@@ -22,6 +22,42 @@ describe('Rhapsody source-derived import', () => {
     vi.spyOn(document, 'cookie', 'get').mockReturnValue('other=ignored; JWT=token.with=padding; businessId=wrong');
   });
 
+  it.each(['unchanged', 'tenant', 'patient', 'encounter', 'navigation', 'auth'])(
+    'keeps schedule and CKEditor metadata insufficient for export authority (%s)', async (change) => {
+      const fetcher = vi.fn().mockResolvedValue(json(payload()));
+      const ctx = context(fetcher);
+      expect(await rhapsody.listAppointments('2026-11-16', ctx)).toMatchObject({
+        ok: true, appointments: [{ appointmentId: '12', patientNumber: '22' }],
+      });
+      document.body.innerHTML = '<button role="tab" aria-selected="true">Medical notes</button><button role="tab">Discharge notes</button><div class="ck-editor__editable" contenteditable="true" data-patient-id="22" data-encounter-id="12">Existing medical note</div><textarea>Untouched discharge note</textarea>';
+      const insertContent = vi.fn();
+      const getData = vi.fn(() => '<p>Existing medical note</p>');
+      Object.assign(document.querySelector('.ck-editor__editable')!, {
+        ckeditorInstance: { id: 'patient-22-encounter-12', state: 'ready', getData, model: { insertContent } },
+      });
+      const current = new URL('https://clinic.rhapsody.vet/patients/22/encounters/12?businessId=clinic%2Fone');
+      if (change === 'tenant') current.searchParams.set('businessId', 'other-clinic');
+      if (change === 'patient') current.pathname = '/patients/other/encounters/12';
+      if (change === 'encounter') current.pathname = '/patients/22/encounters/other';
+      if (change === 'navigation') current.pathname = '/login';
+      if (change === 'auth') vi.spyOn(document, 'cookie', 'get').mockReturnValue('JWT=');
+      ctx.currentUrl = () => current;
+      const before = document.body.innerHTML;
+      const tab = vi.spyOn(document.querySelector('button')!, 'click');
+      const requestCount = fetcher.mock.calls.length;
+      fetcher.mockResolvedValue(json({ success: true }));
+      expect(rhapsody.status(ctx)).toMatchObject({ state: 'notConsult', consult: null });
+      for (const fieldTitle of ['Medical notes', 'Discharge notes']) {
+        expect(await rhapsody.write({ fieldTitle, text: 'New note' }, ctx)).toEqual({ ok: false, code: 'not_writable' });
+      }
+      expect(document.body.innerHTML).toBe(before);
+      expect(fetcher).toHaveBeenCalledTimes(requestCount);
+      expect(tab).not.toHaveBeenCalled();
+      expect(insertContent).not.toHaveBeenCalled();
+      expect(getData).not.toHaveBeenCalled();
+    },
+  );
+
   it('uses the same-origin schedules endpoint, query business and JWT cookie', async () => {
     const fetcher = vi.fn().mockResolvedValue(json(payload()));
     expect(await rhapsody.listAppointments('2026-11-16', context(fetcher))).toEqual({ ok: true, failures: [], appointments: [

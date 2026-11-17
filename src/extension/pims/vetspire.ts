@@ -1,4 +1,5 @@
 import { identifyPims } from './hosts';
+import { providerSyncSource } from './providerSync';
 import { dayBounds, isVisible, readFailed, readJson, routeStatus } from './shared';
 import type { AdapterContext, Appointment, AppointmentsResult, FieldInfo, PimsAdapter } from './types';
 
@@ -70,6 +71,7 @@ async function listAppointments(date: string, context: AdapterContext): Promise<
 
 export const vetspire: PimsAdapter = {
   id: 'vetspire',
+  syncSource: providerSyncSource,
   status: (context) => routeStatus(context, null, null, false),
   listFields,
   write: async () => ({ ok: false, code: 'not_writable' }),

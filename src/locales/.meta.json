@@ -9140,6 +9140,74 @@
       "hash": "ed9f3aaff1c9",
       "status": "machine"
     },
+    "pims:exam.chooseTemplate": {
+      "hash": "329a8ef36e36",
+      "status": "machine"
+    },
+    "pims:exam.close": {
+      "hash": "6638fc2255a7",
+      "status": "machine"
+    },
+    "pims:exam.doctor": {
+      "hash": "0c467aa78216",
+      "status": "machine"
+    },
+    "pims:exam.doctorHint": {
+      "hash": "bdad9965da45",
+      "status": "machine"
+    },
+    "pims:exam.errors.invalid_request": {
+      "hash": "4e3fa8798076",
+      "status": "machine"
+    },
+    "pims:exam.errors.not_writable": {
+      "hash": "814dfe5bdcfb",
+      "status": "machine"
+    },
+    "pims:exam.errors.patient_changed": {
+      "hash": "3ea3e92fc96a",
+      "status": "machine"
+    },
+    "pims:exam.errors.physical_exam_outcome_unknown": {
+      "hash": "76aaff20fa71",
+      "status": "machine"
+    },
+    "pims:exam.errors.physical_exam_template_not_found": {
+      "hash": "6ced65295e9b",
+      "status": "machine"
+    },
+    "pims:exam.errors.supervising_doctor_not_set": {
+      "hash": "065ccffb18e9",
+      "status": "machine"
+    },
+    "pims:exam.errors.unavailable": {
+      "hash": "c09d08981493",
+      "status": "machine"
+    },
+    "pims:exam.hint": {
+      "hash": "b22cb54db6ce",
+      "status": "machine"
+    },
+    "pims:exam.open": {
+      "hash": "e2c090b1d8b8",
+      "status": "machine"
+    },
+    "pims:exam.opened": {
+      "hash": "c2fe6cb396eb",
+      "status": "machine"
+    },
+    "pims:exam.setup": {
+      "hash": "1cd18a80c0ee",
+      "status": "machine"
+    },
+    "pims:exam.template": {
+      "hash": "633260f6e3b7",
+      "status": "machine"
+    },
+    "pims:exam.working": {
+      "hash": "600977de2d6e",
+      "status": "machine"
+    },
     "pims:extension.description": {
       "hash": "e37be74c643c",
       "status": "machine"
@@ -9158,6 +9226,114 @@
     },
     "pims:handover.otherUser": {
       "hash": "b9df5a17bc09",
+      "status": "machine"
+    },
+    "pims:images.alt": {
+      "hash": "9bd87658fd54",
+      "status": "machine"
+    },
+    "pims:images.dicom": {
+      "hash": "288fab210285",
+      "status": "machine"
+    },
+    "pims:images.dimensions": {
+      "hash": "fa2358ee8322",
+      "status": "machine"
+    },
+    "pims:images.download": {
+      "hash": "f648b1c1fe02",
+      "status": "machine"
+    },
+    "pims:images.empty": {
+      "hash": "d7bac3e37dcb",
+      "status": "machine"
+    },
+    "pims:images.errors.forbidden": {
+      "hash": "00c3fe5d8b34",
+      "status": "machine"
+    },
+    "pims:images.errors.invalid": {
+      "hash": "8b4767ae9fea",
+      "status": "machine"
+    },
+    "pims:images.errors.save": {
+      "hash": "e0ce1789e7ee",
+      "status": "machine"
+    },
+    "pims:images.errors.schema": {
+      "hash": "a22cc1d4c4b5",
+      "status": "machine"
+    },
+    "pims:images.errors.stale": {
+      "hash": "1d2912a7e808",
+      "status": "machine"
+    },
+    "pims:images.errors.unknown": {
+      "hash": "2088d4a64ec1",
+      "status": "machine"
+    },
+    "pims:images.errors.unsupported": {
+      "hash": "b05725c1f704",
+      "status": "machine"
+    },
+    "pims:images.includeTransfer": {
+      "hash": "7c51684e6e09",
+      "status": "machine"
+    },
+    "pims:images.included": {
+      "hash": "c3f5bb4ff095",
+      "status": "machine"
+    },
+    "pims:images.kinds.photo": {
+      "hash": "d84eebada93e",
+      "status": "machine"
+    },
+    "pims:images.kinds.xray": {
+      "hash": "c3dcd283e5cf",
+      "status": "machine"
+    },
+    "pims:images.loading": {
+      "hash": "20d43ee533bf",
+      "status": "machine"
+    },
+    "pims:images.manual": {
+      "hash": "40b638bd6cef",
+      "status": "machine"
+    },
+    "pims:images.open": {
+      "hash": "cd7828681b2e",
+      "status": "machine"
+    },
+    "pims:images.preview": {
+      "hash": "91122ef7364c",
+      "status": "machine"
+    },
+    "pims:images.reload": {
+      "hash": "61e0548cfea5",
+      "status": "machine"
+    },
+    "pims:images.removeTransfer": {
+      "hash": "bef859ff1375",
+      "status": "machine"
+    },
+    "pims:images.requested": {
+      "hash": "317536ecbc77",
+      "status": "machine"
+    },
+    "pims:images.select": {
+      "hash": "9936ddb1c15a",
+      "status": "machine"
+    },
+    "pims:images.source": {
+      "hash": "a84b04df5ec9",
+      "status": "machine"
+    },
+    "pims:images.transferHelp": {
+      "hash": "48fddef953ea",
+      "status": "machine"
+    },
+    "pims:images.transferRow": {
+      "hash": "9bd87658fd54",
       "status": "machine"
     },
     "pims:install.body": {
@@ -9620,6 +9796,202 @@
       "hash": "e983f20b67ec",
       "status": "machine"
     },
+    "pims:setup.add": {
+      "hash": "685f88ae3db2",
+      "status": "machine"
+    },
+    "pims:setup.chartWarning": {
+      "hash": "dd8dccc85beb",
+      "status": "machine"
+    },
+    "pims:setup.chooseMember": {
+      "hash": "c6aaa7202c40",
+      "status": "machine"
+    },
+    "pims:setup.clinicianId": {
+      "hash": "a981aa75e534",
+      "status": "machine"
+    },
+    "pims:setup.collections.charts": {
+      "hash": "6a7d1c1bb760",
+      "status": "machine"
+    },
+    "pims:setup.collections.clinicians": {
+      "hash": "8a4f24c5ef87",
+      "status": "machine"
+    },
+    "pims:setup.collections.patients": {
+      "hash": "ce0e9c7a7afd",
+      "status": "machine"
+    },
+    "pims:setup.confirm": {
+      "hash": "4bddfff95427",
+      "status": "machine"
+    },
+    "pims:setup.confirmHint": {
+      "hash": "97c279d8d9bb",
+      "status": "machine"
+    },
+    "pims:setup.connection": {
+      "hash": "20f55bb816f0",
+      "status": "machine"
+    },
+    "pims:setup.connectionLabel": {
+      "hash": "7ec856cef18a",
+      "status": "machine"
+    },
+    "pims:setup.description": {
+      "hash": "84e4ba9b7f5b",
+      "status": "machine"
+    },
+    "pims:setup.empty": {
+      "hash": "20adee18e60b",
+      "status": "machine"
+    },
+    "pims:setup.emptyConnections": {
+      "hash": "0132bcd2e246",
+      "status": "machine"
+    },
+    "pims:setup.errors.conflict": {
+      "hash": "7aec02158017",
+      "status": "machine"
+    },
+    "pims:setup.errors.forbidden": {
+      "hash": "42d50ef06389",
+      "status": "machine"
+    },
+    "pims:setup.errors.invalid": {
+      "hash": "7575eb656248",
+      "status": "machine"
+    },
+    "pims:setup.errors.schema": {
+      "hash": "83682d52c762",
+      "status": "machine"
+    },
+    "pims:setup.errors.unknown": {
+      "hash": "205f20cd0f68",
+      "status": "machine"
+    },
+    "pims:setup.loading": {
+      "hash": "ae6f99a46e2f",
+      "status": "machine"
+    },
+    "pims:setup.member": {
+      "hash": "53f9f62407f5",
+      "status": "machine"
+    },
+    "pims:setup.open": {
+      "hash": "a63ee83ea0af",
+      "status": "machine"
+    },
+    "pims:setup.origin": {
+      "hash": "852a6db7f67e",
+      "status": "machine"
+    },
+    "pims:setup.patientId": {
+      "hash": "0f5e518e24a3",
+      "status": "machine"
+    },
+    "pims:setup.provider": {
+      "hash": "e5af30ad4329",
+      "status": "machine"
+    },
+    "pims:setup.providers.daysmart": {
+      "hash": "10f33f97efc1",
+      "status": "machine"
+    },
+    "pims:setup.providers.ezyvet": {
+      "hash": "30da5822c1e7",
+      "status": "machine"
+    },
+    "pims:setup.providers.instinct": {
+      "hash": "f363b62f7885",
+      "status": "machine"
+    },
+    "pims:setup.providers.pulse": {
+      "hash": "7bfe209e65d3",
+      "status": "machine"
+    },
+    "pims:setup.providers.rhapsody": {
+      "hash": "6c27f2055d7a",
+      "status": "machine"
+    },
+    "pims:setup.providers.shepherd": {
+      "hash": "fe806cf166eb",
+      "status": "machine"
+    },
+    "pims:setup.providers.vetspire": {
+      "hash": "a3a82148b7f0",
+      "status": "machine"
+    },
+    "pims:setup.refresh": {
+      "hash": "8425d2bca744",
+      "status": "machine"
+    },
+    "pims:setup.reviewConnection": {
+      "hash": "25cb72b47583",
+      "status": "machine"
+    },
+    "pims:setup.reviewLink.charts": {
+      "hash": "c1409d506f8c",
+      "status": "machine"
+    },
+    "pims:setup.reviewLink.clinicians": {
+      "hash": "a833dae85b40",
+      "status": "machine"
+    },
+    "pims:setup.reviewLink.patients": {
+      "hash": "8238a2026e94",
+      "status": "machine"
+    },
+    "pims:setup.selectChart": {
+      "hash": "a46569f103c7",
+      "status": "machine"
+    },
+    "pims:setup.states.active": {
+      "hash": "ce5735de5ed9",
+      "status": "machine"
+    },
+    "pims:setup.states.disabled": {
+      "hash": "80f39124f306",
+      "status": "machine"
+    },
+    "pims:setup.states.unverified": {
+      "hash": "7d2c59315a8c",
+      "status": "machine"
+    },
+    "pims:setup.sync": {
+      "hash": "59dc9d3d9ea1",
+      "status": "machine"
+    },
+    "pims:setup.syncDate": {
+      "hash": "6d659977ac79",
+      "status": "machine"
+    },
+    "pims:setup.syncHint": {
+      "hash": "8e2d0c2568ea",
+      "status": "machine"
+    },
+    "pims:setup.syncResult": {
+      "hash": "1ef9ef134668",
+      "status": "machine"
+    },
+    "pims:setup.tenant": {
+      "hash": "c8dbde0ec832",
+      "status": "machine"
+    },
+    "pims:setup.unlinked": {
+      "hash": "1e31d9596d67",
+      "status": "machine"
+    },
+    "pims:setup.verified": {
+      "hash": "babcec7b0cf1",
+      "status": "machine"
+    },
+    "pims:setup.verifyBrowser": {
+      "hash": "81033190707d",
+      "status": "machine"
+    },
     "pims:severalTabs": {
       "hash": "982dbde5d8e5",
       "status": "machine"
@@ -9646,6 +10018,122 @@
     },
     "pims:targetNoPatient": {
       "hash": "0f4e0172049d",
+      "status": "machine"
+    },
+    "pims:uploadReview.acknowledge": {
+      "hash": "40bf8d46893d",
+      "status": "machine"
+    },
+    "pims:uploadReview.attempt": {
+      "hash": "8c70f1856ebb",
+      "status": "machine"
+    },
+    "pims:uploadReview.close": {
+      "hash": "fabb1c282124",
+      "status": "machine"
+    },
+    "pims:uploadReview.destination": {
+      "hash": "742a23c60379",
+      "status": "machine"
+    },
+    "pims:uploadReview.empty": {
+      "hash": "0c05f7c8feef",
+      "status": "machine"
+    },
+    "pims:uploadReview.errors.conflict": {
+      "hash": "72260576de98",
+      "status": "machine"
+    },
+    "pims:uploadReview.errors.forbidden": {
+      "hash": "ae4c88334e6a",
+      "status": "machine"
+    },
+    "pims:uploadReview.errors.invalid": {
+      "hash": "97e6dfb5ce54",
+      "status": "machine"
+    },
+    "pims:uploadReview.errors.schema": {
+      "hash": "1ac5ae65705a",
+      "status": "machine"
+    },
+    "pims:uploadReview.errors.unknown": {
+      "hash": "db1d34636d1f",
+      "status": "machine"
+    },
+    "pims:uploadReview.fingerprint": {
+      "hash": "599571918993",
+      "status": "machine"
+    },
+    "pims:uploadReview.next": {
+      "hash": "bcf095550c3a",
+      "status": "machine"
+    },
+    "pims:uploadReview.note": {
+      "hash": "c2d4c598bbf1",
+      "status": "machine"
+    },
+    "pims:uploadReview.observation": {
+      "hash": "c43e015ac278",
+      "status": "machine"
+    },
+    "pims:uploadReview.observations.not_found": {
+      "hash": "a05e2698b273",
+      "status": "machine"
+    },
+    "pims:uploadReview.observations.present": {
+      "hash": "37ccb0787063",
+      "status": "machine"
+    },
+    "pims:uploadReview.observations.uncertain": {
+      "hash": "afcf43f9be95",
+      "status": "machine"
+    },
+    "pims:uploadReview.open": {
+      "hash": "92d04f88c1b6",
+      "status": "machine"
+    },
+    "pims:uploadReview.option": {
+      "hash": "80f10fbb6713",
+      "status": "machine"
+    },
+    "pims:uploadReview.patient": {
+      "hash": "697d9fee73f8",
+      "status": "machine"
+    },
+    "pims:uploadReview.previous": {
+      "hash": "984f0f7cb990",
+      "status": "machine"
+    },
+    "pims:uploadReview.recorded": {
+      "hash": "a0d96f17e69c",
+      "status": "machine"
+    },
+    "pims:uploadReview.reload": {
+      "hash": "86c854915df5",
+      "status": "machine"
+    },
+    "pims:uploadReview.save": {
+      "hash": "ac3f85c02d7e",
+      "status": "machine"
+    },
+    "pims:uploadReview.saveFirst": {
+      "hash": "52a4a2a16889",
+      "status": "machine"
+    },
+    "pims:uploadReview.source": {
+      "hash": "acee0994ba45",
+      "status": "machine"
+    },
+    "pims:uploadReview.target": {
+      "hash": "c8fd6319cb9e",
+      "status": "machine"
+    },
+    "pims:uploadReview.title": {
+      "hash": "924c0f9bedd3",
+      "status": "machine"
+    },
+    "pims:uploadReview.warning": {
+      "hash": "cadcd458a0fb",
       "status": "machine"
     },
     "reminders:composer.aria": {
@@ -21886,6 +22374,74 @@
       "hash": "ed9f3aaff1c9",
       "status": "machine"
     },
+    "pims:exam.chooseTemplate": {
+      "hash": "329a8ef36e36",
+      "status": "machine"
+    },
+    "pims:exam.close": {
+      "hash": "6638fc2255a7",
+      "status": "machine"
+    },
+    "pims:exam.doctor": {
+      "hash": "0c467aa78216",
+      "status": "machine"
+    },
+    "pims:exam.doctorHint": {
+      "hash": "bdad9965da45",
+      "status": "machine"
+    },
+    "pims:exam.errors.invalid_request": {
+      "hash": "4e3fa8798076",
+      "status": "machine"
+    },
+    "pims:exam.errors.not_writable": {
+      "hash": "814dfe5bdcfb",
+      "status": "machine"
+    },
+    "pims:exam.errors.patient_changed": {
+      "hash": "3ea3e92fc96a",
+      "status": "machine"
+    },
+    "pims:exam.errors.physical_exam_outcome_unknown": {
+      "hash": "76aaff20fa71",
+      "status": "machine"
+    },
+    "pims:exam.errors.physical_exam_template_not_found": {
+      "hash": "6ced65295e9b",
+      "status": "machine"
+    },
+    "pims:exam.errors.supervising_doctor_not_set": {
+      "hash": "065ccffb18e9",
+      "status": "machine"
+    },
+    "pims:exam.errors.unavailable": {
+      "hash": "c09d08981493",
+      "status": "machine"
+    },
+    "pims:exam.hint": {
+      "hash": "b22cb54db6ce",
+      "status": "machine"
+    },
+    "pims:exam.open": {
+      "hash": "e2c090b1d8b8",
+      "status": "machine"
+    },
+    "pims:exam.opened": {
+      "hash": "c2fe6cb396eb",
+      "status": "machine"
+    },
+    "pims:exam.setup": {
+      "hash": "1cd18a80c0ee",
+      "status": "machine"
+    },
+    "pims:exam.template": {
+      "hash": "633260f6e3b7",
+      "status": "machine"
+    },
+    "pims:exam.working": {
+      "hash": "600977de2d6e",
+      "status": "machine"
+    },
     "pims:extension.description": {
       "hash": "e37be74c643c",
       "status": "machine"
@@ -21904,6 +22460,114 @@
     },
     "pims:handover.otherUser": {
       "hash": "b9df5a17bc09",
+      "status": "machine"
+    },
+    "pims:images.alt": {
+      "hash": "9bd87658fd54",
+      "status": "machine"
+    },
+    "pims:images.dicom": {
+      "hash": "288fab210285",
+      "status": "machine"
+    },
+    "pims:images.dimensions": {
+      "hash": "fa2358ee8322",
+      "status": "machine"
+    },
+    "pims:images.download": {
+      "hash": "f648b1c1fe02",
+      "status": "machine"
+    },
+    "pims:images.empty": {
+      "hash": "d7bac3e37dcb",
+      "status": "machine"
+    },
+    "pims:images.errors.forbidden": {
+      "hash": "00c3fe5d8b34",
+      "status": "machine"
+    },
+    "pims:images.errors.invalid": {
+      "hash": "8b4767ae9fea",
+      "status": "machine"
+    },
+    "pims:images.errors.save": {
+      "hash": "e0ce1789e7ee",
+      "status": "machine"
+    },
+    "pims:images.errors.schema": {
+      "hash": "a22cc1d4c4b5",
+      "status": "machine"
+    },
+    "pims:images.errors.stale": {
+      "hash": "1d2912a7e808",
+      "status": "machine"
+    },
+    "pims:images.errors.unknown": {
+      "hash": "2088d4a64ec1",
+      "status": "machine"
+    },
+    "pims:images.errors.unsupported": {
+      "hash": "b05725c1f704",
+      "status": "machine"
+    },
+    "pims:images.includeTransfer": {
+      "hash": "7c51684e6e09",
+      "status": "machine"
+    },
+    "pims:images.included": {
+      "hash": "c3f5bb4ff095",
+      "status": "machine"
+    },
+    "pims:images.kinds.photo": {
+      "hash": "d84eebada93e",
+      "status": "machine"
+    },
+    "pims:images.kinds.xray": {
+      "hash": "c3dcd283e5cf",
+      "status": "machine"
+    },
+    "pims:images.loading": {
+      "hash": "20d43ee533bf",
+      "status": "machine"
+    },
+    "pims:images.manual": {
+      "hash": "40b638bd6cef",
+      "status": "machine"
+    },
+    "pims:images.open": {
+      "hash": "cd7828681b2e",
+      "status": "machine"
+    },
+    "pims:images.preview": {
+      "hash": "91122ef7364c",
+      "status": "machine"
+    },
+    "pims:images.reload": {
+      "hash": "61e0548cfea5",
+      "status": "machine"
+    },
+    "pims:images.removeTransfer": {
+      "hash": "bef859ff1375",
+      "status": "machine"
+    },
+    "pims:images.requested": {
+      "hash": "317536ecbc77",
+      "status": "machine"
+    },
+    "pims:images.select": {
+      "hash": "9936ddb1c15a",
+      "status": "machine"
+    },
+    "pims:images.source": {
+      "hash": "a84b04df5ec9",
+      "status": "machine"
+    },
+    "pims:images.transferHelp": {
+      "hash": "48fddef953ea",
+      "status": "machine"
+    },
+    "pims:images.transferRow": {
+      "hash": "9bd87658fd54",
       "status": "machine"
     },
     "pims:install.body": {
@@ -22370,6 +23034,202 @@
       "hash": "e983f20b67ec",
       "status": "machine"
     },
+    "pims:setup.add": {
+      "hash": "685f88ae3db2",
+      "status": "machine"
+    },
+    "pims:setup.chartWarning": {
+      "hash": "dd8dccc85beb",
+      "status": "machine"
+    },
+    "pims:setup.chooseMember": {
+      "hash": "c6aaa7202c40",
+      "status": "machine"
+    },
+    "pims:setup.clinicianId": {
+      "hash": "a981aa75e534",
+      "status": "machine"
+    },
+    "pims:setup.collections.charts": {
+      "hash": "6a7d1c1bb760",
+      "status": "machine"
+    },
+    "pims:setup.collections.clinicians": {
+      "hash": "8a4f24c5ef87",
+      "status": "machine"
+    },
+    "pims:setup.collections.patients": {
+      "hash": "ce0e9c7a7afd",
+      "status": "machine"
+    },
+    "pims:setup.confirm": {
+      "hash": "4bddfff95427",
+      "status": "machine"
+    },
+    "pims:setup.confirmHint": {
+      "hash": "97c279d8d9bb",
+      "status": "machine"
+    },
+    "pims:setup.connection": {
+      "hash": "20f55bb816f0",
+      "status": "machine"
+    },
+    "pims:setup.connectionLabel": {
+      "hash": "7ec856cef18a",
+      "status": "machine"
+    },
+    "pims:setup.description": {
+      "hash": "84e4ba9b7f5b",
+      "status": "machine"
+    },
+    "pims:setup.empty": {
+      "hash": "20adee18e60b",
+      "status": "machine"
+    },
+    "pims:setup.emptyConnections": {
+      "hash": "0132bcd2e246",
+      "status": "machine"
+    },
+    "pims:setup.errors.conflict": {
+      "hash": "7aec02158017",
+      "status": "machine"
+    },
+    "pims:setup.errors.forbidden": {
+      "hash": "42d50ef06389",
+      "status": "machine"
+    },
+    "pims:setup.errors.invalid": {
+      "hash": "7575eb656248",
+      "status": "machine"
+    },
+    "pims:setup.errors.schema": {
+      "hash": "83682d52c762",
+      "status": "machine"
+    },
+    "pims:setup.errors.unknown": {
+      "hash": "205f20cd0f68",
+      "status": "machine"
+    },
+    "pims:setup.loading": {
+      "hash": "ae6f99a46e2f",
+      "status": "machine"
+    },
+    "pims:setup.member": {
+      "hash": "53f9f62407f5",
+      "status": "machine"
+    },
+    "pims:setup.open": {
+      "hash": "a63ee83ea0af",
+      "status": "machine"
+    },
+    "pims:setup.origin": {
+      "hash": "852a6db7f67e",
+      "status": "machine"
+    },
+    "pims:setup.patientId": {
+      "hash": "0f5e518e24a3",
+      "status": "machine"
+    },
+    "pims:setup.provider": {
+      "hash": "e5af30ad4329",
+      "status": "machine"
+    },
+    "pims:setup.providers.daysmart": {
+      "hash": "10f33f97efc1",
+      "status": "machine"
+    },
+    "pims:setup.providers.ezyvet": {
+      "hash": "30da5822c1e7",
+      "status": "machine"
+    },
+    "pims:setup.providers.instinct": {
+      "hash": "f363b62f7885",
+      "status": "machine"
+    },
+    "pims:setup.providers.pulse": {
+      "hash": "7bfe209e65d3",
+      "status": "machine"
+    },
+    "pims:setup.providers.rhapsody": {
+      "hash": "6c27f2055d7a",
+      "status": "machine"
+    },
+    "pims:setup.providers.shepherd": {
+      "hash": "fe806cf166eb",
+      "status": "machine"
+    },
+    "pims:setup.providers.vetspire": {
+      "hash": "a3a82148b7f0",
+      "status": "machine"
+    },
+    "pims:setup.refresh": {
+      "hash": "8425d2bca744",
+      "status": "machine"
+    },
+    "pims:setup.reviewConnection": {
+      "hash": "25cb72b47583",
+      "status": "machine"
+    },
+    "pims:setup.reviewLink.charts": {
+      "hash": "c1409d506f8c",
+      "status": "machine"
+    },
+    "pims:setup.reviewLink.clinicians": {
+      "hash": "a833dae85b40",
+      "status": "machine"
+    },
+    "pims:setup.reviewLink.patients": {
+      "hash": "8238a2026e94",
+      "status": "machine"
+    },
+    "pims:setup.selectChart": {
+      "hash": "a46569f103c7",
+      "status": "machine"
+    },
+    "pims:setup.states.active": {
+      "hash": "ce5735de5ed9",
+      "status": "machine"
+    },
+    "pims:setup.states.disabled": {
+      "hash": "80f39124f306",
+      "status": "machine"
+    },
+    "pims:setup.states.unverified": {
+      "hash": "7d2c59315a8c",
+      "status": "machine"
+    },
+    "pims:setup.sync": {
+      "hash": "59dc9d3d9ea1",
+      "status": "machine"
+    },
+    "pims:setup.syncDate": {
+      "hash": "6d659977ac79",
+      "status": "machine"
+    },
+    "pims:setup.syncHint": {
+      "hash": "8e2d0c2568ea",
+      "status": "machine"
+    },
+    "pims:setup.syncResult": {
+      "hash": "1ef9ef134668",
+      "status": "machine"
+    },
+    "pims:setup.tenant": {
+      "hash": "c8dbde0ec832",
+      "status": "machine"
+    },
+    "pims:setup.unlinked": {
+      "hash": "1e31d9596d67",
+      "status": "machine"
+    },
+    "pims:setup.verified": {
+      "hash": "babcec7b0cf1",
+      "status": "machine"
+    },
+    "pims:setup.verifyBrowser": {
+      "hash": "81033190707d",
+      "status": "machine"
+    },
     "pims:severalTabs": {
       "hash": "982dbde5d8e5",
       "status": "machine"
@@ -22396,6 +23256,122 @@
     },
     "pims:targetNoPatient": {
       "hash": "0f4e0172049d",
+      "status": "machine"
+    },
+    "pims:uploadReview.acknowledge": {
+      "hash": "40bf8d46893d",
+      "status": "machine"
+    },
+    "pims:uploadReview.attempt": {
+      "hash": "8c70f1856ebb",
+      "status": "machine"
+    },
+    "pims:uploadReview.close": {
+      "hash": "fabb1c282124",
+      "status": "machine"
+    },
+    "pims:uploadReview.destination": {
+      "hash": "742a23c60379",
+      "status": "machine"
+    },
+    "pims:uploadReview.empty": {
+      "hash": "0c05f7c8feef",
+      "status": "machine"
+    },
+    "pims:uploadReview.errors.conflict": {
+      "hash": "72260576de98",
+      "status": "machine"
+    },
+    "pims:uploadReview.errors.forbidden": {
+      "hash": "ae4c88334e6a",
+      "status": "machine"
+    },
+    "pims:uploadReview.errors.invalid": {
+      "hash": "97e6dfb5ce54",
+      "status": "machine"
+    },
+    "pims:uploadReview.errors.schema": {
+      "hash": "1ac5ae65705a",
+      "status": "machine"
+    },
+    "pims:uploadReview.errors.unknown": {
+      "hash": "db1d34636d1f",
+      "status": "machine"
+    },
+    "pims:uploadReview.fingerprint": {
+      "hash": "599571918993",
+      "status": "machine"
+    },
+    "pims:uploadReview.next": {
+      "hash": "bcf095550c3a",
+      "status": "machine"
+    },
+    "pims:uploadReview.note": {
+      "hash": "c2d4c598bbf1",
+      "status": "machine"
+    },
+    "pims:uploadReview.observation": {
+      "hash": "c43e015ac278",
+      "status": "machine"
+    },
+    "pims:uploadReview.observations.not_found": {
+      "hash": "a05e2698b273",
+      "status": "machine"
+    },
+    "pims:uploadReview.observations.present": {
+      "hash": "37ccb0787063",
+      "status": "machine"
+    },
+    "pims:uploadReview.observations.uncertain": {
+      "hash": "afcf43f9be95",
+      "status": "machine"
+    },
+    "pims:uploadReview.open": {
+      "hash": "92d04f88c1b6",
+      "status": "machine"
+    },
+    "pims:uploadReview.option": {
+      "hash": "80f10fbb6713",
+      "status": "machine"
+    },
+    "pims:uploadReview.patient": {
+      "hash": "697d9fee73f8",
+      "status": "machine"
+    },
+    "pims:uploadReview.previous": {
+      "hash": "984f0f7cb990",
+      "status": "machine"
+    },
+    "pims:uploadReview.recorded": {
+      "hash": "a0d96f17e69c",
+      "status": "machine"
+    },
+    "pims:uploadReview.reload": {
+      "hash": "86c854915df5",
+      "status": "machine"
+    },
+    "pims:uploadReview.save": {
+      "hash": "ac3f85c02d7e",
+      "status": "machine"
+    },
+    "pims:uploadReview.saveFirst": {
+      "hash": "52a4a2a16889",
+      "status": "machine"
+    },
+    "pims:uploadReview.source": {
+      "hash": "acee0994ba45",
+      "status": "machine"
+    },
+    "pims:uploadReview.target": {
+      "hash": "c8fd6319cb9e",
+      "status": "machine"
+    },
+    "pims:uploadReview.title": {
+      "hash": "924c0f9bedd3",
+      "status": "machine"
+    },
+    "pims:uploadReview.warning": {
+      "hash": "cadcd458a0fb",
       "status": "machine"
     },
     "reminders:composer.aria": {
@@ -34664,6 +35640,74 @@
       "hash": "ed9f3aaff1c9",
       "status": "machine"
     },
+    "pims:exam.chooseTemplate": {
+      "hash": "329a8ef36e36",
+      "status": "machine"
+    },
+    "pims:exam.close": {
+      "hash": "6638fc2255a7",
+      "status": "machine"
+    },
+    "pims:exam.doctor": {
+      "hash": "0c467aa78216",
+      "status": "machine"
+    },
+    "pims:exam.doctorHint": {
+      "hash": "bdad9965da45",
+      "status": "machine"
+    },
+    "pims:exam.errors.invalid_request": {
+      "hash": "4e3fa8798076",
+      "status": "machine"
+    },
+    "pims:exam.errors.not_writable": {
+      "hash": "814dfe5bdcfb",
+      "status": "machine"
+    },
+    "pims:exam.errors.patient_changed": {
+      "hash": "3ea3e92fc96a",
+      "status": "machine"
+    },
+    "pims:exam.errors.physical_exam_outcome_unknown": {
+      "hash": "76aaff20fa71",
+      "status": "machine"
+    },
+    "pims:exam.errors.physical_exam_template_not_found": {
+      "hash": "6ced65295e9b",
+      "status": "machine"
+    },
+    "pims:exam.errors.supervising_doctor_not_set": {
+      "hash": "065ccffb18e9",
+      "status": "machine"
+    },
+    "pims:exam.errors.unavailable": {
+      "hash": "c09d08981493",
+      "status": "machine"
+    },
+    "pims:exam.hint": {
+      "hash": "b22cb54db6ce",
+      "status": "machine"
+    },
+    "pims:exam.open": {
+      "hash": "e2c090b1d8b8",
+      "status": "machine"
+    },
+    "pims:exam.opened": {
+      "hash": "c2fe6cb396eb",
+      "status": "machine"
+    },
+    "pims:exam.setup": {
+      "hash": "1cd18a80c0ee",
+      "status": "machine"
+    },
+    "pims:exam.template": {
+      "hash": "633260f6e3b7",
+      "status": "machine"
+    },
+    "pims:exam.working": {
+      "hash": "600977de2d6e",
+      "status": "machine"
+    },
     "pims:extension.description": {
       "hash": "e37be74c643c",
       "status": "machine"
@@ -34682,6 +35726,114 @@
     },
     "pims:handover.otherUser": {
       "hash": "b9df5a17bc09",
+      "status": "machine"
+    },
+    "pims:images.alt": {
+      "hash": "9bd87658fd54",
+      "status": "machine"
+    },
+    "pims:images.dicom": {
+      "hash": "288fab210285",
+      "status": "machine"
+    },
+    "pims:images.dimensions": {
+      "hash": "fa2358ee8322",
+      "status": "machine"
+    },
+    "pims:images.download": {
+      "hash": "f648b1c1fe02",
+      "status": "machine"
+    },
+    "pims:images.empty": {
+      "hash": "d7bac3e37dcb",
+      "status": "machine"
+    },
+    "pims:images.errors.forbidden": {
+      "hash": "00c3fe5d8b34",
+      "status": "machine"
+    },
+    "pims:images.errors.invalid": {
+      "hash": "8b4767ae9fea",
+      "status": "machine"
+    },
+    "pims:images.errors.save": {
+      "hash": "e0ce1789e7ee",
+      "status": "machine"
+    },
+    "pims:images.errors.schema": {
+      "hash": "a22cc1d4c4b5",
+      "status": "machine"
+    },
+    "pims:images.errors.stale": {
+      "hash": "1d2912a7e808",
+      "status": "machine"
+    },
+    "pims:images.errors.unknown": {
+      "hash": "2088d4a64ec1",
+      "status": "machine"
+    },
+    "pims:images.errors.unsupported": {
+      "hash": "b05725c1f704",
+      "status": "machine"
+    },
+    "pims:images.includeTransfer": {
+      "hash": "7c51684e6e09",
+      "status": "machine"
+    },
+    "pims:images.included": {
+      "hash": "c3f5bb4ff095",
+      "status": "machine"
+    },
+    "pims:images.kinds.photo": {
+      "hash": "d84eebada93e",
+      "status": "machine"
+    },
+    "pims:images.kinds.xray": {
+      "hash": "c3dcd283e5cf",
+      "status": "machine"
+    },
+    "pims:images.loading": {
+      "hash": "20d43ee533bf",
+      "status": "machine"
+    },
+    "pims:images.manual": {
+      "hash": "40b638bd6cef",
+      "status": "machine"
+    },
+    "pims:images.open": {
+      "hash": "cd7828681b2e",
+      "status": "machine"
+    },
+    "pims:images.preview": {
+      "hash": "91122ef7364c",
+      "status": "machine"
+    },
+    "pims:images.reload": {
+      "hash": "61e0548cfea5",
+      "status": "machine"
+    },
+    "pims:images.removeTransfer": {
+      "hash": "bef859ff1375",
+      "status": "machine"
+    },
+    "pims:images.requested": {
+      "hash": "317536ecbc77",
+      "status": "machine"
+    },
+    "pims:images.select": {
+      "hash": "9936ddb1c15a",
+      "status": "machine"
+    },
+    "pims:images.source": {
+      "hash": "a84b04df5ec9",
+      "status": "machine"
+    },
+    "pims:images.transferHelp": {
+      "hash": "48fddef953ea",
+      "status": "machine"
+    },
+    "pims:images.transferRow": {
+      "hash": "9bd87658fd54",
       "status": "machine"
     },
     "pims:install.body": {
@@ -35148,6 +36300,202 @@
       "hash": "e983f20b67ec",
       "status": "machine"
     },
+    "pims:setup.add": {
+      "hash": "685f88ae3db2",
+      "status": "machine"
+    },
+    "pims:setup.chartWarning": {
+      "hash": "dd8dccc85beb",
+      "status": "machine"
+    },
+    "pims:setup.chooseMember": {
+      "hash": "c6aaa7202c40",
+      "status": "machine"
+    },
+    "pims:setup.clinicianId": {
+      "hash": "a981aa75e534",
+      "status": "machine"
+    },
+    "pims:setup.collections.charts": {
+      "hash": "6a7d1c1bb760",
+      "status": "machine"
+    },
+    "pims:setup.collections.clinicians": {
+      "hash": "8a4f24c5ef87",
+      "status": "machine"
+    },
+    "pims:setup.collections.patients": {
+      "hash": "ce0e9c7a7afd",
+      "status": "machine"
+    },
+    "pims:setup.confirm": {
+      "hash": "4bddfff95427",
+      "status": "machine"
+    },
+    "pims:setup.confirmHint": {
+      "hash": "97c279d8d9bb",
+      "status": "machine"
+    },
+    "pims:setup.connection": {
+      "hash": "20f55bb816f0",
+      "status": "machine"
+    },
+    "pims:setup.connectionLabel": {
+      "hash": "7ec856cef18a",
+      "status": "machine"
+    },
+    "pims:setup.description": {
+      "hash": "84e4ba9b7f5b",
+      "status": "machine"
+    },
+    "pims:setup.empty": {
+      "hash": "20adee18e60b",
+      "status": "machine"
+    },
+    "pims:setup.emptyConnections": {
+      "hash": "0132bcd2e246",
+      "status": "machine"
+    },
+    "pims:setup.errors.conflict": {
+      "hash": "7aec02158017",
+      "status": "machine"
+    },
+    "pims:setup.errors.forbidden": {
+      "hash": "42d50ef06389",
+      "status": "machine"
+    },
+    "pims:setup.errors.invalid": {
+      "hash": "7575eb656248",
+      "status": "machine"
+    },
+    "pims:setup.errors.schema": {
+      "hash": "83682d52c762",
+      "status": "machine"
+    },
+    "pims:setup.errors.unknown": {
+      "hash": "205f20cd0f68",
+      "status": "machine"
+    },
+    "pims:setup.loading": {
+      "hash": "ae6f99a46e2f",
+      "status": "machine"
+    },
+    "pims:setup.member": {
+      "hash": "53f9f62407f5",
+      "status": "machine"
+    },
+    "pims:setup.open": {
+      "hash": "a63ee83ea0af",
+      "status": "machine"
+    },
+    "pims:setup.origin": {
+      "hash": "852a6db7f67e",
+      "status": "machine"
+    },
+    "pims:setup.patientId": {
+      "hash": "0f5e518e24a3",
+      "status": "machine"
+    },
+    "pims:setup.provider": {
+      "hash": "e5af30ad4329",
+      "status": "machine"
+    },
+    "pims:setup.providers.daysmart": {
+      "hash": "10f33f97efc1",
+      "status": "machine"
+    },
+    "pims:setup.providers.ezyvet": {
+      "hash": "30da5822c1e7",
+      "status": "machine"
+    },
+    "pims:setup.providers.instinct": {
+      "hash": "f363b62f7885",
+      "status": "machine"
+    },
+    "pims:setup.providers.pulse": {
+      "hash": "7bfe209e65d3",
+      "status": "machine"
+    },
+    "pims:setup.providers.rhapsody": {
+      "hash": "6c27f2055d7a",
+      "status": "machine"
+    },
+    "pims:setup.providers.shepherd": {
+      "hash": "fe806cf166eb",
+      "status": "machine"
+    },
+    "pims:setup.providers.vetspire": {
+      "hash": "a3a82148b7f0",
+      "status": "machine"
+    },
+    "pims:setup.refresh": {
+      "hash": "8425d2bca744",
+      "status": "machine"
+    },
+    "pims:setup.reviewConnection": {
+      "hash": "25cb72b47583",
+      "status": "machine"
+    },
+    "pims:setup.reviewLink.charts": {
+      "hash": "c1409d506f8c",
+      "status": "machine"
+    },
+    "pims:setup.reviewLink.clinicians": {
+      "hash": "a833dae85b40",
+      "status": "machine"
+    },
+    "pims:setup.reviewLink.patients": {
+      "hash": "8238a2026e94",
+      "status": "machine"
+    },
+    "pims:setup.selectChart": {
+      "hash": "a46569f103c7",
+      "status": "machine"
+    },
+    "pims:setup.states.active": {
+      "hash": "ce5735de5ed9",
+      "status": "machine"
+    },
+    "pims:setup.states.disabled": {
+      "hash": "80f39124f306",
+      "status": "machine"
+    },
+    "pims:setup.states.unverified": {
+      "hash": "7d2c59315a8c",
+      "status": "machine"
+    },
+    "pims:setup.sync": {
+      "hash": "59dc9d3d9ea1",
+      "status": "machine"
+    },
+    "pims:setup.syncDate": {
+      "hash": "6d659977ac79",
+      "status": "machine"
+    },
+    "pims:setup.syncHint": {
+      "hash": "8e2d0c2568ea",
+      "status": "machine"
+    },
+    "pims:setup.syncResult": {
+      "hash": "1ef9ef134668",
+      "status": "machine"
+    },
+    "pims:setup.tenant": {
+      "hash": "c8dbde0ec832",
+      "status": "machine"
+    },
+    "pims:setup.unlinked": {
+      "hash": "1e31d9596d67",
+      "status": "machine"
+    },
+    "pims:setup.verified": {
+      "hash": "babcec7b0cf1",
+      "status": "machine"
+    },
+    "pims:setup.verifyBrowser": {
+      "hash": "81033190707d",
+      "status": "machine"
+    },
     "pims:severalTabs": {
       "hash": "982dbde5d8e5",
       "status": "machine"
@@ -35174,6 +36522,122 @@
     },
     "pims:targetNoPatient": {
       "hash": "0f4e0172049d",
+      "status": "machine"
+    },
+    "pims:uploadReview.acknowledge": {
+      "hash": "40bf8d46893d",
+      "status": "machine"
+    },
+    "pims:uploadReview.attempt": {
+      "hash": "8c70f1856ebb",
+      "status": "machine"
+    },
+    "pims:uploadReview.close": {
+      "hash": "fabb1c282124",
+      "status": "machine"
+    },
+    "pims:uploadReview.destination": {
+      "hash": "742a23c60379",
+      "status": "machine"
+    },
+    "pims:uploadReview.empty": {
+      "hash": "0c05f7c8feef",
+      "status": "machine"
+    },
+    "pims:uploadReview.errors.conflict": {
+      "hash": "72260576de98",
+      "status": "machine"
+    },
+    "pims:uploadReview.errors.forbidden": {
+      "hash": "ae4c88334e6a",
+      "status": "machine"
+    },
+    "pims:uploadReview.errors.invalid": {
+      "hash": "97e6dfb5ce54",
+      "status": "machine"
+    },
+    "pims:uploadReview.errors.schema": {
+      "hash": "1ac5ae65705a",
+      "status": "machine"
+    },
+    "pims:uploadReview.errors.unknown": {
+      "hash": "db1d34636d1f",
+      "status": "machine"
+    },
+    "pims:uploadReview.fingerprint": {
+      "hash": "599571918993",
+      "status": "machine"
+    },
+    "pims:uploadReview.next": {
+      "hash": "bcf095550c3a",
+      "status": "machine"
+    },
+    "pims:uploadReview.note": {
+      "hash": "c2d4c598bbf1",
+      "status": "machine"
+    },
+    "pims:uploadReview.observation": {
+      "hash": "c43e015ac278",
+      "status": "machine"
+    },
+    "pims:uploadReview.observations.not_found": {
+      "hash": "a05e2698b273",
+      "status": "machine"
+    },
+    "pims:uploadReview.observations.present": {
+      "hash": "37ccb0787063",
+      "status": "machine"
+    },
+    "pims:uploadReview.observations.uncertain": {
+      "hash": "afcf43f9be95",
+      "status": "machine"
+    },
+    "pims:uploadReview.open": {
+      "hash": "92d04f88c1b6",
+      "status": "machine"
+    },
+    "pims:uploadReview.option": {
+      "hash": "80f10fbb6713",
+      "status": "machine"
+    },
+    "pims:uploadReview.patient": {
+      "hash": "697d9fee73f8",
+      "status": "machine"
+    },
+    "pims:uploadReview.previous": {
+      "hash": "984f0f7cb990",
+      "status": "machine"
+    },
+    "pims:uploadReview.recorded": {
+      "hash": "a0d96f17e69c",
+      "status": "machine"
+    },
+    "pims:uploadReview.reload": {
+      "hash": "86c854915df5",
+      "status": "machine"
+    },
+    "pims:uploadReview.save": {
+      "hash": "ac3f85c02d7e",
+      "status": "machine"
+    },
+    "pims:uploadReview.saveFirst": {
+      "hash": "52a4a2a16889",
+      "status": "machine"
+    },
+    "pims:uploadReview.source": {
+      "hash": "acee0994ba45",
+      "status": "machine"
+    },
+    "pims:uploadReview.target": {
+      "hash": "c8fd6319cb9e",
+      "status": "machine"
+    },
+    "pims:uploadReview.title": {
+      "hash": "924c0f9bedd3",
+      "status": "machine"
+    },
+    "pims:uploadReview.warning": {
+      "hash": "cadcd458a0fb",
       "status": "machine"
     },
     "reminders:composer.aria": {
@@ -47442,6 +48906,74 @@
       "hash": "ed9f3aaff1c9",
       "status": "machine"
     },
+    "pims:exam.chooseTemplate": {
+      "hash": "329a8ef36e36",
+      "status": "machine"
+    },
+    "pims:exam.close": {
+      "hash": "6638fc2255a7",
+      "status": "machine"
+    },
+    "pims:exam.doctor": {
+      "hash": "0c467aa78216",
+      "status": "machine"
+    },
+    "pims:exam.doctorHint": {
+      "hash": "bdad9965da45",
+      "status": "machine"
+    },
+    "pims:exam.errors.invalid_request": {
+      "hash": "4e3fa8798076",
+      "status": "machine"
+    },
+    "pims:exam.errors.not_writable": {
+      "hash": "814dfe5bdcfb",
+      "status": "machine"
+    },
+    "pims:exam.errors.patient_changed": {
+      "hash": "3ea3e92fc96a",
+      "status": "machine"
+    },
+    "pims:exam.errors.physical_exam_outcome_unknown": {
+      "hash": "76aaff20fa71",
+      "status": "machine"
+    },
+    "pims:exam.errors.physical_exam_template_not_found": {
+      "hash": "6ced65295e9b",
+      "status": "machine"
+    },
+    "pims:exam.errors.supervising_doctor_not_set": {
+      "hash": "065ccffb18e9",
+      "status": "machine"
+    },
+    "pims:exam.errors.unavailable": {
+      "hash": "c09d08981493",
+      "status": "machine"
+    },
+    "pims:exam.hint": {
+      "hash": "b22cb54db6ce",
+      "status": "machine"
+    },
+    "pims:exam.open": {
+      "hash": "e2c090b1d8b8",
+      "status": "machine"
+    },
+    "pims:exam.opened": {
+      "hash": "c2fe6cb396eb",
+      "status": "machine"
+    },
+    "pims:exam.setup": {
+      "hash": "1cd18a80c0ee",
+      "status": "machine"
+    },
+    "pims:exam.template": {
+      "hash": "633260f6e3b7",
+      "status": "machine"
+    },
+    "pims:exam.working": {
+      "hash": "600977de2d6e",
+      "status": "machine"
+    },
     "pims:extension.description": {
       "hash": "e37be74c643c",
       "status": "machine"
@@ -47460,6 +48992,114 @@
     },
     "pims:handover.otherUser": {
       "hash": "b9df5a17bc09",
+      "status": "machine"
+    },
+    "pims:images.alt": {
+      "hash": "9bd87658fd54",
+      "status": "machine"
+    },
+    "pims:images.dicom": {
+      "hash": "288fab210285",
+      "status": "machine"
+    },
+    "pims:images.dimensions": {
+      "hash": "fa2358ee8322",
+      "status": "machine"
+    },
+    "pims:images.download": {
+      "hash": "f648b1c1fe02",
+      "status": "machine"
+    },
+    "pims:images.empty": {
+      "hash": "d7bac3e37dcb",
+      "status": "machine"
+    },
+    "pims:images.errors.forbidden": {
+      "hash": "00c3fe5d8b34",
+      "status": "machine"
+    },
+    "pims:images.errors.invalid": {
+      "hash": "8b4767ae9fea",
+      "status": "machine"
+    },
+    "pims:images.errors.save": {
+      "hash": "e0ce1789e7ee",
+      "status": "machine"
+    },
+    "pims:images.errors.schema": {
+      "hash": "a22cc1d4c4b5",
+      "status": "machine"
+    },
+    "pims:images.errors.stale": {
+      "hash": "1d2912a7e808",
+      "status": "machine"
+    },
+    "pims:images.errors.unknown": {
+      "hash": "2088d4a64ec1",
+      "status": "machine"
+    },
+    "pims:images.errors.unsupported": {
+      "hash": "b05725c1f704",
+      "status": "machine"
+    },
+    "pims:images.includeTransfer": {
+      "hash": "7c51684e6e09",
+      "status": "machine"
+    },
+    "pims:images.included": {
+      "hash": "c3f5bb4ff095",
+      "status": "machine"
+    },
+    "pims:images.kinds.photo": {
+      "hash": "d84eebada93e",
+      "status": "machine"
+    },
+    "pims:images.kinds.xray": {
+      "hash": "c3dcd283e5cf",
+      "status": "machine"
+    },
+    "pims:images.loading": {
+      "hash": "20d43ee533bf",
+      "status": "machine"
+    },
+    "pims:images.manual": {
+      "hash": "40b638bd6cef",
+      "status": "machine"
+    },
+    "pims:images.open": {
+      "hash": "cd7828681b2e",
+      "status": "machine"
+    },
+    "pims:images.preview": {
+      "hash": "91122ef7364c",
+      "status": "machine"
+    },
+    "pims:images.reload": {
+      "hash": "61e0548cfea5",
+      "status": "machine"
+    },
+    "pims:images.removeTransfer": {
+      "hash": "bef859ff1375",
+      "status": "machine"
+    },
+    "pims:images.requested": {
+      "hash": "317536ecbc77",
+      "status": "machine"
+    },
+    "pims:images.select": {
+      "hash": "9936ddb1c15a",
+      "status": "machine"
+    },
+    "pims:images.source": {
+      "hash": "a84b04df5ec9",
+      "status": "machine"
+    },
+    "pims:images.transferHelp": {
+      "hash": "48fddef953ea",
+      "status": "machine"
+    },
+    "pims:images.transferRow": {
+      "hash": "9bd87658fd54",
       "status": "machine"
     },
     "pims:install.body": {
@@ -47926,6 +49566,202 @@
       "hash": "e983f20b67ec",
       "status": "machine"
     },
+    "pims:setup.add": {
+      "hash": "685f88ae3db2",
+      "status": "machine"
+    },
+    "pims:setup.chartWarning": {
+      "hash": "dd8dccc85beb",
+      "status": "machine"
+    },
+    "pims:setup.chooseMember": {
+      "hash": "c6aaa7202c40",
+      "status": "machine"
+    },
+    "pims:setup.clinicianId": {
+      "hash": "a981aa75e534",
+      "status": "machine"
+    },
+    "pims:setup.collections.charts": {
+      "hash": "6a7d1c1bb760",
+      "status": "machine"
+    },
+    "pims:setup.collections.clinicians": {
+      "hash": "8a4f24c5ef87",
+      "status": "machine"
+    },
+    "pims:setup.collections.patients": {
+      "hash": "ce0e9c7a7afd",
+      "status": "machine"
+    },
+    "pims:setup.confirm": {
+      "hash": "4bddfff95427",
+      "status": "machine"
+    },
+    "pims:setup.confirmHint": {
+      "hash": "97c279d8d9bb",
+      "status": "machine"
+    },
+    "pims:setup.connection": {
+      "hash": "20f55bb816f0",
+      "status": "machine"
+    },
+    "pims:setup.connectionLabel": {
+      "hash": "7ec856cef18a",
+      "status": "machine"
+    },
+    "pims:setup.description": {
+      "hash": "84e4ba9b7f5b",
+      "status": "machine"
+    },
+    "pims:setup.empty": {
+      "hash": "20adee18e60b",
+      "status": "machine"
+    },
+    "pims:setup.emptyConnections": {
+      "hash": "0132bcd2e246",
+      "status": "machine"
+    },
+    "pims:setup.errors.conflict": {
+      "hash": "7aec02158017",
+      "status": "machine"
+    },
+    "pims:setup.errors.forbidden": {
+      "hash": "42d50ef06389",
+      "status": "machine"
+    },
+    "pims:setup.errors.invalid": {
+      "hash": "7575eb656248",
+      "status": "machine"
+    },
+    "pims:setup.errors.schema": {
+      "hash": "83682d52c762",
+      "status": "machine"
+    },
+    "pims:setup.errors.unknown": {
+      "hash": "205f20cd0f68",
+      "status": "machine"
+    },
+    "pims:setup.loading": {
+      "hash": "ae6f99a46e2f",
+      "status": "machine"
+    },
+    "pims:setup.member": {
+      "hash": "53f9f62407f5",
+      "status": "machine"
+    },
+    "pims:setup.open": {
+      "hash": "a63ee83ea0af",
+      "status": "machine"
+    },
+    "pims:setup.origin": {
+      "hash": "852a6db7f67e",
+      "status": "machine"
+    },
+    "pims:setup.patientId": {
+      "hash": "0f5e518e24a3",
+      "status": "machine"
+    },
+    "pims:setup.provider": {
+      "hash": "e5af30ad4329",
+      "status": "machine"
+    },
+    "pims:setup.providers.daysmart": {
+      "hash": "10f33f97efc1",
+      "status": "machine"
+    },
+    "pims:setup.providers.ezyvet": {
+      "hash": "30da5822c1e7",
+      "status": "machine"
+    },
+    "pims:setup.providers.instinct": {
+      "hash": "f363b62f7885",
+      "status": "machine"
+    },
+    "pims:setup.providers.pulse": {
+      "hash": "7bfe209e65d3",
+      "status": "machine"
+    },
+    "pims:setup.providers.rhapsody": {
+      "hash": "6c27f2055d7a",
+      "status": "machine"
+    },
+    "pims:setup.providers.shepherd": {
+      "hash": "fe806cf166eb",
+      "status": "machine"
+    },
+    "pims:setup.providers.vetspire": {
+      "hash": "a3a82148b7f0",
+      "status": "machine"
+    },
+    "pims:setup.refresh": {
+      "hash": "8425d2bca744",
+      "status": "machine"
+    },
+    "pims:setup.reviewConnection": {
+      "hash": "25cb72b47583",
+      "status": "machine"
+    },
+    "pims:setup.reviewLink.charts": {
+      "hash": "c1409d506f8c",
+      "status": "machine"
+    },
+    "pims:setup.reviewLink.clinicians": {
+      "hash": "a833dae85b40",
+      "status": "machine"
+    },
+    "pims:setup.reviewLink.patients": {
+      "hash": "8238a2026e94",
+      "status": "machine"
+    },
+    "pims:setup.selectChart": {
+      "hash": "a46569f103c7",
+      "status": "machine"
+    },
+    "pims:setup.states.active": {
+      "hash": "ce5735de5ed9",
+      "status": "machine"
+    },
+    "pims:setup.states.disabled": {
+      "hash": "80f39124f306",
+      "status": "machine"
+    },
+    "pims:setup.states.unverified": {
+      "hash": "7d2c59315a8c",
+      "status": "machine"
+    },
+    "pims:setup.sync": {
+      "hash": "59dc9d3d9ea1",
+      "status": "machine"
+    },
+    "pims:setup.syncDate": {
+      "hash": "6d659977ac79",
+      "status": "machine"
+    },
+    "pims:setup.syncHint": {
+      "hash": "8e2d0c2568ea",
+      "status": "machine"
+    },
+    "pims:setup.syncResult": {
+      "hash": "1ef9ef134668",
+      "status": "machine"
+    },
+    "pims:setup.tenant": {
+      "hash": "c8dbde0ec832",
+      "status": "machine"
+    },
+    "pims:setup.unlinked": {
+      "hash": "1e31d9596d67",
+      "status": "machine"
+    },
+    "pims:setup.verified": {
+      "hash": "babcec7b0cf1",
+      "status": "machine"
+    },
+    "pims:setup.verifyBrowser": {
+      "hash": "81033190707d",
+      "status": "machine"
+    },
     "pims:severalTabs": {
       "hash": "982dbde5d8e5",
       "status": "machine"
@@ -47952,6 +49788,122 @@
     },
     "pims:targetNoPatient": {
       "hash": "0f4e0172049d",
+      "status": "machine"
+    },
+    "pims:uploadReview.acknowledge": {
+      "hash": "40bf8d46893d",
+      "status": "machine"
+    },
+    "pims:uploadReview.attempt": {
+      "hash": "8c70f1856ebb",
+      "status": "machine"
+    },
+    "pims:uploadReview.close": {
+      "hash": "fabb1c282124",
+      "status": "machine"
+    },
+    "pims:uploadReview.destination": {
+      "hash": "742a23c60379",
+      "status": "machine"
+    },
+    "pims:uploadReview.empty": {
+      "hash": "0c05f7c8feef",
+      "status": "machine"
+    },
+    "pims:uploadReview.errors.conflict": {
+      "hash": "72260576de98",
+      "status": "machine"
+    },
+    "pims:uploadReview.errors.forbidden": {
+      "hash": "ae4c88334e6a",
+      "status": "machine"
+    },
+    "pims:uploadReview.errors.invalid": {
+      "hash": "97e6dfb5ce54",
+      "status": "machine"
+    },
+    "pims:uploadReview.errors.schema": {
+      "hash": "1ac5ae65705a",
+      "status": "machine"
+    },
+    "pims:uploadReview.errors.unknown": {
+      "hash": "db1d34636d1f",
+      "status": "machine"
+    },
+    "pims:uploadReview.fingerprint": {
+      "hash": "599571918993",
+      "status": "machine"
+    },
+    "pims:uploadReview.next": {
+      "hash": "bcf095550c3a",
+      "status": "machine"
+    },
+    "pims:uploadReview.note": {
+      "hash": "c2d4c598bbf1",
+      "status": "machine"
+    },
+    "pims:uploadReview.observation": {
+      "hash": "c43e015ac278",
+      "status": "machine"
+    },
+    "pims:uploadReview.observations.not_found": {
+      "hash": "a05e2698b273",
+      "status": "machine"
+    },
+    "pims:uploadReview.observations.present": {
+      "hash": "37ccb0787063",
+      "status": "machine"
+    },
+    "pims:uploadReview.observations.uncertain": {
+      "hash": "afcf43f9be95",
+      "status": "machine"
+    },
+    "pims:uploadReview.open": {
+      "hash": "92d04f88c1b6",
+      "status": "machine"
+    },
+    "pims:uploadReview.option": {
+      "hash": "80f10fbb6713",
+      "status": "machine"
+    },
+    "pims:uploadReview.patient": {
+      "hash": "697d9fee73f8",
+      "status": "machine"
+    },
+    "pims:uploadReview.previous": {
+      "hash": "984f0f7cb990",
+      "status": "machine"
+    },
+    "pims:uploadReview.recorded": {
+      "hash": "a0d96f17e69c",
+      "status": "machine"
+    },
+    "pims:uploadReview.reload": {
+      "hash": "86c854915df5",
+      "status": "machine"
+    },
+    "pims:uploadReview.save": {
+      "hash": "ac3f85c02d7e",
+      "status": "machine"
+    },
+    "pims:uploadReview.saveFirst": {
+      "hash": "52a4a2a16889",
+      "status": "machine"
+    },
+    "pims:uploadReview.source": {
+      "hash": "acee0994ba45",
+      "status": "machine"
+    },
+    "pims:uploadReview.target": {
+      "hash": "c8fd6319cb9e",
+      "status": "machine"
+    },
+    "pims:uploadReview.title": {
+      "hash": "924c0f9bedd3",
+      "status": "machine"
+    },
+    "pims:uploadReview.warning": {
+      "hash": "cadcd458a0fb",
       "status": "machine"
     },
     "reminders:composer.aria": {

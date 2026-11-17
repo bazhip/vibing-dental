@@ -11,7 +11,7 @@ export type SyncTicket = {
 };
 export type ObservedAppointment = {
   appointment_id: string; patient_id: string; clinician_id: string; encounter_id: string | null;
-  starts_at: string; ends_at: string; status: 'active' | 'cancelled' | 'deleted' | 'unknown';
+  starts_at: string; ends_at: string | null; status: 'active' | 'cancelled' | 'deleted' | 'unknown';
 };
 export type SyncFailure = { appointment_id: string | null; code: 'read_failed' | 'identity_missing' | 'unsupported' };
 export type SyncCapture = {
@@ -131,8 +131,8 @@ function validCapture(capture: SyncCapture, ticket: SyncTicket, identity: SyncId
   for (const entry of capture.items) {
     if (!entry || !validId(entry.appointment_id) || !validId(entry.patient_id) || !validId(entry.clinician_id) || (entry.encounter_id !== null && !validId(entry.encounter_id)) || seen.has(entry.appointment_id)) return false;
     seen.add(entry.appointment_id);
-    const starts = Date.parse(entry.starts_at), ends = Date.parse(entry.ends_at);
-    if (!Number.isFinite(starts) || !Number.isFinite(ends) || ends <= starts || ends - starts > 26 * 60 * 60 * 1000 || starts < Date.parse(ticket.scope.window_start) || starts >= Date.parse(ticket.scope.window_end)) return false;
+    const starts = Date.parse(entry.starts_at);
+    if (!validAppointmentTimes(entry.starts_at, entry.ends_at) || starts < Date.parse(ticket.scope.window_start) || starts >= Date.parse(ticket.scope.window_end)) return false;
     if (!['active','cancelled','deleted','unknown'].includes(entry.status)) return false;
   }
   return capture.failures.every((failure) => failure && (failure.appointment_id === null || (validId(failure.appointment_id) && !seen.has(failure.appointment_id))) && ['read_failed','identity_missing','unsupported'].includes(failure.code));
@@ -151,6 +151,12 @@ function batchesFor(items: SyncItem[]): SyncItem[][] {
     bytes += size;
   }
   return batches;
+}
+
+export function validAppointmentTimes(start: unknown, end: unknown): boolean {
+  if (typeof start !== 'string' || !Number.isFinite(Date.parse(start))) return false;
+  return end === null || typeof end === 'string' && Number.isFinite(Date.parse(end))
+    && Date.parse(end) > Date.parse(start) && Date.parse(end) - Date.parse(start) <= 93600000;
 }
 
 function validOutcome(outcome: SyncOutcome, appointmentId: string): boolean {
@@ -248,8 +254,7 @@ export async function syncAppointments(options: StartRequest & {
           if (status.status === 'active') {
             const entry = status.appointment;
             if (!entry || entry.status !== 'active' || entry.appointment_id !== status.appointment_id || !validId(entry.patient_id) || !validId(entry.clinician_id)
-                || (entry.encounter_id !== null && !validId(entry.encounter_id)) || !Number.isFinite(Date.parse(entry.starts_at)) || !Number.isFinite(Date.parse(entry.ends_at))
-                || Date.parse(entry.ends_at) <= Date.parse(entry.starts_at) || Date.parse(entry.ends_at) - Date.parse(entry.starts_at) > 93600000) return interrupt('invalid_status');
+                || (entry.encounter_id !== null && !validId(entry.encounter_id)) || !validAppointmentTimes(entry.starts_at, entry.ends_at)) return interrupt('invalid_status');
           }
           statuses.set(status.appointment_id, { status, captured_at: response.captured_at });
         }

@@ -12,7 +12,7 @@ const billingMock = vi.hoisted(() => ({
   changePlan: vi.fn(),
 }));
 
-vi.mock('../utils/supabaseClient', () => ({ supabase: { auth: {} }, cloudEnabled: true }));
+vi.mock('../utils/supabaseClient', () => ({ supabase: { auth: { onAuthStateChange: () => ({ data: { subscription: { unsubscribe: vi.fn() } } }) } }, cloudEnabled: true }));
 const treatmentStore = vi.hoisted(() => ({ enabled: true, loaded: true, templates: [] as { id: string; name: string; body: string }[], create: vi.fn(), update: vi.fn(), remove: vi.fn() }));
 vi.mock('../hooks/useReportTemplates', () => ({ useReportTemplates: () => treatmentStore }));
 vi.mock('../hooks/useTeam', () => ({ useTeam: () => teamState.current }));
@@ -108,10 +108,13 @@ describe('PracticeSettingsModal', () => {
     try {
       render(<PracticeSettingsModal open presentation={presentation} sectionNavigation onClose={vi.fn()} profile={profile} />);
       expect(screen.getByRole('heading', { name: 'PIMS appointments' })).toBeVisible();
+      expect(screen.getByRole('button', { name: 'Set up PIMS connections' })).toBeVisible();
       await userEvent.click(screen.getByRole('button', { name: 'Team' }));
       expect(screen.queryByRole('heading', { name: 'PIMS appointments' })).toBeNull();
+      expect(screen.queryByRole('button', { name: 'Set up PIMS connections' })).toBeNull();
       await userEvent.click(screen.getByRole('button', { name: 'General' }));
       expect(screen.getByRole('heading', { name: 'PIMS appointments' })).toBeVisible();
+      expect(screen.getByRole('button', { name: 'Set up PIMS connections' })).toBeVisible();
     } finally {
       vi.unstubAllEnvs();
     }

@@ -1626,6 +1626,10 @@
 .pims-dialog__target { margin: 0 0 6px; font-weight: 600; }
 .pims-dialog__rows { display: grid; gap: 8px; }
 .pims-dialog__row { display: grid; grid-template-columns: minmax(8rem, 1fr) minmax(10rem, 1.4fr); gap: 10px; align-items: center; font-size: 14px; }
+.pims-dialog__row select { min-width: 0; width: 100%; }
+@media (max-width: 480px) {
+  .pims-dialog__row { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+}
 .pims-dialog__results { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
 .pims-dialog__results li { display: grid; gap: 2px; font-size: 14px; }
 .pims-dialog__result--ok span { color: var(--primary, #0c6b63); }

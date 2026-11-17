@@ -19,6 +19,6 @@ function contextNow(): AdapterContext {
   };
 }
 
-if (window.__toothopsPims?.version !== EXTENSION_VERSION) {
+if (window.__toothopsPims?.version !== EXTENSION_VERSION || !window.__toothopsPims.providerSync || !window.__toothopsPims.physicalExam) {
   window.__toothopsPims = createPageBridge(() => adapterFor(location.href), contextNow);
 }

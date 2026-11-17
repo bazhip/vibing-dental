@@ -13,6 +13,7 @@ const mocks = vi.hoisted(() => ({
   inspect: vi.fn(),
   send: vi.fn(),
   diagnose: vi.fn(),
+  physicalExam: vi.fn(),
   available: vi.fn(() => true),
   save: vi.fn(async () => {}),
   reset: vi.fn(async () => {}),
@@ -30,6 +31,7 @@ vi.mock('../utils/pims/extensionBridge', () => ({
   inspect: mocks.inspect,
   send: mocks.send,
   diagnose: mocks.diagnose,
+  physicalExam: mocks.physicalExam,
   appointments: vi.fn(),
   startChart: vi.fn(),
   takePendingPatient: vi.fn(),
@@ -135,6 +137,39 @@ beforeEach(() => {
 afterEach(() => { cleanup(); vi.unstubAllEnvs(); });
 
 describe('SendToEzyvetDialog', () => {
+  it('opens Shepherd exams only explicitly and locks closing during creation without marking a send', async () => {
+    mocks.supabase = { auth: { onAuthStateChange: (callback: (event: string, session: unknown) => void) => {
+      callback('INITIAL_SESSION', { user: { id: 'user' } });
+      return { data: { subscription: { unsubscribe: vi.fn() } } };
+    } } };
+    const recordId = '12345678-1234-1234-1234-123456789abc';
+    mocks.ping.mockResolvedValue({ version: '1', protocol: 1, capabilities: ['inspect', 'send', 'diagnose', 'physicalExam'] });
+    mocks.inspect.mockResolvedValue({ tab: { id: 7, title: 'Shepherd' }, candidates: 1, fields: [], status: {
+      provider: 'shepherd', state: 'locked', patientName: 'Bella', patientNumber: null,
+      consult: { recordId, viewId: `https://app.shepherd.vet/soap/${recordId}/objective|` },
+    } });
+    let resolveOpen!: (value: unknown) => void;
+    mocks.physicalExam.mockImplementation(async (_tabId, request) => request.operation === 'inspect'
+      ? { ok: true, state: 'available', pageId: 'page' }
+      : request.operation === 'prepare'
+        ? { ok: true, state: 'prepared', pageId: 'page', ticket: 'ticket', doctor: 'Dr Rivera', templates: [{ id: 'dental', label: 'Dental' }] }
+        : new Promise(resolve => { resolveOpen = resolve; }));
+    const { el, props } = dlg();
+    render(el);
+    fireEvent.click(await screen.findByRole('button', { name: t('pims:exam.setup') }));
+    await screen.findByLabelText(t('pims:exam.template'));
+    fireEvent.change(screen.getByLabelText(t('pims:exam.template')), { target: { value: 'dental' } });
+    expect(mocks.physicalExam.mock.calls.some(([, request]) => request.operation === 'open')).toBe(false);
+    fireEvent.click(screen.getByRole('button', { name: t('pims:exam.open') }));
+    await waitFor(() => expect(resolveOpen).toBeDefined());
+    for (const button of screen.getAllByRole('button', { name: t('common:actions.close') })) expect(button).toBeDisabled();
+    fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
+    expect(props.onClose).not.toHaveBeenCalled();
+    await act(async () => resolveOpen({ ok: true, state: 'opened', recordId, examId: 'aaaaaaaa-1234-1234-1234-123456789abc' }));
+    expect(mocks.send).not.toHaveBeenCalled();
+    expect(mocks.markPimsSent).not.toHaveBeenCalled();
+    expect(props.onSent).not.toHaveBeenCalled();
+  });
   it('does not mount or probe when invoked directly before rollout', () => {
     vi.stubEnv('VITE_PIMS_ROLLOUT_ENABLED', undefined);
     render(dlg().el);

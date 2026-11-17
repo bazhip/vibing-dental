@@ -16,6 +16,36 @@ describe('Pulse source-derived import', () => {
   beforeEach(() => { document.body.innerHTML = '<input name="__RequestVerificationToken" value="csrf">'; });
   afterEach(() => { vi.useRealTimers(); });
 
+  it.each(['unchanged', 'tenant', 'patient', 'encounter', 'navigation', 'auth'])(
+    'keeps imported appointments insufficient for export authority (%s)', async (change) => {
+      const fetcher = vi.fn().mockResolvedValueOnce(json([appointment])).mockResolvedValueOnce(text(tooltipHtml));
+      const ctx = context(fetcher);
+      const imported = await pulse.listAppointments('2026-11-16', ctx);
+      expect(imported).toMatchObject({ ok: true, appointments: [{ appointmentId: '12', patientNumber: '22' }] });
+      document.body.innerHTML = '<input name="__RequestVerificationToken" value="csrf"><medical-record-question-section data-patient-id="22" data-encounter-id="12"><span class="ds-text-h4">Plan</span><div contenteditable="true">Existing plan</div></medical-record-question-section><input name="Name" value="Original title"><textarea>Untouched note</textarea><button>Save</button>';
+      const current = new URL(ctx.url.href);
+      if (change === 'tenant') current.hostname = 'other.evetpractice.com';
+      if (change === 'patient') current.searchParams.set('patientId', 'other-patient');
+      if (change === 'encounter') current.pathname = '/Practice/MedicalRecord/other';
+      if (change === 'navigation') current.pathname = '/Account/Login';
+      if (change === 'auth') document.querySelector('input[name="__RequestVerificationToken"]')?.remove();
+      ctx.currentUrl = () => current;
+      const before = document.body.innerHTML;
+      const save = vi.spyOn(document.querySelector('button')!, 'click');
+      const dispatch = vi.spyOn(document.querySelector('[contenteditable]')!, 'dispatchEvent');
+      const requestCount = fetcher.mock.calls.length;
+      fetcher.mockResolvedValue(json({ success: true }));
+      expect(pulse.status(ctx)).toMatchObject({ state: 'notConsult', consult: null });
+      for (const item of [{ fieldTitle: 'Plan', text: 'New plan' }, { fieldTitle: 'Plan', html: '<p>New plan</p>' }]) {
+        expect(await pulse.write(item, ctx)).toEqual({ ok: false, code: 'not_writable' });
+      }
+      expect(document.body.innerHTML).toBe(before);
+      expect(fetcher).toHaveBeenCalledTimes(requestCount);
+      expect(save).not.toHaveBeenCalled();
+      expect(dispatch).not.toHaveBeenCalled();
+    },
+  );
+
   it.each([
     '', '<form><input name="password"></form>',
     '<ul><li><label>Client</label>Ada Smith</li></ul>',

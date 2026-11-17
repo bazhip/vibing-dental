@@ -5,6 +5,8 @@ import type { AppointmentsResult } from './ezyvet/appointments';
 import type { ConsultId, Diagnostics, EzyvetState, Status } from './ezyvet/read';
 import type { WriteCode, WriteResult } from './ezyvet/write';
 import type { PimsId } from './pims/types';
+import type { PhysicalExamRequest } from './pims/types';
+import type { ProviderSyncRequest } from './pims/syncBridge';
 
 // The local web app dev server, allowed only by the unpacked dev build (`npm run build:extension`).
 // The store build (`npm run package:extension`) sets VITE_PIMS_STORE_BUILD=1, which compiles this to
@@ -27,6 +29,8 @@ export const HANDOVER_TTL_MS = 120_000;
 export type { AppointmentsResult, ConsultId, Diagnostics, EzyvetState, FieldInfo, SendItem, Status, WriteCode, WriteResult };
 
 export type Request =
+  | { type: 'physicalExam'; tabId: number; request: PhysicalExamRequest }
+  | { type: 'providerSync'; tabId: number; request: ProviderSyncRequest }
   | { type: 'ping' }
   | { type: 'inspect' }
   | {

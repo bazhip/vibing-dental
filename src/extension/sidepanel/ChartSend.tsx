@@ -9,6 +9,10 @@ import { usePimsSend } from '../../hooks/usePimsSend';
 import { MappingRows } from '../../components/pims/MappingRows';
 import { CopyActions } from '../../components/pims/CopyActions';
 import { PimsDrafts } from '../../components/pims/PimsDrafts';
+import { PimsImages } from '../../components/pims/PimsImages';
+import { PimsExam } from '../../components/pims/PimsExam';
+import type { SelectedImageTransfer } from '../../utils/pims/images';
+import { PimsUploadReview } from '../../components/pims/PimsUploadReview';
 import { DiagnosticLink, SendResults } from '../../components/pims/SendResults';
 import { friendlyError } from '../../components/ui/dialogs';
 import { internalTransport } from './internalTransport';
@@ -128,6 +132,8 @@ const ChartSendReady: React.FC<ReadyProps> = ({
   const patientNumber = snapshot.patientInfo.patientNumber || chart.patient_number || '';
   const ownerName = snapshot.patientInfo.ownerName || chart.owner_name;
   const canSend = sendFlag === 'on';
+  const [savedImage, setSavedImage] = React.useState<SelectedImageTransfer | null>(null);
+  const [examBusy, setExamBusy] = React.useState(false);
   // The panel proposed this chart itself, so without two patient numbers to compare only an exact
   // name (or name + owner surname) skips the "Different patient?" confirmation.
   const patientMatcher = React.useCallback(
@@ -148,6 +154,7 @@ const ChartSendReady: React.FC<ReadyProps> = ({
     stored,
     chartSnapshotPicture: picture.render,
     hasChartPicture: picture.hasDiagrams,
+    savedImage,
     chartId: chart.id,
     patientName,
     patientNumber,
@@ -159,19 +166,20 @@ const ChartSendReady: React.FC<ReadyProps> = ({
 
   const busy = React.useRef(onBusyChange);
   busy.current = onBusyChange;
-  React.useEffect(() => { busy.current?.(sending); }, [sending]);
+  const actionsBusy = sending || examBusy;
+  React.useEffect(() => { busy.current?.(actionsBusy); }, [actionsBusy]);
   React.useEffect(() => () => busy.current?.(false), []);
 
   // The vet moved to another tab or came back to the panel: look again (quietly, keeping the mapping choices), unless a send (or its
   // confirmations) is under way or the results are showing.
   useActiveTabChange(() => {
-    if (sending || !canSend) return;
+    if (actionsBusy || !canSend) return;
     if (phase.kind === 'ready') void refreshTarget();
     else if (phase.kind === 'error') void load();
   }, phase.kind === 'ready' || phase.kind === 'results' ? phase.info.tab?.id ?? null : null);
 
   const retry = (
-    <button type="button" className="sp-secondary" onClick={() => void load()}>{t('pims:dialog.retry')}</button>
+    <button type="button" className="sp-secondary" onClick={() => void load()} disabled={actionsBusy}>{t('pims:dialog.retry')}</button>
   );
 
   const destination = phase.kind === 'ready' || phase.kind === 'results' ? phase.info : null;
@@ -248,18 +256,18 @@ const ChartSendReady: React.FC<ReadyProps> = ({
       <>
         {!split && <p className="sp-hint" role="status">{t('pims:editedNotice')}</p>}
         <h3 className="sp-subtitle">{t('pims:rows.heading')}</h3>
-        <MappingRows rows={rows} disabled={sending} onChoose={choose} />
+        <MappingRows rows={rows} disabled={actionsBusy} onChoose={choose} />
         {changedTarget && <p className="sp-hint" role="status">{t('pims:send.targetChanged')}</p>}
         {notePreview}
         <div className="sp-actions">
-          <button type="button" className="sp-secondary" onClick={() => void resetToDefaults()} disabled={sending}>
+          <button type="button" className="sp-secondary" onClick={() => void resetToDefaults()} disabled={actionsBusy}>
             {t('pims:rows.reset')}
           </button>
           <button
             type="button"
             className="sp-primary"
             onClick={() => void doSend()}
-            disabled={sending || nothingToSend || !sentAtSettled}
+            disabled={actionsBusy || nothingToSend || !sentAtSettled}
           >
             {sending ? t('pims:actions.sending') : t('pims:actions.send')}
           </button>
@@ -270,7 +278,7 @@ const ChartSendReady: React.FC<ReadyProps> = ({
 
   return (
     <section className="sp-chartview">
-      {back(sending)}
+      {back(actionsBusy)}
       <h2 className="sp-section">{patientName}</h2>
       {lastSentAt && <p className="sp-hint">{t('pims:dialog.sentOn', { date: formatDate(lastSentAt) })}</p>}
       {destination?.tab && (
@@ -286,9 +294,15 @@ const ChartSendReady: React.FC<ReadyProps> = ({
       )}
       {stale && <p className="sp-hint" role="status">{t('media:recordNote.stale')}</p>}
       {picture.element}
+      {canSend && destination && <PimsExam inspection={destination} transport={internalTransport} chartKey={chart.id}
+        disabled={sending} onBusyChange={setExamBusy} onOpened={() => void load()} />}
       {canSend && <CopyActions note={note} storedText={stored?.text ?? null}
-        renderImage={picture.hasDiagrams ? picture.render : undefined} disabled={sending} />}
-      {canSend && <PimsDrafts key={chart.id} chartId={chart.id} disabled={sending} />}
+        renderImage={picture.hasDiagrams ? picture.render : undefined} disabled={actionsBusy} />}
+      {canSend && <PimsDrafts key={chart.id} chartId={chart.id} disabled={actionsBusy} />}
+      {canSend && <PimsImages chartId={chart.id} disabled={actionsBusy} onTransferSelect={setSavedImage}
+        canTransfer={phase.kind === 'ready' && destination?.status?.state === 'writable' && (destination.status.provider ?? 'ezyvet') === 'ezyvet'
+          && destination.fields.some(field => field.acceptsImage && field.kind !== 'email')} />}
+      {canSend && <PimsUploadReview chartId={chart.id} disabled={actionsBusy} />}
       {body}
       {(phase.kind !== 'ready' || !canSend || destination?.status?.state !== 'writable') && notePreview}
     </section>

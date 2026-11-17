@@ -55,6 +55,74 @@ function guard(context: AdapterContext, editor?: HTMLElement): WriteResult | nul
   }
 }
 
+export type ShepherdPhysicalExamResult =
+  | { ok: true; state: 'opened'; recordId: string; examId: string }
+  | { ok: false; code: 'patient_changed' | 'not_writable' | 'physical_exam_template_not_found' | 'supervising_doctor_not_set' | 'physical_exam_outcome_unknown' };
+
+const physicalExamAttempts = new WeakSet<AdapterContext>();
+const physicalExamDocuments = new WeakSet<Document>();
+
+export async function createShepherdPhysicalExam(template: string, context: AdapterContext): Promise<ShepherdPhysicalExamResult> {
+  const initial = guard(context);
+  if (initial && !initial.ok) return { ok: false, code: initial.code === 'patient_changed' ? 'patient_changed' : 'not_writable' };
+  const initialUrl = new URL(context.url.href);
+  const recordId = record(initialUrl)!;
+  const token = () => {
+    try { return text(object(JSON.parse(context.sessionStorage.getItem('baasic-auth-token-pav2') || '{}')).token); }
+    catch { return ''; }
+  };
+  const initialToken = token();
+  if (!initialToken || initialUrl.port || !template.trim() || !context.currentUrl) return { ok: false, code: 'not_writable' };
+  if (physicalExamAttempts.has(context) || physicalExamDocuments.has(context.doc)) return { ok: false, code: 'physical_exam_outcome_unknown' };
+  const enabled = (element: HTMLElement) => element.isConnected && isVisible(element)
+    && !element.matches(':disabled, .is-disabled') && !element.closest('[inert], [aria-disabled="true"]');
+  const unchanged = () => context.currentUrl!().href === initialUrl.href && !guard(context) && token() === initialToken;
+  const options = () => Array.from(context.doc.querySelectorAll<HTMLElement>('[data-test-groupid="soap-phyiscalExam"]'));
+  const selectedDoctor = () => {
+    const selections = context.doc.querySelectorAll<HTMLElement>('[data-test-id="soap-physicalExam-doctor-control"] .react-select__single-value');
+    return selections.length === 1 && enabled(selections[0]) ? text(selections[0].textContent) : '';
+  };
+  let activated = false;
+  physicalExamDocuments.add(context.doc);
+  try {
+    if (!options().length) {
+      const controls = context.doc.querySelectorAll<HTMLElement>(selector('soap-objective-addPhysicalExam-btn'));
+      if (controls.length !== 1 || !enabled(controls[0]) || !unchanged()) return { ok: false, code: 'not_writable' };
+      controls[0].click();
+      for (let attempt = 0; attempt < 50 && !options().length; attempt++) {
+        if (!unchanged()) return { ok: false, code: 'patient_changed' };
+        await context.wait(100);
+      }
+    }
+    if (!unchanged()) return { ok: false, code: 'patient_changed' };
+    const matches = options().filter(option => text(option.querySelector(selector('soap-physicalExam-name'))?.textContent) === template);
+    if (matches.length !== 1 || !enabled(matches[0])) return { ok: false, code: 'physical_exam_template_not_found' };
+    const doctor = selectedDoctor();
+    if (!doctor) return { ok: false, code: 'supervising_doctor_not_set' };
+    if (!unchanged() || selectedDoctor() !== doctor) return { ok: false, code: 'patient_changed' };
+    const previousEditors = new Set(fields(context).map(field => field.editor));
+    physicalExamAttempts.add(context);
+    activated = true;
+    matches[0].click();
+    for (let attempt = 0; attempt <= 100; attempt++) {
+      const current = context.currentUrl();
+      if (current.origin !== initialUrl.origin || record(current) !== recordId || token() !== initialToken
+        || current.search !== initialUrl.search || current.hash !== initialUrl.hash) return { ok: false, code: 'physical_exam_outcome_unknown' };
+      const examId = /^\/soap\/[\da-f-]+\/objective\/physical-exam-entry\/edit\/([\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12})\/?$/i.exec(current.pathname)?.[1];
+      if (examId && current.href !== initialUrl.href && fields(context).some(field => field.title.startsWith('Objective > ')
+        && !previousEditors.has(field.editor) && writable(field.editor))) {
+        return { ok: true, state: 'opened', recordId, examId };
+      }
+      if (attempt < 100) await context.wait(100);
+    }
+    return { ok: false, code: 'physical_exam_outcome_unknown' };
+  } catch {
+    return { ok: false, code: activated ? 'physical_exam_outcome_unknown' : 'not_writable' };
+  } finally {
+    physicalExamDocuments.delete(context.doc);
+  }
+}
+
 async function write(item: SendItem, context: AdapterContext): Promise<WriteResult> {
   if (item.pngDataUrl !== undefined) return { ok: false, code: 'image_not_accepted' };
   if (item.html !== undefined && new DOMParser().parseFromString(item.html, 'text/html').querySelector('img, svg, picture, image')) return { ok: false, code: 'image_not_accepted' };

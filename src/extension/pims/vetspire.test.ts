@@ -33,6 +33,38 @@ describe('Vetspire source-derived adapter', () => {
     localStorage.setItem('__pref-location', 'clinic-1');
   });
 
+  it.each(['unchanged', 'tenant', 'patient', 'encounter', 'navigation', 'auth'])(
+    'keeps appointment and Quill metadata insufficient for export authority (%s)', async (change) => {
+      const fetcher = vi.fn().mockResolvedValue(json({ appointments: [appointment], location: { providers: [appointment.provider] } }));
+      const ctx = context(fetcher);
+      expect(await vetspire.listAppointments(date, ctx)).toMatchObject({
+        ok: true, appointments: [{ appointmentId: 'appointment-1', patientNumber: 'patient-1' }],
+      });
+      document.querySelector('#sectionContainer')?.setAttribute('data-patient-id', 'patient-1');
+      document.querySelector('#Plan')?.setAttribute('data-encounter-id', 'appointment-1');
+      const current = new URL(ctx.url.href);
+      if (change === 'tenant') localStorage.setItem('__pref-location', 'other-clinic');
+      if (change === 'patient') current.pathname = '/patients/other/encounters/encounter-1';
+      if (change === 'encounter') current.pathname = '/patients/patient-1/encounters/other';
+      if (change === 'navigation') current.pathname = '/login';
+      if (change === 'auth') localStorage.removeItem('authToken');
+      ctx.currentUrl = () => current;
+      const before = document.body.innerHTML;
+      const addNote = vi.spyOn(document.querySelector('#History > div')! as HTMLElement, 'click');
+      const dispatch = vi.spyOn(document.querySelector('.ql-editor')!, 'dispatchEvent');
+      const requestCount = fetcher.mock.calls.length;
+      fetcher.mockResolvedValue(json({ success: true }));
+      expect(vetspire.status(ctx)).toMatchObject({ state: 'notConsult', consult: null });
+      for (const fieldTitle of ['Plan', 'History']) {
+        expect(await vetspire.write({ fieldTitle, text: 'New note' }, ctx)).toEqual({ ok: false, code: 'not_writable' });
+      }
+      expect(document.body.innerHTML).toBe(before);
+      expect(fetcher).toHaveBeenCalledTimes(requestCount);
+      expect(addNote).not.toHaveBeenCalled();
+      expect(dispatch).not.toHaveBeenCalled();
+    },
+  );
+
   it('discovers Quill and Add Note fields but never guesses encounter identity', async () => {
     expect(vetspire.listFields(context())).toEqual([{ title: 'Plan', kind: 'note', acceptsImage: false }, { title: 'History', kind: 'note', acceptsImage: false }]);
     expect(vetspire.status(context())).toMatchObject({ state: 'notConsult', consult: null });

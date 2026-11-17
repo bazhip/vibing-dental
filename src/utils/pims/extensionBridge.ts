@@ -3,6 +3,8 @@ import { LocalizedError } from '../apiErrors';
 import { isNativeApp } from '../../native/platform';
 import { DEV_EXTENSION_ID } from '../../extension/extensionId';
 import { compatibleExtension } from '../../extension/protocol';
+import { isPhysicalExamRequest, isPhysicalExamResult, type PhysicalExamRequest, type PhysicalExamResult } from '../../extension/pims/types';
+import type { ProviderSyncRequest, ProviderSyncResponse } from '../../extension/pims/syncBridge';
 import type { AppointmentsResponse, DiagnoseResult, Handover, InspectResult, PingResult, Request, SendResult, StartChartResult, TakePendingResult } from '../../extension/protocol';
 
 /** Minimal shape of the part of `chrome.runtime` the page can see when an
@@ -104,6 +106,15 @@ export function createTransport(channel: () => RuntimeChannel | undefined): Pims
       return null;
     },
     inspect: () => call<InspectResult>({ type: 'inspect' }, INSPECT_TIMEOUT_MS),
+    async physicalExam(tabId, request) {
+      if (!Number.isSafeInteger(tabId) || tabId < 0 || !isPhysicalExamRequest(request)) return { ok: false, code: 'invalid_request' };
+      const failure: PhysicalExamResult = { ok: false, code: request.operation === 'open' ? 'physical_exam_outcome_unknown' : 'unavailable' };
+      try {
+        const reply = await raw<unknown>({ type: 'physicalExam', tabId, request }, 20_000);
+        return isPhysicalExamResult(reply, request) ? reply : failure;
+      } catch { return failure; }
+    },
+    providerSync: (tabId, request) => call<ProviderSyncResponse>({ type: 'providerSync', tabId, request }, SEND_TIMEOUT_MS),
     /** A `{ ok: false, code }` reply is returned, not thrown. */
     send: (req) => call<SendResult>(req, SEND_TIMEOUT_MS),
     /** The page's structure report and the failure codes of the last send. */
@@ -127,6 +138,8 @@ export function createTransport(channel: () => RuntimeChannel | undefined): Pims
 
 /** What the send flow needs from the extension, so the page and the side panel can each supply their own. */
 export type PimsTransport = {
+  physicalExam?(tabId: number, request: PhysicalExamRequest): Promise<PhysicalExamResult>;
+  providerSync?(tabId: number, request: ProviderSyncRequest): Promise<ProviderSyncResponse>;
   ping(): Promise<PingResult | null>;
   inspect(): Promise<InspectResult>;
   send(req: Extract<Request, { type: 'send' }>): Promise<SendResult>;
@@ -149,3 +162,7 @@ export const externalTransport: PimsTransport = createTransport(() => {
 });
 
 export const { ping, inspect, send, diagnose, appointments, startChart, takePendingPatient } = externalTransport;
+
+export function physicalExam(tabId: number, request: PhysicalExamRequest): Promise<PhysicalExamResult> {
+  return externalTransport.physicalExam!(tabId, request);
+}

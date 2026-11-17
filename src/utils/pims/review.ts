@@ -1,7 +1,8 @@
+import { validAppointmentTimes } from './sync';
 export type ReviewConnection = { id: string; provider: string; tenant_id: string; practice_name: string; state: string };
 export type ReviewVisit = {
   id: string; appointment_id: string; patient_id: string; clinician_id: string; encounter_id: string | null;
-  starts_at: string; ends_at: string; version: number; archived_at: string | null; archive_kind: string | null; archive_reason: string | null;
+  starts_at: string; ends_at: string | null; version: number; archived_at: string | null; archive_kind: string | null; archive_reason: string | null;
 };
 export type ReviewIssue = { id: string; appointment_id: string; reason: string; proposed: Record<string, unknown>; current: ReviewVisit | null };
 export type ReviewCollection = 'active' | 'archived' | 'issues';
@@ -21,14 +22,13 @@ const version = (value: unknown): value is number => Number.isInteger(value) && 
 function validVisit(value: unknown): value is ReviewVisit {
   return record(value) && ['id','appointment_id','patient_id','clinician_id'].every((field) => text(value[field])) && version(value.version)
     && nullableText(value.encounter_id) && nullableText(value.archived_at) && nullableText(value.archive_kind) && nullableText(value.archive_reason)
-    && typeof value.starts_at === 'string' && Number.isFinite(Date.parse(value.starts_at)) && typeof value.ends_at === 'string' && Number.isFinite(Date.parse(value.ends_at));
+    && validAppointmentTimes(value.starts_at, value.ends_at);
 }
 export function canAcceptSchedule(issue: ReviewIssue): boolean {
   const current = issue.current, proposed = issue.proposed;
   return !!current && !current.archived_at && proposed.status === 'active' && current.appointment_id === proposed.appointment_id && current.patient_id === proposed.patient_id
     && current.clinician_id === proposed.clinician_id && current.encounter_id === proposed.encounter_id
-    && typeof proposed.starts_at === 'string' && Number.isFinite(Date.parse(proposed.starts_at))
-    && typeof proposed.ends_at === 'string' && Date.parse(proposed.ends_at) > Date.parse(proposed.starts_at);
+    && validAppointmentTimes(proposed.starts_at, proposed.ends_at);
 }
 export function reviewError(error: unknown): 'schema' | 'forbidden' | 'conflict' | 'unknown' {
   const code = record(error) ? error.code : undefined;

@@ -56,6 +56,12 @@ function links() {
 }
 
 describe.skipIf(!container)('PIMS foundation on isolated PostgreSQL', () => {
+  it('stores unknown appointment end times without inventing a duration', () => {
+    links();
+    const run = start();
+    expect(rpc('pims_submit_sync', submission(run, { items: [item({ ends_at: null })] }), member).outcomes[0].outcome).toBe('applied');
+    expect(sql('select ends_at is null from public.pims_visits')).toBe('t');
+  });
   beforeAll(() => {
     if (!container?.startsWith('toothops-pims-')) throw new Error('Use a disposable toothops-pims-* container');
     sql(readFileSync('scripts/pims/bootstrap.sql', 'utf8'));
@@ -72,6 +78,26 @@ describe.skipIf(!container)('PIMS foundation on isolated PostgreSQL', () => {
       sql(readFileSync(draftPath, 'utf8'));
       sql(readFileSync(draftPath, 'utf8'));
     }
+    const setupPath = 'supabase/migrations/20261202_pims_setup.sql';
+    if (existsSync(setupPath)) {
+      sql(readFileSync(setupPath, 'utf8'));
+      sql(readFileSync(setupPath, 'utf8'));
+    }
+    const uploadsPath = 'supabase/migrations/20261203_pims_upload_attempts.sql';
+    if (existsSync(uploadsPath)) {
+      sql(readFileSync(uploadsPath, 'utf8'));
+      sql(readFileSync(uploadsPath, 'utf8'));
+    }
+    const observationsPath = 'supabase/migrations/20261204_pims_upload_observations.sql';
+    if (existsSync(observationsPath)) {
+      sql(readFileSync(observationsPath, 'utf8'));
+      sql(readFileSync(observationsPath, 'utf8'));
+    }
+    const imagesPath = 'supabase/migrations/20261205_pims_image_attempts.sql';
+    if (existsSync(imagesPath)) {
+      sql(readFileSync(imagesPath, 'utf8'));
+      sql(readFileSync(imagesPath, 'utf8'));
+    }
   });
   beforeEach(() => {
     sql(`truncate auth.users cascade;
@@ -80,6 +106,105 @@ describe.skipIf(!container)('PIMS foundation on isolated PostgreSQL', () => {
       insert into public.practice_members values ('${practice}','${owner}','owner'), ('${practice}','${member}','member'), ('${otherPractice}','${outsider}','owner');`);
     connection = rpc('pims_configure_connection', connectionInput);
     connection = rpc('pims_verify_connection', { connection_id: connection.id, expected_revision: 1, provider: identity.provider, origin: identity.origin, tenant_id: identity.tenant_id, observed_at: new Date().toISOString() });
+  });
+
+  describe('durable image attempts', () => {
+    const chart = '88888888-8888-4888-8888-888888888888';
+    const image = '99999999-9999-4999-8999-999999999999';
+    let payload: Record<string, unknown>;
+    beforeEach(() => {
+      links();
+      sql(`insert into public.charts(id,created_by,practice_id) values('${chart}','${member}','${practice}');
+        insert into public.attachments(id,created_by,chart_id,path) values('${image}','${member}','${chart}','${member}/${chart}/${image}.png')`);
+      const source = rpc('pims_draft_context', { chart_id: chart }, member).source;
+      rpc('pims_link_chart', { connection_id: connection.id, chart_id: chart, patient_id: 'patient-1', expected_version: 0,
+        source_hash: source.hash, request_id: group, reason: 'Verified source chart' });
+      payload = { request_id: request, connection_id: connection.id, connection_revision: connection.revision, chart_id: chart,
+        chart_link_version: 1, image_id: image, source_hash: source.hash, patient_id: 'patient-1', encounter_id: 'encounter-1',
+        destination: 'Medical Notes', document_generation: 'page-1', content_hash: 'a'.repeat(64), content_bytes: 1234 };
+    });
+    const prepare = (changes: Record<string, unknown> = {}, actor = member) => rpc('pims_prepare_image_transfer', { ...payload, ...changes }, actor);
+    it('keeps ambiguous writes locked across new UUIDs and browser document generations', () => {
+      const attempt = prepare().attempt;
+      expect(rpc('pims_dispatch_image_transfer', { attempt_id: attempt.id }, member)).toMatchObject({ execute: true, attempt: { state: 'unknown' } });
+      expect(prepare({ request_id: nextRequest, document_generation: 'reloaded-page' })).toMatchObject({ created: false, attempt: { id: attempt.id, state: 'unknown' } });
+      expect(rpc('pims_dispatch_image_transfer', { attempt_id: attempt.id }, member).execute).toBe(false);
+      expect(sql('select count(*) from public.pims_image_attempts')).toBe('1');
+    });
+    it('allows one dispatch across separate database sessions', async () => {
+      const attempt = prepare().attempt;
+      const results = await Promise.all([1, 2].map(() => asyncSql(userSql(member, callStatement('pims_dispatch_image_transfer', { attempt_id: attempt.id })))));
+      expect(results.map(value => JSON.parse(value).execute).sort()).toEqual([false, true]);
+    });
+    it.each(['unknown', 'confirmed'])('reauthorizes chart access before replaying a %s dispatch', (state) => {
+      const attempt = prepare().attempt;
+      rpc('pims_dispatch_image_transfer', { attempt_id: attempt.id }, member);
+      if (state === 'confirmed') rpc('pims_confirm_image_transfer', { attempt_id: attempt.id, content_hash: payload.content_hash, resource_id: 'file-1' }, member);
+      sql(`update public.charts set practice_id='${otherPractice}' where id='${chart}'`);
+      expect(sql(userSql(member, 'select count(*) from public.pims_image_attempts'))).toBe('0');
+      expect(() => rpc('pims_dispatch_image_transfer', { attempt_id: attempt.id }, member)).toThrow(/pims_forbidden/);
+    });
+    it('renews only an expired undispatched preparation using a new attempt identity', () => {
+      const old = prepare().attempt;
+      sql("update public.pims_image_attempts set expires_at=clock_timestamp()-interval '1 second'");
+      const renewed = prepare({ request_id: nextRequest, document_generation: 'page-2' });
+      expect(renewed).toMatchObject({ created: true, attempt: { state: 'prepared', request_id: nextRequest } });
+      expect(renewed.attempt.id).not.toBe(old.id);
+      expect(sql(`select state from public.pims_image_attempts where id='${old.id}'`)).toBe('expired');
+      expect(rpc('pims_dispatch_image_transfer', { attempt_id: old.id }, member)).toMatchObject({ execute: false, attempt: { state: 'expired' } });
+      expect(prepare()).toMatchObject({ created: false, attempt: { id: old.id, state: 'expired' } });
+      expect(rpc('pims_dispatch_image_transfer', { attempt_id: renewed.attempt.id }, member).execute).toBe(true);
+    });
+    it('serializes competing renewals of an expired undispatched preparation', async () => {
+      const old = prepare().attempt;
+      sql("update public.pims_image_attempts set expires_at=clock_timestamp()-interval '1 second'");
+      const replies = await Promise.all([nextRequest, chunk].map(request_id => asyncSql(userSql(member,
+        callStatement('pims_prepare_image_transfer', { ...payload, request_id })))));
+      const results = replies.map(value => JSON.parse(value));
+      expect(results.map(result => result.created).sort()).toEqual([false, true]);
+      expect(results[0].attempt.id).toBe(results[1].attempt.id);
+      expect(results[0].attempt.id).not.toBe(old.id);
+      expect(sql("select count(*) from public.pims_image_attempts where state='prepared'")).toBe('1');
+    });
+    it.each(['unknown', 'confirmed'])('never renews an expired %s outcome', (state) => {
+      const old = prepare().attempt;
+      rpc('pims_dispatch_image_transfer', { attempt_id: old.id }, member);
+      if (state === 'confirmed') rpc('pims_confirm_image_transfer', { attempt_id: old.id, content_hash: payload.content_hash, resource_id: 'file-1' }, member);
+      sql("update public.pims_image_attempts set expires_at=clock_timestamp()-interval '1 second'");
+      expect(prepare({ request_id: nextRequest })).toMatchObject({ created: false, attempt: { id: old.id, state } });
+      expect(sql('select count(*) from public.pims_image_attempts')).toBe('1');
+    });
+    it.each(['chart', 'image', 'link', 'connection', 'membership', 'disabled', 'expiry'])('rejects %s drift before dispatch', (change) => {
+      const attempt = prepare().attempt;
+      if (change === 'chart') sql(`update public.charts set patient_name='Changed' where id='${chart}'`);
+      if (change === 'image') sql(`update public.attachments set caption='Changed' where id='${image}'`);
+      if (change === 'link') sql('update public.pims_chart_links set version=version+1');
+      if (change === 'connection') sql('update public.pims_connections set revision=revision+1');
+      if (change === 'membership') sql(`delete from public.practice_members where user_id='${member}'`);
+      if (change === 'disabled') sql('update public.practices set pims_send_enabled=false');
+      if (change === 'expiry') sql("update public.pims_image_attempts set expires_at=clock_timestamp()-interval '1 second'");
+      expect(() => rpc('pims_dispatch_image_transfer', { attempt_id: attempt.id }, member)).toThrow(/pims_/);
+      expect(sql('select state from public.pims_image_attempts')).toBe('prepared');
+    });
+    it('requires exact identity, authorized chart and a bounded digest', () => {
+      for (const changes of [{ patient_id: 'wrong' }, { chart_link_version: 2 }, { source_hash: 'b'.repeat(64) }, { content_hash: 'bad' }, { content_bytes: 2097153 }, { encounter_id: '' }]) {
+        expect(() => prepare(changes)).toThrow(/pims_/);
+      }
+      expect(() => prepare({}, outsider)).toThrow(/pims_forbidden/);
+      const attempt = prepare().attempt;
+      expect(sql(userSql(outsider, 'select count(*) from public.pims_image_attempts'))).toBe('0');
+      expect(() => sql(userSql(member, "update public.pims_image_attempts set state='confirmed'"))).toThrow(/permission denied/);
+      expect(() => rpc('pims_dispatch_image_transfer', { attempt_id: attempt.id }, owner)).toThrow(/pims_forbidden/);
+    });
+    it('confirms only matching content and saved resource, without unlocking duplicate retries', () => {
+      const attempt = prepare().attempt;
+      const confirm = { attempt_id: attempt.id, content_hash: payload.content_hash, resource_id: 'file-1' };
+      expect(() => rpc('pims_confirm_image_transfer', confirm, member)).toThrow(/pims_conflict/);
+      rpc('pims_dispatch_image_transfer', { attempt_id: attempt.id }, member);
+      expect(() => rpc('pims_confirm_image_transfer', { ...confirm, content_hash: 'b'.repeat(64) }, member)).toThrow(/pims_identity/);
+      expect(rpc('pims_confirm_image_transfer', confirm, member)).toMatchObject({ state: 'confirmed', resource_id: 'file-1' });
+      expect(prepare({ request_id: nextRequest })).toMatchObject({ created: false, attempt: { id: attempt.id, state: 'confirmed' } });
+    });
   });
 
   describe('persisted clinical drafts', () => {
@@ -99,6 +224,161 @@ describe.skipIf(!container)('PIMS foundation on isolated PostgreSQL', () => {
     beforeEach(() => {
       sql(`insert into public.charts(id,created_by,practice_id,patient_name,patient_number,data)
         values('${chartId}','${member}','${practice}','Milo','P-1','{"findings":"4.5 mm"}')`);
+    });
+    const prepareUpload = (changes: Record<string, unknown> = {}, actor = member) => rpc('pims_prepare_upload', {
+      request_id: nextRequest, connection_id: connection.id, connection_revision: connection.revision,
+      chart_id: chartId, draft_id: draftId, draft_version: 2, patient_id: 'patient-1', chart_link_version: 1,
+      location_id: 'location-2', endpoint: 'https://api.instinctvet.com/graphql', content_hash: 'a'.repeat(64), content_bytes: 1024, ...changes,
+    }, actor);
+    function uploadFixture() {
+      connection = rpc('pims_configure_connection', { ...connectionInput, provider: 'instinct', origin: 'https://clinic.instinctvet.cloud' });
+      connection = rpc('pims_verify_connection', { connection_id: connection.id, expected_revision: 1, provider: connection.provider,
+        origin: connection.origin, tenant_id: connection.tenant_id, observed_at: new Date().toISOString() });
+      links(); save(); review();
+      rpc('pims_link_chart', { connection_id: connection.id, chart_id: chartId, patient_id: 'patient-1', expected_version: 0,
+        source_hash: context().source.hash, request_id: group, reason: 'Checked both patient records' });
+    }
+    const uploadPage = (changes: Record<string, unknown> = {}, actor = member) => rpc('pims_upload_review_page', { chart_id: chartId, ...changes }, actor);
+    function unknownUpload() {
+      uploadFixture();
+      const prepared = prepareUpload();
+      rpc('pims_dispatch_upload', { attempt_id: prepared.attempt.id }, member);
+      return prepared.attempt.id as string;
+    }
+    const observation = (attemptId: string, changes: Record<string, unknown> = {}, actor = member) => rpc('pims_record_upload_observation', {
+      chart_id: chartId, attempt_id: attemptId, request_id: request, expected_version: 0,
+      observation: 'not_found', note: 'Checked the patient document list', ...changes,
+    }, actor);
+    it('records a manual observation without confirming a save or releasing duplicate protection', () => {
+      const attemptId = unknownUpload();
+      expect(uploadPage().rows).toEqual([expect.objectContaining({ id: attemptId, chart_id: chartId, state: 'unknown', review_version: 0, observation: null })]);
+      const receipt = observation(attemptId);
+      expect(receipt).toMatchObject({ attempt_id: attemptId, chart_id: chartId, version: 1, actor_id: member, observation: 'not_found' });
+      expect(Date.parse(receipt.created_at)).toBeGreaterThan(0);
+      expect(uploadPage().rows[0]).toMatchObject({ state: 'unknown', review_version: 1, observation: receipt });
+      expect(prepareUpload({ request_id: chunk })).toMatchObject({ created: false, attempt: { id: attemptId, state: 'unknown' } });
+      expect(rpc('pims_dispatch_upload', { attempt_id: attemptId }, member).execute).toBe(false);
+      expect(sql('select confirmed_at is null and file_id is null from public.pims_upload_attempts')).toBe('t');
+    });
+    it('replays exact manual observations but rejects request reuse and stale competing reviews', () => {
+      const attemptId = unknownUpload(), receipt = observation(attemptId);
+      expect(observation(attemptId)).toEqual(receipt);
+      expect(() => observation(attemptId, { note: 'Different' })).toThrow(/pims_idempotency/);
+      expect(() => observation(attemptId, {}, owner)).toThrow(/pims_idempotency/);
+      expect(() => observation(attemptId, { request_id: chunk })).toThrow(/pims_conflict/);
+      expect(observation(attemptId, { request_id: chunk, expected_version: 1, observation: 'present' }, owner)).toMatchObject({ version: 2, actor_id: owner });
+      expect(sql('select count(*) from public.pims_upload_observations')).toBe('2');
+      expect(sql("select count(*) from public.pims_audit_events where action='upload_manually_reviewed'")).toBe('2');
+    });
+    it('serializes concurrent manual observations without overwriting either author', async () => {
+      const attemptId = unknownUpload();
+      const payload = { chart_id: chartId, attempt_id: attemptId, expected_version: 0, observation: 'uncertain', note: 'Unable to determine outcome' };
+      const results = await Promise.allSettled([request, chunk].map(request_id => asyncSql(userSql(member,
+        callStatement('pims_record_upload_observation', { ...payload, request_id })))));
+      expect(results.filter(result => result.status === 'fulfilled')).toHaveLength(1);
+      expect(String((results.find(result => result.status === 'rejected') as PromiseRejectedResult).reason)).toContain('pims_conflict');
+      expect(sql('select count(*) from public.pims_upload_observations')).toBe('1');
+    });
+    it('allows historical observations after expiry or relinking without reauthorizing an upload', () => {
+      const attemptId = unknownUpload();
+      sql("update public.pims_upload_attempts set expires_at=clock_timestamp()-interval '1 hour'; update public.pims_connections set state='disabled',revision=revision+1; update public.pims_chart_links set version=version+1");
+      expect(observation(attemptId)).toMatchObject({ version: 1 });
+      expect(uploadPage().rows[0]).toMatchObject({ state: 'unknown', patient_id: 'patient-1', location_id: 'location-2' });
+      expect(sql('select state from public.pims_upload_attempts')).toBe('unknown');
+    });
+    it.each(['outsider','removed','private','moved'])('denies %s access to upload review, receipts and replay', (change) => {
+      const attemptId = unknownUpload();
+      observation(attemptId);
+      let actor = member;
+      if (change === 'outsider') actor = outsider;
+      if (change === 'removed') sql(`delete from public.practice_members where user_id='${member}'`);
+      if (change === 'private') sql(`update public.charts set practice_id=null where id='${chartId}'`);
+      if (change === 'moved') sql(`update public.charts set practice_id='${otherPractice}' where id='${chartId}'`);
+      expect(() => observation(attemptId, {}, actor)).toThrow(/pims_forbidden/);
+      if (change !== 'moved') expect(() => uploadPage({}, actor)).toThrow(/pims_forbidden/);
+      expect(sql(userSql(actor, 'select count(*) from public.pims_upload_observations'))).toBe('0');
+    });
+    it('does not expose attempts from a former practice when a chart changes practice', () => {
+      unknownUpload();
+      sql(`update public.charts set practice_id='${otherPractice}' where id='${chartId}'`);
+      expect(uploadPage({}, outsider).rows).toEqual([]);
+    });
+    it.each([{ observation: 'confirmed' }, { note: '' }, { note: 'x'.repeat(201) }, { note: 'line\nbreak' }, { actor_id: owner }, { expected_version: -1 }])('rejects invalid observation payload %j', changes => {
+      const attemptId = unknownUpload();
+      expect(() => observation(attemptId, changes)).toThrow(/pims_invalid/);
+    });
+    it('only reviews unknown attempts, rejects chart substitution and prevents direct writes', () => {
+      uploadFixture();
+      const prepared = prepareUpload(), reference = { attempt_id: prepared.attempt.id };
+      expect(() => observation(prepared.attempt.id)).toThrow(/pims_conflict/);
+      rpc('pims_dispatch_upload', reference, member);
+      expect(() => observation(prepared.attempt.id, { chart_id: group })).toThrow(/pims_forbidden/);
+      observation(prepared.attempt.id);
+      expect(() => sql(userSql(member, "update public.pims_upload_observations set observation='present'"))).toThrow();
+      expect(() => sql(userSql(member, 'delete from public.pims_upload_observations'))).toThrow();
+      rpc('pims_confirm_upload', { ...reference, file_id: 'file-1', patient_id: 'patient-1', content_hash: 'a'.repeat(64) }, member);
+      expect(() => observation(prepared.attempt.id, { request_id: chunk, expected_version: 1 })).toThrow(/pims_conflict/);
+      expect(uploadPage().rows).toEqual([]);
+    });
+    it('pages unknown attempts with a stable cursor without disclosing provider credentials', () => {
+      const attemptId = unknownUpload();
+      sql(`insert into public.pims_upload_attempts(id,request_id,practice_id,connection_id,connection_revision,chart_id,draft_id,draft_version,patient_id,chart_link_version,location_id,endpoint,content_hash,content_bytes,source_hash,identity,payload_hash,actor_id,state,dispatched_at)
+        select gen_random_uuid(),gen_random_uuid(),practice_id,connection_id,connection_revision,chart_id,draft_id,draft_version,'patient-'||series,chart_link_version,location_id,endpoint,content_hash,content_bytes,source_hash,identity,payload_hash,actor_id,state,dispatched_at
+        from public.pims_upload_attempts cross join generate_series(2,52) series where id='${attemptId}'`);
+      const first = uploadPage(), second = uploadPage({ cursor: first.next_cursor });
+      expect(first.rows).toHaveLength(50);
+      expect(first.next_cursor).toBe(first.rows[49].id);
+      expect(second.rows).toHaveLength(2);
+      expect(second.next_cursor).toBeNull();
+      expect(new Set([...first.rows, ...second.rows].map(row => row.id)).size).toBe(52);
+      expect(first.rows[0]).not.toHaveProperty('endpoint');
+      expect(first.rows[0]).not.toHaveProperty('payload_hash');
+    });
+    it('durably consumes upload dispatch once and blocks a new request for the same reviewed artifact', () => {
+      uploadFixture();
+      const prepared = prepareUpload();
+      expect(prepared).toMatchObject({ created: true, attempt: { state: 'prepared', patient_id: 'patient-1', location_id: 'location-2' } });
+      const reference = { attempt_id: prepared.attempt.id };
+      expect(rpc('pims_dispatch_upload', reference, member)).toMatchObject({ execute: true, attempt: { state: 'unknown' } });
+      expect(rpc('pims_dispatch_upload', reference, member)).toMatchObject({ execute: false, attempt: { state: 'unknown' } });
+      expect(prepareUpload({ request_id: chunk })).toMatchObject({ created: false, attempt: { id: prepared.attempt.id, state: 'unknown' } });
+      expect(() => prepareUpload({ content_hash: 'b'.repeat(64) })).toThrow(/pims_idempotency/);
+    });
+    it('grants a single upload dispatch across concurrent database sessions', async () => {
+      uploadFixture();
+      const prepared = prepareUpload();
+      const statement = userSql(member, callStatement('pims_dispatch_upload', { attempt_id: prepared.attempt.id }));
+      const results = (await Promise.all([asyncSql(statement), asyncSql(statement)])).map(value => JSON.parse(value));
+      expect(results.filter(value => value.execute)).toHaveLength(1);
+      expect(results.every(value => value.attempt.state === 'unknown')).toBe(true);
+    });
+    it.each(['expiry', 'revision', 'relink', 'membership'])('blocks %s changes before provider dispatch', (change) => {
+      uploadFixture();
+      const prepared = prepareUpload();
+      if (change === 'expiry') sql("update public.pims_upload_attempts set expires_at=clock_timestamp()-interval '1 second'");
+      if (change === 'revision') sql('update public.pims_connections set revision=revision+1');
+      if (change === 'relink') sql('update public.pims_chart_links set version=version+1');
+      if (change === 'membership') sql(`delete from public.practice_members where user_id='${member}'`);
+      expect(() => rpc('pims_dispatch_upload', { attempt_id: prepared.attempt.id }, member)).toThrow(/pims_(stale|identity|forbidden)/);
+      expect(sql('select state from public.pims_upload_attempts')).toBe('prepared');
+    });
+    it('requires reviewed fresh drafts, matching patient links and current membership before upload', () => {
+      uploadFixture();
+      expect(() => prepareUpload({ patient_id: 'other' })).toThrow(/pims_identity/);
+      expect(() => prepareUpload({}, outsider)).toThrow(/pims_forbidden/);
+      const prepared = prepareUpload();
+      sql(`update public.charts set patient_name='Changed' where id='${chartId}'`);
+      expect(() => rpc('pims_dispatch_upload', { attempt_id: prepared.attempt.id }, member)).toThrow(/pims_stale/);
+    });
+    it('only records a matching receipt and keeps unknown outcomes blocked after a wrong acknowledgement', () => {
+      uploadFixture();
+      const prepared = prepareUpload(), reference = { attempt_id: prepared.attempt.id };
+      rpc('pims_dispatch_upload', reference, member);
+      expect(() => rpc('pims_confirm_upload', { ...reference, file_id: 'file-1', patient_id: 'other', content_hash: 'a'.repeat(64) }, member)).toThrow(/pims_identity/);
+      expect(rpc('pims_confirm_upload', { ...reference, file_id: 'file-1', patient_id: 'patient-1', content_hash: 'a'.repeat(64) }, member)).toMatchObject({ state: 'confirmed', file_id: 'file-1' });
+      expect(prepareUpload({ request_id: chunk })).toMatchObject({ created: false, attempt: { state: 'confirmed' } });
+      expect(sql(userSql(outsider, 'select count(*) from public.pims_upload_attempts'))).toBe('0');
+      expect(() => sql(userSql(member, "update public.pims_upload_attempts set state='prepared'"))).toThrow();
     });
     it('persists literal text and requires review before export without marking a PIMS send', () => {
       const created = save();
@@ -184,7 +464,7 @@ describe.skipIf(!container)('PIMS foundation on isolated PostgreSQL', () => {
     }
     expect(() => sql(`set role anon; ${callStatement('pims_start_sync', {})}`)).toThrow(/permission denied/);
     expect(() => sql(`set role service_role; ${callStatement('pims_start_sync', {})}`)).toThrow(/permission denied/);
-  });
+  }, 15000);
   it('rejects mixed-practice foreign keys even for privileged insertion', () => {
     expect(() => sql(`insert into public.pims_patient_links (practice_id,connection_id,patient_id,patient_key,created_by) values ('${otherPractice}','${connection.id}','bad','${group}','${owner}')`)).toThrow(/foreign key/);
   });
@@ -478,6 +758,14 @@ describe.skipIf(!container)('PIMS foundation on isolated PostgreSQL', () => {
     expect(() => rpc('pims_submit_sync', submission(run, { request_id: request }), member)).toThrow(/pims_stale/);
     expect(() => seal(run, 'partial')).toThrow(/pims_idempotency/);
   });
+  it('accepts a reviewed schedule with an explicitly unknown end time', () => {
+    const { run, visit } = seededVisit();
+    rpc('pims_submit_sync', submission(run, { request_id: nextRequest, items: [item({ starts_at: '2026-11-01T16:00:00Z', ends_at: null })] }), member);
+    const issue = rpc('pims_review_page', { connection_id: connection.id, collection: 'issues' }, member).rows[0];
+    expect(rpc('pims_resolve_issue', { connection_id: connection.id, issue_id: issue.id, expected_version: visit.version,
+      request_id: group, action: 'accept_schedule' }, member)).toMatchObject({ resolution: 'accept_schedule', visit_version: 2 });
+    expect(sql('select ends_at is null from public.pims_visits')).toBe('t');
+  });
   it.each(['partial', 'unknown'])('does not infer absence from a %s capture', (completeness) => {
     const { run } = seededVisit();
     seal(run, completeness);
@@ -563,6 +851,90 @@ describe.skipIf(!container)('PIMS foundation on isolated PostgreSQL', () => {
     const issue = rpc('pims_review_page', { connection_id: connection.id, collection: 'issues' }, member).rows[0];
     expect(() => rpc('pims_resolve_issue', { connection_id: connection.id, issue_id: issue.id, expected_version: 1, request_id: group, action: 'accept_schedule' }, member)).toThrow(/pims_identity/);
     expect(sql('select version from public.pims_visits')).toBe('1');
+  });
+  it('reconciles active status with an unknown end time without manufacturing a duration', () => {
+    const { run, visit } = missingRun();
+    expect(reconcile(run, visit, 'active', { appointment: item({ expected_version: 1, ends_at: null }) })).toMatchObject({ outcome: 'applied', version: 2 });
+    expect(sql('select ends_at is null from public.pims_visits')).toBe('t');
+  });
+  it('reads setup only for the primary owner and keeps configuration unverified', () => {
+    const configured = rpc('pims_configure_connection', { ...connectionInput, tenant_id: 'new-clinic' });
+    const context = rpc('pims_setup_context', { practice_id: practice });
+    expect(context.connections.find((entry: any) => entry.id === configured.id).state).toBe('unverified');
+    expect(context.members).toEqual(expect.arrayContaining([{ user_id: owner }, { user_id: member }]));
+    for (const actor of [member, outsider]) {
+      expect(() => rpc('pims_setup_context', { practice_id: practice }, actor)).toThrow(/pims_forbidden/);
+      expect(() => rpc('pims_setup_page', { connection_id: connection.id, collection: 'patients' }, actor)).toThrow(/pims_forbidden/);
+    }
+  });
+  it('pages confirmed links without silently truncating the setup inventory', () => {
+    sql(`insert into public.pims_patient_groups values ('${group}','${practice}','${owner}',clock_timestamp());
+      insert into public.pims_patient_links(practice_id,connection_id,patient_id,patient_key,created_by)
+        select '${practice}','${connection.id}','patient-'||lpad(number::text,3,'0'),'${group}','${owner}' from generate_series(1,51) number`);
+    const first = rpc('pims_setup_page', { connection_id: connection.id, collection: 'patients' });
+    expect(first.rows).toHaveLength(50);
+    const last = rpc('pims_setup_page', { connection_id: connection.id, collection: 'patients', cursor: first.next_cursor });
+    expect(last.rows).toHaveLength(1);
+    expect(last.next_cursor).toBeNull();
+    expect(last.rows[0].patient_id).toBe('patient-051');
+  });
+  function chartLinkInput(chartPractice: string | null = practice) {
+    links();
+    sql(`insert into public.charts(id,created_by,practice_id,patient_name,patient_number,data)
+      values ('${request}','${owner}',${chartPractice ? `'${chartPractice}'` : 'null'},'Milo','P-1','{"note":"keep"}')`);
+    const source = chartPractice === practice ? rpc('pims_setup_page', { connection_id: connection.id, collection: 'charts' }).rows[0] : { source_hash: 'a'.repeat(64) };
+    return { connection_id: connection.id, chart_id: request, patient_id: 'patient-1', expected_version: 0, source_hash: source.source_hash, request_id: nextRequest, reason: 'Checked both patient records' };
+  }
+  it('links historical charts explicitly with replay receipts and without changing chart data', () => {
+    const input = chartLinkInput();
+    const before = sql(`select to_jsonb(charts) from public.charts where id='${request}'`);
+    const result = rpc('pims_link_chart', input);
+    expect(result).toMatchObject({ chart_id: request, patient_id: 'patient-1', version: 1 });
+    expect(rpc('pims_link_chart', input)).toEqual(result);
+    expect(sql(`select to_jsonb(charts) from public.charts where id='${request}'`)).toBe(before);
+    expect(sql("select count(*) from public.pims_audit_events where action='chart_linked'")).toBe('1');
+    expect(() => rpc('pims_link_chart', { ...input, reason: 'changed' })).toThrow(/pims_idempotency/);
+    expect(() => rpc('pims_link_chart', input, member)).toThrow(/pims_forbidden/);
+  });
+  it('requires current chart hash and link version when explicitly relinking a chart', () => {
+    const input = chartLinkInput();
+    rpc('pims_link_chart', input);
+    rpc('pims_confirm_patient', { connection_id: connection.id, patient_id: 'patient-2', patient_key: chunk });
+    const next = { ...input, patient_id: 'patient-2', request_id: chunk };
+    expect(() => rpc('pims_link_chart', next)).toThrow(/pims_conflict/);
+    expect(rpc('pims_link_chart', { ...next, expected_version: 1 })).toMatchObject({ version: 2, patient_id: 'patient-2' });
+    sql(`update public.charts set patient_name='Different patient' where id='${request}'`);
+    expect(() => rpc('pims_link_chart', { ...input, request_id: group, expected_version: 2 })).toThrow(/pims_stale/);
+  });
+  it.each([null, otherPractice])('rejects historical linking of charts outside this practice: %s', (chartPractice) => {
+    const input = chartLinkInput(chartPractice);
+    expect(() => rpc('pims_link_chart', input)).toThrow(/pims_forbidden/);
+    expect(rpc('pims_setup_page', { connection_id: connection.id, collection: 'charts' }).rows).toEqual([]);
+  });
+  it('hides linked charts after unsharing and rejects replay after membership removal', () => {
+    const input = chartLinkInput();
+    rpc('pims_link_chart', input);
+    sql(`update public.charts set practice_id=null where id='${request}'`);
+    expect(sql(userSql(member, 'select count(*) from public.pims_chart_links'))).toBe('0');
+    expect(() => rpc('pims_link_chart', input)).toThrow(/pims_forbidden/);
+    sql(`delete from public.practice_members where user_id='${owner}'`);
+    expect(() => rpc('pims_setup_context', { practice_id: practice })).toThrow(/pims_forbidden/);
+  });
+  it('enforces setup receipt connection/practice consistency in the database', () => {
+    const input = chartLinkInput();
+    rpc('pims_link_chart', input);
+    expect(() => sql(`update public.pims_setup_actions set practice_id='${otherPractice}' where request_id='${nextRequest}'`)).toThrow(/foreign key/);
+  });
+  it('paginates historical charts with an empty first cursor and validates the next cursor', () => {
+    chartLinkInput();
+    sql(`insert into public.charts(id,created_by,practice_id) select gen_random_uuid(),'${owner}','${practice}' from generate_series(1,50)`);
+    const page = rpc('pims_setup_page', { connection_id: connection.id, collection: 'charts' });
+    expect(page.rows).toHaveLength(50);
+    const next = rpc('pims_setup_page', { connection_id: connection.id, collection: 'charts', cursor: page.next_cursor });
+    expect(next.rows).toHaveLength(1);
+    expect(next.next_cursor).toBeNull();
+    expect(new Set([...page.rows, ...next.rows].map((row: { chart_id: string }) => row.chart_id)).size).toBe(51);
+    expect(() => rpc('pims_setup_page', { connection_id: connection.id, collection: 'charts', cursor: 'not-a-uuid' })).toThrow(/pims_invalid/);
   });
   it('rejects stale status capture, tenant changes, version races and expired leases', () => {
     const { run, visit } = missingRun();

@@ -17,3 +17,6 @@
 .pims-review__comparison { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 16px; }
 .pims-review__comparison > div, .pims-review form { display: grid; gap: 10px; }
 .pims-review [role="alert"] { color: var(--sp-error, #a3291c); }
+.pims-setup__form { display: grid; gap: 10px; min-width: 0; border: 0; padding: 0; margin: 0; overflow-wrap: anywhere; }
+.pims-setup { min-width: 0; overflow-wrap: anywhere; }
+.pims-setup :is(button, input, select) { box-sizing: border-box; min-height: 44px; max-width: 100%; }

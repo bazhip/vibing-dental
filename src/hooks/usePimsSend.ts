@@ -19,6 +19,7 @@ import { supabase } from '../utils/supabaseClient';
 import { copyRichText } from '../utils/clipboard';
 import { errorText } from '../utils/apiErrors';
 import { confirmDialog, toast } from '../components/ui/dialogs';
+import type { SelectedImageTransfer } from '../utils/pims/images';
 
 export type FailCode = Extract<ItemResult, { ok: false }>['code'] | 'picture_failed';
 export type ResultRow = { fieldTitle: string; code: FailCode | null };
@@ -47,6 +48,7 @@ function targetChanged(a: InspectResult, b: InspectResult): boolean {
     (sa?.provider ?? 'ezyvet') !== (sb?.provider ?? 'ezyvet') ||
     (sa?.state === 'writable') !== (sb?.state === 'writable') ||
     (sa?.patientName ?? null) !== (sb?.patientName ?? null) ||
+    (sa?.patientNumber ?? null) !== (sb?.patientNumber ?? null) ||
     (sa?.consult?.viewId ?? null) !== (sb?.consult?.viewId ?? null) ||
     (sa?.consult?.recordId ?? null) !== (sb?.consult?.recordId ?? null)
   );
@@ -62,6 +64,7 @@ export interface UsePimsSendOptions {
    *  `hasChartPicture` says whether there is a chart row at all. */
   chartSnapshotPicture: () => Promise<string | null>;
   hasChartPicture: boolean;
+  savedImage?: SelectedImageTransfer | null;
   /** Cloud chart id (null = not saved to the cloud: nothing is stamped). */
   chartId: string | null;
   patientName: string;
@@ -87,9 +90,20 @@ export interface UsePimsSendOptions {
  */
 export function usePimsSend({
   transport, note, stored, chartSnapshotPicture, hasChartPicture, chartId, patientName, patientNumber, sentAt, onSent, open = true,
-  patientMatcher = patientsMatch,
+  patientMatcher = patientsMatch, savedImage = null,
 }: UsePimsSendOptions) {
   const { t, i18n } = useTranslation(['pims', 'media', 'app', 'forms', 'common']);
+  const mounted = React.useRef(true);
+  const authVersion = React.useRef(0);
+  const live = React.useRef({ chartId, savedImage, open, patientName, patientNumber });
+  live.current = { chartId, savedImage, open, patientName, patientNumber };
+  React.useEffect(() => {
+    mounted.current = true;
+    const subscription = supabase?.auth?.onAuthStateChange?.((event) => {
+      if (event === 'SIGNED_OUT' || event === 'SIGNED_IN' || event === 'USER_UPDATED') authVersion.current++;
+    });
+    return () => { mounted.current = false; subscription?.data.subscription.unsubscribe(); };
+  }, []);
   const [phase, setPhase] = React.useState<PimsPhase>({ kind: 'loading' });
   const provider = (phase.kind === 'ready' || phase.kind === 'results' ? phase.info.status?.provider : undefined) ?? 'ezyvet';
   const { map, save, reset } = usePimsFieldMap(provider);
@@ -217,6 +231,8 @@ export function usePimsSend({
       : [{ key: 'edited', label: t('pims:rows.edited'), options: targets, wanted: editedWanted }]
     : [];
   if (writable && hasChartPicture) rows.push({ key: 'chart', label: t('pims:rows.chart'), options: imageTargets, wanted: wantedFor('chart') });
+  const hasSavedImage = !!savedImage?.dispatch && savedImage.chartId === chartId && provider === 'ezyvet';
+  if (writable && hasSavedImage) rows.push({ key: 'attachment', label: t('pims:images.transferRow'), options: imageTargets, wanted: wantedFor('attachment') });
 
   const choose = (key: RowKey, value: string) => {
     const next = value === DONT_SEND ? null : value;
@@ -237,15 +253,19 @@ export function usePimsSend({
     sendingRef.current = true;
     refreshId.current++;
     setSending(true);
+    const auth = authVersion.current;
+    const active = () => mounted.current && auth === authVersion.current && live.current.open && live.current.chartId === chartId
+      && live.current.savedImage === savedImage && live.current.patientName === patientName && live.current.patientNumber === patientNumber;
     try {
       // Look again first: the vet may have switched consults in ezyVet since this screen loaded.
       let fresh: InspectResult;
       try {
         fresh = await transport.inspect();
       } catch (err) {
-        setPhase({ kind: 'error', message: errorText(err, t('pims:errors.extension_error')) });
+        if (active()) setPhase({ kind: 'error', message: errorText(err, t('pims:errors.extension_error')) });
         return;
       }
+      if (!active()) return;
       if (targetChanged(info, fresh)) {
         setPhase({ kind: 'ready', info: fresh });
         setChangedTarget(true);
@@ -261,13 +281,14 @@ export function usePimsSend({
         // Saving the map must not stop the send.
         try { await save(changes); } catch { /* the choices still apply to this send */ }
       }
+      if (!active()) return;
       if (lastSentAt) {
         const again = await confirmDialog({
           title: t('pims:alreadySent.title', { date: formatDate(lastSentAt) }),
           message: t('pims:alreadySent.message'),
           confirmLabel: t('pims:alreadySent.confirm'),
         });
-        if (!again) return;
+        if (!again || !active()) return;
       }
       const match = pimsPatientMatch(
         { name: patientName, number: patientNumber },
@@ -288,7 +309,7 @@ export function usePimsSend({
           message,
           confirmLabel: t('pims:mismatch.sendAnyway'),
         });
-        if (!anyway) return;
+        if (!anyway || !active()) return;
       }
 
       const effective = { ...map, ...edits } as Record<SourceKey, string | null>;
@@ -312,8 +333,30 @@ export function usePimsSend({
         pngDataUrl,
       });
 
+      if (!active()) return;
       const rowsOut: ResultRow[] = [];
+      if (hasSavedImage && effective.attachment != null) {
+        const destination = selectValue(effective.attachment, info2.fields.filter(field => field.acceptsImage && field.kind !== 'email'));
+        if (destination === MISSING) unresolved.push(effective.attachment);
+        else {
+          try {
+            const result = await savedImage!.dispatch!(destination, active);
+            if (!active()) return;
+            if (result.state !== 'confirmed') {
+              setPhase({ kind: 'error', message: t(result.state === 'blocked' ? 'pims:images.errors.stale' : 'pims:errors.maybe_sent'), tabId: tab.id });
+              return;
+            }
+            rowsOut.push({ fieldTitle: destination, code: null });
+          } catch {
+            if (active()) setPhase({ kind: 'error', message: t('pims:images.errors.stale'), tabId: tab.id });
+            return;
+          }
+        }
+      }
+      if (!active()) return;
+
       if (items.length) {
+        const imageConfirmed = rowsOut.some(row => row.code === null);
         let result: SendResult;
         try {
           result = await transport.send({
@@ -328,17 +371,27 @@ export function usePimsSend({
         } catch {
           // Timed out or lost the extension mid-send: some fields may be
           // written, so the next Send asks first.
-          const at = new Date().toISOString();
-          setJustSentAt(at);
-          onSent(at);
-          setPhase({ kind: 'error', message: t('pims:errors.maybe_sent'), tabId: tab.id });
-          return;
+          if (!active()) return;
+          if (!imageConfirmed) {
+            const at = new Date().toISOString();
+            setJustSentAt(at);
+            onSent(at);
+            setPhase({ kind: 'error', message: t('pims:errors.maybe_sent'), tabId: tab.id });
+            return;
+          }
+          result = { ok: false, code: 'extension_error' };
         }
+        if (!active()) return;
         if (!result.ok) {
-          setPhase({ kind: 'error', message: t(`pims:errors.${result.code}`), tabId: tab.id });
-          return;
+          if (!imageConfirmed) {
+            setPhase({ kind: 'error', message: t(`pims:errors.${result.code}`), tabId: tab.id });
+            return;
+          }
+          const code = result.code === 'no_tab' ? 'extension_error' : result.code;
+          for (const item of items) rowsOut.push({ fieldTitle: item.fieldTitle, code });
+        } else {
+          for (const r of result.results) rowsOut.push({ fieldTitle: r.fieldTitle, code: r.result.ok ? null : r.result.code });
         }
-        for (const r of result.results) rowsOut.push({ fieldTitle: r.fieldTitle, code: r.result.ok ? null : r.result.code });
       }
       for (const title of unresolved) rowsOut.push({ fieldTitle: title, code: 'field_not_found' });
       if (chartMissing && !unresolved.includes(effective.chart!)) rowsOut.push({ fieldTitle: effective.chart!, code: 'field_not_found' });
@@ -355,6 +408,7 @@ export function usePimsSend({
             stampFailed = true;
           }
         }
+        if (!active()) return;
         setJustSentAt(at);
         onSent(at);
       } else if (rowsOut.some((r) => r.code !== null && MAYBE_WRITTEN.has(r.code))) {
@@ -366,7 +420,7 @@ export function usePimsSend({
       setPhase({ kind: 'results', info: info2, rows: rowsOut, stampFailed });
     } finally {
       sendingRef.current = false;
-      setSending(false);
+      if (mounted.current) setSending(false);
     }
   };
 

@@ -36,3 +36,8 @@ create table public.charts (
   chart_date date not null default current_date, data jsonb not null default '{}',
   updated_at timestamptz not null default clock_timestamp()
 );
+create table public.attachments (
+  id uuid primary key, created_by uuid not null references auth.users,
+  chart_id uuid not null, path text not null, caption text not null default '',
+  kind text not null default 'photo', original_path text
+);

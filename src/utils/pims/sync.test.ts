@@ -28,6 +28,13 @@ function setup(overrides: Partial<SyncCapture> = {}) {
 }
 
 describe('durable PIMS capture orchestration', () => {
+  it('preserves an unknown source end time rather than manufacturing a duration', async () => {
+    const fixture = setup();
+    Object.assign(fixture.capture.items[0] = { ...appointment }, { ends_at: null });
+    const submit = vi.spyOn(fixture.backend, 'submit');
+    expect(await fixture.run()).toMatchObject({ state: 'completed' });
+    expect(submit).toHaveBeenCalledWith(expect.objectContaining({ items: [expect.objectContaining({ ends_at: null })] }));
+  });
   it('keeps the captured baseline version for explicit cancellations', async () => {
     const { run, backend } = setup({ items: [{ ...appointment, status: 'cancelled' }] });
     backend.candidates = async () => ({ rows: [{ appointment_id: 'appointment-1', version: 6, patient_link_version: 2, clinician_link_version: 3 }], next_cursor: null });

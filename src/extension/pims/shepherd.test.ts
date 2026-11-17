@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { shepherd } from './shepherd';
+import { createShepherdPhysicalExam, shepherd } from './shepherd';
 import type { AdapterContext } from './types';
 
 function storage(): Storage {
@@ -33,6 +33,127 @@ function clipboard() {
   vi.stubGlobal('DataTransfer', Transfer);
   vi.stubGlobal('ClipboardEvent', Paste);
 }
+
+describe('Shepherd explicit physical exam preparation', () => {
+  const examId = 'aaaaaaaa-1234-1234-1234-123456789abc';
+  let current: URL;
+  let clicks = vi.fn<() => void>();
+  function fixture(doctor = 'Dr Rivera'): AdapterContext {
+    sessionStorage.setItem('baasic-auth-token-pav2', '{"token":"secret"}');
+    document.body.innerHTML = `<div data-test-id="soap-physicalExam-doctor-control"><span class="react-select__single-value">${doctor}</span></div>
+      <button data-test-groupid="soap-phyiscalExam"><span data-test-id="soap-physicalExam-name">Dental</span></button>`;
+    current = context().url;
+    clicks = vi.fn(() => {
+      current = new URL(`${context().url.href}/objective/physical-exam-entry/edit/${examId}`);
+      document.body.insertAdjacentHTML('beforeend', '<div data-test-id="dynamic-form-element"><label class="form__group__label">Mouth</label><textarea></textarea></div>');
+    });
+    document.querySelector('button')!.addEventListener('click', clicks);
+    return { ...context(), currentUrl: () => current };
+  }
+  beforeEach(() => { document.body.innerHTML = ''; sessionStorage.clear(); });
+
+  it('opens the exact enabled template with the existing selected doctor, without claiming persistence', async () => {
+    const ctx = fixture();
+    expect(await createShepherdPhysicalExam('Dental', ctx)).toEqual({ ok: true, state: 'opened', recordId, examId });
+    expect(clicks).toHaveBeenCalledOnce();
+    expect(ctx.fetch).not.toHaveBeenCalled();
+  });
+
+  it.each(['', '   '])('never selects an arbitrary doctor when the selection is %j', async doctor => {
+    const ctx = fixture(doctor);
+    expect(await createShepherdPhysicalExam('Dental', ctx)).toEqual({ ok: false, code: 'supervising_doctor_not_set' });
+    expect(clicks).not.toHaveBeenCalled();
+  });
+
+  it('rejects duplicate, missing and disabled templates', async () => {
+    const ctx = fixture();
+    document.querySelector('button')!.classList.add('is-disabled');
+    expect(await createShepherdPhysicalExam('Dental', ctx)).toEqual({ ok: false, code: 'physical_exam_template_not_found' });
+    document.querySelector('button')!.classList.remove('is-disabled');
+    document.body.append(document.querySelector('button')!.cloneNode(true));
+    expect(await createShepherdPhysicalExam('Dental', ctx)).toEqual({ ok: false, code: 'physical_exam_template_not_found' });
+    expect(await createShepherdPhysicalExam('Other', ctx)).toEqual({ ok: false, code: 'physical_exam_template_not_found' });
+    expect(clicks).not.toHaveBeenCalled();
+  });
+
+  it('does not mistake old dynamic fields or an unchanged route for a created exam', async () => {
+    const ctx = fixture();
+    document.querySelector('button')!.removeEventListener('click', clicks);
+    document.body.insertAdjacentHTML('beforeend', '<div data-test-id="dynamic-form-element"><textarea></textarea></div>');
+    expect(await createShepherdPhysicalExam('Dental', ctx)).toEqual({ ok: false, code: 'physical_exam_outcome_unknown' });
+  });
+
+  it('rejects stale contexts and changed sessions before clicking', async () => {
+    const ctx = fixture();
+    current = new URL('https://app.shepherd.vet/soap/bbbbbbbb-1234-1234-1234-123456789abc');
+    expect(await createShepherdPhysicalExam('Dental', ctx)).toEqual({ ok: false, code: 'patient_changed' });
+    expect(clicks).not.toHaveBeenCalled();
+    current = ctx.url;
+    sessionStorage.clear();
+    expect(await createShepherdPhysicalExam('Dental', ctx)).toEqual({ ok: false, code: 'not_writable' });
+    expect(clicks).not.toHaveBeenCalled();
+  });
+
+  it('checks SOAP identity and session again after template activation', async () => {
+    const ctx = fixture();
+    document.querySelector('button')!.addEventListener('click', () => { sessionStorage.setItem('baasic-auth-token-pav2', '{"token":"other"}'); });
+    expect(await createShepherdPhysicalExam('Dental', ctx)).toEqual({ ok: false, code: 'physical_exam_outcome_unknown' });
+    expect(clicks).toHaveBeenCalledOnce();
+  });
+
+  it('opens the evidenced picker but never retries template activation after an unknown outcome', async () => {
+    const ctx = fixture();
+    const picker = document.body.innerHTML;
+    document.body.innerHTML = '<button data-test-id="soap-objective-addPhysicalExam-btn">Add</button>';
+    const add = vi.fn(() => { document.body.innerHTML = picker; });
+    document.querySelector('button')!.addEventListener('click', add);
+    expect(await createShepherdPhysicalExam('Dental', ctx)).toEqual({ ok: false, code: 'physical_exam_outcome_unknown' });
+    expect(add).toHaveBeenCalledOnce();
+  });
+
+  it('requires a live route observer before initiating creation', async () => {
+    const ctx = fixture();
+    delete ctx.currentUrl;
+    expect(await createShepherdPhysicalExam('Dental', ctx)).toEqual({ ok: false, code: 'not_writable' });
+    expect(clicks).not.toHaveBeenCalled();
+  });
+
+  it('does not reuse pre-existing fields as readback even if the edit route changes', async () => {
+    const ctx = fixture();
+    document.querySelector('button')!.removeEventListener('click', clicks);
+    document.body.insertAdjacentHTML('beforeend', '<div data-test-id="dynamic-form-element"><label class="form__group__label">Mouth</label><textarea></textarea></div>');
+    document.querySelector('button')!.addEventListener('click', () => {
+      current = new URL(`${ctx.url.href}/objective/physical-exam-entry/edit/${examId}`);
+    });
+    expect(await createShepherdPhysicalExam('Dental', ctx)).toEqual({ ok: false, code: 'physical_exam_outcome_unknown' });
+  });
+
+  it('blocks duplicate creation from concurrent callers waiting for one picker', async () => {
+    const ctx = fixture();
+    const picker = document.body.innerHTML;
+    document.body.innerHTML = '<button data-test-id="soap-objective-addPhysicalExam-btn">Add</button>';
+    let release!: () => void;
+    ctx.wait = vi.fn(() => new Promise<void>(resolve => { release = resolve; }));
+    const first = createShepherdPhysicalExam('Dental', ctx);
+    const second = createShepherdPhysicalExam('Dental', ctx);
+    document.body.innerHTML = picker;
+    document.querySelector('button')!.addEventListener('click', clicks);
+    release();
+    expect(await second).toEqual({ ok: false, code: 'physical_exam_outcome_unknown' });
+    expect(await first).toMatchObject({ ok: true, state: 'opened' });
+    expect(clicks).toHaveBeenCalledOnce();
+  });
+
+  it('never clicks twice on repeated calls after ambiguous activation', async () => {
+    const ctx = fixture();
+    document.querySelector('button')!.removeEventListener('click', clicks);
+    document.querySelector('button')!.addEventListener('click', () => undefined);
+    const activate = vi.spyOn(document.querySelector('button')!, 'click');
+    expect(await createShepherdPhysicalExam('Dental', ctx)).toEqual({ ok: false, code: 'physical_exam_outcome_unknown' });
+    expect(await createShepherdPhysicalExam('Dental', ctx)).toEqual({ ok: false, code: 'physical_exam_outcome_unknown' });
+    expect(activate).toHaveBeenCalledOnce();
+  });
+});
 
 describe('Shepherd static-source adapter', () => {
   beforeEach(() => { document.body.innerHTML = ''; localStorage.clear(); sessionStorage.clear(); vi.unstubAllGlobals(); });

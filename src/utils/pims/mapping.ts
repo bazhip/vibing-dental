@@ -9,7 +9,7 @@ import {
   type RecordNoteSection,
 } from '../recordNote';
 
-export type SourceKey = RecordNoteKey | 'chart';
+export type SourceKey = RecordNoteKey | 'chart' | 'attachment';
 /** `null` = don't send. `editedNote` is where a note that can't be split goes (unset = the
  *  treatment field's choice). */
 export type PimsFieldMap = Partial<Record<SourceKey, string | null>> & { editedNote?: string | null };
@@ -27,6 +27,7 @@ export const DEFAULT_EZYVET_MAP: Record<SourceKey, string | null> = {
   treatment: 'Plan',
   recheck: 'Plan',
   chart: 'Discharge Summary',
+  attachment: null,
 };
 
 export function effectiveMap(saved: PimsFieldMap | null, provider: PimsId = 'ezyvet'): EffectiveFieldMap {

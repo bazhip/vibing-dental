@@ -1,6 +1,47 @@
 import { describe, expect, it, vi } from 'vitest';
 import { createPageBridge } from './bridge';
+import { shepherd } from './shepherd';
 import type { AdapterContext, PimsAdapter, Status } from './types';
+
+describe('physical exam preparation identity lifetime', () => {
+  it.each(['navigation', 'session', 'provider', 'navigation-event', 'navigation-status', 'session-status', 'document-status'])('invalidates old tickets after observed %s changes and restoration', async change => {
+    const recordId = '12345678-1234-1234-1234-123456789abc';
+    let doc = change === 'navigation-event' ? document : document.implementation.createHTMLDocument();
+    const originalDoc = doc;
+    const originalUrl = new URL(`https://app.shepherd.vet/soap/${recordId}/objective`);
+    let url = originalUrl;
+    let token = '{"token":"original"}';
+    let adapter: PimsAdapter = shepherd;
+    doc.body.innerHTML = '<div data-test-id="soap-physicalExam-doctor-control"><span class="react-select__single-value">Dr Rivera</span></div><button data-test-groupid="soap-phyiscalExam"><span data-test-id="soap-physicalExam-name">Dental</span></button>';
+    const activate = vi.fn();
+    doc.querySelector('button')!.onclick = activate;
+    const context = (): AdapterContext => ({ doc, url, currentUrl: () => url, fetch: vi.fn(), localStorage,
+      sessionStorage: { getItem: () => token } as unknown as Storage, wait: async () => undefined });
+    const bridge = createPageBridge(() => adapter, context);
+    const target = { provider: 'shepherd' as const, consult: shepherd.status(context()).consult! };
+    const available = await bridge.physicalExam({ operation: 'inspect', target });
+    expect(available.ok && available.state).toBe('available');
+    if (!available.ok || available.state !== 'available') return;
+    const prepared = await bridge.physicalExam({ operation: 'prepare', target, pageId: available.pageId });
+    expect(prepared.ok && prepared.state).toBe('prepared');
+    if (!prepared.ok || prepared.state !== 'prepared') return;
+    if (change.startsWith('navigation') && change !== 'navigation-event') url = new URL('https://app.shepherd.vet/dashboard');
+    if (change.startsWith('session')) token = '{}';
+    if (change === 'provider') adapter = { ...shepherd, id: 'instinct' };
+    if (change === 'document-status') doc = document.implementation.createHTMLDocument();
+    if (change === 'navigation-event') window.dispatchEvent(new PopStateEvent('popstate'));
+    else if (change.endsWith('-status')) bridge.status();
+    else expect((await bridge.physicalExam({ operation: 'inspect', target })).ok).toBe(false);
+    url = originalUrl;
+    token = '{"token":"original"}';
+    adapter = shepherd;
+    doc = originalDoc;
+    expect(await bridge.physicalExam({ operation: 'open', target, pageId: prepared.pageId, ticket: prepared.ticket,
+      templateId: prepared.templates[0].id })).toEqual({ ok: false, code: 'patient_changed' });
+    expect(activate).not.toHaveBeenCalled();
+    if (doc === document) doc.body.replaceChildren();
+  });
+});
 
 describe('provider-neutral page bridge', () => {
   const consult = { viewId: 'patient-1', recordId: 'visit-1' };

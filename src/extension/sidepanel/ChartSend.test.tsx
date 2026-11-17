@@ -8,7 +8,8 @@ import { effectiveMap } from '../../utils/pims/mapping';
 const mocks = vi.hoisted(() => ({
   load: vi.fn(),
   confirm: vi.fn(async (_o: unknown) => true),
-  transport: { ping: vi.fn(), inspect: vi.fn(), send: vi.fn(), diagnose: vi.fn(), appointments: vi.fn(), startChart: vi.fn(), takePendingPatient: vi.fn() },
+  transport: { ping: vi.fn(), inspect: vi.fn(), send: vi.fn(), diagnose: vi.fn(), appointments: vi.fn(), startChart: vi.fn(), takePendingPatient: vi.fn(), physicalExam: vi.fn() },
+  supabase: null as unknown,
   tab: { activated: null as null | (() => void) },
 }));
 vi.mock('../../utils/chartQueries', () => ({ loadChartSnapshot: mocks.load }));
@@ -19,7 +20,7 @@ vi.mock('./OffscreenChartPicture', () => ({
 vi.mock('../../hooks/usePimsFieldMap', () => ({
   usePimsFieldMap: () => ({ map: effectiveMap(null), save: async () => {}, reset: async () => {} }),
 }));
-vi.mock('../../utils/supabaseClient', () => ({ supabase: null, cloudEnabled: false }));
+vi.mock('../../utils/supabaseClient', () => ({ get supabase() { return mocks.supabase; }, cloudEnabled: false }));
 vi.mock('../../utils/edgeFunctions', () => ({ markPimsSent: vi.fn(async () => ({ sentAt: '2026-11-15T10:00:00Z' })) }));
 vi.mock('../../components/ui/dialogs', async (orig) => ({
   ...(await orig<typeof import('../../components/ui/dialogs')>()),
@@ -76,6 +77,7 @@ function open({ stored, fresh, ezyvet, ezyvetNumber = null, chartName, ownerName
 
 beforeEach(() => {
   vi.clearAllMocks();
+  mocks.supabase = null;
   mocks.confirm.mockResolvedValue(true);
 });
 afterEach(cleanup);
@@ -87,6 +89,36 @@ const send = async () => {
 };
 
 describe('ChartSend', () => {
+  it('exposes explicit Shepherd setup and keeps navigation locked until opening finishes', async () => {
+    mocks.supabase = { auth: { onAuthStateChange: (callback: (event: string, session: unknown) => void) => {
+      callback('INITIAL_SESSION', { user: { id: 'user' } });
+      return { data: { subscription: { unsubscribe: vi.fn() } } };
+    } } };
+    const onBusyChange = vi.fn(), onSent = vi.fn();
+    open({ onBusyChange, onSent });
+    const recordId = '12345678-1234-1234-1234-123456789abc';
+    mocks.transport.ping.mockResolvedValue({ version: '1', protocol: 1, capabilities: ['inspect', 'send', 'diagnose', 'physicalExam'] });
+    mocks.transport.inspect.mockResolvedValue({ tab: { id: 7, title: 'Shepherd' }, candidates: 1, fields: [], status: {
+      provider: 'shepherd', state: 'locked', patientName: 'Bella', patientNumber: null,
+      consult: { recordId, viewId: `https://app.shepherd.vet/soap/${recordId}/objective|` },
+    } });
+    let resolveOpen!: (value: unknown) => void;
+    mocks.transport.physicalExam.mockImplementation(async (_tabId, request) => request.operation === 'inspect'
+      ? { ok: true, state: 'available', pageId: 'page' }
+      : request.operation === 'prepare'
+        ? { ok: true, state: 'prepared', pageId: 'page', ticket: 'ticket', doctor: 'Dr Rivera', templates: [{ id: 'dental', label: 'Dental' }] }
+        : new Promise(resolve => { resolveOpen = resolve; }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Set up physical exam' }));
+    fireEvent.change(await screen.findByLabelText('Physical exam template'), { target: { value: 'dental' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Open physical exam' }));
+    await waitFor(() => expect(resolveOpen).toBeDefined());
+    expect(onBusyChange).toHaveBeenLastCalledWith(true);
+    expect(screen.getByRole('button', { name: '← Back to charts' })).toBeDisabled();
+    await act(async () => resolveOpen({ ok: true, state: 'opened', recordId, examId: 'aaaaaaaa-1234-1234-1234-123456789abc' }));
+    expect(onBusyChange).toHaveBeenLastCalledWith(false);
+    expect(mocks.transport.send).not.toHaveBeenCalled();
+    expect(onSent).not.toHaveBeenCalled();
+  });
   it('allows manual copy when automatic writes cannot verify an encounter', async () => {
     const onSent = vi.fn();
     open({ stored: true, onSent });

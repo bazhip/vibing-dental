@@ -24,8 +24,11 @@ import {
 } from './protocol';
 import { EXTENSION_VERSION } from './version';
 import { BRIDGE_PROTOCOL, SEND_CAPABILITIES } from './protocol';
-import { PIMS_HOST_PERMISSIONS } from './pims/hosts';
+import { identifyPims, PIMS_HOST_PERMISSIONS } from './pims/hosts';
 import type { WriteTarget } from './pims/types';
+import { isPhysicalExamRequest, isPhysicalExamResult, shepherdObjectiveRecord, type PhysicalExamRequest, type PhysicalExamResult } from './pims/types';
+import { examAttemptKey, openExamOnce, type ExamAttemptStore } from './pims/examAttempts';
+import type { ProviderSyncRequest, ProviderSyncResponse } from './pims/syncBridge';
 import type {} from './pims/page';
 
 /** A tab plus whether it is the active tab of the last-focused window. */
@@ -33,6 +36,8 @@ export type EzyvetTab = chrome.tabs.Tab & { focusedWindow?: boolean };
 
 /** Calls into `window.__toothopsEzyvet` of one tab (injecting it first). Reject = tab unreachable. */
 export type PageApi = {
+  physicalExam?(tabId: number, request: PhysicalExamRequest): Promise<PhysicalExamResult>;
+  providerSync?(tabId: number, request: ProviderSyncRequest): Promise<ProviderSyncResponse>;
   status(tabId: number): Promise<Status>;
   listFields(tabId: number): Promise<FieldInfo[]>;
   write(tabId: number, item: SendItem, target: WriteTarget): Promise<WriteResult>;
@@ -60,6 +65,7 @@ export type Deps = {
   openTab(url: string): Promise<number | undefined>;
   navigateTab(tabId: number, url: string): Promise<void>;
   session: SessionStore;
+  examAttempts?: ExamAttemptStore;
   now(): number;
 };
 
@@ -247,7 +253,45 @@ async function diagnose(tabId: number | undefined, deps: Deps): Promise<Diagnose
   }
 }
 
+async function providerSync(message: Extract<Request, { type: 'providerSync' }>, deps: Deps): Promise<ProviderSyncResponse> {
+  try {
+    if (!Number.isSafeInteger(message.tabId) || !deps.page.providerSync) return { ok: false, code: 'unavailable' };
+    const tab = (await deps.queryEzyvetTabs()).find((entry) => entry.id === message.tabId);
+    if (!tab?.url || !['rhapsody', 'vetspire'].includes(identifyPims(tab.url) ?? '')) return { ok: false, code: 'unavailable' };
+    if (message.request.operation === 'open' && (new URL(tab.url).origin !== message.request.identity.origin
+      || identifyPims(tab.url) !== message.request.identity.provider)) return { ok: false, code: 'unavailable' };
+    return await deps.page.providerSync(message.tabId, message.request);
+  } catch { return { ok: false, code: 'unavailable' }; }
+}
+
+async function physicalExam(message: Extract<Request, { type: 'physicalExam' }>, deps: Deps): Promise<PhysicalExamResult> {
+  if (!Number.isSafeInteger(message.tabId) || message.tabId < 0 || !isPhysicalExamRequest(message.request)) return { ok: false, code: 'invalid_request' };
+  let dispatched = false;
+  try {
+    if (!deps.page.physicalExam) return { ok: false, code: 'unavailable' };
+    const tab = (await deps.queryEzyvetTabs()).find(entry => entry.id === message.tabId);
+    if (!tab?.url || identifyPims(tab.url) !== 'shepherd') return { ok: false, code: 'patient_changed' };
+    const url = new URL(tab.url);
+    if (url.port || shepherdObjectiveRecord(url) !== message.request.target.consult.recordId
+      || message.request.target.consult.viewId !== `${url.href}|`) return { ok: false, code: 'patient_changed' };
+    if (!deps.examAttempts) return { ok: false, code: 'unavailable' };
+    const key = await examAttemptKey(url.origin, message.request.target.consult.recordId);
+    const execute = async (): Promise<PhysicalExamResult> => {
+      const current = (await deps.queryEzyvetTabs()).find(entry => entry.id === message.tabId);
+      if (current?.url !== tab.url) return { ok: false, code: 'patient_changed' };
+      dispatched = true;
+      const result = await deps.page.physicalExam!(message.tabId, message.request);
+      return isPhysicalExamResult(result, message.request) ? result : { ok: false, code: message.request.operation === 'open' ? 'physical_exam_outcome_unknown' : 'unavailable' };
+    };
+    if (message.request.operation === 'open') return await openExamOnce(deps.examAttempts, key, execute);
+    if (await deps.examAttempts.get(key) !== undefined) return { ok: false, code: 'physical_exam_outcome_unknown' };
+    return await execute();
+  } catch { return { ok: false, code: dispatched && message.request.operation === 'open' ? 'physical_exam_outcome_unknown' : 'unavailable' }; }
+}
+
 type Response =
+  | PhysicalExamResult
+  | ProviderSyncResponse
   | PingResult
   | InspectResult
   | SendResult
@@ -278,8 +322,12 @@ export async function handleInternal(msg: Request, sender: InternalSender, runti
 /** Requests both the web app and the side panel may send. */
 function dispatchShared(msg: Request, deps: Deps): Promise<Response> | Response {
   switch (msg?.type) {
+    case 'physicalExam':
+      return physicalExam(msg, deps);
+    case 'providerSync':
+      return providerSync(msg, deps);
     case 'ping':
-      return { version: deps.version, protocol: BRIDGE_PROTOCOL, capabilities: SEND_CAPABILITIES };
+      return { version: deps.version, protocol: BRIDGE_PROTOCOL, capabilities: [...SEND_CAPABILITIES, 'physicalExam'] };
     case 'inspect':
       return inspect(deps);
     case 'send':
@@ -352,6 +400,10 @@ export function createChromeDeps(api: ChromeApi, lastCodes: WriteCode[] = []): D
       if (tab?.windowId !== undefined) await api.windows.update(tab.windowId, { focused: true });
     },
     page: {
+      physicalExam: (tabId, request) => callWith(tabId,
+        (args: PhysicalExamRequest) => window.__toothopsPims!.physicalExam(args), request),
+      providerSync: (tabId, request) => callWith(tabId,
+        (args: ProviderSyncRequest) => window.__toothopsPims!.providerSync(args), request),
       status: (tabId) => call(tabId, () => window.__toothopsPims!.status()),
       listFields: (tabId) => call(tabId, () => window.__toothopsPims!.listFields()),
       write: (tabId, item, target) => callWith(tabId,
@@ -378,11 +430,16 @@ export function createChromeDeps(api: ChromeApi, lastCodes: WriteCode[] = []): D
       remove: (key) => api.storage.session.remove(key),
       getAll: () => api.storage.session.get(null),
     },
+    examAttempts: {
+      get: async (key) => (await api.storage.local.get(key))[key],
+      set: (key, value) => api.storage.local.set({ [key]: value }),
+      remove: (key) => api.storage.local.remove(key),
+    },
     now: () => Date.now(),
   };
 }
 
-const SHARED_TYPES = ['ping', 'inspect', 'send', 'diagnose'];
+const SHARED_TYPES = ['ping', 'inspect', 'send', 'diagnose', 'physicalExam'];
 /** Per side, so a request for the other side is never even answered. */
 const INTERNAL_TYPES = [...SHARED_TYPES, 'appointments', 'startChart'];
 const EXTERNAL_TYPES = [...SHARED_TYPES, 'takePendingPatient'];

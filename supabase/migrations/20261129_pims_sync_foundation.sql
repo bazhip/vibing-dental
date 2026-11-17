@@ -88,7 +88,7 @@ create table if not exists public.pims_visits (
   clinician_link_version integer not null,
   encounter_id text,
   starts_at timestamptz not null,
-  ends_at timestamptz not null,
+  ends_at timestamptz,
   source_hash text not null,
   version integer not null default 1,
   last_seen_run_id uuid not null,
@@ -474,7 +474,7 @@ begin
     perform pims_private.integer_value(entry,'expected_version');
     perform pims_private.integer_value(entry,'patient_link_version');
     perform pims_private.integer_value(entry,'clinician_link_version');
-    starts := pims_private.instant(entry,'starts_at'); ends := pims_private.instant(entry,'ends_at');
+    starts := pims_private.instant(entry,'starts_at'); ends := case when entry->'ends_at'='null'::jsonb then null else pims_private.instant(entry,'ends_at') end;
     if ends<=starts or ends-starts>interval '26 hours' or starts<(run.scope->>'window_start')::timestamptz
        or starts>=(run.scope->>'window_end')::timestamptz then raise exception 'pims_invalid'; end if;
     if exists(select 1 from jsonb_array_elements(normalized_items) previous_item where previous_item->>'appointment_id'=entry->>'appointment_id') then raise exception 'pims_invalid'; end if;

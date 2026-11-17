@@ -1,12 +1,174 @@
 import { describe, expect, it, vi } from 'vitest';
-import { createHash } from 'node:crypto';
+import { createHash, webcrypto } from 'node:crypto';
 import manifest from './manifest.json';
 import { DEV_EXTENSION_ID } from './extensionId';
 import { handleExternal, handleInternal, installListeners, pickEzyvetTab, type Deps, type EzyvetTab } from './background';
 import { ALLOWED_ORIGINS, allowedOrigins, HANDOVER_TTL_MS, WEB_APP_ORIGIN, type Handover, type Request } from './protocol';
 import type { SendItem } from '../utils/pims/mapping';
+import { createPageBridge } from './pims/bridge';
+import { shepherd } from './pims/shepherd';
+import type { AdapterContext, PhysicalExamRequest, PhysicalExamResult } from './pims/types';
+
+describe('explicit Shepherd exam setup', () => {
+  beforeEach(() => vi.stubGlobal('crypto', webcrypto));
+  afterEach(() => vi.unstubAllGlobals());
+  const recordId = '12345678-1234-1234-1234-123456789abc';
+  const examId = 'aaaaaaaa-1234-1234-1234-123456789abc';
+  function fixture() {
+    const doc = document.implementation.createHTMLDocument();
+    const session = new Map([['baasic-auth-token-pav2', '{"token":"secret"}']]);
+    let url = new URL(`https://app.shepherd.vet/soap/${recordId}/objective`);
+    let provider = shepherd;
+    const context: AdapterContext = { doc, url, currentUrl: () => url, fetch: vi.fn(), localStorage,
+      sessionStorage: { getItem: (key: string) => session.get(key) ?? null } as Storage, wait: async () => undefined };
+    const contextNow = () => ({ ...context, url });
+    doc.body.innerHTML = '<button data-test-id="soap-objective-addPhysicalExam-btn">Add</button>';
+    const activate = vi.fn(() => {
+      url = new URL(`https://app.shepherd.vet/soap/${recordId}/objective/physical-exam-entry/edit/${examId}`);
+      doc.body.insertAdjacentHTML('beforeend', '<div data-test-id="dynamic-form-element"><label class="form__group__label">Mouth</label><textarea></textarea></div>');
+    });
+    const picker = () => {
+      doc.body.insertAdjacentHTML('beforeend', '<div data-test-id="soap-physicalExam-doctor-control"><span class="react-select__single-value">Dr Rivera</span></div><button data-test-groupid="soap-phyiscalExam"><span data-test-id="soap-physicalExam-name">Dental</span></button>');
+      doc.querySelector<HTMLElement>('[data-test-groupid]')!.onclick = activate;
+    };
+    doc.querySelector('button')!.onclick = picker;
+    const bridge = createPageBridge(() => provider, contextNow);
+    const target = { provider: 'shepherd' as const, consult: shepherd.status(context).consult! };
+    const prepare = async () => {
+      const available = await bridge.physicalExam({ operation: 'inspect', target });
+      if (!available.ok || available.state !== 'available') throw new TypeError();
+      const prepared = await bridge.physicalExam({ operation: 'prepare', target, pageId: available.pageId });
+      if (!prepared.ok || prepared.state !== 'prepared') throw new TypeError();
+      const request: PhysicalExamRequest = { operation: 'open', target, pageId: prepared.pageId, ticket: prepared.ticket, templateId: prepared.templates[0].id };
+      return { prepared, request };
+    };
+    return { bridge, target, context, doc, activate, prepare, picker, session,
+      changeUrl: (value: string) => { url = new URL(value); },
+      changeProvider: () => { provider = { ...shepherd, id: 'instinct' }; } };
+  }
+  it('only opens after explicit preparation and template selection; never writes content or claims saved', async () => {
+    const { bridge, target, activate, prepare, context, doc } = fixture();
+    expect((await bridge.physicalExam({ operation: 'inspect', target })).ok).toBe(true);
+    expect(doc.querySelector('[data-test-groupid]')).toBeNull();
+    const { prepared, request } = await prepare();
+    expect(prepared.doctor).toBe('Dr Rivera');
+    expect(activate).not.toHaveBeenCalled();
+    expect(await bridge.physicalExam(request)).toEqual({ ok: true, state: 'opened', recordId, examId });
+    expect(activate).toHaveBeenCalledOnce();
+    expect(context.fetch).not.toHaveBeenCalled();
+  });
+  it.each(['doctor', 'template', 'session', 'provider', 'url', 'pageId', 'ticket'])('refuses a changed %s before activation', async (change) => {
+    const state = fixture();
+    const { request } = await state.prepare();
+    if (change === 'doctor') state.doc.querySelector('.react-select__single-value')!.textContent = 'Dr Other';
+    if (change === 'template') state.doc.querySelector('[data-test-groupid]')!.remove();
+    if (change === 'session') state.session.set('baasic-auth-token-pav2', '{"token":"different"}');
+    if (change === 'provider') state.changeProvider();
+    if (change === 'url') state.changeUrl(`https://app.shepherd.vet/soap/${examId}/objective`);
+    if (change === 'pageId' && request.operation === 'open') request.pageId = 'stale';
+    if (change === 'ticket' && request.operation === 'open') request.ticket = 'stale';
+    expect((await state.bridge.physicalExam(request)).ok).toBe(false);
+    expect(state.activate).not.toHaveBeenCalled();
+  });
+  it('requires authentication and a preselected doctor, never choosing one', async () => {
+    const state = fixture();
+    state.session.clear();
+    expect(await state.bridge.physicalExam({ operation: 'inspect', target: state.target })).toEqual({ ok: false, code: 'not_writable' });
+    state.session.set('baasic-auth-token-pav2', '{"token":"secret"}');
+    state.picker();
+    state.doc.querySelector('.react-select__single-value')!.remove();
+    const available = await state.bridge.physicalExam({ operation: 'inspect', target: state.target });
+    expect(available.ok && available.state === 'available' && await state.bridge.physicalExam({ operation: 'prepare', target: state.target, pageId: available.pageId })).toEqual({ ok: false, code: 'supervising_doctor_not_set' });
+    expect(state.activate).not.toHaveBeenCalled();
+  });
+  it('locks an unknown outcome across new requests and fresh contexts for this document', async () => {
+    const state = fixture();
+    const { request } = await state.prepare();
+    state.doc.querySelector<HTMLElement>('[data-test-groupid]')!.onclick = state.activate.mockImplementation(() => undefined);
+    expect(await state.bridge.physicalExam(request)).toEqual({ ok: false, code: 'physical_exam_outcome_unknown' });
+    expect(await state.bridge.physicalExam({ operation: 'inspect', target: state.target })).toEqual({ ok: false, code: 'physical_exam_outcome_unknown' });
+    expect(await state.bridge.physicalExam(request)).toEqual({ ok: false, code: 'physical_exam_outcome_unknown' });
+    expect(state.activate).toHaveBeenCalledOnce();
+  });
+  it('retains original session identity while the picker is opening', async () => {
+    const state = fixture();
+    state.doc.querySelector('button')!.onclick = () => { state.session.clear(); state.picker(); };
+    const available = await state.bridge.physicalExam({ operation: 'inspect', target: state.target });
+    expect(available.ok && available.state === 'available' && await state.bridge.physicalExam({ operation: 'prepare', target: state.target, pageId: available.pageId })).toEqual({ ok: false, code: 'patient_changed' });
+    expect(state.activate).not.toHaveBeenCalled();
+  });
+  it('routes only authenticated, validated requests to the exact Shepherd tab', async () => {
+    const state = fixture();
+    const { deps } = makeDeps([{ ...tab(7), url: state.context.url.href }]);
+    deps.page.physicalExam = vi.fn(async () => ({ ok: false, code: 'not_writable' } as PhysicalExamResult));
+    const request: Request = { type: 'physicalExam', tabId: 7, request: { operation: 'inspect', target: state.target } };
+    await handleExternal(request, okSender, deps);
+    expect(deps.page.physicalExam).toHaveBeenCalledOnce();
+    await handleExternal(request, { origin: 'https://attacker.example' }, deps);
+    await handleInternal(request, { id: 'other', url: 'chrome-extension://other/' }, 'own', deps);
+    for (const bad of [ { ...request, tabId: 8 }, { ...request, tabId: '7' }, { ...request, request: {} },
+      { ...request, request: { operation: 'open', target: state.target } },
+      { ...request, request: { operation: 'inspect', target: { ...state.target, provider: 'instinct' } } }]) {
+      expect((await handleExternal(bad as Request, okSender, deps) as { ok: boolean }).ok).toBe(false);
+    }
+    expect(deps.page.physicalExam).toHaveBeenCalledOnce();
+  });
+  it.each(['unknown', 'lost', 'opened'])('keeps %s exam attempts blocked after tab, bridge and worker replacement', async outcome => {
+    vi.stubGlobal('crypto', webcrypto);
+    try {
+      const state = fixture();
+      const { request } = await state.prepare();
+      const durable = new Map<string, unknown>();
+      const storage = { get: async (key: string) => durable.get(key), set: async (key: string, value: unknown) => { durable.set(key, value); }, remove: async (key: string) => { durable.delete(key); } };
+      const first = makeDeps([{ ...tab(7), url: state.context.url.href }]).deps;
+      Object.assign(first, { examAttempts: storage });
+      first.page.physicalExam = vi.fn(async (): Promise<PhysicalExamResult> => {
+        expect(durable.size).toBe(1);
+        if (outcome === 'lost') throw new TypeError();
+        return outcome === 'opened' ? { ok: true, state: 'opened', recordId, examId } : { ok: false, code: 'physical_exam_outcome_unknown' };
+      });
+      await handleExternal({ type: 'physicalExam', tabId: 7, request }, okSender, first);
+      expect(first.page.physicalExam).toHaveBeenCalledOnce();
+      const replacement = makeDeps([{ ...tab(8), url: state.context.url.href }]).deps;
+      Object.assign(replacement, { examAttempts: { ...storage } });
+      replacement.page.physicalExam = vi.fn(async (): Promise<PhysicalExamResult> => ({ ok: true, state: 'opened', recordId, examId }));
+      expect(await handleExternal({ type: 'physicalExam', tabId: 8, request }, okSender, replacement)).toEqual({ ok: false, code: 'physical_exam_outcome_unknown' });
+      expect(await handleExternal({ type: 'physicalExam', tabId: 8, request: { operation: 'inspect', target: state.target } }, okSender, replacement)).toEqual({ ok: false, code: 'physical_exam_outcome_unknown' });
+      expect(replacement.page.physicalExam).not.toHaveBeenCalled();
+      expect(JSON.stringify([...durable])).not.toContain(recordId);
+      expect(JSON.stringify([...durable])).not.toContain('secret');
+    } finally { vi.unstubAllGlobals(); }
+  });
+  it('serializes simultaneous exam opens across two tabs and fails closed without durable storage', async () => {
+    vi.stubGlobal('crypto', webcrypto);
+    try {
+      const state = fixture(), { request } = await state.prepare();
+      const durable = new Map<string, unknown>();
+      const { deps } = makeDeps([7,8].map(id => ({ ...tab(id), url: state.context.url.href })));
+      Object.assign(deps, { examAttempts: { get: async (key: string) => durable.get(key), set: async (key: string, value: unknown) => { await Promise.resolve(); durable.set(key, value); }, remove: async (key: string) => { durable.delete(key); } } });
+      deps.page.physicalExam = vi.fn(async (): Promise<PhysicalExamResult> => ({ ok: false, code: 'physical_exam_outcome_unknown' }));
+      await Promise.all([7,8].map(tabId => handleExternal({ type: 'physicalExam', tabId, request }, okSender, deps)));
+      expect(deps.page.physicalExam).toHaveBeenCalledOnce();
+      Object.assign(deps, { examAttempts: undefined });
+      await handleExternal({ type: 'physicalExam', tabId: 7, request }, okSender, deps);
+      expect(deps.page.physicalExam).toHaveBeenCalledOnce();
+    } finally { vi.unstubAllGlobals(); }
+  });
+});
 
 const okSender = { origin: 'https://toothops.app' };
+it('routes provider sync only to the explicitly selected supported tab and matching origin', async () => {
+  const { deps } = makeDeps([{ ...tab(7), url: 'https://clinic.rhapsody.vet/schedule?businessId=business' }]);
+  deps.page.providerSync = vi.fn(async () => ({ ok: false, code: 'unavailable' } as const));
+  const identity = { provider: 'rhapsody' as const, origin: 'https://clinic.rhapsody.vet', tenant_id: 'business', connection_revision: 1 };
+  const request: Request = { type: 'providerSync', tabId: 7, request: { operation: 'open', identity } };
+  await handleExternal(request, okSender, deps);
+  expect(deps.page.providerSync).toHaveBeenCalledTimes(1);
+  await handleExternal({ ...request, tabId: 8 }, okSender, deps);
+  await handleExternal(request, { origin: 'https://attacker.example' }, deps);
+  await handleExternal({ ...request, request: { operation: 'open', identity: { ...identity, origin: 'https://other.rhapsody.vet' } } }, okSender, deps);
+  expect(deps.page.providerSync).toHaveBeenCalledTimes(1);
+});
 const tab = (id: number, o: { lastAccessed?: number; active?: boolean; focusedWindow?: boolean } = {}) =>
   ({ id, title: `Tab ${id}`, ...o }) as EzyvetTab;
 const a: SendItem = { fieldTitle: 'Plan', text: 'a' };
@@ -18,6 +180,7 @@ const otherConsult = { viewId: '1', recordId: '9999' };
 function makeDeps(tabs: EzyvetTab[] = [tab(1, { active: true, focusedWindow: true })]) {
   const state = { status: { state: 'writable', patientName: 'Bella', patientNumber: null, consult } as unknown };
   const store = new Map<string, unknown>();
+  const examStore = new Map<string, unknown>();
   const clock = { now: 1_000_000 };
   const deps = {
     version: 'dev',
@@ -39,6 +202,11 @@ function makeDeps(tabs: EzyvetTab[] = [tab(1, { active: true, focusedWindow: tru
       set: vi.fn(async (k: string, v: unknown) => void store.set(k, v)),
       remove: vi.fn(async (k: string) => void store.delete(k)),
       getAll: vi.fn(async () => Object.fromEntries(store)),
+    },
+    examAttempts: {
+      get: vi.fn(async (key: string) => examStore.get(key)),
+      set: vi.fn(async (key: string, value: unknown) => { examStore.set(key, value); }),
+      remove: vi.fn(async (key: string) => { examStore.delete(key); }),
     },
     now: vi.fn(() => clock.now),
   } as unknown as FakeDeps;
@@ -76,7 +244,7 @@ describe('background', () => {
   });
 
   it('ping', async () => {
-    expect(await handleExternal({ type: 'ping' }, okSender, makeDeps().deps)).toEqual({ version: 'dev', protocol: 1, capabilities: ['inspect', 'send', 'diagnose'] });
+    expect(await handleExternal({ type: 'ping' }, okSender, makeDeps().deps)).toEqual({ version: 'dev', protocol: 1, capabilities: ['inspect', 'send', 'diagnose', 'physicalExam'] });
   });
 
   it('picks active ezyVet tab of focused window, else most recent', () => {
@@ -455,7 +623,7 @@ describe('internal messages', () => {
   it('internal messages accepted only from own extension pages', async () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     const { deps } = makeDeps();
-    expect(await handleInternal({ type: 'ping' }, panel, ID, deps)).toEqual({ version: 'dev', protocol: 1, capabilities: ['inspect', 'send', 'diagnose'] });
+    expect(await handleInternal({ type: 'ping' }, panel, ID, deps)).toEqual({ version: 'dev', protocol: 1, capabilities: ['inspect', 'send', 'diagnose', 'physicalExam'] });
     const refused = [
       { id: 'otherextensionidotherextensionid', url: `chrome-extension://otherextensionidotherextensionid/x.html` },
       { id: 'otherextensionidotherextensionid', url: panel.url },
@@ -496,7 +664,7 @@ describe('internal messages', () => {
     const [listener] = api.runtime.onMessage.listeners;
     const reply = vi.fn();
     expect(listener({ type: 'ping' }, panel, reply)).toBe(true);
-    await vi.waitFor(() => expect(reply).toHaveBeenCalledWith({ version: 'dev', protocol: 1, capabilities: ['inspect', 'send', 'diagnose'] }));
+    await vi.waitFor(() => expect(reply).toHaveBeenCalledWith({ version: 'dev', protocol: 1, capabilities: ['inspect', 'send', 'diagnose', 'physicalExam'] }));
     const ignored = vi.fn();
     expect(listener({ type: 'ping' }, { id: ID, url: 'https://clinic.ezyvet.com/' }, ignored)).toBe(false);
     expect(listener({ type: 'unknown' }, panel, ignored)).toBe(false);

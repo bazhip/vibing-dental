@@ -39,6 +39,11 @@ describe('PIMS review transport', () => {
   });
 });
 describe('schedule review eligibility', () => {
+  it('preserves unknown end times but rejects absent or invalid values', () => {
+    expect(canAcceptSchedule({ ...issue, proposed: { ...issue.proposed, ends_at: null } })).toBe(true);
+    expect(canAcceptSchedule({ ...issue, proposed: { ...issue.proposed, ends_at: undefined } })).toBe(false);
+    expect(canAcceptSchedule({ ...issue, proposed: { ...issue.proposed, ends_at: 'invalid' } })).toBe(false);
+  });
   it('allows matching schedule proposals only', () => {
     expect(canAcceptSchedule(issue)).toBe(true);
     expect(canAcceptSchedule({ ...issue, proposed: { ...issue.proposed, appointment_id: 'different' } })).toBe(false);

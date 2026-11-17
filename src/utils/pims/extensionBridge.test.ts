@@ -3,7 +3,8 @@ import { vi } from 'vitest';
 const native = vi.hoisted(() => vi.fn(() => false));
 vi.mock('../../native/platform', () => ({ isNativeApp: native }));
 
-import { extensionAvailable, ping, inspect, send, diagnose, appointments, startChart, takePendingPatient, EXTENSION_ID } from './extensionBridge';
+import { createTransport, extensionAvailable, ping, inspect, send, diagnose, appointments, startChart, takePendingPatient, EXTENSION_ID } from './extensionBridge';
+import type { PhysicalExamRequest } from '../../extension/pims/types';
 import i18n from '../../i18n';
 import { LocalizedError } from '../apiErrors';
 
@@ -18,6 +19,27 @@ const lastError = (message: string) => (_id: string, _m: unknown, cb: Cb) => {
   runtime.lastError = undefined;
 };
 const neverAnswers = () => {};
+
+describe('explicit physical exam transport', () => {
+  const target = { provider: 'shepherd' as const, consult: { recordId: '12345678-1234-1234-1234-123456789abc', viewId: 'objective' } };
+  const request: PhysicalExamRequest = { operation: 'open', target, pageId: 'page', ticket: 'ticket', templateId: 'template' };
+  it('pins the tab and action without retrying an unknown creation timeout', async () => {
+    const channel = { sendMessage: vi.fn() };
+    const transport = createTransport(() => channel);
+    const pending = transport.physicalExam!(7, request);
+    await vi.advanceTimersByTimeAsync(20_000);
+    expect(await pending).toEqual({ ok: false, code: 'physical_exam_outcome_unknown' });
+    expect(channel.sendMessage).toHaveBeenCalledExactlyOnceWith({ type: 'physicalExam', tabId: 7, request }, expect.any(Function));
+  });
+  it.each([undefined, { ok: true, state: 'saved' }, { ok: true, state: 'opened', recordId: 'another', examId: '123' }])('fails closed on a missing or malformed opening response: %j', async response => {
+    const transport = createTransport(() => ({ sendMessage: (_message, callback) => callback(response) }));
+    expect(await transport.physicalExam!(7, request)).toEqual({ ok: false, code: 'physical_exam_outcome_unknown' });
+  });
+  it('rejects stale prepare replies, keeping read-only failures distinct from unknown opening', async () => {
+    const transport = createTransport(() => ({ sendMessage: (_message, callback) => callback({ ok: true, state: 'prepared', pageId: 'other', ticket: 'ticket', doctor: 'Doctor', templates: [{ id: 'id', label: 'Dental' }] }) }));
+    expect(await transport.physicalExam!(7, { operation: 'prepare', target, pageId: 'page' })).toEqual({ ok: false, code: 'unavailable' });
+  });
+});
 
 beforeEach(() => {
   vi.useFakeTimers();

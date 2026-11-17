@@ -92,7 +92,7 @@ begin
     if not found then raise exception 'pims_identity'; end if;
     if connection.state<>'active' or connection.revision<>run.connection_revision or connection.generation<>run.generation
        or visit.archived_at is not null or issue.proposed->>'status' is distinct from 'active' then raise exception 'pims_conflict'; end if;
-    update public.pims_visits set starts_at=pims_private.instant(issue.proposed,'starts_at'),ends_at=pims_private.instant(issue.proposed,'ends_at'),
+    update public.pims_visits set starts_at=pims_private.instant(issue.proposed,'starts_at'),ends_at=case when issue.proposed->'ends_at'='null'::jsonb then null else pims_private.instant(issue.proposed,'ends_at') end,
       source_hash=pims_private.hash(issue.proposed-array['expected_version','patient_link_version','clinician_link_version']),version=version+1
       where id=visit.id returning * into visit;
   end if;
@@ -224,7 +224,7 @@ begin
     perform pims_private.text_value(appointment,'patient_id');
     perform pims_private.text_value(appointment,'clinician_id');
     if appointment->'encounter_id'<>'null'::jsonb then perform pims_private.text_value(appointment,'encounter_id'); end if;
-    starts := pims_private.instant(appointment,'starts_at'); ends := pims_private.instant(appointment,'ends_at');
+    starts := pims_private.instant(appointment,'starts_at'); ends := case when appointment->'ends_at'='null'::jsonb then null else pims_private.instant(appointment,'ends_at') end;
     if appointment->>'status' is distinct from 'active' or ends<=starts or ends-starts>interval '26 hours' then raise exception 'pims_invalid'; end if;
   end if;
   select * into visit from public.pims_visits where connection_id=connection.id and appointment_id=pims_private.text_value(payload,'appointment_id') for update;
@@ -246,7 +246,7 @@ begin
       or appointment->>'clinician_id' is distinct from clinician.clinician_id or appointment->>'encounter_id' is distinct from visit.encounter_id
       or appointment->>'status' is distinct from 'active' then reason_value := 'identity_changed'; outcome_value := 'conflict';
     else
-      if starts=visit.starts_at and ends=visit.ends_at then outcome_value := 'unchanged';
+      if starts=visit.starts_at and ends is not distinct from visit.ends_at then outcome_value := 'unchanged';
       else
         update public.pims_visits set starts_at=starts,ends_at=ends,version=version+1,
           source_hash=pims_private.hash((appointment-array['expected_version','patient_link_version','clinician_link_version'])||jsonb_build_object('starts_at',starts,'ends_at',ends)),last_seen_run_id=run.id

@@ -31,6 +31,7 @@ import './Login.css';
 import './AccountSurfaces.css';
 import './PracticeWorkspace.css';
 import { PimsReview } from './pims/PimsReview';
+import { PimsSetup } from './pims/PimsSetup';
 
 interface PracticeSettingsModalProps {
   open: boolean;
@@ -704,6 +705,8 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
 
       {/* ---- Language for pet owners ----------------------------------- */}
       {team.practice && (!sectioned || section === 'general') && <PimsReview key={team.practice.id} practiceId={team.practice.id} />}
+      {team.practice && (!sectioned || section === 'general') && <PimsSetup practiceId={team.practice.id} owner={isPrimaryOwner}
+        members={team.members.filter((member) => !member.pending).map((member) => ({ userId: member.userId, label: member.doctorName || member.email }))} />}
       {team.practice && (
         <section className="ai-settings-section" hidden={sectioned && section !== 'general'}>
           <h3 className="ai-settings-subhead">{t('practice.clientLanguage.title')}</h3>
