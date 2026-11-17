@@ -258,6 +258,16 @@ describe('EntryGrid in the app, with saved charts', () => {
       expect(cloud.skipDuplicateCheckFor).not.toHaveBeenCalled();
     });
 
+    it.each(['refused', 'failed'])('does not create a blank visit when opening today is %s', async mode => {
+      const dialog = await ask();
+      if (mode === 'failed') cloud.openChart.mockRejectedValueOnce(new Error('offline'));
+      else cloud.openChart.mockResolvedValueOnce(false);
+      const originalId = localStorage.getItem('vibing-dental.chart.cloudId.v1');
+      await act(async () => fireEvent.click(within(dialog).getByRole('button', { name: 'Open today’s visit' })));
+      expect(localStorage.getItem('vibing-dental.chart.cloudId.v1')).toBe(originalId);
+      expect(tab('Patients')).toHaveAttribute('aria-selected', 'true');
+    });
+
     it('“Start a second visit” starts one only when chosen', async () => {
       const dialog = await ask();
       await act(async () => fireEvent.click(within(dialog).getByRole('button', { name: 'Start a second visit' })));
