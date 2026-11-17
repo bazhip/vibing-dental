@@ -90,7 +90,7 @@ describe('ChartLibrary (website)', () => {
     const { listCharts } = setup(undefined, true);
     await screen.findByRole('heading', { name: 'Rechecks' });
     expect(lastQuery(listCharts)).toMatchObject({ dueOnly: true, sortKey: 'recall', sortDir: 'asc' });
-    expect(screen.queryByRole('button', { name: 'Due (2)' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Rechecks due (2)' })).not.toBeInTheDocument();
     fireEvent.change(screen.getByRole('combobox', { name: 'Filter by species' }), { target: { value: 'feline' } });
     await waitFor(() => expect(lastQuery(listCharts)).toMatchObject({ dueOnly: true, species: 'feline' }));
   });
@@ -103,7 +103,7 @@ describe('ChartLibrary (website)', () => {
     expect(screen.getAllByRole('columnheader').map((h) => h.textContent)).toEqual([
       'Patient', 'Patient #', 'Species', 'Visits', 'Updated▼', 'Recheck',
     ]);
-    await waitFor(() => expect(screen.getByRole('button', { name: 'Due (2)' })).toHaveAttribute('aria-pressed', 'false'));
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Rechecks due (2)' })).toHaveAttribute('aria-pressed', 'false'));
     const rows = container.querySelectorAll('.chart-library__scroll > .chart-library__row');
     expect(Array.from(rows).map((r) => r.querySelector('.chart-library__patient-main')?.firstChild?.textContent)).toEqual([
       'Bella', 'Max', 'Unnamed patient',
@@ -144,7 +144,9 @@ describe('ChartLibrary (website)', () => {
     await waitFor(() => expect(lastQuery(listCharts)).toMatchObject({ search: 'max', species: 'feline' }));
     fireEvent.change(screen.getByRole('combobox', { name: 'Filter by doctor' }), { target: { value: 'u2' } });
     await waitFor(() => expect(lastQuery(listCharts)).toMatchObject({ createdBy: 'u2' }));
-    fireEvent.click(screen.getByRole('button', { name: /^Due/ }));
+    const recheckFilter = screen.getByRole('button', { name: /^Rechecks due/ });
+    expect(recheckFilter.closest('.chart-library__controls')).not.toBeNull();
+    fireEvent.click(recheckFilter);
     await waitFor(() => expect(lastQuery(listCharts)).toMatchObject({ dueOnly: true }));
     fireEvent.click(screen.getByRole('button', { name: /^Patient$/ }));
     await waitFor(() => expect(lastQuery(listCharts)).toMatchObject({ sortKey: 'patient', sortDir: 'asc', offset: 0, limit: 200 }));
@@ -155,7 +157,7 @@ describe('ChartLibrary (website)', () => {
   it('deletes a visit only after confirming, then refetches', async () => {
     const { onDelete, listCharts } = setup();
     const button = await screen.findByRole('button', { name: 'Delete chart for Bella' });
-    await waitFor(() => expect(screen.getByRole('button', { name: 'Due (2)' })).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Rechecks due (2)' })).toBeInTheDocument());
     const before = listCharts.mock.calls.length;
     fireEvent.click(button);
     await waitFor(() => expect(onDelete).toHaveBeenCalledWith('a1'));

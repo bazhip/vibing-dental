@@ -36,8 +36,8 @@
     "updated": "Updated",
     "recheck": "Recheck"
   },
-  "due": "Due",
-  "dueCount": "Due ({{n}})",
+  "due": "Rechecks due",
+  "dueCount": "Rechecks due ({{n}})",
   "dueTitle": "Show only patients due or overdue for a recheck",
   "recall": {
     "overdue": "{{date}} · overdue",

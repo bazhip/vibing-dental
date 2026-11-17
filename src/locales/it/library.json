@@ -36,8 +36,8 @@
     "updated": "Modificata",
     "recheck": "Controllo"
   },
-  "due": "In scadenza",
-  "dueCount": "In scadenza ({{n}})",
+  "due": "Controlli in scadenza",
+  "dueCount": "Controlli in scadenza ({{n}})",
   "dueTitle": "Mostra solo i pazienti con controllo in scadenza o scaduto",
   "recall": {
     "overdue": "{{date}} · scaduto",

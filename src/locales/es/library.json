@@ -36,8 +36,8 @@
     "updated": "Actualizado",
     "recheck": "Revisión"
   },
-  "due": "Pendientes",
-  "dueCount": "Pendientes ({{n}})",
+  "due": "Revisiones pendientes",
+  "dueCount": "Revisiones pendientes ({{n}})",
   "dueTitle": "Mostrar solo los pacientes con revisión pendiente o vencida",
   "recall": {
     "overdue": "{{date}} · vencida",

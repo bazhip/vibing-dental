@@ -258,6 +258,21 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                 <option key={sp} value={sp}>{t(SPECIES_KEYS[sp], { ns: 'app' })}</option>
               ))}
             </select>
+                  {rechecksOnly ? (
+                    <span className="chart-library__due-toggle chart-library__due-toggle--on">
+                      {dueCount > 0 ? t('dueCount', { n: dueCount }) : t('due')}
+                    </span>
+                  ) : (
+                  <button
+                    type="button"
+                    className={dueOnly ? 'chart-library__due-toggle chart-library__due-toggle--on' : 'chart-library__due-toggle'}
+                    onClick={() => setDueOnly((v) => !v)}
+                    aria-pressed={dueOnly}
+                    title={t('dueTitle')}
+                  >
+                    {dueCount > 0 ? t('dueCount', { n: dueCount }) : t('due')}
+                  </button>
+                  )}
             {showDoctors && (
               <select
                 className="chart-library__filter-select"
@@ -334,21 +349,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                   {heads.recall}
                 </div>
                 <span className="chart-library__row-actions">
-                  {rechecksOnly ? (
-                    <span className="chart-library__due-toggle chart-library__due-toggle--on">
-                      {dueCount > 0 ? t('dueCount', { n: dueCount }) : t('due')}
-                    </span>
-                  ) : (
-                  <button
-                    type="button"
-                    className={dueOnly ? 'chart-library__due-toggle chart-library__due-toggle--on' : 'chart-library__due-toggle'}
-                    onClick={() => setDueOnly((v) => !v)}
-                    aria-pressed={dueOnly}
-                    title={t('dueTitle')}
-                  >
-                    {dueCount > 0 ? t('dueCount', { n: dueCount }) : t('due')}
-                  </button>
-                  )}
+
                 </span>
               </div>
               <div className="chart-library__scroll">

@@ -36,8 +36,8 @@
     "updated": "Modifié",
     "recheck": "Contrôle"
   },
-  "due": "À faire",
-  "dueCount": "À faire ({{n}})",
+  "due": "Contrôles à prévoir",
+  "dueCount": "Contrôles à prévoir ({{n}})",
   "dueTitle": "Afficher uniquement les patients dont le contrôle est à faire ou en retard",
   "recall": {
     "overdue": "{{date}} · en retard",

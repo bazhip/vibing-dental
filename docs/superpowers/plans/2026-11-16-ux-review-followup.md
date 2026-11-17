@@ -28,3 +28,5 @@
 - [x] Restore the floating Review and export button at the user's request, reserve bottom space, respect safe areas, and hide it while typing on phones.
 
 Validation: 264 test files / 2,711 tests passed; production build (translations, lint, TypeScript, Vite) passed. Browser fixtures covered 320/390/768/1440 widths, populated identity, separate header hit targets, rechecks, touch tooth navigation, and floating export. Actual Safari/iOS devices, physical camera capture, and live clinical/PIMS/email backend writes were not exercised. Existing bundle-size warnings remain.
+
+User follow-up: remove the redundant web Rechecks navigation tab. Keep visit recheck dates and the Patients filter, rename it “Rechecks due,” and place it with the other list filters. Existing recheck links and native workflows remain compatible.

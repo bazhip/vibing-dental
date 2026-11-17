@@ -36,8 +36,8 @@
     "updated": "Geändert",
     "recheck": "Nachkontrolle"
   },
-  "due": "Fällig",
-  "dueCount": "Fällig ({{n}})",
+  "due": "Fällige Nachkontrollen",
+  "dueCount": "Fällige Nachkontrollen ({{n}})",
   "dueTitle": "Nur Patienten mit fälliger oder überfälliger Nachkontrolle anzeigen",
   "recall": {
     "overdue": "{{date}} · überfällig",

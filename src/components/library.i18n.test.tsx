@@ -108,7 +108,7 @@ describe('ChartLibrary', () => {
     await screen.findByText('Bella');
     expect(screen.getByText('⟦1 visit⟧')).toBeInTheDocument();
     expect(screen.getByText(/· today⟧$/)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: '⟦Due (1)⟧' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '⟦Rechecks due (1)⟧' })).toBeInTheDocument();
     expect(findUntranslated(container, ALLOW)).toEqual([]);
   });
 

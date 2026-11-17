@@ -450,7 +450,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   };
   // Patients is a full workspace destination; the working chart stays mounted.
   const libraryOpen = cloud.enabled && (route.view === 'library' || route.view === 'rechecks') && !native;
-  const openRechecks = () => navigate('#/rechecks');
   const openLibrary = () => {
     navigate('#/library');
   };
@@ -2256,7 +2255,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
 
       <nav className="workspace-nav" aria-label={t('workspace.navigation')}>
         {cloud.enabled && <button type="button" data-tour="library" aria-current={route.view === 'library' ? 'page' : undefined} onClick={openLibrary}>{t('topbar.myCharts')}</button>}
-        {cloud.enabled && <button type="button" aria-current={route.view === 'rechecks' ? 'page' : undefined} onClick={openRechecks}>{t('workspace.rechecks')}</button>}
         <button type="button" aria-current={!workspacePage ? 'page' : undefined} onClick={returnToVisit}>{t('workspace.currentVisit')}</button>
         {cloud.enabled && <button type="button" data-tour="practice-settings" aria-current={route.view === 'settings' ? 'page' : undefined} onClick={openPracticeSettings}>{t('workspace.practice')}</button>}
         {!cloud.enabled && <button type="button" onClick={() => setChartSettingsOpen('all')}>{t('menu.chartSettings.label')}</button>}
