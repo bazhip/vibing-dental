@@ -120,7 +120,7 @@
     cursor: pointer;
   }
   .tooth-chart .tooth-chart__tooth-button[data-charted] { border-color: var(--ios-success, #38a169); }
-  .tooth-chart .tooth-chart__tooth-button[data-planned] { border: 2px dashed #b7791f; }
+  .tooth-chart .tooth-chart__tooth-button[data-planned] { border: 2px dashed var(--ios-warning-label, #b7791f); }
   .tooth-chart .tooth-chart__tooth-button[data-mark='missing'] { text-decoration: line-through; }
   .tooth-chart .tooth-chart__tooth-button[data-mark='extracted'] { color: var(--ios-danger, #c53030); text-decoration: line-through; }
   .tooth-chart .tooth-chart__tooth-button[aria-pressed='true'] {

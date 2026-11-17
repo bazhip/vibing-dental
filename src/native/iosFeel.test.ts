@@ -37,6 +37,17 @@ describe('scrollFocusedCellIntoView (keyboard avoidance)', () => {
 });
 
 describe('followColorSchemeForStatusBar', () => {
+  afterEach(() => { delete document.documentElement.dataset.theme; });
+  it('follows the explicit app theme instead of the OS', () => {
+    const set = vi.fn().mockResolvedValue(undefined);
+    document.documentElement.dataset.theme = 'dark';
+    const stop = followColorSchemeForStatusBar(set, fakeMedia(false).matchMedia);
+    expect(set).toHaveBeenLastCalledWith({ style: Style.Dark });
+    document.documentElement.dataset.theme = 'light';
+    window.dispatchEvent(new Event('toothops-appearance-change'));
+    expect(set).toHaveBeenLastCalledWith({ style: Style.Light });
+    stop();
+  });
   function fakeMedia(dark: boolean) {
     let listener: ((e: { matches: boolean }) => void) | null = null;
     const mql = {

@@ -18,6 +18,7 @@ import { initIosFeel, hideSplashAfterFirstRender } from './native/iosFeel';
 import { isIosPreview } from './ios/preview';
 import { bootLanguage } from './i18n/bootLanguage';
 import { captureFromEzyvet } from './utils/pims/ezyvetHandover';
+import { initAppearance } from './theme/appearance';
 
 // DEV-only: `?iosPreview=1&iosGallery=1` renders the iOS component kit
 // gallery instead of the app. The constant DEV check drops it (and its
@@ -41,6 +42,8 @@ const IosFixture =
 installIteratorHelpers();
 installScopeSelectorFallback();
 initNativeShell();
+const disposeAppearance = initAppearance();
+if (import.meta.hot) import.meta.hot.dispose(disposeAppearance);
 // App only: finish sign-ins that come back through toothops://auth-callback.
 initAuthReturn();
 initIosFeel();

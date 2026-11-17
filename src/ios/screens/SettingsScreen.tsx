@@ -1,3 +1,4 @@
+import { AppearanceSelect } from '../../theme/AppearanceSelect';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavBar } from '../NavBar';
@@ -163,6 +164,7 @@ function SettingsList() {
             />
           )}
         </ListSection>
+        {!s.open.account && <ListSection><div className="ios-settings__appearance"><AppearanceSelect /></div></ListSection>}
         <ListSection header={t('ios.settings.help')}>
           <ListRow
             title={t('ios.settings.gettingStarted')}

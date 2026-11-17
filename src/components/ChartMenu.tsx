@@ -1,3 +1,4 @@
+import { AppearanceSelect } from '../theme/AppearanceSelect';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { supabase } from '../utils/supabaseClient';
@@ -138,6 +139,8 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ scope = 'all', visit, onNe
   };
 
   const onPanelKeyDown = (e: React.KeyboardEvent) => {
+    // The appearance picker owns its arrow/Home/End keys.
+    if (e.target instanceof HTMLElement && e.target.closest('.appearance-disclosure')) return;
     const list = items();
     const idx = list.indexOf(document.activeElement as HTMLButtonElement);
     switch (e.key) {
@@ -243,6 +246,7 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ scope = 'all', visit, onNe
           )}
 
           <section className="chart-menu__section">
+            {!cloud && (scope === 'all' || scope === 'more' || scope === 'account') && <AppearanceSelect disclosure />}
             {scope === 'all' && <header className="chart-menu__section-head">{t('menu.heads.app')}</header>}
             {(scope === 'all' || scope === 'more') && onOpenChartSettings && item(t('menu.chartSettings.label'), t('menu.chartSettings.sub'), onOpenChartSettings)}
             {showHelp && onOpenFeedback && item(t('menu.feedback.label'), t('menu.feedback.sub'), onOpenFeedback)}

@@ -717,6 +717,8 @@
 }
 
 .chart-library__search {
+  background: var(--surface);
+  color: var(--text);
   width: 100%;
   max-width: 28rem;
   padding: 0.6rem 0.85rem;

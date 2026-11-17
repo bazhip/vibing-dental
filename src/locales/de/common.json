@@ -148,5 +148,11 @@
       "customColor": "Eigene Farbe…",
       "sendingBusy": "Wird gesendet…"
     }
+  },
+  "appearance": {
+    "label": "Darstellung",
+    "system": "System",
+    "light": "Hell",
+    "dark": "Dunkel"
   }
 }

@@ -6,6 +6,13 @@ describe('readAppTokens', () => {
   afterEach(() => {
     document.documentElement.classList.remove('native-ios');
     document.documentElement.style.cssText = '';
+    delete document.documentElement.dataset.theme;
+  });
+
+  it('keeps web dark-mode PDFs on a light palette', () => {
+    document.documentElement.dataset.theme = 'dark';
+    document.documentElement.style.setProperty('--text', '#ffffff');
+    expect(readAppTokens().text).toEqual(rgb(0x17 / 255, 0x23 / 255, 0x2e / 255));
   });
 
   it('reads the live web theme tokens', () => {

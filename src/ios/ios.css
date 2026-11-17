@@ -21,14 +21,14 @@
   --ios-swipe-gray: #636366;                       /* white label 5.9:1 */
   --ios-glass-pressed: rgba(120, 120, 128, 0.16);
 }
-@media (prefers-color-scheme: dark) {
-  :where(html.native-ios) {
+@media screen {
+  :where(html.native-ios[data-theme="dark"]) {
     --ios-glass-highlight: rgba(255, 255, 255, 0.14);
     --ios-sheet-bg: var(--ios-bg-elevated);
     --ios-glass-pressed: rgba(120, 120, 128, 0.3);
   }
   /* Cells on an elevated sheet are one step lighter (iOS dark elevation). */
-  :where(html.native-ios) .ios-sheet { --ios-list-cell: var(--ios-cell-alt); }
+  :where(html.native-ios[data-theme="dark"]) .ios-sheet { --ios-list-cell: var(--ios-cell-alt); }
 }
 
 /* ---- Glass material ---------------------------------------------------- */
@@ -1097,8 +1097,8 @@
   background: rgba(0, 0, 0, 0.1);
   animation: ios-fade-in 0.25s;
 }
-@media (prefers-color-scheme: dark) {
-  :where(html.native-ios) .ios-appshell__scrim { background: rgba(0, 0, 0, 0.28); }
+@media screen {
+  :where(html.native-ios[data-theme="dark"]) .ios-appshell__scrim { background: rgba(0, 0, 0, 0.28); }
 }
 
 /* Placeholder / empty-state text in a list. */

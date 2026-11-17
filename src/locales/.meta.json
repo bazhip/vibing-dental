@@ -4980,6 +4980,22 @@
       "hash": "d8b8392e2c54",
       "status": "machine"
     },
+    "common:appearance.dark": {
+      "hash": "60acc53f13a5",
+      "status": "machine"
+    },
+    "common:appearance.label": {
+      "hash": "3907fa7f8072",
+      "status": "machine"
+    },
+    "common:appearance.light": {
+      "hash": "dbcd5e7bb7a0",
+      "status": "machine"
+    },
+    "common:appearance.system": {
+      "hash": "6725e7bbcd28",
+      "status": "machine"
+    },
     "common:errors.api.account_already_active": {
       "hash": "82aa4d83cd11",
       "status": "machine"
@@ -17148,6 +17164,22 @@
     },
     "common:actions.tryAgain": {
       "hash": "d8b8392e2c54",
+      "status": "machine"
+    },
+    "common:appearance.dark": {
+      "hash": "60acc53f13a5",
+      "status": "machine"
+    },
+    "common:appearance.label": {
+      "hash": "3907fa7f8072",
+      "status": "machine"
+    },
+    "common:appearance.light": {
+      "hash": "dbcd5e7bb7a0",
+      "status": "machine"
+    },
+    "common:appearance.system": {
+      "hash": "6725e7bbcd28",
       "status": "machine"
     },
     "common:errors.api.account_already_active": {
@@ -29388,6 +29420,22 @@
       "hash": "d8b8392e2c54",
       "status": "machine"
     },
+    "common:appearance.dark": {
+      "hash": "60acc53f13a5",
+      "status": "machine"
+    },
+    "common:appearance.label": {
+      "hash": "3907fa7f8072",
+      "status": "machine"
+    },
+    "common:appearance.light": {
+      "hash": "dbcd5e7bb7a0",
+      "status": "machine"
+    },
+    "common:appearance.system": {
+      "hash": "6725e7bbcd28",
+      "status": "machine"
+    },
     "common:errors.api.account_already_active": {
       "hash": "82aa4d83cd11",
       "status": "machine"
@@ -41624,6 +41672,22 @@
     },
     "common:actions.tryAgain": {
       "hash": "d8b8392e2c54",
+      "status": "machine"
+    },
+    "common:appearance.dark": {
+      "hash": "60acc53f13a5",
+      "status": "machine"
+    },
+    "common:appearance.label": {
+      "hash": "3907fa7f8072",
+      "status": "machine"
+    },
+    "common:appearance.light": {
+      "hash": "dbcd5e7bb7a0",
+      "status": "machine"
+    },
+    "common:appearance.system": {
+      "hash": "6725e7bbcd28",
       "status": "machine"
     },
     "common:errors.api.account_already_active": {

@@ -1130,7 +1130,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
           className="tooth-diagram__outline"
           // Stroked line art (equine): inline style beats the class's
           // fill (here and in the PDF rasterizer's stylesheet).
-          style={diagram.outlineStroke ? { fill: 'none', stroke: '#1a202c', strokeWidth: diagram.outlineStroke, strokeLinejoin: 'round' } : undefined}
+          style={diagram.outlineStroke ? { fill: 'none', stroke: 'var(--diagram-ink, #1a202c)', strokeWidth: diagram.outlineStroke, strokeLinejoin: 'round' } : undefined}
         />
       )}
 
@@ -1143,7 +1143,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
         y1={diagram.midlineDash.y}
         x2={diagram.midlineDash.x2}
         y2={diagram.midlineDash.y}
-        stroke="#1a202c"
+        stroke="var(--diagram-ink, #1a202c)"
         strokeWidth={3.5}
         strokeDasharray="24 12"
         strokeLinecap="round"
@@ -1157,7 +1157,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
           fontSize={l.fontSize}
           fontWeight={600}
           fontFamily='-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
-          fill="#1a202c"
+          fill="var(--diagram-ink, #1a202c)"
           textAnchor="middle"
           dominantBaseline="central"
           pointerEvents="none"
@@ -1247,11 +1247,11 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
                 <g pointerEvents="none">
                   <line
                     x1={bbox.minX} y1={bbox.minY} x2={bbox.maxX} y2={bbox.maxY}
-                    stroke="#c53030" strokeWidth={5} strokeLinecap="round"
+                    stroke="var(--diagram-danger, #c53030)" strokeWidth={5} strokeLinecap="round"
                   />
                   <line
                     x1={bbox.minX} y1={bbox.maxY} x2={bbox.maxX} y2={bbox.minY}
-                    stroke="#c53030" strokeWidth={5} strokeLinecap="round"
+                    stroke="var(--diagram-danger, #c53030)" strokeWidth={5} strokeLinecap="round"
                   />
                 </g>
               )}
@@ -1345,6 +1345,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
             key={s.id}
             d={d}
             fill="none"
+            className={/^(#000(?:000)?|#2d3748|black)$/i.test(s.color) ? 'diagram-stroke--neutral' : undefined}
             stroke={s.color}
             strokeWidth={s.width * 2}
             strokeLinecap="round"
@@ -1367,7 +1368,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
               y1={anchor.y}
               x2={targetX}
               y2={y + h / 2}
-              stroke="#a0aec0"
+              stroke="var(--diagram-muted, #a0aec0)"
               strokeWidth={1.5}
               strokeDasharray="6,5"
               pointerEvents="none"

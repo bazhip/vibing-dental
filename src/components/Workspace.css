@@ -49,9 +49,9 @@
 
 /* Web shell: an instrument panel, with patient actions always in reach. */
 html:not(.native-ios) .entry-grid-container {
-  --bg-page: #f3f6f7;
-  --surface-alt: #f7f9fa;
-  --border: #dfe6e9;
+  --bg-page: var(--ios-bg-grouped, #f3f6f7);
+  --surface-alt: var(--ios-cell-alt, #f7f9fa);
+  --border: var(--ios-separator, #dfe6e9);
   --radius: 8px;
   --radius-sm: 6px;
   --shadow: 0 1px 3px rgba(23,35,46,.035);
@@ -96,7 +96,7 @@ html:not(.native-ios) .entry-grid__topbar .topbar-new-patient {
 }
 html:not(.native-ios) .entry-grid__topbar :is(.chart-menu--help,.chart-menu--account) .chart-menu__trigger:hover,
 html:not(.native-ios) .entry-grid__topbar .topbar-new-patient:hover { background: var(--surface-alt); color: var(--primary); }
-html:not(.native-ios) .entry-grid__topbar .voice-input:not(:disabled) { border-color: #bdd6d2; }
+html:not(.native-ios) .entry-grid__topbar .voice-input:not(:disabled) { border-color: var(--border-strong, #bdd6d2); }
 html:not(.native-ios) .entry-grid__topbar .topbar-new-patient { margin-left: 6px; }
 /* One persistent workspace rail owns global and clinical navigation. */
 html:not(.native-ios) .workspace-layout { --workspace-rail-width: 208px; display: grid; grid-template-columns: var(--workspace-rail-width) minmax(0, 1fr); gap: 24px; align-items: start; }

@@ -2060,7 +2060,7 @@
 .diagram-view__color {
   width: 22px;
   height: 22px;
-  border: 2px solid white;
+  border: 2px solid var(--surface, white);
   border-radius: 50%;
   cursor: pointer;
   outline: 1px solid var(--border);
@@ -2084,7 +2084,7 @@
   position: relative;
   width: 100%;
   max-width: 1200px;
-  background: white;
+  background: var(--surface, white);
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 0.75rem;
@@ -2161,13 +2161,19 @@
  *   .tooth-group__hover       – transparent overlay that picks up a tint on hover.
  */
 .tooth-diagram__outline {
-  fill: #1a202c;
+  fill: var(--diagram-ink, #1a202c);
   stroke: none;
   pointer-events: none;
 }
 
+/* Neutral drawing ink adapts on screen only; SVG exports retain the saved
+   stroke attribute and deliberately do not include this rule. */
+@media screen {
+  html[data-theme="dark"] .diagram-stroke--neutral { stroke: var(--diagram-ink, #1a202c); }
+}
+
 .tooth-group__missing-fill {
-  fill: #1a202c;
+  fill: var(--diagram-ink, #1a202c);
 }
 
 .tooth-group__hover {
@@ -3438,7 +3444,7 @@ a.imaging__dicom:hover { background: var(--surface-2, rgba(0, 0, 0, 0.05)); }
 
 /* Tooth hover tooltip (SVG) */
 .tooth-tooltip__bg {
-  fill: #1a202c;
+  fill: var(--ios-hud-bg, #1a202c);
   opacity: 0.94;
 }
 .tooth-tooltip__text {
@@ -3620,9 +3626,9 @@ button.save-status--manual:hover {
 .diagram-view__numbers.diagram-view__tool--active,
 .diagram-view__numbers.diagram-view__tool--active:hover { background: var(--primary); border-color: var(--primary); }
 .tooth-number {
-  fill: #2b6cb0;
+  fill: var(--ios-link, #2b6cb0);
   paint-order: stroke;
-  stroke: white;
+  stroke: var(--surface, white);
   stroke-width: 4px;
   stroke-linejoin: round;
 }
@@ -3669,7 +3675,7 @@ button.save-status--manual:hover {
 }
 .tooth-chart .tooth-group[data-planned='true'] .tooth-group__hover {
   fill: rgba(214, 158, 46, 0.35);
-  stroke: #b7791f;
+  stroke: var(--ios-warning-label, #b7791f);
   stroke-width: 3;
   stroke-dasharray: 8 5;
 }
@@ -3706,9 +3712,9 @@ button.save-status--manual:hover {
   line-height: 1;
 }
 .tooth-chart__swatch--charted { background: rgba(56, 161, 105, 0.35); }
-.tooth-chart__swatch--planned { background: rgba(214, 158, 46, 0.4); border: 2px dashed #b7791f; }
-.tooth-chart__swatch--extracted { color: #c53030; font-weight: 800; border-color: transparent; }
-.tooth-chart__swatch--missing { background: #1a202c; }
+.tooth-chart__swatch--planned { background: rgba(214, 158, 46, 0.4); border: 2px dashed var(--ios-warning-label, #b7791f); }
+.tooth-chart__swatch--extracted { color: var(--diagram-danger, #c53030); font-weight: 800; border-color: transparent; }
+.tooth-chart__swatch--missing { background: var(--diagram-ink, #1a202c); }
 
 .tooth-chart__panel {
   position: sticky;

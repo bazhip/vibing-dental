@@ -151,5 +151,11 @@
       "customColor": "Colore personalizzato…",
       "sendingBusy": "Invio…"
     }
+  },
+  "appearance": {
+    "label": "Aspetto",
+    "system": "Sistema",
+    "light": "Chiaro",
+    "dark": "Scuro"
   }
 }

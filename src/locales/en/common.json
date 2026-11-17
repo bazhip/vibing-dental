@@ -148,5 +148,11 @@
       "customColor": "Custom Color…",
       "sendingBusy": "Sending…"
     }
+  },
+  "appearance": {
+    "label": "Appearance",
+    "system": "System",
+    "light": "Light",
+    "dark": "Dark"
   }
 }

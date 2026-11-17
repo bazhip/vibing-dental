@@ -580,7 +580,7 @@ describe('AccountModal', () => {
     const { container } = render(<AccountModal open onClose={() => {}} profile={profile()} language="en" onLanguageChange={() => {}} />);
     await waitFor(() => expect(screen.getAllByDisplayValue('me@vet.com').length).toBeGreaterThan(0));
     // Languages are named in themselves (endonyms), never translated.
-    expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual(Object.values(LANGUAGE_NAMES));
+    expect(Array.from(screen.getByRole('combobox', { name: '⟦Language⟧' }).querySelectorAll('option')).map((o) => o.textContent)).toEqual(Object.values(LANGUAGE_NAMES));
     expect(findUntranslated(container, [...ALLOW, ...Object.values(LANGUAGE_NAMES)])).toEqual([]);
     const [pw, confirm] = container.querySelectorAll<HTMLInputElement>('input[autocomplete="new-password"]');
     fireEvent.change(pw, { target: { value: 'short' } });
