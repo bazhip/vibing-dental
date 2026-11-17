@@ -6660,6 +6660,10 @@
       "hash": "7aecda9be32e",
       "status": "machine"
     },
+    "library:actions.clearRecallShort": {
+      "hash": "19488971a09b",
+      "status": "machine"
+    },
     "library:actions.clearRecallTitle": {
       "hash": "083e81ca64bb",
       "status": "machine"
@@ -18768,6 +18772,10 @@
     },
     "library:actions.clearRecall": {
       "hash": "7aecda9be32e",
+      "status": "machine"
+    },
+    "library:actions.clearRecallShort": {
+      "hash": "19488971a09b",
       "status": "machine"
     },
     "library:actions.clearRecallTitle": {
@@ -30936,6 +30944,10 @@
       "hash": "7aecda9be32e",
       "status": "machine"
     },
+    "library:actions.clearRecallShort": {
+      "hash": "19488971a09b",
+      "status": "machine"
+    },
     "library:actions.clearRecallTitle": {
       "hash": "083e81ca64bb",
       "status": "machine"
@@ -43100,6 +43112,10 @@
     },
     "library:actions.clearRecall": {
       "hash": "7aecda9be32e",
+      "status": "machine"
+    },
+    "library:actions.clearRecallShort": {
+      "hash": "19488971a09b",
       "status": "machine"
     },
     "library:actions.clearRecallTitle": {

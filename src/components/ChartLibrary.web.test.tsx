@@ -112,7 +112,7 @@ describe('ChartLibrary (website)', () => {
     expect(within(bella).getByText('Ann · Dr Ames')).toHaveClass('chart-library__owner');
     expect(bella.querySelector('.chart-library__recall--overdue')?.textContent).toMatch(/· overdue$/);
     expect(within(bella).getByRole('button', { name: 'Reminder' })).toBeInTheDocument();
-    expect(within(bella).getByRole('button', { name: "Clear Bella's recheck reminder" })).toHaveTextContent("Clear Bella's recheck reminder");
+    expect(within(bella).getByRole('button', { name: "Clear Bella's recheck reminder" })).toHaveTextContent("Clear recheck");
     expect(within(bella).getByRole('button', { name: 'Delete chart for Bella' })).toBeInTheDocument();
     const max = rows[1] as HTMLElement;
     expect(max.querySelector('.chart-library__recall--due')?.textContent).toMatch(/· today$/);

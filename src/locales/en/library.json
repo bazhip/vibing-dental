@@ -69,7 +69,8 @@
     "historyChartTitle": "Who saved {{name}}'s chart, and when",
     "historyVisitTitle": "Who saved this visit, and when",
     "deleteChart": "Delete chart for {{name}}",
-    "loadMore": "Load more charts"
+    "loadMore": "Load more charts",
+    "clearRecallShort": "Clear recheck"
   },
   "errors": {
     "load": "Couldn’t load your charts. {{error}}",

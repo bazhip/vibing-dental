@@ -28,7 +28,7 @@ function RowActions({ children }: { children: React.ReactNode }) {
         close(event.currentTarget);
       }
     }}>
-      <summary>{t('actions.menu')}</summary>
+      <summary>{t('actions.menu')}<svg width="12" height="12" viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.5" /></svg></summary>
       <div className="chart-library__actions-panel" onClick={(event) => {
         if ((event.target as HTMLElement).closest('button')) {
           close(event.currentTarget.parentElement as HTMLDetailsElement);
@@ -258,21 +258,21 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                 <option key={sp} value={sp}>{t(SPECIES_KEYS[sp], { ns: 'app' })}</option>
               ))}
             </select>
-                  {rechecksOnly ? (
-                    <span className="chart-library__due-toggle chart-library__due-toggle--on">
-                      {dueCount > 0 ? t('dueCount', { n: dueCount }) : t('due')}
-                    </span>
-                  ) : (
-                  <button
-                    type="button"
-                    className={dueOnly ? 'chart-library__due-toggle chart-library__due-toggle--on' : 'chart-library__due-toggle'}
-                    onClick={() => setDueOnly((v) => !v)}
-                    aria-pressed={dueOnly}
-                    title={t('dueTitle')}
-                  >
-                    {dueCount > 0 ? t('dueCount', { n: dueCount }) : t('due')}
-                  </button>
-                  )}
+            {rechecksOnly ? (
+              <span className="chart-library__due-toggle chart-library__due-toggle--on">
+                {dueCount > 0 ? t('dueCount', { n: dueCount }) : t('due')}
+              </span>
+            ) : (
+            <button
+              type="button"
+              className={dueOnly ? 'chart-library__due-toggle chart-library__due-toggle--on' : 'chart-library__due-toggle'}
+              onClick={() => setDueOnly((v) => !v)}
+              aria-pressed={dueOnly}
+              title={t('dueTitle')}
+            >
+              {dueCount > 0 ? t('dueCount', { n: dueCount }) : t('due')}
+            </button>
+            )}
             {showDoctors && (
               <select
                 className="chart-library__filter-select"
@@ -396,7 +396,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                               ? t('deciduousSuffix', { species: speciesLabel(g.species) })
                               : speciesLabel(g.species)}
                           </span>
-                          <span role="cell" className="chart-library__cell">
+                          <span role="cell" className="chart-library__cell chart-library__cell--visits">
                             {t('visits', { count: g.visits.length })}
                           </span>
                           <span role="cell" data-label={t('table.updated')} className="chart-library__cell chart-library__cell--date">
@@ -405,16 +405,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                           {recallCell(g.recall)}
                         </button>
                         <span className="chart-library__row-actions">
-                          {g.ownerEmail && g.reminderChart && (
-                            <button
-                              type="button"
-                              className="chart-library__act"
-                              onClick={() => onSendReminder(g.reminderChart!)}
-                              title={t('actions.reminderTitle', { who: g.owner || g.ownerEmail })}
-                            >
-                              {t('actions.reminder')}
-                            </button>
-                          )}
+
                           <button
                             type="button"
                             className="chart-library__act chart-library__new-visit"
@@ -430,7 +421,17 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                               {t('visits', { count: g.visits.length })} <span aria-hidden="true">{isOpen ? '▾' : '▸'}</span>
                             </button>
                           )}
-                          {(!multi || g.recall) && <RowActions>
+                          {(!multi || g.recall || (g.ownerEmail && g.reminderChart)) && <RowActions>
+                          {g.ownerEmail && g.reminderChart && (
+                            <button
+                              type="button"
+                              className="chart-library__act"
+                              onClick={() => onSendReminder(g.reminderChart!)}
+                              title={t('actions.reminderTitle', { who: g.owner || g.ownerEmail })}
+                            >
+                              {t('actions.reminder')}
+                            </button>
+                          )}
                           {g.recall && (
                             <button
                               type="button"
@@ -440,7 +441,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                               aria-label={t('actions.clearRecall', { name: g.name })}
                               title={t('actions.clearRecallTitle', { name: g.name })}
                             >
-                              {t('actions.clearRecall', { name: g.name })}
+                              {t('actions.clearRecallShort')}
                             </button>
                           )}
                           {!multi && onOpenHistory && (

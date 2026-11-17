@@ -71,7 +71,8 @@
     "historyChartTitle": "Quién guardó el historial de {{name}} y cuándo",
     "historyVisitTitle": "Quién guardó esta visita y cuándo",
     "deleteChart": "Eliminar el historial de {{name}}",
-    "loadMore": "Cargar más historiales"
+    "loadMore": "Cargar más historiales",
+    "clearRecallShort": "Borrar revisión"
   },
   "errors": {
     "load": "No se pudieron cargar sus historiales. {{error}}",

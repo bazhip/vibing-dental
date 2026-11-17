@@ -1166,13 +1166,21 @@
 .dental-grid .rdg-cell[aria-selected="true"] {
   outline: 2px solid var(--ios-grid-selected-ring, var(--accent));
   outline-offset: -2px;
+}
+
+/* Selection may land on a column header after a bulk action. Keep its
+   teal background and light label together; only body cells turn white. */
+.dental-grid .rdg-row .rdg-cell[aria-selected="true"] {
   background-color: var(--ios-grid-active-cell, #fff) !important;
+}
+.dental-grid .rdg-header-row .rdg-cell[aria-selected="true"] {
+  outline-color: var(--ios-grid-header-label, #f2f7f6);
 }
 
 /* The Missing column is a button, not an editable cell — tone the
    spreadsheet selection ring down rather than removing it, so arrow-key
    navigation never loses its visible position (WCAG 2.4.7). */
-.dental-grid .rdg-cell[aria-colindex="1"][aria-selected="true"] {
+.dental-grid .rdg-row .rdg-cell[aria-colindex="1"][aria-selected="true"] {
   outline: 1px solid var(--accent);
   background-color: inherit !important;
 }

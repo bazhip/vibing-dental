@@ -69,7 +69,8 @@
     "historyChartTitle": "Wer die Akte von {{name}} gespeichert hat und wann",
     "historyVisitTitle": "Wer diesen Besuch gespeichert hat und wann",
     "deleteChart": "Akte von {{name}} löschen",
-    "loadMore": "Weitere Akten laden"
+    "loadMore": "Weitere Akten laden",
+    "clearRecallShort": "Nachkontrolle entfernen"
   },
   "errors": {
     "load": "Ihre Akten konnten nicht geladen werden. {{error}}",

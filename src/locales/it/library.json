@@ -71,7 +71,8 @@
     "historyChartTitle": "Chi ha salvato la cartella di {{name}} e quando",
     "historyVisitTitle": "Chi ha salvato questa visita e quando",
     "deleteChart": "Elimina la cartella di {{name}}",
-    "loadMore": "Carica altre cartelle"
+    "loadMore": "Carica altre cartelle",
+    "clearRecallShort": "Cancella controllo"
   },
   "errors": {
     "load": "Impossibile caricare le Sue cartelle. {{error}}",

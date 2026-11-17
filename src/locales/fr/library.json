@@ -71,7 +71,8 @@
     "historyChartTitle": "Qui a enregistré le dossier de {{name}}, et quand",
     "historyVisitTitle": "Qui a enregistré cette visite, et quand",
     "deleteChart": "Supprimer le dossier de {{name}}",
-    "loadMore": "Charger plus de dossiers"
+    "loadMore": "Charger plus de dossiers",
+    "clearRecallShort": "Effacer le contrôle"
   },
   "errors": {
     "load": "Impossible de charger vos dossiers. {{error}}",

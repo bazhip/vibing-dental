@@ -8,8 +8,8 @@
 }
 .patients-workspace__content.chart-library-modal {
   --lib-cols: minmax(8rem, 1.7fr) minmax(4.5rem, 0.8fr) minmax(5.5rem, 1fr)
-    minmax(4rem, 0.7fr) minmax(6.5rem, 1fr) minmax(5.5rem, 0.9fr);
-  --lib-actions: 16rem;
+    minmax(6.5rem, 1fr) minmax(6.5rem, 1fr);
+  --lib-actions: 18rem;
   width: 100%;
   max-width: var(--container-max);
   margin: 0 auto;
@@ -62,6 +62,7 @@
 }
 .patients-workspace .chart-library__filter { font-weight: 600; }
 .patients-workspace .chart-library__table {
+  margin-top: 0;
   border: 1px solid var(--border);
   border-top: 0;
   border-radius: 0 0 var(--radius) var(--radius);
@@ -98,7 +99,7 @@
   color: var(--primary);
   border-color: var(--primary);
 }
-.patients-workspace .chart-library__group-main { min-height: 68px; }
+.patients-workspace .chart-library__group-main { min-height: 64px; }
 .patients-workspace .chart-library__row-actions { flex-wrap: wrap; padding-block: 8px; gap: 6px; }
 .patients-workspace .chart-library__act,
 .patients-workspace .chart-library__delete { min-height: 36px; }
@@ -122,7 +123,10 @@
   .patients-workspace { padding: 20px 16px 32px; }
   .patients-workspace__header { flex-direction: column; gap: 16px; margin-bottom: 24px; }
   .patients-workspace__header h2 { font-size: 24px; }
-  .patients-workspace .chart-library__controls { padding: 12px; }
+  .patients-workspace .chart-library__controls { padding: 12px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .patients-workspace .chart-library__search { grid-column: 1 / -1; min-width: 0; width: 100%; }
+  .patients-workspace .chart-library__controls > :is(button, select) { width: 100%; margin: 0; min-width: 0; padding-inline: 8px; font-size: 12px; white-space: normal; }
+  .patients-workspace .chart-library__controls > input[type='file'] { display: none; }
   .patients-workspace .chart-library__filter-select { flex: 1 1 130px; min-width: 0; }
   .patients-workspace .chart-library-modal .chart-library__head-main { gap: 12px; flex-wrap: wrap; }
   .patients-workspace .chart-library-modal .chart-library__group-main { padding: 16px 12px 8px; gap: 6px 12px; }
@@ -139,10 +143,16 @@
 }
 
 /* Expand in normal flow so actions remain reachable at the bottom of the list. */
-.chart-library__actions-menu { min-width: 90px; }
+.chart-library__actions-menu { min-width: 0; }
 .chart-library__actions-menu summary {
-  min-height: 44px;
-  padding: 10px 8px;
+  min-height: 36px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  line-height: 1.2;
+  list-style: none;
   box-sizing: border-box;
   cursor: pointer;
   color: var(--text-muted);
@@ -154,8 +164,13 @@
   outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
-.chart-library__actions-panel { display: grid; gap: 4px; padding-top: 6px; }
-.chart-library__actions-panel button {
+.chart-library__actions-panel { display: grid; gap: 2px; padding: 4px; margin-top: 6px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); }
+.chart-library__actions-panel :is(.chart-library__act, .chart-library__delete) {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  border-radius: 4px;
+  padding: 8px 10px;
   min-height: 44px;
   white-space: normal;
   text-align: start;
@@ -163,9 +178,28 @@
   line-height: 1.4;
 }
 .chart-library__act.chart-library__new-visit {
-  background: var(--primary);
-  color: var(--text-on-primary, #fff);
-  border-color: var(--primary);
-  min-height: 44px;
+  background: var(--surface);
+  color: var(--primary);
+  border-color: var(--border-strong);
+  min-height: 36px;
 }
 .chart-library__row-actions { flex-wrap: wrap; }
+
+/* A compact patient row: one visit count and a single aligned action group. */
+.patients-workspace .chart-library__cell--visits,
+.patients-workspace .chart-library__head-main > :nth-child(4) { display: none; }
+.chart-library__actions-menu summary::-webkit-details-marker { display: none; }
+.chart-library__actions-menu[open] summary svg { transform: rotate(180deg); }
+.patients-workspace .chart-library__row-actions { align-content: center; }
+.patients-workspace .chart-library__row-actions > .chart-library__act,
+.patients-workspace .chart-library__actions-menu summary { white-space: nowrap; }
+.patients-workspace .chart-library__head-main { min-height: 44px; padding-block: 0; }
+@media (min-width: 701px) {
+  .patients-workspace .chart-library__row-actions { gap: 8px; }
+  .patients-workspace .chart-library__actions-menu[open] { flex-basis: 100%; }
+  .patients-workspace .chart-library__actions-menu[open] summary { width: fit-content; margin-left: auto; }
+}
+@media (max-width: 700px) {
+  .patients-workspace .chart-library__actions-menu summary { min-height: 44px; }
+  .patients-workspace .chart-library__actions-menu[open] { flex-basis: 100%; }
+}
