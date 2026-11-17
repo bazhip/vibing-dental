@@ -185,7 +185,8 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
       confirmLabel: t('clearDialog.confirm'),
     }));
 
-  const recallCell = (recall: string) => {
+  const recallCell = (group: PatientGroup) => {
+    const recall = group.recall;
     if (!recall) return <span className="chart-library__cell chart-library__cell--recall chart-library__cell--empty">—</span>;
     const overdue = recall < today;
     const due = recall <= today;
@@ -198,11 +199,17 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
             : 'chart-library__cell chart-library__cell--recall'
         }
       >
-        {overdue
+        <span className="chart-library__recall-date">{overdue
           ? t('recall.overdue', { date: formatChartDate(recall) })
           : due
           ? t('recall.today', { date: formatChartDate(recall) })
-          : formatChartDate(recall)}
+          : formatChartDate(recall)}</span>
+        <button type="button" className="chart-library__remove-recheck"
+          onClick={() => handleClearRecalls(group)} disabled={busyId !== null}
+          aria-label={t('actions.clearRecall', { name: group.name })}
+          title={t('actions.clearRecallTitle', { name: group.name })}>
+          <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
+        </button>
       </span>
     );
   };
@@ -369,15 +376,11 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                   return (
                     <React.Fragment key={g.key}>
                       <div className="chart-library__row" role="row">
-                        <button
-                          type="button"
-                          className="chart-library__row-main chart-library__group-main"
-                          onClick={() => handleOpen(only.id)}
-                          disabled={busyId === only.id}
-                          title={t('openLatest', { name: g.name })}
-                        >
+                        <div className="chart-library__row-main chart-library__group-main">
                           <span role="cell" className="chart-library__patient">
-                            <span className="chart-library__patient-main">
+                            <button type="button" className="chart-library__patient-main chart-library__open-patient"
+                              onClick={() => handleOpen(only.id)} disabled={busyId === only.id}
+                              title={t('openLatest', { name: g.name })}>
                               {g.name}
                               {(() => {
                                 // Owner, plus the doctor for single-visit
@@ -388,7 +391,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                                 const sub = [g.owner, dr].filter(Boolean).join(' · ');
                                 return sub ? <span className="chart-library__owner">{sub}</span> : null;
                               })()}
-                            </span>
+                            </button>
                           </span>
                           <span role="cell" className={`chart-library__cell chart-library__cell--number${g.number ? '' : ' chart-library__cell--empty'}`}>{g.number || '—'}</span>
                           <span role="cell" className="chart-library__cell chart-library__cell--species">
@@ -402,8 +405,8 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                           <span role="cell" data-label={t('table.updated')} className="chart-library__cell chart-library__cell--date">
                             {formatDate(g.latestUpdated)}
                           </span>
-                          {recallCell(g.recall)}
-                        </button>
+                          {recallCell(g)}
+                        </div>
                         <span className="chart-library__row-actions">
 
                           <button
@@ -421,7 +424,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                               {t('visits', { count: g.visits.length })} <span aria-hidden="true">{isOpen ? '▾' : '▸'}</span>
                             </button>
                           )}
-                          {(!multi || g.recall || (g.ownerEmail && g.reminderChart)) && <RowActions>
+                          {(!multi || (g.ownerEmail && g.reminderChart)) && <RowActions>
                           {g.ownerEmail && g.reminderChart && (
                             <button
                               type="button"
@@ -430,18 +433,6 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                               title={t('actions.reminderTitle', { who: g.owner || g.ownerEmail })}
                             >
                               {t('actions.reminder')}
-                            </button>
-                          )}
-                          {g.recall && (
-                            <button
-                              type="button"
-                              className="chart-library__act chart-library__clear-recall"
-                              onClick={() => handleClearRecalls(g)}
-                              disabled={busyId !== null}
-                              aria-label={t('actions.clearRecall', { name: g.name })}
-                              title={t('actions.clearRecallTitle', { name: g.name })}
-                            >
-                              {t('actions.clearRecallShort')}
                             </button>
                           )}
                           {!multi && onOpenHistory && (

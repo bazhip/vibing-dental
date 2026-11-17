@@ -112,7 +112,7 @@ describe('ChartLibrary (website)', () => {
     expect(within(bella).getByText('Ann · Dr Ames')).toHaveClass('chart-library__owner');
     expect(bella.querySelector('.chart-library__recall--overdue')?.textContent).toMatch(/· overdue$/);
     expect(within(bella).getByRole('button', { name: 'Reminder' })).toBeInTheDocument();
-    expect(within(bella).getByRole('button', { name: "Clear Bella's recheck reminder" })).toHaveTextContent("Clear recheck");
+    expect(within(bella).getByRole('button', { name: "Clear Bella's recheck reminder" })).toHaveAccessibleName("Clear Bella's recheck reminder");
     expect(within(bella).getByRole('button', { name: 'Delete chart for Bella' })).toBeInTheDocument();
     const max = rows[1] as HTMLElement;
     expect(max.querySelector('.chart-library__recall--due')?.textContent).toMatch(/· today$/);
@@ -177,6 +177,18 @@ describe('ChartLibrary (website)', () => {
     await waitFor(() => expect(confirm.fn).toHaveBeenCalled());
     await act(async () => {});
     expect(onDelete).not.toHaveBeenCalled();
+  });
+
+  it('puts recheck removal next to the date without an otherwise empty actions menu', async () => {
+    const { onOpen, onClearRecalls } = setup();
+    const patient = (await screen.findByText('Max')).closest('.chart-library__row')!;
+    const remove = within(patient as HTMLElement).getByRole('button', { name: "Clear Max's recheck reminder" });
+    expect(remove.closest('.chart-library__cell--recall')).not.toBeNull();
+    expect(patient.querySelector('.chart-library__actions-menu')).toBeNull();
+    expect(remove.parentElement?.closest('button')).toBeNull();
+    fireEvent.click(remove);
+    await waitFor(() => expect(onClearRecalls).toHaveBeenCalledWith(['b1']));
+    expect(onOpen).not.toHaveBeenCalled();
   });
 
   it('clears a recheck after confirming', async () => {
