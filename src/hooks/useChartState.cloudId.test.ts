@@ -104,7 +104,8 @@ describe('two tabs: storage always holds one whole chart', () => {
 it('creates an editable generated patient ID and carries permanent identity to later visits', () => {
   const { result } = renderHook(() => useChartState());
   const original = result.current.patientInfo;
-  expect(original.patientNumber).toMatch(/^P-[0-9A-Z]{12}$/);
+  expect(original.patientNumber).toBe('');
+  act(() => result.current.setPatientInfo(previous => ({ ...previous, patientNumber: '1001', generatedPatientNumber: '1001' })));
   expect(original.patientId).toBeTruthy();
   act(() => result.current.handlePatientInfoChange('patientName', 'Luna'));
   act(() => result.current.handlePatientInfoChange('patientNumber', '666'));
@@ -112,7 +113,7 @@ it('creates an editable generated patient ID and carries permanent identity to l
   expect(result.current.patientInfo.patientId).toBe(original.patientId);
   expect(result.current.patientInfo.patientNumber).toBe('666');
   act(() => result.current.handlePatientInfoChange('patientNumber', ''));
-  expect(result.current.getSnapshot().patientInfo.patientNumber).toBe(original.generatedPatientNumber);
+  expect(result.current.getSnapshot().patientInfo.patientNumber).toBe('1001');
   act(() => { result.current.startNewVisit({ identity: { patientName: '', patientNumber: '', ownerName: '', ownerPhone: '', ownerEmail: '', species: 'canine' } }); });
   expect(result.current.patientInfo.patientId).not.toBe(original.patientId);
 });

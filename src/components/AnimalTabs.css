@@ -1,11 +1,11 @@
 .animal-tabs { display: flex; align-items: center; gap: 4px; height: 100%; margin-bottom: 0; min-width: 0; }
 .animal-tabs__list { display: flex; align-self: stretch; flex: 0 1 auto; gap: 4px; overflow-x: auto; min-width: 0; scrollbar-width: thin; position: relative; }
-.animal-tabs__item { position: relative; display: flex; flex: 0 0 auto; width: 250px; min-width: 0; background: var(--surface-sunken); border: 1px solid transparent; border-bottom: 0; border-radius: var(--radius) var(--radius) 0 0; }
+.animal-tabs__item { position: relative; display: flex; flex: 0 0 auto; width: min(250px, var(--animal-tab-available, 250px)); box-sizing: border-box; min-width: 0; background: var(--surface-sunken); border: 1px solid transparent; border-bottom: 0; border-radius: var(--radius) var(--radius) 0 0; }
 .animal-tabs__item--active { background: var(--surface); border-color: var(--border-strong); box-shadow: none; }
 .animal-tabs button { font: inherit; cursor: pointer; color: var(--text); border: 0; background: transparent; }
 .animal-tabs button:disabled { cursor: wait; opacity: 1; }
 .animal-tabs button:focus-visible { outline: 2px solid var(--primary); outline-offset: -3px; }
-.animal-tabs__select { min-width: 0; flex: 1; padding: 10px 10px; text-align: left; border-radius: var(--radius) 0 0 0; }
+.animal-tabs__select { overflow: hidden; min-width: 0; flex: 1; padding: 10px 10px; text-align: left; border-radius: var(--radius) 0 0 0; }
 .animal-tabs__select strong, .animal-tabs__details > span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .animal-tabs__select strong { font-size: 14px; font-weight: 650; }
 .animal-tabs__details { display: flex; gap: 6px; font-size: 12px; color: var(--text-muted); margin-top: 5px; }
@@ -23,7 +23,7 @@
 .animal-tabs__open { min-height: 44px; padding: 10px 16px; background: var(--primary); color: var(--on-primary); border: 0; border-radius: var(--radius-sm); font: inherit; cursor: pointer; }
 .animal-tabs__open:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
 @media (max-width: 600px) {
-  .animal-tabs__item { width: 240px; }
+  .animal-tabs__item { width: min(240px, var(--animal-tab-available, 240px)); }
   .animal-tabs__close { flex-basis: 44px; height: 44px; margin-right: 0; }
 
 }

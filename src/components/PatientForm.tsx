@@ -123,7 +123,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
             <input
               type="text"
               className="patient-form__input"
-              placeholder={t('patient.numberPlaceholder')}
+              placeholder={patientInfo.patientId && !patientInfo.generatedPatientNumber ? t('patient.numberPending') : t('patient.numberPlaceholder')}
               value={patientInfo.patientNumber}
               aria-describedby={isGeneratedPatientNumber(patientInfo) ? numberHintId : undefined}
               onChange={handleInputChange('patientNumber')}
@@ -257,7 +257,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
           <input
             type="text"
             className="patient-form__input"
-            placeholder={t('patient.numberPlaceholder')}
+            placeholder={patientInfo.patientId && !patientInfo.generatedPatientNumber ? t('patient.numberPending') : t('patient.numberPlaceholder')}
             value={patientInfo.patientNumber}
               aria-describedby={isGeneratedPatientNumber(patientInfo) ? numberHintId : undefined}
             onChange={handleInputChange('patientNumber')}

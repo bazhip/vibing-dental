@@ -274,7 +274,8 @@
       "blank": "Nome e numero del paziente assenti",
       "paused": "I dati del paziente sono cambiati. Il salvataggio è sospeso. Salvi di nuovo per confermare una correzione, oppure scelga Nuovo paziente per un altro paziente.",
       "changed": "Il paziente è cambiato durante la verifica del salvataggio. Verifichi i dati e salvi di nuovo."
-    }
+    },
+    "patientNumberFailed": "Impossibile assegnare un numero paziente. Riprovi quando è online oppure inserisca un numero paziente."
   },
   "storage": {
     "full": "La memoria di questo browser è piena — le ultime modifiche potrebbero non essere conservate su questo dispositivo. Salvi la cartella o scarichi il PDF."
