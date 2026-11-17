@@ -10,6 +10,6 @@ An unlocked historical visit has an amber top edge and compact Editing label. Re
 
 Practice settings opens from the bottom-left account menu or practice identity as a modal, retaining left section navigation on desktop and responsive navigation on phones. Missing logos show an outlined Add logo control. Practice name and doctor name form one compact clickable identity block. Mobile More uses an accessible ellipsis icon.
 
-Imaging has no image-count text. A full-width divider and 24px spacing separate Radiographic findings from images.
+Imaging has no image-count text. A full-width divider with 16px spacing above and below separates Radiographic findings from images.
 
 All new text uses translations for en/fr/de/it/es. Preserve focus handling, 44px phone controls, and unsaved settings guards.
