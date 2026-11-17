@@ -37,6 +37,21 @@
     "pre": "Odontograma preoperatorio",
     "post": "Odontograma posoperatorio"
   },
+  "copy": {
+    "title": "Copiar a su software de gestión veterinaria",
+    "hint": "Copie aquí y pegue en el paciente y la consulta correctos. Copiar no guarda nada ni marca este historial como enviado.",
+    "all": "Copiar todo",
+    "allLabel": "Nota clínica",
+    "image": "Copiar la imagen del odontograma",
+    "sections": "Copiar secciones individuales",
+    "section": "Copiar {{section}}",
+    "prompt": "Copie este texto y péguelo en el paciente y la consulta correctos:",
+    "copied": "Copiado: {{section}}. Pegue el contenido en su software de gestión veterinaria y compruebe que se guarda.",
+    "plainCopied": "Copiado como texto sin formato: {{section}}. Pegue el contenido en su software de gestión veterinaria y compruebe que se guarda.",
+    "promptOpened": "Utilice el cuadro de diálogo de copia para seleccionar y copiar el texto manualmente; no se ha enviado nada.",
+    "imageUnavailable": "Este navegador no permite copiar imágenes. Utilice un navegador compatible o copie el texto de la nota.",
+    "failed": "ToothOps no ha podido copiar este contenido. Compruebe los permisos del portapapeles e inténtelo de nuevo. No se ha enviado nada."
+  },
   "actions": {
     "send": "Enviar",
     "sending": "Enviando…",

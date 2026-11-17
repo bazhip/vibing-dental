@@ -37,6 +37,21 @@
     "pre": "Zahnschema präoperativ",
     "post": "Zahnschema postoperativ"
   },
+  "copy": {
+    "title": "In Ihre Praxissoftware kopieren",
+    "hint": "Kopieren Sie den Inhalt hier und fügen Sie ihn beim richtigen Patienten und in der richtigen Konsultation ein. Durch das Kopieren wird nichts gespeichert und diese Akte nicht als gesendet markiert.",
+    "all": "Alles kopieren",
+    "allLabel": "Aktennotiz",
+    "image": "Zahnschemabild kopieren",
+    "sections": "Einzelne Abschnitte kopieren",
+    "section": "{{section}} kopieren",
+    "prompt": "Kopieren Sie diesen Text und fügen Sie ihn beim richtigen Patienten und in der richtigen Konsultation ein:",
+    "copied": "Kopiert: {{section}}. Fügen Sie den Inhalt in Ihre Praxissoftware ein und prüfen Sie, ob er gespeichert wird.",
+    "plainCopied": "Als Klartext kopiert: {{section}}. Fügen Sie den Inhalt in Ihre Praxissoftware ein und prüfen Sie, ob er gespeichert wird.",
+    "promptOpened": "Wählen Sie den Text im Kopierdialog aus und kopieren Sie ihn manuell; es wurde nichts gesendet.",
+    "imageUnavailable": "Dieser Browser kann keine Bilder kopieren. Verwenden Sie einen Browser, der das Kopieren von Bildern unterstützt, oder kopieren Sie stattdessen den Text der Notiz.",
+    "failed": "ToothOps konnte diesen Inhalt nicht kopieren. Prüfen Sie die Berechtigungen für die Zwischenablage und versuchen Sie es erneut. Es wurde nichts gesendet."
+  },
   "actions": {
     "send": "Senden",
     "sending": "Wird gesendet…",

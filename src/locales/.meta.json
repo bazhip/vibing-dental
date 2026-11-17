@@ -8240,6 +8240,58 @@
       "hash": "c1752f79ae24",
       "status": "machine"
     },
+    "pims:copy.all": {
+      "hash": "96e3f09a5f16",
+      "status": "machine"
+    },
+    "pims:copy.allLabel": {
+      "hash": "b3e012490052",
+      "status": "machine"
+    },
+    "pims:copy.copied": {
+      "hash": "fdbba3658b9c",
+      "status": "machine"
+    },
+    "pims:copy.failed": {
+      "hash": "1ac13e24ad05",
+      "status": "machine"
+    },
+    "pims:copy.hint": {
+      "hash": "8200a1639a43",
+      "status": "machine"
+    },
+    "pims:copy.image": {
+      "hash": "7a2c3bc002de",
+      "status": "machine"
+    },
+    "pims:copy.imageUnavailable": {
+      "hash": "e5cac98fb5f4",
+      "status": "machine"
+    },
+    "pims:copy.plainCopied": {
+      "hash": "a1c1b0830a80",
+      "status": "machine"
+    },
+    "pims:copy.prompt": {
+      "hash": "838a557e6499",
+      "status": "machine"
+    },
+    "pims:copy.promptOpened": {
+      "hash": "bbc3037b375d",
+      "status": "machine"
+    },
+    "pims:copy.section": {
+      "hash": "9358b7cd2470",
+      "status": "machine"
+    },
+    "pims:copy.sections": {
+      "hash": "0d1331ac47a2",
+      "status": "machine"
+    },
+    "pims:copy.title": {
+      "hash": "b7007e6472fc",
+      "status": "machine"
+    },
     "pims:dialog.loading": {
       "hash": "cf99ad13b28d",
       "status": "machine"
@@ -19508,6 +19560,58 @@
     },
     "pims:alreadySent.title": {
       "hash": "c1752f79ae24",
+      "status": "machine"
+    },
+    "pims:copy.all": {
+      "hash": "96e3f09a5f16",
+      "status": "machine"
+    },
+    "pims:copy.allLabel": {
+      "hash": "b3e012490052",
+      "status": "machine"
+    },
+    "pims:copy.copied": {
+      "hash": "fdbba3658b9c",
+      "status": "machine"
+    },
+    "pims:copy.failed": {
+      "hash": "1ac13e24ad05",
+      "status": "machine"
+    },
+    "pims:copy.hint": {
+      "hash": "8200a1639a43",
+      "status": "machine"
+    },
+    "pims:copy.image": {
+      "hash": "7a2c3bc002de",
+      "status": "machine"
+    },
+    "pims:copy.imageUnavailable": {
+      "hash": "e5cac98fb5f4",
+      "status": "machine"
+    },
+    "pims:copy.plainCopied": {
+      "hash": "a1c1b0830a80",
+      "status": "machine"
+    },
+    "pims:copy.prompt": {
+      "hash": "838a557e6499",
+      "status": "machine"
+    },
+    "pims:copy.promptOpened": {
+      "hash": "bbc3037b375d",
+      "status": "machine"
+    },
+    "pims:copy.section": {
+      "hash": "9358b7cd2470",
+      "status": "machine"
+    },
+    "pims:copy.sections": {
+      "hash": "0d1331ac47a2",
+      "status": "machine"
+    },
+    "pims:copy.title": {
+      "hash": "b7007e6472fc",
       "status": "machine"
     },
     "pims:dialog.loading": {
@@ -30812,6 +30916,58 @@
       "hash": "c1752f79ae24",
       "status": "machine"
     },
+    "pims:copy.all": {
+      "hash": "96e3f09a5f16",
+      "status": "machine"
+    },
+    "pims:copy.allLabel": {
+      "hash": "b3e012490052",
+      "status": "machine"
+    },
+    "pims:copy.copied": {
+      "hash": "fdbba3658b9c",
+      "status": "machine"
+    },
+    "pims:copy.failed": {
+      "hash": "1ac13e24ad05",
+      "status": "machine"
+    },
+    "pims:copy.hint": {
+      "hash": "8200a1639a43",
+      "status": "machine"
+    },
+    "pims:copy.image": {
+      "hash": "7a2c3bc002de",
+      "status": "machine"
+    },
+    "pims:copy.imageUnavailable": {
+      "hash": "e5cac98fb5f4",
+      "status": "machine"
+    },
+    "pims:copy.plainCopied": {
+      "hash": "a1c1b0830a80",
+      "status": "machine"
+    },
+    "pims:copy.prompt": {
+      "hash": "838a557e6499",
+      "status": "machine"
+    },
+    "pims:copy.promptOpened": {
+      "hash": "bbc3037b375d",
+      "status": "machine"
+    },
+    "pims:copy.section": {
+      "hash": "9358b7cd2470",
+      "status": "machine"
+    },
+    "pims:copy.sections": {
+      "hash": "0d1331ac47a2",
+      "status": "machine"
+    },
+    "pims:copy.title": {
+      "hash": "b7007e6472fc",
+      "status": "machine"
+    },
     "pims:dialog.loading": {
       "hash": "cf99ad13b28d",
       "status": "machine"
@@ -42112,6 +42268,58 @@
     },
     "pims:alreadySent.title": {
       "hash": "c1752f79ae24",
+      "status": "machine"
+    },
+    "pims:copy.all": {
+      "hash": "96e3f09a5f16",
+      "status": "machine"
+    },
+    "pims:copy.allLabel": {
+      "hash": "b3e012490052",
+      "status": "machine"
+    },
+    "pims:copy.copied": {
+      "hash": "fdbba3658b9c",
+      "status": "machine"
+    },
+    "pims:copy.failed": {
+      "hash": "1ac13e24ad05",
+      "status": "machine"
+    },
+    "pims:copy.hint": {
+      "hash": "8200a1639a43",
+      "status": "machine"
+    },
+    "pims:copy.image": {
+      "hash": "7a2c3bc002de",
+      "status": "machine"
+    },
+    "pims:copy.imageUnavailable": {
+      "hash": "e5cac98fb5f4",
+      "status": "machine"
+    },
+    "pims:copy.plainCopied": {
+      "hash": "a1c1b0830a80",
+      "status": "machine"
+    },
+    "pims:copy.prompt": {
+      "hash": "838a557e6499",
+      "status": "machine"
+    },
+    "pims:copy.promptOpened": {
+      "hash": "bbc3037b375d",
+      "status": "machine"
+    },
+    "pims:copy.section": {
+      "hash": "9358b7cd2470",
+      "status": "machine"
+    },
+    "pims:copy.sections": {
+      "hash": "0d1331ac47a2",
+      "status": "machine"
+    },
+    "pims:copy.title": {
+      "hash": "b7007e6472fc",
       "status": "machine"
     },
     "pims:dialog.loading": {

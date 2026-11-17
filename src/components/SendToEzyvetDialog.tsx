@@ -9,6 +9,7 @@ import { renderChartPicture } from '../utils/pims/chartPicture';
 import { usePimsSend } from '../hooks/usePimsSend';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { MappingRows } from './pims/MappingRows';
+import { CopyActions } from './pims/CopyActions';
 import { DiagnosticLink, SendResults } from './pims/SendResults';
 
 export interface SendToEzyvetDialogProps {
@@ -189,7 +190,11 @@ export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
     >
       <div className="ai-settings-modal pims-dialog" ref={modalRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
         {header}
-        <div className="ai-settings-body">{body}</div>
+        <div className="ai-settings-body">
+          {body}
+          <CopyActions note={note} storedText={stored?.text ?? null} disabled={sending}
+            renderImage={chartSnapshot ? () => renderChartPicture(chartSnapshot, { pre: t('pims:picture.pre'), post: t('pims:picture.post') }) : undefined} />
+        </div>
         <footer className="ai-settings-footer">{footer}</footer>
       </div>
     </div>,

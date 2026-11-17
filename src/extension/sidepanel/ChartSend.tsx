@@ -7,6 +7,7 @@ import type { AppLanguage } from '../../i18n/config';
 import type { ChartSnapshot } from '../../types';
 import { usePimsSend } from '../../hooks/usePimsSend';
 import { MappingRows } from '../../components/pims/MappingRows';
+import { CopyActions } from '../../components/pims/CopyActions';
 import { DiagnosticLink, SendResults } from '../../components/pims/SendResults';
 import { friendlyError } from '../../components/ui/dialogs';
 import { internalTransport } from './internalTransport';
@@ -273,6 +274,8 @@ const ChartSendReady: React.FC<ReadyProps> = ({
         value={stored?.text ?? recordNoteText(note)}
       />
       {picture.element}
+      {canSend && <CopyActions note={note} storedText={stored?.text ?? null}
+        renderImage={picture.hasDiagrams ? picture.render : undefined} disabled={sending} />}
       {body}
     </section>
   );

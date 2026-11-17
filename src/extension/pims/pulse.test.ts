@@ -146,3 +146,106 @@ describe('Pulse source-derived import', () => {
     expect(document.querySelector('[contenteditable]')?.textContent).toBe('Existing');
   });
 });
+
+describe('Pulse read-only field discovery', () => {
+  beforeEach(() => { document.body.innerHTML = ''; });
+  afterEach(() => { vi.restoreAllMocks(); });
+
+  it('normalizes sidebar whitespace and gives it precedence over other destinations', () => {
+    document.body.innerHTML = `
+      <aside role="complementary" class="p-sidebar-active">
+        <div class="covetrus-sidebar-header-title"> Medical\n   Notes </div>
+        <div contenteditable="true">Existing</div>
+      </aside>
+      <medical-record-question-section><span class="ds-text-h4">Plan</span></medical-record-question-section>
+      <fieldset><legend>Note Details</legend><iframe></iframe></fieldset>`;
+    const adapterContext = context();
+    adapterContext.url = new URL('https://clinic.evetpractice.com/Practice/Notes/AddNote');
+    expect(pulse.listFields(adapterContext)).toEqual([{ title: 'Medical Notes', kind: 'note', acceptsImage: false }]);
+  });
+
+  it.each([
+    ['/Practice/Notes/AddNote', '<fieldset><legend>Note Details</legend><iframe></iframe></fieldset>', 'Medical Notes'],
+    ['/Practice/Patients/EditAndGenerateDocument/12', '<form action="/Practice/Patients/EditAndGenerateDocument/12"><iframe id="Text_ifr"></iframe></form>', 'Patient Documents'],
+    ['/Practice/MedicalRecord/12', '<fieldset><legend>Summary</legend><ol><li><div class="mce-tinymce"><div class="mce-edit-area"><iframe></iframe></div></div></li></ol></fieldset>', 'Summary'],
+    ['/Practice/MedicalRecord/12', '<fieldset><legend>Plan</legend><ol><p><a id="lnkComponentComments">Edit Comments</a></p></ol></fieldset>', 'Plan'],
+  ])('discovers %s without enabling writes or causing side effects', async (path, html, title) => {
+    document.body.innerHTML = `<a id="lnkExpandCollapseAll">Expand</a>${html}`;
+    const originalHtml = document.body.innerHTML;
+    const click = vi.spyOn(HTMLElement.prototype, 'click');
+    const globalFetch = vi.spyOn(globalThis, 'fetch').mockResolvedValue(json([]));
+    const clickEvent = vi.fn();
+    document.body.addEventListener('click', clickEvent, { once: true });
+    const fetcher = vi.fn();
+    const adapterContext = context(fetcher);
+    adapterContext.url = new URL(`https://clinic.evetpractice.com${path}`);
+    expect(pulse.listFields(adapterContext)).toEqual([{ title, kind: 'note', acceptsImage: false }]);
+    expect(pulse.status(adapterContext).state).toBe('notConsult');
+    expect(await pulse.patientNumber('12', adapterContext)).toBeNull();
+    expect(await pulse.write({ fieldTitle: title, text: 'New' }, adapterContext)).toEqual({ ok: false, code: 'not_writable' });
+    expect(document.body.innerHTML).toBe(originalHtml);
+    expect(click).not.toHaveBeenCalled();
+    expect(clickEvent).not.toHaveBeenCalled();
+    expect(fetcher).not.toHaveBeenCalled();
+    expect(globalFetch).not.toHaveBeenCalled();
+    document.body.removeEventListener('click', clickEvent);
+  });
+
+  it.each([
+    ['/Practice/Notes/AddNote', '<fieldset><legend>Unrelated</legend><iframe></iframe></fieldset>'],
+    ['/Practice/Notes/AddNote', '<fieldset><legend>Note Details</legend></fieldset>'],
+    ['/Practice/Patients/EditAndGenerateDocument/12', '<form action="/unrelated"><iframe id="Text_ifr"></iframe></form>'],
+    ['/Practice/Patients/EditAndGenerateDocument/12', '<form action="/Practice/Patients/EditAndGenerateDocument/12"><iframe></iframe></form>'],
+    ['/Practice/Calendar?next=/Practice/Notes/AddNote', '<fieldset><legend>Note Details</legend><iframe></iframe></fieldset>'],
+    ['/Practice/MedicalRecord/12', '<fieldset><legend>Unrelated</legend><a id="lnkComponentComments">Edit Comments</a><iframe></iframe></fieldset>'],
+  ])('excludes unrelated or incomplete legacy destinations on %s', (path, html) => {
+    document.body.innerHTML = html;
+    const adapterContext = context();
+    adapterContext.url = new URL(`https://clinic.evetpractice.com${path}`);
+    expect(pulse.listFields(adapterContext)).toEqual([]);
+  });
+
+  it.each(['hidden', 'style="display: none"', 'inert', 'disabled', 'readonly', 'aria-disabled="true"', 'aria-readonly="true"'])('excludes destinations under %s containers', (attribute) => {
+    document.body.innerHTML = `<div ${attribute}>
+      <aside role="complementary" class="p-sidebar-active"><div class="covetrus-sidebar-header-title">Sidebar</div><div contenteditable="true"></div></aside>
+      <medical-record-question-section><span class="ds-text-h4">Question</span></medical-record-question-section>
+      <fieldset><legend>Plan</legend><ol><p><a id="lnkComponentComments">Edit Comments</a></p></ol></fieldset>
+      <fieldset><legend>Note Details</legend><iframe></iframe></fieldset>
+      <form action="/Practice/Patients/EditAndGenerateDocument/12"><iframe id="Text_ifr"></iframe></form>
+    </div>`;
+    const adapterContext = context();
+    for (const path of ['/Practice/MedicalRecord/12', '/Practice/Notes/AddNote', '/Practice/Patients/EditAndGenerateDocument/12']) {
+      adapterContext.url = new URL(`https://clinic.evetpractice.com${path}`);
+      expect(pulse.listFields(adapterContext)).toEqual([]);
+    }
+  });
+
+  it('rejects hidden or locked legacy controls and deduplicates modern and legacy titles', () => {
+    document.body.innerHTML = `
+      <medical-record-question-section><span class="ds-text-h4">Plan</span></medical-record-question-section>
+      <medical-record-patient-form-section><span class="ds-text-h4"> Plan </span></medical-record-patient-form-section>
+      <fieldset><legend>Plan</legend><ol><p><a id="lnkComponentComments">Edit Comments</a></p></ol></fieldset>
+      <fieldset><legend>Hidden</legend><ol><p><a id="lnkComponentComments" hidden>Edit Comments</a></p></ol></fieldset>
+      <fieldset><legend>Locked</legend><ol><li><div class="mce-tinymce"><div class="mce-edit-area"><iframe aria-readonly="true"></iframe></div></div></li></ol></fieldset>
+      <fieldset><legend>Other</legend><ol><li><div><div class="mce-edit-area"><iframe></iframe></div></div></li></ol></fieldset>`;
+    expect(pulse.listFields(context())).toEqual([{ title: 'Plan', kind: 'note', acceptsImage: false }]);
+  });
+
+  it.each(['hidden', 'inert', 'aria-readonly="true"'])('ignores a sidebar with an %s editor and keeps visible modern fields', (attribute) => {
+    document.body.innerHTML = `
+      <aside role="complementary" class="p-sidebar-active"><div class="covetrus-sidebar-header-title">Sidebar</div><div contenteditable="true" ${attribute}></div></aside>
+      <medical-record-question-section><span class="ds-text-h4">Plan</span></medical-record-question-section>`;
+    expect(pulse.listFields(context())).toEqual([{ title: 'Plan', kind: 'note', acceptsImage: false }]);
+  });
+
+  it.each(['hidden', 'disabled', 'aria-readonly="true"'])('excludes legacy route editors marked %s', (attribute) => {
+    document.body.innerHTML = `
+      <fieldset><legend>Note Details</legend><iframe ${attribute}></iframe></fieldset>
+      <form action="/Practice/Patients/EditAndGenerateDocument/12"><iframe id="Text_ifr" ${attribute}></iframe></form>`;
+    const adapterContext = context();
+    for (const path of ['/Practice/Notes/AddNote', '/Practice/Patients/EditAndGenerateDocument/12']) {
+      adapterContext.url = new URL(`https://clinic.evetpractice.com${path}`);
+      expect(pulse.listFields(adapterContext)).toEqual([]);
+    }
+  });
+});

@@ -37,6 +37,21 @@
     "pre": "Schéma dentaire préopératoire",
     "post": "Schéma dentaire postopératoire"
   },
+  "copy": {
+    "title": "Copier vers votre logiciel de gestion vétérinaire",
+    "hint": "Copiez ici, puis collez dans le dossier du bon patient et de la bonne consultation. La copie n’enregistre rien et ne marque pas ce dossier comme envoyé.",
+    "all": "Tout copier",
+    "allLabel": "Note du dossier",
+    "image": "Copier l’image du schéma dentaire",
+    "sections": "Copier les sections individuellement",
+    "section": "Copier {{section}}",
+    "prompt": "Copiez ce texte, puis collez-le dans le dossier du bon patient et de la bonne consultation :",
+    "copied": "Copie effectuée : {{section}}. Collez le contenu dans votre logiciel de gestion vétérinaire et vérifiez son enregistrement.",
+    "plainCopied": "Copie en texte brut effectuée : {{section}}. Collez le contenu dans votre logiciel de gestion vétérinaire et vérifiez son enregistrement.",
+    "promptOpened": "Utilisez la boîte de dialogue de copie pour sélectionner et copier le texte manuellement ; rien n’a été envoyé.",
+    "imageUnavailable": "Ce navigateur ne permet pas de copier des images. Utilisez un navigateur compatible ou copiez plutôt le texte de la note.",
+    "failed": "ToothOps n’a pas pu copier ce contenu. Vérifiez les autorisations du presse-papiers et réessayez. Rien n’a été envoyé."
+  },
   "actions": {
     "send": "Envoyer",
     "sending": "Envoi…",

@@ -2,14 +2,39 @@ import { dayBounds, isVisible, readFailed, routeStatus } from './shared';
 import type { AdapterContext, Appointment, AppointmentsResult, FieldInfo, PimsAdapter } from './types';
 
 function listFields(context: AdapterContext): FieldInfo[] {
+  const available = (element: Element | null): element is Element => !!element && isVisible(element) &&
+    !element.closest('[inert], [disabled], [readonly], [aria-disabled="true"], [aria-readonly="true"]');
+  const field = (title: string): FieldInfo => ({ title, kind: 'note', acceptsImage: false });
   const sidebar = context.doc.querySelector('[role="complementary"].p-sidebar-active');
-  const header = sidebar?.querySelector('.covetrus-sidebar-header-title')?.textContent?.trim();
-  if (header && sidebar?.querySelector('[contenteditable="true"]')) return [{ title: header, kind: 'note', acceptsImage: false }];
-  return Array.from(context.doc.querySelectorAll('medical-record-question-section, medical-record-patient-form-section'))
-    .filter(isVisible)
-    .map((section) => section.querySelector('span.ds-text-h4')?.textContent?.trim())
-    .filter((title): title is string => !!title)
-    .map((title) => ({ title, kind: 'note', acceptsImage: false }));
+  const header = sidebar?.querySelector('.covetrus-sidebar-header-title') ?? null;
+  const sidebarTitle = header?.textContent?.replace(/\s+/g, ' ').trim();
+  if (sidebarTitle && available(header) && available(sidebar?.querySelector('[contenteditable="true"]') ?? null)) {
+    return [field(sidebarTitle)];
+  }
+  if (context.url.pathname.includes('/Notes/AddNote')) {
+    const legend = Array.from(context.doc.querySelectorAll('fieldset > legend')).find((element) =>
+      element.textContent?.includes('Note Details') && available(element) && available(element.parentElement?.querySelector('iframe') ?? null));
+    return legend ? [field('Medical Notes')] : [];
+  }
+  if (context.url.pathname.includes('Patients/EditAndGenerateDocument')) {
+    const editor = Array.from(context.doc.querySelectorAll('form[action*="/Practice/Patients/EditAndGenerateDocument/"] iframe#Text_ifr')).find(available);
+    return editor ? [field('Patient Documents')] : [];
+  }
+  const titles = Array.from(context.doc.querySelectorAll('medical-record-question-section, medical-record-patient-form-section'))
+    .filter(available)
+    .map((section) => section.querySelector('span.ds-text-h4'))
+    .filter(available)
+    .map((title) => title.textContent?.trim())
+    .filter((title): title is string => !!title);
+  for (const fieldset of Array.from(context.doc.querySelectorAll('fieldset'))) {
+    const legend = fieldset.querySelector(':scope > legend');
+    if (!available(legend)) continue;
+    const controls = fieldset.querySelectorAll(':scope > ol > p > a[id="lnkComponentComments"], :scope > ol > li > div[class*="mce-tinymce"] div[class*="mce-edit-area"] iframe');
+    if (!Array.from(controls).some(available)) continue;
+    const title = legend.textContent?.trim();
+    if (title) titles.push(title);
+  }
+  return Array.from(new Set(titles)).map(field);
 }
 
 function parseHtml(value: string): Document {

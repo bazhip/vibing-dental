@@ -34,6 +34,7 @@ vi.mock('./useActiveTabChange', () => ({
 import { normalizeSnapshot } from '../../hooks/useChartState';
 import { ChartSend } from './ChartSend';
 import { recordNoteBasis } from '../../utils/recordNote';
+import { copyRichText } from '../../utils/clipboard';
 
 const chart: CloudChartMeta = {
   id: 'c1', patient_name: 'Bella', patient_number: '', owner_name: 'O', owner_phone: '', owner_email: '',
@@ -86,6 +87,23 @@ const send = async () => {
 };
 
 describe('ChartSend', () => {
+  it('allows manual copy when automatic writes cannot verify an encounter', async () => {
+    const onSent = vi.fn();
+    open({ stored: true, onSent });
+    mocks.transport.inspect.mockResolvedValue({ ...info(null), status: { state: 'notConsult', patientName: null, patientNumber: null, consult: null } });
+    await screen.findByText(/ToothOps can’t verify the active encounter/);
+    fireEvent.click(screen.getByRole('button', { name: 'Copy all' }));
+    await waitFor(() => expect(copyRichText).toHaveBeenCalledWith('<p>My edited note</p>', 'My edited note', expect.any(String)));
+    expect(mocks.transport.send).not.toHaveBeenCalled();
+    expect(onSent).not.toHaveBeenCalled();
+  });
+
+  it('does not expose manual transfer while the practice send flag is off', async () => {
+    open({ sendFlag: 'off' });
+    await screen.findByLabelText('Record note');
+    expect(screen.queryByRole('button', { name: 'Copy all' })).not.toBeInTheDocument();
+  });
+
   it('shows the generated note read-only when none is stored', async () => {
     open();
     const note = await screen.findByLabelText('Record note');

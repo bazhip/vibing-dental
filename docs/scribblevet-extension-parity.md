@@ -53,7 +53,7 @@ The ezyVet import fixes also enforce Day-view readiness before choosing a date, 
 
 | Feature area | Static evidence | Boundary |
 | --- | --- | --- |
-| Copy plain text, HTML and PNG; copy all sections | `sidepanel.b7741352.js:202494`, `:212598` | Compare formatting and clipboard behavior separately; not proven equivalent by adapter tests. |
+| Copy plain text, HTML and PNG; copy all sections | `sidepanel.b7741352.js:202494`, `:212598` | Manual copy controls now exist in the web send dialog and extension chart view: individual sections, all text, and a separate PNG. ToothOps formatting is retained; live paste/persistence in each PIMS is not established. |
 | Section mapping, expansion, add/copy actions and dental images | `sidepanel.b7741352.js:212973` | ToothOps has its own record-note mapping and dental images; identical output is not established. |
 | Canine/feline drawing and local note formatting | `sidepanel.b7741352.js:181430`, `:181514`, `:181557`, `:192098` | Functional overlap, not pixel or behavioral equivalence. |
 | Note/visit associations and archive/unarchive | `sidepanel.b7741352.js:150510`, `:157168` | Uses ScribbleVet private backend; requires a separately specified ToothOps equivalent. |
@@ -77,6 +77,17 @@ The ezyVet import fixes also enforce Day-view readiness before choosing a date, 
 - DaySmart reports malformed rows and patient/client relations as `invalid_appointment` failures rather than silently treating them as an empty schedule.
 - Regression-first verification reproduced the defects before implementation. After correction: 257 test files / 2,694 tests pass; production, development-extension and store-extension builds pass. Store permissions and messaging-origin assertions pass.
 - Independent re-review reproduced all three original counterexamples safely and passed 158 focused plus 80 integration tests. This approval is limited to these fixes, not live interoperability or complete parity.
+
+## Shipped-artifact continuation — manual transfer and legacy Pulse
+
+- The three disabled export paths were traced again. Vetspire's `addSection` accepts no patient/encounter identity (`vetspire.da474192.js:176`), performs Quill-classed DOM insertion and returns success without a save acknowledgement (`:190,197`). Its appointment IDs are not demonstrated encounter IDs (`:641`). Its field discovery advertises images (`:460`) while the writer rejects them (`:177`); ToothOps does not copy that contradiction.
+- Pulse's modern writer appends content (`pulse.b8ec9667.js:313`); TinyMCE insertion marks the editor dirty (`:333`). Legacy Pulse clicks Save and immediately returns success (`oldPulse.0d5ec2ea.js:177`). Neither establishes independently readable active clinical identity or persisted-save acknowledgement. Exports remain disabled.
+- Rhapsody selects a tab, acquires CKEditor, inserts content and waits (`rhapsody.76fff428.js:201`). Its writable-page banner does not establish identity (`sidepanel.b7741352.js:214588`). No guessed route or editor-instance ID is used to unlock writes. A new bounded REA parse retained parent evidence `ev_7e7c46773435c1abcb4cc97ee8f0f3c555d863307737fd70024b15841b598da7`; unselected sources and truncated semantic relationships remain unknown.
+- Source-backed Pulse discovery now covers normalized sidebar headings, Medical Notes, Patient Documents and legacy fieldset destinations. It stays read-only: no Expand clicks, no editor mutation, no save or identity claims, and no image advertisement.
+- The manual-transfer component offers section/all text plus HTML and a separate PNG copy. It preserves stored edits (including an empty note), suppresses section actions when edits cannot be split safely, and never stamps a chart as sent. It remains usable when automatic destination verification fails; the extension's practice send flag still applies.
+- Text uses existing plain-text/manual-dialog fallbacks. PNG requests are initiated before asynchronous rendering completes, reject malformed/non-PNG data without fetching URLs, and report success only after clipboard completion. Failure and manual-dialog results are not shown as copied. All new UI strings have hand-written en/fr/de/it/es coverage.
+- This implements the shared manual-transfer flow, not the providers' unsafe unverified writers. Backend linking, sync/reconciliation, add-record/radiology flows and live paste/save verification remain outstanding.
+- Increment verification: 260 test files / 2,771 tests pass; production, development-extension and store-extension builds pass; translation backlog is zero. Store output checks retain the same permissions/hosts and production messaging origins. Independent review passes (162 focused tests). The image-upload UI was not changed.
 
 ## Required authorized live verification
 

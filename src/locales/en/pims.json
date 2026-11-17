@@ -37,6 +37,21 @@
     "pre": "Pre-op chart",
     "post": "Post-op chart"
   },
+  "copy": {
+    "title": "Copy to your practice software",
+    "hint": "Copy here, then paste into the correct patient and encounter. Copying does not save or mark this chart as sent.",
+    "all": "Copy all",
+    "allLabel": "Record note",
+    "image": "Copy chart picture",
+    "sections": "Copy individual sections",
+    "section": "Copy {{section}}",
+    "prompt": "Copy this text, then paste it into the correct patient and encounter:",
+    "copied": "Copied: {{section}}. Paste it into your practice software and verify that it saves.",
+    "plainCopied": "Copied as plain text: {{section}}. Paste it into your practice software and verify that it saves.",
+    "promptOpened": "Use the copy dialog to select and copy the text manually; nothing has been sent.",
+    "imageUnavailable": "This browser cannot copy pictures. Use a browser that supports image copying, or copy the note text instead.",
+    "failed": "ToothOps couldn’t copy this content. Check clipboard permissions and try again. Nothing has been sent."
+  },
   "actions": {
     "send": "Send",
     "sending": "Sending…",

@@ -50,6 +50,18 @@ vi.mock('../utils/supabaseClient', () => ({
 import { SendToEzyvetDialog } from './SendToEzyvetDialog';
 import { RecordNotePanel } from './RecordNotePanel';
 
+it('allows manual copy without a verified encounter and never stamps a send', async () => {
+  mocks.inspect.mockResolvedValue(writableWith({ state: 'notConsult' }));
+  const onSent = vi.fn();
+  render(dlg({ onSent, stored: { text: 'Preserved edit', source: 'edited', lng: 'en', basedOn: 'old' } }).el);
+  await screen.findByText(i18n.t('pims:state.notConsult'));
+  fireEvent.click(screen.getByRole('button', { name: 'Copy all' }));
+  await waitFor(() => expect(mocks.copy).toHaveBeenCalledWith('<p>Preserved edit</p>', 'Preserved edit', expect.any(String)));
+  expect(mocks.send).not.toHaveBeenCalled();
+  expect(mocks.markPimsSent).not.toHaveBeenCalled();
+  expect(onSent).not.toHaveBeenCalled();
+});
+
 const t = i18n.t.bind(i18n);
 
 const FIELDS = [
