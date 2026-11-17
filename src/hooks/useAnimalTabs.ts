@@ -112,10 +112,11 @@ export function useAnimalTabs(chart: UseChartStateReturn, cloud: UseCloudSyncRet
     return saved;
   };
 
-  const run = async (operation: () => Promise<boolean>) => {
+  const run = async (operation: (open: UseCloudSyncReturn['openChart']) => Promise<boolean>) => {
     if (locked.current) return false;
     locked.current = true; setBusy(true);
-    try { return await operation(); }
+    // Give an owned transition its activation path without acquiring the lock twice.
+    try { return await operation(activate); }
     finally { if (dismissed.current !== latest.current.chart.cloudChartId) latest.current.cloud.resumeWorkspace?.(); locked.current = false; setBusy(false); }
   };
 
@@ -124,8 +125,10 @@ export function useAnimalTabs(chart: UseChartStateReturn, cloud: UseCloudSyncRet
     let ok: boolean;
     if (current.cloud.enabled) {
       const draft = drafts.get(id);
-      if (draft && current.cloud.restoreWorkspace && !opts?.force) { current.cloud.restoreWorkspace(draft); ok = true; }
-      else ok = await current.cloud.openChart(id, { ...opts, skipConfirm: true });
+      // Only unsaved work owns a local copy; saved caches may be older than the server.
+      const unsaved = draft && (draft.dirty || (!draft.openedExisting && !draft.lastSaved.at));
+      if (unsaved && current.cloud.restoreWorkspace && !opts?.force) { current.cloud.restoreWorkspace(draft); ok = true; }
+      else ok = await current.cloud.openChart(id, { ...opts, skipConfirm: true, force: true });
     }
     else {
       const cached = local.current.get(id);
@@ -143,7 +146,7 @@ export function useAnimalTabs(chart: UseChartStateReturn, cloud: UseCloudSyncRet
     // Restore/duplicate-resolution callers explicitly own their replacement.
     if (opts?.force || opts?.skipConfirm) return run(() => activate(id, opts));
     return run(async () => {
-      if (id === latest.current.chart.cloudChartId && dismissed.current !== id) return true;
+      if (id === latest.current.chart.cloudChartId && dismissed.current !== id && latest.current.cloud.dirty) return true;
       if (opts?.ifClean && latest.current.cloud.dirty) return false;
       if (!(await prepareLeave())) return false;
       return activate(id, opts);

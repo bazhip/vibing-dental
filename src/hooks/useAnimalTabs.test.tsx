@@ -94,7 +94,7 @@ it('opens a cloud chart only after the current edits are saved', async () => {
   h.rerender();
   await act(async () => { expect(await h.result.current.openChart('b')).toBe(true); });
   expect(h.cloud.saveNow).toHaveBeenCalledOnce();
-  expect(h.cloud.openChart).toHaveBeenCalledWith('b', { skipConfirm: true });
+  expect(h.cloud.openChart).toHaveBeenCalledWith('b', { skipConfirm: true, force: true });
 });
 
 it('keeps an unnamed image-only draft open even when chart text is not dirty', async () => {
@@ -258,4 +258,47 @@ it('saves an inactive draft without overwriting the other open animal', async ()
   expect(h.chart.cloudChartId).toBe('b');
   expect(h.chart.patientInfo.patientName).toBe('Oliver');
   expect(h.result.current.tabs.map(tab => tab.id)).toEqual(['b']);
+});
+
+it('reopens a closed animal within a new-visit transition', async () => {
+  const h = setup(true);
+  await act(async () => { await h.result.current.close('a'); });
+  expect(h.result.current.empty).toBe(true);
+  await act(async () => {
+    expect(await h.result.current.transition(async open => open('a', { skipConfirm: true }))).toBe(true);
+  });
+  expect(h.result.current.empty).toBe(false);
+  expect(h.result.current.tabs.map(tab => tab.id)).toContain('a');
+});
+
+it.each([false, true])('reopening a cached visit refreshes saved notes while preserving dirty=%s edits', async dirty => {
+  const h = setup(true, { dirty });
+  h.cloud.captureWorkspace = async () => ({ ...imageDraftWorkspace(h.chart.cloudChartId, '2026-11-17'), snapshot: h.chart.getSnapshot(), dirty: h.cloud.dirty, openedExisting: true });
+  h.cloud.restoreWorkspace = workspace => { h.chart.applySnapshot(workspace.snapshot, workspace.id); h.rerender(); };
+  h.cloud.openChart = async id => {
+    h.change(id, id === 'a' ? 'Luna' : 'Oliver', id === 'a' ? '1' : '2');
+    h.chart.patientInfo.complaint = 'Latest saved notes';
+    h.cloud.dirty = false;
+    h.rerender();
+    return true;
+  };
+  await act(async () => { await h.result.current.openChart('b'); });
+  await act(async () => { await h.result.current.openChart('a'); });
+  expect(h.chart.patientInfo.complaint).toBe(dirty ? 'Luna note' : 'Latest saved notes');
+});
+
+it('keeps an unsaved image-only workspace even when chart text is clean', async () => {
+  const h = setup(true, { lastSavedAt: '' });
+  h.change('a', '', '');
+  h.cloud.captureWorkspace = async () => ({ ...imageDraftWorkspace(h.chart.cloudChartId, '2026-11-17'), snapshot: h.chart.getSnapshot(), dirty: false });
+  h.cloud.restoreWorkspace = workspace => { h.chart.applySnapshot(workspace.snapshot, workspace.id); h.rerender(); };
+  h.cloud.openChart = async id => {
+    if (id === 'a') throw new Error('Unsaved image draft has no chart row');
+    h.change(id, 'Oliver', '2');
+    return true;
+  };
+  await act(async () => { await h.result.current.openChart('b'); });
+  await act(async () => { expect(await h.result.current.openChart('a')).toBe(true); });
+  expect(h.chart.cloudChartId).toBe('a');
+  expect(h.chart.patientInfo.patientName).toBe('');
 });

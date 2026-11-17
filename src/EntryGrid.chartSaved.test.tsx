@@ -255,3 +255,21 @@ it.each([false, true])('hides dictation on a read-only chart (native=%s)', async
   expect(dictate).not.toBeNull();
   expect(dictate).not.toBeVisible();
 });
+
+it('reopens the last closed animal when choosing today’s visit from the library', async () => {
+  flags.native = false;
+  seedSavedVisit(localDateISO());
+  const visit = { id: 'c-old', patient_name: 'Rex', patient_number: '7', owner_name: '', species: 'canine', chart_date: localDateISO(), updated_at: new Date().toISOString(), recall_date: '' };
+  cloud.listCharts.mockResolvedValue({ rows: [visit], hasMore: false } as never);
+  cloud.listPatientVisits.mockResolvedValue([visit] as never);
+  await renderApp();
+  await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Close Rex tab' })));
+  await screen.findByRole('heading', { name: 'No animal open' });
+  await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Open an animal' })));
+  await act(async () => fireEvent.click(await screen.findByRole('button', { name: 'New visit' })));
+  const dialog = await screen.findByRole('alertdialog', { name: 'Rex already has a visit today' });
+  await act(async () => fireEvent.click(within(dialog).getByRole('button', { name: 'Open today’s visit' })));
+  expect(screen.queryByRole('heading', { name: 'No animal open' })).toBeNull();
+  expect(await screen.findByRole('tab', { name: /Rex/ })).toBeVisible();
+  expect(await screen.findByDisplayValue('Rex')).toBeVisible();
+});

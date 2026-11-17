@@ -693,43 +693,43 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // already gone (missing ∪ extracted) from their most recent saved
   // visit. Shared by the library's "+ Visit" and the saved-chart
   // banner's "+ New visit".
-  const createVisitFromChart = async (latestChartId: string): Promise<boolean> => {
+  const createVisitFromChart = async (latestChartId: string, openVisit = rawCloud.openChart): Promise<boolean> => {
     // Starting a visit replaces the open chart — never silently.
     if (!(await cloud.confirmDiscardIfDirty('newVisit'))) return false;
     const snap = await cloud.fetchChart(latestChartId);
     // Already seen today? Offer that visit rather than a second one —
     // same-day restarts were the main source of duplicate records.
     let answeredToday = false;
+    let todays: CloudChartMeta | undefined;
     try {
       const sp = speciesBase(snap.species);
       const visits = await cloud.listPatientVisits(snap.patientInfo.patientNumber ?? '', snap.patientInfo.patientName ?? '', snap.patientInfo.patientId);
-      const todays = visits.find((v) => v.chart_date === localDateISO() && v.species === sp);
-      if (todays) {
-        const who = snap.patientInfo.patientName?.trim() || t('sync.duplicate.patient');
-        // Three answers, not yes/no: dismissing (Cancel, Escape, a click
-        // outside) must start nothing. As a confirm, a dismissal meant
-        // "Start a second visit" — which then autosaved an empty duplicate
-        // beside the morning's chart.
-        const choice = await chooseDialog({
-          title: t('sync.duplicate.titleToday', { name: who }),
-          message: t('todaysVisit.message'),
-          choices: [
-            { value: 'second', label: t('todaysVisit.cancel') },
-            { value: 'open', label: t('todaysVisit.confirm') },
-          ],
-        });
-        if (choice === null) return false;
-        if (choice === 'open') {
-          // Unsaved changes were already confirmed above.
-          await rawCloud.openChart(todays.id, { skipConfirm: true });
-          goToSection('patient');
-          return true;
-        }
-      }
-      // Answered here — don't ask again on the new visit's first save.
+      todays = visits.find((v) => v.chart_date === localDateISO() && v.species === sp);
       answeredToday = true;
     } catch {
       /* couldn't check — the first-save check will ask instead */
+    }
+    if (todays) {
+      const who = snap.patientInfo.patientName?.trim() || t('sync.duplicate.patient');
+      // Three answers, not yes/no: dismissing (Cancel, Escape, a click
+      // outside) must start nothing. As a confirm, a dismissal meant
+      // "Start a second visit" — which then autosaved an empty duplicate
+      // beside the morning's chart.
+      const choice = await chooseDialog({
+        title: t('sync.duplicate.titleToday', { name: who }),
+        message: t('todaysVisit.message'),
+        choices: [
+          { value: 'second', label: t('todaysVisit.cancel') },
+          { value: 'open', label: t('todaysVisit.confirm') },
+        ],
+      });
+      if (choice === null) return false;
+      if (choice === 'open') {
+        // Unsaved changes were already confirmed above.
+        if (!(await openVisit(todays.id, { skipConfirm: true }))) return false;
+        goToSection('patient');
+        return true;
+      }
     }
     const gone = new Set<number>();
     for (const [k, v] of Object.entries(snap.preMarks ?? {})) if (v === 'missing') gone.add(Number(k));
@@ -759,7 +759,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     return true;
   };
 
-  const startVisitFromChart = (id: string) => native ? createVisitFromChart(id) : animalTabs.transition(() => createVisitFromChart(id));
+  const startVisitFromChart = (id: string) => native ? createVisitFromChart(id) : animalTabs.transition(open => createVisitFromChart(id, open));
 
   // ⌘S / Ctrl+S saves the chart — matches the mental model everyone
   // brings from every other document editor. Swallows the browser's
