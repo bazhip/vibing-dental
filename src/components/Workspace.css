@@ -99,12 +99,16 @@ html:not(.native-ios) .entry-grid__topbar .topbar-new-patient:hover { background
 html:not(.native-ios) .entry-grid__topbar .voice-input:not(:disabled) { border-color: #bdd6d2; }
 html:not(.native-ios) .entry-grid__topbar .topbar-new-patient { margin-left: 6px; }
 /* One persistent workspace rail owns global and clinical navigation. */
-html:not(.native-ios) .workspace-layout { display: grid; grid-template-columns: 208px minmax(0, 1fr); gap: 24px; align-items: start; }
-html:not(.native-ios) .workspace-main { min-width: 0; }
+html:not(.native-ios) .workspace-layout { --workspace-rail-width: 208px; display: grid; grid-template-columns: var(--workspace-rail-width) minmax(0, 1fr); gap: 24px; align-items: start; }
+html:not(.native-ios) .workspace-main { grid-column: 2; min-width: 0; }
 html:not(.native-ios) .workspace-sidebar {
-  position: sticky; top: calc(var(--topbar-height, 72px) + 12px); z-index: 45;
+  /* Fixed to the viewport: a sticky rail is pushed up by the content's
+     bottom boundary before the footer has finished scrolling. The grid
+     reserves its column and supplies its horizontal position. */
+  position: fixed; grid-column: 1; width: var(--workspace-rail-width);
+  top: calc(var(--topbar-height, 72px) + 12px); z-index: 45;
   height: calc(100dvh - var(--topbar-height, 72px) - 24px);
-  display: flex; flex-direction: column; min-height: 240px; min-width: 0;
+  display: flex; flex-direction: column; min-height: 0; min-width: 0;
 }
 html:not(.native-ios) .workspace-nav { display: flex; flex-direction: column; align-items: stretch; gap: 4px; padding: 0 0 12px; margin: 0 0 12px; border-bottom: 1px solid var(--border); }
 html:not(.native-ios) .workspace-nav button {
@@ -160,7 +164,7 @@ html:not(.native-ios) .chart-menu__section-head { text-transform: none; letter-s
 }
 @media (max-width: 900px) {
   html:not(.native-ios) .workspace-layout { display: block; }
-  html:not(.native-ios) .workspace-sidebar { position: static; height: auto; min-height: 0; display: block; }
+  html:not(.native-ios) .workspace-sidebar { position: static; width: auto; height: auto; min-height: 0; display: block; }
   html:not(.native-ios) .workspace-nav { flex-direction: row; gap: 20px; padding: 0; margin-bottom: 16px; }
   html:not(.native-ios) .workspace-nav button { padding: 12px 0; border-radius: 0; border-bottom: 2px solid transparent; white-space: nowrap; }
   html:not(.native-ios) .workspace-nav button[aria-current="page"] { background: transparent; border-bottom-color: var(--primary); }
