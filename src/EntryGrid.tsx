@@ -271,7 +271,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   };
   const returnToVisit = () => navigate(`#/chart/${chart.cloudChartId}`);
   const [navigationHost, setNavigationHost] = React.useState<HTMLDivElement | null>(null);
-  const workspacePage = !native && ((cloud.enabled && (route.view === 'library' || route.view === 'rechecks')));
+  const workspacePage = !native && cloud.enabled && route.view === 'rechecks';
   const [remindersOpen, setRemindersOpen] = React.useState(false);
   const [accountOpen, setAccountOpen] = React.useState(false);
   // Which chart section is showing (controlled so a blocked save can jump
@@ -465,7 +465,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     setWhatsNewOpen(false);
     if (prefs.whatsNewSeen !== WHATS_NEW.id) setPref({ whatsNewSeen: WHATS_NEW.id });
   };
-  // Patients is a full workspace destination; the working chart stays mounted.
+  // Legacy Patients URLs and startup arrivals use the same modal as the tab plus.
   const libraryOpen = cloud.enabled && (route.view === 'library' || route.view === 'rechecks') && !native;
   const [patientPickerOpen, setPatientPickerOpen] = React.useState(false);
   const openLibrary = () => {
@@ -1592,7 +1592,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
 
       {(libraryOpen || patientPickerOpen) && (() => {
         const library = <ChartLibrary
-          presentation={patientPickerOpen ? MODAL_PRESENTATION : PAGE_PRESENTATION}
+          presentation={patientPickerOpen || route.view === 'library' ? MODAL_PRESENTATION : PAGE_PRESENTATION}
           key={route.view}
           rechecksOnly={route.view === 'rechecks'}
           viewState={route.view === 'rechecks' ? rechecksViewState : libraryViewState}
@@ -1610,7 +1610,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           onLoadPdf={libraryCore.loadPdf}
           onClose={() => { if (patientPickerOpen) setPatientPickerOpen(false); else closeLibrary(); }}
         />;
-        return patientPickerOpen ? createPortal(library, document.body) : library;
+        return patientPickerOpen || route.view === 'library' ? createPortal(library, document.body) : library;
       })()}
     </>
   );

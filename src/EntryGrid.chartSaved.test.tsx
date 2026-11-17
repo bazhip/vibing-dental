@@ -229,3 +229,17 @@ it('opens the file picker from Add logo and practice settings from the practice 
   fireEvent.click(container.querySelector('.entry-grid__practice-link')!);
   expect(await screen.findByRole('dialog', { name: 'Practice settings' })).toBeVisible();
 });
+
+it.each(['/', '/#/library'])('opens Patients as a modal over the saved chart on arrival at %s', async (url) => {
+  flags.native = false;
+  window.history.replaceState(null, '', url);
+  const { container } = render(<><EntryGrid /><DialogHost /></>);
+  const dialog = await screen.findByRole('dialog', { name: /Patients|My charts/ });
+  expect(dialog).toHaveAttribute('aria-modal', 'true');
+  expect(container.querySelector('#chart-form')).toBeVisible();
+  expect(container.querySelector('.workspace-sidebar__sections')).toBeVisible();
+  expect(screen.queryByRole('button', { name: 'Back to current visit' })).toBeNull();
+  fireEvent.click(within(dialog).getByRole('button', { name: 'Close' }));
+  expect(screen.queryByRole('dialog', { name: /Patients|My charts/ })).toBeNull();
+  expect(container.querySelector('#chart-form')).toBeVisible();
+});
