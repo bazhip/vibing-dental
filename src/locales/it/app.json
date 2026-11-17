@@ -1,7 +1,7 @@
 {
   "brand": "ToothOps Charting",
   "brandTrial": "ToothOps Charting · Prova",
-  "skipLink": "Vai alla cartella",
+  "skipLink": "Vai al contenuto principale",
   "sections": {
     "patient": "Paziente",
     "exam": "Esame",
@@ -9,7 +9,7 @@
     "charting": "Odontogramma",
     "diagnosis": "Diagnosi",
     "procedure": "Procedura",
-    "images": "Immagini",
+    "images": "Diagnostica per immagini",
     "treatment": "Referto del trattamento",
     "ownerReport": "Referto per il proprietario",
     "menuFallback": "Sezioni",
@@ -39,7 +39,8 @@
     "hint": "Viene stampato nel PDF sopra il referto del trattamento."
   },
   "lock": {
-    "title": "Sola lettura — scelga Modifica cartella per apportare modifiche"
+    "title": "Sola lettura — scelga Modifica cartella per apportare modifiche",
+    "description": "La modifica è disattivata per questa visita salvata."
   },
   "topbar": {
     "patientEmpty": "Nessun paziente — ne aggiunga uno nella sezione Paziente",
@@ -54,8 +55,8 @@
     "signInHint": "Ha già un account dello studio? Acceda",
     "signUp": "Crea un account gratuito",
     "signUpHint": "Crei un account dello studio — le Sue cartelle vengono salvate nel cloud e i PDF riportano il nome e il logo del Suo studio",
-    "myCharts": "Le mie cartelle",
-    "myChartsShort": "Cartelle",
+    "myCharts": "Pazienti",
+    "myChartsShort": "Pazienti",
     "editChart": "Modifica cartella",
     "editChartShort": "Modifica",
     "undo": "Annulla modifiche",
@@ -100,7 +101,9 @@
     "preview": "Anteprima PDF",
     "download": "Scarica i PDF",
     "previewAria": "Anteprima e download del PDF della cartella",
-    "downloadAria": "Anteprima e download della cartella clinica e del referto per il proprietario"
+    "downloadAria": "Anteprima e download della cartella clinica e del referto per il proprietario",
+    "review": "Verifica ed esportazione",
+    "reviewHint": "Visualizzi, scarichi o condivida i documenti della visita."
   },
   "errors": {
     "setting": "Impossibile salvare questa impostazione. {{error}}",
@@ -142,7 +145,7 @@
     "actual": "Cosa è successo in realtà:",
     "involved": "Specie / dente / sezione interessata (se applicabile):",
     "browser": "Browser e dispositivo:",
-    "screenshot": "(Se può, alleghi uno screenshot: è di grande aiuto.)"
+    "screenshot": "Alleghi uno screenshot se aiuta a illustrare il problema."
   },
   "menu": {
     "open": "Apri il menu delle impostazioni",
@@ -176,7 +179,7 @@
     },
     "feedback": {
       "label": "Invia feedback",
-      "sub": "Segnali un problema o proponga un’idea: arriva direttamente a noi."
+      "sub": "Segnali un problema o suggerisca un miglioramento."
     },
     "whatsNew": {
       "label": "Novità",
@@ -187,12 +190,12 @@
       "sub": "Riveda la presentazione di ogni parte dell’app."
     },
     "homepage": {
-      "label": "Home page",
-      "sub": "Veda la pagina del prodotto: la Sua cartella resta qui."
+      "label": "Sito ToothOps",
+      "sub": "Informazioni sul prodotto, prezzi e contatti."
     },
     "signOut": {
       "label": "Esci",
-      "sub": "Termini la sessione e torni alla home page."
+      "sub": "Termini la Sua sessione."
     }
   },
   "trialSignIn": {
@@ -217,8 +220,8 @@
     "offline": "Impossibile raggiungere il server. Controlli la connessione e riprovi: la cartella è al sicuro su questo dispositivo.",
     "saveFailed": "Salvataggio non riuscito: {{message}}. La cartella è al sicuro su questo dispositivo: riprovi tra un momento.",
     "unknownError": "errore sconosciuto",
-    "changedByOther": "Questa cartella è stata modificata da qualcun altro: la riapra da Le mie cartelle per vedere la sua versione",
-    "notSavedConflict": "Non salvato: questa cartella è stata modificata da qualcun altro. La riapra da Le mie cartelle per vedere la sua versione",
+    "changedByOther": "Questa cartella è stata modificata da qualcun altro: la riapra da Pazienti per vedere la sua versione",
+    "notSavedConflict": "Non salvato: questa cartella è stata modificata da qualcun altro. La riapra da Pazienti per vedere la sua versione",
     "noPermission": "Non ha l’autorizzazione per salvare modifiche a questa cartella. Lo chieda al titolare dello studio o avvii una nuova visita",
     "noDeletePermission": "Non ha l’autorizzazione per eliminare questa cartella. Lo chieda al titolare dello studio.",
     "practiceUnknown": "I dati del Suo studio non sono ancora stati caricati, quindi questa nuova cartella non può essere salvata nello studio. Controlli la connessione e ricarichi la pagina — la Sua cartella è ancora su questo dispositivo",
@@ -270,11 +273,24 @@
   "chartsMenu": {
     "thisPatient": "Questo paziente",
     "newVisit": "Nuova visita",
-    "newVisitHint": "Una nuova visita datata — identità e denti già assenti vengono riportati.",
+    "newVisitHint": "Una nuova visita datata con i dati del paziente e i denti precedentemente assenti o estratti riportati.",
     "history": "Cronologia delle versioni",
     "historyHint": "Ogni versione salvata di questa cartella — chi l’ha salvata e quando.",
     "allPatients": "Tutti i pazienti",
-    "openLibrary": "Apri Le mie cartelle…",
+    "openLibrary": "Visualizza pazienti",
     "openLibraryHint": "Cerchi e apra le cartelle di qualsiasi paziente."
+  },
+  "workspace": {
+    "rechecks": "Controlli",
+    "help": "Aiuto",
+    "account": "Il Suo account",
+    "visitActions": "Azioni della visita",
+    "practice": "Impostazioni dello studio",
+    "currentVisit": "Visita corrente",
+    "navigation": "Navigazione dell’area di lavoro",
+    "patientContext": "Paziente e visita correnti",
+    "more": "Altro",
+    "patientNumber": "Numero del paziente {{number}}",
+    "visitDate": "Visita: {{date}}"
   }
 }

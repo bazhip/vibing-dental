@@ -7,9 +7,21 @@
     "next": "Siguiente",
     "finish": "Empezar",
     "steps": {
+      "firstPatient": {
+        "title": "Identificar al paciente",
+        "body": "Introduzca el nombre del paciente y elija la especie y la dentición. Añada los datos del propietario y de la visita según sea necesario."
+      },
+      "firstFinding": {
+        "title": "Registrar un hallazgo",
+        "body": "Elija un diente e introduzca una medición o un hallazgo. Su trabajo se guarda automáticamente; podrá añadir más detalles después de esta guía."
+      },
+      "firstOutput": {
+        "title": "Revisar el resultado",
+        "body": "Abra la vista previa del PDF para revisar la visita antes de compartirla. Para ver la guía completa del espacio de trabajo, abra Ayuda → Primeros pasos."
+      },
       "welcome": {
         "title": "Bienvenido a ToothOps",
-        "body": "Descubra dónde está todo y adapte el registro a su forma de trabajar. Puede repetir esta breve visita en cualquier momento desde Ajustes → Primeros pasos."
+        "body": "Una breve visita al espacio de trabajo. Puede repetirla en cualquier momento desde Ayuda → Primeros pasos."
       },
       "sections": {
         "title": "Toda la visita en un solo lugar",
@@ -21,7 +33,7 @@
       },
       "species": {
         "title": "Especie y dentición",
-        "body": "Elija Felino o Canino, y después Permanente o Decidua — el esquema de los dientes se adapta."
+        "body": "Elija Felino, Canino o Equino y después la dentición — el esquema de los dientes se adapta."
       },
       "grid": {
         "title": "Registre a su manera",
@@ -40,16 +52,16 @@
         "body": "Redacte el informe o inserte una plantilla guardada desde el menú desplegable — y guarde otras nuevas para reutilizarlas."
       },
       "library": {
-        "title": "Mis historiales",
-        "body": "Abra los historiales de cualquier paciente (las visitas guardadas se abren en solo lectura hasta que pulse Editar) o, para el paciente en pantalla, inicie una nueva visita o consulte su historial de versiones. Nuevo paciente, al lado, inicia un historial en blanco."
+        "title": "Pacientes",
+        "body": "Busque pacientes y abra sus visitas. Use Nuevo paciente para un historial vacío. Para el paciente actual, use Acciones de la visita para iniciar una nueva visita o consultar el historial de versiones."
       },
       "dictate": {
         "title": "Dictar",
         "body": "Toque Dictar y describa sus hallazgos — desde cualquier página. Cada uno va a su sitio y un panel en directo muestra cada cambio para que pueda deshacer lo que sea."
       },
       "settings": {
-        "title": "Ajustes",
-        "body": "Nombre y logotipo de la clínica, equipo, plantillas de recordatorio de revisión, su cuenta — y este recorrido."
+        "title": "Ajustes de la clínica",
+        "body": "Gestione aquí su clínica, equipo, plantillas y recordatorios. Las preferencias personales están en Su cuenta; las guías y los comentarios, en Ayuda."
       },
       "pdf": {
         "title": "Vista previa y descarga del PDF",

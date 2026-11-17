@@ -7,9 +7,21 @@
     "next": "Avanti",
     "finish": "Inizia",
     "steps": {
+      "firstPatient": {
+        "title": "Identificare il paziente",
+        "body": "Inserisca il nome del paziente, poi scelga la specie e la dentizione. Aggiunga i dati del proprietario e della visita secondo necessità."
+      },
+      "firstFinding": {
+        "title": "Registrare un reperto",
+        "body": "Scelga un dente e inserisca una misurazione o un reperto. Il Suo lavoro viene salvato automaticamente; potrà aggiungere altri dettagli dopo questa guida."
+      },
+      "firstOutput": {
+        "title": "Verificare il risultato",
+        "body": "Apra l’anteprima PDF per verificare la visita prima di condividerla. Per la guida completa all’area di lavoro, apra Aiuto → Per iniziare."
+      },
       "welcome": {
         "title": "Benvenuto in ToothOps",
-        "body": "Scopra dove trovare tutto e adatti la compilazione al Suo modo di lavorare. Può rivedere questa breve guida in qualsiasi momento da Impostazioni → Primi passi."
+        "body": "Una breve panoramica dell’area di lavoro. Può rivederla in qualsiasi momento da Aiuto → Per iniziare."
       },
       "sections": {
         "title": "La visita in un unico posto",
@@ -21,7 +33,7 @@
       },
       "species": {
         "title": "Specie e dentatura",
-        "body": "Scelga Felino o Canino, poi Permanente o Decidua — lo schema dei denti si adatta."
+        "body": "Scelga Felino, Canino o Equino, poi la dentizione — lo schema dei denti si adatta."
       },
       "grid": {
         "title": "Compili a modo Suo",
@@ -40,16 +52,16 @@
         "body": "Scriva il referto oppure inserisca un modello salvato dal menu a tendina — e ne salvi di nuovi per riutilizzarli."
       },
       "library": {
-        "title": "Le mie cartelle",
-        "body": "Apra le cartelle di qualsiasi paziente (le visite salvate si aprono in sola lettura finché non fa clic su Modifica) oppure — per il paziente sullo schermo — avvii una nuova visita o consulti la cronologia delle versioni. Nuovo paziente, lì accanto, avvia una cartella vuota."
+        "title": "Pazienti",
+        "body": "Cerchi i pazienti e apra le loro visite. Usi Nuovo paziente per una cartella vuota. Per il paziente corrente, usi Azioni della visita per iniziare una nuova visita o visualizzare la cronologia delle versioni."
       },
       "dictate": {
         "title": "Detta",
         "body": "Tocchi Detta e descriva i Suoi reperti — da qualsiasi pagina. Ognuno finisce al posto giusto e un pannello in tempo reale mostra ogni modifica, così potrà annullare qualsiasi cosa."
       },
       "settings": {
-        "title": "Impostazioni",
-        "body": "Nome e logo dello studio, team, modelli dei promemoria di controllo, il Suo account — e questo giro guidato."
+        "title": "Impostazioni dello studio",
+        "body": "Gestisca qui la Sua clinica, il team, i modelli e i promemoria. Le preferenze personali si trovano in Il Suo account; le guide e il feedback in Aiuto."
       },
       "pdf": {
         "title": "Anteprima e download del PDF",

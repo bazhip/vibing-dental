@@ -16,6 +16,9 @@
     "journal": { "name": "Journal", "description": "Serif print classic — deep red accents on warm paper." }
   },
   "preview": {
+    "retryImages": "Retry images",
+    "withoutImages": "Download without images",
+
     "title": "Clinical chart",
     "subtitle": "For your records and referrals. Pick a style or your own color — the preview updates live.",
     "closeAria": "Close preview",
@@ -23,8 +26,8 @@
     "loadingImages": "Loading images…",
     "generating": "Generating preview…",
     "buildFailed": "Couldn't build the preview. See console for details.",
-    "imagesFailed": "Couldn't load the chart's images, so they're not in this PDF. Close and reopen the preview to retry.",
-    "imagesPartial": "Some images could not be loaded. They show as blank boxes in the PDF.",
+    "imagesFailed": "Couldn’t load the chart’s images. Retry, or download a PDF without images.",
+    "imagesPartial": "Some images could not be loaded. Retry, or download a PDF without images.",
     "frameTitle": "Clinical chart preview"
   },
   "link": {

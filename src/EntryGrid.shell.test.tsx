@@ -42,16 +42,31 @@ describe('EntryGrid on the website', () => {
     flags.native = false;
     const { container } = await renderGrid();
     expect(container.querySelector('.entry-grid-container > header.entry-grid__topbar')).not.toBeNull();
+    // Phone layouts hide practice branding without hiding encounter identity.
+    const brand = container.querySelector('.entry-grid__practice-brand')!;
+    const patient = container.querySelector('.entry-grid__patient')!;
+    expect(brand).not.toBeNull();
+    expect(brand.contains(patient)).toBe(false);
+    expect(brand.parentElement).toBe(patient.parentElement);
+
     expect(container.querySelector('.sidebar-layout__nav')).not.toBeNull();
     expect(container.querySelector('.mobile-section-menu')).not.toBeNull();
     expect(container.querySelector('.chart-menu__trigger')).not.toBeNull();
-    expect(container.querySelector('.sidebar-layout')?.className).toBe('sidebar-layout');
-    expect(container.querySelector('.fab-download')).not.toBeNull();
+    expect(container.querySelector('.sidebar-layout')).toHaveClass('sidebar-layout--external-nav');
+    expect(container.querySelectorAll('.sidebar-layout__nav')).toHaveLength(1);
+    expect(container.querySelector('.workspace-sidebar__sections .sidebar-layout__nav')).not.toBeNull();
+    expect(container.querySelector('form .sidebar-layout__nav')).toBeNull();
+    expect(container.querySelector('.visit-export__button')).not.toBeNull();
     expect(container.querySelector('.entry-grid__footnote')).not.toBeNull();
     expect(container.querySelector('.ios-appshell')).toBeNull();
     expect(screen.queryByRole('tablist')).toBeNull();
-    // The form is a direct child of the page container, as before.
-    expect(container.querySelector('.entry-grid-container > form#chart-form')).not.toBeNull();
+    // The chart remains mounted inside the destination content.
+    expect(container.querySelector('#workspace-content form#chart-form')).not.toBeNull();
+    expect(container.querySelector('.sidebar-layout__nav')).toHaveTextContent('Imaging');
+    const action = within(container.querySelector('form#chart-form')!).getByRole('button', { name: 'Customize' });
+    const enter = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true });
+    fireEvent(action, enter);
+    expect(enter.defaultPrevented).toBe(false);
   });
 });
 

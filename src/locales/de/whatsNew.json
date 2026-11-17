@@ -39,7 +39,7 @@
   },
   "radiographicFindings": {
     "title": "Röntgenbefunde",
-    "body": "Ein eigenes Feld auf der Seite Bilder. Es wird im PDF über dem Behandlungsbericht gedruckt."
+    "body": "Ein eigenes Feld auf der Seite Bildgebung. Es wird im PDF über dem Behandlungsbericht gedruckt."
   },
   "anesthesia": {
     "title": "Narkose",
@@ -59,10 +59,10 @@
   },
   "startsWhereLeft": {
     "title": "Beginnt dort, wo Sie aufgehört haben",
-    "body": "Beim Öffnen zeigt ToothOps Meine Akten — außer der heutige Besuch ist noch offen — und der heutige Besuch öffnet sich direkt zur Bearbeitung."
+    "body": "Beim Öffnen zeigt ToothOps die Patienten — es sei denn, der heutige Besuch ist noch geöffnet — und der heutige Besuch öffnet sich bereit zum Bearbeiten."
   },
   "sendFeedback": {
     "title": "Feedback mit zwei Tipps senden",
-    "body": "Einstellungen → Feedback senden, oder Feedback im Diktatfenster (Ihr Transkript kann angehängt werden). Es kommt direkt bei uns an."
+    "body": "Hilfe → Feedback senden, oder Feedback im Diktatfenster, um Ihr Transkript beizufügen."
   }
 }

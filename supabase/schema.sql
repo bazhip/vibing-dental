@@ -245,6 +245,8 @@ alter table public.report_templates   add column if not exists practice_id uuid;
 alter table public.attachments        add column if not exists practice_id uuid;
 -- DICOM originals (paid plans): `path` is the rendered preview, this is
 -- the untouched .dcm. Gated + frozen — see migration 20261112_dicom_attachments.
+-- Gate: public.current_user_can_store_dicom() — paid or comped practice
+-- members and app admins (migration 20261129_dicom_comped_and_admins).
 alter table public.attachments        add column if not exists original_path text;
 -- SECURITY DEFINER membership checks used in row policies (see migrations
 -- team_access / team_access_row_policies for the full policy definitions):

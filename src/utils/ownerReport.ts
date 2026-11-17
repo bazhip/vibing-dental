@@ -1,3 +1,4 @@
+import type { Attachment } from '../hooks/useAttachments';
 import { ChartSnapshot, DentalField, EXAM_ITEMS } from '../types';
 import { parseRootPockets, deepestPocket } from './pocket';
 import {
@@ -10,7 +11,9 @@ import {
   isCustomSection,
   resolveTemplate,
 } from './ownerReportConfig';
-import { ReportLocale, formatReportDate, reportStrings } from './ownerReportI18n';
+import { ReportLocale, SUMMARY_FIELDS, SummaryExtent, SummaryField, formatReportDate, reportStrings } from './ownerReportI18n';
+import { ownerFriendlyText } from './ownerReportCodes';
+import { isGridComment } from './gridComments';
 
 /**
  * Owner report model — the chart's structured findings translated into
@@ -44,6 +47,8 @@ export type OwnerReportRenderSection =
   | { kind: 'custom'; id: string; heading: string; body: string };
 
 export interface OwnerReportModel {
+  /** Explicit review of this exact chart, text and template revision. */
+  reviewed: boolean;
   /** Language of the generated text (and the PDF's fixed labels). */
   locale: ReportLocale;
   /** Header title (top right of page one); '' = none. */
@@ -69,9 +74,13 @@ export interface OwnerReportModel {
   alreadyMissing: string[];
   /** Lay names of teeth extracted during this visit. */
   extracted: string[];
-  /** Per-tooth findings (teeth with nothing recorded are omitted —
-   *  standard charting convention: blank means healthy). */
+  /** Mouth-wide findings, one line each ("Gum inflammation on most teeth
+   *  (mild to moderate)"). Those fields are left out of `teeth` notes. */
+  summaryLines: string[];
+  /** Per-tooth findings; an omitted tooth has no recorded findings. */
   teeth: OwnerReportTooth[];
+  /** The vet's notes not anchored to a tooth, codes in plain words. */
+  otherFindings: string[];
   /** Abnormal oral-exam areas with their comments. */
   examNotes: { area: string; comment: string }[];
 }
@@ -154,6 +163,44 @@ export function templateForSnapshot(snapshot: ChartSnapshot, options: BuildOwner
   return options.template ?? resolveTemplate(options.config, snapshot.ownerReport?.templateId);
 }
 
+/** Canonical ordering makes persisted review fingerprints independent of object insertion order. */
+function canonicalReviewValue(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(canonicalReviewValue);
+  if (value && typeof value === 'object') return Object.fromEntries(
+    Object.entries(value).filter(([, item]) => item !== undefined).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0).map(([key, item]) => [key, canonicalReviewValue(item)])
+  );
+  return value;
+}
+
+/** Small versioned change detector, not a security signature. */
+export function ownerReportReviewBasis(snapshot: ChartSnapshot, options: BuildOwnerReportOptions = {}): string {
+  const { recordNote: _recordNote, ownerReport, ...clinical } = snapshot;
+  const { reviewedBasis: _reviewedBasis, reviewedAttachments: _reviewedAttachments, ...overrides } = ownerReport ?? {};
+  const text = JSON.stringify(canonicalReviewValue({
+    clinical, overrides, template: templateForSnapshot(snapshot, options),
+    practiceName: options.practiceName?.trim() ?? '', doctorName: options.doctorName?.trim() ?? '',
+  }));
+  let first = 0x811c9dc5;
+  let second = 0x9e3779b9;
+  for (let i = 0; i < text.length; i += 1) {
+    first = Math.imul(first ^ text.charCodeAt(i), 0x01000193);
+    second = Math.imul(second ^ text.charCodeAt(i), 0x85ebca6b);
+  }
+  return `v1:${(first >>> 0).toString(16).padStart(8, '0')}${(second >>> 0).toString(16).padStart(8, '0')}`;
+}
+
+/** Signed URLs expire; only document content and membership affect review. */
+export function ownerReportAttachmentBasis(items: Pick<Attachment, 'id' | 'path' | 'caption' | 'kind' | 'toothTriadan'>[], roles: ChartSnapshot['imageRoles'] = {}): string {
+  return JSON.stringify(Object.entries(roles).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0).map(([id, role]) => {
+    const item = items.find((entry) => entry.id === id);
+    return item ? [id, role, item.path, item.caption, item.kind, item.toothTriadan] : [id, role, null];
+  }));
+}
+
+export function ownerReportIsReviewed(snapshot: ChartSnapshot, options: BuildOwnerReportOptions = {}): boolean {
+  return snapshot.ownerReport?.reviewedBasis === ownerReportReviewBasis(snapshot, options);
+}
+
 export function buildOwnerReportModel(
   snapshot: ChartSnapshot,
   options: BuildOwnerReportOptions = {}
@@ -174,24 +221,88 @@ export function buildOwnerReportModel(
     if (mark === 'extracted') extractedSet.add(Number(key));
   }
 
-  // Comments anchored to a tooth join that tooth's notes; the vet wrote
-  // them for the record, so they carry through verbatim.
+  // The vet's notes: anchored ones join that tooth's notes, the rest are
+  // "other findings". AVDC codes read in plain words. Auto-copied grid
+  // comments are left out: they repeat the grid (in English).
+  const plain = (text: string) => ownerFriendlyText(text, locale, snapshot.species);
   const commentsByTooth = new Map<number, string[]>();
+  const otherFindings: string[] = [];
   for (const comment of [...(snapshot.preComments ?? []), ...(snapshot.postComments ?? [])]) {
-    if (comment.anchorTriadan == null || !comment.text.trim()) continue;
+    if (isGridComment(comment) || !comment.text.trim()) continue;
+    if (comment.anchorTriadan == null) {
+      otherFindings.push(plain(comment.text.trim()));
+      continue;
+    }
     const list = commentsByTooth.get(comment.anchorTriadan) ?? [];
-    list.push(comment.text.trim());
+    list.push(plain(comment.text.trim()));
     commentsByTooth.set(comment.anchorTriadan, list);
+  }
+
+  // Mouth-wide findings: a periodontal finding on enough teeth becomes one
+  // line instead of a note on every tooth.
+  // Zero in any spelling ("0", "00", "0.0") means none.
+  const valueOf = (raw: unknown): string => {
+    const v = typeof raw === 'string' ? raw.trim() : '';
+    return /^0+(\.0+)?$/.test(v) ? '' : v;
+  };
+  // A grade's number, from its leading digits ("2+", "2.5", "1-2" → 2, 2.5, 1);
+  // null when there's none.
+  const gradeOf = (v: string): number | null => {
+    const m = v.match(/\d+(\.\d+)?/);
+    return m ? Number(m[0]) : null;
+  };
+  const gone = new Set<number>([
+    ...Object.entries(snapshot.preMarks ?? {}).filter(([, m]) => m === 'missing').map(([k]) => Number(k)),
+    ...extractedSet,
+  ]);
+  const presentCount = (snapshot.toothData ?? []).filter((tooth) => !gone.has(tooth.triadan)).length;
+  const summarised = new Map<SummaryField, Set<number>>(); // field → outlier teeth that keep their note
+  const summaryLines: string[] = [];
+  for (const field of SUMMARY_FIELDS) {
+    // Teeth present only: a tooth removed today keeps its own grades on its line.
+    const found = (snapshot.toothData ?? [])
+      .filter((tooth) => !gone.has(tooth.triadan))
+      .map((tooth) => ({ triadan: tooth.triadan, value: valueOf(tooth[field]) }))
+      .filter((f) => f.value);
+    const needed = presentCount < 12 ? Math.max(1, Math.ceil(presentCount / 2)) : 6;
+    if (found.length < needed) continue;
+    const share = presentCount ? found.length / presentCount : 1;
+    const extent: SummaryExtent = share >= 0.75 ? 'most' : share >= 0.4 ? 'many' : 'some';
+    const graded = field === 'gingivitis' || field === 'calculus';
+    const outliers = new Set<number>();
+    let severity = '';
+    if (graded) {
+      const grades = found.map((f) => ({ triadan: f.triadan, grade: gradeOf(f.value) }));
+      const levels = grades
+        .filter((g): g is { triadan: number; grade: number } => g.grade !== null)
+        .map((g) => Math.min(3, Math.max(1, Math.ceil(g.grade))) as 1 | 2 | 3);
+      const severeTeeth = grades.filter((g) => g.grade !== null && g.grade >= 3);
+      // Severe teeth stand out when most of the summarised teeth are milder.
+      if (severeTeeth.length > 0 && severeTeeth.length < found.length / 2) {
+        for (const g of severeTeeth) outliers.add(g.triadan);
+      }
+      // A grade with no number would make any range partial: no words then.
+      const allGraded = levels.length === found.length;
+      if (template.showGrades && levels.length && allGraded) {
+        const lo = Math.min(...levels) as 1 | 2 | 3;
+        const hi = Math.max(...levels) as 1 | 2 | 3;
+        severity = lo === hi ? t.severitySingle(t.severityWord(lo)) : t.severityRange(t.severityWord(lo), t.severityWord(hi));
+      }
+    }
+    summarised.set(field, outliers);
+    summaryLines.push(t.summaryLine(field, extent, severity));
   }
 
   const teeth: OwnerReportTooth[] = [];
   for (const tooth of snapshot.toothData ?? []) {
     const notes: string[] = [];
     for (const field of FIELD_ORDER) {
-      const raw = tooth[field];
-      let value = typeof raw === 'string' ? raw.trim() : '';
-      // Per-root pockets ("M4 D6") read as the deepest one for owners.
-      if (field === 'pocket' && parseRootPockets(value)) value = String(deepestPocket(value) ?? value);
+      let value = valueOf(tooth[field]);
+      const outliers = summarised.get(field as SummaryField);
+      if (outliers && !outliers.has(tooth.triadan)) continue;
+      // Per-root pockets ("M4 D6") read as the deepest one for owners;
+      // all-zero roots ("M0 D0") are no finding.
+      if (field === 'pocket' && parseRootPockets(value)) value = valueOf(String(deepestPocket(value) ?? value));
       if (value) notes.push(template.showGrades ? t.fieldPhrases[field](value) : t.fieldPlain[field]);
     }
     for (const text of commentsByTooth.get(tooth.triadan) ?? []) notes.push(text);
@@ -250,6 +361,7 @@ export function buildOwnerReportModel(
   }
 
   return {
+    reviewed: ownerReportIsReviewed(snapshot, options),
     locale,
     title: template.title.trim() ? fillPlaceholders(template.title, values).trim() : '',
     sections,
@@ -265,7 +377,9 @@ export function buildOwnerReportModel(
     extraNotes: (overrides.extraNotes ?? '').trim(),
     alreadyMissing,
     extracted: [...extractedSet].sort((a, b) => a - b).map(layName),
+    summaryLines,
     teeth,
+    otherFindings,
     examNotes,
   };
 }

@@ -1,5 +1,10 @@
 {
-  "title": "Meine Akten",
+  "rechecks": {
+    "title": "Kontrollen",
+    "description": "Patienten mit heute fälliger oder überfälliger Nachkontrolle. Öffnen Sie einen Besuch, senden Sie eine Erinnerung oder entfernen Sie eine erledigte Nachkontrolle."
+  },
+  "openLatest": "Letzten Besuch von {{name}} öffnen",
+  "title": "Patienten",
   "unnamedPatient": "Patient ohne Namen",
   "search": {
     "placeholder": "Nach Patientenname oder -nummer suchen …",
@@ -13,7 +18,7 @@
   },
   "importPdf": "Akten-PDF importieren",
   "importPdfTitle": "Eine mit dieser App erstellte Akten-PDF öffnen, um sie weiter zu bearbeiten",
-  "newPatient": "+ Neuer Patient",
+  "newPatient": "Neuer Patient",
   "newPatientTitle": "Die aktuelle Akte leeren und einen ganz neuen Patienten beginnen",
   "loading": "Wird geladen …",
   "empty": "Noch keine gespeicherten Akten — sie werden beim Erfassen automatisch gespeichert.",
@@ -31,8 +36,8 @@
     "updated": "Geändert",
     "recheck": "Nachkontrolle"
   },
-  "due": "Fällig",
-  "dueCount": "Fällig ({{n}})",
+  "due": "Fällige Nachkontrollen",
+  "dueCount": "Fällige Nachkontrollen ({{n}})",
   "dueTitle": "Nur Patienten mit fälliger oder überfälliger Nachkontrolle anzeigen",
   "recall": {
     "overdue": "{{date}} · überfällig",
@@ -53,17 +58,19 @@
     "updated": "Geändert {{when}}"
   },
   "actions": {
+    "menu": "Aktionen",
     "reminder": "Erinnerung",
     "reminderTitle": "Eine Nachkontroll-Erinnerung an {{who}} senden",
     "clearRecall": "Nachkontroll-Erinnerung für {{name}} entfernen",
     "clearRecallTitle": "Nachkontroll-Erinnerung für {{name}} entfernen — z. B. nach einer Nachkontrolle, bei der keine neue Akte entstanden ist",
-    "newVisit": "+ Besuch",
+    "newVisit": "Neuer Besuch",
     "newVisitTitle": "Einen neuen Besuch für {{name}} beginnen",
-    "history": "Verlauf",
+    "history": "Versionsverlauf",
     "historyChartTitle": "Wer die Akte von {{name}} gespeichert hat und wann",
     "historyVisitTitle": "Wer diesen Besuch gespeichert hat und wann",
     "deleteChart": "Akte von {{name}} löschen",
-    "loadMore": "Weitere Akten laden"
+    "loadMore": "Weitere Akten laden",
+    "clearRecallShort": "Nachkontrolle entfernen"
   },
   "errors": {
     "load": "Ihre Akten konnten nicht geladen werden. {{error}}",
@@ -128,5 +135,9 @@
     "saving": "Wird gespeichert …",
     "saveChanges": "Änderungen speichern",
     "saveTemplate": "Vorlage speichern"
+  },
+  "workspace": {
+    "description": "Suchen Sie Patientenakten, prüfen Sie Besuche und verwalten Sie Nachkontrollen.",
+    "backToVisit": "Zurück zum aktuellen Besuch"
   }
 }

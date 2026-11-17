@@ -30,16 +30,23 @@ interface SendResultsProps {
 /** What happened to each field, plus the diagnostic link. */
 export const SendResults: React.FC<SendResultsProps> = ({ rows, stampFailed, sentOn, onCopyDiagnostic }) => {
   const { t } = useTranslation(['pims']);
+  const heading = React.useRef<HTMLHeadingElement>(null);
+  const summaryId = React.useId();
+  React.useEffect(() => { heading.current?.focus(); }, []);
+  const saved = rows.filter((row) => row.code === null).length;
   return (
     <>
-      <h3 className="pims-dialog__subtitle">{t('pims:results.title')}</h3>
+      <h3 ref={heading} tabIndex={-1} aria-describedby={summaryId} className="pims-dialog__subtitle">{t('pims:results.title')}</h3>
+      <p id={summaryId} role="status" aria-live="polite" aria-atomic="true">
+        {t('pims:results.summary', { saved, attention: rows.length - saved })}
+      </p>
       <ul className="pims-dialog__results">
         {rows.map((r, i) => (
           <li key={`${r.fieldTitle}-${i}`} className={r.code ? 'pims-dialog__result--failed' : 'pims-dialog__result--ok'}>
             <strong>{r.fieldTitle}</strong>
             {r.code
               ? <span>{t(rowErrorKey(r.code))}</span>
-              : <span><span aria-hidden="true">✓ </span>{t('pims:results.sent')}</span>}
+              : <span><span aria-hidden="true">✓ </span>{t('pims:results.saved')}</span>}
           </li>
         ))}
       </ul>

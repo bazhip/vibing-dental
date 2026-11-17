@@ -47,12 +47,12 @@
     "voiceResult3": "Eingriffsdiagramm · 104 zur Extraktion markiert",
     "grid": {
       "title": "Erfassen wie in einer Tabelle",
-      "blurb": "Triadan-Raster für das gesamte Gebiss bei Katze, Hund und Milchgebiss. Ein Klick zum Eingeben, mit Tab, Enter oder Leertaste fliegen Sie durch eine angesagte Zahlenreihe.",
+      "blurb": "Vollständige Triadan-Raster für Katzen-, Hunde- und Milchgebisse. Geben Sie Messwerte per Klick ein und navigieren Sie mit Tab, Eingabe oder Leertaste.",
       "lead": "Das Raster funktioniert so, wie Ihr Team ohnehin tippt: Zelle anklicken und los. Sondierungstiefen eintragen, den Blick am Patienten.",
       "imageAlt": "Das Befundraster mit eingetragenen Werten für Gingivitis, Zahnstein, Tasche, Furkation und Beweglichkeit, Zahn 106 als fehlend durchgestrichen",
       "points": {
-        "p1": "Ein einziger Klick versetzt eine Zelle direkt in den Bearbeitungsmodus – kein Doppelklick nötig.",
-        "p2": "Tab, Enter und Leertaste springen weiter wie in einer Tabelle, sodass eine angesagte Reihe („3, 2, 4 …“) ohne Hinsehen sitzt.",
+        "p1": "Klicken Sie auf eine Zelle, um Messwerte einzugeben.",
+        "p2": "Wechseln Sie beim Erfassen von Messwerten mit Tab, Eingabe und Leertaste zwischen den Zellen.",
         "p3": "Werte für das ganze Gebiss in einem Schritt: Zahnstein oder Gingivitis für jeden Zahn über die Spaltenüberschrift setzen.",
         "p4": "Das Kontrollkästchen „Fehlend“ streicht die Zeile durch und füllt den Zahn im Diagramm – eine einzige Datenquelle.",
         "p5": "Bei einer Folgebehandlung erscheinen die Werte vom letzten Mal als blasse Hinweise in leeren Zellen: vergleichen, ohne die alte Akte zu öffnen.",
@@ -76,7 +76,7 @@
     "diagrams": {
       "title": "Diagramme, die synchron bleiben",
       "blurb": "Die Zahndiagramme für Befund und Eingriff folgen dem Raster – streichen Sie einen Zahn einmal durch, und die gesamte Akte zieht nach, vom Schema bis zum PDF.",
-      "lead": "Zwei anatomisch gezeichnete Diagramme – erst die Befunde, dann die Eingriffe –, die dem Raster und dem Ausdruck nie widersprechen.",
+      "lead": "Anatomische Diagramme für Diagnose und Eingriffe, mit synchronisierten Befunden im Raster und im gedruckten Befundbogen.",
       "imageAlt": "Das Befunddiagramm mit ausgefüllten fehlenden Zähnen und AVDC-Codes – T/FX, T/FX/CCF, TR, AB, AT – an jedem Zahn verankert",
       "points": {
         "p1": "Zähne mit einem Klick als fehlend oder extrahiert markieren (oder per Tastatur – jeder Zahn ist fokussierbar).",
@@ -125,7 +125,7 @@
     "history": {
       "title": "Jeder Besuch, ein Patient",
       "blurb": "Akten werden nach Patient gruppiert, sodass die gesamte Geschichte eines wiederkehrenden Tieres einen Klick entfernt ist – und dieser Besuch beginnt dort, wo der letzte endete.",
-      "lead": "Ein Patient ist eine Geschichte, kein Dateihaufen. ToothOps hält die Besuche zusammen und übernimmt das Richtige.",
+      "lead": "Halten Sie die Besuche jedes Patienten zusammen und übernehmen Sie relevante Befunde in den nächsten Besuch.",
       "points": {
         "p1": "Akten werden nach Patient gruppiert; ein Besuchswähler in der Kopfleiste wechselt zwischen den Terminen.",
         "p2": "Neue Besuche übernehmen extrahierte und fehlende Zähne automatisch – als „vorh.“ markiert, damit sie als Vorgeschichte und nicht als heutiger Befund gelesen werden.",
@@ -136,8 +136,8 @@
     },
     "recall": {
       "title": "Recall integriert",
-      "blurb": "Legen Sie beim Erfassen einen Kontrolltermin fest; die Patientenliste zeigt, wer fällig und wer überfällig ist, damit die nächste Zahnbehandlung nie untergeht.",
-      "lead": "Bei der Einhaltung der Kontrolltermine entscheidet sich der Behandlungserfolg – die Liste führt für Sie Buch.",
+      "blurb": "Legen Sie bei der Dokumentation einen Kontrolltermin fest und sehen Sie in der Patientenliste, welche Kontrollen fällig oder überfällig sind.",
+      "lead": "Planen Sie die Nachsorge mit Kontrollterminen und Erinnerungen im Patientenbereich.",
       "points": {
         "p1": "Ein Kontrolltermin in der Akte setzt den Patienten auf die Liste „Fällig“, markiert als fällig oder überfällig.",
         "p2": "Senden Sie dem Tierhalter direkt aus der Patientenliste eine Erinnerungs-E-Mail.",
@@ -158,10 +158,10 @@
     },
     "offline": {
       "title": "Cloud & am Behandlungsstuhl",
-      "blurb": "Jede Akte wird automatisch in der Cloud gespeichert und als lokale Kopie am Behandlungsstuhl vorgehalten – eine abgebrochene Verbindung kostet nie ein Gebiss.",
-      "lead": "Das WLAN der Praxis ist kein Teil Ihres Narkoseprotokolls. ToothOps geht davon aus, dass die Verbindung abbricht, und plant dafür.",
+      "blurb": "Akten werden automatisch in der Cloud gespeichert; bei einem Verbindungsabbruch steht eine lokale Kopie zur Verfügung.",
+      "lead": "Dokumentieren Sie bei Verbindungsunterbrechungen weiter und prüfen Sie den Speicherstatus, bevor Sie den Besuch verlassen.",
       "points": {
-        "p1": "Jeder Tastenanschlag wird sofort lokal gesichert – ein Neuladen mitten im Eingriff verliert nichts.",
+        "p1": "Änderungen werden während Ihrer Arbeit auf diesem Gerät gespeichert.",
         "p2": "Neue Akten werden automatisch in der Cloud gespeichert; fehlgeschlagene Speichervorgänge werden bei wiederhergestellter Verbindung automatisch wiederholt.",
         "p3": "Läuft Ihre Sitzung mitten im Eingriff ab, bleibt die Akte geöffnet – melden Sie sich direkt darüber wieder an.",
         "p4": "Wiederverwendbare Berichtsvorlagen sparen bei jeder COHAT das Tippen."

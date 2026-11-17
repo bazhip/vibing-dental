@@ -163,7 +163,16 @@
     "allConfirmed": "Alle geplanten Extraktionen bestätigt.",
     "confirmed": "{{done}} von {{total}} als extrahiert bestätigt.",
     "markExtracted_one": "Als extrahiert markieren",
-    "markExtracted_other": "Alle {{count}} als extrahiert markieren"
+    "markExtracted_other": "Alle {{count}} als extrahiert markieren",
+    "toothMap": "Zahnübersicht",
+    "quadrant": "Quadrant",
+    "quadrants": {
+      "1": "Oberkiefer rechts",
+      "2": "Oberkiefer links",
+      "3": "Unterkiefer links",
+      "4": "Unterkiefer rechts"
+    },
+    "selectTooth": "Zahn {{triadan}} auswählen: {{name}}"
   },
   "toothName": {
     "side": {
@@ -266,7 +275,8 @@
     "strokeWidthValue": "{{width}} Pixel",
     "clearStrokes": "Striche löschen",
     "more": "Weitere Diagrammwerkzeuge",
-    "moreTitle": "Weitere Werkzeuge — Kommentare, Nummern, Zoom, Textgröße"
+    "moreTitle": "Weitere Werkzeuge — Kommentare, Nummern, Zoom, Textgröße",
+    "moreLabel": "Weitere Werkzeuge"
   },
   "codeRef": {
     "all": "Codes",

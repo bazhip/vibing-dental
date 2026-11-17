@@ -1,7 +1,7 @@
 {
   "brand": "ToothOps Charting",
   "brandTrial": "ToothOps Charting · Trial",
-  "skipLink": "Skip to the chart",
+  "skipLink": "Skip to main content",
   "sections": {
     "patient": "Patient",
     "exam": "Exam",
@@ -9,9 +9,9 @@
     "charting": "Charting",
     "diagnosis": "Diagnosis",
     "procedure": "Procedure",
-    "images": "Images",
+    "images": "Imaging",
     "treatment": "Treatment report",
-    "ownerReport": "Owner Report",
+    "ownerReport": "Owner report",
     "menuFallback": "Sections",
     "nav": "Chart sections"
   },
@@ -39,7 +39,8 @@
     "hint": "Prints in the PDF above the treatment report."
   },
   "lock": {
-    "title": "View only — choose Edit chart to make changes"
+    "title": "View only — choose Edit chart to make changes",
+    "description": "Editing is off for this saved visit."
   },
   "topbar": {
     "patientEmpty": "No patient yet — add one in the Patient section",
@@ -54,8 +55,8 @@
     "signInHint": "Already have a practice account? Sign in",
     "signUp": "Create free account",
     "signUpHint": "Create a practice account — your charts save to the cloud and PDFs carry your practice name and logo",
-    "myCharts": "My charts",
-    "myChartsShort": "Charts",
+    "myCharts": "Patients",
+    "myChartsShort": "Patients",
     "editChart": "Edit chart",
     "editChartShort": "Edit",
     "undo": "Undo changes",
@@ -100,7 +101,9 @@
     "preview": "Preview PDF",
     "download": "Download PDFs",
     "previewAria": "Preview and download the chart PDF",
-    "downloadAria": "Preview and download the clinical chart and owner report"
+    "downloadAria": "Preview and download the clinical chart and owner report",
+    "review": "Review and export",
+    "reviewHint": "Preview, download, or share visit documents."
   },
   "errors": {
     "setting": "Couldn’t save that setting. {{error}}",
@@ -140,7 +143,7 @@
     "actual": "What actually happened:",
     "involved": "Species / tooth / section involved (if any):",
     "browser": "Browser & device:",
-    "screenshot": "(If you can, attach a screenshot — it helps a ton.)"
+    "screenshot": "Attach a screenshot if it helps explain the issue."
   },
   "menu": {
     "open": "Open settings menu",
@@ -174,7 +177,7 @@
     },
     "feedback": {
       "label": "Send feedback",
-      "sub": "Report a problem or suggest an idea — it comes straight to us."
+      "sub": "Report a problem or suggest an improvement."
     },
     "whatsNew": {
       "label": "What’s new",
@@ -185,12 +188,12 @@
       "sub": "Replay the walkthrough of every part of the app."
     },
     "homepage": {
-      "label": "Homepage",
-      "sub": "View the product page — your chart stays right here."
+      "label": "ToothOps website",
+      "sub": "Product information, pricing, and contact details."
     },
     "signOut": {
       "label": "Sign out",
-      "sub": "End your session and return to the homepage."
+      "sub": "End your session."
     }
   },
   "trialSignIn": {
@@ -215,8 +218,8 @@
     "offline": "Couldn't reach the server. Check your connection and retry — your chart is safe on this device.",
     "saveFailed": "Save failed: {{message}}. Your chart is safe on this device — retry in a moment.",
     "unknownError": "unknown error",
-    "changedByOther": "This chart was changed by someone else — reopen it from My charts to see their version.",
-    "notSavedConflict": "Not saved — this chart was changed by someone else. Reopen it from My charts to see their version.",
+    "changedByOther": "This chart was changed by someone else — reopen it from Patients to see their version.",
+    "notSavedConflict": "Not saved — this chart was changed by someone else. Reopen it from Patients to see their version.",
     "noPermission": "You don’t have permission to save changes to this chart. Ask the practice owner, or start a new visit.",
     "noDeletePermission": "You don’t have permission to delete this chart. Ask the practice owner.",
     "practiceUnknown": "Your practice details haven’t loaded yet, so this new chart can’t be saved to the practice. Check your connection and reload — your chart is still here on this device.",
@@ -268,11 +271,24 @@
   "chartsMenu": {
     "thisPatient": "This patient",
     "newVisit": "New visit",
-    "newVisitHint": "A fresh dated visit — identity and already-gone teeth carry over.",
+    "newVisitHint": "A new dated visit with patient details and previously missing or extracted teeth carried forward.",
     "history": "Version history",
     "historyHint": "Every saved version of this chart — who saved it and when.",
     "allPatients": "All patients",
-    "openLibrary": "Open My charts…",
+    "openLibrary": "View patients",
     "openLibraryHint": "Search and open any patient’s charts."
+  },
+  "workspace": {
+    "rechecks": "Rechecks",
+    "help": "Help",
+    "account": "Your account",
+    "visitActions": "Visit actions",
+    "practice": "Practice settings",
+    "currentVisit": "Current visit",
+    "navigation": "Workspace navigation",
+    "patientContext": "Current patient and visit",
+    "more": "More",
+    "patientNumber": "Patient number {{number}}",
+    "visitDate": "Visit: {{date}}"
   }
 }

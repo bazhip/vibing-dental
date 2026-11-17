@@ -15,7 +15,7 @@
     "ownerEmail": "E-mail du propriétaire",
     "ownerEmailOptional": "Facultatif",
     "ownerEmailReminders": "Pour les rappels de contrôle",
-    "tech": "Auxiliaire",
+    "tech": "Auxiliaire vétérinaire",
     "techPlaceholder": "Nom de l’auxiliaire (facultatif)",
     "recheck": "Contrôle prévu",
     "recheckQuick": "Définir la date de contrôle à un intervalle courant après la date de la visite",
@@ -36,7 +36,10 @@
     "dentition": "Dentition",
     "permanent": "Permanente",
     "deciduous": "Déciduale",
-    "equine": "Équin"
+    "equine": "Équin",
+    "identityGroup": "Informations du patient",
+    "ownerGroup": "Coordonnées du propriétaire",
+    "visitGroup": "Informations sur la visite"
   },
   "exam": {
     "title": "Examen",
@@ -66,10 +69,11 @@
       "palate": "palais",
       "pharynx": "pharynx / amygdales"
     },
-    "customizeTitle": "Ajouter vos propres zones d’examen"
+    "customizeTitle": "Ajouter vos propres zones d’examen",
+    "duplicateArea": "Cette zone figure déjà dans votre examen."
   },
   "anesthesia": {
-    "title": "Anesthésie — Blocs nerveux",
+    "title": "Anesthésie",
     "customize": "Personnaliser",
     "customizeTitle": "Choisir les blocs nerveux affichés et votre anesthésique habituel",
     "anesthetic": "Anesthésique",
@@ -99,7 +103,7 @@
     "record": "Fiche d’anesthésie"
   },
   "customEditor": {
-    "blocksLegend": "Vos blocs nerveux",
+    "blocksLegend": "Blocs nerveux supplémentaires",
     "blocksNote": "Lignes Droite / Gauche supplémentaires (mL), p. ex. palatin majeur.",
     "blockName": "Nom du bloc",
     "blockNameAria": "Nom du bloc nerveux {{n}}",
@@ -108,7 +112,7 @@
     "fallbackBlock": "bloc nerveux",
     "fallbackField": "champ",
     "addBlock": "Ajouter un bloc nerveux",
-    "fieldsLegend": "Vos champs",
+    "fieldsLegend": "Champs d’anesthésie personnalisés",
     "fieldsNote": "Affichés sous « Fiche d’anesthésie », p. ex. prémédication, sonde endotrachéale, fluides.",
     "fieldName": "Nom du champ",
     "fieldNameAria": "Nom du champ {{n}}",
@@ -123,8 +127,9 @@
       "text": "Texte",
       "number": "Nombre",
       "checkbox": "Oui / non",
-      "select": "Liste de choix"
-    }
+      "select": "Liste déroulante"
+    },
+    "fieldType": "Type de champ"
   },
   "report": {
     "title": "Compte rendu de traitement",
@@ -147,6 +152,8 @@
       "nameRequired": "Donnez un nom au modèle."
     },
     "saved": "Modèle « {{name}} » enregistré.",
-    "saveFailed": "Impossible d’enregistrer le modèle. {{error}}"
+    "saveFailed": "Impossible d’enregistrer le modèle. {{error}}",
+    "customize": "Personnaliser",
+    "customizeTitle": "Gérer les modèles de rapport de traitement"
   }
 }

@@ -7,10 +7,11 @@ import { usePracticeLanguage } from '../hooks/usePracticeLanguage';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { isNativeApp } from '../native/platform';
 import { Sheet } from '../ios/Sheet';
-import { toast } from './ui/dialogs';
+import { toast, confirmDialog } from './ui/dialogs';
 
 interface OwnerReportEmailModalProps {
   open: boolean;
+  validatePdf?: () => Promise<boolean>;
   onClose: () => void;
   chartId: string;
   practiceId: string;
@@ -38,7 +39,7 @@ function blobToBase64(blob: Blob): Promise<string> {
  * is attached and goes to the owner email saved on the chart.
  */
 export const OwnerReportEmailModal: React.FC<OwnerReportEmailModalProps> = ({
-  open, onClose, chartId, practiceId, practiceName, toEmail, patientName, ownerName, getPdf,
+  open, onClose, chartId, practiceId, practiceName, toEmail, patientName, ownerName, getPdf, validatePdf,
 }) => {
   const { t } = useTranslation('reportui');
   const { language, loaded } = usePracticeLanguage(practiceId || null, open);
@@ -47,6 +48,12 @@ export const OwnerReportEmailModal: React.FC<OwnerReportEmailModalProps> = ({
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState('');
   const native = isNativeApp();
+  const mounted = React.useRef(true);
+  React.useEffect(() => { mounted.current = true; return () => { mounted.current = false; }; }, []);
+  const sending = React.useRef(false);
+  const confirming = React.useRef(false);
+  const current = React.useRef({ open, chartId, getPdf, toEmail, subject, bodyText });
+  current.current = { open, chartId, getPdf, toEmail, subject, bodyText };
   const modalRef = useModalFocus(open && !native);
   const filename = open ? getPdf()?.filename ?? '' : '';
 
@@ -69,7 +76,7 @@ export const OwnerReportEmailModal: React.FC<OwnerReportEmailModalProps> = ({
     // Capture phase + stop: this composer sits on top of the Documents
     // dialog, and one Escape closed both (even mid-send).
     const onKey = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape') return;
+      if (e.key !== 'Escape' || confirming.current) return;
       e.stopImmediatePropagation();
       if (!busy) onClose();
     };
@@ -80,21 +87,41 @@ export const OwnerReportEmailModal: React.FC<OwnerReportEmailModalProps> = ({
   if (!open && !native) return null;
 
   const send = async () => {
+    if (sending.current || !open || !loaded || !subject.trim() || !bodyText.trim()) return;
     const pdf = getPdf();
     if (!pdf) return;
+    sending.current = true;
     setBusy(true);
     setError('');
     try {
-      const pdfBase64 = await blobToBase64(pdf.blob);
-      const res = await invokeFunction<{ to?: string }>('send-owner-report', {
-        chartId, subject, body: bodyText, filename: pdf.filename, pdfBase64,
+      confirming.current = true;
+      const confirmed = await confirmDialog({
+        title: t('email.confirmTitle'),
+        message: t('email.confirmMessage', { email: toEmail, filename: pdf.filename }),
+        confirmLabel: t('email.send'),
       });
+      confirming.current = false;
+      const stillCurrent = () => mounted.current && current.current.open &&
+        current.current.chartId === chartId && current.current.toEmail === toEmail &&
+        current.current.subject === subject && current.current.bodyText === bodyText &&
+        current.current.getPdf()?.blob === pdf.blob;
+      if (!confirmed || !stillCurrent()) return;
+      const pdfBase64 = await blobToBase64(pdf.blob);
+      if (validatePdf && !(await validatePdf())) return;
+      if (!stillCurrent()) return;
+      const res = await invokeFunction<{ to?: string }>('send-owner-report', {
+        chartId, subject, body: bodyText, filename: pdf.filename, pdfBase64, expectedRecipient: toEmail,
+      });
+      if (!mounted.current || current.current.chartId !== chartId) return;
       toast(t('email.sent', { email: res?.to || toEmail }), { kind: 'success' });
       onClose();
     } catch (e) {
+      if (!mounted.current || !current.current.open || current.current.chartId !== chartId) return;
       setError(errorText(e, t('email.sendFailed')));
     } finally {
-      setBusy(false);
+      confirming.current = false;
+      sending.current = false;
+      if (mounted.current) setBusy(false);
     }
   };
 

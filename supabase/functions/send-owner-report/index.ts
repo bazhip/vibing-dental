@@ -12,7 +12,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2';
 import { apiError } from '../_shared/apiErrors.ts';
 import { canAccessChart } from '../_shared/chartAccess.ts';
 import { renderBrandedEmail } from '../_shared/email.ts';
-import { decodePdf, emailParagraphs, fromHeader, sanitizeFilename, senderPractice, type SenderPractice } from '../_shared/ownerReportEmail.ts';
+import { confirmedRecipientMatches, decodePdf, emailParagraphs, fromHeader, sanitizeFilename, senderPractice, type SenderPractice } from '../_shared/ownerReportEmail.ts';
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -68,6 +68,7 @@ Deno.serve(async (req: Request) => {
   // Recipient is the chart's saved owner email — never a client value.
   const to = (chart.owner_email ?? '').trim();
   if (!isEmail(to)) return json(apiError('no_owner_email'), 400);
+  if (!confirmedRecipientMatches(to, body.expectedRecipient)) return json(apiError('owner_report_recipient_changed'), 409);
 
   // From-name and email language: the chart's practice (members only),
   // else the caller's own practice.

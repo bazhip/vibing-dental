@@ -18,6 +18,11 @@ interface ChartMenuCloud {
  */
 
 interface ChartMenuProps {
+  scope?: 'all' | 'help' | 'account' | 'more';
+  visit?: { name: string; onNewVisit: () => void; onHistory: () => void };
+  onNewPatient?: () => void;
+  onPreviewDocuments?: () => void;
+  onRevert?: () => void;
   /** Relaunch the getting-started walkthrough. */
   onOpenWalkthrough: () => void;
   /** View the landing page without ending the session. */
@@ -35,27 +40,25 @@ interface ChartMenuProps {
   /** Signed-in email for the menu header. Optional — when omitted (and
    *  cloud is on) the menu reads it from the current session. */
   email?: string;
+
 }
 
 const ITEM_SELECTOR = '.chart-menu__item';
 
-/** The signed-in email, from the prop or (failing that) the session. */
-function useSignedInEmail(enabled: boolean, override?: string): string {
-  const [email, setEmail] = React.useState('');
+/** Resolve personal identity before the account disclosure is opened. */
+function useSignedInIdentity(enabled: boolean) {
+  const [identity, setIdentity] = React.useState({ email: '' });
   React.useEffect(() => {
-    if (!enabled || override !== undefined || !supabase) return;
+    if (!enabled || !supabase) return;
     let cancelled = false;
-    supabase.auth
-      .getSession()
-      .then(({ data }) => {
-        if (!cancelled) setEmail(data.session?.user.email ?? '');
-      })
-      .catch(() => { /* header is optional */ });
-    return () => {
-      cancelled = true;
+    const update = (user: { email?: string } | undefined) => {
+      if (!cancelled) setIdentity({ email: user?.email ?? '' });
     };
-  }, [enabled, override]);
-  return override ?? email;
+    void supabase.auth.getSession().then(({ data }) => update(data.session?.user)).catch(() => { /* optional identity */ });
+    const subscription = supabase.auth.onAuthStateChange?.((_event, session) => update(session?.user));
+    return () => { cancelled = true; subscription?.data.subscription.unsubscribe(); };
+  }, [enabled]);
+  return identity;
 }
 
 /**
@@ -63,13 +66,18 @@ function useSignedInEmail(enabled: boolean, override?: string): string {
  * admin (when applicable), and app-level bits (AI settings, homepage,
  * sign out). Lives in the topbar.
  */
-export const ChartMenu: React.FC<ChartMenuProps> = ({ onOpenWalkthrough, onGoHome, onOpenAdmin, onOpenFeedback, onOpenChartSettings, onOpenWhatsNew, cloud, email }) => {
+export const ChartMenu: React.FC<ChartMenuProps> = ({ scope = 'all', visit, onNewPatient, onPreviewDocuments, onRevert, onOpenWalkthrough, onGoHome, onOpenAdmin, onOpenFeedback, onOpenChartSettings, onOpenWhatsNew, cloud, email }) => {
   const { t } = useTranslation('app');
+  const showHelp = scope !== 'account';
+  const showAccount = scope !== 'help';
   const [open, setOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
   const panelRef = React.useRef<HTMLDivElement>(null);
-  const signedInAs = useSignedInEmail(!!cloud && open, email);
+  const identity = useSignedInIdentity(!!cloud && (scope === 'account' || scope === 'more' || open));
+  const signedInAs = email ?? identity.email;
+  const accountName = signedInAs;
+  const triggerLabel = scope === 'account' ? accountName || t('menu.heads.account') : t(scope === 'all' ? 'menu.trigger' : `workspace.${scope}`);
 
   /** Close; return focus to the trigger if it was inside the menu (so
    *  keyboard users don't land on <body>). */
@@ -172,7 +180,7 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onOpenWalkthrough, onGoHom
   );
 
   return (
-    <div className={`chart-menu${open ? ' chart-menu--open' : ''}`} ref={containerRef} onBlur={onBlur}>
+    <div className={`chart-menu chart-menu--${scope}${open ? ' chart-menu--open' : ''}`} ref={containerRef} onBlur={onBlur}>
       {/* Disclosure semantics (button + aria-expanded) over plain buttons,
           with arrow keys as a convenience for moving between them. */}
       <button
@@ -182,24 +190,37 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onOpenWalkthrough, onGoHom
         onClick={() => setOpen((o) => !o)}
         onKeyDown={onTriggerKeyDown}
         aria-expanded={open}
-        aria-label={t('menu.open')}
+        title={scope === 'account' ? signedInAs || undefined : undefined}
+        aria-label={scope === 'account' ? triggerLabel : t(scope === 'all' ? 'menu.open' : `workspace.${scope}`)}
       >
-        <svg className="topbar-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+        {scope === 'all' && <svg className="topbar-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
           <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" fill="none" stroke="currentColor" strokeWidth="2" />
           <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
-        </svg>
-        <span className="chart-menu__trigger-label">{t('menu.trigger')}</span>
+        </svg>}
+        <span className="chart-menu__trigger-label">{triggerLabel}</span>
+        {scope === 'account' && <span aria-hidden="true">⌃</span>}
       </button>
 
       {open && (
         <div className="chart-menu__panel" ref={panelRef} onKeyDown={onPanelKeyDown}>
-          {cloud && signedInAs && (
+          {showAccount && cloud && signedInAs && (
             <div className="chart-menu__account" title={signedInAs}>
               <Trans t={t} i18nKey="menu.signedInAs" values={{ email: signedInAs }} components={{ strong: <strong /> }} />
             </div>
           )}
 
-          {cloud && (
+          {scope === 'more' && (visit || onNewPatient || onRevert || onPreviewDocuments) && (
+            <section className="chart-menu__section">
+              <header className="chart-menu__section-head">{visit?.name || t('chartsMenu.thisPatient')}</header>
+              {visit && item(t('chartsMenu.newVisit'), t('chartsMenu.newVisitHint'), visit.onNewVisit)}
+              {visit && item(t('chartsMenu.history'), t('chartsMenu.historyHint'), visit.onHistory)}
+              {onPreviewDocuments && item(t('fab.review'), t('fab.reviewHint'), onPreviewDocuments)}
+              {onNewPatient && item(t('topbar.newPatient'), t('topbar.newPatientTitle'), onNewPatient)}
+              {onRevert && item(t('topbar.undo'), t('topbar.undoTitle'), onRevert)}
+            </section>
+          )}
+
+          {(scope === 'all' || scope === 'more') && cloud && (
             <section className="chart-menu__section">
               <header className="chart-menu__section-head">{t('menu.heads.practice')}</header>
               {item(t('menu.practiceSettings.label'), isNativeApp() ? t('menu.practiceSettingsHintApp', { ns: 'chart' }) : t('menu.practiceSettings.sub'), cloud.onPracticeSettings)}
@@ -207,14 +228,14 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onOpenWalkthrough, onGoHom
             </section>
           )}
 
-          {cloud && (
+          {showAccount && cloud && (
             <section className="chart-menu__section">
               <header className="chart-menu__section-head">{t('menu.heads.account')}</header>
-              {item(t('menu.account.label'), t('menu.account.sub'), cloud.onOpenAccount)}
+              {item(scope === 'more' && accountName ? accountName : t('menu.account.label'), t('menu.account.sub'), cloud.onOpenAccount)}
             </section>
           )}
 
-          {onOpenAdmin && (
+          {showAccount && onOpenAdmin && (
             <section className="chart-menu__section">
               <header className="chart-menu__section-head">{t('menu.heads.admin')}</header>
               {item(t('menu.admin.label'), t('menu.admin.sub'), onOpenAdmin)}
@@ -222,13 +243,13 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onOpenWalkthrough, onGoHom
           )}
 
           <section className="chart-menu__section">
-            <header className="chart-menu__section-head">{t('menu.heads.app')}</header>
-            {onOpenChartSettings && item(t('menu.chartSettings.label'), t('menu.chartSettings.sub'), onOpenChartSettings)}
-            {onOpenFeedback && item(t('menu.feedback.label'), t('menu.feedback.sub'), onOpenFeedback)}
-            {onOpenWhatsNew && item(t('menu.whatsNew.label'), t('menu.whatsNew.sub'), onOpenWhatsNew)}
-            {item(t('menu.gettingStarted.label'), t('menu.gettingStarted.sub'), onOpenWalkthrough)}
-            {onGoHome && item(t('menu.homepage.label'), t('menu.homepage.sub'), onGoHome)}
-            {cloud && item(t('menu.signOut.label'), t('menu.signOut.sub'), cloud.onSignOut)}
+            {scope === 'all' && <header className="chart-menu__section-head">{t('menu.heads.app')}</header>}
+            {(scope === 'all' || scope === 'more') && onOpenChartSettings && item(t('menu.chartSettings.label'), t('menu.chartSettings.sub'), onOpenChartSettings)}
+            {showHelp && onOpenFeedback && item(t('menu.feedback.label'), t('menu.feedback.sub'), onOpenFeedback)}
+            {showHelp && onOpenWhatsNew && item(t('menu.whatsNew.label'), t('menu.whatsNew.sub'), onOpenWhatsNew)}
+            {showHelp && item(t('menu.gettingStarted.label'), t('menu.gettingStarted.sub'), onOpenWalkthrough)}
+            {showHelp && onGoHome && item(t('menu.homepage.label'), t('menu.homepage.sub'), onGoHome)}
+            {showAccount && cloud && item(t('menu.signOut.label'), t('menu.signOut.sub'), cloud.onSignOut)}
           </section>
         </div>
       )}

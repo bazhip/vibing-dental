@@ -1,4 +1,6 @@
 {
+  "draftLabel": "DRAFT — NOT REVIEWED",
+  "draftNotice": "This report has not been reviewed for the current chart. Information may be incomplete.",
   "abnormalityNoted": "abnormality noted",
   "after": "After",
   "alreadyMissingLine": "Already missing before this visit: {{list}}.",
@@ -12,7 +14,7 @@
     "pharynx": "Pharynx / Tonsils",
     "tongue": "Tongue"
   },
-  "extractionsLead": "These teeth could not be saved and were removed so they no longer cause pain or infection:",
+  "extractionsLead": "These teeth were recorded as removed during this visit:",
   "fieldPhrases": {
     "calculus": "tartar buildup (grade {{value}})",
     "furcation": "bone loss between the roots (grade {{value}})",
@@ -56,11 +58,11 @@
     "forage": "Allow plenty of forage — long-stem hay and grazing keep the teeth wearing evenly.",
     "warningSigns": "Watch for dropping feed, weight loss, slow eating, head tossing or resistance to the bit, bad breath or nasal discharge — call us if you notice any."
   },
-  "intro": "{{pet}} had a professional dental assessment and cleaning under anesthesia. This report explains what we found in everyday language — the full clinical chart with measurements is on file and available any time.",
+  "intro": "This report summarizes the information documented for {{pet}}’s dental visit. Please discuss any questions with your veterinary team.",
   "legendFilled": "filled = missing before this visit",
   "legendNumbers": "Numbers match the findings below",
   "legendRemoved": "red ✕ = removed today",
-  "noProblems": "No dental problems were recorded on the chart for this visit — great news!",
+  "noProblems": "No dental findings have been recorded for this visit.",
   "ourPractice": "our practice",
   "ownerLabel": "Owner",
   "patientLabel": "Patient",
@@ -100,5 +102,58 @@
     }
   },
   "yourPet": "your pet",
-  "yourTeam": "your veterinary team"
+  "yourTeam": "your veterinary team",
+  "plainCodes": {
+    "T/FX": "a broken tooth",
+    "T/FX/EI": "a crack in the tooth's enamel",
+    "T/FX/EF": "a chipped tooth (enamel only)",
+    "T/FX/UCF": "a broken tooth (the nerve is not exposed)",
+    "T/FX/CCF": "a broken tooth with the nerve exposed",
+    "T/FX/UCRF": "a broken tooth reaching below the gum line (the nerve is not exposed)",
+    "T/FX/CCRF": "a broken tooth reaching below the gum line, with the nerve exposed",
+    "T/FX/RF": "a fractured tooth root",
+    "T/PE": "the tooth's nerve is exposed",
+    "T/NV": "a tooth that is no longer alive",
+    "TR": "tooth resorption (the body is breaking the tooth down)",
+    "T/A": "a tooth that was knocked out",
+    "T/U": "a tooth that hasn't come through the gum",
+    "T/I": "a tooth stuck below the gum line",
+    "DT": "a baby tooth",
+    "AT": "tooth wear from teeth rubbing together",
+    "AB": "tooth wear from chewing hard objects",
+    "E/D": "a defect in the tooth's enamel",
+    "E/H": "thin or poorly formed enamel",
+    "CA": "a cavity (tooth decay)",
+    "GR": "receding gums",
+    "GH": "overgrown gum tissue",
+    "OM": "a growth in the mouth",
+    "B": "a biopsy (tissue sample for the lab)",
+    "B/I": "a biopsy (sample of the growth for the lab)",
+    "B/E": "removal of the growth for lab testing",
+    "X": "tooth removed",
+    "XS": "tooth removed in sections",
+    "XSS": "tooth removed surgically",
+    "RCT": "root canal treatment",
+    "VPT": "treatment to keep the tooth alive",
+    "PRO": "professional cleaning (scaling and polishing)"
+  },
+  "summary": {
+    "gingivitis": "Gum inflammation on {{extent}}{{severity}}",
+    "calculus": "Tartar on {{extent}}{{severity}}",
+    "recession": "Receding gums on {{extent}}",
+    "hyperplasia": "Overgrown gum tissue on {{extent}}"
+  },
+  "extent": {
+    "most": "most teeth",
+    "many": "many teeth",
+    "some": "some teeth"
+  },
+  "severity": {
+    "mild": "mild",
+    "moderate": "moderate",
+    "severe": "severe",
+    "single": " ({{level}})",
+    "range": " ({{from}} to {{to}})"
+  },
+  "otherFindings": "Other findings"
 }

@@ -21,12 +21,15 @@ import {
 } from '../constants/plans';
 import { usePracticeLanguage } from '../hooks/usePracticeLanguage';
 import { REPORT_LOCALES, ReportLocale, isReportLocale } from '../utils/ownerReportI18n';
+import { ReportTemplatesModal } from './ReportTemplatesModal';
+import { useReportTemplates } from '../hooks/useReportTemplates';
 import { OwnerReportTemplatesModal } from './OwnerReportTemplatesModal';
 import { confirmDialog, friendlyError, toast } from './ui/dialogs';
 import { deleteMyPractice } from '../utils/accountDeletion';
 import { useStackLeaveGuard, useStackScreenOptions } from '../ios/Stack';
 import './Login.css';
 import './AccountSurfaces.css';
+import './PracticeWorkspace.css';
 
 interface PracticeSettingsModalProps {
   open: boolean;
@@ -35,7 +38,11 @@ interface PracticeSettingsModalProps {
   /** 'screen': the body only, as a pushed screen in the iOS app's Settings
    *  tab — Save sits in the navigation bar while the name has an edit, and
    *  Back asks before discarding it. Default: the dialog. */
-  presentation?: 'modal' | 'screen';
+  presentation?: 'modal' | 'screen' | 'page';
+  onOpenReminders?: () => void;
+  onOpenChartSettings?: () => void;
+  /** Register the page's unsaved-name guard with the app navigation. */
+  onLeaveGuardChange?: (guard: (() => Promise<boolean>) | null) => void;
   /** Screen only: open the owner report templates (pushes a screen). */
   onCustomizeReport?: () => void;
 }
@@ -78,22 +85,34 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   profile,
   presentation = 'modal',
   onCustomizeReport,
+  onOpenReminders,
+  onOpenChartSettings,
+  onLeaveGuardChange,
 }) => {
   const { t } = useTranslation('settings');
   const asScreen = presentation === 'screen';
-  const [practiceName, setPracticeName] = React.useState(profile.practiceName);
+  const asPage = presentation === 'page';
+  const [section, setSection] = React.useState<'general' | 'team' | 'templates' | 'billing'>('general');
+  const [nameDraft, setNameDraft] = React.useState<string | null>(null);
+  const practiceName = nameDraft ?? profile.practiceName;
   const [nameBusy, setNameBusy] = React.useState(false);
   const [nameError, setNameError] = React.useState('');
   const [logoBusy, setLogoBusy] = React.useState(false);
   const [logoError, setLogoError] = React.useState('');
   const fileRef = React.useRef<HTMLInputElement>(null);
   const firstFieldRef = React.useRef<HTMLInputElement>(null);
-  // The owner-report template editor swaps in on top of this dialog.
-  const [templatesOpen, setTemplatesOpen] = React.useState(false);
-  const modalRef = useModalFocus(open && !templatesOpen && !asScreen);
+  // The selected template editor swaps in on top of this dialog.
+  const [templatesOpen, setTemplatesOpen] = React.useState<'owner' | 'treatment' | null>(null);
+  const [treatmentTemplateId, setTreatmentTemplateId] = React.useState<string | null>(null);
+  const templateLeaveGuard = React.useRef<(() => Promise<boolean>) | null>(null);
+  const registerTemplateLeaveGuard = React.useCallback((guard: (() => Promise<boolean>) | null) => {
+    templateLeaveGuard.current = guard;
+  }, []);
+  const modalRef = useModalFocus(open && !templatesOpen && !asScreen && !asPage);
 
   // Team state (loads when the dialog opens).
   const team = useTeam(open);
+  const treatmentTemplates = useReportTemplates(team.practice?.id ?? '');
   const clientLang = usePracticeLanguage(team.practice?.id ?? null);
   const languageName = (l: ReportLocale) => t(`languages.${l}`, { ns: 'reportui' });
   const [langError, setLangError] = React.useState('');
@@ -134,14 +153,14 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
 
   React.useEffect(() => {
     if (open) {
-      setPracticeName(profile.practiceName);
+      setNameDraft(null);
       setNameError('');
       setLogoError('');
       setMemberEmail('');
       setTeamError('');
       setTeamNote('');
       // (A pushed screen doesn't raise the keyboard on arrival.)
-      if (!asScreen) firstFieldRef.current?.focus();
+      if (!asScreen && !asPage) firstFieldRef.current?.focus();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
@@ -155,19 +174,25 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   const isPrimaryOwner = team.members.some((m) => m.isYou && m.isPrimaryOwner);
   const teamLoadFailed = team.loaded && !!team.error && !team.practice;
   const canRename = !team.enabled || (!teamLoadFailed && (!team.loaded || !team.practice || isPrimaryOwner));
-  const nameDirty = canRename && practiceName.trim() !== profile.practiceName.trim();
+  const nameDirty = canRename && nameDraft !== null && practiceName.trim() !== profile.practiceName.trim();
 
   // The field locked after the user started typing (role arrived): drop
   // the draft so a stale value doesn't sit in a disabled field.
   React.useEffect(() => {
-    if (!canRename) setPracticeName(profile.practiceName);
+    if (!canRename) setNameDraft(null);
   }, [canRename, profile.practiceName]);
+
+  // Once the saved profile catches up, follow future server refreshes again.
+  React.useEffect(() => {
+    if (nameDraft !== null && nameDraft === profile.practiceName) setNameDraft(null);
+  }, [nameDraft, profile.practiceName]);
 
   const busy = nameBusy || logoBusy;
 
   /** Asks before discarding an unsaved practice name; false = stay. */
   const confirmLeave = React.useCallback(async (): Promise<boolean> => {
     if (nameBusy) return false;
+    if (templatesOpen && !(await templateLeaveGuard.current?.())) return false;
     if (nameDirty) {
       const discard = await confirmDialog({
         title: t('practice.discard.title'),
@@ -179,7 +204,23 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
       if (!discard) return false;
     }
     return true;
-  }, [nameBusy, nameDirty, t]);
+  }, [nameBusy, nameDirty, templatesOpen, t]);
+
+  React.useEffect(() => {
+    if (!asPage || !open) return;
+    onLeaveGuardChange?.(confirmLeave);
+    return () => onLeaveGuardChange?.(null);
+  }, [asPage, open, confirmLeave, onLeaveGuardChange]);
+
+  React.useEffect(() => {
+    if (!asPage || !open || !nameDirty) return;
+    const preventLoss = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = '';
+    };
+    window.addEventListener('beforeunload', preventLoss);
+    return () => window.removeEventListener('beforeunload', preventLoss);
+  }, [asPage, open, nameDirty]);
 
   /** Close, asking first when the practice name has an unsaved edit. */
   const requestClose = React.useCallback(async () => {
@@ -203,7 +244,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   });
 
   React.useEffect(() => {
-    if (!open || asScreen) return;
+    if (!open || asScreen || asPage) return;
     const onKey = (e: KeyboardEvent) => {
       // The templates dialog handles its own Escape (unsaved-changes
       // check), so only close the practice dialog when it's on top.
@@ -214,7 +255,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [open, requestClose, templatesOpen, asScreen]);
+  }, [open, requestClose, templatesOpen, asScreen, asPage]);
 
   const backdrop = useBackdropDismiss(() => void requestClose());
 
@@ -222,11 +263,23 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
 
   // The templates editor replaces the practice dialog while open — it
   // manages its own focus, Escape handling, and unsaved-changes guard.
-  if (templatesOpen) {
+  if (templatesOpen === 'treatment') {
+    return (
+      <ReportTemplatesModal
+        open
+        store={treatmentTemplates}
+        initialTemplateId={treatmentTemplateId}
+        onLeaveGuardChange={registerTemplateLeaveGuard}
+        onClose={() => setTemplatesOpen(null)}
+      />
+    );
+  }
+  if (templatesOpen === 'owner') {
     return (
       <OwnerReportTemplatesModal
         open
-        onClose={() => setTemplatesOpen(false)}
+        onLeaveGuardChange={registerTemplateLeaveGuard}
+        onClose={() => setTemplatesOpen(null)}
         config={profile.ownerReportConfig}
         onSave={profile.saveOwnerReportConfig}
         loadFailed={profile.ownerReportConfigLoadFailed}
@@ -248,11 +301,13 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
     setNameError('');
     try {
       await profile.update({ practiceName: practiceName.trim(), doctorName: profile.doctorName });
+      setNameDraft(practiceName.trim());
       toast(t('practice.nameSaved'), { kind: 'success' });
       // The screen stays (it holds the team, logo, …); the dialog closes.
-      if (!asScreen) onClose();
+      if (!asScreen && !asPage) onClose();
     } catch (e) {
       setNameError(friendlyError(e, t('practice.nameSaveFailed')));
+      if (asPage) setSection('general');
     } finally {
       setNameBusy(false);
     }
@@ -443,6 +498,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
     <>
       {/* ---- Identity ------------------------------------------------ */}
       <form
+        hidden={asPage && section !== 'general'}
         className="ai-settings-section"
         onSubmit={(e) => {
           e.preventDefault();
@@ -450,6 +506,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
         }}
       >
         <h3 className="ai-settings-subhead">{t('practice.profile')}</h3>
+        <p className="ai-settings-blurb">{t('workspace.saveHint')}</p>
         <label className="patient-form__label">
           {t('practice.nameLabel')}
           <input
@@ -458,7 +515,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
             className="patient-form__input"
             value={practiceName}
             onChange={(e) => {
-              setPracticeName(e.target.value);
+              setNameDraft(e.target.value);
               setNameError('');
             }}
             placeholder={t('practice.namePlaceholder')}
@@ -474,7 +531,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
       </form>
 
       {/* ---- Logo --------------------------------------------------- */}
-      <section className="ai-settings-section">
+      <section className="ai-settings-section" hidden={asPage && section !== 'general'}>
         <span className="patient-form__label">{t('practice.logo.label')}</span>
         {profile.logoUrl ? (
           <div className="practice-logo-row">
@@ -510,7 +567,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
       </section>
 
       {/* ---- Team --------------------------------------------------- */}
-      <section className="ai-settings-section">
+      <section className="ai-settings-section" hidden={asPage && section !== 'team'}>
         <h3 className="ai-settings-subhead">{t('practice.team.title')}</h3>
         {!team.enabled ? null : !team.loaded ? (
           <p className="practice-logo-empty">{t('practice.team.loading')}</p>
@@ -643,7 +700,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
 
       {/* ---- Language for pet owners ----------------------------------- */}
       {team.practice && (
-        <section className="ai-settings-section">
+        <section className="ai-settings-section" hidden={asPage && section !== 'general'}>
           <h3 className="ai-settings-subhead">{t('practice.clientLanguage.title')}</h3>
           <p className="ai-settings-blurb">{t('practice.clientLanguage.blurb')}</p>
           {isOwner ? (
@@ -674,9 +731,32 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
         </section>
       )}
 
+      {treatmentTemplates.enabled && (
+        <section className="ai-settings-section" hidden={asPage && section !== 'templates'}>
+          <h3 className="ai-settings-subhead">{t('practice.treatmentReport.title')}</h3>
+          <p className="ai-settings-blurb">{t('practice.treatmentReport.blurb')}</p>
+          <ul className="treatment-templates__list">
+            {treatmentTemplates.templates.map((tpl) => (
+              <li key={tpl.id}>
+                <button type="button" className="treatment-templates__item" onClick={() => { setTreatmentTemplateId(tpl.id); setTemplatesOpen('treatment'); }}>
+                  {tpl.name.trim() || t('templates.untitled', { ns: 'library' })}
+                </button>
+              </li>
+            ))}
+          </ul>
+          <button
+            type="button"
+            className="diagram-view__action"
+            onClick={() => { setTreatmentTemplateId(null); setTemplatesOpen('treatment'); }}
+          >
+            {t('practice.treatmentReport.customize')}
+          </button>
+        </section>
+      )}
+
       {/* ---- Owner report --------------------------------------------- */}
       {profile.ownerReportEnabled && (
-        <section className="ai-settings-section">
+        <section className="ai-settings-section" hidden={asPage && section !== 'templates'}>
           <h3 className="ai-settings-subhead">{t('practice.ownerReport.title')}</h3>
           <p className="ai-settings-blurb">
             {t('practice.ownerReport.blurb')}
@@ -684,7 +764,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
           <button
             type="button"
             className="diagram-view__action"
-            onClick={() => (asScreen && onCustomizeReport ? onCustomizeReport() : setTemplatesOpen(true))}
+            onClick={() => (asScreen && onCustomizeReport ? onCustomizeReport() : setTemplatesOpen('owner'))}
           >
             {t('practice.ownerReport.customize')}
           </button>
@@ -693,7 +773,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
 
       {/* ---- Billing (web only) -------------------------------------- */}
       {showBilling && (
-        <section className="ai-settings-section">
+        <section className="ai-settings-section" hidden={asPage && section !== 'billing'}>
           <h3 className="ai-settings-subhead">{t('settings.title', { ns: 'billing' })}</h3>
           {!billing ? (
             billingError ? (
@@ -820,7 +900,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
       {/* ---- Delete practice (primary owner only) -------------------- */}
       {team.practice && team.primaryOwnerId != null &&
         team.members.some((m) => m.isYou && m.userId === team.primaryOwnerId) && (
-        <section className="ai-settings-section">
+        <section className="ai-settings-section" hidden={asPage && section !== 'general'}>
           <h3 className="ai-settings-subhead">{t('practice.deletion.title')}</h3>
           <p className="patient-form__hint">
             {t('practice.deletion.blurb')}
@@ -839,20 +919,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
     </>
   );
 
-  if (asScreen) return <div className="ai-settings-body ios-settings-page">{practiceBody}</div>;
-
-  return (
-    <div className="ai-settings-overlay" {...backdrop} role="dialog" aria-modal="true" aria-labelledby="practice-settings-title">
-      <div className="ai-settings-modal" ref={modalRef} tabIndex={-1}>
-        <header className="ai-settings-header">
-          <h2 id="practice-settings-title">{t('practice.title')}</h2>
-          <button type="button" className="pdf-preview-close" onClick={() => void requestClose()} aria-label={t('actions.close', { ns: 'common' })}>
-            ×
-          </button>
-        </header>
-        <div className="ai-settings-body">
-          {practiceBody}
-        </div>
+  const footer = (
         <footer className="ai-settings-footer">
           {/* Logo, team and billing apply instantly; only the practice
               name is a draft — so the footer only offers Save when it
@@ -877,6 +944,64 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
             </button>
           )}
         </footer>
+  );
+
+  const pageSections: Array<'general' | 'team' | 'templates' | 'billing'> = ['general', 'team'];
+  if (profile.ownerReportEnabled || treatmentTemplates.enabled) pageSections.push('templates');
+  if (showBilling) pageSections.push('billing');
+
+  if (asPage) return (
+    <main className="practice-workspace" aria-labelledby="practice-workspace-title">
+      <header className="practice-workspace__header">
+        <div>
+          <h1 id="practice-workspace-title">{t('practice.title')}</h1>
+          <p>{t('workspace.scope')}</p>
+        </div>
+        <button type="button" className="diagram-view__action" onClick={() => void requestClose()} disabled={nameBusy}>
+          {t('workspace.back')}
+        </button>
+      </header>
+      <div className="practice-workspace__layout">
+        <div>
+        <nav className="practice-workspace__nav" aria-label={t('practice.title')}>
+          {pageSections.map((id) => (
+            <button key={id} type="button" aria-current={section === id ? 'page' : undefined} onClick={() => setSection(id)}>
+              {t(`workspace.${id}`)}
+            </button>
+          ))}
+          {(onOpenReminders || onOpenChartSettings) && <div className="practice-workspace__nav-divider" />}
+          {onOpenReminders && <button type="button" onClick={onOpenReminders}>{t('workspace.reminders')}</button>}
+        </nav>
+        {onOpenChartSettings && <aside className="practice-workspace__personal">
+          <p>{t('workspace.personalScope')}</p>
+          <button type="button" className="diagram-view__action" onClick={onOpenChartSettings}>{t('workspace.charting')}</button>
+        </aside>}
+        </div>
+        <div className="practice-workspace__content">
+          <h2>{t(`workspace.${section}`)}</h2>
+          {practiceBody}
+
+          {footer}
+        </div>
+      </div>
+    </main>
+  );
+
+  if (asScreen) return <div className="ai-settings-body ios-settings-page">{practiceBody}</div>;
+
+  return (
+    <div className="ai-settings-overlay" {...backdrop} role="dialog" aria-modal="true" aria-labelledby="practice-settings-title">
+      <div className="ai-settings-modal" ref={modalRef} tabIndex={-1}>
+        <header className="ai-settings-header">
+          <h2 id="practice-settings-title">{t('practice.title')}</h2>
+          <button type="button" className="pdf-preview-close" onClick={() => void requestClose()} aria-label={t('actions.close', { ns: 'common' })}>
+            ×
+          </button>
+        </header>
+        <div className="ai-settings-body">
+          {practiceBody}
+        </div>
+        {footer}
       </div>
     </div>
   );

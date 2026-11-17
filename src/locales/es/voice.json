@@ -97,7 +97,8 @@
     "sending": "enviando…",
     "showInChart": "Mostrar en el historial",
     "speaker": "Hablante {{n}}",
-    "transcript": "Transcripción"
+    "transcript": "Transcripción",
+    "reviewComplete": "Revisión completada"
   },
   "peek": {
     "connecting": "Preparando el micrófono: un momento…",

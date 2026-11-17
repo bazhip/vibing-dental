@@ -75,3 +75,9 @@ export function senderPractice<T extends SenderPractice>(
   if (chartPractice && callerIsMember && chartPractice.name?.trim()) return chartPractice;
   return callerPractice;
 }
+
+/** A confirmation is a precondition, never the source of the destination.
+ * Older clients omit it; newer clients must match the saved email exactly. */
+export function confirmedRecipientMatches(saved: string, expected: unknown): boolean {
+  return expected === undefined || (typeof expected === 'string' && !!expected.trim() && saved.trim() === expected.trim());
+}

@@ -46,4 +46,17 @@ describe('drawImagePage', () => {
     ];
     await expect(drawImagePage(doc, page, images, 0, 1, regular, bold)).resolves.toBeUndefined();
   });
+
+  it('labels an image pinned to a tooth with its Triadan number', async () => {
+    const { doc, page, regular, bold } = await setup();
+    const drawn: string[] = [];
+    const orig = page.drawText.bind(page);
+    page.drawText = (text: string, opts?: Parameters<typeof orig>[1]) => { drawn.push(text); return orig(text, opts); };
+    await drawImagePage(doc, page, [
+      { jpegBytes: jpeg(), caption: 'Fracture', kind: 'xray', tooth: 108 },
+      { jpegBytes: jpeg(), caption: '', kind: 'photo', tooth: null },
+    ], 0, 2, regular, bold);
+    expect(drawn.join('|')).toContain('1. Radiograph · Tooth 108 — Fracture');
+    expect(drawn.join('|')).toMatch(/2\. Photo(\||$)/);
+  });
 });

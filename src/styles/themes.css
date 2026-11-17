@@ -32,6 +32,11 @@
   --primary:        #0c6b63;
   --primary-end:    #095049;
   --accent:         #0d9488;
+  --action-tint:    #e7f0ef;
+  --action-border:  #75a9a2;
+  --warning:        #92400e;
+  --warning-tint:   #fff7e6;
+  --warning-border: #d9a441;
 
   /* Chart ink — strong instrument chrome (grid header, patient banner
      accents). Deliberately not the brand teal: teal is for actions,
@@ -48,7 +53,7 @@
   --text:           #17232e;
   --text-muted:     #55677a;
   --border:         #e2e7eb;
-  --border-strong:  #c5d0d8;
+  --border-strong:  #9cabb7;
 
   --shadow:         0 1px 2px rgba(23, 35, 46, 0.04), 0 4px 16px rgba(23, 35, 46, 0.05);
   --radius:         10px;

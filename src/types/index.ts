@@ -374,6 +374,10 @@ export interface StoredRecordNote {
 }
 
 export interface OwnerReportOverrides {
+  /** Fingerprint of the chart and template explicitly reviewed as complete. */
+  reviewedBasis?: string;
+  /** Stable manifest of the report photos checked during review. */
+  reviewedAttachments?: string;
   /** Opening summary paragraph. */
   intro?: string;
   /** Home-care advice, one tip per line. */

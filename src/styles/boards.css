@@ -249,6 +249,8 @@
   transform: rotate(180deg);
 }
 .mobile-section-menu__list {
+  box-sizing: border-box;
+  overscroll-behavior: contain;
   position: absolute;
   top: calc(100% + 4px);
   left: 0; right: 0;
@@ -507,7 +509,7 @@
 .pdf-preview-styles {
   border-right: 1px solid var(--ios-separator, #e2e8f0);
   padding: 1rem;
-  display: flex; flex-direction: column;
+  display: flex; flex-direction: column; gap: 8px;
   background: var(--ios-cell-alt, #f8fafc);
   /* Only the style list scrolls — the Download button stays pinned at
      the rail's bottom instead of scrolling out of reach. */
@@ -538,7 +540,7 @@
 .pdf-preview-style span   { font-size: 0.8rem; color: var(--ios-label-muted, #64748b); line-height: 1.35; }
 
 .pdf-preview-download {
-  margin-top: 0.85rem;
+  margin-top: 0;
   padding: 0.8rem 1rem;
   background: var(--ios-inverse-bg, #0f172a); color: var(--ios-inverse-label, white);
   border: none; border-radius: 10px;
@@ -552,6 +554,10 @@
   font-size: 0.8rem;
   line-height: 1.35;
   color: var(--ios-warning-label, #92400e);
+  padding: 12px;
+  background: var(--ios-warning-fill, var(--warning-tint));
+  border-left: 3px solid var(--ios-warning-border, var(--warning-border));
+  border-radius: var(--radius-sm);
 }
 /* Heads-up beside Download where the browser won't simply save the
    file (Firefox for Android, in-app browsers). */
@@ -999,10 +1005,10 @@
   font-size: 0.85rem;
   font-weight: 600;
   padding: 0.55rem 0.9rem;
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--action-border);
   border-radius: 8px;
   background: var(--surface);
-  color: var(--text-muted);
+  color: var(--primary);
   cursor: pointer;
   white-space: nowrap;
 }

@@ -51,7 +51,9 @@ export const AnesthesiaCustomEditor: React.FC<{
         <p className="chart-settings__note">{t('customEditor.blocksNote')}</p>
         {b.map((x, i) => (
           <div key={x.id} className="custom-def">
-            <input
+            <label className="custom-def__control">
+              <span>{t('customEditor.blockName')}</span>
+              <input
               type="text"
               className="patient-form__input custom-def__label"
               placeholder={t('customEditor.blockName')}
@@ -61,6 +63,7 @@ export const AnesthesiaCustomEditor: React.FC<{
               onChange={(e) => setB(b.map((y) => (y.id === x.id ? { ...y, label: e.target.value } : y)))}
               onBlur={() => saveBlocks()}
             />
+            </label>
             <button
               type="button"
               className="diagram-view__action custom-def__remove"
@@ -83,7 +86,9 @@ export const AnesthesiaCustomEditor: React.FC<{
         <p className="chart-settings__note">{t('customEditor.fieldsNote')}</p>
         {f.map((x, i) => (
           <div key={x.id} className="custom-def custom-def--field">
-            <input
+            <label className="custom-def__control">
+              <span>{t('customEditor.fieldName')}</span>
+              <input
               type="text"
               className="patient-form__input custom-def__label"
               placeholder={t('customEditor.fieldName')}
@@ -93,7 +98,10 @@ export const AnesthesiaCustomEditor: React.FC<{
               onChange={(e) => setF(f.map((y) => (y.id === x.id ? { ...y, label: e.target.value } : y)))}
               onBlur={() => saveFields()}
             />
-            <select
+            </label>
+            <label className="custom-def__control">
+              <span>{t('customEditor.fieldType')}</span>
+              <select
               className="patient-form__input custom-def__type"
               aria-label={t('customEditor.fieldTypeAria', { n: i + 1 })}
               value={x.type}
@@ -106,7 +114,10 @@ export const AnesthesiaCustomEditor: React.FC<{
             >
               {FIELD_TYPES.map((ft) => <option key={ft} value={ft}>{t(`customEditor.types.${ft}`)}</option>)}
             </select>
+            </label>
             {x.type === 'number' && (
+              <label className="custom-def__control">
+              <span>{t('customEditor.unit')}</span>
               <input
                 type="text"
                 className="patient-form__input custom-def__unit"
@@ -117,8 +128,11 @@ export const AnesthesiaCustomEditor: React.FC<{
                 onChange={(e) => setF(f.map((y) => (y.id === x.id ? { ...y, unit: e.target.value } : y)))}
                 onBlur={() => saveFields()}
               />
+            </label>
             )}
             {x.type === 'select' && (
+              <label className="custom-def__control">
+              <span>{t('customEditor.options')}</span>
               <input
                 type="text"
                 className="patient-form__input custom-def__options"
@@ -131,6 +145,7 @@ export const AnesthesiaCustomEditor: React.FC<{
                 }}
                 onBlur={() => saveFields()}
               />
+            </label>
             )}
             <button
               type="button"

@@ -15,7 +15,7 @@
     "ownerEmail": "Correo electrónico del propietario",
     "ownerEmailOptional": "Opcional",
     "ownerEmailReminders": "Para los recordatorios de revisión",
-    "tech": "Auxiliar",
+    "tech": "Auxiliar veterinario",
     "techPlaceholder": "Nombre del auxiliar (opcional)",
     "recheck": "Próxima revisión",
     "recheckQuick": "Fijar la fecha de revisión a un intervalo habitual tras la fecha de la visita",
@@ -36,7 +36,10 @@
     "dentition": "Dentición",
     "permanent": "Permanente",
     "deciduous": "Decidua",
-    "equine": "Equino"
+    "equine": "Equino",
+    "identityGroup": "Datos del paciente",
+    "ownerGroup": "Datos del propietario",
+    "visitGroup": "Datos de la visita"
   },
   "exam": {
     "title": "Examen",
@@ -66,10 +69,11 @@
       "palate": "paladar",
       "pharynx": "faringe / amígdalas"
     },
-    "customizeTitle": "Añada sus propias zonas de examen"
+    "customizeTitle": "Añada sus propias zonas de examen",
+    "duplicateArea": "Esta zona ya figura en su examen."
   },
   "anesthesia": {
-    "title": "Anestesia — Bloqueos nerviosos",
+    "title": "Anestesia",
     "customize": "Personalizar",
     "customizeTitle": "Elija qué bloqueos nerviosos se muestran y su anestésico habitual",
     "anesthetic": "Anestésico",
@@ -99,7 +103,7 @@
     "record": "Registro de anestesia"
   },
   "customEditor": {
-    "blocksLegend": "Sus bloqueos nerviosos",
+    "blocksLegend": "Bloqueos nerviosos adicionales",
     "blocksNote": "Filas adicionales Derecha / Izquierda (mL), p. ej. palatino mayor.",
     "blockName": "Nombre del bloqueo",
     "blockNameAria": "Nombre del bloqueo nervioso {{n}}",
@@ -108,7 +112,7 @@
     "fallbackBlock": "bloqueo nervioso",
     "fallbackField": "campo",
     "addBlock": "Añadir bloqueo nervioso",
-    "fieldsLegend": "Sus campos",
+    "fieldsLegend": "Campos de anestesia personalizados",
     "fieldsNote": "Se muestran en «Registro de anestesia», p. ej. premedicación, tubo endotraqueal, fluidos.",
     "fieldName": "Nombre del campo",
     "fieldNameAria": "Nombre del campo {{n}}",
@@ -123,8 +127,9 @@
       "text": "Texto",
       "number": "Número",
       "checkbox": "Sí / no",
-      "select": "Lista de opciones"
-    }
+      "select": "Lista desplegable"
+    },
+    "fieldType": "Tipo de campo"
   },
   "report": {
     "title": "Informe del tratamiento",
@@ -147,6 +152,8 @@
       "nameRequired": "Póngale un nombre a la plantilla."
     },
     "saved": "Plantilla «{{name}}» guardada.",
-    "saveFailed": "No se pudo guardar la plantilla. {{error}}"
+    "saveFailed": "No se pudo guardar la plantilla. {{error}}",
+    "customize": "Personalizar",
+    "customizeTitle": "Gestionar las plantillas de informe de tratamiento"
   }
 }

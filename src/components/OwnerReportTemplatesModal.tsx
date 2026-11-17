@@ -50,9 +50,13 @@ interface OwnerReportTemplatesModalProps {
    *  editor in an iOS sheet (Cancel / Save; swipe-down asks before
    *  discarding). Default: the dialog. */
   presentation?: 'modal' | 'screen' | 'sheet';
+  /** Register the current draft guard with the containing workspace. */
+  onLeaveGuardChange?: (guard: (() => Promise<boolean>) | null) => void;
 }
 
 const DATE_FORMATS = ['iso', 'long'] as const;
+const EDITOR_CATEGORIES = ['basics', 'content', 'homecare', 'closing'] as const;
+type EditorCategory = typeof EDITOR_CATEGORIES[number];
 
 type TextField = HTMLInputElement | HTMLTextAreaElement;
 
@@ -77,10 +81,15 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
   clientLanguage,
   branding,
   presentation = 'modal',
+  onLeaveGuardChange,
 }) => {
   const { t } = useTranslation('reportui');
   const asScreen = presentation === 'screen';
   const asSheet = presentation === 'sheet';
+  const categorized = !asScreen && !asSheet;
+  const [actionsOpen, setActionsOpen] = React.useState(false);
+  const [category, setCategory] = React.useState<EditorCategory>('basics');
+  const editorRef = React.useRef<HTMLDivElement>(null);
   const [draft, setDraft] = React.useState<OwnerReportConfig>(() => clone(config));
   const [selectedId, setSelectedId] = React.useState(config.defaultTemplateId);
   const [busy, setBusy] = React.useState(false);
@@ -95,6 +104,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
     if (!open) return;
     setDraft(clone(config));
     setSelectedId(config.defaultTemplateId);
+    setCategory('basics');
     setError('');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
@@ -104,11 +114,40 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
 
   // The PDF behind previewUrl, for drawing it as pages where a frame can't show it.
   const previewBlobRef = React.useRef<Blob | null>(null);
-  const requestClose = React.useCallback(() => {
-    if (busy) return;
-    if (dirty && !window.confirm(t('templates.discardConfirm'))) return;
-    onClose();
-  }, [busy, dirty, onClose, t]);
+  const confirmationPending = React.useRef(false);
+  const current = React.useRef({ open, busy, canEdit, snapshot: JSON.stringify(draft) });
+  current.current = { open, busy, canEdit, snapshot: JSON.stringify(draft) };
+  const mounted = React.useRef(true);
+  React.useEffect(() => {
+    mounted.current = true;
+    return () => { mounted.current = false; };
+  }, []);
+  const confirmLeave = React.useCallback(async () => {
+    if (current.current.busy || confirmationPending.current) return false;
+    if (!dirty) return true;
+    const snapshot = current.current.snapshot;
+    confirmationPending.current = true;
+    try {
+      const confirmed = await confirmDialog({
+        title: t('templates.discardConfirm'),
+        confirmLabel: t('ios.sheets.discard.discard', { ns: 'common' }),
+        cancelLabel: t('ios.sheets.discard.keep', { ns: 'common' }),
+        danger: true,
+      });
+      return confirmed && mounted.current && current.current.open && !current.current.busy && current.current.snapshot === snapshot;
+    } finally {
+      confirmationPending.current = false;
+    }
+  }, [dirty, t]);
+  const requestClose = React.useCallback(async () => {
+    if (await confirmLeave()) onClose();
+  }, [confirmLeave, onClose]);
+
+  React.useEffect(() => {
+    if (!open) return;
+    onLeaveGuardChange?.(confirmLeave);
+    return () => onLeaveGuardChange?.(null);
+  }, [open, confirmLeave, onLeaveGuardChange]);
 
   const closePreview = React.useCallback(() => {
     setPreviewUrl((url) => {
@@ -131,12 +170,6 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
   // As a pushed screen: Save in the navigation bar (owners); Back asks
   // before discarding edits.
   const saveRef = React.useRef<() => Promise<void>>(async () => {});
-  const confirmLeave = async () => !busy && (!dirty || (await confirmDialog({
-    title: t('templates.discardConfirm'),
-    confirmLabel: t('ios.sheets.discard.discard', { ns: 'common' }),
-    cancelLabel: t('ios.sheets.discard.keep', { ns: 'common' }),
-    danger: true,
-  })));
   useStackLeaveGuard(asScreen ? confirmLeave : null);
   useStackScreenOptions({
     trailing: asScreen && canEdit ? (
@@ -206,22 +239,35 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
   };
 
   const addTemplate = (base?: OwnerReportTemplate) => {
-    if (draft.templates.length >= MAX_TEMPLATES) return;
+    if (!canEdit || busy || draft.templates.length >= MAX_TEMPLATES) return;
     const fresh = base
       ? { ...clone(base), id: newId('tpl-'), name: t('templates.copyName', { name: base.name }) }
       : { ...defaultTemplate(clientLanguage ?? appReportLocale()), id: newId('tpl-'), name: t('templates.newName') };
     setDraft((d) => ({ ...d, templates: [...d.templates, fresh] }));
     setSelectedId(fresh.id);
   };
-  const deleteTemplate = () => {
-    if (draft.templates.length <= 1) return;
-    if (!window.confirm(t('templates.deleteConfirm', { name: selected.name }))) return;
-    setDraft((d) => {
-      const templates = d.templates.filter((tpl) => tpl.id !== selected.id);
-      const defaultTemplateId = d.defaultTemplateId === selected.id ? templates[0].id : d.defaultTemplateId;
-      return { templates, defaultTemplateId };
-    });
-    setSelectedId(draft.templates.find((tpl) => tpl.id !== selected.id)!.id);
+  const deleteTemplate = async () => {
+    if (!canEdit || busy || draft.templates.length <= 1 || confirmationPending.current) return;
+    const snapshot = current.current.snapshot;
+    const selectedToDelete = selected.id;
+    confirmationPending.current = true;
+    try {
+      const confirmed = await confirmDialog({
+        title: t('templates.deleteConfirm', { name: selected.name }),
+        confirmLabel: t('actions.delete', { ns: 'common' }),
+        cancelLabel: t('actions.cancel', { ns: 'common' }),
+        danger: true,
+      });
+      if (!confirmed || !mounted.current || !current.current.open || current.current.busy || !current.current.canEdit || current.current.snapshot !== snapshot) return;
+      const remaining = draft.templates.filter((tpl) => tpl.id !== selectedToDelete);
+      setDraft((d) => ({
+        templates: remaining,
+        defaultTemplateId: d.defaultTemplateId === selectedToDelete ? remaining[0].id : d.defaultTemplateId,
+      }));
+      setSelectedId(remaining[0].id);
+    } finally {
+      confirmationPending.current = false;
+    }
   };
 
   // ---- Placeholder chips -----------------------------------------------------
@@ -323,10 +369,24 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
     </div>
   );
 
+  const selectCategory = (next: EditorCategory) => {
+    setCategory(next);
+    activeField.current = null;
+    if (editorRef.current) editorRef.current.scrollTop = 0;
+  };
+
   const templatesEditor = (
     <>
       {/* ---- Template list ------------------------------------------- */}
       <nav className="report-templates__list" aria-label={t('templates.listLabel')}>
+        {categorized && (
+          <label className="report-templates__compact-picker patient-form__label">
+            {t('section.templateLabel')}
+            <select className="patient-form__input" value={selected.id} onChange={(e) => { setSelectedId(e.target.value); activeField.current = null; }}>
+              {draft.templates.map((tpl) => <option key={tpl.id} value={tpl.id}>{tpl.name || t('templates.untitled')}{tpl.id === draft.defaultTemplateId ? ` — ${t('templates.badgeDefault')}` : ''}</option>)}
+            </select>
+          </label>
+        )}
         <ul>
           {draft.templates.map((tpl) => (
             <li key={tpl.id}>
@@ -334,7 +394,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
                 type="button"
                 className={`report-templates__item${tpl.id === selected.id ? ' report-templates__item--on' : ''}`}
                 aria-current={tpl.id === selected.id ? 'true' : undefined}
-                onClick={() => setSelectedId(tpl.id)}
+                onClick={() => { setSelectedId(tpl.id); activeField.current = null; }}
               >
                 <span className="report-templates__item-name">{tpl.name || t('templates.untitled')}</span>
                 <span className="report-templates__item-meta">
@@ -346,18 +406,21 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
           ))}
         </ul>
         {canEdit && (
-          <div className="report-templates__list-actions">
-            <button type="button" className="diagram-view__action" onClick={() => addTemplate()} disabled={draft.templates.length >= MAX_TEMPLATES}>
+          <div className="report-templates__management">
+          <button type="button" className="diagram-view__action report-templates__actions-toggle" aria-expanded={actionsOpen} aria-controls="template-management-actions" onClick={() => setActionsOpen((value) => !value)}>{t('templates.manageActions')}</button>
+          <div id="template-management-actions" className={`report-templates__list-actions${actionsOpen ? ' report-templates__list-actions--open' : ''}`}>
+
+            <button type="button" className="diagram-view__action" onClick={() => addTemplate()} disabled={busy || draft.templates.length >= MAX_TEMPLATES}>
               {t('templates.new')}
             </button>
-            <button type="button" className="diagram-view__action" onClick={() => addTemplate(selected)} disabled={draft.templates.length >= MAX_TEMPLATES}>
+            <button type="button" className="diagram-view__action" onClick={() => addTemplate(selected)} disabled={busy || draft.templates.length >= MAX_TEMPLATES}>
               {t('actions.duplicate', { ns: 'common' })}
             </button>
             <button
               type="button"
               className="diagram-view__action"
-              onClick={() => setDraft((d) => ({ ...d, defaultTemplateId: selected.id }))}
-              disabled={selected.id === draft.defaultTemplateId}
+              onClick={() => { if (!busy && canEdit) setDraft((d) => ({ ...d, defaultTemplateId: selected.id })); }}
+              disabled={busy || selected.id === draft.defaultTemplateId}
               aria-label={t('templates.setDefault')}
             >
               <span className="report-templates__long">{t('templates.setDefault')}</span>
@@ -367,16 +430,34 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
               type="button"
               className="diagram-view__action diagram-view__action--danger"
               onClick={deleteTemplate}
-              disabled={draft.templates.length <= 1}
+              disabled={busy || draft.templates.length <= 1}
             >
               {t('actions.delete', { ns: 'common' })}
             </button>
           </div>
+          </div>
         )}
       </nav>
 
+      {categorized && (
+        <nav className="report-templates__categories" aria-label={t('templates.editor.navigation')}>
+          <label className="report-templates__compact-picker patient-form__label">
+            {t('templates.editor.navigation')}
+            <select className="patient-form__input" value={category} onChange={(e) => selectCategory(e.target.value as EditorCategory)}>
+              {EDITOR_CATEGORIES.map((id) => <option key={id} value={id}>{t(`templates.editor.${id}`)}</option>)}
+            </select>
+          </label>
+          {EDITOR_CATEGORIES.map((id) => (
+            <button type="button" key={id} aria-current={category === id ? 'page' : undefined} onClick={() => selectCategory(id)}>
+              {t(`templates.editor.${id}`)}
+            </button>
+          ))}
+        </nav>
+      )}
+
       {/* ---- Editor ---------------------------------------------------- */}
-      <div className="report-templates__editor">
+      <div className="report-templates__editor" ref={editorRef}>
+        {categorized && <p className="report-templates__scope">{t('templates.editor.scope')}</p>}
         {loadFailed && (
           <p className="login-error" role="alert">
             {t('templates.loadFailed')}
@@ -388,7 +469,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
           </p>
         )}
         <fieldset className="report-templates__fieldset" disabled={!canEdit || busy}>
-          <section className="ai-settings-section">
+          <section className="ai-settings-section" hidden={categorized && category !== 'basics'}>
             <h3 className="ai-settings-subhead">{t('templates.basics')}</h3>
             <div className="report-templates__row">
               <label className="patient-form__label">
@@ -479,7 +560,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
             </label>
           </section>
 
-          <section className="ai-settings-section">
+          <section className="ai-settings-section" hidden={categorized && category !== 'content'}>
             <h3 className="ai-settings-subhead">{t('templates.summaryTitle')}</h3>
             <div className="report-templates__chips" role="group" aria-label={t('templates.insertLabel')}>
               {PLACEHOLDERS.map((p) => (
@@ -511,7 +592,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
             <span className="patient-form__hint">{t('templates.summaryEmpty')}</span>
           </section>
 
-          <section className="ai-settings-section">
+          <section className="ai-settings-section" hidden={categorized && category !== 'content'}>
             <h3 className="ai-settings-subhead">{t('templates.sectionsTitle')}</h3>
             <p className="patient-form__hint">
               {t('templates.sectionsHint')}
@@ -594,7 +675,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
             </button>
           </section>
 
-          <section className="ai-settings-section">
+          <section className="ai-settings-section" hidden={categorized && category !== 'homecare'}>
             <h3 className="ai-settings-subhead">{t('templates.tipsTitle')}</h3>
             {selected.homecareTips.length === 0 ? (
               <>
@@ -665,7 +746,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
             </span>
           </section>
 
-          <section className="ai-settings-section">
+          <section className="ai-settings-section" hidden={categorized && category !== 'closing'}>
             <h3 className="ai-settings-subhead">{t('templates.closingTitle')}</h3>
             <label className="patient-form__label">
               {t('templates.closingLabel')}
@@ -733,7 +814,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
   return (
     <>
       <div className="ai-settings-overlay" onClick={requestClose} role="dialog" aria-modal="true" aria-labelledby="report-templates-title">
-        <div className="ai-settings-modal report-templates" ref={modalRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
+        <div className="ai-settings-modal report-templates report-templates--categorized" ref={modalRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
           <header className="ai-settings-header">
             <h2 id="report-templates-title">{t('templates.title')}</h2>
             <button type="button" className="pdf-preview-close" onClick={requestClose} aria-label={t('actions.close', { ns: 'common' })}>

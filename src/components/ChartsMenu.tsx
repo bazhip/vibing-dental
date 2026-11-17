@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface ChartsMenuProps {
+  visitOnly?: boolean;
   /** Open the My charts library (search / open any patient). */
   onOpenLibrary: () => void;
   /** Actions for the patient on screen — shown once the chart is saved. */
@@ -20,7 +21,7 @@ const ITEM_SELECTOR = '.chart-menu__item';
  * header shows a single, consistent set of buttons. Same keyboard model
  * as the Settings menu: Esc / click outside closes, arrows move.
  */
-export function ChartsMenu({ onOpenLibrary, thisPatient }: ChartsMenuProps) {
+export function ChartsMenu({ onOpenLibrary, thisPatient, visitOnly = false }: ChartsMenuProps) {
   const { t } = useTranslation('app');
   const [open, setOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -95,14 +96,15 @@ export function ChartsMenu({ onOpenLibrary, thisPatient }: ChartsMenuProps) {
         ref={triggerRef}
         type="button"
         className="chart-menu__trigger topbar-library-btn"
-        data-tour="library"
+        data-tour={visitOnly ? undefined : 'library'}
+        aria-label={t(visitOnly ? 'workspace.visitActions' : 'topbar.myCharts')}
         aria-expanded={open}
         aria-haspopup="true"
         onClick={() => setOpen((o) => !o)}
         onKeyDown={onTriggerKeyDown}
       >
-        <span className="topbar-label-long">{t('topbar.myCharts')}</span>
-        <span className="topbar-label-short">{t('topbar.myChartsShort')}</span>
+        <span className="topbar-label-long">{t(visitOnly ? 'workspace.visitActions' : 'topbar.myCharts')}</span>
+        <span className="topbar-label-short">{t(visitOnly ? 'workspace.visitActions' : 'topbar.myChartsShort')}</span>
         <svg className="charts-menu__caret" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true">
           <path d="M2.5 4.5L6 8l3.5-3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
@@ -116,10 +118,10 @@ export function ChartsMenu({ onOpenLibrary, thisPatient }: ChartsMenuProps) {
               {item(t('chartsMenu.history'), t('chartsMenu.historyHint'), thisPatient.onHistory)}
             </section>
           )}
-          <section className="chart-menu__section">
+          {!visitOnly && <section className="chart-menu__section">
             <header className="chart-menu__section-head">{t('chartsMenu.allPatients')}</header>
             {item(t('chartsMenu.openLibrary'), t('chartsMenu.openLibraryHint'), onOpenLibrary)}
-          </section>
+          </section>}
         </div>
       )}
     </div>

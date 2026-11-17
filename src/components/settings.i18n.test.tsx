@@ -1,3 +1,4 @@
+vi.mock('../hooks/useReportTemplates', () => ({ useReportTemplates: () => ({ enabled: true, loaded: true, templates: [], create: vi.fn(), update: vi.fn(), remove: vi.fn() }) }));
 import React from 'react';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
@@ -150,6 +151,14 @@ const ALLOW: (string | RegExp)[] = [
 const DRUGS = ['T/SN', 'mg/mL', 'Bupivacaine', 'Ropivacaine', 'Lidocaine', 'Mepivacaine'];
 
 describe('PracticeSettingsModal', () => {
+  it('translates the practice workspace navigation and every settings section', async () => {
+    const { container } = render(<PracticeSettingsModal open presentation="page" onClose={() => {}} profile={profile()} onOpenReminders={() => {}} onOpenChartSettings={() => {}} />);
+    await screen.findByText('⟦Back to current visit⟧');
+    expect(findUntranslated(container, ALLOW)).toEqual([]);
+    fireEvent.click(screen.getByRole('button', { name: '⟦Team⟧' }));
+    expect(findUntranslated(container, ALLOW)).toEqual([]);
+  });
+
   it('owners pick the pet-owner language; members see it read-only', async () => {
     langMock.save.mockClear();
     const { container, unmount } = render(<PracticeSettingsModal open onClose={() => {}} profile={profile()} />);
@@ -305,9 +314,10 @@ describe('ChartSettingsModal', () => {
     render(<ChartSettingsModal {...props} followsAccount={false} prefs={{ ...DEFAULT_CHART_PREFS, mirrorToDiagnosis: true, hiddenColumns: ['mobility'], usualDrug: { name: 'Bupivacaine', concentration: '0.5' } }} />);
     expect(findUntranslated(document.body, [...DRUGS, '0.5', '%'])).toEqual([]);
   });
-  it.each(['patient', 'anesthesia', 'charting', 'diagnosis', 'images'] as const)('only the %s page', (section) => {
+  it.each(['patient', 'anesthesia', 'charting', 'diagnosis', 'procedure', 'images'] as const)('only the %s page', (section) => {
     render(<ChartSettingsModal {...props} section={section} />);
-    expect(screen.getByRole('button', { name: '⟦All chart settings⟧' })).toBeInTheDocument();
+    expect(screen.getByRole('navigation', { name: '⟦Chart settings categories⟧' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '⟦Done⟧' })).toBeInTheDocument();
     expect(findUntranslated(document.body, DRUGS)).toEqual([]);
   });
 });
@@ -475,6 +485,18 @@ describe('FeedbackModal', () => {
 });
 
 describe('WalkthroughModal', () => {
+  it('translates every task in the short first-run tour', () => {
+    const onNavigate = vi.fn();
+    render(<WalkthroughModal open firstRun onClose={() => {}} onNavigate={onNavigate} />);
+    expect(screen.getByText('⟦1 of 3⟧')).toBeInTheDocument();
+    for (let n = 0; n < 3; n++) {
+      expect(findUntranslated(document.body, [])).toEqual([]);
+      if (n < 2) fireEvent.click(screen.getByRole('button', { name: '⟦Next⟧' }));
+    }
+    expect(onNavigate.mock.calls.map(([section]) => section)).toEqual(['patient', 'charting', 'charting']);
+    expect(screen.getByRole('button', { name: '⟦Get charting⟧' })).toBeInTheDocument();
+  });
+
   it('every step, with and without the dictation step', () => {
     for (const aiEnabled of [true, false]) {
       const onClose = vi.fn();
@@ -526,7 +548,7 @@ describe('PDF chrome', () => {
     const { listChartAttachments } = await import('../hooks/useAttachments');
     vi.mocked(listChartAttachments).mockResolvedValue(null);
     const { container } = render(<PdfPreviewModal open onClose={() => {}} snapshot={{ ...snapshot, imagesChartId: 'c1' }} />);
-    await screen.findByText('⟦Couldn\'t load the chart\'s images, so they\'re not in this PDF. Close and reopen the preview to retry.⟧');
+    await screen.findByText('⟦Couldn’t load the chart’s images. Retry, or download a PDF without images.⟧');
     expect(findUntranslated(container, [])).toEqual([]);
   });
 

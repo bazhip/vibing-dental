@@ -86,6 +86,7 @@ export const API_ERRORS = {
   email_failed: (p: { detail: string }) => `Email failed: ${p.detail}`,
 
   // send-owner-report
+  owner_report_recipient_changed: () => "The owner’s email address changed. Reopen the report and confirm the recipient again.",
   report_chart_required: () => 'Save the chart before emailing the report.',
   attachment_invalid: () => 'The report file couldn’t be read. Try again.',
   attachment_too_large: () => 'The report is too large to email (max 10 MB). Remove some photos and try again.',

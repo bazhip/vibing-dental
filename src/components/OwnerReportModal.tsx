@@ -12,8 +12,8 @@ import { OwnerReportEmailModal } from './OwnerReportEmailModal';
 import { ChartSnapshot, ImageRole, Species } from '../types';
 import { diagramSvgToPng, type DiagramPin } from '../utils/svgToPng';
 import { TOOTH_DIAGRAMS } from '../constants/toothShapes';
-import { useAttachments } from '../hooks/useAttachments';
-import { buildOwnerReportModel, hasSection, teethWithFindings } from '../utils/ownerReport';
+import { useAttachments, listChartAttachments } from '../hooks/useAttachments';
+import { buildOwnerReportModel, ownerReportReviewBasis, ownerReportAttachmentBasis, hasSection, teethWithFindings } from '../utils/ownerReport';
 import type { OwnerReportConfig } from '../utils/ownerReportConfig';
 import { fetchAsJpeg } from '../utils/imageJpeg';
 import { buildOwnerReportPdfBytes, OwnerReportBranding, OwnerReportPhoto } from '../utils/ownerReportPdf';
@@ -80,8 +80,23 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
   onEditPatient,
 }) => {
   const { t } = useTranslation('reportui');
-  const [emailOpen, setEmailOpen] = React.useState(false);
+  const reportContext = React.useMemo(() => ({ config, practiceName: branding.practiceName, doctorName: branding.doctorName }), [config, branding.practiceName, branding.doctorName]);
+  const baseModel = React.useMemo(() => buildOwnerReportModel(snapshot, reportContext), [snapshot, reportContext]);
   const attachments = useAttachments(cloudActive ? chartId : '', practiceId);
+  const attachmentBasis = ownerReportAttachmentBasis(attachments.items, imageRoles);
+  const [attachmentInvalid, setAttachmentInvalid] = React.useState(false);
+  React.useEffect(() => { setAttachmentInvalid(false); }, [chartId]);
+  const model = baseModel;
+  const ready = attachments.loaded && !attachmentInvalid;
+  const [incomplete, setIncomplete] = React.useState(false);
+  const [retry, setRetry] = React.useState(0);
+  const reviewBasis = ownerReportReviewBasis(snapshot, reportContext);
+  const currentReport = React.useRef({ ready: ready && !incomplete, basis: reviewBasis, chartId, open });
+  currentReport.current = { ready: ready && !incomplete, basis: reviewBasis, chartId, open };
+  React.useEffect(() => () => { currentReport.current.open = false; }, []);
+
+  const [emailOpen, setEmailOpen] = React.useState(false);
+  React.useEffect(() => { setEmailOpen(false); }, [ready, reviewBasis, attachmentBasis, chartId, open, incomplete]);
   const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
   // The bytes behind pdfUrl — the share sheet needs the file itself,
   // in hand when the button is tapped.
@@ -107,11 +122,17 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
   }, [open, onClose, bare]);
 
   React.useEffect(() => {
+    pdfBlobRef.current = null;
+    setPdfUrl(null);
+    inAppLink.reset();
     if (!open || !attachments.loaded) return;
     let cancelled = false;
     let createdUrl: string | null = null;
     setGenerating(true);
     setError(null);
+    setPdfUrl(null);
+    pdfBlobRef.current = null;
+    inAppLink.reset();
 
     (async () => {
       try {
@@ -119,17 +140,15 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
           .map((item) => ({ item, role: imageRoles[item.id] }))
           .filter((x): x is { item: (typeof attachments.items)[number]; role: ImageRole } => !!x.role);
         const photos: OwnerReportPhoto[] = [];
+        let missing = tagged.length !== Object.keys(imageRoles).length;
         for (const { item, role } of tagged) {
-          if (!item.url) continue;
+          if (!item.url) { missing = true; continue; }
           const jpegBytes = await fetchAsJpeg(item.url, REPORT_PHOTO_MAX_EDGE);
           if (jpegBytes) photos.push({ role, caption: item.caption, jpegBytes });
+          else missing = true;
         }
         if (cancelled) return;
-        const model = buildOwnerReportModel(snapshot, {
-          config,
-          practiceName: branding.practiceName,
-          doctorName: branding.doctorName,
-        });
+
         // Mouth diagram: numbered pins on the teeth with findings, in the
         // same order as the report's list. No clinical code cards.
         let diagram: { png: Uint8Array } | undefined;
@@ -152,9 +171,11 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
             diagram = { png: await diagramSvgToPng(diagramSvg, diag.width, diag.height, [], 2, undefined, diag.cropBounds, pins) };
           } catch (err) {
             console.warn('[OwnerReport] diagram render failed', err);
+            missing = true;
           }
         }
         if (cancelled) return;
+        setIncomplete(missing);
         const bytes = await buildOwnerReportPdfBytes(model, branding, photos, diagram);
         if (cancelled) return;
         const blob = new Blob([bytes as BlobPart], { type: 'application/pdf' });
@@ -173,11 +194,12 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
 
     return () => {
       cancelled = true;
+      pdfBlobRef.current = null;
       if (createdUrl) URL.revokeObjectURL(createdUrl);
     };
-    // Attachment identity churns with signed-URL refreshes; key on load.
+    // Stable manifest covers content changes without rebuilding on signed URL refresh.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, attachments.loaded, snapshot, imageRoles, diagramSvg, species, config]);
+  }, [open, attachments.loaded, attachmentBasis, retry, chartId, snapshot, imageRoles, diagramSvg, species, config, model, branding.practiceName, branding.doctorName, branding.logoUrl]);
 
   const reportFilename = () => {
     const sanitize = (value: string) => value.replace(/[^a-z0-9]/gi, '_').toLowerCase();
@@ -185,6 +207,7 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
   };
 
   const handleEmail = async () => {
+    if (!currentReport.current.ready || !pdfBlobRef.current) return;
     if (!ownerEmail.trim()) {
       const choice = await chooseDialog({
         title: t('email.noEmailTitle'),
@@ -199,11 +222,12 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
       toast(t('email.saveFirst'), { kind: 'error' });
       return;
     }
+    if (!currentReport.current.open || !currentReport.current.ready || !pdfBlobRef.current || currentReport.current.basis !== reviewBasis || (chartId && currentReport.current.chartId !== chartId)) return;
     setEmailOpen(true);
   };
 
   const handleDownload = () => {
-    if (!pdfUrl) return;
+    if (!pdfUrl || generating || error) return;
     const filename = reportFilename();
     if (!pdfBlobRef.current) return;
     const blob = pdfBlobRef.current;
@@ -214,7 +238,7 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
       return;
     }
     savePdf(blob, filename).then((outcome) => {
-      if (outcome === 'unsupported') void inAppLink.start(blob, filename);
+      if (outcome === 'unsupported' && pdfBlobRef.current === blob) void inAppLink.start(blob, filename);
     });
   };
 
@@ -260,7 +284,7 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
                 type="button"
                 className="pdf-preview-secondary"
                 onClick={() => void handleEmail()}
-                disabled={!cloudActive || !pdfUrl || generating}
+                disabled={!ready || incomplete || !cloudActive || !pdfUrl || generating}
                 title={!cloudActive ? t('email.needAccount') : undefined}
               >
                 {t('email.button')}
@@ -268,6 +292,7 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
             )}
             {!isNativeApp() && !inAppLink.state && downloadHint() && <p className="pdf-preview-hint" role="note">{downloadHint()}</p>}
             <PdfLinkPanel state={inAppLink.state} />
+            {(incomplete || attachmentInvalid) && <div className="pdf-preview-warning" role="status"><p>{t('review.incompleteImages')}</p><button type="button" className="pdf-preview-secondary" onClick={() => { setAttachmentInvalid(false); setRetry((value) => value + 1); }}>{t('preview.retryImages', { ns: 'pdfui' })}</button></div>}
           </aside>
           <div className="pdf-preview-iframe-wrap">
             {generating && <div className="pdf-preview-status">{t('modal.generating')}</div>}
@@ -293,7 +318,17 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
       toEmail={ownerEmail.trim()}
       patientName={snapshot.patientInfo.patientName}
       ownerName={snapshot.patientInfo.ownerName}
-      getPdf={() => (pdfBlobRef.current ? { blob: pdfBlobRef.current, filename: reportFilename() } : null)}
+      validatePdf={async () => {
+        if (!currentReport.current.open || !currentReport.current.ready) return false;
+        if (!cloudActive || Object.keys(imageRoles).length === 0) return true;
+        const items = await listChartAttachments(chartId);
+        if (!items || ownerReportAttachmentBasis(items, imageRoles) !== attachmentBasis) {
+          if (currentReport.current.open) { setAttachmentInvalid(true); setEmailOpen(false); }
+          return false;
+        }
+        return currentReport.current.open && currentReport.current.ready && currentReport.current.basis === reviewBasis && currentReport.current.chartId === chartId;
+      }}
+      getPdf={() => (currentReport.current.open && currentReport.current.ready && pdfBlobRef.current ? { blob: pdfBlobRef.current, filename: reportFilename() } : null)}
     />
   );
 

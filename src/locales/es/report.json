@@ -1,4 +1,6 @@
 {
+  "draftLabel": "BORRADOR — SIN REVISAR",
+  "draftNotice": "Este informe no se ha revisado con respecto a el historial actual. La información puede estar incompleta.",
   "abnormalityNoted": "se observó una anomalía",
   "after": "Después",
   "alreadyMissingLine": "Ausentes antes de esta visita: {{list}}.",
@@ -12,7 +14,7 @@
     "pharynx": "Faringe / amígdalas",
     "tongue": "Lengua"
   },
-  "extractionsLead": "Estos dientes no se podían salvar y se extrajeron para que dejen de causar dolor o infección:",
+  "extractionsLead": "Estos dientes se registraron como extraídos durante esta visita:",
   "fieldPhrases": {
     "calculus": "acumulación de sarro (grado {{value}})",
     "furcation": "pérdida de hueso entre las raíces (grado {{value}})",
@@ -56,11 +58,11 @@
     "forage": "Ofrezca abundante forraje: el heno de fibra larga y el pastoreo mantienen un desgaste uniforme de los dientes.",
     "warningSigns": "Esté atento a la comida que se le cae de la boca, la pérdida de peso, si come despacio, sacude la cabeza o se resiste al bocado, el mal aliento o la secreción nasal; llámenos si nota algo."
   },
-  "intro": "{{pet}} recibió una evaluación y limpieza dental profesional bajo anestesia. Este informe explica lo que encontramos en un lenguaje sencillo; el historial clínico completo con las mediciones está archivado y disponible en cualquier momento.",
+  "intro": "Este informe resume la información documentada de la visita dental de {{pet}}. Consulte cualquier duda con su equipo veterinario.",
   "legendFilled": "relleno = ausente antes de esta visita",
   "legendNumbers": "Los números corresponden a los hallazgos de abajo",
   "legendRemoved": "✕ rojo = extraído hoy",
-  "noProblems": "No se registraron problemas dentales en el historial de esta visita: ¡excelentes noticias!",
+  "noProblems": "No se han registrado hallazgos dentales para esta visita.",
   "ourPractice": "nuestra clínica",
   "ownerLabel": "Propietario",
   "patientLabel": "Paciente",
@@ -100,5 +102,58 @@
     }
   },
   "yourPet": "su mascota",
-  "yourTeam": "su equipo veterinario"
+  "yourTeam": "su equipo veterinario",
+  "plainCodes": {
+    "T/FX": "un diente roto",
+    "T/FX/EI": "una grieta en el esmalte",
+    "T/FX/EF": "un diente astillado (solo el esmalte)",
+    "T/FX/UCF": "un diente roto (el nervio no está expuesto)",
+    "T/FX/CCF": "un diente roto con el nervio expuesto",
+    "T/FX/UCRF": "un diente roto que llega por debajo de la encía (el nervio no está expuesto)",
+    "T/FX/CCRF": "un diente roto que llega por debajo de la encía, con el nervio expuesto",
+    "T/FX/RF": "una raíz dental fracturada",
+    "T/PE": "el nervio del diente está expuesto",
+    "T/NV": "un diente que ya no está vivo",
+    "TR": "reabsorción dental (el organismo destruye el diente)",
+    "T/A": "un diente arrancado por un golpe",
+    "T/U": "un diente que no ha salido de la encía",
+    "T/I": "un diente atrapado bajo la encía",
+    "DT": "un diente de leche",
+    "AT": "desgaste por el roce de los dientes entre sí",
+    "AB": "desgaste por morder objetos duros",
+    "E/D": "un defecto en el esmalte",
+    "E/H": "esmalte fino o mal formado",
+    "CA": "una caries",
+    "GR": "retracción de las encías",
+    "GH": "crecimiento excesivo de las encías",
+    "OM": "una masa en la boca",
+    "B": "una biopsia (muestra de tejido para el laboratorio)",
+    "B/I": "una biopsia (muestra de la masa para el laboratorio)",
+    "B/E": "la extirpación de la masa para análisis de laboratorio",
+    "X": "diente extraído",
+    "XS": "diente extraído en partes",
+    "XSS": "diente extraído quirúrgicamente",
+    "RCT": "tratamiento de conducto",
+    "VPT": "tratamiento para mantener vivo el diente",
+    "PRO": "limpieza profesional (sarro y pulido)"
+  },
+  "summary": {
+    "gingivitis": "Inflamación de las encías en {{extent}}{{severity}}",
+    "calculus": "Sarro en {{extent}}{{severity}}",
+    "recession": "Retracción de las encías en {{extent}}",
+    "hyperplasia": "Encía agrandada en {{extent}}"
+  },
+  "extent": {
+    "most": "la mayoría de los dientes",
+    "many": "muchos dientes",
+    "some": "algunos dientes"
+  },
+  "severity": {
+    "mild": "leve",
+    "moderate": "moderado",
+    "severe": "grave",
+    "single": " (grado {{level}})",
+    "range": " (grado {{from}} a {{to}})"
+  },
+  "otherFindings": "Otros hallazgos"
 }

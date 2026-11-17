@@ -60,7 +60,9 @@
   "results": {
     "title": "Résultats",
     "sent": "Envoyé",
-    "stampFailed": "Envoyé, mais ToothOps n’a pas pu enregistrer la date d’envoi sur ce dossier."
+    "stampFailed": "Envoyé, mais ToothOps n’a pas pu enregistrer la date d’envoi sur ce dossier.",
+    "saved": "Enregistré dans ezyVet",
+    "summary": "Champs enregistrés : {{saved}} · À vérifier : {{attention}}"
   },
   "errors": {
     "extension_error": "ToothOps n’a pas pu joindre l’extension ezyVet. Vérifiez qu’elle est installée et activée, puis réessayez.",
@@ -116,7 +118,8 @@
       "noteLabel": "Note du dossier",
       "flagLoading": "Vérification de l’activation de l’envoi pour votre cabinet…",
       "flagFailed": "Impossible de vérifier si l’envoi vers ezyVet est activé pour votre cabinet.",
-      "sendOff": "L’envoi vers ezyVet n’est pas activé pour votre cabinet."
+      "sendOff": "L’envoi vers ezyVet n’est pas activé pour votre cabinet.",
+      "destination": "Destination"
     },
     "today": {
       "title": "Patients du jour (ezyVet)",

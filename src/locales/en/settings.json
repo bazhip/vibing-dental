@@ -97,6 +97,11 @@
       "title": "Delete practice",
       "blurb": "Permanently deletes the practice and every chart shared with it, including your team’s, and cancels any subscription. Team members keep their accounts and private charts.",
       "button": "Delete practice…"
+    },
+    "treatmentReport": {
+      "title": "Treatment report",
+      "blurb": "Saved text for common procedures, ready to insert into a treatment report.",
+      "customize": "Customize treatment report"
     }
   },
   "logoErrors": {
@@ -114,18 +119,19 @@
       "anesthesia": "Anesthesia settings",
       "charting": "Charting settings",
       "diagnosis": "Diagnosis settings",
-      "images": "Images settings",
-      "exam": "Exam settings"
+      "images": "Imaging settings",
+      "exam": "Exam settings",
+      "procedure": "Procedure settings"
     },
-    "noteAccount": "Just for you — these follow your account on every device. Changes save right away.",
-    "noteBrowser": "Saved in this browser. Changes apply right away.",
+    "noteAccount": "Personal preferences follow your account on every device. Changes save automatically.",
+    "noteBrowser": "Personal preferences saved automatically in this browser.",
     "all": "All chart settings",
     "charting": {
       "title": "Charting",
-      "view": "View",
+      "view": "Chart layout",
       "grid": "Grid",
       "byTooth": "By tooth",
-      "pocket": "Pocket depths",
+      "pocket": "Pocket depth recording",
       "pocketTooth": "One per tooth",
       "pocketRoot": "One per root",
       "pocketRootHint": "M / D, or MB / MP / D on three-rooted teeth",
@@ -140,14 +146,14 @@
       "scoreFindingHint": "mobility → recession → … for tooth-by-tooth exams",
       "scoreTooth": "Go down to the next tooth",
       "scoreToothHint": "for scoring one finding across the mouth",
-      "scoreStay": "Stay put",
-      "columns": "Columns"
+      "scoreStay": "Keep the current cell selected",
+      "columns": "Visible measurements"
     },
     "beside": {
-      "title": "Beside the teeth",
+      "title": "Diagram findings",
       "show": "Show findings on the Diagnosis diagram",
       "showHint": "(and in the PDF)",
-      "include": "Include"
+      "include": "Findings to display"
     },
     "anesthesia": {
       "title": "Anesthesia",
@@ -160,64 +166,102 @@
         "mental": "Mental",
         "other": "Other"
       },
-      "usual": "Your usual anesthetic",
-      "usualNote": "Offered as one tap on a chart with no anesthetic set.",
+      "usual": "Preferred local anesthetic",
+      "usualNote": "Available as a shortcut when no anesthetic is recorded. You choose when to apply it.",
       "drugPlaceholder": "e.g. Bupivacaine",
-      "drugAria": "Usual anesthetic",
-      "strengthAria": "Usual anesthetic strength (%)",
-      "adjunct": "Added to the mix",
-      "adjunctNote": "Added to the mix (optional), e.g. buprenorphine or dexmedetomidine. “Use my usual” then charts both.",
+      "drugAria": "Preferred local anesthetic",
+      "strengthAria": "Local anesthetic concentration (%)",
+      "adjunct": "Additional medication",
+      "adjunctNote": "Optional medication saved with your preferred anesthetic. Applying the shortcut records both.",
       "adjunctPlaceholder": "e.g. Buprenorphine",
-      "adjunctAria": "Usual drug added to the mix",
-      "adjunctStrengthAria": "Strength of the drug added to the mix"
+      "adjunctAria": "Additional medication",
+      "adjunctStrengthAria": "Additional medication concentration"
     },
     "patient": {
       "title": "Patient page",
-      "hideRecheck": "Hide the Recheck due field"
+      "hideRecheck": "Hide the Recheck due field",
+      "visibilityNote": "Choose the fields shown on blank visits. Fields with recorded information remain visible."
     },
     "pdf": {
       "title": "PDF",
       "grid": "Include the charting grid",
-      "gridHint": "(optional while findings are on the diagram)",
+      "gridHint": "Required when diagram findings are off, so recorded measurements remain in the PDF.",
       "images": "Include images",
       "imagesHint": "(4 per page, after the chart)"
     },
-    "noteDevice": "Saved on this device. Changes apply right away.",
+    "noteDevice": "Personal preferences saved automatically on this device.",
     "spaceMovesDownHint": "Fast for calling out a run of depths",
     "scoreTapFindingHint": "Mobility → recession → … for tooth-by-tooth exams",
     "scoreTapToothHint": "For scoring one finding across the mouth",
     "columnsFooter": "Columns shown in the charting grid. At least one stays on.",
     "mirrorHint": "And in the PDF",
     "drugName": "Drug",
-    "drugStrength": "Strength",
-    "pdfGridHint": "Optional while findings are on the diagram",
+    "drugStrength": "Concentration",
+    "pdfGridHint": "Required when diagram findings are off, so recorded measurements remain in the PDF.",
     "pdfImagesHint": "4 per page, after the chart",
     "quickCodes": {
-      "title": "Quick codes",
-      "note": "One-tap buttons for codes you chart often, such as T/SN (supernumerary tooth). They appear under the diagnosis note in By tooth and above the Diagnosis diagram.",
+      "title": "Diagnosis shortcuts",
+      "note": "Add AVDC or custom codes for tooth notes and the Diagnosis diagram. Their order here sets the shortcut order.",
       "remove": "Remove",
       "removeAria": "Remove {{code}}",
       "placeholder": "Code, e.g. T/SR",
       "addAria": "Code to add",
-      "add": "Add"
+      "add": "Add",
+      "duplicate": "This code is already in your shortcuts."
     },
     "exam": {
       "title": "Exam",
-      "areas": "Your exam areas",
-      "areasNote": "Added after the six built-in areas, each with Normal / Abnormal and a comment. Only the areas you answer print on the PDF.",
+      "areas": "Exam areas",
+      "areasNote": "Choose the areas shown on the Exam page. Areas with saved findings remain visible even when unchecked. Custom areas appear in the order below.",
       "areaPlaceholder": "e.g. Lips",
       "areaAria": "Exam area {{n}} name",
       "areaN": "area {{n}}",
       "remove": "Remove",
       "removeAria": "Remove {{name}}",
       "add": "Add area",
-      "addPreset": "Add the full oral exam list",
+      "addPreset": "Add suggested areas",
       "presets": {
         "lips": "Lips / mucocutaneous junction",
         "gingiva": "Gingiva / mucogingival line",
         "salivary": "Salivary duct openings",
         "floor": "Floor of mouth / frenulum"
-      }
+      },
+      "suggestions": "Suggested areas",
+      "showArea": "Show {{name}}",
+      "customCount": "Custom areas added: {{used}} · Limit: {{max}}"
+    },
+    "customization": {
+      "navigation": "Chart settings categories",
+      "categories": {
+        "patient": "Patient details",
+        "exam": "Oral exam",
+        "diagnosis": "Diagnosis",
+        "images": "Imaging and PDF",
+        "procedure": "Procedure"
+      },
+      "descriptions": {
+        "patient": "Choose whether to show the recheck date on the Patient page.",
+        "exam": "Choose the additional areas you record during an oral exam.",
+        "anesthesia": "Configure nerve blocks, custom fields, and your usual medications.",
+        "charting": "Set the chart layout, measurements, and data-entry behavior.",
+        "diagnosis": "Choose the findings displayed on the diagnosis diagram and your quick codes.",
+        "images": "Choose the chart and images included in generated PDFs.",
+        "procedure": "Choose the quick codes available on the procedure diagram."
+      },
+      "showRecheck": "Show the Recheck due field",
+      "layout": "Layout and measurements",
+      "input": "Data entry"
+    },
+    "procedureQuickCodes": {
+      "title": "Procedure shortcuts",
+      "note": "Add codes for procedures you record often. These shortcuts appear only on the Procedure diagram; diagnosis quick codes stay separate.",
+      "placeholder": "Code, e.g. XSS"
+    },
+    "list": {
+      "moveUp": "Move {{name}} up",
+      "moveDown": "Move {{name}} down",
+      "count": "{{used}} of {{max}} configured",
+      "limit": "Limit reached. Remove an item to add another."
     }
   },
   "feedback": {
@@ -286,5 +330,19 @@
   "reminders": {
     "sendFrom": "Send a reminder for one patient from Patients or Rechecks.",
     "settingUp": "Your practice is being set up — check back in a moment."
+  },
+  "workspace": {
+    "personalScope": "Personal chart preferences — changes apply only to your account.",
+    "accountScope": "These settings belong to your account. Save each section separately; email and password changes have their own confirmation.",
+    "languageImmediate": "Language changes apply immediately.",
+    "general": "General",
+    "team": "Team",
+    "templates": "Templates",
+    "billing": "Billing",
+    "reminders": "Recheck reminders",
+    "charting": "Charting preferences",
+    "back": "Back to current visit",
+    "scope": "Manage the settings shared by your practice.",
+    "saveHint": "Save changes to the practice name. Other settings apply immediately."
   }
 }

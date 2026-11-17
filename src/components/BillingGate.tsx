@@ -170,7 +170,14 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
     );
   }
 
-  if (!info || isAdmin === null) return blocking(null);
+  if (!info || isAdmin === null) return blocking(
+    <div className="billing-gate" role="status" aria-live="polite">
+      <div className="billing-gate__panel billing-gate__panel--narrow">
+        <div className="billing-gate__spinner" aria-hidden="true" />
+        <p className="billing-gate__sub">{t('gate.loading')}</p>
+      </div>
+    </div>
+  );
 
   if (ACCESS_STATUSES.includes(info.status)) {
     return <>{children}</>;

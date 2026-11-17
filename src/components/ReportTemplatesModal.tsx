@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { confirmDialog, friendlyError } from './ui/dialogs';
 import { isNativeApp } from '../native/platform';
 import { Sheet } from '../ios/Sheet';
+import { useModalFocus } from '../hooks/useModalFocus';
 import { ReportTemplate, UseReportTemplatesReturn } from '../hooks/useReportTemplates';
 
 interface ReportTemplatesModalProps {
@@ -11,6 +12,8 @@ interface ReportTemplatesModalProps {
   store: UseReportTemplatesReturn;
   /** Prefill for a new template (the current report text, if any). */
   draftBody?: string;
+  initialTemplateId?: string | null;
+  onLeaveGuardChange?: (guard: (() => Promise<boolean>) | null) => void;
 }
 
 /**
@@ -24,9 +27,12 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
   onClose,
   store,
   draftBody = '',
+  initialTemplateId = null,
+  onLeaveGuardChange,
 }) => {
   const { t } = useTranslation('library');
   const asSheet = isNativeApp();
+  const modalRef = useModalFocus(open && !asSheet);
   // null = editing a new, not-yet-saved template.
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
   const [name, setName] = React.useState('');
@@ -41,27 +47,58 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
   const dirty = name !== baseline.name || body !== baseline.body;
   const dirtyRef = React.useRef(dirty);
   dirtyRef.current = dirty;
-  const confirmDiscard = React.useCallback(async () => !dirtyRef.current || confirmDialog({
-    title: t('ios.sheets.discard.title', { ns: 'common' }),
-    confirmLabel: t('ios.sheets.discard.discard', { ns: 'common' }),
-    cancelLabel: t('ios.sheets.discard.keep', { ns: 'common' }),
-    danger: true,
-  }), [t]);
   const busyRef = React.useRef(false);
+  busyRef.current = busy;
+  const confirmationPending = React.useRef(false);
+  const current = React.useRef({ open, name, body });
+  current.current = { open, name, body };
+  const confirmDiscard = React.useCallback(async () => {
+    if (busyRef.current || confirmationPending.current) return false;
+    if (!dirtyRef.current) return true;
+    const snapshot = current.current;
+    confirmationPending.current = true;
+    try {
+      const confirmed = await confirmDialog({
+        title: t('ios.sheets.discard.title', { ns: 'common' }),
+        confirmLabel: t('ios.sheets.discard.discard', { ns: 'common' }),
+        cancelLabel: t('ios.sheets.discard.keep', { ns: 'common' }),
+        danger: true,
+      });
+      return confirmed && current.current.open && !busyRef.current &&
+        current.current.name === snapshot.name && current.current.body === snapshot.body;
+    } finally {
+      confirmationPending.current = false;
+    }
+  }, [t]);
   const requestClose = React.useCallback(async () => {
-    if (busyRef.current) return; // not mid-save
     if (await confirmDiscard()) onClose();
   }, [confirmDiscard, onClose]);
-  busyRef.current = busy;
+
+  React.useEffect(() => {
+    if (!open) return;
+    onLeaveGuardChange?.(confirmDiscard);
+    return () => onLeaveGuardChange?.(null);
+  }, [open, confirmDiscard, onLeaveGuardChange]);
+
+  React.useEffect(() => {
+    if (!open || (!dirty && !busy)) return;
+    const preventLoss = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = '';
+    };
+    window.addEventListener('beforeunload', preventLoss);
+    return () => window.removeEventListener('beforeunload', preventLoss);
+  }, [open, dirty, busy]);
 
   // Re-seed each open: start on a fresh draft (prefilled from the
   // current report so "save what I just wrote" is one click away).
   React.useEffect(() => {
     if (open) {
-      setSelectedId(null);
-      setName('');
-      setBody(draftBody);
-      setBaseline({ name: '', body: draftBody });
+      const initial = store.templates.find((tpl) => tpl.id === initialTemplateId);
+      setSelectedId(initial?.id ?? null);
+      setName(initial?.name ?? '');
+      setBody(initial?.body ?? draftBody);
+      setBaseline({ name: initial?.name ?? '', body: initial?.body ?? draftBody });
       setError('');
       nameRef.current?.focus();
     }
@@ -101,10 +138,12 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
   };
 
   const handleSave = async () => {
+    if (busyRef.current) return;
     if (!name.trim()) {
       setError(t('templates.nameRequired'));
       return;
     }
+    busyRef.current = true;
     setBusy(true);
     setError('');
     try {
@@ -120,18 +159,20 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
     } catch (e) {
       setError(friendlyError(e, t('templates.saveFailed')));
     } finally {
+      busyRef.current = false;
       setBusy(false);
     }
   };
 
   const handleDelete = async () => {
-    if (!selectedId) return;
+    if (!selectedId || busyRef.current) return;
     if (!(await confirmDialog({
       title: t('templates.deleteTitle', { name: name.trim() || t('templates.untitled') }),
       message: t('templates.deleteMessage'),
       confirmLabel: t('templates.deleteConfirm'),
       danger: true,
     }))) return;
+    busyRef.current = true;
     setBusy(true);
     setError('');
     try {
@@ -140,6 +181,7 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
     } catch (e) {
       setError(friendlyError(e, t('templates.deleteFailed')));
     } finally {
+      busyRef.current = false;
       setBusy(false);
     }
   };
@@ -147,7 +189,7 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
   const templatesBody = (
     <>
       <section className="ai-settings-section">
-        <div className="report-templates__list-head">
+        <div className="treatment-templates__list-head">
           <span className="patient-form__label">{t('templates.saved')}</span>
           <button type="button" className="diagram-view__action" onClick={() => void startNew()} disabled={busy}>
             {t('templates.new')}
@@ -158,16 +200,17 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
             {t('templates.empty')}
           </p>
         ) : (
-          <ul className="report-templates__list">
+          <ul className="treatment-templates__list">
             {store.templates.map((tpl) => (
               <li key={tpl.id}>
                 <button
                   type="button"
                   className={
                     tpl.id === selectedId
-                      ? 'report-templates__item report-templates__item--active'
-                      : 'report-templates__item'
+                      ? 'treatment-templates__item treatment-templates__item--active'
+                      : 'treatment-templates__item'
                   }
+                  aria-pressed={tpl.id === selectedId}
                   onClick={() => void pick(tpl)}
                   disabled={busy}
                 >
@@ -194,7 +237,7 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
         <label className="patient-form__label" style={{ marginTop: '0.75rem' }}>
           {t('templates.bodyLabel')}
           <textarea
-            className="patient-form__textarea report-templates__body"
+            className="patient-form__textarea treatment-templates__body"
             placeholder={t('templates.bodyPlaceholder')}
             value={body}
             onChange={(e) => setBody(e.target.value)}
@@ -239,7 +282,7 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
 
   return (
     <div className="ai-settings-overlay" onClick={() => void requestClose()} role="dialog" aria-modal="true" aria-label={t('templates.aria')}>
-      <div className="ai-settings-modal" onClick={(e) => e.stopPropagation()}>
+      <div className="ai-settings-modal" ref={modalRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
         <header className="ai-settings-header">
           <h2>{t('templates.title')}</h2>
           <button type="button" className="pdf-preview-close" onClick={() => void requestClose()} aria-label={t('actions.close', { ns: 'common' })}>

@@ -1,3 +1,4 @@
+vi.mock('../../hooks/useReportTemplates', () => ({ useReportTemplates: () => ({ enabled: true, loaded: true, templates: [], create: vi.fn(), update: vi.fn(), remove: vi.fn() }) }));
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import React from 'react';
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -219,14 +220,21 @@ describe('Settings tab screens', () => {
   });
 
   it('Chart settings: a usual anesthetic typed then left with Back (no blur) is still saved', async () => {
-    const s = makeSettings();
-    pushScreen(<ChartSettingsScreen />, s);
-    fireEvent.change(screen.getByLabelText('Usual anesthetic'), { target: { value: 'Lidocaine' } });
-    fireEvent.change(screen.getByLabelText('Usual anesthetic strength (%)'), { target: { value: '2' } });
-    expect(s.setPref).not.toHaveBeenCalled();
-    fireEvent.click(back());
-    await waitFor(() => expect(screen.queryByLabelText('Usual anesthetic')).toBeNull());
-    expect(s.setPref).toHaveBeenCalledWith({ usualDrug: { name: 'Lidocaine', concentration: '2' } });
+    vi.useFakeTimers();
+    try {
+      const s = makeSettings();
+      pushScreen(<ChartSettingsScreen />, s);
+      fireEvent.change(screen.getByLabelText('Preferred local anesthetic', { selector: 'input' }), { target: { value: 'Lidocaine' } });
+      fireEvent.change(screen.getByLabelText('Local anesthetic concentration (%)'), { target: { value: '2' } });
+      expect(s.setPref).not.toHaveBeenCalled();
+      await act(async () => fireEvent.click(back()));
+      // The draft flush happens when the animated outgoing screen unmounts.
+      await act(async () => { await vi.runOnlyPendingTimersAsync(); });
+      expect(screen.queryByLabelText('Preferred local anesthetic', { selector: 'input' })).toBeNull();
+      expect(s.setPref).toHaveBeenCalledWith({ usualDrug: { name: 'Lidocaine', concentration: '2' } });
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('Send feedback: Send sits in the bar, sends the chart section, then goes back', async () => {
@@ -292,10 +300,22 @@ describe('Chart settings opened from a chart page in the app', () => {
     const sheet = screen.getByRole('dialog');
     expect(sheet.closest('.ios-sheet-root')).not.toBeNull();
     expect(within(sheet).getByRole('heading', { name: 'Patient page settings' })).toBeInTheDocument();
-    fireEvent.click(within(sheet).getByRole('switch', { name: 'Hide the Recheck due field' }));
+    fireEvent.click(within(sheet).getByRole('switch', { name: 'Show the Recheck due field' }));
     expect(onChange).toHaveBeenLastCalledWith({ hideRecheck: true });
     expect(within(sheet).queryByRole('checkbox')).toBeNull();
     fireEvent.click(within(sheet).getByRole('button', { name: 'All chart settings' }));
     expect(within(sheet).getByRole('heading', { name: 'Chart settings' })).toBeInTheDocument();
   });
+});
+
+
+it('the native procedure customization sheet edits procedure codes only', () => {
+  const onChange = vi.fn();
+  render(<ChartSettingsModal onClose={() => {}} prefs={{ ...DEFAULT_CHART_PREFS, quickCodes: ['T/SN'], procedureQuickCodes: ['EXT'] }} followsAccount onChange={onChange} section="procedure" />);
+  const sheet = screen.getByRole('dialog');
+  expect(sheet.closest('.ios-sheet-root')).not.toBeNull();
+  expect(within(sheet).getByRole('heading', { name: 'Procedure settings' })).toBeInTheDocument();
+  fireEvent.click(within(sheet).getByRole('button', { name: 'Remove EXT' }));
+  expect(onChange).toHaveBeenLastCalledWith({ procedureQuickCodes: [] });
+  expect(within(sheet).queryByRole('button', { name: 'Remove T/SN' })).toBeNull();
 });

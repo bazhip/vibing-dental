@@ -39,7 +39,7 @@
   },
   "radiographicFindings": {
     "title": "Hallazgos radiográficos",
-    "body": "Un recuadro propio en la página Imágenes. Se imprime en el PDF encima del informe de tratamiento."
+    "body": "Un recuadro propio en la página Diagnóstico por imagen. Se imprime en el PDF encima del informe de tratamiento."
   },
   "anesthesia": {
     "title": "Anestesia",
@@ -59,10 +59,10 @@
   },
   "startsWhereLeft": {
     "title": "Continúa donde lo dejó",
-    "body": "Al abrir ToothOps se muestra Mis historiales — salvo que la visita de hoy siga abierta — y la visita de hoy se abre lista para editar."
+    "body": "Al abrirse, ToothOps muestra Pacientes — salvo que la visita de hoy siga abierta — y la visita de hoy se abre lista para editar."
   },
   "sendFeedback": {
     "title": "Envíe comentarios en dos toques",
-    "body": "Ajustes → Enviar comentarios, o Comentarios en el panel de dictado (puede adjuntar su transcripción). Nos llegan directamente."
+    "body": "Ayuda → Enviar comentarios, o Comentarios en el panel de dictado para incluir su transcripción."
   }
 }

@@ -1,3 +1,4 @@
+import { SectionHeader } from './SectionHeader';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast, confirmDialog } from './ui/dialogs';
@@ -7,6 +8,7 @@ import { ensureAiConsent } from '../native/aiConsent';
 import { ChartSnapshot, OwnerReportOverrides } from '../types';
 import {
   buildOwnerReportModel,
+  ownerReportReviewBasis,
   placeholderValuesFor,
   templateForSnapshot,
   templateHomecareTips,
@@ -17,6 +19,7 @@ import type { OwnerReportContext } from '../utils/ownerReportConfig';
 interface OwnerReportSectionProps {
   /** Live chart snapshot — the generated report content derives from it. */
   snapshot: ChartSnapshot;
+  chartId?: string | null;
   overrides: OwnerReportOverrides;
   onOverrideChange: (field: keyof OwnerReportOverrides, value: string | null) => void;
   /** Open the report preview modal. */
@@ -41,6 +44,7 @@ interface OwnerReportSectionProps {
  */
 export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
   snapshot,
+  chartId = '',
   overrides,
   onOverrideChange,
   onPreview,
@@ -51,6 +55,11 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
 }) => {
   const { t } = useTranslation('reportui');
   const model = React.useMemo(() => buildOwnerReportModel(snapshot, context), [snapshot, context]);
+  const mounted = React.useRef(true);
+  React.useEffect(() => { mounted.current = true; return () => { mounted.current = false; }; }, []);
+  const reviewState = React.useRef({ snapshot, context, readOnly, chartId });
+  reviewState.current = { snapshot, context, readOnly, chartId };
+  const canApply = (basis: string, forChart = chartId) => mounted.current && !reviewState.current.readOnly && reviewState.current.chartId === forChart && ownerReportReviewBasis(reviewState.current.snapshot, reviewState.current.context) === basis;
   // Prefills follow the chosen template (its intro / tips / language).
   const template = templateForSnapshot(snapshot, context);
   const values = placeholderValuesFor(snapshot, context, template);
@@ -83,16 +92,20 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
     }
   };
   const writeDraft = async () => {
+    if (readOnly) return;
+    const basis = ownerReportReviewBasis(snapshot, context);
     if ((introEdited || homecareEdited) && !(await confirmDialog({
       title: t('section.replaceTitle'),
       message: t('section.replaceMessage'),
       confirmLabel: t('section.writeWithAi'),
     }))) return;
     // App only: one-time consent before chart text first goes to Anthropic.
-    if (!(await ensureAiConsent())) return;
+    if (!canApply(basis) || !(await ensureAiConsent()) || !canApply(basis)) return;
     setDrafting(true);
     try {
       const draft = await draftOwnerReport(snapshot, context);
+      if (!canApply(basis)) return;
+      const appliedBasis = ownerReportReviewBasis({ ...snapshot, ownerReport: { ...snapshot.ownerReport, ...(draft.intro ? { intro: draft.intro } : {}), ...(draft.homecare ? { homecare: draft.homecare } : {}) } }, context);
       const before = { intro: overrides.intro ?? null, homecare: overrides.homecare ?? null };
       if (draft.intro) onOverrideChange('intro', draft.intro);
       if (draft.homecare) onOverrideChange('homecare', draft.homecare);
@@ -101,15 +114,17 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
         action: {
           label: t('section.undo'),
           onClick: () => {
+            if (!canApply(appliedBasis)) return;
             onOverrideChange('intro', before.intro);
             onOverrideChange('homecare', before.homecare);
           },
         },
       });
     } catch (err) {
+      if (!canApply(basis)) return;
       toast(t('section.draftFailed', { reason: detailText(err) }).trim(), { kind: 'error' });
     } finally {
-      setDrafting(false);
+      if (mounted.current) setDrafting(false);
     }
   };
 
@@ -185,14 +200,7 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
 
   return (
     <div className="patient-form">
-      <div className="patient-form__header">
-        <h2 className="patient-form__section-title">{t('section.title')}</h2>
-        <div className="owner-report__actions">
-          {onCustomize && (
-            <button type="button" className="diagram-view__action" onClick={onCustomize} title={t('section.customizeTitle')}>
-              {t('section.customize')}
-            </button>
-          )}
+      <SectionHeader title={t('section.title')} onCustomize={onCustomize} customizeTitle={t('section.customizeTitle')} actions={<>
           {aiEnabled && !readOnly && (
             <button
               type="button"
@@ -207,8 +215,7 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
           <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={onPreview}>
             {t('section.previewButton')}
           </button>
-        </div>
-      </div>
+      </>} />
 
       <p className="patient-form__hint">
         {t('section.intro')}
@@ -251,6 +258,11 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
             <strong>{t('section.removedThisVisit')}</strong> {model.extracted.join(', ')}
           </p>
         )}
+        {model.summaryLines.length > 0 && (
+          <ul className="owner-report__preview-list">
+            {model.summaryLines.map((line) => <li key={line}>{line}</li>)}
+          </ul>
+        )}
         {model.teeth.filter((tooth) => tooth.notes.length > 0).length > 0 ? (
           <ul className="owner-report__preview-list">
             {model.teeth.filter((tooth) => tooth.notes.length > 0).map((tooth) => (
@@ -260,9 +272,15 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
               </li>
             ))}
           </ul>
-        ) : (
+        ) : model.summaryLines.length === 0 && model.otherFindings.length === 0 && (
           <p className="owner-report__preview-line">
             {t('section.noFindings')}
+          </p>
+        )}
+        {model.otherFindings.length > 0 && (
+          <p className="owner-report__preview-line">
+            <strong>{t('section.otherFindings')}</strong>{' '}
+            {model.otherFindings.join(' · ')}
           </p>
         )}
         {model.examNotes.length > 0 && (

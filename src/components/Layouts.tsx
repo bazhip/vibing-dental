@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { pinnedSectionNav } from '../utils/pinnedSectionNav';
 import { MobileSectionMenu } from './MobileSectionMenu';
@@ -33,6 +34,10 @@ interface LayoutProps {
   /** App shell (iOS): no section rail or phone section menu — the shell
    *  provides section navigation (iPad sidebar, Chart title menu). */
   hideNav?: boolean;
+  /** A shared notice beside the active section, outside locked controls. */
+  notice?: React.ReactNode;
+  /** Web workspace owns the persistent rail; native retains its own shell. */
+  navigationHost?: HTMLElement | null;
 }
 
 export const SidebarLayout: React.FC<LayoutProps> = ({
@@ -42,6 +47,8 @@ export const SidebarLayout: React.FC<LayoutProps> = ({
   onActiveChange,
   companions,
   hideNav = false,
+  notice,
+  navigationHost,
 }) => {
   const { t } = useTranslation('app');
   const initial = activeId ?? defaultActiveId ?? sections[0]?.id;
@@ -91,7 +98,7 @@ export const SidebarLayout: React.FC<LayoutProps> = ({
     updateFade();
     window.addEventListener('resize', updateFade);
     return () => window.removeEventListener('resize', updateFade);
-  }, [updateFade]);
+  }, [updateFade, navigationHost]);
   React.useEffect(() => {
     const nav = navRef.current;
     const item = nav?.querySelector<HTMLElement>('.sidebar-layout__nav-item--active');
@@ -100,15 +107,10 @@ export const SidebarLayout: React.FC<LayoutProps> = ({
     // scrolls the page).
     const left = item.offsetLeft - (nav.clientWidth - item.offsetWidth) / 2;
     nav.scrollTo({ left: Math.max(0, left), behavior: 'smooth' });
-  }, [active]);
+  }, [active, navigationHost]);
 
-  return (
-    <div className={`${companion ? 'sidebar-layout sidebar-layout--paired' : 'sidebar-layout'}${hideNav ? ' sidebar-layout--bare' : ''}`}>
-      {!hideNav && <MobileSectionMenu sections={sections} activeId={active} onSelect={choose} />}
-      {/* Plain navigation, not an ARIA tablist — the buttons have no
-          arrow-key contract, and sections read better as nav anyway. */}
-      {!hideNav && (
-        <nav
+  const navigation = (
+    <nav
           ref={navRef}
           className={`sidebar-layout__nav${fade.start ? ' sidebar-layout__nav--fade-start' : ''}${fade.end ? ' sidebar-layout__nav--fade-end' : ''}`}
           aria-label={t('sections.nav')}
@@ -129,8 +131,14 @@ export const SidebarLayout: React.FC<LayoutProps> = ({
             </button>
           ))}
         </nav>
-      )}
-      <main className="sidebar-layout__main" ref={mainRef}>
+  );
+
+  return (
+    <div className={`${companion ? 'sidebar-layout sidebar-layout--paired' : 'sidebar-layout'}${hideNav ? ' sidebar-layout--bare' : ''}${navigationHost ? ' sidebar-layout--external-nav' : ''}`}>
+      {!hideNav && <MobileSectionMenu sections={sections} activeId={active} onSelect={choose} />}
+      {!hideNav && (navigationHost ? createPortal(navigation, navigationHost) : navigation)}
+      <main className="sidebar-layout__main" data-active-section={active} ref={mainRef}>
+        {notice}
         {sections.map((s) => (
           <div
             key={s.id}

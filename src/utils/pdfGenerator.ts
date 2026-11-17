@@ -1,5 +1,6 @@
 import { PDFDocument, PDFHexString } from 'pdf-lib';
 import { safeFont } from './pdf/safeFont';
+import { optionalClinicalContinuations, drawClinicalContinuations, drawContinuationNotice } from './pdf/continuation';
 import download from 'downloadjs';
 import i18n, { loadLanguage } from '../i18n';
 import { isAppLanguage, type AppLanguage } from '../i18n/config';
@@ -29,6 +30,7 @@ import {
   PATIENT_INFO_BOX,
   EXAM_TABLE_YTOP_IN,
   NERVE_BLOCK_BOX,
+  TREATMENT_REPORT,
 } from './pdf/layout';
 import { formatGeneratedAt, CARD_BAND_PT } from './pdf/draw';
 import {
@@ -143,7 +145,7 @@ export async function buildDentalChartPDFBytes(
   const t = i18n.getFixedT(lng, 'pdf');
   const images = layoutOptions.images ?? [];
   const imagePageCount = Math.ceil(images.length / IMAGES_PER_PAGE);
-  const totalPages = 2 + imagePageCount;
+
   const style = resolvePdfStyle(styleId);
   applyPdfStyle(style);
 
@@ -157,6 +159,21 @@ export async function buildDentalChartPDFBytes(
   // dropped instead of failing the whole PDF.
   const regular = safeFont(await pdfDoc.embedFont(fontIds.regular));
   const bold    = safeFont(await pdfDoc.embedFont(fontIds.bold));
+
+  // Preflight the same card layouts without drawing: supported custom settings
+  // can exceed the compact column or its text limits. Move complete sections
+  // to readable continuation pages instead of clipping values or the diagram.
+  const maxOptionalBottomIn = DIAGRAM_SLOTS[species][1].yTopIn + DIAGRAM_SLOTS[species][1].heightIn - 2.2 - 0.15;
+  const measure = { maxBottomIn: maxOptionalBottomIn, overflow: false };
+  const measuredTableBottom = drawNerveBlockTable(page2, patientInfo.nerveBlocks, bold, regular, logo === 'vca', patientInfo.customAnesthesia, lng, measure);
+  drawCustomExamCard(page2, patientInfo.customExam, regular, bold,
+    measuredTableBottom > NERVE_BLOCK_BOX.yTopIn ? measuredTableBottom + 0.12 : TREATMENT_REPORT.headerYTopIn,
+    NERVE_BLOCK_BOX.xIn, NERVE_BLOCK_BOX.labelColIn + 2 * NERVE_BLOCK_BOX.valueColIn,
+    maxOptionalBottomIn, lng, measure);
+  const continuations = measure.overflow ? optionalClinicalContinuations(patientInfo, logo, lng) : [];
+  drawClinicalContinuations(pdfDoc, continuations, regular, bold);
+  const continuationPages = pdfDoc.getPageCount() - 2;
+  const totalPages = 2 + continuationPages + imagePageCount;
 
   const generatedAt = formatGeneratedAt(new Date());
 
@@ -298,25 +315,22 @@ export async function buildDentalChartPDFBytes(
   // The nerve-block table grows to fit a long "Other" note; push the diagram
   // beneath it (keeping its bottom fixed above the codes legend) so the two
   // never overlap.
-  const tableBottomIn = drawNerveBlockTable(page2, patientInfo.nerveBlocks, bold, regular, logo === 'vca', patientInfo.customAnesthesia, lng);
+  const tableBottomIn = measure.overflow ? NERVE_BLOCK_BOX.yTopIn : drawNerveBlockTable(page2, patientInfo.nerveBlocks, bold, regular, logo === 'vca', patientInfo.customAnesthesia, lng);
   const baseSlot = DIAGRAM_SLOTS[species][1];
   // The person's own exam areas don't fit on page 1: they get a card under
   // the nerve blocks, kept short enough to leave the diagram its minimum.
   const slotBottomIn = baseSlot.yTopIn + baseSlot.heightIn;
-  const nbBottomIn = drawCustomExamCard(
-    page2, patientInfo.customExam, regular, bold, tableBottomIn + 0.12,
+  const hasAnesthesia = tableBottomIn > NERVE_BLOCK_BOX.yTopIn;
+  const columnTopIn = TREATMENT_REPORT.headerYTopIn;
+  const nbBottomIn = measure.overflow ? drawContinuationNotice(page2, regular, bold, lng) : drawCustomExamCard(
+    page2, patientInfo.customExam, regular, bold, hasAnesthesia ? tableBottomIn + 0.12 : columnTopIn,
     NERVE_BLOCK_BOX.xIn, NERVE_BLOCK_BOX.labelColIn + 2 * NERVE_BLOCK_BOX.valueColIn,
     slotBottomIn - 2.2 - 0.15, lng
-  ) ?? tableBottomIn;
-  const minTopIn = nbBottomIn + 0.15;
-  const postSlot =
-    minTopIn > baseSlot.yTopIn
-      ? {
-          ...baseSlot,
-          yTopIn: minTopIn,
-          heightIn: Math.max(2.2, baseSlot.yTopIn + baseSlot.heightIn - minTopIn),
-        }
-      : baseSlot;
+  ) ?? (hasAnesthesia ? tableBottomIn : null);
+  // An omitted or short card must release its unused space. Center within
+  // the actual free region, rather than the original full-table allowance.
+  const minTopIn = nbBottomIn === null ? columnTopIn : nbBottomIn + 0.15;
+  const postSlot = { ...baseSlot, yTopIn: minTopIn };
   await drawDiagramAt(
     pdfDoc, postSlot, postDiagram.png,
     diagramBottomIn(1, usedByPage.page2)
@@ -334,7 +348,11 @@ export async function buildDentalChartPDFBytes(
     await drawImagePage(
       pdfDoc, page, images.slice(start, start + IMAGES_PER_PAGE), start, images.length, regular, bold, lng
     );
-    drawFooter(page, regular, bold, 3 + p, totalPages, generatedAt, identityLine, lng);
+    drawFooter(page, regular, bold, 3 + continuationPages + p, totalPages, generatedAt, identityLine, lng);
+  }
+
+  for (let index = 0; index < continuationPages; index++) {
+    drawFooter(pdfDoc.getPage(index + 2), regular, bold, index + 3, totalPages, generatedAt, identityLine, lng);
   }
 
   // ---- Hidden round-trip stash -------------------------------------------

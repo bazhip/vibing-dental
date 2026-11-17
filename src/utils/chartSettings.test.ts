@@ -40,3 +40,16 @@ describe('anesthesia settings', () => {
     expect(normalizeChartPrefs({ usualDrug: { name: '  ' } }).usualDrug).toBeNull();
   });
 });
+
+it('keeps procedure quick codes independent and normalizes older preferences', () => {
+  expect(normalizeChartPrefs({ quickCodes: ['T/SN'] }).procedureQuickCodes).toEqual([]);
+  const prefs = normalizeChartPrefs({ quickCodes: ['T/SN'], procedureQuickCodes: [' EXT ', 'EXT', '', 3] });
+  expect(prefs.quickCodes).toEqual(['T/SN']);
+  expect(prefs.procedureQuickCodes).toEqual(['EXT']);
+  expect(normalizeChartPrefs({ procedureQuickCodes: null }).procedureQuickCodes).toEqual([]);
+});
+
+test('optional patient fields reject unknown keys and deduplicate preferences', () => {
+  expect(normalizeChartPrefs({ hiddenPatientFields: ['ownerName', 'tech', 'tech', 'patientName', null] }).hiddenPatientFields).toEqual(['ownerName', 'tech']);
+  expect(normalizeChartPrefs({ hiddenPatientFields: true }).hiddenPatientFields).toEqual([]);
+});

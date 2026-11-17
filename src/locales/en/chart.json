@@ -163,7 +163,16 @@
     "allConfirmed": "All planned extractions confirmed.",
     "confirmed": "{{done}} of {{total}} confirmed extracted.",
     "markExtracted_one": "Mark it extracted",
-    "markExtracted_other": "Mark all {{count}} extracted"
+    "markExtracted_other": "Mark all {{count}} extracted",
+    "toothMap": "Tooth map",
+    "quadrant": "Quadrant",
+    "quadrants": {
+      "1": "Upper right",
+      "2": "Upper left",
+      "3": "Lower left",
+      "4": "Lower right"
+    },
+    "selectTooth": "Select tooth {{triadan}}: {{name}}"
   },
   "toothName": {
     "side": {
@@ -266,7 +275,8 @@
     "strokeWidthValue": "{{width}} pixels",
     "clearStrokes": "Clear strokes",
     "more": "More diagram tools",
-    "moreTitle": "More tools — comments, numbers, zoom, text size"
+    "moreTitle": "More tools — comments, numbers, zoom, text size",
+    "moreLabel": "More tools"
   },
   "codeRef": {
     "all": "Codes",

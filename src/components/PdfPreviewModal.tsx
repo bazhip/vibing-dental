@@ -92,14 +92,15 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
   // in hand when the button is tapped.
   const pdfBlobRef = React.useRef<Blob | null>(null);
   const inAppLink = useInAppPdfLink();
-  // A new PDF (style switched, data changed) invalidates an old link.
-  React.useEffect(() => { inAppLink.reset(); }, [pdfUrl]); // eslint-disable-line react-hooks/exhaustive-deps
+  const downloadGeneration = React.useRef(0);
   const [generating, setGenerating] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const closeButtonRef = React.useRef<HTMLButtonElement>(null);
   // Chart images, fetched once per open (not per style switch). null =
   // still loading; [] = none / not requested.
   const [images, setImages] = React.useState<PdfImage[] | null>(null);
+  const [imageAttempt, setImageAttempt] = React.useState(0);
+  const loadedSnapshot = React.useRef<ChartSnapshot | null>(null);
   const [imageWarning, setImageWarning] = React.useState<string | null>(null);
 
   // Move focus into the dialog on open so keyboard / screen-reader users
@@ -118,12 +119,15 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
   }, [open, onClose, bare]);
 
   React.useEffect(() => {
+    loadedSnapshot.current = null;
+    setImageWarning(null);
     if (!open || !snapshot) {
       setImages(null);
       return;
     }
     const chartId = snapshot.imagesChartId;
     if (!chartId) {
+      loadedSnapshot.current = snapshot;
       setImages([]);
       return;
     }
@@ -135,6 +139,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
       const items = await listChartAttachments(chartId);
       if (cancelled) return;
       if (!items) {
+        loadedSnapshot.current = snapshot;
         setImageWarning(warn);
         setImages([]);
         return;
@@ -144,26 +149,32 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
       for (const item of items.filter((it) => !excluded.has(it.id))) {
         const jpegBytes = item.url ? await fetchAsJpeg(item.url, PDF_IMAGE_MAX_EDGE, 0.85) : null;
         if (cancelled) return;
-        out.push({ jpegBytes, caption: item.caption, kind: item.kind });
+        out.push({ jpegBytes, caption: item.caption, kind: item.kind, tooth: item.toothTriadan });
       }
       if (!cancelled) {
         if (out.some((img) => !img.jpegBytes)) {
           setImageWarning(i18n.t('preview.imagesPartial', { ns: 'pdfui' }));
         }
-        setImages(out);
+        loadedSnapshot.current = snapshot;
+        setImages(out.some((img) => !img.jpegBytes) ? [] : out);
       }
     })().catch((err) => {
       console.error(err);
       if (!cancelled) {
+        loadedSnapshot.current = snapshot;
         setImageWarning(warn);
         setImages([]);
       }
     });
     return () => { cancelled = true; };
-  }, [open, snapshot]);
+  }, [open, snapshot, imageAttempt]);
 
   React.useEffect(() => {
-    if (!open || !snapshot || images === null) return;
+    downloadGeneration.current += 1;
+    inAppLink.reset();
+    pdfBlobRef.current = null;
+    setPdfUrl(null);
+    if (!open || !snapshot || images === null || loadedSnapshot.current !== snapshot) return;
     let cancelled = false;
     let createdUrl: string | null = null;
     setGenerating(true);
@@ -207,12 +218,14 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
 
     return () => {
       cancelled = true;
+      downloadGeneration.current += 1;
+      pdfBlobRef.current = null;
       if (createdUrl) URL.revokeObjectURL(createdUrl);
     };
-  }, [open, snapshot, styleId, images, lng]);
+  }, [open, snapshot, styleId, images, lng, imageAttempt, inAppLink.reset]);
 
-  const handleDownload = () => {
-    if (!pdfUrl || !snapshot) return;
+  const handleDownload = (withoutImages = false) => {
+    if (!pdfUrl || !snapshot || generating || images === null || error || (imageWarning && !withoutImages)) return;
     const sanitize = (str: string) => str.replace(/[^a-z0-9]/gi, '_').toLowerCase();
     const { patientInfo } = snapshot;
     const filename = `${sanitize(patientInfo.patientName) || 'patient'}_${sanitize(patientInfo.patientNumber) || 'pid'}_dental_chart_${patientInfo.date}.pdf`;
@@ -224,7 +237,9 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
       void saveChartPdf(blob, filename).catch(() => toast(i18n.t('common:errors.saveFile')));
       return;
     }
+    const attempt = downloadGeneration.current;
     savePdf(blob, filename).then((outcome) => {
+      if (attempt !== downloadGeneration.current || pdfBlobRef.current !== blob) return;
       if (outcome === 'unsupported') void inAppLink.start(blob, filename);
     });
   };
@@ -235,8 +250,8 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
     <button
       type="button"
       className="pdf-preview-download"
-      onClick={handleDownload}
-      disabled={!pdfUrl || generating || images === null}
+      onClick={() => handleDownload()}
+      disabled={!pdfUrl || generating || images === null || !!imageWarning || !!error}
     >
       {isNativeApp() ? (
         <>
@@ -266,7 +281,11 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
             {!isNativeApp() && !inAppLink.state && downloadHint() && <p className="pdf-preview-hint" role="note">{downloadHint()}</p>}
             <PdfLinkPanel state={inAppLink.state} />
             {imageWarning && (
-              <p className="pdf-preview-warning" role="status">{imageWarning}</p>
+              <div className="pdf-preview-warning">
+                <p role="status">{imageWarning}</p>
+                <button type="button" className="pdf-preview-secondary" onClick={() => setImageAttempt((attempt) => attempt + 1)}>{t('preview.retryImages')}</button>
+                <button type="button" className="pdf-preview-secondary" disabled={!pdfUrl || generating || images === null || !!error} onClick={() => handleDownload(true)}>{t('preview.withoutImages')}</button>
+              </div>
             )}
           </aside>
           <div className="pdf-preview-iframe-wrap">

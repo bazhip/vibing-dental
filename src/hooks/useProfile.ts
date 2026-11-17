@@ -33,20 +33,25 @@ export type PracticePlan = 'free' | 'basic' | 'pro';
  *  images per chart. */
 export const PLAN_LIMITS: Record<PracticePlan, { maxImages: number; aiAutofill: boolean; dicom: boolean }> = {
   // DICOM radiographs (original .dcm kept alongside a rendered preview)
-  // are for PAYING subscribers only: off on the free tier, never part of
-  // the free beta, and also off for comped practices (see
-  // BILLED_STATUSES). The database enforces the same rule (migration
-  // 20261112_dicom_attachments).
+  // come with the paid plans — off on the free tier and never part of the
+  // free beta. Comped practices and app admins get them too (see
+  // dicomAllowed). The database enforces the same rule
+  // (public.current_user_can_store_dicom, migration
+  // 20261129_dicom_comped_and_admins).
   free: { maxImages: 10, aiAutofill: true, dicom: false },
   basic: { maxImages: 30, aiAutofill: true, dicom: true },
   pro: { maxImages: 100, aiAutofill: true, dicom: true },
 };
 
-/** Subscription statuses backed by a real Stripe subscription. Unlike
- *  the plan check, 'comped' is excluded — comped/grandfathered practices
- *  pay nothing, so paid-only extras (DICOM) stay off for them. Mirrored
- *  in public.current_user_has_billed_subscription(). */
-export const BILLED_STATUSES = ['active', 'trialing', 'past_due'];
+/** Subscription statuses that unlock the practice's basic/pro plan. */
+export const PAID_STATUSES = ['active', 'trialing', 'comped', 'past_due'];
+
+/** Whether DICOM uploads are allowed: app admins always (support and
+ *  testing); everyone else on a basic/pro plan that is live or comped.
+ *  Mirrors public.current_user_can_store_dicom(). */
+export function dicomAllowed(u: { plan: PracticePlan; admin: boolean }): boolean {
+  return u.admin || PLAN_LIMITS[u.plan].dicom;
+}
 
 export interface UseProfileReturn extends PracticeProfile {
   loaded: boolean;
@@ -187,8 +192,10 @@ export function useProfile(): UseProfileReturn {
   const [logoUrl, setLogoUrl] = React.useState('');
   const [practiceId, setPracticeId] = React.useState('');
   const [plan, setPlan] = React.useState<PracticePlan>('basic');
-  // Off until the profile proves a real subscription (no flash of DICOM).
-  const [billed, setBilled] = React.useState(false);
+  // Plan state starts at 'basic' (no flash of a free-plan banner), so
+  // DICOM waits for the profile load instead (no flash of DICOM).
+  const [dicomReady, setDicomReady] = React.useState(false);
+  const [isAdmin, setIsAdmin] = React.useState(false);
   const [ownerReportEnabled, setOwnerReportEnabled] = React.useState(false);
   const [pimsSendEnabled, setPimsSendEnabled] = React.useState(false);
   const [ownerReportConfig, setOwnerReportConfig] = React.useState<OwnerReportConfig>(defaultConfig);
@@ -226,7 +233,8 @@ export function useProfile(): UseProfileReturn {
       // get basic/pro features while their subscription is alive (or
       // comped/grandfathered) — a lapsed or never-started one is free.
       let practicePlan: PracticePlan = 'free';
-      let billedSub = false;
+      // app_metadata is server-controlled; the database re-checks it.
+      const admin = sessionData.session?.user.app_metadata?.role === 'admin';
       let ownerReportOn = false;
       let pimsSendOn = false;
       let reportConfig: OwnerReportConfig | null = null;
@@ -240,9 +248,8 @@ export function useProfile(): UseProfileReturn {
           .maybeSingle();
         if (prac?.logo_path) effectiveLogoPath = prac.logo_path;
         if (prac?.name?.trim()) effectivePracticeName = prac.name.trim();
-        const paidStatus = ['active', 'trialing', 'comped', 'past_due'].includes(prac?.subscription_status ?? '');
+        const paidStatus = PAID_STATUSES.includes(prac?.subscription_status ?? '');
         if (paidStatus) practicePlan = prac?.plan === 'pro' ? 'pro' : 'basic';
-        billedSub = BILLED_STATUSES.includes(prac?.subscription_status ?? '');
         // Separate query so a database that predates the column (it ships
         // via migration) degrades to flag-off instead of breaking the
         // whole profile load.
@@ -302,6 +309,8 @@ export function useProfile(): UseProfileReturn {
       }
       const signedUrl = await signedLogoUrl(effectiveLogoPath);
       if (!cancelled) {
+        setIsAdmin(admin);
+        setDicomReady(true);
         if (data) {
           setProfile({
             practiceName: effectivePracticeName,
@@ -310,7 +319,6 @@ export function useProfile(): UseProfileReturn {
           setLogoUrl(signedUrl);
           setPracticeId(pid);
           setPlan(practicePlan);
-          setBilled(billedSub);
           setOwnerReportEnabled(ownerReportOn);
           setPimsSendEnabled(pimsSendOn);
           if (reportConfig) setOwnerReportConfig(reportConfig);
@@ -400,7 +408,7 @@ export function useProfile(): UseProfileReturn {
     plan,
     aiEnabled: PLAN_LIMITS[plan].aiAutofill,
     maxImages: PLAN_LIMITS[plan].maxImages,
-    dicomEnabled: PLAN_LIMITS[plan].dicom && billed,
+    dicomEnabled: dicomReady && dicomAllowed({ plan, admin: isAdmin }),
     // Free beta: the owner report is on for everyone.
     ownerReportEnabled: FREE_BETA || ownerReportEnabled,
     // Free beta: Send to PIMS is on for everyone too.
@@ -412,5 +420,5 @@ export function useProfile(): UseProfileReturn {
     update,
     uploadLogo,
     removeLogo,
-  }), [profile, loaded, practiceKnown, practiceId, plan, billed, ownerReportEnabled, pimsSendEnabled, ownerReportConfig, saveOwnerReportConfig, logoUrl, update, uploadLogo, removeLogo]);
+  }), [profile, loaded, practiceKnown, practiceId, plan, dicomReady, isAdmin, ownerReportEnabled, pimsSendEnabled, ownerReportConfig, saveOwnerReportConfig, logoUrl, update, uploadLogo, removeLogo]);
 }

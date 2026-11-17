@@ -1,0 +1,47 @@
+/* A single, keyboard-accessible upload surface for files, photos and DICOM. */
+.imaging-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin: 8px 0 24px;
+  border: 1.5px dashed var(--border-strong, #bdcbd2);
+  border-radius: 12px;
+  background: var(--surface-alt, #f8fafc);
+  overflow: hidden;
+}
+.imaging-upload__dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 180px;
+  padding: 24px 20px 16px;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+  text-align: center;
+}
+.imaging-upload__dropzone:hover:not(:disabled) { background: color-mix(in srgb, var(--primary) 5%, transparent); }
+.imaging-upload__dropzone:focus-visible { outline: 2px solid var(--primary); outline-offset: -5px; border-radius: 10px; }
+.imaging-upload__plus {
+  display: grid; place-items: center; width: 52px; height: 52px;
+  border-radius: 50%; border: 1px solid var(--border); background: var(--surface);
+  color: var(--primary);
+}
+.imaging-upload__title { font-size: 17px; font-weight: 650; line-height: 1.4; }
+.imaging-upload__hint { max-width: 36em; color: var(--text-muted); font-size: 13px; line-height: 1.5; }
+.imaging-upload__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; padding: 0 16px; }
+.imaging-upload__actions button { display: inline-flex; justify-content: center; align-items: center; gap: 7px; min-height: 44px; white-space: normal; }
+.imaging-upload__formats { margin: 12px auto 18px; padding-inline: 20px; max-width: 42em; text-align: center; color: var(--text-muted); font-size: 12px; line-height: 1.5; }
+.imaging-upload--dragging { border-color: var(--primary); border-style: solid; background: color-mix(in srgb, var(--primary) 8%, var(--surface)); }
+.imaging.imaging--dragging { outline: none; }
+.imaging-upload__dropzone:disabled { cursor: default; }
+.imaging-upload--full .imaging-upload__plus { color: var(--text-muted); }
+@media (max-width: 600px) {
+  .imaging-upload__dropzone { min-height: 160px; padding: 20px 16px 14px; }
+  .imaging-upload__actions button { flex: 1 1 115px; }
+}

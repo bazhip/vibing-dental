@@ -47,12 +47,12 @@
     "voiceResult3": "Diagramma della procedura · 104 segnato per l’estrazione",
     "grid": {
       "title": "Si compila come un foglio di calcolo",
-      "blurb": "Griglie Triadan di tutta la bocca per dentizione felina, canina e decidua. Un clic per scrivere, Tab, Invio o Spazio per scorrere una serie di valori dettati ad alta voce.",
+      "blurb": "Griglie Triadan complete per dentizioni feline, canine e decidue. Inserisca le misurazioni con un clic e navighi con Tab, Invio o Spazio.",
       "lead": "La griglia funziona come il Suo team già scrive: clicchi su una cella e via. Le profondità di sondaggio entrano, gli occhi restano sul paziente.",
       "imageAlt": "La griglia di compilazione con i valori di gengivite, tartaro, tasca, forcazione e mobilità inseriti e il dente 106 barrato come mancante",
       "points": {
-        "p1": "Un solo clic porta la cella direttamente in modifica — niente doppio clic.",
-        "p2": "Tab, Invio e Spazio avanzano esattamente come in un foglio di calcolo, così una serie dettata («3, 2, 4…») si inserisce senza guardare.",
+        "p1": "Faccia clic su una cella per inserire le misurazioni.",
+        "p2": "Usi Tab, Invio e Spazio per spostarsi tra le celle durante la registrazione delle misurazioni.",
         "p3": "Punteggi per tutta la bocca in una sola azione: imposti tartaro o gengivite per ogni dente dall’intestazione della colonna.",
         "p4": "La casella Mancante barra la riga e riempie il dente nel diagramma — un’unica fonte di verità.",
         "p5": "A una visita di controllo i valori dell’ultima volta compaiono come suggerimenti sfumati nelle celle vuote: confronti senza aprire la vecchia cartella.",
@@ -76,7 +76,7 @@
     "diagrams": {
       "title": "Diagrammi sempre allineati",
       "blurb": "I diagrammi dentali di diagnosi e di procedura seguono la griglia — barri un dente una volta sola e tutta la cartella si aggiorna, dall’odontogramma al PDF.",
-      "lead": "Due diagrammi anatomici — prima i reperti, poi le procedure — che non contraddicono mai la griglia né il documento stampato.",
+      "lead": "Diagrammi anatomici per diagnosi e procedure, con reperti sincronizzati tra griglia e cartella stampata.",
       "imageAlt": "Il diagramma di diagnosi con i denti mancanti riempiti e i codici AVDC — T/FX, T/FX/CCF, TR, AB, AT — ancorati a ciascun dente",
       "points": {
         "p1": "Segni un dente come mancante o estratto con un clic (o con la tastiera — ogni dente è raggiungibile).",
@@ -125,7 +125,7 @@
     "history": {
       "title": "Ogni visita, un solo paziente",
       "blurb": "Le cartelle sono raggruppate per paziente, così l’intera storia di un animale che ritorna è a un clic — e questa visita riparte da dove si era fermata l’ultima.",
-      "lead": "Un paziente è una storia, non un mucchio di file. ToothOps tiene insieme le visite e porta avanti ciò che serve.",
+      "lead": "Mantenga raggruppate le visite di ciascun paziente, riportando i reperti pertinenti alla visita successiva.",
       "points": {
         "p1": "Le cartelle sono raggruppate per paziente; un selettore delle visite nella barra superiore passa da una data all’altra.",
         "p2": "Le nuove visite riportano automaticamente i denti estratti e mancanti — contrassegnati «prec.» perché si leggano come storia e non come reperto di oggi.",
@@ -136,8 +136,8 @@
     },
     "recall": {
       "title": "Richiami integrati",
-      "blurb": "Imposti una data di controllo mentre compila; l’elenco dei pazienti segnala chi è in scadenza e chi è in ritardo, così la prossima igiene dentale non sfugge mai.",
-      "lead": "È nel rispetto dei controlli che si vincono gli esiti odontoiatrici — l’elenco tiene il conto per Lei.",
+      "blurb": "Imposti una data di controllo durante la compilazione e visualizzi nell’elenco i pazienti con controlli in scadenza o scaduti.",
+      "lead": "Pianifichi il follow-up con date di controllo e promemoria nell’area pazienti.",
       "points": {
         "p1": "Una data di controllo sulla cartella inserisce il paziente nell’elenco In scadenza, segnalato come in scadenza o in ritardo.",
         "p2": "Invii al proprietario un’email di promemoria direttamente dall’elenco dei pazienti.",
@@ -158,10 +158,10 @@
     },
     "offline": {
       "title": "Cloud e alla poltrona",
-      "blurb": "Ogni cartella viene salvata automaticamente nel cloud e conservata in copia locale alla poltrona, così una connessione che cade non fa mai perdere una bocca.",
-      "lead": "Il Wi-Fi dello studio non fa parte del Suo protocollo anestesiologico. ToothOps dà per scontato che la connessione cada e si organizza di conseguenza.",
+      "blurb": "Le cartelle vengono salvate automaticamente nel cloud, con una copia locale disponibile in caso di interruzione della connessione.",
+      "lead": "Continui la compilazione durante le interruzioni della connessione e verifichi lo stato del salvataggio prima di lasciare la visita.",
       "points": {
-        "p1": "Ogni tasto premuto viene salvato subito in locale — ricaricare la pagina a metà procedura non fa perdere nulla.",
+        "p1": "Le modifiche vengono conservate su questo dispositivo durante il lavoro.",
         "p2": "Le nuove cartelle si salvano automaticamente nel cloud; i salvataggi falliti vengono ritentati in automatico al ritorno della connessione.",
         "p3": "Se la sessione scade a metà procedura, la cartella resta aperta — acceda di nuovo direttamente sopra di essa.",
         "p4": "I modelli di referto riutilizzabili evitano di riscrivere tutto a ogni COHAT."

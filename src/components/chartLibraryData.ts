@@ -131,7 +131,20 @@ export interface LibraryError {
   cause: unknown;
 }
 
+/** Kept by the mounted workspace owner, never persisted to browser storage. */
+export interface ChartLibraryViewState {
+  query: string;
+  speciesFilter: string;
+  doctorFilter: string;
+  dueOnly: boolean;
+  sortKey: SortKey;
+  sortDir: SortDir;
+}
+
 export interface ChartLibraryListOptions {
+  /** Dedicated Rechecks workspace cannot turn off the due filter. */
+  lockedDueOnly?: boolean;
+  viewState?: React.RefObject<ChartLibraryViewState | undefined>;
   listCharts: (query?: ChartListQuery) => Promise<ChartListPage>;
   onDelete: (id: string) => Promise<void>;
   onClearRecalls: (chartIds: string[]) => Promise<void>;
@@ -154,31 +167,38 @@ export function useChartLibraryList({
   onDelete,
   onClearRecalls,
   enabled = true,
+  lockedDueOnly = false,
   reloadToken,
   unnamedLabel,
+  viewState,
 }: ChartLibraryListOptions) {
   const [charts, setCharts] = React.useState<CloudChartMeta[] | null>(null);
   const [hasMore, setHasMore] = React.useState(false);
   const [loadingMore, setLoadingMore] = React.useState(false);
-  const [query, setQuery] = React.useState('');
+  const [query, setQuery] = React.useState(viewState?.current?.query ?? '');
   // Search runs server-side — debounce so we query per pause, not per key.
-  const [debouncedQuery, setDebouncedQuery] = React.useState('');
+  const [debouncedQuery, setDebouncedQuery] = React.useState(viewState?.current?.query ?? '');
   React.useEffect(() => {
     const t = window.setTimeout(() => setDebouncedQuery(query), 250);
     return () => window.clearTimeout(t);
   }, [query]);
   const [error, setError] = React.useState<LibraryError | null>(null);
   const [busyId, setBusyId] = React.useState<string | null>(null);
-  const [sortKey, setSortKey] = React.useState<SortKey>('updated');
-  const [sortDir, setSortDir] = React.useState<SortDir>('desc');
-  const [dueOnly, setDueOnly] = React.useState(false);
+  const [sortKey, setSortKey] = React.useState<SortKey>(viewState?.current?.sortKey ?? (lockedDueOnly ? 'recall' : 'updated'));
+  const [sortDir, setSortDir] = React.useState<SortDir>(viewState?.current?.sortDir ?? (lockedDueOnly ? 'asc' : 'desc'));
+  const [dueFilter, setDueOnly] = React.useState(viewState?.current?.dueOnly ?? false);
+  const dueOnly = lockedDueOnly || dueFilter;
   const [dueCount, setDueCount] = React.useState(0);
   // Visit-level filters. Doctor filters by each chart's author — the
   // same patient can be seen by different doctors across visits, so
   // filtering happens before grouping and a patient's row shows only
   // the matching visits.
-  const [doctorFilter, setDoctorFilter] = React.useState('');
-  const [speciesFilter, setSpeciesFilter] = React.useState('');
+  const [doctorFilter, setDoctorFilter] = React.useState(viewState?.current?.doctorFilter ?? '');
+  const [speciesFilter, setSpeciesFilter] = React.useState(viewState?.current?.speciesFilter ?? '');
+
+  React.useEffect(() => {
+    if (viewState) viewState.current = { query, speciesFilter, doctorFilter, dueOnly, sortKey, sortDir };
+  }, [viewState, query, speciesFilter, doctorFilter, dueOnly, sortKey, sortDir]);
 
   // Everything the server needs to produce the visible set. Filters and
   // search happen in Postgres — the full library is searchable no matter

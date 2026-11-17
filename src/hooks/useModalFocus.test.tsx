@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { useModalFocus } from './useModalFocus';
 
 function Dialog({ open }: { open: boolean }) {
@@ -21,4 +21,13 @@ test('an open dialog holds the page still, and stacked dialogs release it only w
 test('a closed dialog leaves the page alone', () => {
   render(<Dialog open={false} />);
   expect(document.body.style.position).toBe('');
+});
+
+test('initial focus skips controls excluded from the tab order', () => {
+  function RovingDialog() {
+    const ref = useModalFocus(true);
+    return <div ref={ref}><button tabIndex={-1}>Inactive tab</button><button>Active tab</button></div>;
+  }
+  render(<RovingDialog />);
+  expect(screen.getByRole('button', { name: 'Active tab' })).toHaveFocus();
 });

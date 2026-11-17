@@ -97,6 +97,11 @@
       "title": "Elimina lo studio",
       "blurb": "Elimina definitivamente lo studio e tutte le cartelle condivise con esso, comprese quelle del Suo team, e annulla qualsiasi abbonamento. I membri del team conservano i propri account e le cartelle private.",
       "button": "Elimina lo studio…"
+    },
+    "treatmentReport": {
+      "title": "Referto del trattamento",
+      "blurb": "Testi salvati per le procedure comuni, pronti da inserire in un referto di trattamento.",
+      "customize": "Personalizza il referto di trattamento"
     }
   },
   "logoErrors": {
@@ -114,18 +119,19 @@
       "anesthesia": "Impostazioni dell’anestesia",
       "charting": "Impostazioni dell’odontogramma",
       "diagnosis": "Impostazioni della diagnosi",
-      "images": "Impostazioni delle immagini",
-      "exam": "Impostazioni dell’esame"
+      "images": "Impostazioni di diagnostica per immagini",
+      "exam": "Impostazioni dell’esame",
+      "procedure": "Impostazioni delle procedure"
     },
-    "noteAccount": "Solo per Lei — queste impostazioni seguono il Suo account su ogni dispositivo. Le modifiche vengono salvate subito.",
-    "noteBrowser": "Salvate in questo browser. Le modifiche si applicano subito.",
+    "noteAccount": "Le Sue preferenze personali seguono il Suo account su ogni dispositivo. Le modifiche vengono salvate automaticamente.",
+    "noteBrowser": "Preferenze personali salvate automaticamente in questo browser.",
     "all": "Tutte le impostazioni dell’odontogramma",
     "charting": {
       "title": "Odontogramma",
-      "view": "Vista",
+      "view": "Layout dell’odontogramma",
       "grid": "Griglia",
       "byTooth": "Per dente",
-      "pocket": "Profondità delle tasche",
+      "pocket": "Registrazione delle profondità delle tasche",
       "pocketTooth": "Una per dente",
       "pocketRoot": "Una per radice",
       "pocketRootHint": "M / D, oppure MB / MP / D sui denti con tre radici",
@@ -140,14 +146,14 @@
       "scoreFindingHint": "mobilità → recessione → … per gli esami dente per dente",
       "scoreTooth": "Scendi al dente successivo",
       "scoreToothHint": "per valutare un singolo reperto su tutta la bocca",
-      "scoreStay": "Resta dove sei",
-      "columns": "Colonne"
+      "scoreStay": "Mantenere selezionata la cella corrente",
+      "columns": "Misurazioni visibili"
     },
     "beside": {
-      "title": "Accanto ai denti",
+      "title": "Reperti sul diagramma",
       "show": "Mostra i reperti nello schema della diagnosi",
       "showHint": "(e nel PDF)",
-      "include": "Includi"
+      "include": "Reperti da visualizzare"
     },
     "anesthesia": {
       "title": "Anestesia",
@@ -160,29 +166,30 @@
         "mental": "Mentoniero",
         "other": "Altro"
       },
-      "usual": "Il Suo anestetico abituale",
-      "usualNote": "Proposto con un tocco in una cartella senza anestetico impostato.",
+      "usual": "Anestetico locale preferito",
+      "usualNote": "Disponibile come scelta rapida quando non è registrato alcun anestetico. Lei decide quando applicarlo.",
       "drugPlaceholder": "ad es. bupivacaina",
-      "drugAria": "Anestetico abituale",
-      "strengthAria": "Concentrazione dell’anestetico abituale (%)",
-      "adjunct": "Aggiunto alla miscela",
-      "adjunctNote": "Aggiunto alla miscela (facoltativo), ad es. buprenorfina o dexmedetomidina. «Usa il mio abituale» registra allora entrambi.",
+      "drugAria": "Anestetico locale preferito",
+      "strengthAria": "Concentrazione dell’anestetico locale (%)",
+      "adjunct": "Farmaco aggiuntivo",
+      "adjunctNote": "Farmaco facoltativo salvato con il Suo anestetico preferito. La scelta rapida registra entrambi.",
       "adjunctPlaceholder": "ad es. buprenorfina",
-      "adjunctAria": "Farmaco abituale aggiunto alla miscela",
-      "adjunctStrengthAria": "Concentrazione del farmaco aggiunto alla miscela"
+      "adjunctAria": "Farmaco aggiuntivo",
+      "adjunctStrengthAria": "Concentrazione del farmaco aggiuntivo"
     },
     "patient": {
       "title": "Pagina Paziente",
-      "hideRecheck": "Nascondi il campo Controllo previsto"
+      "hideRecheck": "Nascondi il campo Controllo previsto",
+      "visibilityNote": "Scelga i campi da mostrare nelle visite vuote. I campi con informazioni registrate restano visibili."
     },
     "pdf": {
       "title": "PDF",
       "grid": "Includi la griglia delle misure",
-      "gridHint": "(facoltativa quando i reperti sono nello schema)",
+      "gridHint": "Obbligatorio quando i reperti sul diagramma sono disattivati, per mantenere le misurazioni nel PDF.",
       "images": "Includi le immagini",
       "imagesHint": "(4 per pagina, dopo la cartella)"
     },
-    "noteDevice": "Salvate su questo dispositivo. Le modifiche si applicano subito.",
+    "noteDevice": "Preferenze personali salvate automaticamente su questo dispositivo.",
     "spaceMovesDownHint": "Veloce per dettare una serie di profondità",
     "scoreTapFindingHint": "Mobilità → recessione → … per esami dente per dente",
     "scoreTapToothHint": "Per valutare un reperto in tutta la bocca",
@@ -190,34 +197,71 @@
     "mirrorHint": "E nel PDF",
     "drugName": "Farmaco",
     "drugStrength": "Concentrazione",
-    "pdfGridHint": "Facoltativa finché i reperti sono sul diagramma",
+    "pdfGridHint": "Obbligatorio quando i reperti sul diagramma sono disattivati, per mantenere le misurazioni nel PDF.",
     "pdfImagesHint": "4 per pagina, dopo la cartella",
     "quickCodes": {
-      "title": "Codici rapidi",
-      "note": "Pulsanti a un tocco per i codici che registra spesso, come T/SN (dente soprannumerario). Compaiono sotto la nota diagnostica nella vista Per dente e sopra lo schema Diagnosi.",
+      "title": "Scorciatoie diagnostiche",
+      "note": "Aggiunga codici AVDC o personalizzati per le note dentali e il diagramma diagnostico. L’ordine qui determina quello delle scorciatoie.",
       "remove": "Rimuovi",
       "removeAria": "Rimuovi {{code}}",
       "placeholder": "Codice, ad es. T/SR",
       "addAria": "Codice da aggiungere",
-      "add": "Aggiungi"
+      "add": "Aggiungi",
+      "duplicate": "Questo codice è già presente nelle Sue scorciatoie."
     },
     "exam": {
       "title": "Esame",
-      "areas": "Le Sue aree d’esame",
-      "areasNote": "Aggiunte dopo le sei aree predefinite, ciascuna con Normale / Anormale e un commento. Nel PDF compaiono solo le aree compilate.",
+      "areas": "Aree di esame",
+      "areasNote": "Scelga le aree visualizzate nella pagina Esame. Le aree con reperti salvati rimangono visibili anche se deselezionate. Le aree personalizzate appaiono nell’ordine seguente.",
       "areaPlaceholder": "ad es. Labbra",
       "areaAria": "Nome dell’area d’esame {{n}}",
       "areaN": "area {{n}}",
       "remove": "Rimuovi",
       "removeAria": "Rimuovi {{name}}",
       "add": "Aggiungi area",
-      "addPreset": "Aggiungi l’elenco completo dell’esame orale",
+      "addPreset": "Aggiungere le aree suggerite",
       "presets": {
         "lips": "Labbra / giunzione mucocutanea",
         "gingiva": "Gengiva / linea mucogengivale",
         "salivary": "Sbocchi dei dotti salivari",
         "floor": "Pavimento della bocca / frenulo"
-      }
+      },
+      "suggestions": "Aree suggerite",
+      "showArea": "Mostra {{name}}",
+      "customCount": "Aree personalizzate aggiunte: {{used}} · Limite: {{max}}"
+    },
+    "customization": {
+      "navigation": "Categorie delle impostazioni della cartella",
+      "categories": {
+        "patient": "Dati del paziente",
+        "exam": "Esame del cavo orale",
+        "diagnosis": "Diagnosi",
+        "images": "Diagnostica per immagini e PDF",
+        "procedure": "Procedura"
+      },
+      "descriptions": {
+        "patient": "Scelga se mostrare la data del controllo nella pagina Paziente.",
+        "exam": "Scelga le aree aggiuntive da registrare durante l’esame orale.",
+        "anesthesia": "Configuri i blocchi nervosi, i campi personalizzati e i Suoi farmaci abituali.",
+        "charting": "Definisca la disposizione, le misurazioni e il comportamento di inserimento.",
+        "diagnosis": "Scelga i reperti visualizzati nel diagramma diagnostico e i Suoi codici rapidi.",
+        "images": "Scelga la tabella e le immagini da includere nei PDF generati.",
+        "procedure": "Scelga i codici rapidi disponibili sul diagramma delle procedure."
+      },
+      "showRecheck": "Mostrare il campo della data di controllo",
+      "layout": "Disposizione e misurazioni",
+      "input": "Inserimento dei dati"
+    },
+    "procedureQuickCodes": {
+      "title": "Scorciatoie per le procedure",
+      "note": "Aggiunga i codici delle procedure che registra spesso. Queste scorciatoie compaiono solo sul diagramma delle procedure; i codici rapidi diagnostici restano separati.",
+      "placeholder": "Codice, ad es. XSS"
+    },
+    "list": {
+      "moveUp": "Spostare {{name}} in alto",
+      "moveDown": "Spostare {{name}} in basso",
+      "count": "{{used}} di {{max}} configurati",
+      "limit": "Limite raggiunto. Rimuova un elemento per aggiungerne un altro."
     }
   },
   "feedback": {
@@ -286,5 +330,19 @@
   "reminders": {
     "sendFrom": "Invii un promemoria per un paziente da Pazienti o Controlli.",
     "settingUp": "La Sua struttura è in fase di configurazione — ricontrolli tra un momento."
+  },
+  "workspace": {
+    "personalScope": "Preferenze personali della cartella — le modifiche si applicano solo al Suo account.",
+    "accountScope": "Queste impostazioni appartengono al Suo account. Salvi ogni sezione separatamente; le modifiche a email e password hanno una conferma dedicata.",
+    "languageImmediate": "Le modifiche alla lingua si applicano immediatamente.",
+    "general": "Generale",
+    "team": "Team",
+    "templates": "Modelli",
+    "billing": "Fatturazione",
+    "reminders": "Promemoria di controllo",
+    "charting": "Preferenze di compilazione",
+    "back": "Torna alla visita in corso",
+    "scope": "Gestisca le impostazioni condivise della Sua clinica.",
+    "saveHint": "Salvi le modifiche al nome della clinica. Le altre impostazioni vengono applicate immediatamente."
   }
 }

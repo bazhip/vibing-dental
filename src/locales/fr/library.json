@@ -1,5 +1,10 @@
 {
-  "title": "Mes dossiers",
+  "rechecks": {
+    "title": "Contrôles",
+    "description": "Patients dont le contrôle est prévu aujourd’hui ou en retard. Ouvrez une visite, envoyez un rappel ou effacez un contrôle effectué."
+  },
+  "openLatest": "Ouvrir la dernière visite de {{name}}",
+  "title": "Patients",
   "unnamedPatient": "Patient sans nom",
   "search": {
     "placeholder": "Rechercher par nom ou numéro de patient…",
@@ -13,7 +18,7 @@
   },
   "importPdf": "Importer un PDF de dossier",
   "importPdfTitle": "Ouvrir un PDF de dossier créé avec cette application pour continuer à le modifier",
-  "newPatient": "+ Nouveau patient",
+  "newPatient": "Nouveau patient",
   "newPatientTitle": "Effacer le dossier en cours et commencer un tout nouveau patient",
   "loading": "Chargement…",
   "empty": "Aucun dossier enregistré pour l’instant — ils s’enregistrent automatiquement pendant que vous saisissez.",
@@ -31,8 +36,8 @@
     "updated": "Modifié",
     "recheck": "Contrôle"
   },
-  "due": "À faire",
-  "dueCount": "À faire ({{n}})",
+  "due": "Contrôles à prévoir",
+  "dueCount": "Contrôles à prévoir ({{n}})",
   "dueTitle": "Afficher uniquement les patients dont le contrôle est à faire ou en retard",
   "recall": {
     "overdue": "{{date}} · en retard",
@@ -55,17 +60,19 @@
     "updated": "Modifié le {{when}}"
   },
   "actions": {
+    "menu": "Actions",
     "reminder": "Rappel",
     "reminderTitle": "Envoyer un rappel de contrôle à {{who}}",
     "clearRecall": "Effacer le rappel de contrôle de {{name}}",
     "clearRecallTitle": "Effacer le rappel de contrôle de {{name}} — par exemple après un contrôle qui n’a pas donné lieu à un nouveau dossier",
-    "newVisit": "+ Visite",
+    "newVisit": "Nouvelle visite",
     "newVisitTitle": "Commencer une nouvelle visite pour {{name}}",
-    "history": "Historique",
+    "history": "Historique des versions",
     "historyChartTitle": "Qui a enregistré le dossier de {{name}}, et quand",
     "historyVisitTitle": "Qui a enregistré cette visite, et quand",
     "deleteChart": "Supprimer le dossier de {{name}}",
-    "loadMore": "Charger plus de dossiers"
+    "loadMore": "Charger plus de dossiers",
+    "clearRecallShort": "Effacer le contrôle"
   },
   "errors": {
     "load": "Impossible de charger vos dossiers. {{error}}",
@@ -130,5 +137,9 @@
     "saving": "Enregistrement…",
     "saveChanges": "Enregistrer les modifications",
     "saveTemplate": "Enregistrer le modèle"
+  },
+  "workspace": {
+    "description": "Recherchez les dossiers patients, consultez les visites et gérez les contrôles.",
+    "backToVisit": "Retour à la visite en cours"
   }
 }

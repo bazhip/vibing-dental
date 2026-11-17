@@ -7,9 +7,21 @@
     "next": "Next",
     "finish": "Get charting",
     "steps": {
+      "firstPatient": {
+        "title": "Identify the patient",
+        "body": "Enter the patient name, then choose the species and dentition. Add owner and visit details as needed."
+      },
+      "firstFinding": {
+        "title": "Record a finding",
+        "body": "Choose a tooth and enter a measurement or finding. Your work saves automatically; you can keep adding detail after this tour."
+      },
+      "firstOutput": {
+        "title": "Review the output",
+        "body": "Open the PDF preview to review the visit before sharing it. For the complete workspace tour, open Help → Getting started."
+      },
       "welcome": {
         "title": "Welcome to ToothOps",
-        "body": "Let’s find your way around and make charting feel like you. You can replay this quick tour any time from Settings → Getting started."
+        "body": "A short tour of the workspace. Replay it any time from Help → Getting started."
       },
       "sections": {
         "title": "Your visit, in one place",
@@ -21,7 +33,7 @@
       },
       "species": {
         "title": "Species & dentition",
-        "body": "Pick Feline or Canine, then Permanent or Deciduous — the tooth layout follows."
+        "body": "Pick Feline, Canine or Equine, then the dentition — the tooth layout follows."
       },
       "grid": {
         "title": "Chart your way",
@@ -40,16 +52,16 @@
         "body": "Write the report, or insert a saved template from the dropdown — and save new ones to reuse."
       },
       "library": {
-        "title": "My charts",
-        "body": "Open any patient’s charts (saved visits open read-only until you Edit), or — for the patient on screen — start a new visit or see its version history. New patient, beside it, starts a blank chart."
+        "title": "Patients",
+        "body": "Search patients and open their visits. Use New patient for a blank chart. For the current patient, use Visit actions to start a new visit or view version history."
       },
       "dictate": {
         "title": "Dictate",
         "body": "Tap Dictate and talk through your findings — from any page. Each one lands in the right place, and a live panel shows every change so you can undo anything."
       },
       "settings": {
-        "title": "Settings",
-        "body": "Practice name & logo, team, recheck-reminder templates, your account — and this tour."
+        "title": "Practice settings",
+        "body": "Manage your practice, team, templates, and reminders here. Personal preferences are under Your account; guidance and feedback are under Help."
       },
       "pdf": {
         "title": "Preview & download the PDF",

@@ -10,7 +10,7 @@ import { LocalizedError } from '../utils/apiErrors';
  * `report_templates` table, RLS-scoped to the signed-in user.
  *
  * The full list loads once (it's small) and CRUD calls update local
- * state after the database write succeeds. Standalone mode (no
+ * state in every mounted consumer after the database write succeeds. Standalone mode (no
  * Supabase) reports `enabled: false` and the UI hides the feature.
  */
 
@@ -32,6 +32,12 @@ export interface UseReportTemplatesReturn {
 const byName = (a: ReportTemplate, b: ReportTemplate) =>
   a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
 
+// All consumers read the same RLS-scoped list. Broadcast successful mutations
+// without retaining account data after the consumers unmount.
+type TemplateChange = (templates: ReportTemplate[]) => ReportTemplate[];
+const listeners = new Set<(change: TemplateChange) => void>();
+const publish = (change: TemplateChange) => listeners.forEach((listener) => listener(change));
+
 export function useReportTemplates(practiceId = ''): UseReportTemplatesReturn {
   const [templates, setTemplates] = React.useState<ReportTemplate[]>([]);
   const [loaded, setLoaded] = React.useState(!cloudEnabled);
@@ -41,17 +47,28 @@ export function useReportTemplates(practiceId = ''): UseReportTemplatesReturn {
   React.useEffect(() => {
     if (!supabase) return;
     let cancelled = false;
+    let loading = true;
+    const pending: TemplateChange[] = [];
+    const onChange = (change: TemplateChange) => {
+      if (loading) pending.push(change);
+      setTemplates(change);
+    };
+    listeners.add(onChange);
     (async () => {
       const { data, error } = await supabase
         .from('report_templates')
         .select('id, name, body')
         .order('name');
       if (cancelled) return;
-      if (!error && data) setTemplates(data as ReportTemplate[]);
+      // A mutation may have finished while this older snapshot was loading.
+      if (!error && data) setTemplates(pending.reduce((rows, change) => change(rows), data as ReportTemplate[]));
+      loading = false;
+      pending.length = 0;
       setLoaded(true);
     })();
     return () => {
       cancelled = true;
+      listeners.delete(onChange);
     };
   }, []);
 
@@ -64,7 +81,7 @@ export function useReportTemplates(practiceId = ''): UseReportTemplatesReturn {
       .single();
     if (error) throw new Error(error.message);
     const created = data as ReportTemplate;
-    setTemplates((prev) => [...prev, created].sort(byName));
+    publish((prev) => [...prev.filter((template) => template.id !== created.id), created].sort(byName));
     return created;
   }, []);
 
@@ -75,7 +92,7 @@ export function useReportTemplates(practiceId = ''): UseReportTemplatesReturn {
       .update({ name, body })
       .eq('id', id);
     if (error) throw new Error(error.message);
-    setTemplates((prev) =>
+    publish((prev) =>
       prev.map((t) => (t.id === id ? { ...t, name, body } : t)).sort(byName)
     );
   }, []);
@@ -84,7 +101,7 @@ export function useReportTemplates(practiceId = ''): UseReportTemplatesReturn {
     if (!supabase) throw new LocalizedError(i18n.t('templates.cloudOff', { ns: 'library' }));
     const { error } = await supabase.from('report_templates').delete().eq('id', id);
     if (error) throw new Error(error.message);
-    setTemplates((prev) => prev.filter((t) => t.id !== id));
+    publish((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
   return { enabled: cloudEnabled, loaded, templates, create, update, remove };

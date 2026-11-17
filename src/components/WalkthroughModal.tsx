@@ -10,11 +10,13 @@ interface WalkthroughModalProps {
   /** Whether AI autofill applies to this account (Pro) — shows that step. */
   aiEnabled?: boolean;
   ownerReportEnabled?: boolean;
+  /** A short task-based introduction; Help opens the full tour by default. */
+  firstRun?: boolean;
   /** Switch the app to a chart section so the step's target is on screen. */
   onNavigate?: (sectionId: string) => void;
 }
 
-type StepId = 'welcome' | 'sections' | 'patient' | 'grid' | 'byTooth' | 'customize' | 'diagrams' | 'images' | 'treatment' | 'ownerReport' | 'library' | 'dictate' | 'settings' | 'pdf';
+type StepId = 'firstPatient' | 'firstFinding' | 'firstOutput' | 'welcome' | 'sections' | 'patient' | 'grid' | 'byTooth' | 'customize' | 'diagrams' | 'images' | 'treatment' | 'ownerReport' | 'library' | 'dictate' | 'settings' | 'pdf';
 
 export interface Step {
   /** Catalog id: onboarding:walkthrough.steps.<id>.title / .body. */
@@ -49,36 +51,44 @@ export function buildSteps(aiEnabled?: boolean, ownerReportEnabled?: boolean): S
     steps.push({ id: 'dictate', target: '.voice-input', placement: 'bottom' });
   }
   steps.push(
-    { id: 'settings', target: '[data-tour="settings"] .chart-menu__trigger', placement: 'bottom' },
-    { id: 'pdf', target: '.fab-download', placement: 'left' },
+    { id: 'settings', target: '[data-tour="practice-settings"]', placement: 'bottom' },
+    { id: 'pdf', target: '.visit-export__button', placement: 'left' },
   );
   return steps;
+}
+
+function buildFirstRunSteps(app: boolean): Step[] {
+  return [
+    { id: 'firstPatient', section: 'patient', target: '[data-tour="patient-name"]', placement: 'bottom' },
+    { id: 'firstFinding', section: 'charting', target: '.dental-grid, .tooth-chart', placement: 'top' },
+    { id: 'firstOutput', section: 'charting', target: app ? '[data-app-tab="chart"] button[type="submit"][form="chart-form"]' : '.visit-export__button', placement: 'bottom' },
+  ];
 }
 
 const GAP = 12; // px between the spotlight and the popover
 const POP_W = 320;
 
-export const WalkthroughModal: React.FC<WalkthroughModalProps> = ({ open, onClose, aiEnabled, ownerReportEnabled, onNavigate }) => {
+export const WalkthroughModal: React.FC<WalkthroughModalProps> = ({ open, onClose, aiEnabled, ownerReportEnabled, firstRun = false, onNavigate }) => {
   const { t } = useTranslation('onboarding');
   const { t: tSettings } = useTranslation('settings');
   // The app's tour points at the app's chrome and speaks touch.
   const app = isNativeApp();
   const steps = React.useMemo<TourStep[]>(
     () =>
-      app
+      app && !firstRun
         ? buildAppSteps(tSettings, aiEnabled, ownerReportEnabled)
-        : buildSteps(aiEnabled, ownerReportEnabled).map(({ id, ...rest }) => ({
+        : (firstRun ? buildFirstRunSteps(app) : buildSteps(aiEnabled, ownerReportEnabled)).map(({ id, ...rest }) => ({
             ...rest,
             title: t(`walkthrough.steps.${id}.title`),
             body: t(`walkthrough.steps.${id}.body`),
           })),
-    [app, t, tSettings, aiEnabled, ownerReportEnabled],
+    [app, t, tSettings, aiEnabled, ownerReportEnabled, firstRun],
   );
   const [i, setI] = React.useState(0);
   const [rect, setRect] = React.useState<DOMRect | null>(null);
   const [tick, setTick] = React.useState(0); // forces re-measure
 
-  React.useEffect(() => { if (open) setI(0); }, [open]);
+  React.useEffect(() => { if (open) setI(0); }, [open, firstRun]);
 
   // Keyboard users land on the primary button each step (and Tab stays
   // inside the tour via the shared focus trap).
@@ -88,7 +98,8 @@ export const WalkthroughModal: React.FC<WalkthroughModalProps> = ({ open, onClos
     if (open) window.setTimeout(() => nextRef.current?.focus(), 0);
   }, [open, i]);
 
-  const step = steps[i];
+  const stepIndex = Math.min(i, steps.length - 1);
+  const step = steps[stepIndex];
 
   // Switch section, then measure the target (after it renders + scrolls in).
   React.useEffect(() => {
@@ -131,7 +142,7 @@ export const WalkthroughModal: React.FC<WalkthroughModalProps> = ({ open, onClos
   }, [open, onClose, steps.length]);
 
   if (!open) return null;
-  const last = i === steps.length - 1;
+  const last = stepIndex === steps.length - 1;
   const vw = window.innerWidth;
   const vh = window.innerHeight;
 
@@ -175,12 +186,12 @@ export const WalkthroughModal: React.FC<WalkthroughModalProps> = ({ open, onClos
       )}
 
       <div className="tour__pop" style={popStyle} ref={popRef} tabIndex={-1}>
-        <div className="tour__eyebrow">{t('walkthrough.progress', { current: i + 1, total: steps.length })}</div>
+        <div className="tour__eyebrow">{t('walkthrough.progress', { current: stepIndex + 1, total: steps.length })}</div>
         <h3 className="tour__title">{step.title}</h3>
         <p className="tour__body">{step.body}</p>
         <div className="tour__foot">
           <div className="tour__dots" aria-hidden="true">
-            {steps.map((_, n) => <span key={n} className={`tour__dot${n === i ? ' tour__dot--on' : ''}`} />)}
+            {steps.map((_, n) => <span key={n} className={`tour__dot${n === stepIndex ? ' tour__dot--on' : ''}`} />)}
           </div>
           <div className="tour__nav">
             <button type="button" className="tour__skip" onClick={onClose}>{t('walkthrough.skip')}</button>

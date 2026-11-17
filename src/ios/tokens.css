@@ -139,6 +139,11 @@ html.native-ios {
   --primary:        var(--ios-tint);
   --primary-end:    var(--ios-tint-pressed);
   --primary-tint:   var(--ios-tint-fill);
+  --action-tint:    var(--ios-tint-fill);
+  --action-border:  var(--ios-tint);
+  --warning:        var(--ios-warning-label);
+  --warning-tint:   var(--ios-warning-fill);
+  --warning-border: var(--ios-warning-border);
   --accent:         var(--ios-tint);
   --danger:         var(--ios-danger);
   --danger-strong:  var(--ios-danger-strong);

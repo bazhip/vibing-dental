@@ -39,7 +39,7 @@
   },
   "radiographicFindings": {
     "title": "Observations radiographiques",
-    "body": "Une zone dédiée sur la page Images. Elle s’imprime sur le PDF au-dessus du compte rendu de traitement."
+    "body": "Une zone dédiée sur la page Imagerie. Elle s’imprime sur le PDF au-dessus du compte rendu de traitement."
   },
   "anesthesia": {
     "title": "Anesthésie",
@@ -59,10 +59,10 @@
   },
   "startsWhereLeft": {
     "title": "Reprend là où vous vous étiez arrêté",
-    "body": "À l’ouverture, ToothOps affiche Mes dossiers — sauf si la visite du jour est encore ouverte — et la visite du jour s’ouvre prête à être modifiée."
+    "body": "À l’ouverture, ToothOps affiche Patients — sauf si la visite du jour est encore ouverte — et la visite du jour s’ouvre prête à être modifiée."
   },
   "sendFeedback": {
     "title": "Envoyer un avis en deux gestes",
-    "body": "Réglages → Envoyer un avis, ou Avis dans le panneau de dictée (il peut joindre votre transcription). Il nous parvient directement."
+    "body": "Aide → Envoyer un commentaire, ou Commentaires dans le panneau de dictée pour joindre votre transcription."
   }
 }

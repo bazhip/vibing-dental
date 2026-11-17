@@ -7,9 +7,21 @@
     "next": "Weiter",
     "finish": "Los geht’s",
     "steps": {
+      "firstPatient": {
+        "title": "Patienten identifizieren",
+        "body": "Geben Sie den Patientennamen ein und wählen Sie Tierart und Gebiss. Ergänzen Sie bei Bedarf Halter- und Besuchsdaten."
+      },
+      "firstFinding": {
+        "title": "Einen Befund erfassen",
+        "body": "Wählen Sie einen Zahn und tragen Sie einen Messwert oder Befund ein. Ihre Arbeit wird automatisch gespeichert; nach dieser Einführung können Sie weitere Details ergänzen."
+      },
+      "firstOutput": {
+        "title": "Ausgabe prüfen",
+        "body": "Öffnen Sie die PDF-Vorschau, um den Besuch vor dem Teilen zu prüfen. Die vollständige Einführung finden Sie unter Hilfe → Erste Schritte."
+      },
       "welcome": {
         "title": "Willkommen bei ToothOps",
-        "body": "Finden Sie sich zurecht und passen Sie die Dokumentation an Ihre Arbeitsweise an. Diese kurze Tour können Sie jederzeit unter Einstellungen → Erste Schritte wiederholen."
+        "body": "Eine kurze Tour durch den Arbeitsbereich. Starten Sie sie jederzeit unter Hilfe → Erste Schritte erneut."
       },
       "sections": {
         "title": "Ihr Besuch an einem Ort",
@@ -21,7 +33,7 @@
       },
       "species": {
         "title": "Tierart & Gebiss",
-        "body": "Wählen Sie Katze oder Hund, dann Bleibend oder Milchzähne — das Zahnschema passt sich an."
+        "body": "Wählen Sie Katze, Hund oder Pferd und dann das Gebiss — das Zahnschema passt sich an."
       },
       "grid": {
         "title": "Dokumentieren Sie auf Ihre Art",
@@ -40,16 +52,16 @@
         "body": "Schreiben Sie den Bericht oder fügen Sie eine gespeicherte Vorlage aus der Auswahlliste ein — und speichern Sie neue Vorlagen zur Wiederverwendung."
       },
       "library": {
-        "title": "Meine Akten",
-        "body": "Öffnen Sie die Akten eines beliebigen Patienten (gespeicherte Besuche öffnen sich schreibgeschützt, bis Sie auf Bearbeiten klicken) oder beginnen Sie — für den angezeigten Patienten — einen neuen Besuch bzw. sehen Sie dessen Versionsverlauf ein. Neuer Patient, gleich daneben, beginnt eine leere Akte."
+        "title": "Patienten",
+        "body": "Suchen Sie Patienten und öffnen Sie deren Besuche. Mit Neuer Patient beginnen Sie eine leere Akte. Unter Besuchsaktionen starten Sie einen neuen Besuch für den aktuellen Patienten oder sehen den Versionsverlauf ein."
       },
       "dictate": {
         "title": "Diktieren",
         "body": "Tippen Sie auf Diktieren und sprechen Sie Ihre Befunde ein — auf jeder Seite. Jeder landet an der richtigen Stelle, und ein Live-Bereich zeigt jede Änderung, sodass Sie alles rückgängig machen können."
       },
       "settings": {
-        "title": "Einstellungen",
-        "body": "Praxisname und Logo, Team, Vorlagen für Kontrollerinnerungen, Ihr Konto — und diese Tour."
+        "title": "Praxiseinstellungen",
+        "body": "Verwalten Sie hier Ihre Praxis, Ihr Team, Vorlagen und Erinnerungen. Persönliche Einstellungen finden Sie unter Ihr Konto; Anleitungen und Feedback unter Hilfe."
       },
       "pdf": {
         "title": "PDF ansehen & herunterladen",
