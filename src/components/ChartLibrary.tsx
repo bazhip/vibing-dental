@@ -17,12 +17,40 @@ import { todayIso, useChartLibraryList, type LibraryError, type PatientGroup, ty
 /** Native disclosure keeps secondary actions in the tab order when open. */
 function RowActions({ children }: { children: React.ReactNode }) {
   const { t } = useTranslation('library');
+  const ref = React.useRef<HTMLDetailsElement>(null);
+  const position = () => {
+    const details = ref.current;
+    if (!details?.open) return;
+    const anchor = details.querySelector('summary')!.getBoundingClientRect();
+    const panel = details.querySelector<HTMLElement>('.chart-library__actions-panel')!;
+    const width = Math.min(224, window.innerWidth - 24);
+    panel.style.width = `${width}px`;
+    panel.style.left = `${Math.max(12, Math.min(anchor.right - width, window.innerWidth - width - 12))}px`;
+    const height = panel.scrollHeight;
+    panel.style.top = `${anchor.bottom + height + 8 <= window.innerHeight ? anchor.bottom + 6 : Math.max(12, anchor.top - height - 6)}px`;
+  };
+  React.useEffect(() => {
+    const dismiss = (event: Event) => {
+      if (ref.current?.open && !ref.current.contains(event.target as Node)) ref.current.open = false;
+    };
+    const reposition = () => position();
+    document.addEventListener('pointerdown', dismiss);
+    document.addEventListener('focusin', dismiss);
+    window.addEventListener('resize', reposition);
+    window.addEventListener('scroll', reposition, true);
+    return () => {
+      document.removeEventListener('pointerdown', dismiss);
+      document.removeEventListener('focusin', dismiss);
+      window.removeEventListener('resize', reposition);
+      window.removeEventListener('scroll', reposition, true);
+    };
+  }, []);
   const close = (el: HTMLDetailsElement) => {
     el.open = false;
     el.querySelector('summary')?.focus();
   };
   return (
-    <details className="chart-library__actions-menu" onKeyDown={(event) => {
+    <details ref={ref} onToggle={position} className="chart-library__actions-menu" onKeyDown={(event) => {
       if (event.key === 'Escape' && event.currentTarget.open) {
         event.stopPropagation();
         close(event.currentTarget);
@@ -441,7 +469,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                           {!multi && onOpenHistory && (
                             <button
                               type="button"
-                              className="chart-library__delete chart-library__history"
+                              className="chart-library__act chart-library__history"
                               onClick={() => onOpenHistory(only.id, `${g.name}${only.chart_date ? ` · ${formatChartDate(only.chart_date)}` : ''}`)}
                               title={t('actions.historyChartTitle', { name: g.name })}
                             >
@@ -488,7 +516,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                               {onOpenHistory && (
                                 <button
                                   type="button"
-                                  className="chart-library__delete chart-library__history"
+                                  className="chart-library__act chart-library__history"
                                   onClick={() => onOpenHistory(v.id, `${g.name} · ${v.chart_date ? formatChartDate(v.chart_date) : t('visit.undated')}`)}
                                   title={t('actions.historyVisitTitle')}
                                 >

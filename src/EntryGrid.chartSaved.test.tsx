@@ -36,6 +36,10 @@ const cloud = vi.hoisted(() => ({
   restoreRevision: vi.fn(async () => {}),
 }));
 vi.mock('./hooks/useCloudSync', () => ({ useCloudSync: () => cloud }));
+vi.mock('./hooks/useProfile', async original => {
+  const actual = await original<typeof import('./hooks/useProfile')>();
+  return { ...actual, useProfile: () => ({ ...actual.useProfile(), aiEnabled: true }) };
+});
 vi.mock('./components/ChartHistoryModal', () => ({
   ChartHistoryModal: () => <div role="dialog" aria-label="Chart history dialog" />,
 }));
@@ -242,4 +246,12 @@ it.each(['/', '/#/library'])('opens Patients as a modal over the saved chart on 
   fireEvent.click(within(dialog).getByRole('button', { name: 'Close' }));
   expect(screen.queryByRole('dialog', { name: /Patients|My charts/ })).toBeNull();
   expect(container.querySelector('#chart-form')).toBeVisible();
+});
+
+it.each([false, true])('hides dictation on a read-only chart (native=%s)', async native => {
+  flags.native = native;
+  const { container } = await renderApp();
+  const dictate = container.querySelector('.voice-input-wrap > button');
+  expect(dictate).not.toBeNull();
+  expect(dictate).not.toBeVisible();
 });

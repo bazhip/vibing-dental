@@ -2014,7 +2014,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             (fixed position). Mounted on every tab so a recording keeps
             going; shown on the Chart tab only. */}
         {profile.aiEnabled && !trial && (
-          <div className="ios-chart-dictate" hidden={appTab !== 'chart'} role="region" aria-label={t('ios.form.dictate', { ns: 'chart' })}>
+          <div className="ios-chart-dictate" hidden={appTab !== 'chart' || readOnly} role="region" aria-label={t('ios.form.dictate', { ns: 'chart' })}>
             <VoiceInputButton
               context={aiContext}
               handlers={aiHandlers}
@@ -2145,7 +2145,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               behind JWT-gated edge functions, so trial (no account) and
               Basic practices don't get it. */}
           {profile.aiEnabled && !trial && (
-            <span hidden={workspacePage || animalTabs.empty}><VoiceInputButton
+            <span hidden={workspacePage || animalTabs.empty || readOnly}><VoiceInputButton
               context={aiContext}
               handlers={aiHandlers}
               onActivity={handleAiActivity}
