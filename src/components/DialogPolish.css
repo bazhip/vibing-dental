@@ -147,7 +147,7 @@ html:not(.native-ios) .pdf-preview-style { border-radius: var(--radius-sm); box-
 html:not(.native-ios) .pdf-preview-style--active { border-color: var(--primary); background: color-mix(in srgb, var(--primary) 5%, var(--surface)); }
 html:not(.native-ios) .pdf-preview-download { background: var(--primary); color: #fff; }
 html:not(.native-ios) .pdf-preview-download:hover:not(:disabled) { background: var(--primary-end); }
-html:not(.native-ios) .pdf-preview-secondary { color: var(--text); border-color: var(--border-strong); }
+html:not(.native-ios) .pdf-preview-secondary { color: var(--primary); border-color: var(--action-border); }
 
 @media (max-width: 600px) {
   html:not(.native-ios) :is(.ai-settings-overlay, .ui-dialog-overlay, .pdf-preview-overlay) { padding: 12px; }

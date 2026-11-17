@@ -1,4 +1,4 @@
-import { decodePdf, emailParagraphs, fromHeader, MAX_PDF_BYTES, sanitizeFilename, senderPractice, type SenderPractice } from '../../supabase/functions/_shared/ownerReportEmail';
+import { confirmedRecipientMatches, decodePdf, emailParagraphs, fromHeader, MAX_PDF_BYTES, sanitizeFilename, senderPractice, type SenderPractice } from '../../supabase/functions/_shared/ownerReportEmail';
 
 describe('owner report email validation', () => {
   it('sanitizes filenames so they cannot inject headers', () => {
@@ -54,4 +54,13 @@ describe('owner report email content', () => {
     expect(senderPractice({ name: ' ' }, true, ownP)).toBe(ownP);
     expect(senderPractice(null, false, null)).toBeNull();
   });
+});
+
+it('rejects a saved owner email that differs from the confirmed recipient', () => {
+  expect(confirmedRecipientMatches('new@example.com', 'sam@example.com')).toBe(false);
+  expect(confirmedRecipientMatches('sam@example.com', ' sam@example.com ')).toBe(true);
+  expect(confirmedRecipientMatches('sam@example.com', '')).toBe(false);
+  expect(confirmedRecipientMatches('sam@example.com', null)).toBe(false);
+  // Older app clients do not send a precondition; retain their existing contract.
+  expect(confirmedRecipientMatches('sam@example.com', undefined)).toBe(true);
 });

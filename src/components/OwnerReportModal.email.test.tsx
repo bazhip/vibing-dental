@@ -28,7 +28,6 @@ vi.mock('./ui/dialogs', async (orig) => ({
 import { OwnerReportModal } from './OwnerReportModal';
 import { fetchAsJpeg } from '../utils/imageJpeg';
 vi.mock('../utils/imageJpeg', () => ({ fetchAsJpeg: vi.fn(async () => new Uint8Array([1])) }));
-import { buildOwnerReportPdfBytes } from '../utils/ownerReportPdf';
 import { ownerReportReviewBasis, ownerReportAttachmentBasis } from '../utils/ownerReport';
 import { sampleOwnerReportSnapshot } from '../utils/ownerReportSample';
 
@@ -98,11 +97,11 @@ describe('OwnerReportModal — email to owner', () => {
   });
 });
 
-it('keeps an unreviewed owner report in draft and blocks owner email', async () => {
+it('exports and emails without a separate review step', async () => {
   setup({ snapshot: { ...sampleOwnerReportSnapshot(), ownerReport: {} } });
-  await waitFor(() => expect(screen.getByRole('button', { name: 'Download draft PDF' })).toBeEnabled());
-  expect(emailButton()).toBeDisabled();
-  expect(screen.getByText('Draft — review required')).toBeInTheDocument();
+  await waitFor(() => expect(screen.getByRole('button', { name: 'Download PDF' })).toBeEnabled());
+  expect(emailButton()).toBeEnabled();
+  expect(screen.queryByText('Draft — review required')).toBeNull();
 });
 
 const photo = { id: 'p', path: 'image.jpg', caption: 'Before', kind: 'photo', toothTriadan: null, url: 'https://example.test/photo' } as Attachment;
@@ -110,24 +109,23 @@ function reviewedPhotoSnapshot() {
   const snapshot = { ...sampleOwnerReportSnapshot(), imageRoles: { p: 'before' as const } };
   return { ...snapshot, ownerReport: { ...snapshot.ownerReport, reviewedBasis: ownerReportReviewBasis(snapshot, { practiceName: 'Elm Vet', doctorName: '' }), reviewedAttachments: ownerReportAttachmentBasis([photo], snapshot.imageRoles) } };
 }
-it('caption changes invalidate reviewed export and rebuild the PDF as draft', async () => {
+it('caption changes rebuild the report without requiring review', async () => {
   mocks.items = [photo];
   const props = setup({ snapshot: reviewedPhotoSnapshot(), imageRoles: { p: 'before' } });
   await waitFor(() => expect(emailButton()).toBeEnabled());
   mocks.items = [{ ...photo, caption: 'Changed clinical caption' }];
   props.rerender(<OwnerReportModal {...props} />);
-  await waitFor(() => expect(screen.getByRole('button', { name: 'Download draft PDF' })).toBeEnabled());
-  expect(emailButton()).toBeDisabled();
-  expect(vi.mocked(buildOwnerReportPdfBytes).mock.lastCall?.[0].reviewed).toBe(false);
+  await waitFor(() => expect(screen.getByRole('button', { name: 'Download PDF' })).toBeEnabled());
+  expect(emailButton()).toBeEnabled();
 });
 it('failed report photos cannot produce a reviewed PDF or enable email', async () => {
   mocks.items = [photo];
   vi.mocked(fetchAsJpeg).mockResolvedValueOnce(null);
   setup({ snapshot: reviewedPhotoSnapshot(), imageRoles: { p: 'before' } });
-  await waitFor(() => expect(screen.getByRole('button', { name: 'Download draft PDF' })).toBeEnabled());
+  await waitFor(() => expect(screen.getByRole('button', { name: 'Download PDF' })).toBeEnabled());
   expect(emailButton()).toBeDisabled();
-  expect(screen.getByText(/Some report images could not be loaded/)).toBeInTheDocument();
-  expect(vi.mocked(buildOwnerReportPdfBytes).mock.lastCall?.[0].reviewed).toBe(false);
+  expect(screen.getByText(/Some report images are unavailable/)).toBeInTheDocument();
+
 });
 
 it('fresh validation blocks email when a photo changed on the server after preview loaded', async () => {

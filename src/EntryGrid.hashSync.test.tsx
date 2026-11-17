@@ -58,3 +58,13 @@ it('picking a section writes it to the address', async () => {
   act(() => navButton('Exam').click());
   await waitFor(() => expect(window.location.hash).toBe('#/chart/exam'));
 });
+
+it('returns from practice settings to the visible current visit', async () => {
+  window.history.replaceState({ workspaceIndex: 0 }, '', '/#/settings');
+  render(<><EntryGrid trial /><DialogHost /></>);
+  const back = await screen.findByRole('button', { name: 'Back to current visit' });
+  act(() => back.click());
+  await waitFor(() => expect(window.location.hash).toMatch(/^#\/chart/));
+  await waitFor(() => expect(document.getElementById('chart-form')).toBeVisible());
+  expect(screen.queryByRole('heading', { name: 'Practice settings' })).toBeNull();
+});

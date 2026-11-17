@@ -1605,7 +1605,7 @@
 }
 
 /* Report-templates modal */
-.report-templates__list-head {
+.treatment-templates__list-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1613,39 +1613,45 @@
   margin-bottom: 0.5rem;
 }
 
-.report-templates__list {
+.treatment-templates__list {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
   gap: 0.4rem;
-  max-height: 9rem;
+  max-height: 18rem;
+  margin-bottom: 12px;
   overflow-y: auto;
 }
 
-.report-templates__item {
+.treatment-templates__item {
   font: inherit;
   font-size: 0.85rem;
-  padding: 0.3rem 0.7rem;
-  border: 1px solid var(--border, #cbd5e1);
-  border-radius: 999px;
+  padding: 10px 14px;
+  width: 100%;
+  min-height: 44px;
+  text-align: left;
+  overflow-wrap: anywhere;
+  font-weight: 600;
+  border: 1px solid var(--action-border);
+  border-radius: var(--radius-sm);
   background: var(--surface, #fff);
-  color: var(--text);
+  color: var(--primary);
   cursor: pointer;
 }
 
-.report-templates__item:hover {
+.treatment-templates__item:hover {
   border-color: var(--primary);
 }
 
-.report-templates__item--active {
+.treatment-templates__item--active {
   background: var(--primary);
   border-color: var(--primary);
   color: var(--ios-on-tint, #fff);
 }
 
-.report-templates__body {
+.treatment-templates__body {
   min-height: 10rem;
   width: 100%;
   box-sizing: border-box;
@@ -1951,18 +1957,19 @@
 
 .diagram-view__action {
   background: var(--ios-cell, white);
-  border: 1px solid var(--border);
+  border: 1px solid var(--action-border);
   padding: 0.45rem 0.9rem;
   border-radius: 6px;
   font-size: 0.85rem;
-  font-weight: 500;
-  color: var(--text-muted);
+  font-weight: 600;
+  color: var(--primary);
   cursor: pointer;
   font-family: inherit;
 }
 
 .diagram-view__action:hover {
-  border-color: var(--accent);
+  border-color: var(--primary);
+  background: var(--action-tint);
 }
 
 .diagram-view__action--danger {
