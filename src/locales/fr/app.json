@@ -265,6 +265,14 @@
         "message": "Ce dossier contient des modifications qui ne sont pas encore enregistrées dans le cloud. Importer quand même ce PDF ? Pour les conserver, annulez et appuyez d’abord sur Enregistrer.",
         "confirm": "Abandonner et importer ce PDF"
       }
+    },
+    "identity": {
+      "title": "Ces informations concernent-elles le même patient ?",
+      "message": "Enregistré : {{saved}}\nModifié : {{proposed}}\n\nL’enregistrement modifiera les informations du patient dans ce dossier. Les observations et les images existantes resteront jointes.\n\nPour un autre patient, annulez et choisissez Nouveau patient.",
+      "confirm": "Confirmer la correction",
+      "blank": "Aucun nom ni numéro de patient",
+      "paused": "Les informations du patient ont changé. L’enregistrement est suspendu. Enregistrez à nouveau pour confirmer une correction, ou choisissez Nouveau patient pour un autre patient.",
+      "changed": "Le patient a changé pendant la vérification de l’enregistrement. Vérifiez les informations et enregistrez à nouveau."
     }
   },
   "storage": {

@@ -912,6 +912,30 @@
       "hash": "05870b4b840a",
       "status": "machine"
     },
+    "app:sync.identity.blank": {
+      "hash": "8581e75e2865",
+      "status": "machine"
+    },
+    "app:sync.identity.changed": {
+      "hash": "6c06f3acd04d",
+      "status": "machine"
+    },
+    "app:sync.identity.confirm": {
+      "hash": "07250c86a8b1",
+      "status": "machine"
+    },
+    "app:sync.identity.message": {
+      "hash": "78222d0a4e2f",
+      "status": "machine"
+    },
+    "app:sync.identity.paused": {
+      "hash": "4f338a7e234f",
+      "status": "machine"
+    },
+    "app:sync.identity.title": {
+      "hash": "16e60ef82ec8",
+      "status": "machine"
+    },
     "app:sync.noDeletePermission": {
       "hash": "d110e65f006e",
       "status": "machine"
@@ -13052,6 +13076,30 @@
     },
     "app:sync.historyNotSetUp": {
       "hash": "05870b4b840a",
+      "status": "machine"
+    },
+    "app:sync.identity.blank": {
+      "hash": "8581e75e2865",
+      "status": "machine"
+    },
+    "app:sync.identity.changed": {
+      "hash": "6c06f3acd04d",
+      "status": "machine"
+    },
+    "app:sync.identity.confirm": {
+      "hash": "07250c86a8b1",
+      "status": "machine"
+    },
+    "app:sync.identity.message": {
+      "hash": "78222d0a4e2f",
+      "status": "machine"
+    },
+    "app:sync.identity.paused": {
+      "hash": "4f338a7e234f",
+      "status": "machine"
+    },
+    "app:sync.identity.title": {
+      "hash": "16e60ef82ec8",
       "status": "machine"
     },
     "app:sync.noDeletePermission": {
@@ -25308,6 +25356,30 @@
       "hash": "05870b4b840a",
       "status": "machine"
     },
+    "app:sync.identity.blank": {
+      "hash": "8581e75e2865",
+      "status": "machine"
+    },
+    "app:sync.identity.changed": {
+      "hash": "6c06f3acd04d",
+      "status": "machine"
+    },
+    "app:sync.identity.confirm": {
+      "hash": "07250c86a8b1",
+      "status": "machine"
+    },
+    "app:sync.identity.message": {
+      "hash": "78222d0a4e2f",
+      "status": "machine"
+    },
+    "app:sync.identity.paused": {
+      "hash": "4f338a7e234f",
+      "status": "machine"
+    },
+    "app:sync.identity.title": {
+      "hash": "16e60ef82ec8",
+      "status": "machine"
+    },
     "app:sync.noDeletePermission": {
       "hash": "d110e65f006e",
       "status": "machine"
@@ -37560,6 +37632,30 @@
     },
     "app:sync.historyNotSetUp": {
       "hash": "05870b4b840a",
+      "status": "machine"
+    },
+    "app:sync.identity.blank": {
+      "hash": "8581e75e2865",
+      "status": "machine"
+    },
+    "app:sync.identity.changed": {
+      "hash": "6c06f3acd04d",
+      "status": "machine"
+    },
+    "app:sync.identity.confirm": {
+      "hash": "07250c86a8b1",
+      "status": "machine"
+    },
+    "app:sync.identity.message": {
+      "hash": "78222d0a4e2f",
+      "status": "machine"
+    },
+    "app:sync.identity.paused": {
+      "hash": "4f338a7e234f",
+      "status": "machine"
+    },
+    "app:sync.identity.title": {
+      "hash": "16e60ef82ec8",
       "status": "machine"
     },
     "app:sync.noDeletePermission": {

@@ -265,6 +265,14 @@
         "message": "Este historial tiene cambios que aún no se han guardado en la nube. ¿Importar este PDF de todos modos? Para conservarlos, cancele y pulse Guardar primero.",
         "confirm": "Descartar e importar este PDF"
       }
+    },
+    "identity": {
+      "title": "¿Estos datos corresponden al mismo paciente?",
+      "message": "Guardado: {{saved}}\nModificado: {{proposed}}\n\nAl guardar, se modificarán los datos del paciente en este historial. Los hallazgos y las imágenes existentes seguirán asociados.\n\nPara otro paciente, cancele y elija Nuevo paciente.",
+      "confirm": "Confirmar corrección",
+      "blank": "Sin nombre ni número de paciente",
+      "paused": "Los datos del paciente han cambiado. El guardado está en pausa. Guarde de nuevo para confirmar una corrección, o elija Nuevo paciente para otro paciente.",
+      "changed": "El paciente cambió durante la comprobación del guardado. Revise los datos y guarde de nuevo."
     }
   },
   "storage": {

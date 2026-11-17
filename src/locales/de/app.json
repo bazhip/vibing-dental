@@ -263,6 +263,14 @@
         "message": "Diese Akte enthält Änderungen, die noch nicht in der Cloud gespeichert sind. Dieses PDF trotzdem importieren? Um sie zu behalten, brechen Sie ab und klicken Sie zuerst auf Speichern.",
         "confirm": "Verwerfen und dieses PDF importieren"
       }
+    },
+    "identity": {
+      "title": "Gehören diese Angaben zum selben Patienten?",
+      "message": "Gespeichert: {{saved}}\nGeändert: {{proposed}}\n\nBeim Speichern werden die Patientendaten in dieser Akte geändert. Bestehende Befunde und Bilder bleiben zugeordnet.\n\nFür einen anderen Patienten brechen Sie ab und wählen Sie Neuer Patient.",
+      "confirm": "Korrektur bestätigen",
+      "blank": "Kein Name und keine Patientennummer",
+      "paused": "Die Patientendaten wurden geändert. Das Speichern ist pausiert. Speichern Sie erneut, um eine Korrektur zu bestätigen, oder wählen Sie Neuer Patient für einen anderen Patienten.",
+      "changed": "Der Patient wurde während der Speicherprüfung geändert. Prüfen Sie die Angaben und speichern Sie erneut."
     }
   },
   "storage": {

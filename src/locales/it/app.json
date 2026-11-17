@@ -265,6 +265,14 @@
         "message": "Questa cartella contiene modifiche non ancora salvate nel cloud. Importare comunque questo PDF? Per conservarle, annulli e prema prima Salva.",
         "confirm": "Scarta e importa questo PDF"
       }
+    },
+    "identity": {
+      "title": "Questi dati riguardano lo stesso paziente?",
+      "message": "Salvato: {{saved}}\nModificato: {{proposed}}\n\nIl salvataggio modificherà i dati del paziente in questa cartella. I reperti e le immagini esistenti resteranno associati.\n\nPer un altro paziente, annulli e scelga Nuovo paziente.",
+      "confirm": "Confermare la correzione",
+      "blank": "Nome e numero del paziente assenti",
+      "paused": "I dati del paziente sono cambiati. Il salvataggio è sospeso. Salvi di nuovo per confermare una correzione, oppure scelga Nuovo paziente per un altro paziente.",
+      "changed": "Il paziente è cambiato durante la verifica del salvataggio. Verifichi i dati e salvi di nuovo."
     }
   },
   "storage": {
