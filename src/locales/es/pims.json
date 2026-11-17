@@ -60,7 +60,9 @@
   "results": {
     "title": "Resultados",
     "sent": "Enviado",
-    "stampFailed": "Enviado, pero ToothOps no pudo registrar la fecha de envío en este historial."
+    "stampFailed": "Enviado, pero ToothOps no pudo registrar la fecha de envío en este historial.",
+    "saved": "Guardado en ezyVet",
+    "summary": "Campos guardados: {{saved}} · Por revisar: {{attention}}"
   },
   "errors": {
     "extension_error": "ToothOps no pudo comunicarse con la extensión de ezyVet. Compruebe que esté instalada y activada, y vuelva a intentarlo.",
@@ -116,7 +118,8 @@
       "noteLabel": "Nota clínica",
       "flagLoading": "Comprobando si el envío está activado para su clínica…",
       "flagFailed": "No se ha podido comprobar si el envío a ezyVet está activado para su clínica.",
-      "sendOff": "El envío a ezyVet no está activado para su clínica."
+      "sendOff": "El envío a ezyVet no está activado para su clínica.",
+      "destination": "Destino"
     },
     "today": {
       "title": "Pacientes de hoy (ezyVet)",

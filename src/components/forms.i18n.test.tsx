@@ -94,6 +94,16 @@ describe('PatientForm', () => {
 });
 
 describe('ExamForm', () => {
+  it('translates the inline add editor and duplicate feedback', () => {
+    const { container } = render(<ExamForm exam={EMPTY_EXAM_FINDINGS} onStatusChange={() => {}} onCommentChange={() => {}}
+      onAddArea={() => {}} />);
+    fireEvent.click(screen.getByRole('button', { name: /⟦Add area⟧/ }));
+    expect(findUntranslated(container, ALLOW)).toEqual([]);
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: '⟦Tongue⟧' } });
+    expect(screen.getByRole('alert')).toHaveTextContent('⟦This area is already in your exam.⟧');
+    expect(findUntranslated(container, ALLOW)).toEqual([]);
+  });
+
   const noop = () => {};
   it('unanswered, partly answered with an abnormal comment, fully answered', () => {
     const exam: ExamFindings = {
@@ -135,11 +145,11 @@ describe('ExamAreasEditor', () => {
     const noop = () => {};
     const { container, unmount } = render(<ExamAreasEditor areas={[]} onChange={noop} />);
     expect(findUntranslated(container, ALLOW)).toEqual([]);
-    fireEvent.click(screen.getByRole('button', { name: /⟦Add the full oral exam list⟧/ }));
+    fireEvent.click(screen.getByRole('checkbox', { name: /⟦Salivary duct openings⟧/ }));
     expect(findUntranslated(container, ALLOW)).toEqual([]);
     unmount();
     const second = render(<ExamAreasEditor areas={[{ id: 'x1', label: 'Lips' }]} onChange={noop} />);
-    expect(findUntranslated(second.container, [...ALLOW, 'Lips', /^⟦Remove Lips⟧$/])).toEqual([]);
+    expect(findUntranslated(second.container, [...ALLOW, 'Lips', /^⟦Remove Lips⟧$/, /^⟦Show Lips⟧$/])).toEqual([]);
   });
 });
 

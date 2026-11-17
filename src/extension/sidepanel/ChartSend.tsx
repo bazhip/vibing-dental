@@ -172,6 +172,19 @@ const ChartSendReady: React.FC<ReadyProps> = ({
     <button type="button" className="sp-secondary" onClick={() => void load()}>{t('pims:dialog.retry')}</button>
   );
 
+  const destination = phase.kind === 'ready' || phase.kind === 'results' ? phase.info : null;
+  const notePreview = (
+    <details className="sp-note-preview">
+      <summary>{t('pims:panel.chart.noteLabel')}</summary>
+      <textarea
+        className="sp-note"
+        readOnly
+        aria-label={t('pims:panel.chart.noteLabel')}
+        value={stored?.text ?? recordNoteText(note)}
+      />
+    </details>
+  );
+
   let body: React.ReactNode;
   if (sendFlag === 'loading') {
     body = <p className="sp-hint" role="status">{t('pims:panel.chart.flagLoading')}</p>;
@@ -229,20 +242,13 @@ const ChartSendReady: React.FC<ReadyProps> = ({
       />
     );
   } else {
-    const tab = phase.info.tab;
-    const ezyvetName = phase.info.status!.patientName;
     body = (
       <>
-        <p className="sp-target">
-          {ezyvetName
-            ? t('pims:target', { patient: ezyvetName, title: tab.title })
-            : t('pims:targetNoPatient', { title: tab.title })}
-        </p>
-        {phase.info.candidates > 1 && <p className="sp-hint">{t('pims:severalTabs', { title: tab.title })}</p>}
         {!split && <p className="sp-hint" role="status">{t('pims:editedNotice')}</p>}
         <h3 className="sp-subtitle">{t('pims:rows.heading')}</h3>
         <MappingRows rows={rows} disabled={sending} onChoose={choose} />
         {changedTarget && <p className="sp-hint" role="status">{t('pims:send.targetChanged')}</p>}
+        {notePreview}
         <div className="sp-actions">
           <button type="button" className="sp-secondary" onClick={() => void resetToDefaults()} disabled={sending}>
             {t('pims:rows.reset')}
@@ -265,15 +271,21 @@ const ChartSendReady: React.FC<ReadyProps> = ({
       {back(sending)}
       <h2 className="sp-section">{patientName}</h2>
       {lastSentAt && <p className="sp-hint">{t('pims:dialog.sentOn', { date: formatDate(lastSentAt) })}</p>}
+      {destination?.tab && (
+        <aside className="sp-destination" aria-label={t('pims:panel.chart.destination')}>
+          <h3 className="sp-subtitle">{t('pims:panel.chart.destination')}</h3>
+          <p className="sp-target">
+            {destination.status?.patientName
+              ? t('pims:target', { patient: destination.status.patientName, title: destination.tab.title })
+              : t('pims:targetNoPatient', { title: destination.tab.title })}
+          </p>
+          {destination.candidates > 1 && <p className="sp-hint">{t('pims:severalTabs', { title: destination.tab.title })}</p>}
+        </aside>
+      )}
       {stale && <p className="sp-hint" role="status">{t('media:recordNote.stale')}</p>}
-      <textarea
-        className="sp-note"
-        readOnly
-        aria-label={t('pims:panel.chart.noteLabel')}
-        value={stored?.text ?? recordNoteText(note)}
-      />
       {picture.element}
       {body}
+      {(phase.kind !== 'ready' || !canSend || destination?.status?.state !== 'writable') && notePreview}
     </section>
   );
 };

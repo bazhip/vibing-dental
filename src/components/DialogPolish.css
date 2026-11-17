@@ -1,0 +1,176 @@
+/* Web settings and document chrome. Keep native sheets and the clinical
+   grid/diagram styles independent of these administrative surfaces. */
+html:not(.native-ios) :is(.ai-settings-overlay, .ui-dialog-overlay, .pdf-preview-overlay) {
+  background: rgb(23 35 46 / 42%);
+  padding: 24px;
+}
+
+html:not(.native-ios) :is(.ai-settings-modal, .ui-dialog, .pdf-preview-modal) {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 24px 72px rgb(23 35 46 / 20%);
+}
+
+/* Preserve wider library, history and admin modal variants. */
+html:not(.native-ios) .ai-settings-modal:not(.chart-library-modal):not(.chart-history):not(.admin-panel):not(.admin-chart-viewer):not(.report-templates):not(.chart-customization) {
+  max-width: 600px;
+}
+html:not(.native-ios) .ai-settings-modal.feedback-modal { max-width: 560px; }
+html:not(.native-ios) .ai-settings-modal.chart-settings:not(.chart-customization) { max-width: 600px; }
+html:not(.native-ios) .ui-dialog { max-width: 460px; padding: 24px; }
+
+html:not(.native-ios) :is(.ai-settings-header, .pdf-preview-header) {
+  gap: 20px;
+  padding: 20px 24px;
+  align-items: flex-start;
+  border-bottom-color: var(--border);
+  background: var(--surface);
+}
+html:not(.native-ios) :is(.ai-settings-header, .pdf-preview-header) > div { min-width: 0; }
+html:not(.native-ios) :is(.ai-settings-header h2, .pdf-preview-header h2, .ui-dialog__title) {
+  color: var(--text);
+  font-size: 20px;
+  font-weight: 650;
+  letter-spacing: -0.015em;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+html:not(.native-ios) .pdf-preview-header p { margin-top: 6px; font-size: 14px; line-height: 1.5; overflow-wrap: anywhere; }
+html:not(.native-ios) :is(.ai-settings-close, .pdf-preview-close) {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+}
+html:not(.native-ios) :is(.ai-settings-close, .pdf-preview-close):hover { background: var(--surface-alt); }
+
+html:not(.native-ios) .ai-settings-modal > .ai-settings-body { padding: 24px; gap: 24px; }
+html:not(.native-ios) :is(.ai-settings-modal, .practice-workspace) .ai-settings-section {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  gap: 12px;
+}
+html:not(.native-ios) :is(.ai-settings-modal, .practice-workspace) .ai-settings-section + .ai-settings-section {
+  border-top: 1px solid var(--border);
+  padding-top: 24px;
+}
+html:not(.native-ios) :is(.ai-settings-modal, .practice-workspace) .ai-settings-subhead {
+  margin: 0;
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: 0;
+  text-transform: none;
+  line-height: 1.5;
+}
+html:not(.native-ios) :is(.ai-settings-modal, .practice-workspace) :is(.ai-settings-blurb, .ai-settings-section-blurb, .patient-form__hint, .feedback-modal__note) {
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 68ch;
+}
+html:not(.native-ios) :is(.ai-settings-modal, .practice-workspace) :is(.patient-form__label, .ai-settings-label) {
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+  gap: 8px;
+}
+html:not(.native-ios) :is(.ai-settings-modal, .practice-workspace) :is(.patient-form__input, .patient-form__textarea, .ai-settings-input),
+html:not(.native-ios) .ui-dialog__input {
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 40px;
+  max-width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background-color: var(--surface);
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.5;
+}
+html:not(.native-ios) :is(.ai-settings-modal, .practice-workspace) .settings-password .patient-form__input { padding-right: 5rem; }
+html:not(.native-ios) .ai-settings-modal :is(.patient-form__textarea, .feedback-modal__message) { resize: vertical; min-height: 160px; }
+html:not(.native-ios) .ai-settings-modal .settings-password__toggle { min-height: 36px; }
+
+html:not(.native-ios) :is(.ai-settings-footer, .ui-dialog__actions) {
+  gap: 12px;
+  flex-wrap: wrap;
+}
+html:not(.native-ios) .ai-settings-footer {
+  padding: 16px 24px;
+  background: var(--surface);
+  border-top-color: var(--border);
+}
+html:not(.native-ios) .ui-dialog__actions { margin-top: 24px; }
+html:not(.native-ios) .ui-dialog__message { margin: 12px 0 0; font-size: 15px; line-height: 1.6; }
+html:not(.native-ios) .ui-dialog__label { margin-top: 20px; font-size: 14px; }
+html:not(.native-ios) :is(.ai-settings-header, .ai-settings-footer, .ai-settings-section, .feedback-modal__kinds, .practice-workspace) :is(.diagram-view__action, .entry-grid__button, .ai-settings-button, .feedback-modal__kind),
+html:not(.native-ios) :is(.ui-btn, .pdf-preview-download, .pdf-preview-secondary) {
+  min-height: 40px;
+  padding: 9px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: normal;
+}
+html:not(.native-ios) .ai-settings-section .practice-logo-actions { gap: 10px; flex-wrap: wrap; }
+html:not(.native-ios) .ai-settings-section .practice-team__add { align-items: flex-start; }
+html:not(.native-ios) .ai-settings-section .practice-team__add > .patient-form__input { width: 100%; }
+html:not(.native-ios) .feedback-modal__kinds { gap: 8px; }
+html:not(.native-ios) .feedback-modal__kind:not(.feedback-modal__kind--on) { background: var(--surface); border-color: var(--border-strong); color: var(--text-muted); }
+
+/* Shared interaction states, limited to settings and document controls. */
+html:not(.native-ios) :is(.ai-settings-modal, .practice-workspace, .ui-dialog, .pdf-preview-modal) :is(button, input, select, textarea, a):focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+html:not(.native-ios) :is(.ai-settings-modal, .practice-workspace, .ui-dialog, .pdf-preview-modal) :is(button, input, select, textarea):disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+html:not(.native-ios) .ui-btn--danger { background: var(--danger); }
+html:not(.native-ios) .ui-btn--danger:hover:not(:disabled) { background: var(--danger-strong); }
+
+/* Documents keep their existing split preview and mobile scrolling model. */
+html:not(.native-ios) .documents-modal__tabs { padding: 0 24px; gap: 16px; border-bottom-color: var(--border); }
+html:not(.native-ios) .documents-modal__tab { padding: 14px 4px; font-size: 14px; font-weight: 600; }
+html:not(.native-ios) .documents-modal__subtitle { color: var(--text-muted); }
+html:not(.native-ios) .pdf-preview-styles { padding: 20px; background: var(--surface-alt); border-right-color: var(--border); }
+html:not(.native-ios) .pdf-preview-style { border-radius: var(--radius-sm); box-shadow: none; padding: 12px; }
+html:not(.native-ios) .pdf-preview-style--active { border-color: var(--primary); background: color-mix(in srgb, var(--primary) 5%, var(--surface)); }
+html:not(.native-ios) .pdf-preview-download { background: var(--primary); color: #fff; }
+html:not(.native-ios) .pdf-preview-download:hover:not(:disabled) { background: var(--primary-end); }
+html:not(.native-ios) .pdf-preview-secondary { color: var(--text); border-color: var(--border-strong); }
+
+@media (max-width: 600px) {
+  html:not(.native-ios) :is(.ai-settings-overlay, .ui-dialog-overlay, .pdf-preview-overlay) { padding: 12px; }
+  html:not(.native-ios) .ai-settings-modal { max-height: calc(100dvh - 24px); }
+  html:not(.native-ios) :is(.ai-settings-header, .pdf-preview-header) { padding: 16px; gap: 12px; }
+  html:not(.native-ios) .ai-settings-modal > .ai-settings-body { padding: 20px 16px; gap: 20px; }
+  html:not(.native-ios) .ai-settings-footer { padding: 16px; }
+  html:not(.native-ios) .ui-dialog { padding: 20px; }
+  html:not(.native-ios) :is(.ai-settings-header, .ai-settings-footer, .ai-settings-section, .feedback-modal__kinds, .practice-workspace) :is(.diagram-view__action, .entry-grid__button, .ai-settings-button, .feedback-modal__kind),
+  html:not(.native-ios) :is(.ui-btn, .pdf-preview-download, .pdf-preview-secondary) { min-height: 44px; }
+  html:not(.native-ios) :is(.ai-settings-close, .pdf-preview-close) { width: 44px; height: 44px; }
+  html:not(.native-ios) .ai-settings-modal .settings-password__toggle { min-height: 44px; }
+  html:not(.native-ios) :is(.ai-settings-modal, .practice-workspace) :is(.patient-form__input, .ai-settings-input),
+  html:not(.native-ios) .ui-dialog__input { min-height: 44px; }
+  html:not(.native-ios) .ai-settings-section .practice-team__add { flex-wrap: wrap; }
+  html:not(.native-ios) .ai-settings-footer > button { flex: 1 1 auto; }
+  html:not(.native-ios) .documents-modal__tabs { padding: 0 16px; gap: 8px; }
+  html:not(.native-ios) .documents-modal__tab { min-width: 0; overflow-wrap: anywhere; }
+  html:not(.native-ios) .pdf-preview-styles { padding: 16px; }
+}
+
+html:not(.native-ios) :is(.ai-settings-modal, .practice-workspace) select.patient-form__input { padding-right: 2.25rem; }
+html:not(.native-ios) .practice-workspace__personal { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+html:not(.native-ios) .practice-workspace__personal p { color: var(--text-muted); font-size: 13px; line-height: 1.5; }
+html:not(.native-ios) .pdf-preview-warning { display: flex; flex-wrap: wrap; gap: 8px; }
+html:not(.native-ios) .pdf-preview-warning p { flex-basis: 100%; margin: 0; }

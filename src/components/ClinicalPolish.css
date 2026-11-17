@@ -1,0 +1,275 @@
+/* Web clinical workspace. Keep native screens and application/dialog chrome
+   under their own design systems; never change dental-grid cell geometry. */
+html:not(.native-ios) .entry-grid-container .entry-grid-form {
+  --clinical-label-size: 0.875rem;
+  --clinical-control-size: 1rem;
+  --clinical-action-height: 36px;
+}
+
+/* Section titles share one baseline and leave space for wrapping actions. */
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__header, .dental-grid__section-header) {
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  padding-bottom: 16px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__section-title, .dental-grid__title) {
+  font-size: 1.25rem;
+  font-weight: 650;
+  line-height: 1.35;
+  letter-spacing: -0.015em;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .patient-form__row {
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+  gap: 20px 24px;
+  margin-bottom: 24px;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__label, .patient-form__selector-label, .anesthesia-drug__label, .anesthesia-other__label) {
+  font-size: var(--clinical-label-size);
+  font-weight: 550;
+  line-height: 1.45;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .patient-form__label {
+  gap: 7px;
+  min-width: 0;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__input, .patient-form__textarea, .surgery-report__template-select) {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  font-size: var(--clinical-control-size);
+  font-weight: 400;
+  line-height: 1.45;
+  border-radius: var(--radius-sm);
+  border-color: var(--border-strong);
+  box-shadow: none;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__input, .surgery-report__template-select) {
+  min-height: 40px;
+  padding-block: 8px;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__input, .patient-form__textarea, .surgery-report__template-select):focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-color: var(--primary);
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__input, .patient-form__textarea)::placeholder {
+  color: var(--text-muted);
+  opacity: 0.8;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__hint, .anesthesia-drug__hint) {
+  font-size: 0.8125rem;
+  line-height: 1.55;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__textarea, .owner-report__textarea) {
+  padding-block: 12px;
+  line-height: 1.6;
+}
+
+/* Species and dentition are selections, with a quiet but clear active state. */
+html:not(.native-ios) .entry-grid-container .entry-grid-form .patient-form__species {
+  padding: 4px;
+  gap: 4px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-alt);
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .species-tab {
+  padding: 10px 16px;
+  min-height: 40px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font-size: var(--clinical-label-size);
+  font-weight: 550;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .species-tab--active,
+html:not(.native-ios) .entry-grid-container .entry-grid-form .species-tab--active:hover {
+  border-color: var(--primary);
+  background: var(--surface);
+  color: var(--primary);
+  box-shadow: 0 1px 2px rgb(23 35 46 / 5%);
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .species-tab:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Clinical tables use plain readable labels; abnormal row signals remain intact. */
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.exam-table, .anesthesia-table) thead th {
+  padding-block: 12px;
+  font-size: var(--clinical-label-size);
+  text-transform: none;
+  letter-spacing: 0;
+  background: var(--surface-alt);
+  border-bottom: 1px solid var(--border-strong);
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.exam-table, .anesthesia-table) tbody td {
+  border-bottom: 1px solid var(--border);
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.exam-table, .anesthesia-table) tbody tr:last-child td {
+  border-bottom: 0;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .anesthesia-drug {
+  gap: 12px;
+  margin-bottom: 20px;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .anesthesia-drug__list {
+  gap: 8px;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .anesthesia-drug__add {
+  border-style: solid;
+  background: var(--surface);
+}
+
+/* The chart stays dense. Typography and surface depth change, never row height,
+   column width, selection colors, or the missing/abnormal/AI feedback palette. */
+html:not(.native-ios) .entry-grid-container .entry-grid-form .dental-grid {
+  border-radius: var(--radius-sm);
+  box-shadow: none;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .dental-grid .rdg {
+  border-radius: var(--radius-sm);
+  font-variant-numeric: tabular-nums;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .dental-grid .rdg-header-row .rdg-cell {
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__header, .dental-grid__section-header, .surgery-report__template-bar, .owner-report__actions) .diagram-view__action {
+  min-height: var(--clinical-action-height);
+  font-size: var(--clinical-label-size);
+}
+
+/* Report and imaging tools remain part of the record, with clear editable areas. */
+html:not(.native-ios) .entry-grid-container .entry-grid-form .surgery-report__template-bar {
+  gap: 8px;
+  flex-wrap: wrap;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .owner-report__block {
+  margin-bottom: 24px;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .owner-report__block-head {
+  margin-bottom: 8px;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .owner-report__preview {
+  margin-top: 28px;
+  padding: 20px;
+  background: var(--surface-alt);
+  border-radius: var(--radius-sm);
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.owner-report__preview-line, .owner-report__preview-list) {
+  font-size: var(--clinical-label-size);
+  line-height: 1.6;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .imaging__uploader {
+  gap: 12px;
+  padding-block: 12px;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .imaging__card {
+  border-radius: var(--radius-sm);
+  box-shadow: none;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .imaging__meta {
+  padding: 12px;
+  gap: 10px;
+}
+
+@media (max-width: 640px) {
+  html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__header, .dental-grid__section-header) {
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  html:not(.native-ios) .entry-grid-container .entry-grid-form .patient-form__row {
+    gap: 18px;
+    margin-bottom: 20px;
+  }
+  /* Touch targets for actions only: never expand tooth marks or chart cells. */
+  html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.species-tab, .diagram-view__action, .diagram-view__tool, .anesthesia-drug__add, .anesthesia-drug__remove, .imaging__queue-dismiss, .exam-table__radio-hit) {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  html:not(.native-ios) .entry-grid-container .entry-grid-form .anesthesia-drug__row {
+    gap: 6px;
+    min-width: 0;
+  }
+  html:not(.native-ios) .entry-grid-container .entry-grid-form .anesthesia-drug__input {
+    width: 100%;
+  }
+  html:not(.native-ios) .entry-grid-container .entry-grid-form .imaging__desc {
+    flex-basis: 100%;
+    max-width: none;
+  }
+  html:not(.native-ios) .entry-grid-container .entry-grid-form .owner-report__block-head {
+    align-items: flex-start;
+  }
+}
+
+/* A predictable action location on every clinical page. */
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__header, .dental-grid__section-header) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__header, .dental-grid__section-header) > .section-header__customize {
+  grid-column: 2; grid-row: 1; justify-self: end;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .charting-header-actions { display: contents; }
+html:not(.native-ios) .entry-grid-container .entry-grid-form .charting-header-actions > .diagram-view__action { grid-column: 2; grid-row: 1; justify-self: end; }
+html:not(.native-ios) .entry-grid-container .entry-grid-form .charting-view-switch { grid-column: 1 / -1; grid-row: 2; justify-self: start; }
+html:not(.native-ios) .entry-grid-container .entry-grid-form .surgery-report__template-bar { margin-bottom: 16px; }
+
+.section-header__actions, .section-header__description { grid-column: 1 / -1; min-width: 0; }
+.section-header__actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.section-header__description { color: var(--text-muted); font-size: 0.875rem; }
+.section-header__description .patient-form__hint { margin: 0; }
+.visit-export { height: calc(76px + env(safe-area-inset-bottom, 0px)); }
+.visit-export__button { position: fixed; right: 24px; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); z-index: 55; min-height: 44px; max-width: calc(100vw - 32px); border-radius: 999px; box-shadow: 0 4px 16px rgb(23 35 46 / 18%); }
+@media (max-width: 600px) {
+  html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__header, .dental-grid__section-header) { gap: 8px; padding-bottom: 12px; margin-bottom: 16px; }
+  html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.diagram-view__action, .charting-view-switch__btn) { min-height: 44px; }
+  .visit-export__button { right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); width: auto; }
+  body:has(input:not([type='checkbox']):not([type='radio']):focus, textarea:focus, select:focus) .visit-export__button { display: none; }
+}
+
+.patient-form__group { min-width: 0; }
+.patient-form__group + .patient-form__group { border-top: 1px solid var(--border); margin-top: 20px; padding-top: 20px; }
+.patient-form__group h3, .patient-form__owner summary { margin: 0 0 16px; font-size: 1rem; font-weight: 600; color: var(--text); }
+.patient-form__owner summary { cursor: pointer; min-height: 44px; display: list-item; padding-block: 10px; box-sizing: border-box; margin-bottom: 0; }
+.patient-form__owner[open] summary { margin-bottom: 16px; }
+.patient-form__group .patient-form__selectors { margin-bottom: 16px; }
+.code-reference-disclosure { border-top: 1px solid var(--border); padding-top: 8px; }
+.code-reference-disclosure > summary { cursor: pointer; padding: 12px 0; font-weight: 600; color: var(--primary); min-height: 44px; box-sizing: border-box; }
+.code-reference-disclosure .dental-grid__section-header { display: none; }
+@media (max-width: 600px) {
+  html:not(.native-ios) .entry-grid-container .entry-grid-form .patient-form__row { gap: 12px; margin-bottom: 16px; }
+  html:not(.native-ios) .patient-form__group + .patient-form__group { margin-top: 16px; padding-top: 16px; }
+  html:not(.native-ios) .entry-grid-container .entry-grid-form .patient-form__selectors { gap: 12px; }
+}
+
+.visit-export__button--secondary { background: var(--surface); color: var(--primary); border: 1px solid var(--border-strong); }
+html:not(.native-ios) .entry-grid-form .section-header__actions .entry-grid__button { min-height: var(--clinical-action-height, 40px); }
+@media (max-width: 600px) {
+  html:not(.native-ios) .entry-grid-container .entry-grid-form { --clinical-action-height: 44px; }
+}
+
+.owner-report__review { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 16px; margin-bottom: 20px; border: 1px solid var(--border-strong); border-left: 3px solid var(--text-muted); border-radius: var(--radius-sm); background: var(--surface-alt); }
+.owner-report__review > div { flex: 1 1 240px; }
+.owner-report__review p { margin: 6px 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--text-muted); }
+.owner-report__review--complete { border-left-color: var(--primary); }
+.owner-report__draft-notice { grid-column: 1 / -1; margin: 0; padding: 12px 16px; background: var(--surface-alt); font-size: 0.875rem; line-height: 1.5; }
+
+/* The sidebar panel provides the padding on every clinical screen. */
+html:not(.native-ios) .entry-grid-container .entry-grid-form .patient-form { padding: 0; border-radius: 0; }
+
+html:not(.native-ios) .sidebar-layout__main[data-active-section="treatment"] { min-height: 0; }
+
+/* Exam areas use the same inline add flow as anesthesia entries. */
+.exam-add-area { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.exam-add-area .exam-add-area__input { flex: 1 1 200px; min-width: 0; max-width: 420px; }
+.exam-add-area :is(button, input) { min-height: 40px; }
+.exam-add-area__message { flex-basis: 100%; }
+@media (max-width: 600px) {
+  .exam-add-area :is(button, input) { min-height: 44px; }
+}

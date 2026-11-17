@@ -39,7 +39,7 @@
   },
   "radiographicFindings": {
     "title": "Radiographic findings",
-    "body": "A dedicated box on the Images page. It prints on the PDF above the treatment report."
+    "body": "A dedicated box on the Imaging page. It prints on the PDF above the treatment report."
   },
   "anesthesia": {
     "title": "Anesthesia",
@@ -59,10 +59,10 @@
   },
   "startsWhereLeft": {
     "title": "Starts where you left off",
-    "body": "Opening ToothOps fresh shows My charts — unless today’s visit is still open — and today’s visit opens ready to edit."
+    "body": "Opening ToothOps fresh shows Patients — unless today’s visit is still open — and today’s visit opens ready to edit."
   },
   "sendFeedback": {
     "title": "Send feedback in two taps",
-    "body": "Settings → Send feedback, or Feedback in the dictation panel (it can attach your transcript). It comes straight to us."
+    "body": "Help → Send feedback, or Feedback in the dictation panel to include your transcript."
   }
 }

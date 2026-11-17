@@ -50,6 +50,20 @@ const props = {
 };
 
 describe('VoiceInputButton session flow', () => {
+  it('keeps a recognition failure visible beyond eight seconds', () => {
+    vi.useFakeTimers();
+    try {
+      render(<VoiceInputButton {...props} />);
+      fireEvent.click(screen.getByRole('button', { name: /Dictate/ }));
+      fireEvent.click(screen.getByRole('button', { name: 'Start dictation' }));
+      act(() => FakeRecognition.last!.onerror?.({ error: 'not-allowed' }));
+      expect(screen.getAllByRole('alert').length).toBeGreaterThan(0);
+      act(() => vi.advanceTimersByTime(9000));
+      expect(screen.getAllByRole('alert').length).toBeGreaterThan(0);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
   it('shows the intro once; reopening resumes with the old transcript', () => {
     render(<VoiceInputButton {...props} />);
 
@@ -155,7 +169,7 @@ describe('VoiceInputButton — stopping', () => {
     act(() => FakeRecognition.last!.say('104 GI 2'));
     rerender(<VoiceInputButton {...props} context={realContext} locked />);
     await act(async () => { await new Promise((r) => setTimeout(r, 600)); });
-    expect(extractChartActions).toHaveBeenCalledTimes(1); // what was said still charted
+    expect(extractChartActions).toHaveBeenCalledTimes(1); // pending text is extracted; the locked chart rejects writes
     expect(reviewFullTranscript).not.toHaveBeenCalled();
   });
 });
@@ -250,4 +264,86 @@ describe('VoiceInputButton — never touches audio output while capturing', () =
       (window as unknown as { AudioContext: unknown }).AudioContext = Orig;
     }
   });
+});
+
+
+describe('dictation locked controls and accessibility', () => {
+  it('closes the intro with Escape', () => {
+    render(<VoiceInputButton {...props} />);
+    fireEvent.click(screen.getByRole('button', { name: /Dictate/ }));
+    fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  it('disables sidebar resume and retains the transcript when locked', () => {
+    const { rerender } = render(<VoiceInputButton {...props} context={realContext} />);
+    startDictation();
+    act(() => FakeRecognition.last!.say('104 GI 2'));
+    rerender(<VoiceInputButton {...props} context={realContext} locked />);
+    const resume = document.querySelector('.ai-sidebar__primary')!;
+    expect(resume).toBeDisabled();
+    expect(screen.getByText('104 GI 2')).toBeInTheDocument();
+    expect(document.querySelector('.ai-sidebar__transcript')).not.toHaveAttribute('aria-live');
+    expect(screen.getByRole('status')).toHaveTextContent('Stopped');
+  });
+
+  it('does not apply a chunk that finishes after locking', async () => {
+    let release!: () => void;
+    vi.mocked(extractChartActions).mockImplementationOnce(() => new Promise((resolve) => {
+      release = () => resolve({ actions: [gi], skipped: [], flags: [], ran: true });
+    }));
+    const setToothField = vi.fn();
+    const configured = { ...props, context: realContext, handlers: { setToothField } as never };
+    const { rerender } = render(<VoiceInputButton {...configured} />);
+    startDictation();
+    act(() => FakeRecognition.last!.say('104 GI 2'));
+    await act(async () => { await new Promise((r) => setTimeout(r, 1300)); });
+    rerender(<VoiceInputButton {...configured} locked />);
+    await act(async () => { release(); await new Promise((r) => setTimeout(r, 400)); });
+    expect(setToothField).not.toHaveBeenCalled();
+  });
+});
+
+it('retains locked review choices, then focuses the next review and completion', async () => {
+  vi.mocked(extractChartActions).mockResolvedValueOnce({
+    actions: [], skipped: [], ran: true,
+    flags: [104, 105].map((triadan) => ({
+      triadan, heard: String(triadan), reason: 'Uncertain score',
+      options: [{ label: `Use ${triadan}`, action: { ...gi, input: { ...gi.input, triadan } } }],
+    })),
+  });
+  const setToothField = vi.fn();
+  const configured = { ...props, context: realContext, handlers: { setToothField } as never };
+  const { rerender } = render(<VoiceInputButton {...configured} />);
+  startDictation();
+  act(() => FakeRecognition.last!.say('104 GI 2 and 105 GI 2'));
+  await act(async () => { await new Promise((r) => setTimeout(r, 1300)); });
+  rerender(<VoiceInputButton {...configured} locked />);
+  expect(screen.getByRole('button', { name: 'Use 104' })).toBeDisabled();
+  fireEvent.click(screen.getByRole('button', { name: 'Use 104' }));
+  expect(setToothField).not.toHaveBeenCalled();
+  rerender(<VoiceInputButton {...configured} locked={false} />);
+  fireEvent.click(screen.getByRole('button', { name: 'Use 104' }));
+  expect(setToothField).toHaveBeenCalledWith(104, 'gingivitis', '2');
+  expect(document.activeElement?.closest('.ai-review__item')).toHaveTextContent('105');
+  fireEvent.click(screen.getByRole('button', { name: 'Use 105' }));
+  expect(screen.getByRole('region', { name: 'Review complete' })).toHaveFocus();
+});
+
+it('drops a final review result if the chart locks while the request is pending', async () => {
+  let release!: () => void;
+  vi.mocked(reviewFullTranscript).mockImplementationOnce(() => new Promise((resolve) => {
+    release = () => resolve({ actions: [gi], skipped: [], flags: [], ran: true });
+  }));
+  const setToothField = vi.fn();
+  const configured = { ...props, context: realContext, handlers: { setToothField } as never };
+  const { rerender } = render(<VoiceInputButton {...configured} />);
+  startDictation();
+  act(() => FakeRecognition.last!.say('104 GI 2'));
+  fireEvent.click(screen.getAllByRole('button', { name: 'Stop' })[0]);
+  await act(async () => { await new Promise((r) => setTimeout(r, 600)); });
+  expect(release).toBeTypeOf('function');
+  rerender(<VoiceInputButton {...configured} locked />);
+  await act(async () => { release(); });
+  expect(setToothField).not.toHaveBeenCalled();
 });

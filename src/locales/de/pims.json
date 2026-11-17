@@ -60,7 +60,9 @@
   "results": {
     "title": "Ergebnisse",
     "sent": "Gesendet",
-    "stampFailed": "Gesendet, aber ToothOps konnte das Sendedatum in dieser Akte nicht speichern."
+    "stampFailed": "Gesendet, aber ToothOps konnte das Sendedatum in dieser Akte nicht speichern.",
+    "saved": "In ezyVet gespeichert",
+    "summary": "Gespeicherte Felder: {{saved}} · Zu prüfen: {{attention}}"
   },
   "errors": {
     "extension_error": "ToothOps konnte die ezyVet-Erweiterung nicht erreichen. Prüfen Sie, ob sie installiert und aktiviert ist, und versuchen Sie es erneut.",
@@ -116,7 +118,8 @@
       "noteLabel": "Aktennotiz",
       "flagLoading": "Es wird geprüft, ob das Senden für Ihre Praxis aktiviert ist…",
       "flagFailed": "Es konnte nicht geprüft werden, ob das Senden an ezyVet für Ihre Praxis aktiviert ist.",
-      "sendOff": "Das Senden an ezyVet ist für Ihre Praxis nicht aktiviert."
+      "sendOff": "Das Senden an ezyVet ist für Ihre Praxis nicht aktiviert.",
+      "destination": "Ziel"
     },
     "today": {
       "title": "Heutige Patienten (ezyVet)",

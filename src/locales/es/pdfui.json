@@ -9,13 +9,30 @@
     "chooseColor": "Elegir un color personalizado"
   },
   "presets": {
-    "clinic": { "name": "Turquesa clínico", "description": "Igual que la aplicación — encabezados turquesa, indicadores rojos para lo anómalo, tarjetas redondeadas." },
-    "classic-blue": { "name": "Azul clásico", "description": "El azul tradicional de los historiales médicos, con encabezados de sección rellenos." },
-    "slate": { "name": "Pizarra", "description": "Grafito neutro — se imprime con nitidez en blanco y negro." },
-    "iris": { "name": "Iris", "description": "Discretos acentos índigo y encabezados compactos en mayúsculas." },
-    "journal": { "name": "Revista", "description": "Clásico con serifas — acentos rojo intenso sobre papel cálido." }
+    "clinic": {
+      "name": "Turquesa clínico",
+      "description": "Igual que la aplicación — encabezados turquesa, indicadores rojos para lo anómalo, tarjetas redondeadas."
+    },
+    "classic-blue": {
+      "name": "Azul clásico",
+      "description": "El azul tradicional de los historiales médicos, con encabezados de sección rellenos."
+    },
+    "slate": {
+      "name": "Pizarra",
+      "description": "Grafito neutro — se imprime con nitidez en blanco y negro."
+    },
+    "iris": {
+      "name": "Iris",
+      "description": "Discretos acentos índigo y encabezados compactos en mayúsculas."
+    },
+    "journal": {
+      "name": "Revista",
+      "description": "Clásico con serifas — acentos rojo intenso sobre papel cálido."
+    }
   },
   "preview": {
+    "retryImages": "Reintentar imágenes",
+    "withoutImages": "Descargar sin imágenes",
     "title": "Historial clínico",
     "subtitle": "Para sus archivos y derivaciones. Elija un estilo o su propio color — la vista previa se actualiza al instante.",
     "closeAria": "Cerrar la vista previa",
@@ -23,8 +40,8 @@
     "loadingImages": "Cargando imágenes…",
     "generating": "Generando la vista previa…",
     "buildFailed": "No se pudo crear la vista previa. Consulte la consola para más detalles.",
-    "imagesFailed": "No se pudieron cargar las imágenes del historial, así que no aparecen en este PDF. Cierre y vuelva a abrir la vista previa para reintentarlo.",
-    "imagesPartial": "No se pudieron cargar algunas imágenes. En el PDF aparecen como recuadros en blanco.",
+    "imagesFailed": "No se pudieron cargar las imágenes del historial. Vuelva a intentarlo o descargue un PDF sin imágenes.",
+    "imagesPartial": "No se pudieron cargar algunas imágenes. Vuelva a intentarlo o descargue un PDF sin imágenes.",
     "frameTitle": "Vista previa del historial clínico"
   },
   "link": {

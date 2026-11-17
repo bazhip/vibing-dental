@@ -23,6 +23,12 @@ const fill = (label: RegExp, value: string) =>
   fireEvent.change(screen.getByLabelText(label), { target: { value } });
 
 describe('Login — signup confirmation flow', () => {
+  it('defers optional branding and shows one legal notice', () => {
+    render(<Login onAuthenticate={vi.fn()} initialMode="signup" />);
+    expect(document.querySelector('input[type="file"]')).not.toBeInTheDocument();
+    expect(screen.getAllByRole('link', { name: 'Terms of Service' })).toHaveLength(1);
+  });
+
   beforeEach(() => vi.clearAllMocks());
 
   it('after signup, shows a check-your-inbox screen instead of the sign-in form', async () => {
@@ -126,9 +132,9 @@ describe('Login — Sign in with Apple and app mode', () => {
     expect(notices[0]).toHaveTextContent(/^By continuing you agree to the Terms of Service/);
   });
 
-  it('web keeps both legal notices (by Google and after the email form)', () => {
+  it('web shows one legal notice after the email form', () => {
     render(<Login onAuthenticate={vi.fn()} />);
-    expect(document.querySelectorAll('.login-legal')).toHaveLength(2);
+    expect(document.querySelectorAll('.login-legal')).toHaveLength(1);
   });
 
   it('web: the website form (labelled fields, login buttons); no iOS styling', () => {

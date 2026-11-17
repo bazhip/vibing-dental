@@ -60,7 +60,9 @@
   "results": {
     "title": "Results",
     "sent": "Sent",
-    "stampFailed": "Sent, but ToothOps couldn’t record the send date on this chart."
+    "stampFailed": "Sent, but ToothOps couldn’t record the send date on this chart.",
+    "saved": "Saved in ezyVet",
+    "summary": "Saved fields: {{saved}} · Need attention: {{attention}}"
   },
   "errors": {
     "extension_error": "ToothOps couldn’t reach the ezyVet extension. Check that it is installed and enabled, then try again.",
@@ -116,7 +118,8 @@
       "noteLabel": "Record note",
       "flagLoading": "Checking whether sending is on for your practice…",
       "flagFailed": "Couldn’t check whether sending to ezyVet is turned on for your practice.",
-      "sendOff": "Sending to ezyVet isn’t turned on for your practice."
+      "sendOff": "Sending to ezyVet isn’t turned on for your practice.",
+      "destination": "Destination"
     },
     "today": {
       "title": "Today’s patients (ezyVet)",

@@ -117,6 +117,22 @@ vi.mock('./utils/pdfGenerator', async (orig) => ({
   },
 }));
 
+// Match a returning app user; this suite exercises tab navigation, not the
+// first-run modal (which deliberately navigates to its current task).
+function memoryStorage(): Storage {
+  const values = new Map<string, string>();
+  return {
+    getItem: (key) => values.get(key) ?? null,
+    setItem: (key, value) => { values.set(key, String(value)); },
+    removeItem: (key) => { values.delete(key); },
+    clear: () => values.clear(),
+    key: (index) => Array.from(values.keys())[index] ?? null,
+    get length() { return values.size; },
+  };
+}
+vi.stubGlobal('localStorage', memoryStorage());
+vi.stubGlobal('sessionStorage', memoryStorage());
+
 import EntryGrid from './EntryGrid';
 import { DialogHost } from './components/ui/dialogs';
 import { localDateISO } from './utils/localDate';
@@ -133,6 +149,9 @@ beforeAll(() => {
   vi.spyOn(console, 'error').mockImplementation(() => {});
 });
 beforeEach(() => {
+  localStorage.clear();
+  sessionStorage.clear();
+  localStorage.setItem('vibing-dental.onboarding.seen.v1', '1');
   cloud.lastSavedAt = null;
   vi.clearAllMocks();
 });

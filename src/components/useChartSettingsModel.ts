@@ -35,6 +35,7 @@ export function useChartSettingsModel(
     beside: showAll || only === 'charting' || only === 'diagnosis',
     // By-tooth charting (Charting page) and the Diagnosis diagram use them.
     quickCodes: showAll || only === 'charting' || only === 'diagnosis',
+    procedureQuickCodes: showAll || only === 'procedure',
     anesthesia: showAll || only === 'anesthesia',
     patient: showAll || only === 'patient',
     exam: showAll || only === 'exam',
@@ -52,6 +53,9 @@ export function useChartSettingsModel(
 
   const latestSaves = React.useRef([drug, adjunct]);
   latestSaves.current = [drug, adjunct];
+  const flushPendingDrafts = React.useCallback(() => {
+    for (const d of latestSaves.current) if (d.dirty.current) d.save();
+  }, []);
   React.useEffect(() => {
     if (!saveDrugOnUnmount) return undefined;
     return () => {
@@ -63,7 +67,7 @@ export function useChartSettingsModel(
   const { name: adjunctName, setName: setAdjunctName, strength: adjunctStrength, setStrength: setAdjunctStrength, save: saveUsualAdjunct } = adjunct;
 
   return {
-    showAll, show, shownColumns, toggleBlock,
+    showAll, show, shownColumns, toggleBlock, flushPendingDrafts,
     drugName, setDrugName, drugStrength, setDrugStrength, saveUsualDrug,
     adjunctName, setAdjunctName, adjunctStrength, setAdjunctStrength, saveUsualAdjunct,
   };
@@ -87,7 +91,13 @@ function useUsualDrugDraft(value: UsualDrug, onSave: (next: UsualDrug) => void) 
     dirty.current = true;
     setStrengthState(v);
   };
+  React.useEffect(() => {
+    if (dirty.current) return;
+    setNameState(value?.name ?? '');
+    setStrengthState(value ? strengthForInput(value.name, value.concentration) : '');
+  }, [value]);
   const save = () => {
+    if (!dirty.current) return;
     dirty.current = false;
     const n = name.trim();
     const next = n ? { name: n, concentration: withDrugUnit(n, strength.replace(/%/g, '').trim()) } : null;

@@ -16,6 +16,9 @@
     "journal": { "name": "Journal", "description": "Serifen-Klassiker — tiefrote Akzente auf warmem Papier." }
   },
   "preview": {
+    "retryImages": "Bilder erneut laden",
+    "withoutImages": "Ohne Bilder herunterladen",
+
     "title": "Klinische Akte",
     "subtitle": "Für Ihre Unterlagen und Überweisungen. Wählen Sie einen Stil oder Ihre eigene Farbe — die Vorschau aktualisiert sich live.",
     "closeAria": "Vorschau schließen",
@@ -23,8 +26,8 @@
     "loadingImages": "Bilder werden geladen…",
     "generating": "Vorschau wird erstellt…",
     "buildFailed": "Die Vorschau konnte nicht erstellt werden. Details finden Sie in der Konsole.",
-    "imagesFailed": "Die Bilder der Akte konnten nicht geladen werden und sind daher nicht in diesem PDF enthalten. Schließen Sie die Vorschau und öffnen Sie sie erneut, um es noch einmal zu versuchen.",
-    "imagesPartial": "Einige Bilder konnten nicht geladen werden. Sie erscheinen im PDF als leere Felder.",
+    "imagesFailed": "Die Bilder des Zahnschemas konnten nicht geladen werden. Versuchen Sie es erneut oder laden Sie eine PDF ohne Bilder herunter.",
+    "imagesPartial": "Einige Bilder konnten nicht geladen werden. Versuchen Sie es erneut oder laden Sie eine PDF ohne Bilder herunter.",
     "frameTitle": "Vorschau der klinischen Akte"
   },
   "link": {

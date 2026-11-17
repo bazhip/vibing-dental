@@ -1,4 +1,6 @@
 {
+  "draftLabel": "BROUILLON — NON VÉRIFIÉ",
+  "draftNotice": "Ce rapport n’a pas été vérifié pour le dossier actuel. Les informations peuvent être incomplètes.",
   "abnormalityNoted": "anomalie constatée",
   "after": "Après",
   "alreadyMissingLine": "Déjà absentes avant cette visite : {{list}}.",
@@ -12,7 +14,7 @@
     "pharynx": "Pharynx / amygdales",
     "tongue": "Langue"
   },
-  "extractionsLead": "Ces dents ne pouvaient pas être sauvées et ont été extraites pour ne plus causer de douleur ni d’infection :",
+  "extractionsLead": "Ces dents ont été consignées comme ayant été extraites lors de cette visite :",
   "fieldPhrases": {
     "calculus": "accumulation de tartre (grade {{value}})",
     "furcation": "perte osseuse entre les racines (grade {{value}})",
@@ -56,11 +58,11 @@
     "forage": "Offrez beaucoup de fourrage : le foin à brins longs et le pâturage favorisent une usure régulière des dents.",
     "warningSigns": "Surveillez la nourriture qui tombe de la bouche, la perte de poids, une mastication lente, les mouvements de tête ou la résistance au mors, la mauvaise haleine ou un jetage nasal — appelez-nous si vous remarquez quelque chose."
   },
-  "intro": "{{pet}} a bénéficié d’un examen et de soins dentaires sous anesthésie. Ce compte rendu explique nos constatations avec des mots simples ; le dossier clinique complet, avec les mesures, est conservé et disponible à tout moment.",
+  "intro": "Ce rapport résume les informations consignées pour la visite dentaire de {{pet}}. Pour toute question, veuillez consulter votre équipe vétérinaire.",
   "legendFilled": "plein = absente avant cette visite",
   "legendNumbers": "Les numéros renvoient aux constatations ci-dessous",
   "legendRemoved": "✕ rouge = extraite aujourd’hui",
-  "noProblems": "Aucun problème dentaire n’a été noté au dossier lors de cette visite — excellente nouvelle !",
+  "noProblems": "Aucune constatation dentaire n’a été consignée pour cette visite.",
   "ourPractice": "notre clinique",
   "ownerLabel": "Propriétaire",
   "patientLabel": "Patient",

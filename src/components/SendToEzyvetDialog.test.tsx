@@ -376,7 +376,9 @@ describe('SendToEzyvetDialog', () => {
     fireEvent.click(sendButton());
     await screen.findByText(t('pims:results.title'));
     const list = screen.getByRole('list');
-    expect(within(list).getByText('Plan').closest('li')).toHaveTextContent(t('pims:results.sent'));
+    expect(within(list).getByText('Plan').closest('li')).toHaveTextContent(t('pims:results.saved'));
+    expect(screen.getByRole('heading', { name: t('pims:results.title') })).toHaveFocus();
+    expect(screen.getByText(t('pims:results.summary', { saved: 1, attention: 1 }))).toHaveAttribute('role', 'status');
     expect(within(list).getByText('Physical Exam').closest('li')).toHaveTextContent(t('pims:errors.editor_not_found'));
     expect(mocks.markPimsSent).toHaveBeenCalledTimes(1);
     expect(mocks.markPimsSent).toHaveBeenCalledWith('chart-1');

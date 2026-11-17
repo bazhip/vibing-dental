@@ -28,49 +28,38 @@ export function groupByVisit(visits: ImageHistoryVisit[], items: Attachment[]): 
   return visits
     .filter((v) => byChart.has(v.id))
     .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
-    .map((visit) => ({ visit, items: byChart.get(visit.id)! }));
+    .map((visit) => ({ visit, items: [...byChart.get(visit.id)!].sort((a, b) => a.createdAt.localeCompare(b.createdAt)) }));
 }
 
 const visitDate = (iso: string) => formatDate(iso, 'medium');
 
-/**
- * "Image history": the patient's photos and radiographs from their other
- * visits, by visit date. Collapsed by default and loaded only when opened,
- * so a chart with a long history costs nothing until someone asks.
- * Read-only — images are changed from the visit they belong to.
- */
+/** Read-only thumbnails from other visits, loaded automatically and grouped by date. */
 export const ImageHistory: React.FC<ImageHistoryProps> = ({ visits, onOpenVisit, toothLabel }) => {
   const { t } = useTranslation('media');
-  const [open, setOpen] = React.useState(false);
-  const [items, setItems] = React.useState<Attachment[] | null>(null);
-  const [failed, setFailed] = React.useState(false);
+  const [result, setResult] = React.useState<{ key: string; items: Attachment[] | null; failed: boolean } | null>(null);
   const [viewing, setViewing] = React.useState<number | null>(null);
-  // Bumped by "Try again": a failed load leaves `items` null, so it can't be the trigger.
   const [attempt, setAttempt] = React.useState(0);
-  const visitKey = visits.map((v) => v.id).sort().join(',');
-
-  // Another patient or another set of visits: start over, closed.
-  React.useEffect(() => {
-    setOpen(false);
-    setItems(null);
-    setFailed(false);
-    setViewing(null);
-  }, [visitKey]);
+  const visitKey = JSON.stringify(visits.map(({ id, date }) => ({ id, date })).sort((a, b) => a.id.localeCompare(b.id)));
+  // Key the rendered result as well as cancelling the request: a new patient
+  // must never show the previous patient's thumbnails, even before effects run.
+  const items = result?.key === visitKey ? result.items : null;
+  const failed = result?.key === visitKey && result.failed;
 
   React.useEffect(() => {
-    if (!open || items !== null) return;
     let cancelled = false;
-    setFailed(false);
+    setViewing(null);
+    setResult({ key: visitKey, items: null, failed: false });
+    if (visits.length === 0) return;
     listAttachmentsForCharts(visits.map((v) => v.id))
       .then((rows) => {
-        if (cancelled) return;
-        if (rows) setItems(rows);
-        else setFailed(true);
+        if (!cancelled) setResult({ key: visitKey, items: rows, failed: rows === null });
       })
-      .catch(() => { if (!cancelled) setFailed(true); });
+      .catch(() => {
+        if (!cancelled) setResult({ key: visitKey, items: null, failed: true });
+      });
     return () => { cancelled = true; };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- visitKey stands for visits
-  }, [open, items, visitKey, attempt]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- visitKey includes every visit id and date
+  }, [visitKey, attempt]);
 
   const groups = React.useMemo(() => (items ? groupByVisit(visits, items) : []), [items, visits]);
   const flat = React.useMemo(() => groups.flatMap((g) => g.items), [groups]);
@@ -80,32 +69,19 @@ export const ImageHistory: React.FC<ImageHistoryProps> = ({ visits, onOpenVisit,
     return m;
   }, [groups]);
 
-  if (visits.length === 0) return null;
+  if (visits.length === 0 || (!failed && groups.length === 0)) return null;
 
   return (
     <section className="image-history">
-      <button
-        type="button"
-        className="diagram-view__action image-history__toggle"
-        aria-expanded={open}
-        onClick={() => setOpen((v) => !v)}
-      >
-        {open ? t('history.hide') : t('history.show', { count: visits.length })}
-      </button>
-
-      {open && (
-        <div className="image-history__body">
+      <h2 className="patient-form__section-title">{t('history.title')}</h2>
+      <div className="image-history__body">
           {failed ? (
             <p className="login-error" role="alert">
               {t('history.failed')}{' '}
-              <button type="button" className="image-history__retry" onClick={() => { setFailed(false); setItems(null); setAttempt((n) => n + 1); }}>
+              <button type="button" className="image-history__retry" onClick={() => setAttempt((n) => n + 1)}>
                 {t('history.retry')}
               </button>
             </p>
-          ) : items === null ? (
-            <p className="practice-logo-empty">{t('history.loading')}</p>
-          ) : groups.length === 0 ? (
-            <p className="practice-logo-empty">{t('history.empty')}</p>
           ) : (
             groups.map((g) => (
               <div key={g.visit.id} className="image-history__visit">
@@ -149,8 +125,7 @@ export const ImageHistory: React.FC<ImageHistoryProps> = ({ visits, onOpenVisit,
               </div>
             ))
           )}
-        </div>
-      )}
+      </div>
 
       {viewing !== null && flat[viewing] && (
         <ImageViewer

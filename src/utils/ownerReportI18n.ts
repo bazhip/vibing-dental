@@ -17,9 +17,8 @@ import type { BuiltInSectionId } from './ownerReportConfig';
  * standard Helvetica font (WinAnsi), which covers Western European
  * accents but not other scripts.
  *
- * English strings must stay byte-identical to the original report; the
- * other languages are careful translations that should still get a
- * native-speaker review before marketing them.
+ * Defaults describe documented information without assuming procedures
+ * were completed or unrecorded findings were normal.
  */
 
 export const REPORT_LOCALES = ['en', 'es', 'fr', 'de', 'it', 'pt'] as const;
@@ -47,6 +46,8 @@ export interface ReportStrings {
   /** BCP-47 tag for Intl date formatting. */
   intlLocale: string;
   defaultTitle: string;
+  draftLabel: string;
+  draftNotice: string;
   /** Placeholder fallbacks. */
   yourPet: string;
   ourPractice: string;
@@ -225,6 +226,8 @@ function buildStrings(locale: ReportLocale): ReportStrings {
     examAreas: map(EXAM_AREAS, (a) => t(`examAreas.${a}`)),
     patientLabel: t('patientLabel'),
     ownerLabel: t('ownerLabel'),
+    draftLabel: t('draftLabel'),
+    draftNotice: t('draftNotice'),
     extractionsLead: t('extractionsLead'),
     removedToday: t('removedToday'),
     alreadyMissingLine: (list) => t('alreadyMissingLine', { list }),

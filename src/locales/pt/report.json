@@ -1,4 +1,6 @@
 {
+  "draftLabel": "RASCUNHO — NÃO REVISTO",
+  "draftNotice": "Este relatório não foi revisto em relação à ficha atual. As informações podem estar incompletas.",
   "abnormalityNoted": "alteração observada",
   "after": "Depois",
   "alreadyMissingLine": "Ausentes antes desta consulta: {{list}}.",
@@ -12,7 +14,7 @@
     "pharynx": "Faringe / tonsilas",
     "tongue": "Língua"
   },
-  "extractionsLead": "Estes dentes não podiam ser salvos e foram extraídos para que não causem mais dor ou infecção:",
+  "extractionsLead": "Estes dentes foram registados como extraídos durante esta consulta:",
   "fieldPhrases": {
     "calculus": "acúmulo de tártaro (grau {{value}})",
     "furcation": "perda óssea entre as raízes (grau {{value}})",
@@ -56,11 +58,11 @@
     "forage": "Ofereça bastante forragem: feno de fibra longa e pasto mantêm um desgaste uniforme dos dentes.",
     "warningSigns": "Fique atento à comida caindo da boca, à perda de peso, se ele come devagar, balança a cabeça ou resiste à embocadura, ao mau hálito ou ao corrimento nasal — ligue para nós se notar algo."
   },
-  "intro": "{{pet}} fez um exame e tratamento dentário sob anestesia. Este relatório explica o que encontramos em linguagem simples — o prontuário clínico completo, com as medições, está arquivado e disponível a qualquer momento.",
+  "intro": "Este relatório resume as informações documentadas da consulta dentária de {{pet}}. Esclareça quaisquer dúvidas com a sua equipa veterinária.",
   "legendFilled": "preenchido = ausente antes desta consulta",
   "legendNumbers": "Os números correspondem aos achados abaixo",
   "legendRemoved": "✕ vermelho = extraído hoje",
-  "noProblems": "Nenhum problema dentário foi registrado no prontuário nesta consulta — ótima notícia!",
+  "noProblems": "Não foram registados achados dentários nesta consulta.",
   "ourPractice": "nossa clínica",
   "ownerLabel": "Tutor",
   "patientLabel": "Paciente",

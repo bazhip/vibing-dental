@@ -1,3 +1,4 @@
+import type { Attachment } from '../hooks/useAttachments';
 import { ChartSnapshot, DentalField, EXAM_ITEMS } from '../types';
 import { parseRootPockets, deepestPocket } from './pocket';
 import {
@@ -46,6 +47,8 @@ export type OwnerReportRenderSection =
   | { kind: 'custom'; id: string; heading: string; body: string };
 
 export interface OwnerReportModel {
+  /** Explicit review of this exact chart, text and template revision. */
+  reviewed: boolean;
   /** Language of the generated text (and the PDF's fixed labels). */
   locale: ReportLocale;
   /** Header title (top right of page one); '' = none. */
@@ -74,8 +77,7 @@ export interface OwnerReportModel {
   /** Mouth-wide findings, one line each ("Gum inflammation on most teeth
    *  (mild to moderate)"). Those fields are left out of `teeth` notes. */
   summaryLines: string[];
-  /** Per-tooth findings (teeth with nothing recorded are omitted —
-   *  standard charting convention: blank means healthy). */
+  /** Per-tooth findings; an omitted tooth has no recorded findings. */
   teeth: OwnerReportTooth[];
   /** The vet's notes not anchored to a tooth, codes in plain words. */
   otherFindings: string[];
@@ -159,6 +161,44 @@ export interface BuildOwnerReportOptions extends OwnerReportContext {
  *  default > built-in). */
 export function templateForSnapshot(snapshot: ChartSnapshot, options: BuildOwnerReportOptions = {}): OwnerReportTemplate {
   return options.template ?? resolveTemplate(options.config, snapshot.ownerReport?.templateId);
+}
+
+/** Canonical ordering makes persisted review fingerprints independent of object insertion order. */
+function canonicalReviewValue(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(canonicalReviewValue);
+  if (value && typeof value === 'object') return Object.fromEntries(
+    Object.entries(value).filter(([, item]) => item !== undefined).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0).map(([key, item]) => [key, canonicalReviewValue(item)])
+  );
+  return value;
+}
+
+/** Small versioned change detector, not a security signature. */
+export function ownerReportReviewBasis(snapshot: ChartSnapshot, options: BuildOwnerReportOptions = {}): string {
+  const { recordNote: _recordNote, ownerReport, ...clinical } = snapshot;
+  const { reviewedBasis: _reviewedBasis, reviewedAttachments: _reviewedAttachments, ...overrides } = ownerReport ?? {};
+  const text = JSON.stringify(canonicalReviewValue({
+    clinical, overrides, template: templateForSnapshot(snapshot, options),
+    practiceName: options.practiceName?.trim() ?? '', doctorName: options.doctorName?.trim() ?? '',
+  }));
+  let first = 0x811c9dc5;
+  let second = 0x9e3779b9;
+  for (let i = 0; i < text.length; i += 1) {
+    first = Math.imul(first ^ text.charCodeAt(i), 0x01000193);
+    second = Math.imul(second ^ text.charCodeAt(i), 0x85ebca6b);
+  }
+  return `v1:${(first >>> 0).toString(16).padStart(8, '0')}${(second >>> 0).toString(16).padStart(8, '0')}`;
+}
+
+/** Signed URLs expire; only document content and membership affect review. */
+export function ownerReportAttachmentBasis(items: Pick<Attachment, 'id' | 'path' | 'caption' | 'kind' | 'toothTriadan'>[], roles: ChartSnapshot['imageRoles'] = {}): string {
+  return JSON.stringify(Object.entries(roles).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0).map(([id, role]) => {
+    const item = items.find((entry) => entry.id === id);
+    return item ? [id, role, item.path, item.caption, item.kind, item.toothTriadan] : [id, role, null];
+  }));
+}
+
+export function ownerReportIsReviewed(snapshot: ChartSnapshot, options: BuildOwnerReportOptions = {}): boolean {
+  return snapshot.ownerReport?.reviewedBasis === ownerReportReviewBasis(snapshot, options);
 }
 
 export function buildOwnerReportModel(
@@ -321,6 +361,7 @@ export function buildOwnerReportModel(
   }
 
   return {
+    reviewed: ownerReportIsReviewed(snapshot, options),
     locale,
     title: template.title.trim() ? fillPlaceholders(template.title, values).trim() : '',
     sections,

@@ -79,5 +79,9 @@
     "photo": "Photo",
     "radiograph": "Radiographie",
     "tooth": "Dent {{triadan}}"
+  },
+  "continuation": {
+    "title": "Notes cliniques",
+    "notice": "Les informations complètes figurent sur les pages suivantes."
   }
 }

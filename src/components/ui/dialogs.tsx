@@ -216,7 +216,7 @@ function ConfirmView({ req, onDone }: { req: Extract<DialogRequest, { kind: 'con
   const titleId = `dlg-title-${req.id}`;
   return (
     <div className="ui-dialog-overlay" {...backdrop}>
-      <div className="ui-dialog" role="alertdialog" aria-modal="true" aria-labelledby={titleId}>
+      <div className="ui-dialog" role="alertdialog" aria-modal="true" aria-labelledby={titleId} onKeyDown={(e) => trapTab(e, e.currentTarget)}>
         <h2 id={titleId} className="ui-dialog__title">{opts.title}</h2>
         {opts.message && <div className="ui-dialog__message">{opts.message}</div>}
         <div className="ui-dialog__actions">
@@ -267,6 +267,7 @@ function PromptView({ req, onDone }: { req: Extract<DialogRequest, { kind: 'prom
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
+        onKeyDown={(e) => trapTab(e, e.currentTarget)}
         onSubmit={(e) => { e.preventDefault(); submit(); }}
       >
         <h2 id={titleId} className="ui-dialog__title">{opts.title}</h2>
@@ -306,7 +307,7 @@ function ChoiceView({ req, onDone }: { req: Extract<DialogRequest, { kind: 'choo
   const titleId = `dlg-title-${req.id}`;
   return (
     <div className="ui-dialog-overlay" {...backdrop}>
-      <div className="ui-dialog" role="alertdialog" aria-modal="true" aria-labelledby={titleId}>
+      <div className="ui-dialog" role="alertdialog" aria-modal="true" aria-labelledby={titleId} onKeyDown={(e) => trapTab(e, e.currentTarget)}>
         <h2 id={titleId} className="ui-dialog__title">{opts.title}</h2>
         {opts.message && <div className="ui-dialog__message">{opts.message}</div>}
         <div className="ui-dialog__actions">
@@ -525,9 +526,9 @@ function NativeActionSheet({ req, onDone }: { req: Extract<DialogRequest, { kind
 
 function NativeToast({ item, onDismiss }: { item: ToastItem; onDismiss: () => void }) {
   const kind = item.opts.kind ?? 'info';
-  useAutoDismiss(item, onDismiss);
+  const interaction = useAutoDismiss(item, onDismiss);
   return (
-    <div className={`ios-toast ios-toast--${kind}`} role={kind === 'error' ? 'alert' : 'status'}>
+    <div {...interaction} className={`ios-toast ios-toast--${kind}`} role={kind === 'error' ? 'alert' : 'status'}>
       {kind === 'success' && <Icon name={CHECKMARK_CIRCLE_ICON} filled size={20} className="ios-toast__icon" />}
       {kind === 'error' && <Icon name={EXCLAMATIONMARK_CIRCLE_ICON} filled size={20} className="ios-toast__icon" />}
       <span className="ios-toast__msg">{item.message}</span>
@@ -656,19 +657,37 @@ export function DialogHost() {
 function useAutoDismiss(item: ToastItem, onDismiss: () => void) {
   const kind = item.opts.kind ?? 'info';
   const duration = item.opts.duration ?? (kind === 'error' ? 0 : item.opts.action ? 8000 : 4000);
+  const dismissRef = React.useRef(onDismiss);
+  dismissRef.current = onDismiss;
+  const remaining = React.useRef(duration);
+  const [hovered, setHovered] = React.useState(false);
+  const [focused, setFocused] = React.useState(false);
+  const paused = hovered || focused;
   React.useEffect(() => {
-    if (!duration) return;
-    const t = window.setTimeout(onDismiss, duration);
-    return () => window.clearTimeout(t);
-  }, [duration, onDismiss]);
+    if (!duration || paused) return;
+    const started = Date.now();
+    const timer = window.setTimeout(() => dismissRef.current(), remaining.current);
+    return () => {
+      window.clearTimeout(timer);
+      remaining.current = Math.max(0, remaining.current - (Date.now() - started));
+    };
+  }, [duration, paused]);
+  return {
+    onMouseEnter: () => setHovered(true),
+    onMouseLeave: () => setHovered(false),
+    onFocus: () => setFocused(true),
+    onBlur: (event: React.FocusEvent<HTMLDivElement>) => {
+      if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setFocused(false);
+    },
+  };
 }
 
 function ToastView({ item, onDismiss }: { item: ToastItem; onDismiss: () => void }) {
   const { t } = useTranslation();
   const kind = item.opts.kind ?? 'info';
-  useAutoDismiss(item, onDismiss);
+  const interaction = useAutoDismiss(item, onDismiss);
   return (
-    <div className={`ui-toast ui-toast--${kind}`} role={kind === 'error' ? 'alert' : 'status'}>
+    <div {...interaction} className={`ui-toast ui-toast--${kind}`} role={kind === 'error' ? 'alert' : 'status'}>
       <span className="ui-toast__msg">{item.message}</span>
       {item.opts.action && (
         <button

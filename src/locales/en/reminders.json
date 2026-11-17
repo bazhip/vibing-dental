@@ -3,7 +3,7 @@
     "aria": "Recheck reminders",
     "title": "Recheck reminders",
     "blurb": "Email the pet owner when a recheck is due. Placeholders:",
-    "blurbTail": "Send a reminder for one patient from <strong>My charts</strong>.",
+    "blurbTail": "Send a reminder for one patient from <strong>Patients</strong>.",
     "loading": "Loading…",
     "notSetUp": "Your practice is being set up — reload in a moment.",
     "ownerOnly": "Only a practice owner can change the reminder template.",

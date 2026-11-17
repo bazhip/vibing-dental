@@ -1,6 +1,6 @@
 {
   "imaging": {
-    "title": "Images",
+    "title": "Imaging",
     "signedOut": "Sign in with a practice account to attach intraoral photos and dental radiographs — they're stored privately alongside the chart.",
     "usage": "{{used}} of {{max}} images",
     "customize": "Customize",
@@ -10,7 +10,7 @@
     "pdfSelected": "{{selected}} of {{total}} selected",
     "freePlan": "Photo & radiograph uploads aren't included in the free plan.",
     "typeAria": "Image type",
-    "photo": "Photo",
+    "photo": "Image",
     "radiograph": "Radiograph",
     "descriptionPlaceholder": "Description (optional)",
     "descriptionAria": "Image description (optional)",
@@ -55,10 +55,17 @@
     "toothAria": "Tooth for this image",
     "toothTitle": "Pin this image to a tooth (shown on the PDF label)",
     "toothNone": "No tooth",
-    "toothFailed": "Could not change the tooth for that image."
+    "toothFailed": "Could not change the tooth for that image.",
+    "upload": {
+      "title": "Add images",
+      "dropHint": "Drop images here, or click to browse. You can also paste an image.",
+      "touchHint": "Choose from your photo library or files, or take a photo.",
+      "library": "Photo library or files",
+      "files": "Choose files"
+    }
   },
   "documents": {
-    "title": "Download PDFs",
+    "title": "Review and export",
     "chartTab": "Clinical chart",
     "chartWho": "For your records and referrals — the full chart with codes.",
     "ownerTab": "Owner report",
@@ -153,6 +160,7 @@
     "undated": "Undated visit",
     "imageCount_one": "1 image",
     "imageCount_other": "{{count}} images",
-    "openVisit": "Open visit"
+    "openVisit": "Open visit",
+    "title": "Image history"
   }
 }

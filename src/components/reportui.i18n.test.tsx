@@ -84,6 +84,12 @@ describe('OwnerReportTemplatesModal', () => {
     const { container, rerender } = render(<OwnerReportTemplatesModal {...props} config={twoTemplates()} />);
     expect(findUntranslated(container, allow)).toEqual([]);
     expect(screen.getByText('⟦Owner report templates⟧')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: '⟦Report content⟧' }));
+    expect(findUntranslated(container, allow)).toEqual([]);
+    fireEvent.click(screen.getByRole('button', { name: '⟦Home care⟧' }));
+    expect(findUntranslated(container, allow)).toEqual([]);
+    fireEvent.click(screen.getByRole('button', { name: '⟦Closing and footer⟧' }));
+    expect(findUntranslated(container, allow)).toEqual([]);
 
     const custom = twoTemplates();
     custom.templates[0].sections.push({ id: 'custom-1', enabled: true, title: '', body: '' });
@@ -222,7 +228,7 @@ describe('OwnerReportSection', () => {
     const empty = { ...snapshot, toothData: [], preComments: [], postComments: [], patientInfo: { ...snapshot.patientInfo, recallDate: '', exam: { ...snapshot.patientInfo.exam } } };
     const { container } = render(<OwnerReportSection snapshot={empty} overrides={{}} onOverrideChange={noop} onPreview={noop} />);
     expect(findUntranslated(container, previewAllow(container, empty))).toEqual([]);
-    expect(screen.getByText(/⟦No per-tooth findings recorded yet/)).toBeInTheDocument();
+    expect(screen.getByText(/⟦No findings recorded for individual teeth yet./)).toBeInTheDocument();
   });
 });
 
@@ -251,7 +257,7 @@ describe('OwnerReportModal', () => {
     expect(screen.getByText('⟦Generating the owner report…⟧')).toBeInTheDocument();
     expect(findUntranslated(container, [])).toEqual([]);
     await waitFor(() => expect(container.querySelector('iframe')).toBeInTheDocument());
-    expect(screen.getByText('⟦Tag photos Before/After in Images to include them.⟧')).toBeInTheDocument();
+    expect(screen.getByText('⟦Tag photos Before/After in Imaging to include them.⟧')).toBeInTheDocument();
     rerender(<OwnerReportModal {...baseProps} cloudActive={false} imageRoles={{}} bare />);
     expect(screen.getByText('⟦Photos need a signed-in account.⟧')).toBeInTheDocument();
   });

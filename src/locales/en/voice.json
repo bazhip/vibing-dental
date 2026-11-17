@@ -96,7 +96,8 @@
     "sending": "sending…",
     "showInChart": "Show in the chart",
     "speaker": "Speaker {{n}}",
-    "transcript": "Transcript"
+    "transcript": "Transcript",
+    "reviewComplete": "Review complete"
   },
   "peek": {
     "connecting": "Getting the microphone ready — one moment…",

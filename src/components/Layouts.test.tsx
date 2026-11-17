@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { fireEvent, render, within } from '@testing-library/react';
 import { SidebarLayout, ChartSection } from './Layouts';
 
 const sections: ChartSection[] = [
@@ -37,3 +37,18 @@ describe('SidebarLayout companions (wide-screen side-by-side)', () => {
     expect(container.querySelector('.sidebar-layout--paired')).toBeNull();
   });
 });
+
+ it('portals one section rail into the workspace and retains section selection', () => {
+  const host = document.createElement('div');
+  document.body.append(host);
+  const onActiveChange = vi.fn();
+  const { container, unmount } = render(<SidebarLayout sections={sections} navigationHost={host} onActiveChange={onActiveChange} />);
+  expect(container.querySelector('.sidebar-layout__nav')).toBeNull();
+  expect(host.querySelectorAll('.sidebar-layout__nav')).toHaveLength(1);
+  fireEvent.click(within(host).getByRole('button', { name: /Diagnosis/ }));
+  expect(onActiveChange).toHaveBeenCalledWith('diagnosis');
+  expect(panel(container, 'diagnosis').style.display).toBe('');
+  unmount();
+  expect(host.childElementCount).toBe(0);
+  host.remove();
+ });

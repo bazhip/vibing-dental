@@ -656,6 +656,12 @@ export function drawExamSection(
  * line. Returns the card's bottom (in from the page top), or null (and
  * draws nothing) when no custom area was answered.
  */
+/** Optional preflight: compute the same layout without drawing any operators. */
+export interface SectionMeasure {
+  maxBottomIn: number;
+  overflow: boolean;
+}
+
 export function drawCustomExamCard(
   page: PDFPage,
   custom: CustomExamValue[] | undefined,
@@ -665,7 +671,8 @@ export function drawCustomExamCard(
   xIn: number,
   widthIn: number,
   maxBottomIn: number,
-  lng = 'en'
+  lng = 'en',
+  measure?: SectionMeasure
 ): number | null {
   const answered = answeredCustomExam(custom);
   if (answered.length === 0) return null;
@@ -696,8 +703,20 @@ export function drawCustomExamCard(
       left += dropped.summary ? normals.length : 1;
     }
     pick = [left ? [...kept, more(left)] : kept, 1];
+    if (measure && left) measure.overflow = true;
   }
   const layouts = computeExamLayouts(pick[0], font, geo, fontBold, pick[1]);
+  if (measure) {
+    const compact = (value: string) => value.replace(/\s+/g, ' ').trim();
+    for (let i = 0; i < pick[0].length; i++) {
+      const row = pick[0][i];
+      const layout = layouts[i];
+      if (compact(layout.label?.lines.join(' ') ?? '') !== compact(row.label)
+        || compact(layout.comment?.lines.join(' ') ?? '') !== compact(row.comment)
+        || (layout.label?.lines ?? []).some(line => fontBold.widthOfTextAtSize(line, layout.label!.fontSize) > (row.summary ? widthIn * PT_PER_IN - 14 : examLabelWidthPt(geo)))) measure.overflow = true;
+    }
+    return bodyTopIn + EXAM_HEAD_IN + layouts.reduce((height, row) => height + row.heightPt, 0) / PT_PER_IN;
+  }
   return drawExamCard(page, pick[0], layouts, font, fontBold, bodyTopIn, geo, t, t('exam.additional'));
 }
 
@@ -1069,7 +1088,8 @@ export function drawNerveBlockTable(
   /** The chart's custom blocks (extra rows) and fields (lines at the top
    *  of the "Other" row) — printed only when filled. */
   custom?: CustomAnesthesia,
-  lng = 'en'
+  lng = 'en',
+  measure?: SectionMeasure
 ): number {
   const t = pdfT(lng);
   const { height: pageHeight } = page.getSize();
@@ -1155,6 +1175,7 @@ export function drawNerveBlockTable(
         ? wrapToWidth(l, regular, bodySize, drugValueWidth)
         : [l]
     );
+    if (measure && (fitted.length > 6 || fitted.some(line => regular.widthOfTextAtSize(line, bodySize) > drugValueWidth))) measure.overflow = true;
     drugLines.splice(0, drugLines.length, ...fitted.slice(0, 6));
   }
   const drugRowH = useDrugRow
@@ -1162,6 +1183,17 @@ export function drawNerveBlockTable(
     : 0;
 
   const totalH = drugRowH + rowH * (lrCount + 1) + (otherRows.length ? otherRowH : 0);
+
+  const bottomIn = NERVE_BLOCK_BOX.yTopIn - 0.20 + (CARD_BAND_PT + totalH) / PT_PER_IN;
+  if (measure) {
+    const fullOther = wrapToWidth(otherRow.value, regular, bodySize, otherValueWidth);
+    measure.overflow ||= bottomIn > measure.maxBottomIn
+      || fullOther.length > otherLines.length
+      || fullOther.some(line => regular.widthOfTextAtSize(line, bodySize) > otherValueWidth)
+      || lrRows.some(row => regular.widthOfTextAtSize(row.label, bodySize) > labelW - padX * 2
+        || [row.right, row.left].some(raw => regular.widthOfTextAtSize(t('anesthesia.dose', { value: raw }), bodySize) > valueW - 2));
+    return bottomIn;
+  }
 
   // One card: title band + table inside a single rounded frame.
   const cardTop = yTop + 0.20 * PT_PER_IN;

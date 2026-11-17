@@ -1,4 +1,6 @@
 {
+  "draftLabel": "ENTWURF — NICHT GEPRÜFT",
+  "draftNotice": "Dieser Bericht wurde für das aktuelle Zahnschema noch nicht geprüft. Die Informationen können unvollständig sein.",
   "abnormalityNoted": "Auffälligkeit festgestellt",
   "after": "Nachher",
   "alreadyMissingLine": "Bereits vor diesem Besuch fehlend: {{list}}.",
@@ -12,7 +14,7 @@
     "pharynx": "Rachen / Mandeln",
     "tongue": "Zunge"
   },
-  "extractionsLead": "Diese Zähne waren nicht zu retten und wurden entfernt, damit sie keine Schmerzen oder Infektionen mehr verursachen:",
+  "extractionsLead": "Diese Zähne wurden bei diesem Besuch als entfernt dokumentiert:",
   "fieldPhrases": {
     "calculus": "Zahnsteinbildung (Grad {{value}})",
     "furcation": "Knochenabbau zwischen den Wurzeln (Grad {{value}})",
@@ -56,11 +58,11 @@
     "forage": "Bieten Sie reichlich Raufutter an – langes Heu und Weidegang sorgen für einen gleichmäßigen Zahnabrieb.",
     "warningSigns": "Achten Sie auf herausfallendes Futter, Gewichtsverlust, langsames Fressen, Kopfschlagen oder Widerstand gegen das Gebiss, Mundgeruch oder Nasenausfluss – rufen Sie uns an, wenn Ihnen etwas auffällt."
   },
-  "intro": "{{pet}} hatte eine Zahnuntersuchung und -behandlung unter Narkose. Dieser Bericht erklärt unsere Befunde in einfachen Worten – die vollständige klinische Akte mit allen Messwerten liegt bei uns vor und ist jederzeit einsehbar.",
+  "intro": "Dieser Bericht fasst die dokumentierten Informationen zum Zahnarztbesuch von {{pet}} zusammen. Bitte besprechen Sie Fragen mit Ihrem tierärztlichen Team.",
   "legendFilled": "ausgefüllt = schon vorher fehlend",
   "legendNumbers": "Die Nummern entsprechen den Befunden unten",
   "legendRemoved": "rotes ✕ = heute entfernt",
-  "noProblems": "Bei diesem Besuch wurden keine Zahnprobleme festgestellt – eine tolle Nachricht!",
+  "noProblems": "Für diesen Besuch wurden keine Zahnbefunde dokumentiert.",
   "ourPractice": "unsere Praxis",
   "ownerLabel": "Besitzer",
   "patientLabel": "Patient",

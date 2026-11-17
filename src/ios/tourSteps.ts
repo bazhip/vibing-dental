@@ -39,7 +39,7 @@ export function buildAppSteps(t: TFunction<'settings'>, aiEnabled?: boolean): To
     step('sections', { section: 'patient', target: '[data-app-tab="chart"] .ios-navbar__title-button', placement: 'bottom' }),
     step('patient', { section: 'patient', target: '[data-tour="patient-name"]', placement: 'bottom' }),
     step('species', { section: 'patient', target: '.patient-form__selectors', placement: 'top' }),
-    step('grid', { section: 'charting', target: '.dental-grid', placement: 'top' }),
+    step('grid', { section: 'charting', target: '.dental-grid, .tooth-chart', placement: 'top' }),
     step('diagrams', { section: 'diagnosis', target: '.tooth-diagram-wrapper', placement: 'bottom' }),
     step('codes', { section: 'diagnosis', target: '.diagram-with-codes__codes', placement: 'top' }),
     step('treatment', { section: 'treatment', target: '.dental-grid-section', placement: 'top' }),

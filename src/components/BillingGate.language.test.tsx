@@ -77,3 +77,9 @@ test("the paywall follows the account's language over the browser's", async () =
   expect(await screen.findByRole('heading', { name: 'Wählen Sie Ihren Tarif' }, { timeout: 5000 })).toBeInTheDocument();
   expect(i18n.language).toBe('de');
 });
+
+test('shows an accessible loading state while checking account access', () => {
+  fetchBilling.mockReturnValue(new Promise(() => {}));
+  render(<BillingGate><div>Chart</div></BillingGate>);
+  expect(screen.getByRole('status')).toHaveTextContent('Loading');
+});

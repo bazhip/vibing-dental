@@ -1,6 +1,6 @@
 {
   "imaging": {
-    "title": "Bilder",
+    "title": "Bildgebung",
     "signedOut": "Melden Sie sich mit einem Praxiskonto an, um intraorale Fotos und Zahnröntgenaufnahmen anzuhängen — sie werden privat zusammen mit der Akte gespeichert.",
     "usage": "{{used}} von {{max}} Bildern",
     "customize": "Anpassen",
@@ -10,7 +10,7 @@
     "pdfSelected": "{{selected}} von {{total}} ausgewählt",
     "freePlan": "Das Hochladen von Fotos und Röntgenaufnahmen ist im kostenlosen Tarif nicht enthalten.",
     "typeAria": "Bildtyp",
-    "photo": "Foto",
+    "photo": "Bild",
     "radiograph": "Röntgenbild",
     "descriptionPlaceholder": "Beschreibung (optional)",
     "descriptionAria": "Bildbeschreibung (optional)",
@@ -55,10 +55,17 @@
     "toothAria": "Zahn für dieses Bild",
     "toothTitle": "Dieses Bild einem Zahn zuordnen (wird auf der PDF-Beschriftung angezeigt)",
     "toothNone": "Kein Zahn",
-    "toothFailed": "Der Zahn für dieses Bild konnte nicht geändert werden."
+    "toothFailed": "Der Zahn für dieses Bild konnte nicht geändert werden.",
+    "upload": {
+      "title": "Bilder hinzufügen",
+      "dropHint": "Ziehen Sie Bilder hierher oder klicken Sie, um Dateien auszuwählen. Sie können auch ein Bild einfügen.",
+      "touchHint": "Wählen Sie Bilder aus Ihrer Fotomediathek oder Dateien aus, oder nehmen Sie ein Foto auf.",
+      "library": "Fotomediathek oder Dateien",
+      "files": "Dateien auswählen"
+    }
   },
   "documents": {
-    "title": "PDFs herunterladen",
+    "title": "Prüfen und exportieren",
     "chartTab": "Klinische Akte",
     "chartWho": "Für Ihre Unterlagen und Überweisungen — die vollständige Akte mit Codes.",
     "ownerTab": "Besitzerbericht",
@@ -153,6 +160,7 @@
     "undated": "Besuch ohne Datum",
     "imageCount_one": "1 Bild",
     "imageCount_other": "{{count}} Bilder",
-    "openVisit": "Besuch öffnen"
+    "openVisit": "Besuch öffnen",
+    "title": "Bildverlauf"
   }
 }

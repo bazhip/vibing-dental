@@ -249,6 +249,8 @@
   transform: rotate(180deg);
 }
 .mobile-section-menu__list {
+  box-sizing: border-box;
+  overscroll-behavior: contain;
   position: absolute;
   top: calc(100% + 4px);
   left: 0; right: 0;

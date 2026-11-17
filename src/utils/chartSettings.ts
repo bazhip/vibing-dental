@@ -46,6 +46,9 @@ const BLOCK_IDS = new Set<string>(BLOCK_ROW_OPTIONS.map((b) => b.id));
 export type ScoreTapMove = 'finding' | 'tooth' | 'stay';
 const SCORE_TAP_MOVES = new Set<string>(['finding', 'tooth', 'stay']);
 
+export const PATIENT_FIELD_OPTIONS = ['ownerName', 'ownerPhone', 'ownerEmail', 'tech'] as const;
+export type OptionalPatientField = (typeof PATIENT_FIELD_OPTIONS)[number];
+
 export interface ChartPrefs {
   /** 'tooth' = one pocket box per tooth; 'root' = one per root;
    *  'site' = six per tooth (MB / B / DB / ML / L / DL). */
@@ -64,6 +67,7 @@ export interface ChartPrefs {
   pdfIncludeImages: boolean;
   /** Leave out the Recheck due field on the Patient page. */
   hideRecheck: boolean;
+  hiddenPatientFields: OptionalPatientField[];
   /** Space in a grid cell moves down to the next tooth (for calling out
    *  a run of depths) instead of typing a space. */
   spaceMovesDown: boolean;
@@ -90,8 +94,12 @@ export interface ChartPrefs {
   language: AppLanguage | null;
   /** One-tap code stamps on the Diagnosis diagram (T/SN, …). */
   quickCodes: string[];
+  /** One-tap code stamps on the Procedure diagram, separate from diagnosis. */
+  procedureQuickCodes: string[];
   /** The person's own exam areas, after the six built-in ones. */
   customExamAreas: CustomExamAreaDef[];
+  /** Exam rows hidden when they have no saved findings. */
+  hiddenExamAreas: string[];
 }
 
 export const DEFAULT_CHART_PREFS: ChartPrefs = {
@@ -103,6 +111,7 @@ export const DEFAULT_CHART_PREFS: ChartPrefs = {
   pdfIncludeGrid: true,
   pdfIncludeImages: true,
   hideRecheck: false,
+  hiddenPatientFields: [],
   spaceMovesDown: true,
   scoreTapMoves: 'finding',
   hiddenBlocks: [],
@@ -113,7 +122,9 @@ export const DEFAULT_CHART_PREFS: ChartPrefs = {
   customFields: [],
   language: null,
   quickCodes: DEFAULT_QUICK_CODES,
+  procedureQuickCodes: [],
   customExamAreas: [],
+  hiddenExamAreas: [],
 };
 
 const fieldList = (v: unknown, fallback: DentalField[]): DentalField[] =>
@@ -142,6 +153,7 @@ export function normalizeChartPrefs(raw: unknown, fallback: ChartPrefs = DEFAULT
     pdfIncludeGrid: bool(r.pdfIncludeGrid, fallback.pdfIncludeGrid),
     pdfIncludeImages: bool(r.pdfIncludeImages, fallback.pdfIncludeImages),
     hideRecheck: bool(r.hideRecheck, fallback.hideRecheck),
+    hiddenPatientFields: Array.isArray(r.hiddenPatientFields) ? [...new Set(r.hiddenPatientFields.filter((key): key is OptionalPatientField => PATIENT_FIELD_OPTIONS.includes(key as OptionalPatientField)))] : fallback.hiddenPatientFields,
     spaceMovesDown: bool(r.spaceMovesDown, fallback.spaceMovesDown),
     scoreTapMoves: typeof r.scoreTapMoves === 'string' && SCORE_TAP_MOVES.has(r.scoreTapMoves) ? (r.scoreTapMoves as ScoreTapMove) : fallback.scoreTapMoves,
     hiddenBlocks: Array.isArray(r.hiddenBlocks)
@@ -154,6 +166,10 @@ export function normalizeChartPrefs(raw: unknown, fallback: ChartPrefs = DEFAULT
     customFields: Array.isArray(r.customFields) ? normalizeFieldDefs(r.customFields) : fallback.customFields,
     language: r.language === null ? null : isAppLanguage(r.language) ? r.language : fallback.language,
     quickCodes: Array.isArray(r.quickCodes) ? normalizeQuickCodes(r.quickCodes) : fallback.quickCodes,
+    procedureQuickCodes: Array.isArray(r.procedureQuickCodes) ? normalizeQuickCodes(r.procedureQuickCodes) : fallback.procedureQuickCodes,
+    hiddenExamAreas: Array.isArray(r.hiddenExamAreas)
+      ? [...new Set(r.hiddenExamAreas.filter((id): id is string => typeof id === 'string' && id.length > 0 && id.length <= 40))].slice(0, 32)
+      : fallback.hiddenExamAreas,
     customExamAreas: Array.isArray(r.customExamAreas) ? normalizeExamAreaDefs(r.customExamAreas) : fallback.customExamAreas,
   };
 }

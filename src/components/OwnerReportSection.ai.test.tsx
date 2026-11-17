@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { vi } from 'vitest';
 
 const draftOwnerReport = vi.fn();
@@ -95,4 +95,44 @@ describe('OwnerReportSection — Write with AI and Customize', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Customize' }));
     expect(onCustomize).toHaveBeenCalled();
   });
+});
+
+it('does not apply an AI response after the chart becomes locked', async () => {
+  let finish!: (value: { intro: string; homecare: string }) => void;
+  draftOwnerReport.mockImplementation(() => new Promise(resolve => { finish = resolve; }));
+  const change = vi.fn();
+  const props = { snapshot: snap, overrides: {}, onOverrideChange: change, onPreview: vi.fn(), aiEnabled: true };
+  const { rerender } = render(<OwnerReportSection {...props} />);
+  fireEvent.click(screen.getByRole('button', { name: /Write with AI/ }));
+  await waitFor(() => expect(draftOwnerReport).toHaveBeenCalled());
+  rerender(<OwnerReportSection {...props} readOnly />);
+  await act(async () => { finish({ intro: 'Late', homecare: 'Late' }); });
+  expect(change).not.toHaveBeenCalled();
+});
+
+it('does not apply AI text after unmount', async () => {
+  let finish!: (value: { intro: string; homecare: string }) => void;
+  draftOwnerReport.mockImplementation(() => new Promise(resolve => { finish = resolve; }));
+  const change = vi.fn();
+  const { unmount } = render(<OwnerReportSection snapshot={snap} overrides={{}} onOverrideChange={change} onPreview={vi.fn()} aiEnabled />);
+  fireEvent.click(screen.getByRole('button', { name: /Write with AI/ }));
+  await waitFor(() => expect(draftOwnerReport).toHaveBeenCalled());
+  unmount();
+  await act(async () => { finish({ intro: 'Late', homecare: 'Late' }); });
+  expect(change).not.toHaveBeenCalled();
+});
+
+it('Undo does not overwrite report text edited after an AI draft', async () => {
+  draftOwnerReport.mockResolvedValue({ intro: 'Draft', homecare: 'Tips' });
+  const change = vi.fn();
+  const props = { snapshot: snap, overrides: {}, onOverrideChange: change, onPreview: vi.fn(), aiEnabled: true };
+  const { rerender } = render(<OwnerReportSection {...props} />);
+  fireEvent.click(screen.getByRole('button', { name: /Write with AI/ }));
+  await waitFor(() => expect(toast).toHaveBeenCalled());
+  const undo = toast.mock.calls.find(([, options]) => options.action)?.[1].action.onClick;
+  const changed = { ...snap, ownerReport: { intro: 'Later user edit', homecare: 'Tips' } };
+  rerender(<OwnerReportSection {...props} snapshot={changed} overrides={changed.ownerReport} />);
+  change.mockClear();
+  undo();
+  expect(change).not.toHaveBeenCalled();
 });

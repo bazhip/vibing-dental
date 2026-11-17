@@ -167,7 +167,16 @@
     "confirmed": "{{done}} sur {{total}} confirmées comme extraites.",
     "markExtracted_one": "La marquer comme extraite",
     "markExtracted_other": "Marquer les {{count}} comme extraites",
-    "markExtracted_many": "Marquer les {{count}} comme extraites"
+    "markExtracted_many": "Marquer les {{count}} comme extraites",
+    "toothMap": "Carte dentaire",
+    "quadrant": "Quadrant",
+    "quadrants": {
+      "1": "Supérieur droit",
+      "2": "Supérieur gauche",
+      "3": "Inférieur gauche",
+      "4": "Inférieur droit"
+    },
+    "selectTooth": "Sélectionner la dent {{triadan}} : {{name}}"
   },
   "toothName": {
     "side": {
@@ -270,7 +279,8 @@
     "strokeWidthValue": "{{width}} pixels",
     "clearStrokes": "Effacer les traits",
     "more": "Plus d’outils de diagramme",
-    "moreTitle": "Plus d’outils — commentaires, numéros, zoom, taille du texte"
+    "moreTitle": "Plus d’outils — commentaires, numéros, zoom, taille du texte",
+    "moreLabel": "Autres outils"
   },
   "codeRef": {
     "all": "Codes",

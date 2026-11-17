@@ -1,11 +1,11 @@
 {
   "patient": {
-    "title": "Patient Information",
+    "title": "Patient information",
     "customize": "Customize",
     "customizeTitle": "Fields shown on this page",
-    "name": "Patient Name",
+    "name": "Patient name",
     "namePlaceholder": "Enter patient name",
-    "number": "Patient Number",
+    "number": "Patient number",
     "numberPlaceholder": "Enter patient number",
     "date": "Date",
     "ownerName": "Owner name",
@@ -15,7 +15,7 @@
     "ownerEmail": "Owner email",
     "ownerEmailOptional": "Optional",
     "ownerEmailReminders": "For recheck reminders",
-    "tech": "Tech",
+    "tech": "Technician",
     "techPlaceholder": "Tech name (optional)",
     "recheck": "Recheck due",
     "recheckQuick": "Set the recheck date a common interval after the visit date",
@@ -28,7 +28,7 @@
       "months6": "6 months",
       "year1": "1 year"
     },
-    "complaint": "Chief Complaint",
+    "complaint": "Chief complaint",
     "complaintPlaceholder": "Enter chief complaint or reason for visit",
     "species": "Species",
     "canine": "Canine",
@@ -36,7 +36,10 @@
     "dentition": "Dentition",
     "permanent": "Permanent",
     "deciduous": "Deciduous",
-    "equine": "Equine"
+    "equine": "Equine",
+    "identityGroup": "Patient details",
+    "ownerGroup": "Owner details",
+    "visitGroup": "Visit details"
   },
   "exam": {
     "title": "Exam",
@@ -66,10 +69,11 @@
       "palate": "palate",
       "pharynx": "pharynx / tonsils"
     },
-    "customizeTitle": "Add your own exam areas"
+    "customizeTitle": "Add your own exam areas",
+    "duplicateArea": "This area is already in your exam."
   },
   "anesthesia": {
-    "title": "Anesthesia — Nerve Blocks",
+    "title": "Anesthesia",
     "customize": "Customize",
     "customizeTitle": "Choose which nerve blocks show and your usual anesthetic",
     "anesthetic": "Anesthetic",
@@ -99,7 +103,7 @@
     "record": "Anesthesia record"
   },
   "customEditor": {
-    "blocksLegend": "Your nerve blocks",
+    "blocksLegend": "Additional nerve blocks",
     "blocksNote": "Extra Right / Left rows (mL), e.g. Major palatine.",
     "blockName": "Block name",
     "blockNameAria": "Nerve block {{n}} name",
@@ -108,7 +112,7 @@
     "fallbackBlock": "nerve block",
     "fallbackField": "field",
     "addBlock": "Add nerve block",
-    "fieldsLegend": "Your fields",
+    "fieldsLegend": "Custom anesthesia fields",
     "fieldsNote": "Shown under “Anesthesia record”, e.g. Premedication, ET tube, Fluids.",
     "fieldName": "Field name",
     "fieldNameAria": "Field {{n}} name",
@@ -123,8 +127,9 @@
       "text": "Text",
       "number": "Number",
       "checkbox": "Yes / no",
-      "select": "Pick-list"
-    }
+      "select": "Dropdown list"
+    },
+    "fieldType": "Field type"
   },
   "report": {
     "title": "Treatment report",
@@ -147,6 +152,8 @@
       "nameRequired": "Give the template a name."
     },
     "saved": "Template “{{name}}” saved.",
-    "saveFailed": "Couldn’t save the template. {{error}}"
+    "saveFailed": "Couldn’t save the template. {{error}}",
+    "customize": "Customize",
+    "customizeTitle": "Manage treatment report templates"
   }
 }

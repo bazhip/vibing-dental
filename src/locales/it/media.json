@@ -1,6 +1,6 @@
 {
   "imaging": {
-    "title": "Immagini",
+    "title": "Diagnostica per immagini",
     "signedOut": "Acceda con un account della struttura per allegare foto endorali e radiografie dentali — vengono archiviate in modo privato insieme alla cartella.",
     "usage": "{{used}} di {{max}} immagini",
     "customize": "Personalizza",
@@ -10,7 +10,7 @@
     "pdfSelected": "{{selected}} di {{total}} selezionate",
     "freePlan": "Il caricamento di foto e radiografie non è incluso nel piano gratuito.",
     "typeAria": "Tipo di immagine",
-    "photo": "Foto",
+    "photo": "Immagine",
     "radiograph": "Radiografia",
     "descriptionPlaceholder": "Descrizione (facoltativa)",
     "descriptionAria": "Descrizione dell’immagine (facoltativa)",
@@ -55,10 +55,17 @@
     "toothAria": "Dente per questa immagine",
     "toothTitle": "Associ questa immagine a un dente (mostrato nell’etichetta del PDF)",
     "toothNone": "Nessun dente",
-    "toothFailed": "Impossibile modificare il dente di questa immagine."
+    "toothFailed": "Impossibile modificare il dente di questa immagine.",
+    "upload": {
+      "title": "Aggiungere immagini",
+      "dropHint": "Trascini qui le immagini o faccia clic per scegliere i file. Può anche incollare un’immagine.",
+      "touchHint": "Scelga dalla Sua libreria fotografica o dai file, oppure scatti una foto.",
+      "library": "Libreria fotografica o file",
+      "files": "Scegliere file"
+    }
   },
   "documents": {
-    "title": "Scarica i PDF",
+    "title": "Verifica ed esportazione",
     "chartTab": "Cartella clinica",
     "chartWho": "Per i Suoi archivi e per i rinvii — la cartella completa con i codici.",
     "ownerTab": "Referto per il proprietario",
@@ -155,6 +162,7 @@
     "imageCount_one": "1 immagine",
     "imageCount_many": "{{count}} immagini",
     "imageCount_other": "{{count}} immagini",
-    "openVisit": "Apri la visita"
+    "openVisit": "Apri la visita",
+    "title": "Cronologia delle immagini"
   }
 }
