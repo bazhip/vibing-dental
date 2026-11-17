@@ -234,7 +234,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const currentVisit = currentVisitRule || currentVisitLatch === chart.cloudChartId;
   const editable = editUnlocked || currentVisit;
   const native = isNativeApp();
-  const rawCloud = useCloudSync(chart, !trial, profile.practiceId, editable, profile.loaded && profile.practiceKnown);
+  const rawCloud = useCloudSync(chart, !trial, profile.practiceId, editable, profile.loaded && profile.practiceKnown, chartSettings.loaded && prefs.autosave);
   const animalTabs = useAnimalTabs(chart, rawCloud, !native);
   const cloud = native ? rawCloud : { ...rawCloud, openChart: animalTabs.openChart, signOut: animalTabs.signOut, confirmDiscardIfDirty: animalTabs.confirmDiscardIfDirty };
   // Owner report is per-practice, admin-flagged, and off by default —
@@ -1331,7 +1331,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     if (cloud.dirty && !chart.patientInfo.patientName.trim()) {
       return <span className="save-status save-status--manual" title={t('status.needsNameTitle')}>{t('status.needsName')}</span>;
     }
-    if (cloud.awaitingClinical) {
+    if (cloud.awaitingClinical || (cloud.dirty && !prefs.autosave)) {
       // Filled in ahead of time: autosave starts with charting;
       // Save puts it in the cloud now (e.g. to open elsewhere).
       return (
@@ -1361,7 +1361,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       );
     }
     return null;
-  }, [native, cloud.enabled, cloud.status, cloud.saveError, cloud.dirty, cloud.online, cloud.awaitingClinical, cloud.lastSavedAt, saveHint, readOnly, chart.patientInfo.patientName, workspacePage, animalTabs.empty, t]);
+  }, [prefs.autosave, native, cloud.enabled, cloud.status, cloud.saveError, cloud.dirty, cloud.online, cloud.awaitingClinical, cloud.lastSavedAt, saveHint, readOnly, chart.patientInfo.patientName, workspacePage, animalTabs.empty, t]);
   React.useEffect(() => {
     if (!saveFeedback) return;
     const kind = cloud.status === 'error' || saveHint ? 'error' : cloud.status === 'saved' ? 'success' : cloud.dirty || cloud.awaitingClinical ? 'warning' : 'info';
@@ -1912,6 +1912,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         online: cloud.online,
         hasName: !!chart.patientInfo.patientName.trim(),
         awaitingClinical: !!cloud.awaitingClinical,
+        autosaveEnabled: prefs.autosave,
         lastSavedAt: cloud.lastSavedAt || '',
         announceSaved,
         visitDate: chart.patientInfo.date,

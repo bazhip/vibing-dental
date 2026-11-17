@@ -195,3 +195,10 @@ it('keeps a deliberately reopened discarded chart visible after remount', async 
   expect(reopened.result.current.empty).toBe(false);
   expect(reopened.result.current.tabs.some(tab => tab.id === 'a')).toBe(true);
 });
+it('asks before discarding a named manual-save tab instead of saving it on close', async () => {
+  const h = setup(true, { dirty: true, autosaveEnabled: false });
+  await act(async () => { expect(await h.result.current.close('a')).toBe(false); });
+  expect(h.cloud.saveNow).not.toHaveBeenCalled();
+  expect(confirmation).toHaveBeenCalled();
+  expect(h.result.current.tabs).toHaveLength(1);
+});

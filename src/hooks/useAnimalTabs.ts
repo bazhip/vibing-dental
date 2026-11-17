@@ -166,7 +166,7 @@ export function useAnimalTabs(chart: UseChartStateReturn, cloud: UseCloudSyncRet
     const active = id === current.chart.cloudChartId;
     let needsConfirmation = !active && (draft?.dirty || imageDraft);
     if (active && current.cloud.enabled && (current.cloud.dirty || imageDraft)) {
-      const savedNow = !!tab.name.trim() && await ensureChartSaved(() => ({ ...latest.current.cloud, chartId: latest.current.chart.cloudChartId }));
+      const savedNow = current.cloud.autosaveEnabled !== false && !!tab.name.trim() && await ensureChartSaved(() => ({ ...latest.current.cloud, chartId: latest.current.chart.cloudChartId }));
       needsConfirmation = !savedNow;
     }
     let discardedDraft = draft;

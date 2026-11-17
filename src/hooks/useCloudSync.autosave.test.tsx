@@ -715,3 +715,25 @@ it('switches unsaved animals and dates through the tab controller without forcin
   expect(result.current.chart.patientInfo.complaint).toBe('Second visit draft');
   expect(db.upserts).toHaveLength(0);
 });
+
+it('keeps manual saving available while autosave is disabled and resumes when enabled', async () => {
+  const chart = fakeChart(snap({ exam: true }));
+  const { result, rerender } = renderHook(({ enabled }) => useCloudSync(chart, true, '', false, true, enabled), { initialProps: { enabled: false } });
+  await flush();
+  expect(db.upserts).toHaveLength(0);
+  await act(async () => { await result.current.saveNow(); });
+  expect(db.upserts).toHaveLength(1);
+  rerender({ enabled: true });
+  await flush();
+  expect(db.upserts).toHaveLength(1);
+});
+it('cancels a pending autosave when the preference is turned off', async () => {
+  const chart = fakeChart(snap({ exam: true }));
+  const { rerender } = renderHook(({ enabled }) => useCloudSync(chart, true, '', false, true, enabled), { initialProps: { enabled: true } });
+  rerender({ enabled: false });
+  await flush();
+  expect(db.upserts).toHaveLength(0);
+  rerender({ enabled: true });
+  await flush();
+  expect(db.upserts).toHaveLength(1);
+});

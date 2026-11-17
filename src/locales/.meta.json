@@ -10668,6 +10668,14 @@
       "hash": "6e912cd3eb5a",
       "status": "machine"
     },
+    "settings:chart.autosave.hint": {
+      "hash": "12f2baea06f8",
+      "status": "machine"
+    },
+    "settings:chart.autosave.label": {
+      "hash": "97d14ff6a64e",
+      "status": "machine"
+    },
     "settings:chart.beside.include": {
       "hash": "1625f69f7da4",
       "status": "machine"
@@ -23036,6 +23044,14 @@
     },
     "settings:chart.anesthesia.usualNote": {
       "hash": "6e912cd3eb5a",
+      "status": "machine"
+    },
+    "settings:chart.autosave.hint": {
+      "hash": "12f2baea06f8",
+      "status": "machine"
+    },
+    "settings:chart.autosave.label": {
+      "hash": "97d14ff6a64e",
       "status": "machine"
     },
     "settings:chart.beside.include": {
@@ -35432,6 +35448,14 @@
       "hash": "6e912cd3eb5a",
       "status": "machine"
     },
+    "settings:chart.autosave.hint": {
+      "hash": "12f2baea06f8",
+      "status": "machine"
+    },
+    "settings:chart.autosave.label": {
+      "hash": "97d14ff6a64e",
+      "status": "machine"
+    },
     "settings:chart.beside.include": {
       "hash": "1625f69f7da4",
       "status": "machine"
@@ -47824,6 +47848,14 @@
     },
     "settings:chart.anesthesia.usualNote": {
       "hash": "6e912cd3eb5a",
+      "status": "machine"
+    },
+    "settings:chart.autosave.hint": {
+      "hash": "12f2baea06f8",
+      "status": "machine"
+    },
+    "settings:chart.autosave.label": {
+      "hash": "97d14ff6a64e",
       "status": "machine"
     },
     "settings:chart.beside.include": {
