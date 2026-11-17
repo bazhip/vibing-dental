@@ -37,7 +37,7 @@ const DRIFT: Record<(typeof LANGS)[number], RegExp> = {
   es: /\bfichas?\b/i,
 };
 // Italian "scheda" is also a browser tab: these strings mean that.
-const TAB = new Set(['it:app:otherTab.text', 'it:landing:features.avdc.points.p2']);
+const TAB = new Set(['it:app:otherTab.text', 'it:app:animalTabs.imageCheckFailed', 'it:landing:features.avdc.points.p2']);
 // English that says "chart" as a noun (not "dental chart", "Charting", "Chart settings").
 const RECORD = /\bcharts?\b(?!\s+settings)|\bchart's\b/i;
 

@@ -200,3 +200,11 @@ describe('useEzyvetHandover', () => {
     expect(window.sessionStorage.getItem(FROM_EZYVET_KEY)).toBe('1');
   });
 });
+
+it('fills an in-place new patient and leaves no reload stash', async () => {
+  window.sessionStorage.setItem(FROM_EZYVET_KEY, '1');
+  const opts = setup({ newPatientInPlace: true });
+  await run(opts);
+  expect(opts.fillPatient).toHaveBeenCalledWith(patient);
+  expect(window.sessionStorage.getItem(STASHED_PATIENT_KEY)).toBeNull();
+});

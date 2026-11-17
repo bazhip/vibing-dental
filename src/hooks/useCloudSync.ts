@@ -1,4 +1,5 @@
 import React from 'react';
+import { hasChartImages, hasPendingImageUpload, findImageDrafts, discardImageDraft } from '../utils/imageDrafts';
 import { localDateISO } from '../utils/localDate';
 import { ChartSnapshot } from '../types';
 import { chooseDialog, confirmDialog } from '../components/ui/dialogs';
@@ -37,8 +38,30 @@ import { changesPatientIdentity, identityKey, patientIdentityQuestion, type Pati
 
 export type { CloudChartMeta, ChartListQuery, ChartListPage };
 
+export interface ChartWorkspace {
+  id: string;
+  snapshot: ChartSnapshot;
+  openedExisting: boolean;
+  savedHash: string;
+  lastSaved: { chartId: string; at: string };
+  conflict: { chartId: string; mode: 'none' | 'force' | 'blocked' };
+  saveError: string;
+  dirty: boolean;
+  duplicateAnswered: string;
+  skipDuplicate: string;
+}
+
 export interface UseCloudSyncReturn {
   enabled: boolean;
+  /** Preserve a working chart without requiring a cloud save. */
+  captureWorkspace?: () => Promise<ChartWorkspace>;
+  restoreWorkspace?: (workspace: ChartWorkspace) => void;
+  resumeWorkspace?: () => void;
+  pauseWorkspace?: () => void;
+  discardImageDraft?: (id: string) => Promise<void>;
+  hasImages?: (id: string) => Promise<boolean>;
+  hasPendingImageUpload?: (id: string) => boolean;
+  findImageDrafts?: () => Promise<Array<{ id: string; date: string }>>;
   /** 'idle' | 'saving' | 'saved' | 'error'. */
   status: 'idle' | 'saving' | 'saved' | 'error';
   /** Plain-language reason the last save failed ('' when none). */
@@ -537,7 +560,7 @@ export function useCloudSync(
     return false;
   };
 
-  const saveNow = React.useCallback(async (automatic = false): Promise<void> => {
+  const performSave = React.useCallback(async (automatic = false): Promise<void> => {
     const { serialized: json, chartId: id } = latest.current;
     const snap = JSON.parse(json) as ChartSnapshot;
     if (!hasContent(snap)) return;
@@ -557,6 +580,53 @@ export function useCloudSync(
     await upsertChart(latest.current.serialized, id, { automatic });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [upsertChart]);
+
+  const pendingSaves = React.useRef(new Set<Promise<void>>());
+  const workspacePaused = React.useRef(false);
+  const [workspaceResume, setWorkspaceResume] = React.useState(0);
+  React.useEffect(() => { workspacePaused.current = false; }, [chartId]);
+  const resumeWorkspace = () => {
+    workspacePaused.current = false;
+    setWorkspaceResume(value => value + 1);
+  };
+  const saveNow = React.useCallback((automatic = false) => {
+    if (workspacePaused.current) return Promise.resolve();
+    const pending = performSave(automatic);
+    pendingSaves.current.add(pending);
+    void pending.finally(() => pendingSaves.current.delete(pending)).catch(() => {});
+    return pending;
+  }, [performSave]);
+  const workspaceState = React.useRef({ saveError, dirty });
+  workspaceState.current = { saveError, dirty };
+  const captureWorkspace = async (): Promise<ChartWorkspace> => {
+    workspacePaused.current = true;
+    // An already-running save must settle before its baseline is captured.
+    // Failure is still a valid local draft, never a reason to lose edits.
+    await Promise.allSettled([...pendingSaves.current]);
+    await new Promise(resolve => setTimeout(resolve, 0));
+    return {
+      id: latest.current.chartId, snapshot: JSON.parse(latest.current.serialized) as ChartSnapshot,
+      openedExisting: openedExistingRef.current, savedHash: savedHashRef.current,
+      lastSaved: lastSavedRef.current, conflict: { ...conflictRef.current },
+      ...workspaceState.current, duplicateAnswered: dupAnsweredRef.current, skipDuplicate: skipDupForRef.current,
+    };
+  };
+  const restoreWorkspace = (workspace: ChartWorkspace) => {
+    baselineNext.current = false;
+    savedHashRef.current = workspace.savedHash;
+    lastSavedRef.current = workspace.lastSaved;
+    setSavedHash(workspace.savedHash);
+    setLastSaved(workspace.lastSaved);
+    conflictRef.current = { ...workspace.conflict };
+    dupAnsweredRef.current = workspace.duplicateAnswered;
+    skipDupForRef.current = workspace.skipDuplicate;
+    applyRef.current(workspace.snapshot, workspace.id);
+    setOpenedExistingRef.current(workspace.openedExisting);
+    if (!workspace.dirty) armBaseline();
+    resumeWorkspace();
+    setSaveError(workspace.saveError);
+    setStatus(workspace.saveError ? 'error' : 'idle');
+  };
 
   // Autosave — for NEW charts only. Charts opened from a saved one
   // (openedExisting) never autosave: they're read-only until the user
@@ -580,7 +650,7 @@ export function useCloudSync(
     const t = window.setTimeout(() => { saveNowRef.current(true).catch(() => {}); }, 1200);
     return () => window.clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [on, chart.openedExisting, editingUnlocked, dirty, serialized, online, reconnects, awaitingClinical, practiceReady, everSaved]);
+  }, [workspaceResume, on, chart.openedExisting, editingUnlocked, dirty, serialized, online, reconnects, awaitingClinical, practiceReady, everSaved]);
 
   // Guard leaving a chart with unsaved changes.
   const confirmDiscardIfDirty = async (action: DiscardAction): Promise<boolean> => {
@@ -746,6 +816,14 @@ export function useCloudSync(
 
   return {
     enabled: on,
+    captureWorkspace,
+    restoreWorkspace,
+    resumeWorkspace,
+    pauseWorkspace: () => { workspacePaused.current = true; },
+    discardImageDraft,
+    hasImages: hasChartImages,
+    hasPendingImageUpload,
+    findImageDrafts,
     status,
     saveError,
     dirty,

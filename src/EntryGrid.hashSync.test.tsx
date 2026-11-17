@@ -62,7 +62,7 @@ it('picking a section writes it to the address', async () => {
 it('returns from practice settings to the visible current visit', async () => {
   window.history.replaceState({ workspaceIndex: 0 }, '', '/#/settings');
   render(<><EntryGrid trial /><DialogHost /></>);
-  const back = await screen.findByRole('button', { name: 'Back to current visit' });
+  const back = await screen.findByRole('button', { name: 'Close' });
   act(() => back.click());
   await waitFor(() => expect(window.location.hash).toMatch(/^#\/chart/));
   await waitFor(() => expect(document.getElementById('chart-form')).toBeVisible());

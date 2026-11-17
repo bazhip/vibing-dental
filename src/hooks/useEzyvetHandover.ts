@@ -11,6 +11,8 @@ import {
 
 export type EzyvetHandoverOptions = {
   enabled: boolean;
+  /** Web workspaces create a blank patient without reloading. */
+  newPatientInPlace?: boolean;
   getUserId: () => Promise<string | null>;
   take: () => Promise<TakePendingResult | null>;
   /** Resolves false when the vet keeps the unsaved chart; calls `beforeReset` only once discarding is agreed. */
@@ -91,7 +93,14 @@ export function useEzyvetHandover(opts: EzyvetHandoverOptions): void {
         // Stashed only once discarding is agreed; on true the page reloads
         // and the next run fills from the stash.
         const { userId: uid, patientName, patientNumber, ownerName } = handover;
-        await o().startNewPatient(() => stashPatient({ userId: uid, patientName, patientNumber, ownerName }));
+        if (o().newPatientInPlace) {
+          if (await o().startNewPatient()) {
+            o().fillPatient({ patientName, patientNumber, ownerName });
+            toast(t('handover.filled'), { kind: 'success' });
+          }
+        } else {
+          await o().startNewPatient(() => stashPatient({ userId: uid, patientName, patientNumber, ownerName }));
+        }
       } catch {
         takeStashedPatient();
         toast(t('handover.failed'), { kind: 'error' });

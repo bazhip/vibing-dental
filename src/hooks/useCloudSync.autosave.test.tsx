@@ -87,6 +87,8 @@ vi.stubGlobal('localStorage', {
 });
 
 import { hasClinicalContent, useCloudSync } from './useCloudSync';
+import { useChartState } from './useChartState';
+import { useAnimalTabs } from './useAnimalTabs';
 
 function snap(over: { name?: string; exam?: boolean; date?: string }): ChartSnapshot {
   const exam: Record<string, { status: string; comment: string }> = {};
@@ -661,4 +663,55 @@ describe('saved patient identity guard', () => {
     expect(choose).toHaveBeenCalledTimes(1);
     await act(async () => { resolve(null); await pending; });
   });
+});
+
+describe('tab workspace snapshots', () => {
+  it('restores separate unsaved charts and their dirty state without saving', async () => {
+    vi.useRealTimers();
+    const { result } = renderHook(() => { const chart = useChartState(); return { chart, cloud: useCloudSync(chart) }; });
+    act(() => { result.current.chart.handlePatientInfoChange('patientName', 'Luna'); result.current.chart.handlePatientInfoChange('complaint', 'Luna draft'); });
+    const luna = await result.current.cloud.captureWorkspace!();
+    act(() => { result.current.chart.startNewVisit({ identity: { patientName: 'Oliver', patientNumber: '2', ownerName: '', ownerPhone: '', ownerEmail: '', species: 'feline' }, goneTeeth: [] }); });
+    act(() => result.current.chart.handlePatientInfoChange('complaint', 'Oliver draft'));
+    const oliver = await result.current.cloud.captureWorkspace!();
+    act(() => result.current.cloud.restoreWorkspace!(luna));
+    expect(result.current.chart.patientInfo.complaint).toBe('Luna draft');
+    expect(result.current.cloud.dirty).toBe(true);
+    act(() => result.current.cloud.restoreWorkspace!(oliver));
+    expect(result.current.chart.patientInfo.complaint).toBe('Oliver draft');
+    expect(result.current.cloud.dirty).toBe(true);
+    expect(db.upserts).toHaveLength(0);
+  });
+  it('restores a saved baseline without treating the next edit as already saved', async () => {
+    vi.useRealTimers();
+    const { result } = renderHook(() => { const chart = useChartState(); return { chart, cloud: useCloudSync(chart) }; });
+    act(() => result.current.chart.handlePatientInfoChange('patientName', 'Luna'));
+    await act(async () => { await result.current.cloud.saveNow(); });
+    const luna = await result.current.cloud.captureWorkspace!();
+    act(() => result.current.chart.startNewVisit());
+    act(() => result.current.cloud.restoreWorkspace!(luna));
+    expect(result.current.cloud.dirty).toBe(false);
+    act(() => result.current.chart.handlePatientInfoChange('complaint', 'New finding'));
+    expect(result.current.cloud.dirty).toBe(true);
+  });
+});
+
+it('switches unsaved animals and dates through the tab controller without forcing a save', async () => {
+  vi.useRealTimers();
+  const { result } = renderHook(() => {
+    const chart = useChartState(); const cloud = useCloudSync(chart);
+    return { chart, cloud, tabs: useAnimalTabs(chart, cloud, true) };
+  });
+  act(() => { result.current.chart.handlePatientInfoChange('patientName', 'Luna'); result.current.chart.handlePatientInfoChange('complaint', 'First visit draft'); });
+  const firstId = result.current.chart.cloudChartId;
+  await act(async () => { expect(await result.current.tabs.prepareLeave()).toBe(true); });
+  act(() => result.current.chart.startNewVisit());
+  act(() => result.current.chart.handlePatientInfoChange('complaint', 'Second visit draft'));
+  const secondId = result.current.chart.cloudChartId;
+  await act(async () => { expect(await result.current.tabs.openChart(firstId)).toBe(true); });
+  expect(result.current.chart.patientInfo.complaint).toBe('First visit draft');
+  expect(result.current.tabs.tabs).toHaveLength(1);
+  await act(async () => { expect(await result.current.tabs.openChart(secondId)).toBe(true); });
+  expect(result.current.chart.patientInfo.complaint).toBe('Second visit draft');
+  expect(db.upserts).toHaveLength(0);
 });

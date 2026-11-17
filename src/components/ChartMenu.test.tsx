@@ -100,6 +100,9 @@ it('keeps help and account actions in separate menus', async () => {
   render(<ChartMenu scope="account" onOpenWalkthrough={vi.fn()} cloud={cloud} />);
   await user.click(await screen.findByRole('button', { name: 'session@vet.com' }));
   expect(screen.getByRole('button', { name: /Account settings/ })).toBeInTheDocument();
+  await user.click(screen.getByRole('button', { name: /Practice settings/ }));
+  expect(cloud.onPracticeSettings).toHaveBeenCalled();
+  await user.click(screen.getByRole('button', { name: 'session@vet.com' }));
   expect(screen.getByRole('button', { name: /Sign out/ })).toBeInTheDocument();
   expect(screen.queryByRole('button', { name: /Getting started/ })).toBeNull();
 });
