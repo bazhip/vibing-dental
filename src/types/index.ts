@@ -259,6 +259,9 @@ export interface CustomAnesthesia {
 }
 
 export interface PatientInfo {
+  /** Permanent identity for new patients; legacy records may not have one. */
+  patientId?: string;
+  generatedPatientNumber?: string;
   patientName: string;
   patientNumber: string;
   /** Pet owner (client) contact — name/phone searchable in My charts;

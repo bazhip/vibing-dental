@@ -16,10 +16,10 @@ export function isCurrentVisit(
 }
 
 /** Exclude the previous animal's asynchronously loaded visits immediately. */
-export function visitsForPatient<T extends { patient_number: string; patient_name: string }>(
-  visits: readonly T[], number: string, name: string,
+export function visitsForPatient<T extends { patient_number: string; patient_name: string; patient_id?: string }>(
+  visits: readonly T[], number: string, name: string, patientId?: string,
 ): T[] {
   const normalize = (value: string) => (value ?? '').trim().toLowerCase();
   const key = (n: string, nm: string) => normalize(n) ? `n:${normalize(n)}` : `p:${normalize(nm)}`;
-  return visits.filter(visit => key(visit.patient_number, visit.patient_name) === key(number, name));
+  return visits.filter(visit => patientId ? visit.patient_id === patientId : !visit.patient_id && key(visit.patient_number, visit.patient_name) === key(number, name));
 }

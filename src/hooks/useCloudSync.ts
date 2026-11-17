@@ -1,4 +1,5 @@
 import React from 'react';
+import { isGeneratedPatientNumber } from '../utils/patientIds';
 import { hasChartImages, hasPendingImageUpload, findImageDrafts, discardImageDraft } from '../utils/imageDrafts';
 import { localDateISO } from '../utils/localDate';
 import { ChartSnapshot } from '../types';
@@ -83,7 +84,7 @@ export interface UseCloudSyncReturn {
   listCharts: (query?: ChartListQuery) => Promise<ChartListPage>;
   /** All visits for one patient (matched by number when present, else
    *  by name) — powers the topbar visit switcher. */
-  listPatientVisits: (patientNumber: string, patientName: string) => Promise<CloudChartMeta[]>;
+  listPatientVisits: (patientNumber: string, patientName: string, patientId?: string) => Promise<CloudChartMeta[]>;
   /** Ask before replacing a chart that has unsaved changes; true = go ahead. */
   confirmDiscardIfDirty: (action: DiscardAction) => Promise<boolean>;
   /** `ifClean`: skip (no prompt) when the working chart has unsaved edits. */
@@ -111,7 +112,7 @@ export interface UseCloudSyncReturn {
 function hasContent(s: ChartSnapshot): boolean {
   const p = s?.patientInfo;
   if (!p || typeof p !== 'object' || !Array.isArray(s.toothData)) return false;
-  if ((p.patientName ?? '').trim() || (p.patientNumber ?? '').trim() || (p.ownerName ?? '').trim() || (p.ownerPhone ?? '').trim() || (p.ownerEmail ?? '').trim() || (p.complaint ?? '').trim() || (p.treatmentReport ?? '').trim()) return true;
+  if ((p.patientName ?? '').trim() || ((p.patientNumber ?? '').trim() && !isGeneratedPatientNumber(p)) || (p.ownerName ?? '').trim() || (p.ownerPhone ?? '').trim() || (p.ownerEmail ?? '').trim() || (p.complaint ?? '').trim() || (p.treatmentReport ?? '').trim()) return true;
   // Values are strings, except the drug list (and legacy `drug`); only a
   // named drug counts as content.
   if (Object.values(p.nerveBlocks ?? {}).some((v) =>
@@ -510,7 +511,7 @@ export function useCloudSync(
   // for another visit of the same patient on the same visit date (people
   // re-starting a patient instead of reopening this morning's chart left
   // many same-day duplicates). Asked once per chart.
-  const listPatientVisitsRef = React.useRef<(n: string, name: string) => Promise<CloudChartMeta[]>>(async () => []);
+  const listPatientVisitsRef = React.useRef<(n: string, name: string, patientId?: string) => Promise<CloudChartMeta[]>>(async () => []);
   const dupAnsweredRef = React.useRef('');
   // Tied to one chart: a bare "skip the next one" flag outlived a visit
   // that was never saved and let an unrelated chart skip the question.
@@ -529,7 +530,7 @@ export function useCloudSync(
     const p = snap.patientInfo;
     let visits: CloudChartMeta[] = [];
     try {
-      visits = await listPatientVisitsRef.current(p.patientNumber ?? '', p.patientName ?? '');
+      visits = await listPatientVisitsRef.current(p.patientNumber ?? '', p.patientName ?? '', p.patientId);
     } catch {
       return true; // can't check (offline etc.) — never block a save on it
     }
@@ -670,12 +671,13 @@ export function useCloudSync(
 
   const listPatientVisits = React.useCallback(async (
     patientNumber: string,
-    patientName: string
+    patientName: string,
+    patientId?: string
   ): Promise<CloudChartMeta[]> => {
     if (!supabase) return [];
     const num = patientNumber.trim();
     const name = patientName.trim();
-    if (!num && !name) return [];
+    if (!num && !name && !patientId) return [];
     let query = supabase
       .from('charts')
       .select(CHART_META_COLUMNS)
@@ -684,7 +686,8 @@ export function useCloudSync(
     // Same identity rule the library's grouping uses: the patient number
     // is the key when present; name-keyed only for number-less charts.
     // ilike without wildcards = case-insensitive equality.
-    if (num) query = query.ilike('patient_number', escapeLike(num));
+    if (patientId) query = query.eq('data->patientInfo->>patientId', patientId);
+    else if (num) query = query.ilike('patient_number', escapeLike(num));
     else query = query.ilike('patient_name', escapeLike(name)).eq('patient_number', '');
     const { data, error } = await query;
     if (error) throw new Error(error.message);

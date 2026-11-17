@@ -325,6 +325,10 @@
     "closeConfirm": "Close without saving",
     "keepOpen": "Keep chart open",
     "closeImageDraftMessage": "This chart has not been saved. Closing it will discard its contents and permanently delete its uploaded images.",
-    "draftAlreadySaved": "This chart was saved elsewhere. Reopen it before discarding the draft."
+    "draftAlreadySaved": "This chart was saved elsewhere. Reopen it before discarding the draft.",
+    "closeTitle": "Unsaved changes",
+    "saveAndClose": "Save and close",
+    "closeChoiceMessage": "Save your changes before closing, or close without saving to discard them. Uploaded images on saved charts will be kept.",
+    "closeImageChoiceMessage": "Save this chart before closing, or close without saving to discard its contents and permanently delete its uploaded images."
   }
 }

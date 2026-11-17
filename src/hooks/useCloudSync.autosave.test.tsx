@@ -1,3 +1,4 @@
+import { createPatientIdentity } from '../utils/patientIds';
 import { act, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ChartSnapshot } from '../types';
@@ -736,4 +737,13 @@ it('cancels a pending autosave when the preference is turned off', async () => {
   rerender({ enabled: true });
   await flush();
   expect(db.upserts).toHaveLength(1);
+});
+
+it('does not treat an automatically numbered blank patient as unsaved clinical work', async () => {
+  const snapshot = snap({});
+  snapshot.patientInfo = { ...snapshot.patientInfo, patientName: '', ownerName: '', ...createPatientIdentity() };
+  const { result } = renderHook(() => useCloudSync(fakeChart(snapshot)));
+  expect(result.current.dirty).toBe(false);
+  await flush();
+  expect(db.upserts).toHaveLength(0);
 });

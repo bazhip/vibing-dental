@@ -100,3 +100,19 @@ describe('two tabs: storage always holds one whole chart', () => {
     expect(store.has('vibing-dental.chart.species.v1')).toBe(false);
   });
 });
+
+it('creates an editable generated patient ID and carries permanent identity to later visits', () => {
+  const { result } = renderHook(() => useChartState());
+  const original = result.current.patientInfo;
+  expect(original.patientNumber).toMatch(/^P-[0-9A-Z]{12}$/);
+  expect(original.patientId).toBeTruthy();
+  act(() => result.current.handlePatientInfoChange('patientName', 'Luna'));
+  act(() => result.current.handlePatientInfoChange('patientNumber', '666'));
+  act(() => { result.current.startNewVisit(); });
+  expect(result.current.patientInfo.patientId).toBe(original.patientId);
+  expect(result.current.patientInfo.patientNumber).toBe('666');
+  act(() => result.current.handlePatientInfoChange('patientNumber', ''));
+  expect(result.current.getSnapshot().patientInfo.patientNumber).toBe(original.generatedPatientNumber);
+  act(() => { result.current.startNewVisit({ identity: { patientName: '', patientNumber: '', ownerName: '', ownerPhone: '', ownerEmail: '', species: 'canine' } }); });
+  expect(result.current.patientInfo.patientId).not.toBe(original.patientId);
+});

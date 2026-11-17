@@ -188,7 +188,7 @@ async function frame(props: { trial?: boolean } = {}) {
   await act(async () => { await new Promise((r) => setTimeout(r, 20)); });
   return view;
 }
-const untranslated = () => findUntranslated(document.body, FIXTURE);
+const untranslated = () => findUntranslated(document.body, [...FIXTURE, /^P-[0-9A-V]{12}$/]);
 
 // ---------------------------------------------------------------------------
 // The chart frame
@@ -353,7 +353,7 @@ describe('menus and layout', () => {
     fireEvent.click(screen.getByRole('button', { name: '⟦Open settings menu⟧' }));
     expect(screen.getByText('⟦Signed in as ⟧')).toBeTruthy();
     expect(screen.getAllByRole('button').length).toBeGreaterThan(8);
-    expect(findUntranslated(document.body, FIXTURE)).toEqual([]);
+    expect(findUntranslated(document.body, [...FIXTURE, /^P-[0-9A-V]{12}$/])).toEqual([]);
     unmount();
 
     render(<ChartMenu onOpenWalkthrough={noop} />);

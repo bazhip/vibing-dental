@@ -325,6 +325,10 @@
     "closeConfirm": "Ohne Speichern schließen",
     "keepOpen": "Akte geöffnet lassen",
     "closeImageDraftMessage": "Diese Akte wurde noch nicht gespeichert. Beim Schließen wird ihr Inhalt verworfen und ihre hochgeladenen Bilder werden endgültig gelöscht.",
-    "draftAlreadySaved": "Diese Akte wurde an anderer Stelle gespeichert. Öffnen Sie sie erneut, bevor Sie den Entwurf verwerfen."
+    "draftAlreadySaved": "Diese Akte wurde an anderer Stelle gespeichert. Öffnen Sie sie erneut, bevor Sie den Entwurf verwerfen.",
+    "closeTitle": "Nicht gespeicherte Änderungen",
+    "saveAndClose": "Speichern und schließen",
+    "closeChoiceMessage": "Speichern Sie Ihre Änderungen vor dem Schließen oder schließen Sie ohne Speichern, um sie zu verwerfen. Bilder gespeicherter Akten bleiben erhalten.",
+    "closeImageChoiceMessage": "Speichern Sie diese Akte vor dem Schließen oder schließen Sie ohne Speichern, um den Inhalt zu verwerfen und die hochgeladenen Bilder dauerhaft zu löschen."
   }
 }

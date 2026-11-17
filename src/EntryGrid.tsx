@@ -1,3 +1,4 @@
+import { isGeneratedPatientNumber } from './utils/patientIds';
 import { ImageHistory } from './components/ImageHistory';
 import { imageToothLabel } from './utils/imageTeeth';
 import React from 'react';
@@ -221,8 +222,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // switcher and the current-visit rule below. Loaded further down.
   const [loadedVisits, setVisits] = React.useState<CloudChartMeta[]>([]);
   const visitCache = React.useRef(new Map<string, CloudChartMeta[]>());
-  const visitIdentity = JSON.stringify([chart.patientInfo.patientNumber.trim().toLowerCase(), chart.patientInfo.patientName.trim().toLowerCase(), chart.species, !chart.patientInfo.patientNumber.trim() && !chart.patientInfo.patientName.trim() ? chart.cloudChartId : '']);
-  const visits = React.useMemo(() => visitCache.current.get(visitIdentity) ?? visitsForPatient(loadedVisits, chart.patientInfo.patientNumber, chart.patientInfo.patientName), [loadedVisits, visitIdentity, chart.patientInfo.patientNumber, chart.patientInfo.patientName]);
+  const visitIdentity = chart.patientInfo.patientId ? JSON.stringify([chart.patientInfo.patientId, chart.species]) : JSON.stringify([chart.patientInfo.patientNumber.trim().toLowerCase(), chart.patientInfo.patientName.trim().toLowerCase(), chart.species, !chart.patientInfo.patientNumber.trim() && !chart.patientInfo.patientName.trim() ? chart.cloudChartId : '']);
+  const visits = React.useMemo(() => visitCache.current.get(visitIdentity) ?? visitsForPatient(loadedVisits, chart.patientInfo.patientNumber, chart.patientInfo.patientName, chart.patientInfo.patientId), [loadedVisits, chart.patientInfo.patientId, visitIdentity, chart.patientInfo.patientNumber, chart.patientInfo.patientName]);
   // Today's visit isn't a "saved visit": reloading or reopening it
   // mid-visit opens it editable with no banner (see isCurrentVisit).
   // Latched per chart so changing the date mid-edit doesn't lock it.
@@ -614,20 +615,14 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     const num = chart.patientInfo.patientNumber.trim().toLowerCase();
     const name = chart.patientInfo.patientName.trim().toLowerCase();
     if (!num && !name) { setVisits([]); return; }
-    const key = num ? `n:${num}` : `p:${name}`;
     let cancelled = false;
     // Server-side patient lookup — correct however many charts the
     // practice has. The exact key filter re-applies the library's
     // grouping rule to the (already narrow) result set.
-    cloud.listPatientVisits(chart.patientInfo.patientNumber, chart.patientInfo.patientName)
+    cloud.listPatientVisits(chart.patientInfo.patientNumber, chart.patientInfo.patientName, chart.patientInfo.patientId)
       .then((all) => {
         if (cancelled) return;
-        const mine = all
-          .filter((c) => {
-            const n = c.patient_number.trim().toLowerCase();
-            const nm = c.patient_name.trim().toLowerCase();
-            return (n ? `n:${n}` : `p:${nm}`) === key;
-          })
+        const mine = visitsForPatient(all, chart.patientInfo.patientNumber, chart.patientInfo.patientName, chart.patientInfo.patientId)
           .sort((a, b) =>
             (b.chart_date || '').localeCompare(a.chart_date || '') ||
             b.updated_at.localeCompare(a.updated_at)
@@ -683,15 +678,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     const number = chart.patientInfo.patientNumber.trim().toLowerCase();
     const name = chart.patientInfo.patientName.trim().toLowerCase();
     if (!number && !name) return [];
-    const patientKey = number ? `n:${number}` : `p:${name}`;
-    // The visit lookup is asynchronous. Never pass the previous patient's
-    // visits to the automatically loaded image history while it refreshes.
-    return visits.filter((v) => {
-      const n = v.patient_number.trim().toLowerCase();
-      const key = n ? `n:${n}` : `p:${v.patient_name.trim().toLowerCase()}`;
-      return v.id !== chart.cloudChartId && key === patientKey;
-    }).map((v) => ({ id: v.id, date: v.chart_date }));
-  }, [visits, chart.cloudChartId, chart.patientInfo.patientNumber, chart.patientInfo.patientName]);
+    return visitsForPatient(visits, chart.patientInfo.patientNumber, chart.patientInfo.patientName, chart.patientInfo.patientId)
+      .filter(v => v.id !== chart.cloudChartId).map(v => ({ id: v.id, date: v.chart_date }));
+  }, [visits, chart.cloudChartId, chart.patientInfo.patientId, chart.patientInfo.patientNumber, chart.patientInfo.patientName]);
 
   const switchVisit = (id: string) => {
     if (id === chart.cloudChartId) return;
@@ -713,7 +702,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     let answeredToday = false;
     try {
       const sp = speciesBase(snap.species);
-      const visits = await cloud.listPatientVisits(snap.patientInfo.patientNumber ?? '', snap.patientInfo.patientName ?? '');
+      const visits = await cloud.listPatientVisits(snap.patientInfo.patientNumber ?? '', snap.patientInfo.patientName ?? '', snap.patientInfo.patientId);
       const todays = visits.find((v) => v.chart_date === localDateISO() && v.species === sp);
       if (todays) {
         const who = snap.patientInfo.patientName?.trim() || t('sync.duplicate.patient');
@@ -749,6 +738,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       identity: {
         patientName: snap.patientInfo.patientName,
         patientNumber: snap.patientInfo.patientNumber,
+        patientId: snap.patientInfo.patientId,
+        generatedPatientNumber: snap.patientInfo.generatedPatientNumber,
         ownerName: snap.patientInfo.ownerName ?? '',
         ownerPhone: snap.patientInfo.ownerPhone ?? '',
         ownerEmail: snap.patientInfo.ownerEmail ?? '',
@@ -1422,8 +1413,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     fillPatient: ({ patientName, patientNumber, ownerName }) =>
       chart.setPatientInfo((prev: PatientInfo) => ({ ...prev, patientName, ownerName, patientNumber })),
     fillNumberIfBlank: (patientNumber) =>
-      chart.setPatientInfo((prev: PatientInfo) => (prev.patientNumber?.trim() ? prev : { ...prev, patientNumber })),
-    isChartBlank: () => !chart.patientInfo.patientName?.trim() && !chart.patientInfo.patientNumber?.trim(),
+      chart.setPatientInfo((prev: PatientInfo) => (prev.patientNumber?.trim() && !isGeneratedPatientNumber(prev) ? prev : { ...prev, patientNumber })),
+    isChartBlank: () => !chart.patientInfo.patientName?.trim() && (!chart.patientInfo.patientNumber?.trim() || isGeneratedPatientNumber(chart.patientInfo)),
   });
   const unlockForEditing = () => {
     try { window.sessionStorage.setItem(`chart.unlockSnapshot.${chart.cloudChartId}`, JSON.stringify(chart.getSnapshot())); } catch { /* too big / private mode */ }
