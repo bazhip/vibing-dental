@@ -97,7 +97,7 @@ describe('PatientsScreen', () => {
     expect(groups).toEqual([
       ['Sort by', ['Name', 'Last updated ✓', 'Recheck date']],
       ['Order', ['Newest first ✓', 'Oldest first']],
-      ['Species', ['All species ✓', 'Canine', 'Feline']],
+      ['Species', ['All species ✓', 'Canine', 'Feline', 'Equine', 'Rabbit']],
       ['Doctor', ['All doctors ✓', 'Dr Ames', 'b@x.test']],
       [null, [expect.stringMatching(/^Due for recheck/)]],
     ]);
@@ -106,6 +106,8 @@ describe('PatientsScreen', () => {
       await waitFor(() => expect(listQueries(list).at(-1)).toMatchObject(expected));
       menu = openMenu();
     };
+    await pick('Rabbit', { species: 'rabbit' });
+    await pick('Equine', { species: 'equine' });
     await pick('Name', { sortKey: 'patient', sortDir: 'asc' });
     expect(within(menu).getByRole('group', { name: 'Order' })).toHaveTextContent('A to ZZ to A');
     await pick('Z to A', { sortKey: 'patient', sortDir: 'desc' });

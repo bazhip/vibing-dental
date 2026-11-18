@@ -5,7 +5,8 @@
       "canineDeciduous": "Fișă stomatologică canină (dentiție deciduală)",
       "feline": "Fișă stomatologică felină",
       "felineDeciduous": "Fișă stomatologică felină (dentiție deciduală)",
-      "equine": "Fișă stomatologică ecvină"
+      "equine": "Fișă stomatologică ecvină",
+      "rabbit": "Fișă dentară pentru iepure"
     },
     "subtitle": "Evaluare parodontală și plan de tratament",
     "tech": "Asistent: {{name}}"

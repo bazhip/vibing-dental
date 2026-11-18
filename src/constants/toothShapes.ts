@@ -10,6 +10,7 @@
 
 import { Species } from '../types';
 import { EQUINE_TEETH } from './equineTeeth';
+import { RABBIT_TEETH } from './rabbitTeeth';
 
 export type ToothType = 'incisor' | 'canine' | 'premolar' | 'carnassial' | 'molar';
 
@@ -70,6 +71,9 @@ export interface SpeciesDiagram {
    *  radius (diagram units) — for small, isolated teeth (horse canines
    *  and wolf teeth) that are otherwise a few pixels across. */
   minHitRadius?: number;
+  /** Explicit numbers for overlapping rows (rabbit main/peg incisors).
+   * Other teeth keep the shared automatic placement. Diagram coordinates. */
+  numberLabelPositions?: Partial<Record<number, { x: number; y: number }>>;
   /** Canines stand apart from the incisors (horse), so their numbers go
    *  beside the tooth instead of on the front-teeth arc. */
   frontArcIncisorsOnly?: boolean;
@@ -356,6 +360,34 @@ export const TOOTH_DIAGRAMS: Record<Species, SpeciesDiagram> = {
       { text: 'L', x: 672, y: 540, fontSize: 32 },
     ],
     midlineDash: { x1: 48, x2: 645, y: 540 },
+  },
+  rabbit: {
+    imageSrc: '/diagrams/rabbit.png',
+    width: 600,
+    height: 1000,
+    midlineY: 510,
+    teeth: RABBIT_TEETH,
+    cropBounds: { minY: 40, maxY: 960 },
+    labelCulls: [],
+    labels: [
+      { text: 'Maxilla', x: 300, y: 350, fontSize: 24 },
+      { text: 'Mandible', x: 300, y: 555, fontSize: 24 },
+      { text: 'R', x: 65, y: 510, fontSize: 30 },
+      { text: 'L', x: 535, y: 510, fontSize: 30 },
+    ],
+    midlineDash: { x1: 95, x2: 505, y: 510 },
+    outlineStroke: 1.8,
+    sidePad: 220,
+    numberLabelPositions: {
+      // Rabbit cheek rows are close to vertical. Align their numbers in
+      // outside columns rather than radiating them towards adjacent teeth.
+      ...Object.fromEntries(RABBIT_TEETH.filter(t => t.type !== 'incisor')
+        .map(t => [t.triadan, { x: t.cx < 300 ? 155 : 445, y: t.cy }])),
+      101: { x: 275, y: 40 }, 201: { x: 325, y: 40 },
+      102: { x: 240, y: 108 }, 202: { x: 360, y: 108 },
+      401: { x: 275, y: 955 }, 301: { x: 325, y: 955 },
+    },
+    frontArcIncisorsOnly: true,
   },
   equine: {
     imageSrc: '/diagrams/equine.png',

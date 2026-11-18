@@ -248,6 +248,16 @@ export const EQUINE_TOOTH_DATA: ToothData[] = [
   { tooth: 'M3', triadan: 311 },
 ];
 
+/** Adult rabbit: upper I1/I2 (peg), P2–P4, M1–M3;
+ * lower I1, P3/P4, M1–M3. All 28 teeth are continuously growing. */
+export const RABBIT_TOOTH_DATA: ToothData[] = [1, 4, 2, 3].flatMap(q => {
+  const positions = q === 1 || q === 2 ? [1, 2, 6, 7, 8, 9, 10, 11] : [1, 7, 8, 9, 10, 11];
+  return positions.map(pos => ({
+    tooth: pos <= 2 ? `I${pos}` : pos < 9 ? `P${pos - 4}` : `M${pos - 8}`,
+    triadan: q * 100 + pos,
+  }));
+});
+
 /**
  * Get initial tooth data based on species
  */
@@ -256,6 +266,7 @@ export function getInitialToothData(species: Species): ToothData[] {
   if (species === 'canine-deciduous') return CANINE_DECIDUOUS_TOOTH_DATA;
   if (species === 'feline-deciduous') return FELINE_DECIDUOUS_TOOTH_DATA;
   if (species === 'equine') return EQUINE_TOOTH_DATA;
+  if (species === 'rabbit') return RABBIT_TOOTH_DATA;
   return FELINE_TOOTH_DATA;
 }
 

@@ -20,7 +20,8 @@
     "canine": "Canine",
     "felineDeciduous": "Feline · Deciduous",
     "canineDeciduous": "Canine · Deciduous",
-    "equine": "Equine"
+    "equine": "Equine",
+    "rabbit": "Rabbit"
   },
   "chartingView": {
     "label": "Charting view",

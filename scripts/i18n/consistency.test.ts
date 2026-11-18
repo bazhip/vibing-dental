@@ -17,6 +17,7 @@ function flat(c: Catalog, prefix = ''): [string, string][] {
 const MAIN = 'Both keys are the website’s (main’s) own; left exactly as main ships them so the website matches main.';
 // [the whole group of keys with this English, reason]
 const ALLOW: [string[], string][] = [
+  [["forms:patient.other", "forms:anesthesia.other", "pdf:anesthesia.other", "settings:chart.anesthesia.blockNames.other", "settings:feedback.kinds.other"], "The species selector groups multiple species (plural; feminine for espèce/specie/especie), while anesthesia and feedback use a singular generic Other."],
   [["landing:demo.stepChart", "common:ios.tabs.chart"], "The Chart tab names the dental chart where teeth are charted (dental_chart); the landing demo step is the website's own wording."],
   [["settings:done", "app:topbar.doneEditingShort", "reminders:settings.done", "common:actions.done", "account:done", "pdfui:style.done"], "Spanish Done: main's own keys use both Hecho and Listo; left as main ships them so the website matches main."],
   [["report:ownerLabel", "settings:practice.team.roles.owner", "chart:ios.form.owner"], "Pet owner (report label, the app's Owner section) vs. a practice role (team owner): different words in every language."],

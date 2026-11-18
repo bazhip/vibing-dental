@@ -20,7 +20,8 @@
     "canine": "كلاب",
     "felineDeciduous": "قطط · أسنان لبنية",
     "canineDeciduous": "كلاب · أسنان لبنية",
-    "equine": "خيل"
+    "equine": "خيل",
+    "rabbit": "أرنب"
   },
   "chartingView": {
     "label": "عرض إعداد المخطط",

@@ -78,7 +78,8 @@
     "canine-deciduous": "Cățel",
     "feline": "Pisică",
     "feline-deciduous": "Pisoi",
-    "equine": "Cal"
+    "equine": "Cal",
+    "rabbit": "Iepure"
   },
   "tooth": {
     "deciduous": "de lapte",
@@ -155,5 +156,10 @@
     "single": " ({{level}})",
     "range": " (de la {{from}} la {{to}})"
   },
-  "otherFindings": "Alte constatări"
+  "otherFindings": "Alte constatări",
+  "homecareTipsRabbit": {
+    "hay": "Oferiți fân de graminee la discreție pentru a susține uzura normală a dinților și urmați instrucțiunile de hrănire ale echipei veterinare după tratament.",
+    "checkups": "Respectați programările pentru controalele dentare recomandate de echipa veterinară; dinții iepurelui cresc continuu.",
+    "warningSigns": "Contactați prompt echipa veterinară dacă iepurele dumneavoastră mănâncă mai puțin, nu mai mănâncă, produce mai puține fecale, salivează sau pierde în greutate."
+  }
 }

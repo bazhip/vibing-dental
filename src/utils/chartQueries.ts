@@ -32,7 +32,7 @@ export interface ChartListQuery {
   /** Case-insensitive substring match over patient name/number and
    *  owner name/phone. */
   search?: string;
-  /** 'canine' | 'feline' | 'equine'. */
+  /** 'canine' | 'feline' | 'equine' | 'rabbit'. */
   species?: string;
   /** Visit author (user id). */
   createdBy?: string;

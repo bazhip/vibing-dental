@@ -85,6 +85,15 @@ describe('PatientForm', () => {
     expect(screen.getByPlaceholderText('⟦Optional⟧')).toBeInTheDocument();
   });
 
+  it('translates the Other selector and its rabbit/equine selected states', () => {
+    const props = { patientInfo: patient, onPatientInfoChange: () => {}, onSpeciesChange: () => {} };
+    const { container, rerender } = render(<PatientForm {...props} species="rabbit" />);
+    expect(findUntranslated(container, ALLOW)).toEqual([]);
+    expect(screen.getByRole('combobox', { name: '⟦Other species⟧' })).toHaveValue('rabbit');
+    rerender(<PatientForm {...props} species="equine" />);
+    expect(findUntranslated(container, ALLOW)).toEqual([]);
+  });
+
   it('picking a recheck interval fills the date', () => {
     const onChange = vi.fn();
     render(<PatientForm patientInfo={patient} species="canine" onPatientInfoChange={onChange} onSpeciesChange={() => {}} />);

@@ -78,7 +78,8 @@
     "canine-deciduous": "Cucciolo",
     "feline": "Gatto",
     "feline-deciduous": "Gattino",
-    "equine": "Cavallo"
+    "equine": "Cavallo",
+    "rabbit": "Coniglio"
   },
   "tooth": {
     "deciduous": "da latte",
@@ -155,5 +156,10 @@
     "single": " (grado {{level}})",
     "range": " (grado da {{from}} a {{to}})"
   },
-  "otherFindings": "Altri riscontri"
+  "otherFindings": "Altri riscontri",
+  "homecareTipsRabbit": {
+    "hay": "Offra fieno di graminacee a volontà per favorire la normale usura dei denti, seguendo le istruzioni alimentari della Sua équipe veterinaria dopo il trattamento.",
+    "checkups": "Rispetti gli appuntamenti di controllo dentale raccomandati dalla Sua équipe veterinaria; i denti del coniglio crescono continuamente.",
+    "warningSigns": "Contatti tempestivamente la Sua équipe veterinaria se il Suo coniglio mangia meno, smette di mangiare, produce meno feci, sbava o perde peso."
+  }
 }

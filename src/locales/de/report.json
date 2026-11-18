@@ -78,7 +78,8 @@
     "canine-deciduous": "Welpe",
     "feline": "Katze",
     "feline-deciduous": "Kätzchen",
-    "equine": "Pferd"
+    "equine": "Pferd",
+    "rabbit": "Kaninchen"
   },
   "tooth": {
     "deciduous": "(Milchzahn)",
@@ -155,5 +156,10 @@
     "single": " ({{level}})",
     "range": " ({{from}} bis {{to}})"
   },
-  "otherFindings": "Weitere Befunde"
+  "otherFindings": "Weitere Befunde",
+  "homecareTipsRabbit": {
+    "hay": "Bieten Sie unbegrenzt Grasheu an, um den normalen Zahnabrieb zu unterstützen, und befolgen Sie nach der Behandlung die Fütterungsanweisungen Ihres Praxisteams.",
+    "checkups": "Halten Sie die von Ihrem Praxisteam empfohlenen Zahnkontrolltermine ein; Kaninchenzähne wachsen ständig nach.",
+    "warningSigns": "Kontaktieren Sie umgehend Ihr Praxisteam, wenn Ihr Kaninchen weniger oder gar nicht frisst, weniger Kot absetzt, speichelt oder Gewicht verliert."
+  }
 }

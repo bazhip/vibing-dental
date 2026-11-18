@@ -78,7 +78,8 @@
     "canine-deciduous": "Cachorro",
     "feline": "Gato",
     "feline-deciduous": "Gatito",
-    "equine": "Caballo"
+    "equine": "Caballo",
+    "rabbit": "Conejo"
   },
   "tooth": {
     "deciduous": "de leche",
@@ -155,5 +156,10 @@
     "single": " (grado {{level}})",
     "range": " (grado {{from}} a {{to}})"
   },
-  "otherFindings": "Otros hallazgos"
+  "otherFindings": "Otros hallazgos",
+  "homecareTipsRabbit": {
+    "hay": "Ofrezca heno de gramíneas sin límite para favorecer el desgaste dental normal y siga las instrucciones de alimentación de su equipo veterinario después del tratamiento.",
+    "checkups": "Acuda a las revisiones dentales recomendadas por su equipo veterinario; los dientes del conejo crecen continuamente.",
+    "warningSigns": "Contacte cuanto antes con su equipo veterinario si su conejo come menos, deja de comer, produce menos heces, babea o pierde peso."
+  }
 }

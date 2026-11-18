@@ -860,6 +860,10 @@
       "hash": "b13b52284df6",
       "status": "machine"
     },
+    "app:species.rabbit": {
+      "hash": "4ea93dfb214b",
+      "status": "machine"
+    },
     "app:speciesChange.confirm": {
       "hash": "614bc058e1cd",
       "status": "machine"
@@ -6364,6 +6368,18 @@
       "hash": "4b8d9760dcc7",
       "status": "machine"
     },
+    "forms:patient.other": {
+      "hash": "f97e9da0e3b8",
+      "status": "machine"
+    },
+    "forms:patient.otherSelected": {
+      "hash": "c6d779333a5d",
+      "status": "machine"
+    },
+    "forms:patient.otherSpecies": {
+      "hash": "0076d2d9bf7d",
+      "status": "machine"
+    },
     "forms:patient.ownerEmail": {
       "hash": "cbc7ec6db0bb",
       "status": "machine"
@@ -6398,6 +6414,10 @@
     },
     "forms:patient.permanent": {
       "hash": "455a95491f40",
+      "status": "machine"
+    },
+    "forms:patient.rabbit": {
+      "hash": "4ea93dfb214b",
       "status": "machine"
     },
     "forms:patient.recheck": {
@@ -8493,7 +8513,7 @@
       "status": "machine"
     },
     "onboarding:walkthrough.steps.species.body": {
-      "hash": "f6995b457897",
+      "hash": "0fe5eefb8a76",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.species.title": {
@@ -8926,6 +8946,10 @@
     },
     "pdf:header.title.felineDeciduous": {
       "hash": "3f1d0ff8d94c",
+      "status": "machine"
+    },
+    "pdf:header.title.rabbit": {
+      "hash": "32b166f55265",
       "status": "machine"
     },
     "pdf:images.failed": {
@@ -9996,6 +10020,18 @@
       "hash": "4c0912a6e80e",
       "status": "machine"
     },
+    "report:homecareTipsRabbit.checkups": {
+      "hash": "67ed847ddbca",
+      "status": "machine"
+    },
+    "report:homecareTipsRabbit.hay": {
+      "hash": "71c992b60d1f",
+      "status": "machine"
+    },
+    "report:homecareTipsRabbit.warningSigns": {
+      "hash": "9511ec39ab5d",
+      "status": "machine"
+    },
     "report:intro": {
       "hash": "8e6fb11bd40b",
       "status": "machine"
@@ -10218,6 +10254,10 @@
     },
     "report:species.feline-deciduous": {
       "hash": "12d6736f4d23",
+      "status": "machine"
+    },
+    "report:species.rabbit": {
+      "hash": "4ea93dfb214b",
       "status": "machine"
     },
     "report:summary.calculus": {
@@ -13662,6 +13702,10 @@
       "hash": "b13b52284df6",
       "status": "machine"
     },
+    "app:species.rabbit": {
+      "hash": "4ea93dfb214b",
+      "status": "machine"
+    },
     "app:speciesChange.confirm": {
       "hash": "614bc058e1cd",
       "status": "machine"
@@ -18950,6 +18994,18 @@
       "hash": "4b8d9760dcc7",
       "status": "machine"
     },
+    "forms:patient.other": {
+      "hash": "f97e9da0e3b8",
+      "status": "machine"
+    },
+    "forms:patient.otherSelected": {
+      "hash": "c6d779333a5d",
+      "status": "machine"
+    },
+    "forms:patient.otherSpecies": {
+      "hash": "0076d2d9bf7d",
+      "status": "machine"
+    },
     "forms:patient.ownerEmail": {
       "hash": "cbc7ec6db0bb",
       "status": "machine"
@@ -18984,6 +19040,10 @@
     },
     "forms:patient.permanent": {
       "hash": "455a95491f40",
+      "status": "machine"
+    },
+    "forms:patient.rabbit": {
+      "hash": "4ea93dfb214b",
       "status": "machine"
     },
     "forms:patient.recheck": {
@@ -21075,7 +21135,7 @@
       "status": "machine"
     },
     "onboarding:walkthrough.steps.species.body": {
-      "hash": "f6995b457897",
+      "hash": "0fe5eefb8a76",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.species.title": {
@@ -21476,6 +21536,10 @@
     },
     "pdf:header.title.felineDeciduous": {
       "hash": "3f1d0ff8d94c",
+      "status": "machine"
+    },
+    "pdf:header.title.rabbit": {
+      "hash": "32b166f55265",
       "status": "machine"
     },
     "pdf:images.failed": {
@@ -22530,6 +22594,18 @@
       "hash": "4c0912a6e80e",
       "status": "machine"
     },
+    "report:homecareTipsRabbit.checkups": {
+      "hash": "67ed847ddbca",
+      "status": "machine"
+    },
+    "report:homecareTipsRabbit.hay": {
+      "hash": "71c992b60d1f",
+      "status": "machine"
+    },
+    "report:homecareTipsRabbit.warningSigns": {
+      "hash": "9511ec39ab5d",
+      "status": "machine"
+    },
     "report:intro": {
       "hash": "8e6fb11bd40b",
       "status": "machine"
@@ -22752,6 +22828,10 @@
     },
     "report:species.feline-deciduous": {
       "hash": "12d6736f4d23",
+      "status": "machine"
+    },
+    "report:species.rabbit": {
+      "hash": "4ea93dfb214b",
       "status": "machine"
     },
     "report:summary.calculus": {
@@ -26090,6 +26170,10 @@
     },
     "app:species.felineDeciduous": {
       "hash": "b13b52284df6",
+      "status": "machine"
+    },
+    "app:species.rabbit": {
+      "hash": "4ea93dfb214b",
       "status": "machine"
     },
     "app:speciesChange.confirm": {
@@ -31436,6 +31520,18 @@
       "hash": "4b8d9760dcc7",
       "status": "machine"
     },
+    "forms:patient.other": {
+      "hash": "f97e9da0e3b8",
+      "status": "machine"
+    },
+    "forms:patient.otherSelected": {
+      "hash": "c6d779333a5d",
+      "status": "machine"
+    },
+    "forms:patient.otherSpecies": {
+      "hash": "0076d2d9bf7d",
+      "status": "machine"
+    },
     "forms:patient.ownerEmail": {
       "hash": "cbc7ec6db0bb",
       "status": "machine"
@@ -31470,6 +31566,10 @@
     },
     "forms:patient.permanent": {
       "hash": "455a95491f40",
+      "status": "machine"
+    },
+    "forms:patient.rabbit": {
+      "hash": "4ea93dfb214b",
       "status": "machine"
     },
     "forms:patient.recheck": {
@@ -33577,7 +33677,7 @@
       "status": "machine"
     },
     "onboarding:walkthrough.steps.species.body": {
-      "hash": "f6995b457897",
+      "hash": "0fe5eefb8a76",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.species.title": {
@@ -33986,6 +34086,10 @@
     },
     "pdf:header.title.felineDeciduous": {
       "hash": "3f1d0ff8d94c",
+      "status": "machine"
+    },
+    "pdf:header.title.rabbit": {
+      "hash": "32b166f55265",
       "status": "machine"
     },
     "pdf:images.failed": {
@@ -35044,6 +35148,18 @@
       "hash": "4c0912a6e80e",
       "status": "machine"
     },
+    "report:homecareTipsRabbit.checkups": {
+      "hash": "67ed847ddbca",
+      "status": "machine"
+    },
+    "report:homecareTipsRabbit.hay": {
+      "hash": "71c992b60d1f",
+      "status": "machine"
+    },
+    "report:homecareTipsRabbit.warningSigns": {
+      "hash": "9511ec39ab5d",
+      "status": "machine"
+    },
     "report:intro": {
       "hash": "8e6fb11bd40b",
       "status": "machine"
@@ -35266,6 +35382,10 @@
     },
     "report:species.feline-deciduous": {
       "hash": "12d6736f4d23",
+      "status": "machine"
+    },
+    "report:species.rabbit": {
+      "hash": "4ea93dfb214b",
       "status": "machine"
     },
     "report:summary.calculus": {
@@ -38634,6 +38754,10 @@
       "hash": "b13b52284df6",
       "status": "machine"
     },
+    "app:species.rabbit": {
+      "hash": "4ea93dfb214b",
+      "status": "machine"
+    },
     "app:speciesChange.confirm": {
       "hash": "614bc058e1cd",
       "status": "machine"
@@ -43978,6 +44102,18 @@
       "hash": "4b8d9760dcc7",
       "status": "machine"
     },
+    "forms:patient.other": {
+      "hash": "f97e9da0e3b8",
+      "status": "machine"
+    },
+    "forms:patient.otherSelected": {
+      "hash": "c6d779333a5d",
+      "status": "machine"
+    },
+    "forms:patient.otherSpecies": {
+      "hash": "0076d2d9bf7d",
+      "status": "machine"
+    },
     "forms:patient.ownerEmail": {
       "hash": "cbc7ec6db0bb",
       "status": "machine"
@@ -44012,6 +44148,10 @@
     },
     "forms:patient.permanent": {
       "hash": "455a95491f40",
+      "status": "machine"
+    },
+    "forms:patient.rabbit": {
+      "hash": "4ea93dfb214b",
       "status": "machine"
     },
     "forms:patient.recheck": {
@@ -46119,7 +46259,7 @@
       "status": "machine"
     },
     "onboarding:walkthrough.steps.species.body": {
-      "hash": "f6995b457897",
+      "hash": "0fe5eefb8a76",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.species.title": {
@@ -46528,6 +46668,10 @@
     },
     "pdf:header.title.felineDeciduous": {
       "hash": "3f1d0ff8d94c",
+      "status": "machine"
+    },
+    "pdf:header.title.rabbit": {
+      "hash": "32b166f55265",
       "status": "machine"
     },
     "pdf:images.failed": {
@@ -47586,6 +47730,18 @@
       "hash": "4c0912a6e80e",
       "status": "machine"
     },
+    "report:homecareTipsRabbit.checkups": {
+      "hash": "67ed847ddbca",
+      "status": "machine"
+    },
+    "report:homecareTipsRabbit.hay": {
+      "hash": "71c992b60d1f",
+      "status": "machine"
+    },
+    "report:homecareTipsRabbit.warningSigns": {
+      "hash": "9511ec39ab5d",
+      "status": "machine"
+    },
     "report:intro": {
       "hash": "8e6fb11bd40b",
       "status": "machine"
@@ -47808,6 +47964,10 @@
     },
     "report:species.feline-deciduous": {
       "hash": "12d6736f4d23",
+      "status": "machine"
+    },
+    "report:species.rabbit": {
+      "hash": "4ea93dfb214b",
       "status": "machine"
     },
     "report:summary.calculus": {
@@ -51172,6 +51332,10 @@
       "hash": "b13b52284df6",
       "status": "machine"
     },
+    "app:species.rabbit": {
+      "hash": "4ea93dfb214b",
+      "status": "machine"
+    },
     "app:speciesChange.confirm": {
       "hash": "614bc058e1cd",
       "status": "machine"
@@ -56452,6 +56616,18 @@
       "hash": "4b8d9760dcc7",
       "status": "machine"
     },
+    "forms:patient.other": {
+      "hash": "f97e9da0e3b8",
+      "status": "machine"
+    },
+    "forms:patient.otherSelected": {
+      "hash": "c6d779333a5d",
+      "status": "machine"
+    },
+    "forms:patient.otherSpecies": {
+      "hash": "0076d2d9bf7d",
+      "status": "machine"
+    },
     "forms:patient.ownerEmail": {
       "hash": "cbc7ec6db0bb",
       "status": "machine"
@@ -56486,6 +56662,10 @@
     },
     "forms:patient.permanent": {
       "hash": "455a95491f40",
+      "status": "machine"
+    },
+    "forms:patient.rabbit": {
+      "hash": "4ea93dfb214b",
       "status": "machine"
     },
     "forms:patient.recheck": {
@@ -58517,7 +58697,7 @@
       "status": "machine"
     },
     "onboarding:walkthrough.steps.species.body": {
-      "hash": "f6995b457897",
+      "hash": "0fe5eefb8a76",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.species.title": {
@@ -58918,6 +59098,10 @@
     },
     "pdf:header.title.felineDeciduous": {
       "hash": "3f1d0ff8d94c",
+      "status": "machine"
+    },
+    "pdf:header.title.rabbit": {
+      "hash": "32b166f55265",
       "status": "machine"
     },
     "pdf:images.failed": {
@@ -59972,6 +60156,18 @@
       "hash": "4c0912a6e80e",
       "status": "machine"
     },
+    "report:homecareTipsRabbit.checkups": {
+      "hash": "67ed847ddbca",
+      "status": "machine"
+    },
+    "report:homecareTipsRabbit.hay": {
+      "hash": "71c992b60d1f",
+      "status": "machine"
+    },
+    "report:homecareTipsRabbit.warningSigns": {
+      "hash": "9511ec39ab5d",
+      "status": "machine"
+    },
     "report:intro": {
       "hash": "8e6fb11bd40b",
       "status": "machine"
@@ -60194,6 +60390,10 @@
     },
     "report:species.feline-deciduous": {
       "hash": "12d6736f4d23",
+      "status": "machine"
+    },
+    "report:species.rabbit": {
+      "hash": "4ea93dfb214b",
       "status": "machine"
     },
     "report:summary.calculus": {
@@ -63528,6 +63728,10 @@
     },
     "app:species.felineDeciduous": {
       "hash": "b13b52284df6",
+      "status": "machine"
+    },
+    "app:species.rabbit": {
+      "hash": "4ea93dfb214b",
       "status": "machine"
     },
     "app:speciesChange.confirm": {
@@ -68874,6 +69078,18 @@
       "hash": "4b8d9760dcc7",
       "status": "machine"
     },
+    "forms:patient.other": {
+      "hash": "f97e9da0e3b8",
+      "status": "machine"
+    },
+    "forms:patient.otherSelected": {
+      "hash": "c6d779333a5d",
+      "status": "machine"
+    },
+    "forms:patient.otherSpecies": {
+      "hash": "0076d2d9bf7d",
+      "status": "machine"
+    },
     "forms:patient.ownerEmail": {
       "hash": "cbc7ec6db0bb",
       "status": "machine"
@@ -68908,6 +69124,10 @@
     },
     "forms:patient.permanent": {
       "hash": "455a95491f40",
+      "status": "machine"
+    },
+    "forms:patient.rabbit": {
+      "hash": "4ea93dfb214b",
       "status": "machine"
     },
     "forms:patient.recheck": {
@@ -71015,7 +71235,7 @@
       "status": "machine"
     },
     "onboarding:walkthrough.steps.species.body": {
-      "hash": "f6995b457897",
+      "hash": "0fe5eefb8a76",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.species.title": {
@@ -71424,6 +71644,10 @@
     },
     "pdf:header.title.felineDeciduous": {
       "hash": "3f1d0ff8d94c",
+      "status": "machine"
+    },
+    "pdf:header.title.rabbit": {
+      "hash": "32b166f55265",
       "status": "machine"
     },
     "pdf:images.failed": {
@@ -72482,6 +72706,18 @@
       "hash": "4c0912a6e80e",
       "status": "machine"
     },
+    "report:homecareTipsRabbit.checkups": {
+      "hash": "67ed847ddbca",
+      "status": "machine"
+    },
+    "report:homecareTipsRabbit.hay": {
+      "hash": "71c992b60d1f",
+      "status": "machine"
+    },
+    "report:homecareTipsRabbit.warningSigns": {
+      "hash": "9511ec39ab5d",
+      "status": "machine"
+    },
     "report:intro": {
       "hash": "8e6fb11bd40b",
       "status": "machine"
@@ -72704,6 +72940,10 @@
     },
     "report:species.feline-deciduous": {
       "hash": "12d6736f4d23",
+      "status": "machine"
+    },
+    "report:species.rabbit": {
+      "hash": "4ea93dfb214b",
       "status": "machine"
     },
     "report:summary.calculus": {
@@ -75464,6 +75704,18 @@
       "hash": "4c0912a6e80e",
       "status": "machine"
     },
+    "report:homecareTipsRabbit.checkups": {
+      "hash": "67ed847ddbca",
+      "status": "machine"
+    },
+    "report:homecareTipsRabbit.hay": {
+      "hash": "71c992b60d1f",
+      "status": "machine"
+    },
+    "report:homecareTipsRabbit.warningSigns": {
+      "hash": "9511ec39ab5d",
+      "status": "machine"
+    },
     "report:intro": {
       "hash": "8e6fb11bd40b",
       "status": "machine"
@@ -75686,6 +75938,10 @@
     },
     "report:species.feline-deciduous": {
       "hash": "12d6736f4d23",
+      "status": "machine"
+    },
+    "report:species.rabbit": {
+      "hash": "4ea93dfb214b",
       "status": "machine"
     },
     "report:summary.calculus": {
@@ -76612,6 +76868,10 @@
     },
     "app:species.felineDeciduous": {
       "hash": "b13b52284df6",
+      "status": "machine"
+    },
+    "app:species.rabbit": {
+      "hash": "4ea93dfb214b",
       "status": "machine"
     },
     "app:speciesChange.confirm": {
@@ -81950,6 +82210,18 @@
       "hash": "4b8d9760dcc7",
       "status": "machine"
     },
+    "forms:patient.other": {
+      "hash": "f97e9da0e3b8",
+      "status": "machine"
+    },
+    "forms:patient.otherSelected": {
+      "hash": "c6d779333a5d",
+      "status": "machine"
+    },
+    "forms:patient.otherSpecies": {
+      "hash": "0076d2d9bf7d",
+      "status": "machine"
+    },
     "forms:patient.ownerEmail": {
       "hash": "cbc7ec6db0bb",
       "status": "machine"
@@ -81984,6 +82256,10 @@
     },
     "forms:patient.permanent": {
       "hash": "455a95491f40",
+      "status": "machine"
+    },
+    "forms:patient.rabbit": {
+      "hash": "4ea93dfb214b",
       "status": "machine"
     },
     "forms:patient.recheck": {
@@ -84031,7 +84307,7 @@
       "status": "machine"
     },
     "onboarding:walkthrough.steps.species.body": {
-      "hash": "f6995b457897",
+      "hash": "0fe5eefb8a76",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.species.title": {
@@ -84440,6 +84716,10 @@
     },
     "pdf:header.title.felineDeciduous": {
       "hash": "3f1d0ff8d94c",
+      "status": "machine"
+    },
+    "pdf:header.title.rabbit": {
+      "hash": "32b166f55265",
       "status": "machine"
     },
     "pdf:images.failed": {
@@ -85498,6 +85778,18 @@
       "hash": "4c0912a6e80e",
       "status": "machine"
     },
+    "report:homecareTipsRabbit.checkups": {
+      "hash": "67ed847ddbca",
+      "status": "machine"
+    },
+    "report:homecareTipsRabbit.hay": {
+      "hash": "71c992b60d1f",
+      "status": "machine"
+    },
+    "report:homecareTipsRabbit.warningSigns": {
+      "hash": "9511ec39ab5d",
+      "status": "machine"
+    },
     "report:intro": {
       "hash": "8e6fb11bd40b",
       "status": "machine"
@@ -85720,6 +86012,10 @@
     },
     "report:species.feline-deciduous": {
       "hash": "12d6736f4d23",
+      "status": "machine"
+    },
+    "report:species.rabbit": {
+      "hash": "4ea93dfb214b",
       "status": "machine"
     },
     "report:summary.calculus": {
@@ -89078,6 +89374,10 @@
     },
     "app:species.felineDeciduous": {
       "hash": "b13b52284df6",
+      "status": "machine"
+    },
+    "app:species.rabbit": {
+      "hash": "4ea93dfb214b",
       "status": "machine"
     },
     "app:speciesChange.confirm": {
@@ -94360,6 +94660,18 @@
       "hash": "4b8d9760dcc7",
       "status": "machine"
     },
+    "forms:patient.other": {
+      "hash": "f97e9da0e3b8",
+      "status": "machine"
+    },
+    "forms:patient.otherSelected": {
+      "hash": "c6d779333a5d",
+      "status": "machine"
+    },
+    "forms:patient.otherSpecies": {
+      "hash": "0076d2d9bf7d",
+      "status": "machine"
+    },
     "forms:patient.ownerEmail": {
       "hash": "cbc7ec6db0bb",
       "status": "machine"
@@ -94394,6 +94706,10 @@
     },
     "forms:patient.permanent": {
       "hash": "455a95491f40",
+      "status": "machine"
+    },
+    "forms:patient.rabbit": {
+      "hash": "4ea93dfb214b",
       "status": "machine"
     },
     "forms:patient.recheck": {
@@ -96425,7 +96741,7 @@
       "status": "machine"
     },
     "onboarding:walkthrough.steps.species.body": {
-      "hash": "f6995b457897",
+      "hash": "0fe5eefb8a76",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.species.title": {
@@ -96826,6 +97142,10 @@
     },
     "pdf:header.title.felineDeciduous": {
       "hash": "3f1d0ff8d94c",
+      "status": "machine"
+    },
+    "pdf:header.title.rabbit": {
+      "hash": "32b166f55265",
       "status": "machine"
     },
     "pdf:images.failed": {
@@ -97880,6 +98200,18 @@
       "hash": "4c0912a6e80e",
       "status": "machine"
     },
+    "report:homecareTipsRabbit.checkups": {
+      "hash": "67ed847ddbca",
+      "status": "machine"
+    },
+    "report:homecareTipsRabbit.hay": {
+      "hash": "71c992b60d1f",
+      "status": "machine"
+    },
+    "report:homecareTipsRabbit.warningSigns": {
+      "hash": "9511ec39ab5d",
+      "status": "machine"
+    },
     "report:intro": {
       "hash": "8e6fb11bd40b",
       "status": "machine"
@@ -98102,6 +98434,10 @@
     },
     "report:species.feline-deciduous": {
       "hash": "12d6736f4d23",
+      "status": "machine"
+    },
+    "report:species.rabbit": {
+      "hash": "4ea93dfb214b",
       "status": "machine"
     },
     "report:summary.calculus": {

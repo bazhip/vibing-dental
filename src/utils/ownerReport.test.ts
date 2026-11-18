@@ -587,3 +587,13 @@ test('photo review tracks caption, path and deletion while review metadata does 
   const snapshot = baseSnapshot();
   expect(ownerReportReviewBasis({ ...snapshot, ownerReport: { reviewedAttachments: basis } })).toBe(ownerReportReviewBasis(snapshot));
 });
+
+
+it('a rabbit report uses rabbit care defaults and identifies the species', () => {
+  const snap = { ...baseSnapshot(), species: 'rabbit' as const, toothData: getInitialToothData('rabbit') };
+  const model = buildOwnerReportModel(snap);
+  expect(model.speciesLabel).toBe('Rabbit');
+  expect(model.homecareTips).toEqual(reportStrings('en').homecareTipsRabbit);
+  expect(model.homecareTips.join(' ')).toMatch(/hay/);
+  expect(model.homecareTips.join(' ')).not.toMatch(/brush|VOHC|chews|bit,/i);
+});

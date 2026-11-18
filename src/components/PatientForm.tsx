@@ -30,6 +30,7 @@ interface PatientFormProps {
 const GROUP_ROW = 'div' as const;
 const SPECIES_LABEL_ID = 'species-group-label';
 const DENTITION_LABEL_ID = 'dentition-group-label';
+const OTHER_SPECIES = ['equine', 'rabbit'] as const;
 
 export const PatientForm: React.FC<PatientFormProps> = ({
   patientInfo,
@@ -55,7 +56,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
   };
 
   // The one Species value carries both axes; the UI splits them into a
-  // species picker (canine/feline/equine) and a dentition picker
+  // species picker (canine/feline/Other) and a dentition picker
   // (permanent/deciduous) so neither list is a combo of every pair.
   const base = speciesBase(species);
   const dentition = speciesDentition(species);
@@ -64,6 +65,26 @@ export const PatientForm: React.FC<PatientFormProps> = ({
   const handleBaseChange = (b: SpeciesBase) => onSpeciesChange(combineSpecies(b, dentition));
   const handleDentitionChange = (d: Dentition) => onSpeciesChange(combineSpecies(base, d));
   const native = isNativeApp();
+  const otherSelected = base === 'equine' || base === 'rabbit';
+  // Keep the browser/OS select for keyboard navigation and the native phone
+  // picker. Its transparent surface covers the complete visible control.
+  const otherPicker = (
+    <span className={`species-tab patient-form__other${otherSelected ? ' species-tab--active' : ''}`}>
+      <span aria-hidden="true">{otherSelected ? t('patient.otherSelected', { species: t(`patient.${base}`) }) : t('patient.other')}</span>
+      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 16 16" fill="none">
+        <path d="m4 6 4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+      <select
+        className="patient-form__other-select"
+        aria-label={t('patient.otherSpecies')}
+        value={otherSelected ? base : ''}
+        onChange={e => handleBaseChange(e.target.value as 'equine' | 'rabbit')}
+      >
+        <option value="" disabled>{t('patient.other')}</option>
+        {OTHER_SPECIES.map(value => <option key={value} value={value}>{t(`patient.${value}`)}</option>)}
+      </select>
+    </span>
+  );
   // Quick-pick: common recheck intervals, counted from the visit date
   // (falling back to today). Selecting one fills the date field; it can
   // still be hand-adjusted after.
@@ -96,7 +117,6 @@ export const PatientForm: React.FC<PatientFormProps> = ({
     const speciesOptions = [
       { value: 'canine' as const, label: t('patient.canine') },
       { value: 'feline' as const, label: t('patient.feline') },
-      { value: 'equine' as const, label: t('patient.equine') },
     ];
     const dentitionOptions = [
       { value: 'permanent' as const, label: t('patient.permanent') },
@@ -134,15 +154,18 @@ export const PatientForm: React.FC<PatientFormProps> = ({
           <FormField label={t('patient.date')}>
             <input dir="ltr" type="date" className="patient-form__input" value={patientInfo.date} onChange={handleInputChange('date')} />
           </FormField>
-          <FormField as={GROUP_ROW} label={<span id={SPECIES_LABEL_ID}>{t('patient.species')}</span>}>
-            <Segmented
-              labelledBy={SPECIES_LABEL_ID}
-              options={speciesOptions}
-              value={base}
-              onChange={handleBaseChange}
-            />
+          <FormField as={GROUP_ROW} stacked className="patient-form__choice-row" label={<span id={SPECIES_LABEL_ID}>{t('patient.species')}</span>}>
+            <div className="patient-form__species-controls">
+              <Segmented
+                labelledBy={SPECIES_LABEL_ID}
+                options={speciesOptions}
+                value={base}
+                onChange={handleBaseChange}
+              />
+              {otherPicker}
+            </div>
           </FormField>
-          <FormField as={GROUP_ROW} label={<span id={DENTITION_LABEL_ID}>{t('patient.dentition')}</span>}>
+          <FormField as={GROUP_ROW} stacked className="patient-form__choice-row" label={<span id={DENTITION_LABEL_ID}>{t('patient.dentition')}</span>}>
             <Segmented
               labelledBy={DENTITION_LABEL_ID}
               options={dentitionOptions}
@@ -274,11 +297,8 @@ export const PatientForm: React.FC<PatientFormProps> = ({
           <span className="patient-form__selector-label" id="species-group-label">
             {t('patient.species')}
           </span>
-          <div
-            className="patient-form__species"
-            role="radiogroup"
-            aria-labelledby="species-group-label"
-          >
+          <div className="patient-form__species patient-form__species-controls">
+            <div className="patient-form__common-species" role="radiogroup" aria-labelledby="species-group-label">
             {/* Canine first — it's also the default species. */}
             <button
               type="button"
@@ -298,15 +318,8 @@ export const PatientForm: React.FC<PatientFormProps> = ({
             >
               {t('patient.feline')}
             </button>
-            <button
-              type="button"
-              role="radio"
-              aria-checked={base === 'equine'}
-              className={`species-tab ${base === 'equine' ? 'species-tab--active' : ''}`}
-              onClick={() => handleBaseChange('equine')}
-            >
-              {t('patient.equine')}
-            </button>
+            </div>
+            {otherPicker}
           </div>
         </div>
 
@@ -333,7 +346,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
               role="radio"
               aria-checked={dentition === 'deciduous'}
               className={`species-tab ${dentition === 'deciduous' ? 'species-tab--active' : ''}`}
-              // No foal chart: the horse chart is adult teeth only.
+              // Horse and rabbit charts contain adult teeth only.
               disabled={!deciduousOk}
               onClick={() => handleDentitionChange('deciduous')}
             >
