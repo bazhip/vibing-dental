@@ -25,8 +25,20 @@ describe('radiographic findings', () => {
     const { cards } = layoutTreatmentArea({ treatment: 'Scaled and polished.', radiographic: '307: type 2 TR', ct: 'TMJs normal' }, font, H, W);
     expect(cards.map((c) => c.kind)).toEqual(['treatment', 'radiographic', 'ct']);
     expect(total(cards)).toBeCloseTo(H);
-    expect(cards[0].heightPt).toBeGreaterThan(cards[1].heightPt);
+    // Short texts: the column is split evenly.
+    expect(cards[0].heightPt).toBeCloseTo(cards[1].heightPt);
+    expect(cards[1].heightPt).toBeCloseTo(cards[2].heightPt);
     expect(layoutTreatmentArea({ treatment: '', ct: 'TMJs normal' }, font, H, W).cards.map((c) => c.kind)).toEqual(['treatment', 'ct']);
+  });
+
+  it('PDF: a card that needs more than its share grows; the others stay even', async () => {
+    const font = await helvetica();
+    const para = 'Vertical bone loss at the distal root with furcation exposure and periapical lucency. ';
+    const { cards, fontSize } = layoutTreatmentArea({ treatment: 'Scaled.', radiographic: para.repeat(12), ct: 'TMJs normal' }, font, H, W);
+    expect(fontSize).toBe(9.5);
+    expect(cards[1].heightPt).toBeGreaterThan(H / 3);
+    expect(cards[0].heightPt).toBeCloseTo(cards[2].heightPt);
+    expect(total(cards)).toBeCloseTo(H);
   });
 
   it('PDF: long reports shrink the text so everything still fits', async () => {

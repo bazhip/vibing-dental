@@ -1042,12 +1042,25 @@ function wrappedLineCount(value: string, font: PDFFont, size: number, width: num
   return value.split('\n').reduce((n, para) => n + Math.max(1, wrapToWidth(para, font, size, width).length), 0);
 }
 
+/** Even heights, except a card that needs more keeps its need and the
+ *  rest share what's left evenly. Assumes the needs fit in `room`. */
+function evenSplit(needs: number[], room: number): number[] {
+  let big = new Set<number>();
+  for (;;) {
+    const bigSum = [...big].reduce((n, i) => n + needs[i], 0);
+    const level = (room - bigSum) / (needs.length - big.size);
+    const next = new Set(needs.map((n, i) => (n > level ? i : -1)).filter((i) => i >= 0));
+    if (next.size === big.size) return needs.map((n, i) => (big.has(i) ? n : level));
+    big = next;
+  }
+}
+
 /**
  * Splits the right column into cards: the treatment report on top, then
  * the radiographic report and CT report (each only when it has text).
- * The report cards take the height their text needs and the treatment
- * card fills the rest, so the column keeps its size and a chart without
- * either report prints one card as before. When the text doesn't fit at
+ * The cards share the column evenly; one whose text needs more than its
+ * share grows and the others split what's left, so the column keeps its
+ * size and a chart without either report prints one card as before. When the text doesn't fit at
  * 9.5pt it steps down to 7.5pt; only past that are cards shared out by
  * need and capped (with a "continued" note — the full text round-trips
  * in the embedded data).
@@ -1075,13 +1088,8 @@ export function layoutTreatmentArea(
       const lines = c.value ? wrappedLineCount(c.value, font, size, innerW) : 0;
       return chrome + Math.max(lines, c.kind === 'treatment' ? MIN_TREATMENT_LINES : 1) * lh;
     });
-    const reports = needs.slice(1).reduce((a, b) => a + b, 0);
-    if (reports + needs[0] + gaps <= totalHeightPt) {
-      return {
-        fontSize: size,
-        lineHeight: lh,
-        cards: parts.map((c, i) => ({ ...c, heightPt: i === 0 ? totalHeightPt - gaps - reports : needs[i] })),
-      };
+    if (needs.reduce((a, b) => a + b, 0) + gaps <= totalHeightPt) {
+      return { fontSize: size, lineHeight: lh, cards: parts.map((c, i) => ({ ...c, heightPt: evenSplit(needs, totalHeightPt - gaps)[i] })) };
     }
   }
   // Still too long at the smallest size: cards that fit their share keep
