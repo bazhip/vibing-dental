@@ -19,7 +19,7 @@
   background: var(--surface, #fff);
   color: var(--text, #0f172a);
   border-radius: 14px;
-  box-shadow: 0 24px 64px var(--ios-shadow-strong, rgba(15, 23, 42, 0.28));
+  box-shadow: var(--shadow-lg);
   font-family: var(--font-body, inherit);
   animation: ui-pop 0.14s ease-out;
 }
@@ -27,6 +27,7 @@
 .ui-dialog__message { margin: 0 0 0.9rem; font-size: 0.93rem; line-height: 1.5; color: var(--text-muted, #475569); }
 .ui-dialog__label { display: block; margin: 0.2rem 0 0.35rem; font-size: 0.85rem; font-weight: 600; }
 .ui-dialog__input {
+  box-shadow: var(--shadow-xs);
   width: 100%;
   padding: 0.6rem 0.75rem;
   border: 1px solid var(--border, #cbd5e1);
@@ -40,6 +41,7 @@
 .ui-dialog__actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem; }
 
 .ui-btn {
+  box-shadow: var(--shadow-xs);
   min-height: 40px;
   padding: 0 1rem;
   border-radius: 9px;
@@ -81,7 +83,7 @@
   color: var(--ios-on-dark, #fff);
   font-size: 0.9rem;
   line-height: 1.4;
-  box-shadow: 0 10px 30px var(--ios-shadow-strong, rgba(15, 23, 42, 0.3));
+  box-shadow: var(--shadow-md);
   pointer-events: auto;
   animation: ui-pop 0.16s ease-out;
 }

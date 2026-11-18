@@ -17,7 +17,12 @@
  *   --text-muted      secondary text
  *   --border          subtle hairlines
  *   --border-strong   inputs / dividers that need to read
- *   --shadow          default elevation
+ *   --shadow-xs       controls: buttons, inputs, selected segment
+ *   --shadow-sm       resting surfaces: panels, cards, table wrappers
+ *   --shadow-md       floating: menus, popovers, toasts, floating buttons
+ *   --shadow-lg       overlays: dialogs, sheets, viewers
+ *   --shadow          alias of --shadow-sm (legacy name)
+ *   --surface-overlay background for md/lg layers (lifts in dark mode)
  *   --radius(-sm/-lg) corner radii
  *   --font-body/display/mono  type stacks
  * =============================================================================
@@ -61,7 +66,15 @@
   --border:         #e2e7eb;
   --border-strong:  #9cabb7;
 
-  --shadow:         0 1px 2px rgba(23, 35, 46, 0.04), 0 4px 16px rgba(23, 35, 46, 0.05);
+  /* Elevation: one scale for the whole web app. Cool slate shadow colour
+     (never pure black in light mode); each tier pairs a tight contact
+     shadow with a soft ambient one. Borders stay — shadows add lift. */
+  --shadow-xs:      0 1px 2px rgb(23 35 46 / 0.06);
+  --shadow-sm:      0 1px 2px rgb(23 35 46 / 0.05), 0 3px 8px -2px rgb(23 35 46 / 0.08);
+  --shadow-md:      0 1px 3px rgb(23 35 46 / 0.10), 0 12px 32px -4px rgb(23 35 46 / 0.20);
+  --shadow-lg:      0 2px 6px rgb(23 35 46 / 0.10), 0 24px 56px -8px rgb(23 35 46 / 0.28);
+  --shadow:         var(--shadow-sm);
+  --surface-overlay: var(--surface);
   --radius:         10px;
   --radius-sm:      6px;
   --radius-lg:      14px;
@@ -118,7 +131,14 @@
     --text-muted: var(--ios-label-muted);
     --border: var(--ios-separator);
     --border-strong: var(--ios-separator-opaque);
-    --shadow: 0 1px 2px var(--ios-shadow-soft), 0 4px 16px var(--ios-shadow-soft);
+    /* Dark drop shadows barely read, so every tier also carries a faint
+       top highlight; floating layers sit on a lighter overlay surface. */
+    --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.35);
+    --shadow-sm: inset 0 1px 0 rgb(255 255 255 / 0.04), 0 1px 2px rgb(0 0 0 / 0.3), 0 2px 8px rgb(0 0 0 / 0.25);
+    --shadow-md: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 8px 24px rgb(0 0 0 / 0.45);
+    --shadow-lg: inset 0 1px 0 rgb(255 255 255 / 0.07), 0 24px 64px rgb(0 0 0 / 0.6);
+    --shadow: var(--shadow-sm);
+    --surface-overlay: var(--ios-bg-elevated);
     --ios-bg:            #000000;
     --ios-bg-grouped:    #000000;
     --ios-bg-elevated:   #1c1c1e;
@@ -197,7 +217,7 @@
   html[data-theme="dark"]:not(.native-ios) {
     --ios-bg: #10191f;
     --ios-bg-grouped: #10191f;
-    --ios-bg-elevated: #1b2831;
+    --ios-bg-elevated: #1e2c35;
     --ios-cell: #17232c;
     --ios-cell-alt: #202f39;
     --ios-cell-sunken: #293b47;

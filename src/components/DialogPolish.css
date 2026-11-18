@@ -10,7 +10,7 @@ html:not(.native-ios) :is(.ai-settings-modal, .ui-dialog, .pdf-preview-modal) {
   border-radius: var(--radius-lg);
   background: var(--surface);
   color: var(--text);
-  box-shadow: 0 24px 72px rgb(23 35 46 / 20%);
+  box-shadow: var(--shadow-lg);
 }
 
 /* Preserve wider library, history and admin modal variants. */

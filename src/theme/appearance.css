@@ -10,6 +10,7 @@
   line-height: 1.4;
 }
 .appearance-select select {
+  box-shadow: var(--shadow-xs);
   appearance: auto;
   min-height: 44px;
   width: 100%;
