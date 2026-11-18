@@ -8020,6 +8020,18 @@
       "hash": "f3f3bfe656d3",
       "status": "machine"
     },
+    "media:recordNote.h.gpDiagnostics": {
+      "hash": "268f14bbfe11",
+      "status": "machine"
+    },
+    "media:recordNote.h.gpPhysicalExam": {
+      "hash": "225fedfea3c5",
+      "status": "machine"
+    },
+    "media:recordNote.h.gpVitals": {
+      "hash": "14d018309743",
+      "status": "machine"
+    },
     "media:recordNote.h.header": {
       "hash": "8567c5651088",
       "status": "machine"
@@ -13296,6 +13308,42 @@
       "hash": "6b5763afa621",
       "status": "machine"
     },
+    "visitDocumentation:fields.gpDiagnostics.helper": {
+      "hash": "733560ca15b1",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.gpDiagnostics.label": {
+      "hash": "268f14bbfe11",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.gpPhysicalExam.helper": {
+      "hash": "16f0dc2dc488",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.gpPhysicalExam.label": {
+      "hash": "225fedfea3c5",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.gpVitals.helper": {
+      "hash": "f380f5e27578",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.gpVitals.label": {
+      "hash": "14d018309743",
+      "status": "machine"
+    },
+    "visitDocumentation:gp-exam.purpose": {
+      "hash": "7a33d479471a",
+      "status": "machine"
+    },
+    "visitDocumentation:gp-exam.review": {
+      "hash": "503e3b0167f5",
+      "status": "machine"
+    },
+    "visitDocumentation:gp-exam.title": {
+      "hash": "8ca6759ddf15",
+      "status": "machine"
+    },
     "visitDocumentation:noTreatment": {
       "hash": "1efca4ba966e",
       "status": "machine"
@@ -13398,6 +13446,166 @@
     },
     "voice:button.titleStop": {
       "hash": "a63d34f132ff",
+      "status": "machine"
+    },
+    "voice:clinical.applied": {
+      "hash": "fcaa0abdd4e7",
+      "status": "machine"
+    },
+    "voice:clinical.apply": {
+      "hash": "410028ddaee5",
+      "status": "machine"
+    },
+    "voice:clinical.cancelled": {
+      "hash": "7fcb5cf44525",
+      "status": "machine"
+    },
+    "voice:clinical.consentRequired": {
+      "hash": "9c7e36f2ea56",
+      "status": "machine"
+    },
+    "voice:clinical.copied": {
+      "hash": "f8c9947bc916",
+      "status": "machine"
+    },
+    "voice:clinical.copyPrompt": {
+      "hash": "e083559f902b",
+      "status": "machine"
+    },
+    "voice:clinical.copyPromptShown": {
+      "hash": "74713a083e84",
+      "status": "machine"
+    },
+    "voice:clinical.copyTranscript": {
+      "hash": "401584c4ad5b",
+      "status": "machine"
+    },
+    "voice:clinical.ctApply": {
+      "hash": "86a967716bba",
+      "status": "machine"
+    },
+    "voice:clinical.ctHelp": {
+      "hash": "09ce597e2004",
+      "status": "machine"
+    },
+    "voice:clinical.current": {
+      "hash": "afb2756648cf",
+      "status": "machine"
+    },
+    "voice:clinical.dictate": {
+      "hash": "1317595ef0ab",
+      "status": "machine"
+    },
+    "voice:clinical.emptyTranscript": {
+      "hash": "66e8eefefa33",
+      "status": "machine"
+    },
+    "voice:clinical.evidence": {
+      "hash": "fc537eec08e6",
+      "status": "machine"
+    },
+    "voice:clinical.extractionFailed": {
+      "hash": "34852edc7efb",
+      "status": "machine"
+    },
+    "voice:clinical.failed": {
+      "hash": "3e52b81607a7",
+      "status": "machine"
+    },
+    "voice:clinical.help": {
+      "hash": "f76bc680e193",
+      "status": "machine"
+    },
+    "voice:clinical.includeField": {
+      "hash": "50ab4a609f08",
+      "status": "machine"
+    },
+    "voice:clinical.invalidResponse": {
+      "hash": "c5cdc2f1cad3",
+      "status": "machine"
+    },
+    "voice:clinical.invalidSource": {
+      "hash": "83acfec16d01",
+      "status": "machine"
+    },
+    "voice:clinical.kinds.consultation": {
+      "hash": "725949a1f821",
+      "status": "machine"
+    },
+    "voice:clinical.kinds.ct": {
+      "hash": "89cb8fb91c09",
+      "status": "machine"
+    },
+    "voice:clinical.kinds.discharge": {
+      "hash": "0f24996b033f",
+      "status": "machine"
+    },
+    "voice:clinical.kinds.gp-exam": {
+      "hash": "8ca6759ddf15",
+      "status": "machine"
+    },
+    "voice:clinical.kinds.gp-visit": {
+      "hash": "bfa95103cea5",
+      "status": "machine"
+    },
+    "voice:clinical.noSections": {
+      "hash": "a15b9c13f9be",
+      "status": "machine"
+    },
+    "voice:clinical.prepare": {
+      "hash": "59009f4fae31",
+      "status": "machine"
+    },
+    "voice:clinical.preparing": {
+      "hash": "18afcfa7e7a1",
+      "status": "machine"
+    },
+    "voice:clinical.savedTranscript": {
+      "hash": "09626a0aed61",
+      "status": "machine"
+    },
+    "voice:clinical.savedWithVisit": {
+      "hash": "807226b59af8",
+      "status": "machine"
+    },
+    "voice:clinical.sourceTooLarge": {
+      "hash": "faa96a46e8ba",
+      "status": "machine"
+    },
+    "voice:clinical.sources": {
+      "hash": "53657123bc77",
+      "status": "machine"
+    },
+    "voice:clinical.stale": {
+      "hash": "be1b0b972d76",
+      "status": "machine"
+    },
+    "voice:clinical.start": {
+      "hash": "d886bad793cf",
+      "status": "machine"
+    },
+    "voice:clinical.stop": {
+      "hash": "093b82bad0a2",
+      "status": "machine"
+    },
+    "voice:clinical.storageLimit": {
+      "hash": "315616988ab9",
+      "status": "machine"
+    },
+    "voice:clinical.target": {
+      "hash": "3013a8e85178",
+      "status": "machine"
+    },
+    "voice:clinical.title": {
+      "hash": "49ccb98ff868",
+      "status": "machine"
+    },
+    "voice:clinical.transcript": {
+      "hash": "721164f0dc70",
+      "status": "machine"
+    },
+    "voice:clinical.transcriptTooLong": {
+      "hash": "4812bc9f3598",
       "status": "machine"
     },
     "voice:dialog.confirm": {
@@ -22046,6 +22254,18 @@
       "hash": "f3f3bfe656d3",
       "status": "machine"
     },
+    "media:recordNote.h.gpDiagnostics": {
+      "hash": "268f14bbfe11",
+      "status": "machine"
+    },
+    "media:recordNote.h.gpPhysicalExam": {
+      "hash": "225fedfea3c5",
+      "status": "machine"
+    },
+    "media:recordNote.h.gpVitals": {
+      "hash": "14d018309743",
+      "status": "machine"
+    },
     "media:recordNote.h.header": {
       "hash": "8567c5651088",
       "status": "machine"
@@ -27338,6 +27558,42 @@
       "hash": "6b5763afa621",
       "status": "machine"
     },
+    "visitDocumentation:fields.gpDiagnostics.helper": {
+      "hash": "733560ca15b1",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.gpDiagnostics.label": {
+      "hash": "268f14bbfe11",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.gpPhysicalExam.helper": {
+      "hash": "16f0dc2dc488",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.gpPhysicalExam.label": {
+      "hash": "225fedfea3c5",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.gpVitals.helper": {
+      "hash": "f380f5e27578",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.gpVitals.label": {
+      "hash": "14d018309743",
+      "status": "machine"
+    },
+    "visitDocumentation:gp-exam.purpose": {
+      "hash": "7a33d479471a",
+      "status": "machine"
+    },
+    "visitDocumentation:gp-exam.review": {
+      "hash": "503e3b0167f5",
+      "status": "machine"
+    },
+    "visitDocumentation:gp-exam.title": {
+      "hash": "8ca6759ddf15",
+      "status": "machine"
+    },
     "visitDocumentation:noTreatment": {
       "hash": "1efca4ba966e",
       "status": "machine"
@@ -27444,6 +27700,166 @@
     },
     "voice:button.titleStop": {
       "hash": "a63d34f132ff",
+      "status": "machine"
+    },
+    "voice:clinical.applied": {
+      "hash": "fcaa0abdd4e7",
+      "status": "machine"
+    },
+    "voice:clinical.apply": {
+      "hash": "410028ddaee5",
+      "status": "machine"
+    },
+    "voice:clinical.cancelled": {
+      "hash": "7fcb5cf44525",
+      "status": "machine"
+    },
+    "voice:clinical.consentRequired": {
+      "hash": "9c7e36f2ea56",
+      "status": "machine"
+    },
+    "voice:clinical.copied": {
+      "hash": "f8c9947bc916",
+      "status": "machine"
+    },
+    "voice:clinical.copyPrompt": {
+      "hash": "e083559f902b",
+      "status": "machine"
+    },
+    "voice:clinical.copyPromptShown": {
+      "hash": "74713a083e84",
+      "status": "machine"
+    },
+    "voice:clinical.copyTranscript": {
+      "hash": "401584c4ad5b",
+      "status": "machine"
+    },
+    "voice:clinical.ctApply": {
+      "hash": "86a967716bba",
+      "status": "machine"
+    },
+    "voice:clinical.ctHelp": {
+      "hash": "09ce597e2004",
+      "status": "machine"
+    },
+    "voice:clinical.current": {
+      "hash": "afb2756648cf",
+      "status": "machine"
+    },
+    "voice:clinical.dictate": {
+      "hash": "1317595ef0ab",
+      "status": "machine"
+    },
+    "voice:clinical.emptyTranscript": {
+      "hash": "66e8eefefa33",
+      "status": "machine"
+    },
+    "voice:clinical.evidence": {
+      "hash": "fc537eec08e6",
+      "status": "machine"
+    },
+    "voice:clinical.extractionFailed": {
+      "hash": "34852edc7efb",
+      "status": "machine"
+    },
+    "voice:clinical.failed": {
+      "hash": "3e52b81607a7",
+      "status": "machine"
+    },
+    "voice:clinical.help": {
+      "hash": "f76bc680e193",
+      "status": "machine"
+    },
+    "voice:clinical.includeField": {
+      "hash": "50ab4a609f08",
+      "status": "machine"
+    },
+    "voice:clinical.invalidResponse": {
+      "hash": "c5cdc2f1cad3",
+      "status": "machine"
+    },
+    "voice:clinical.invalidSource": {
+      "hash": "83acfec16d01",
+      "status": "machine"
+    },
+    "voice:clinical.kinds.consultation": {
+      "hash": "725949a1f821",
+      "status": "machine"
+    },
+    "voice:clinical.kinds.ct": {
+      "hash": "89cb8fb91c09",
+      "status": "machine"
+    },
+    "voice:clinical.kinds.discharge": {
+      "hash": "0f24996b033f",
+      "status": "machine"
+    },
+    "voice:clinical.kinds.gp-exam": {
+      "hash": "8ca6759ddf15",
+      "status": "machine"
+    },
+    "voice:clinical.kinds.gp-visit": {
+      "hash": "bfa95103cea5",
+      "status": "machine"
+    },
+    "voice:clinical.noSections": {
+      "hash": "a15b9c13f9be",
+      "status": "machine"
+    },
+    "voice:clinical.prepare": {
+      "hash": "59009f4fae31",
+      "status": "machine"
+    },
+    "voice:clinical.preparing": {
+      "hash": "18afcfa7e7a1",
+      "status": "machine"
+    },
+    "voice:clinical.savedTranscript": {
+      "hash": "09626a0aed61",
+      "status": "machine"
+    },
+    "voice:clinical.savedWithVisit": {
+      "hash": "807226b59af8",
+      "status": "machine"
+    },
+    "voice:clinical.sourceTooLarge": {
+      "hash": "faa96a46e8ba",
+      "status": "machine"
+    },
+    "voice:clinical.sources": {
+      "hash": "53657123bc77",
+      "status": "machine"
+    },
+    "voice:clinical.stale": {
+      "hash": "be1b0b972d76",
+      "status": "machine"
+    },
+    "voice:clinical.start": {
+      "hash": "d886bad793cf",
+      "status": "machine"
+    },
+    "voice:clinical.stop": {
+      "hash": "093b82bad0a2",
+      "status": "machine"
+    },
+    "voice:clinical.storageLimit": {
+      "hash": "315616988ab9",
+      "status": "machine"
+    },
+    "voice:clinical.target": {
+      "hash": "3013a8e85178",
+      "status": "machine"
+    },
+    "voice:clinical.title": {
+      "hash": "49ccb98ff868",
+      "status": "machine"
+    },
+    "voice:clinical.transcript": {
+      "hash": "721164f0dc70",
+      "status": "machine"
+    },
+    "voice:clinical.transcriptTooLong": {
+      "hash": "4812bc9f3598",
       "status": "machine"
     },
     "voice:dialog.confirm": {
@@ -36112,6 +36528,18 @@
       "hash": "f3f3bfe656d3",
       "status": "machine"
     },
+    "media:recordNote.h.gpDiagnostics": {
+      "hash": "268f14bbfe11",
+      "status": "machine"
+    },
+    "media:recordNote.h.gpPhysicalExam": {
+      "hash": "225fedfea3c5",
+      "status": "machine"
+    },
+    "media:recordNote.h.gpVitals": {
+      "hash": "14d018309743",
+      "status": "machine"
+    },
     "media:recordNote.h.header": {
       "hash": "8567c5651088",
       "status": "machine"
@@ -41404,6 +41832,42 @@
       "hash": "6b5763afa621",
       "status": "machine"
     },
+    "visitDocumentation:fields.gpDiagnostics.helper": {
+      "hash": "733560ca15b1",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.gpDiagnostics.label": {
+      "hash": "268f14bbfe11",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.gpPhysicalExam.helper": {
+      "hash": "16f0dc2dc488",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.gpPhysicalExam.label": {
+      "hash": "225fedfea3c5",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.gpVitals.helper": {
+      "hash": "f380f5e27578",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.gpVitals.label": {
+      "hash": "14d018309743",
+      "status": "machine"
+    },
+    "visitDocumentation:gp-exam.purpose": {
+      "hash": "7a33d479471a",
+      "status": "machine"
+    },
+    "visitDocumentation:gp-exam.review": {
+      "hash": "503e3b0167f5",
+      "status": "machine"
+    },
+    "visitDocumentation:gp-exam.title": {
+      "hash": "8ca6759ddf15",
+      "status": "machine"
+    },
     "visitDocumentation:noTreatment": {
       "hash": "1efca4ba966e",
       "status": "machine"
@@ -41510,6 +41974,166 @@
     },
     "voice:button.titleStop": {
       "hash": "a63d34f132ff",
+      "status": "machine"
+    },
+    "voice:clinical.applied": {
+      "hash": "fcaa0abdd4e7",
+      "status": "machine"
+    },
+    "voice:clinical.apply": {
+      "hash": "410028ddaee5",
+      "status": "machine"
+    },
+    "voice:clinical.cancelled": {
+      "hash": "7fcb5cf44525",
+      "status": "machine"
+    },
+    "voice:clinical.consentRequired": {
+      "hash": "9c7e36f2ea56",
+      "status": "machine"
+    },
+    "voice:clinical.copied": {
+      "hash": "f8c9947bc916",
+      "status": "machine"
+    },
+    "voice:clinical.copyPrompt": {
+      "hash": "e083559f902b",
+      "status": "machine"
+    },
+    "voice:clinical.copyPromptShown": {
+      "hash": "74713a083e84",
+      "status": "machine"
+    },
+    "voice:clinical.copyTranscript": {
+      "hash": "401584c4ad5b",
+      "status": "machine"
+    },
+    "voice:clinical.ctApply": {
+      "hash": "86a967716bba",
+      "status": "machine"
+    },
+    "voice:clinical.ctHelp": {
+      "hash": "09ce597e2004",
+      "status": "machine"
+    },
+    "voice:clinical.current": {
+      "hash": "afb2756648cf",
+      "status": "machine"
+    },
+    "voice:clinical.dictate": {
+      "hash": "1317595ef0ab",
+      "status": "machine"
+    },
+    "voice:clinical.emptyTranscript": {
+      "hash": "66e8eefefa33",
+      "status": "machine"
+    },
+    "voice:clinical.evidence": {
+      "hash": "fc537eec08e6",
+      "status": "machine"
+    },
+    "voice:clinical.extractionFailed": {
+      "hash": "34852edc7efb",
+      "status": "machine"
+    },
+    "voice:clinical.failed": {
+      "hash": "3e52b81607a7",
+      "status": "machine"
+    },
+    "voice:clinical.help": {
+      "hash": "f76bc680e193",
+      "status": "machine"
+    },
+    "voice:clinical.includeField": {
+      "hash": "50ab4a609f08",
+      "status": "machine"
+    },
+    "voice:clinical.invalidResponse": {
+      "hash": "c5cdc2f1cad3",
+      "status": "machine"
+    },
+    "voice:clinical.invalidSource": {
+      "hash": "83acfec16d01",
+      "status": "machine"
+    },
+    "voice:clinical.kinds.consultation": {
+      "hash": "725949a1f821",
+      "status": "machine"
+    },
+    "voice:clinical.kinds.ct": {
+      "hash": "89cb8fb91c09",
+      "status": "machine"
+    },
+    "voice:clinical.kinds.discharge": {
+      "hash": "0f24996b033f",
+      "status": "machine"
+    },
+    "voice:clinical.kinds.gp-exam": {
+      "hash": "8ca6759ddf15",
+      "status": "machine"
+    },
+    "voice:clinical.kinds.gp-visit": {
+      "hash": "bfa95103cea5",
+      "status": "machine"
+    },
+    "voice:clinical.noSections": {
+      "hash": "a15b9c13f9be",
+      "status": "machine"
+    },
+    "voice:clinical.prepare": {
+      "hash": "59009f4fae31",
+      "status": "machine"
+    },
+    "voice:clinical.preparing": {
+      "hash": "18afcfa7e7a1",
+      "status": "machine"
+    },
+    "voice:clinical.savedTranscript": {
+      "hash": "09626a0aed61",
+      "status": "machine"
+    },
+    "voice:clinical.savedWithVisit": {
+      "hash": "807226b59af8",
+      "status": "machine"
+    },
+    "voice:clinical.sourceTooLarge": {
+      "hash": "faa96a46e8ba",
+      "status": "machine"
+    },
+    "voice:clinical.sources": {
+      "hash": "53657123bc77",
+      "status": "machine"
+    },
+    "voice:clinical.stale": {
+      "hash": "be1b0b972d76",
+      "status": "machine"
+    },
+    "voice:clinical.start": {
+      "hash": "d886bad793cf",
+      "status": "machine"
+    },
+    "voice:clinical.stop": {
+      "hash": "093b82bad0a2",
+      "status": "machine"
+    },
+    "voice:clinical.storageLimit": {
+      "hash": "315616988ab9",
+      "status": "machine"
+    },
+    "voice:clinical.target": {
+      "hash": "3013a8e85178",
+      "status": "machine"
+    },
+    "voice:clinical.title": {
+      "hash": "49ccb98ff868",
+      "status": "machine"
+    },
+    "voice:clinical.transcript": {
+      "hash": "721164f0dc70",
+      "status": "machine"
+    },
+    "voice:clinical.transcriptTooLong": {
+      "hash": "4812bc9f3598",
       "status": "machine"
     },
     "voice:dialog.confirm": {
@@ -50178,6 +50802,18 @@
       "hash": "f3f3bfe656d3",
       "status": "machine"
     },
+    "media:recordNote.h.gpDiagnostics": {
+      "hash": "268f14bbfe11",
+      "status": "machine"
+    },
+    "media:recordNote.h.gpPhysicalExam": {
+      "hash": "225fedfea3c5",
+      "status": "machine"
+    },
+    "media:recordNote.h.gpVitals": {
+      "hash": "14d018309743",
+      "status": "machine"
+    },
     "media:recordNote.h.header": {
       "hash": "8567c5651088",
       "status": "machine"
@@ -55470,6 +56106,42 @@
       "hash": "6b5763afa621",
       "status": "machine"
     },
+    "visitDocumentation:fields.gpDiagnostics.helper": {
+      "hash": "733560ca15b1",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.gpDiagnostics.label": {
+      "hash": "268f14bbfe11",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.gpPhysicalExam.helper": {
+      "hash": "16f0dc2dc488",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.gpPhysicalExam.label": {
+      "hash": "225fedfea3c5",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.gpVitals.helper": {
+      "hash": "f380f5e27578",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.gpVitals.label": {
+      "hash": "14d018309743",
+      "status": "machine"
+    },
+    "visitDocumentation:gp-exam.purpose": {
+      "hash": "7a33d479471a",
+      "status": "machine"
+    },
+    "visitDocumentation:gp-exam.review": {
+      "hash": "503e3b0167f5",
+      "status": "machine"
+    },
+    "visitDocumentation:gp-exam.title": {
+      "hash": "8ca6759ddf15",
+      "status": "machine"
+    },
     "visitDocumentation:noTreatment": {
       "hash": "1efca4ba966e",
       "status": "machine"
@@ -55576,6 +56248,166 @@
     },
     "voice:button.titleStop": {
       "hash": "a63d34f132ff",
+      "status": "machine"
+    },
+    "voice:clinical.applied": {
+      "hash": "fcaa0abdd4e7",
+      "status": "machine"
+    },
+    "voice:clinical.apply": {
+      "hash": "410028ddaee5",
+      "status": "machine"
+    },
+    "voice:clinical.cancelled": {
+      "hash": "7fcb5cf44525",
+      "status": "machine"
+    },
+    "voice:clinical.consentRequired": {
+      "hash": "9c7e36f2ea56",
+      "status": "machine"
+    },
+    "voice:clinical.copied": {
+      "hash": "f8c9947bc916",
+      "status": "machine"
+    },
+    "voice:clinical.copyPrompt": {
+      "hash": "e083559f902b",
+      "status": "machine"
+    },
+    "voice:clinical.copyPromptShown": {
+      "hash": "74713a083e84",
+      "status": "machine"
+    },
+    "voice:clinical.copyTranscript": {
+      "hash": "401584c4ad5b",
+      "status": "machine"
+    },
+    "voice:clinical.ctApply": {
+      "hash": "86a967716bba",
+      "status": "machine"
+    },
+    "voice:clinical.ctHelp": {
+      "hash": "09ce597e2004",
+      "status": "machine"
+    },
+    "voice:clinical.current": {
+      "hash": "afb2756648cf",
+      "status": "machine"
+    },
+    "voice:clinical.dictate": {
+      "hash": "1317595ef0ab",
+      "status": "machine"
+    },
+    "voice:clinical.emptyTranscript": {
+      "hash": "66e8eefefa33",
+      "status": "machine"
+    },
+    "voice:clinical.evidence": {
+      "hash": "fc537eec08e6",
+      "status": "machine"
+    },
+    "voice:clinical.extractionFailed": {
+      "hash": "34852edc7efb",
+      "status": "machine"
+    },
+    "voice:clinical.failed": {
+      "hash": "3e52b81607a7",
+      "status": "machine"
+    },
+    "voice:clinical.help": {
+      "hash": "f76bc680e193",
+      "status": "machine"
+    },
+    "voice:clinical.includeField": {
+      "hash": "50ab4a609f08",
+      "status": "machine"
+    },
+    "voice:clinical.invalidResponse": {
+      "hash": "c5cdc2f1cad3",
+      "status": "machine"
+    },
+    "voice:clinical.invalidSource": {
+      "hash": "83acfec16d01",
+      "status": "machine"
+    },
+    "voice:clinical.kinds.consultation": {
+      "hash": "725949a1f821",
+      "status": "machine"
+    },
+    "voice:clinical.kinds.ct": {
+      "hash": "89cb8fb91c09",
+      "status": "machine"
+    },
+    "voice:clinical.kinds.discharge": {
+      "hash": "0f24996b033f",
+      "status": "machine"
+    },
+    "voice:clinical.kinds.gp-exam": {
+      "hash": "8ca6759ddf15",
+      "status": "machine"
+    },
+    "voice:clinical.kinds.gp-visit": {
+      "hash": "bfa95103cea5",
+      "status": "machine"
+    },
+    "voice:clinical.noSections": {
+      "hash": "a15b9c13f9be",
+      "status": "machine"
+    },
+    "voice:clinical.prepare": {
+      "hash": "59009f4fae31",
+      "status": "machine"
+    },
+    "voice:clinical.preparing": {
+      "hash": "18afcfa7e7a1",
+      "status": "machine"
+    },
+    "voice:clinical.savedTranscript": {
+      "hash": "09626a0aed61",
+      "status": "machine"
+    },
+    "voice:clinical.savedWithVisit": {
+      "hash": "807226b59af8",
+      "status": "machine"
+    },
+    "voice:clinical.sourceTooLarge": {
+      "hash": "faa96a46e8ba",
+      "status": "machine"
+    },
+    "voice:clinical.sources": {
+      "hash": "53657123bc77",
+      "status": "machine"
+    },
+    "voice:clinical.stale": {
+      "hash": "be1b0b972d76",
+      "status": "machine"
+    },
+    "voice:clinical.start": {
+      "hash": "d886bad793cf",
+      "status": "machine"
+    },
+    "voice:clinical.stop": {
+      "hash": "093b82bad0a2",
+      "status": "machine"
+    },
+    "voice:clinical.storageLimit": {
+      "hash": "315616988ab9",
+      "status": "machine"
+    },
+    "voice:clinical.target": {
+      "hash": "3013a8e85178",
+      "status": "machine"
+    },
+    "voice:clinical.title": {
+      "hash": "49ccb98ff868",
+      "status": "machine"
+    },
+    "voice:clinical.transcript": {
+      "hash": "721164f0dc70",
+      "status": "machine"
+    },
+    "voice:clinical.transcriptTooLong": {
+      "hash": "4812bc9f3598",
       "status": "machine"
     },
     "voice:dialog.confirm": {

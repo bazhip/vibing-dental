@@ -112,7 +112,10 @@
       "consultationPlan": "Plan de consultation",
       "dischargeMedications": "Médicaments de sortie",
       "dischargeInstructions": "Consignes de sortie",
-      "dischargeFollowUp": "Suivi après la sortie"
+      "dischargeFollowUp": "Suivi après la sortie",
+      "gpVitals": "Paramètres vitaux",
+      "gpPhysicalExam": "Examen clinique",
+      "gpDiagnostics": "Examens diagnostiques"
     },
     "alreadyMissing": "Déjà absentes : {{teeth}}",
     "extracted": "Extraites : {{teeth}}",

@@ -1,3 +1,4 @@
+import { gpClinicalContinuations } from './pdf/sections';
 import { PDFDocument, PDFHexString } from 'pdf-lib';
 import { safeFont } from './pdf/safeFont';
 import { optionalClinicalContinuations, drawClinicalContinuations, drawContinuationNotice } from './pdf/continuation';
@@ -170,7 +171,7 @@ export async function buildDentalChartPDFBytes(
     measuredTableBottom > NERVE_BLOCK_BOX.yTopIn ? measuredTableBottom + 0.12 : TREATMENT_REPORT.headerYTopIn,
     NERVE_BLOCK_BOX.xIn, NERVE_BLOCK_BOX.labelColIn + 2 * NERVE_BLOCK_BOX.valueColIn,
     maxOptionalBottomIn, lng, measure);
-  const continuations = measure.overflow ? optionalClinicalContinuations(patientInfo, logo, lng) : [];
+  const continuations = [...(measure.overflow ? optionalClinicalContinuations(patientInfo, logo, lng) : []), ...gpClinicalContinuations(patientInfo, lng)];
   drawClinicalContinuations(pdfDoc, continuations, regular, bold);
   const continuationPages = pdfDoc.getPageCount() - 2;
   const totalPages = 2 + continuationPages + imagePageCount;

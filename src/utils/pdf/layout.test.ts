@@ -135,3 +135,17 @@ it('prints an independent CT report alongside the x-ray report and preserves CT 
   const { parseDentalChartPDF } = await import('../pdfGenerator');
   expect((await parseDentalChartPDF({ arrayBuffer: async () => output.bytes.slice().buffer } as File)).patientInfo.ctReport).toBe(p.ctReport);
 });
+
+it('prints full GP sources on continuation pages and stashes their clinical fields only', async () => {
+  const p = { ...patient, gpVitals: '4 kg?', gpPhysicalExam: 'Left ear sore', gpDiagnostics: 'CBC pending' };
+  const result = await capture(p);
+  const text = result.allTexts.map(row => row.text).join('\n');
+  expect(text).toContain('4 kg?');
+  expect(text).toContain('Left ear sore');
+  expect(text).toContain('CBC pending');
+  const doc = await PDFDocument.load(result.bytes);
+  expect(doc.getPageCount()).toBe(3);
+  const stash = JSON.parse(doc.getForm().getTextField(DIAGRAM_STATE_FIELD).getText()!);
+  expect(stash.patientInfo).toMatchObject(p);
+  expect(stash).not.toHaveProperty('clinicalDictations');
+});

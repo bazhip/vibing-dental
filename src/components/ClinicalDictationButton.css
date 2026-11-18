@@ -1,0 +1,20 @@
+.clinical-dictation { width: min(680px, calc(100vw - 32px)); }
+.clinical-dictation__body { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.clinical-dictation__label { display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600; min-width: 0; }
+.clinical-dictation :is(textarea, select) { box-sizing: border-box; width: 100%; min-height: 44px; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; background: var(--surface); color: var(--text); font: inherit; }
+.clinical-dictation textarea { resize: vertical; font-weight: 400; line-height: 1.5; }
+.clinical-dictation__tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.clinical-dictation button { min-height: 44px; border-radius: var(--radius-sm); padding: 8px 12px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font: inherit; cursor: pointer; }
+.clinical-dictation button:disabled { opacity: .5; cursor: default; }
+.clinical-dictation__proposal { display: flex; flex-direction: column; gap: 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; }
+.clinical-dictation__check { display: flex; gap: 10px; align-items: center; min-height: 44px; font-weight: 600; }
+.clinical-dictation__check input { width: 20px; height: 20px; flex: 0 0 auto; accent-color: var(--primary); }
+.clinical-dictation summary { cursor: pointer; min-height: 44px; display: list-item; align-content: center; overflow-wrap: anywhere; }
+.clinical-dictation :is(p, blockquote, pre) { margin: 0; overflow-wrap: anywhere; white-space: pre-wrap; }
+.clinical-dictation blockquote { border-left: 3px solid var(--primary); padding-left: 10px; margin-bottom: 12px; }
+.clinical-dictation__history details { border-top: 1px solid var(--border); padding: 8px 0; }
+.clinical-dictation__error { color: var(--danger); }
+.clinical-dictation__footer { display: flex; justify-content: flex-end; }
+.clinical-dictation button.clinical-dictation__primary { background: var(--primary); color: var(--on-primary); border-color: var(--primary); font-weight: 600; }
+.clinical-dictation :is(button, textarea, select, input, summary):focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+@media (max-width: 480px) { .clinical-dictation { width: calc(100vw - 16px); } .clinical-dictation__footer > button { width: 100%; } }

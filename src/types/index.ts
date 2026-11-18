@@ -275,6 +275,9 @@ export interface PatientInfo {
   complaint: string;
   treatmentReport: string;
   /** Explicit visit sources; absent on older charts. Each is bounded to 20,000 characters. */
+  gpVitals?: string;
+  gpPhysicalExam?: string;
+  gpDiagnostics?: string;
   consultationHistory?: string;
   consultationAssessment?: string;
   consultationPlan?: string;
@@ -415,7 +418,23 @@ export interface OwnerReportOverrides {
   templateId?: string;
 }
 
+export type ClinicalDictationKind = 'gp-visit' | 'consultation' | 'gp-exam' | 'discharge' | 'ct';
+export type ClinicalDictationField =
+  | 'complaint' | 'consultationHistory' | 'consultationAssessment' | 'consultationPlan'
+  | 'gpVitals' | 'gpPhysicalExam' | 'gpDiagnostics' | 'treatmentReport' | 'ctReport'
+  | 'dischargeMedications' | 'dischargeInstructions' | 'dischargeFollowUp';
+export interface ClinicalDictationSource {
+  id: string;
+  kind: ClinicalDictationKind;
+  language: AppLanguage;
+  transcript: string;
+  recordedAt: string;
+  fields: ClinicalDictationField[];
+}
+
 export interface ChartSnapshot {
+  /** Raw dictation provenance: storage only, excluded from reports and PDF stashes. */
+  clinicalDictations?: ClinicalDictationSource[];
   /** Snapshot schema version — absent on charts saved before the field
    *  existed (treat as 1). Bump when the shape changes incompatibly so
    *  loaders have something to key migrations on. */

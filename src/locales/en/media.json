@@ -112,7 +112,10 @@
       "consultationPlan": "Consultation plan",
       "dischargeMedications": "Discharge medications",
       "dischargeInstructions": "Discharge instructions",
-      "dischargeFollowUp": "Discharge follow-up"
+      "dischargeFollowUp": "Discharge follow-up",
+      "gpVitals": "Vital signs",
+      "gpPhysicalExam": "Physical examination",
+      "gpDiagnostics": "Diagnostics"
     },
     "alreadyMissing": "Already missing: {{teeth}}",
     "extracted": "Extracted: {{teeth}}",

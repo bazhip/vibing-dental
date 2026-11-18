@@ -40,6 +40,23 @@
     "dischargeFollowUp": {
       "label": "Suivi",
       "helper": "Consignez le suivi discuté ; utilisez la date de rappel existante pour un contrôle prévu."
+    },
+    "gpVitals": {
+      "label": "Paramètres vitaux",
+      "helper": "Consignez les valeurs mesurées avec leurs unités et toute incertitude."
+    },
+    "gpPhysicalExam": {
+      "label": "Examen clinique",
+      "helper": "Consignez uniquement les constatations observées ou rapportées lors de l’examen."
+    },
+    "gpDiagnostics": {
+      "label": "Examens diagnostiques",
+      "helper": "Consignez les résultats diagnostiques et les examens en attente, en conservant toute incertitude."
     }
+  },
+  "gp-exam": {
+    "title": "Examen général",
+    "purpose": "Consignez les paramètres vitaux, l’examen clinique et les résultats diagnostiques pour cette visite.",
+    "review": "Vérifier le dossier clinique"
   }
 }

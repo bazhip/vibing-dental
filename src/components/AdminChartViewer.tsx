@@ -143,6 +143,7 @@ export function ChartReadOnlyView({ data }: { data: unknown }) {
 
 function ChartBody({ snap }: { snap: ChartSnapshot }) {
   const { t } = useTranslation('app');
+  const { t: visitT } = useTranslation('visitDocumentation');
   const p = snap.patientInfo;
   const exam = EXAM_ITEMS.filter((i) => p.exam[i.key]?.status);
   const blocks = (Object.keys(BLOCK_LABELS) as NerveBlockSite[]).filter((k) => p.nerveBlocks[k]?.trim());
@@ -264,6 +265,10 @@ function ChartBody({ snap }: { snap: ChartSnapshot }) {
         </section>
       )}
 
+      {(['gpVitals', 'gpPhysicalExam', 'gpDiagnostics'] as const).map(field => p[field]?.trim() && <section key={field}>
+        <h3 className="ai-settings-subhead">{visitT(`fields.${field}.label`)}</h3>
+        <p className="admin-chart-viewer__report">{p[field]}</p>
+      </section>)}
       {ctRecordedText(p).trim() && <section>
         <h3 className="ai-settings-subhead">{t('ctReport.title')}</h3>
         <p className="admin-chart-viewer__report">{ctRecordedText(p)}</p>

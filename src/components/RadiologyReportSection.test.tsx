@@ -236,3 +236,32 @@ it('treats malformed local CT text as empty rather than displaying an object or 
  render(<RadiologyReportSection reportKind="ct" snapshot={value} aiEnabled onChange={vi.fn()}/>);
  expect(screen.getByLabelText('Report text')).toHaveValue('');expect(screen.getByRole('button',{name:'Refine with AI'})).toBeDisabled();
 });
+it('keeps real CT capture language and clears review when automatic refinement fails', async () => {
+  const i18n = (await import('../i18n')).default;
+  const { ctReportSnapshot } = await import('../utils/ctReportState');
+  const { radiologySourceBasis, radiologyReviewBasis } = await import('../utils/radiologyReportState');
+  const value = snapshot(); Object.assign(value.patientInfo, { ctReport: 'Existing CT report.', ctReportLanguage: 'en' });
+  const ct = ctReportSnapshot(value);
+  value.patientInfo.ctReportBasis = radiologySourceBasis(ct); value.patientInfo.ctReviewedBasis = radiologyReviewBasis(ct, 'en');
+  let latest = value;
+  function RealCaptureEditor() {
+    const [s, setS] = React.useState(value); latest = s;
+    return <RadiologyReportSection reportKind="ct" snapshot={s} chartId="ct-chart" chartSession={1} aiEnabled
+      onChange={changes => setS(previous => ({ ...previous, patientInfo: { ...previous.patientInfo, ...changes } }))}
+      onDictationApply={(changes, source) => setS(previous => ({ ...previous, patientInfo: { ...previous.patientInfo, ...changes }, clinicalDictations: [source] }))} />;
+  }
+  mocks.generate.mockRejectedValueOnce(new TypeError());
+  try {
+    await act(async () => { await i18n.changeLanguage('fr'); });
+    render(<RealCaptureEditor />);
+    fireEvent.click(screen.getByRole('button', { name: i18n.t('voice:clinical.dictate', { target: i18n.t('voice:clinical.kinds.ct') }) }));
+    fireEvent.change(screen.getByLabelText(i18n.t('voice:clinical.transcript')), { target: { value: 'Lésion de 409, étendue incertaine.' } });
+    fireEvent.click(screen.getByRole('button', { name: i18n.t('voice:clinical.ctApply') }));
+    await waitFor(() => expect(mocks.generate).toHaveBeenCalledOnce()); await screen.findByRole('alert');
+    expect(latest.patientInfo).toMatchObject({ ctReportLanguage: 'fr', ctReviewedBasis: '', ctReport: 'Existing CT report.\n\nLésion de 409, étendue incertaine.' });
+    expect(latest.clinicalDictations?.[0]).toMatchObject({ language: 'fr', kind: 'ct', transcript: 'Lésion de 409, étendue incertaine.' });
+    expect(screen.getByRole('combobox')).toHaveValue('fr');
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(screen.getByLabelText(i18n.t('app:radiologyReport.checked'))).not.toBeChecked();
+  } finally { await act(async () => { await i18n.changeLanguage('en'); }); }
+});

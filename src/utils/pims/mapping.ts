@@ -19,6 +19,9 @@ export type EffectiveFieldMap = Record<SourceKey, string | null> & { editedNote?
 
 export const DEFAULT_EZYVET_MAP: Record<SourceKey, string | null> = {
   header: null,
+  gpVitals: null,
+  gpPhysicalExam: null,
+  gpDiagnostics: null,
   consultationHistory: null,
   consultationAssessment: null,
   consultationPlan: null,

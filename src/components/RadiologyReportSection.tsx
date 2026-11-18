@@ -1,7 +1,8 @@
+import { ClinicalDictationButton } from './ClinicalDictationButton';
 import React from 'react';
 import { ctReportChanges, ctReportSnapshot } from '../utils/ctReportState';
 import { useTranslation } from 'react-i18next';
-import type { ChartSnapshot, PatientInfo } from '../types';
+import type { ChartSnapshot, PatientInfo, ClinicalDictationSource } from '../types';
 import { APP_LANGUAGES, LANGUAGE_NAMES, isAppLanguage, type AppLanguage } from '../i18n/config';
 import { ensureAiConsent } from '../native/aiConsent';
 import { draftRadiologyReport } from '../utils/radiologyReportAi';
@@ -22,6 +23,9 @@ interface Props {
   readOnly?: boolean;
   aiEnabled?: boolean;
   showAiNotice?: boolean;
+  onDictationApply?: (changes: Partial<PatientInfo>, source: ClinicalDictationSource) => void;
+  dictationDisabled?: boolean;
+  onDictationOpenChange?: (open: boolean) => void;
   refineRequest?: { id: number; language: AppLanguage };
   onChange: (changes: Partial<PatientInfo>) => void;
 }
@@ -29,7 +33,7 @@ type Guard = { epoch: number; source: string; report: string; reviewed: string; 
 const reportFields = ['radiologyReport', 'radiologyReportLanguage', 'radiologyReportBasis', 'radiologyReviewedBasis', 'radiologyReportGeneratedAt'] as const;
 const escapeHtml = (value: string) => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-export function RadiologyReportSection({ snapshot: originalSnapshot, reportKind = 'radiology', chartId = null, chartSession = 0, readOnly = false, aiEnabled = false, showAiNotice = true, refineRequest, onChange: onPatientChange }: Props): React.ReactElement {
+export function RadiologyReportSection({ snapshot: originalSnapshot, reportKind = 'radiology', chartId = null, chartSession = 0, readOnly = false, aiEnabled = false, showAiNotice = true, onDictationApply, dictationDisabled, onDictationOpenChange, refineRequest, onChange: onPatientChange }: Props): React.ReactElement {
   const { t, i18n } = useTranslation('app');
   const snapshot = reportKind === 'ct' ? ctReportSnapshot(originalSnapshot) : originalSnapshot;
   const onChange = (changes: Partial<PatientInfo>) => onPatientChange(reportKind === 'ct' ? ctReportChanges(changes) : changes);
@@ -40,6 +44,9 @@ export function RadiologyReportSection({ snapshot: originalSnapshot, reportKind 
   const language: AppLanguage = isAppLanguage(info.radiologyReportLanguage) ? info.radiologyReportLanguage : isAppLanguage(i18n.resolvedLanguage) ? i18n.resolvedLanguage : 'en';
   const draft = radiologyEditorText(snapshot, language);
   const handledRequest = React.useRef<number | null>(null);
+  const localRefineSerial = React.useRef(0);
+  const [localRefineRequest, setLocalRefineRequest] = React.useState<{ id: number; language: AppLanguage }>();
+  const requestedRefinement = refineRequest ?? localRefineRequest;
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [feedback, setFeedback] = React.useState<'copied' | 'downloaded' | 'shared' | 'copyPromptShown' | null>(null);
@@ -109,10 +116,10 @@ export function RadiologyReportSection({ snapshot: originalSnapshot, reportKind 
   const generateRef = React.useRef(generate);
   generateRef.current = generate;
   React.useEffect(() => {
-    if (!refineRequest || handledRequest.current === refineRequest.id) return;
-    handledRequest.current = refineRequest.id;
-    void generateRef.current(refineRequest.language);
-  }, [refineRequest]);
+    if (!requestedRefinement || handledRequest.current === requestedRefinement.id) return;
+    handledRequest.current = requestedRefinement.id;
+    void generateRef.current(requestedRefinement.language);
+  }, [requestedRefinement]);
   const transfer = async (format: 'copy' | 'pdf') => {
     if (locked.current || !reviewed) return;
     const request = guard(); locked.current = true; setBusy(true); setError(null); setFeedback(null);
@@ -160,6 +167,13 @@ export function RadiologyReportSection({ snapshot: originalSnapshot, reportKind 
       }}>
         {APP_LANGUAGES.map(value => <option key={value} value={value}>{LANGUAGE_NAMES[value]}</option>)}
       </select></label>
+      {reportKind === 'ct' && onDictationApply && aiEnabled && <ClinicalDictationButton kind="ct" snapshot={originalSnapshot}
+        chartId={chartId} chartSession={chartSession} readOnly={readOnly} aiEnabled={aiEnabled}
+        disabled={dictationDisabled || busy} onOpenChange={onDictationOpenChange}
+        onApply={(changes, source) => {
+          onDictationApply(changes, source);
+          setLocalRefineRequest({ id: ++localRefineSerial.current, language: source.language });
+        }} />}
       <button type="button" className={!reviewed ? 'entry-grid__button entry-grid__button--topbar radiology-report__primary' : 'diagram-view__action'}
         disabled={readOnly || busy || !aiEnabled || !hasRadiologySource(snapshot)} onClick={() => void generate()}>
         {t(busy && !reviewed ? 'radiologyReport.refining' : 'radiologyReport.refine')}

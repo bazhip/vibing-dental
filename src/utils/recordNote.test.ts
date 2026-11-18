@@ -143,3 +143,15 @@ it('includes CT as a separate record/PIMS section and invalidates on CT edits', 
   value.patientInfo.ctReport = ''; expect(recordNoteBasis(value)).not.toBe(before);
   expect(buildRecordNote(value, en()).sections.some(item => item.key === 'ctReport')).toBe(false);
 });
+
+it('includes GP clinical sections and basis but excludes raw dictation provenance', () => {
+  const base = snap();
+  const s = snap({ clinicalDictations: [{ id: 'source', kind: 'gp-exam', language: 'en', transcript: 'PRIVATE RAW SOURCE', recordedAt: '2026-11-18T12:00:00Z', fields: ['gpVitals'] }] }, { gpVitals: '4 kg?', gpPhysicalExam: 'Painful left ear', gpDiagnostics: 'CBC pending' });
+  const text = recordNoteText(buildRecordNote(s, en()));
+  expect(text).toContain('VITAL SIGNS\n4 kg?');
+  expect(text).toContain('PHYSICAL EXAMINATION\nPainful left ear');
+  expect(text).toContain('DIAGNOSTICS\nCBC pending');
+  expect(text).not.toContain('PRIVATE RAW SOURCE');
+  expect(recordNoteBasis(s)).not.toBe(recordNoteBasis(base));
+  expect(recordNoteBasis({ ...base, clinicalDictations: s.clinicalDictations })).toBe(recordNoteBasis(base));
+});

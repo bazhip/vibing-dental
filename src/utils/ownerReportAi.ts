@@ -97,6 +97,7 @@ export function ownerReportFacts(snapshot: ChartSnapshot, context?: OwnerReportC
     radiologyRecordedText(info).trim() ? `${typeof info.radiologyReport === 'string' ? 'Radiology report (clinician-edited text; may include an unreviewed AI refinement)' : 'Radiographic findings (written by the vet)'}:\n${radiologyRecordedText(info).trim()}` : '',
     ctRecordedText(info).trim() ? `CT report (clinician-edited text; may include an unreviewed AI refinement):\n${ctRecordedText(info).trim()}` : '',
     info.treatmentReport?.trim() ? `Treatment report (written by the vet):\n${info.treatmentReport.trim()}` : '',
+    ...(['gpVitals', 'gpPhysicalExam', 'gpDiagnostics'] as const).map(field => info[field]?.trim() ? `${field} (recorded source, preserve doses and uncertainty):\n${info[field]}` : ''),
     info.consultationHistory?.trim() ? `consultationHistory (recorded source, preserve doses and uncertainty):\n${info.consultationHistory}` : '',
     info.consultationAssessment?.trim() ? `consultationAssessment (recorded source, preserve doses and uncertainty):\n${info.consultationAssessment}` : '',
     info.consultationPlan?.trim() ? `consultationPlan (recorded source, preserve doses and uncertainty):\n${info.consultationPlan}` : '',

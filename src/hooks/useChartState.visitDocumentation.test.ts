@@ -2,7 +2,7 @@ import { act, renderHook } from '@testing-library/react';
 import { beforeEach, afterEach, expect, it, vi } from 'vitest';
 import { normalizeSnapshot, useChartState } from './useChartState';
 import { VISIT_DOCUMENT_FIELDS } from '../utils/visitDocumentation';
-const sources = { consultationHistory: 'History?', consultationAssessment: 'Uncertain', consultationPlan: 'Discuss options', dischargeMedications: 'Drug 2 mg? confirm', dischargeInstructions: 'Recorded wording', dischargeFollowUp: 'As discussed' };
+const sources = { gpVitals: '4 kg?', gpPhysicalExam: 'Left ear sore', gpDiagnostics: 'CBC pending', consultationHistory: 'History?', consultationAssessment: 'Uncertain', consultationPlan: 'Discuss options', dischargeMedications: 'Drug 2 mg? confirm', dischargeInstructions: 'Recorded wording', dischargeFollowUp: 'As discussed' };
 const values = new Map<string, string>();
 beforeEach(() => {
   values.clear();
@@ -26,8 +26,46 @@ it('normalizes malformed imported fields without adding fields to an old chart',
   const { result } = renderHook(() => useChartState());
   const snapshot = result.current.getSnapshot();
   expect(normalizeSnapshot(snapshot).patientInfo).not.toHaveProperty('consultationHistory');
+  expect(normalizeSnapshot(snapshot)).not.toHaveProperty('clinicalDictations');
   const bad = { ...snapshot, patientInfo: { ...snapshot.patientInfo, consultationHistory: {}, dischargeMedications: 'x'.repeat(20001) } };
   const info = normalizeSnapshot(bad as never).patientInfo;
   expect(info).not.toHaveProperty('consultationHistory');
   expect(info).not.toHaveProperty('dischargeMedications');
+});
+
+it('persists clinical provenance separately, normalizes imports, and clears it for another visit', () => {
+  const source = { id: 'test', kind: 'gp-exam' as const, language: 'en' as const, transcript: 'Weight 4 kg?', recordedAt: '2026-11-18T12:00:00Z', fields: ['gpVitals' as const] };
+  const first = renderHook(() => useChartState());
+  act(() => first.result.current.appendClinicalDictation(source));
+  const snapshot = first.result.current.getSnapshot();
+  expect(snapshot.clinicalDictations).toEqual([source]);
+  first.unmount();
+  const next = renderHook(() => useChartState());
+  expect(next.result.current.getSnapshot().clinicalDictations).toEqual([source]);
+  act(() => next.result.current.applySnapshot({ ...snapshot, clinicalDictations: [source, {}] } as never, 'cloud'));
+  expect(next.result.current.clinicalDictations).toEqual([source]);
+  act(() => next.result.current.startNewVisit());
+  expect(next.result.current.getSnapshot().clinicalDictations).toBeUndefined();
+});
+
+it('appends multiple sources in a batch and rejects a duplicate synchronously without changing provenance', () => {
+  const { result } = renderHook(() => useChartState());
+  const source = { id: 'one', kind: 'ct' as const, language: 'en' as const, transcript: 'Uncertain extent', recordedAt: '2026-11-18T12:00:00Z', fields: ['ctReport' as const] };
+  act(() => {
+    result.current.appendClinicalDictation(source);
+    result.current.appendClinicalDictation({ ...source, id: 'two' });
+  });
+  expect(result.current.clinicalDictations).toHaveLength(2);
+  expect(() => result.current.appendClinicalDictation(source)).toThrow();
+  expect(result.current.clinicalDictations).toHaveLength(2);
+});
+it('keeps a same-batch source append bound to the reset or loaded visit', () => {
+  const { result } = renderHook(() => useChartState());
+  const source = { id: 'old', kind: 'gp-visit' as const, language: 'en' as const, transcript: 'Recorded observation.', recordedAt: '2026-11-18T12:00:00Z', fields: ['gpPhysicalExam' as const] };
+  act(() => result.current.appendClinicalDictation(source));
+  act(() => { result.current.startNewVisit(); result.current.appendClinicalDictation({ ...source, id: 'new' }); });
+  expect(result.current.clinicalDictations.map(item => item.id)).toEqual(['new']);
+  const snapshot = result.current.getSnapshot();
+  act(() => { result.current.applySnapshot({ ...snapshot, clinicalDictations: [{ ...source, id: 'loaded' }] }, 'loaded-visit'); result.current.appendClinicalDictation({ ...source, id: 'appended' }); });
+  expect(result.current.clinicalDictations.map(item => item.id)).toEqual(['loaded', 'appended']);
 });

@@ -33,6 +33,7 @@ function allowRouteEvent(event: HashChangeEvent): boolean {
 export const CHART_SECTION_IDS = [
   'patient',
   'consultation',
+  'gp-exam',
   'exam',
   'anesthesia',
   'charting',

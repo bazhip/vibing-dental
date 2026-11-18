@@ -112,7 +112,10 @@
       "consultationPlan": "Plan de la consulta",
       "dischargeMedications": "Medicamentos al alta",
       "dischargeInstructions": "Instrucciones al alta",
-      "dischargeFollowUp": "Seguimiento tras el alta"
+      "dischargeFollowUp": "Seguimiento tras el alta",
+      "gpVitals": "Constantes vitales",
+      "gpPhysicalExam": "Exploración física",
+      "gpDiagnostics": "Pruebas diagnósticas"
     },
     "alreadyMissing": "Ausentes previamente: {{teeth}}",
     "extracted": "Extraídos: {{teeth}}",

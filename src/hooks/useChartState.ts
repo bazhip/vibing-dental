@@ -1,4 +1,6 @@
 import React from 'react';
+import type { ClinicalDictationSource } from '../types';
+import { normalizeClinicalDictations, appendClinicalDictationSource } from '../utils/clinicalDictationSources';
 import { createPatientIdentity, patientNumberOf } from '../utils/patientIds';
 import { normalizeVisitDocumentation } from '../utils/visitDocumentation';
 import { normalizeCustomAnesthesia } from '../utils/customAnesthesia';
@@ -143,6 +145,9 @@ export interface UseChartStateReturn {
   /** Set an owner-report block; null restores the generated text. */
   setOwnerReportOverride: (field: keyof OwnerReportOverrides, value: string | null) => void;
 
+  /** Raw dictation provenance, stored separately from generated reports. */
+  clinicalDictations: ClinicalDictationSource[];
+  appendClinicalDictation: (source: ClinicalDictationSource) => void;
   /** Hand-edited record note (null = generated from the chart). */
   recordNote: StoredRecordNote | null;
   setRecordNote: (note: StoredRecordNote | null) => void;
@@ -214,8 +219,11 @@ function normalizeRadiologyInfo(info: PatientInfo): PatientInfo {
 }
 
 export function normalizeSnapshot(s: ChartSnapshot): ChartSnapshot {
+  const { clinicalDictations: rawDictations, ...chart } = s;
+  const clinicalDictations = normalizeClinicalDictations(rawDictations);
   return {
-    ...s,
+    ...chart,
+    ...(clinicalDictations.length ? { clinicalDictations } : {}),
     patientInfo: {
       ...normalizeVisitDocumentation(normalizeRadiologyInfo(s.patientInfo)),
       complaint: s.patientInfo.complaint ?? '',
@@ -485,6 +493,17 @@ export function useChartState(): UseChartStateReturn {
   // Hand-edited owner-report blocks. A field exists only when customized
   // — the report generator falls back to generated text otherwise.
   const [ownerReport, setOwnerReport] = usePersistedState<OwnerReportOverrides>('chart.ownerReport', 1, {});
+  const [clinicalDictations, persistClinicalDictations] = usePersistedState<ClinicalDictationSource[]>('chart.clinicalDictations', 1, [], normalizeClinicalDictations);
+  const clinicalDictationsRef = React.useRef(clinicalDictations);
+  clinicalDictationsRef.current = clinicalDictations;
+  const setClinicalDictations = (sources: ClinicalDictationSource[]) => {
+    clinicalDictationsRef.current = sources;
+    persistClinicalDictations(sources);
+  };
+  const appendClinicalDictation = (source: ClinicalDictationSource) => {
+    const next = appendClinicalDictationSource(clinicalDictationsRef.current, source);
+    setClinicalDictations(next);
+  };
   const [recordNote, setRecordNote] = usePersistedState<StoredRecordNote | null>('chart.recordNote', 1, null);
   const setOwnerReportOverride = React.useCallback(
     (field: keyof OwnerReportOverrides, value: string | null) => {
@@ -561,6 +580,7 @@ export function useChartState(): UseChartStateReturn {
     setPdfExcludedImages([]);
     setOwnerReport({}); // report edits are visit-specific
     setRecordNote(null);
+    setClinicalDictations([]);
     setPlannedExtractions([]);
     setPatientInfo(blankPatientInfo(keep.patientName.trim() || keep.patientNumber.trim() || keep.patientId ? keep : undefined));
     if (identity) {
@@ -600,6 +620,7 @@ export function useChartState(): UseChartStateReturn {
     ...(plannedExtractions.length ? { plannedExtractions } : {}),
     // Same: absent unless the note was edited, so existing hashes hold.
     ...(recordNote ? { recordNote } : {}),
+    ...(clinicalDictations.length ? { clinicalDictations } : {}),
     patientInfo: patientInfo.generatedPatientNumber && !patientInfo.patientNumber.trim() ? { ...patientInfo, patientNumber: patientNumberOf(patientInfo) } : patientInfo,
     toothData,
     species,
@@ -611,7 +632,7 @@ export function useChartState(): UseChartStateReturn {
     postComments: postDiagramComments,
     postStrokes: postDiagramStrokes,
   }), [
-    imageRoles, pdfExcludedImages, ownerReport, recordNote, plannedExtractions, patientInfo, toothData, species, logo,
+    imageRoles, pdfExcludedImages, ownerReport, recordNote, clinicalDictations, plannedExtractions, patientInfo, toothData, species, logo,
     preToothMarks, preDiagramComments, preDiagramStrokes,
     postToothMarks, postDiagramComments, postDiagramStrokes,
   ]);
@@ -656,6 +677,7 @@ export function useChartState(): UseChartStateReturn {
     writeJson('chart.plannedExtractions', 1, plannedExtractions);
     writeJson('chart.ownerReport', 1, ownerReport);
     writeJson('chart.recordNote', 1, recordNote);
+    writeJson('chart.clinicalDictations', 1, clinicalDictations);
     window.dispatchEvent(new Event(CHART_STORAGE_REWRITE_EVENT));
     // Runs after this tab changes anything; the values are read fresh.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -671,6 +693,7 @@ export function useChartState(): UseChartStateReturn {
     setPdfExcludedImages(Array.isArray(snapshot.pdfExcludedImages) ? snapshot.pdfExcludedImages : []);
     setOwnerReport(snapshot.ownerReport ?? {});
     setRecordNote(snapshot.recordNote ?? null);
+    setClinicalDictations(snapshot.clinicalDictations ?? []);
     setPlannedExtractions(
       Array.isArray(snapshot.plannedExtractions)
         ? snapshot.plannedExtractions.filter((t): t is number => typeof t === 'number')
@@ -727,6 +750,7 @@ export function useChartState(): UseChartStateReturn {
       setPdfExcludedImages([]);
       setOwnerReport({}); // report edits don't either
       setRecordNote(null);
+      setClinicalDictations([]);
       setPlannedExtractions([]); // nor the extraction plan
       setPatientInfo(normalizeSnapshot({ patientInfo: parsed.patientInfo } as ChartSnapshot).patientInfo);
       setSpecies(parsed.species);
@@ -813,6 +837,8 @@ export function useChartState(): UseChartStateReturn {
     ownerReport,
     setOwnerReportOverride,
 
+    clinicalDictations,
+    appendClinicalDictation,
     recordNote,
     setRecordNote,
   };

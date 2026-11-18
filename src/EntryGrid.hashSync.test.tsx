@@ -69,7 +69,7 @@ it('returns from practice settings to the visible current visit', async () => {
   expect(screen.queryByRole('heading', { name: 'Practice settings' })).toBeNull();
 });
 
-it.each([['Consultation','consultation'],['Discharge','discharge'],['Imaging','imaging']])('opens the %s entry tab within the current visit', async(label,section)=>{
+it.each([['Consultation','consultation'],['Discharge','discharge'],['Imaging','imaging'],['GP examination','gp-exam']])('opens the %s entry tab within the current visit', async(label,section)=>{
  window.history.replaceState(null,'','/#/chart/patient');
  render(<><EntryGrid trial/><DialogHost/></>);
  await screen.findAllByText(label);

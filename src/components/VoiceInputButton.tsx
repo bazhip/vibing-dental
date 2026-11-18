@@ -104,6 +104,7 @@ interface VoiceInputButtonProps {
    *  section + highlight the fields the AI just edited. */
   /** After pending chunks and the final check have landed for this session. */
   onDictationComplete?: (lng: AppLanguage) => void;
+  onBusyChange?: (busy: boolean) => void;
   onActivity?: (actions: AiAction[], lng: AppLanguage) => void;
   /** Chart section on screen — dictation fills this section. */
   activeSection?: string;
@@ -239,7 +240,7 @@ function useStickToBottom<T extends HTMLElement>(dep: unknown) {
 }
 
 export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
-  context, handlers, onActivity, onDictationComplete, activeSection, sessionKey, locked = false, onOpenFeedback}) => {
+  context, handlers, onActivity, onDictationComplete, onBusyChange, activeSection, sessionKey, locked = false, onOpenFeedback}) => {
   const { t } = useTranslation('voice');
   const [activeChunkCount, setActiveChunkCount] = React.useState(0);
   const [activity, setActivity] = React.useState<ActivityEntry[]>([]);
@@ -879,6 +880,8 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     : sending ? t('sub.finishing') : reviewLabel;
   const className = ['voice-input', voice.recording ? 'voice-input--recording' : '', sending ? 'voice-input--processing' : ''].filter(Boolean).join(' ');
 
+  React.useEffect(() => { onBusyChange?.(voice.recording || sending); }, [voice.recording, sending, onBusyChange]);
+  React.useEffect(() => () => { onBusyChange?.(false); }, [onBusyChange]);
   const status = connecting
     ? { text: t('status.connecting'), cls: 'ai-sidebar__status--connecting' }
     : goAhead

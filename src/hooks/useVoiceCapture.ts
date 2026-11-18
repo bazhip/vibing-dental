@@ -83,6 +83,8 @@ export interface VoiceCapture {
   interim: string;
   /** Start a fresh session (clears the transcript). Stable. */
   start: () => void;
+  /** Fresh clinical transport in an explicitly retained dictation language. */
+  startInLanguage?: (lng: AppLanguage) => void;
   /** Clear the transcript without starting. Stable. */
   clear: () => void;
   /** Ignore the mic while true (the app is speaking a prompt). Stable. */
@@ -128,7 +130,9 @@ function isTouchPrimary(): boolean {
   return typeof window !== 'undefined' && !!window.matchMedia?.('(pointer: coarse)').matches;
 }
 
-interface UseVoiceCaptureOptions {
+export interface UseVoiceCaptureOptions {
+  /** Opt in to dropping events and stop callbacks from superseded capture sessions. */
+  ignoreStaleStopCallbacks?: boolean;
   /** Fires when a session ends (stop or interruption), once its last
    *  words are in. */
   onStop?: (transcript: string) => void;
@@ -136,7 +140,7 @@ interface UseVoiceCaptureOptions {
   onSegment?: (seg: FinalSegment) => void;
 }
 
-export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = {}): VoiceCapture {
+export function useVoiceCapture({ onStop, onSegment, ignoreStaleStopCallbacks = false }: UseVoiceCaptureOptions = {}): VoiceCapture {
   const browserCtor = React.useMemo(getRecognitionCtor, []);
   // Deepgram (high accuracy + diarization) is preferred when the browser
   // can capture raw audio; its key is minted per-session by the backend,
@@ -157,6 +161,7 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
   const [interrupted, setInterrupted] = React.useState(false);
   const [lng, setLng] = React.useState<AppLanguage>(appLanguage);
   const lngRef = React.useRef<AppLanguage>(lng);
+  const forcedFreshLanguageRef = React.useRef<AppLanguage | null>(null);
 
   // Internal buffers — refs so callbacks don't have to re-bind.
   const finalRef = React.useRef('');
@@ -181,6 +186,11 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
   const sessionLiveRef = React.useRef(false);
   // Mic permission refused: the session ends, but "resume" can't help.
   const fatalRef = React.useRef(false);
+
+  const ignoreStaleStopCallbacksRef = React.useRef(ignoreStaleStopCallbacks);
+  React.useEffect(() => { ignoreStaleStopCallbacksRef.current = ignoreStaleStopCallbacks; }, [ignoreStaleStopCallbacks]);
+  const isStaleSession = React.useCallback((id: number, generation: number) =>
+    ignoreStaleStopCallbacksRef.current && (id !== sessionIdRef.current || generation !== generationRef.current), []);
 
   const onStopRef = React.useRef(onStop);
   React.useEffect(() => { onStopRef.current = onStop; }, [onStop]);
@@ -226,9 +236,10 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
     setStartedAt(null);
   }, []);
 
-  /** A session ended. `id` identifies which; a stale one (already
-   *  superseded by a resume) only flushes its words. */
-  const handleSessionEnd = React.useCallback((id: number) => {
+  /** A session ended. Existing consumers still receive stop callbacks
+   *  after a resume; opted-in consumers require the current session and generation. */
+  const handleSessionEnd = React.useCallback((id: number, generation: number) => {
+    if (isStaleSession(id, generation)) return;
     const finalText = finalRef.current.trim();
     if (id === sessionIdRef.current) {
       const wasLive = sessionLiveRef.current;
@@ -240,9 +251,10 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
       if (wasLive && !stopRequestedRef.current && !fatalRef.current) setInterrupted(true);
     }
     onStopRef.current?.(finalText);
-  }, []);
+  }, [isStaleSession]);
 
   const startBrowser = React.useCallback((id: number) => {
+    const generation = generationRef.current;
     if (!browserCtor) {
       setError(i18n.t('errors.browserUnsupported', { ns: 'voice' }));
       setRecording(false);
@@ -254,6 +266,7 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
     rec.lang = browserSpeechLang(lngRef.current, navigator.language);
 
     rec.onresult = (event) => {
+      if (isStaleSession(id, generation)) return;
       let text = '';
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const result = event.results[i];
@@ -268,12 +281,13 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
       if (text) setInterim(text);
     };
     rec.onerror = (e) => {
+      if (isStaleSession(id, generation)) return;
       if (e.error === 'not-allowed' || e.error === 'service-not-allowed') fatalRef.current = true;
       setError(i18n.t('errors.recognition', { ns: 'voice', error: e.error ?? i18n.t('errors.recognitionUnknown', { ns: 'voice' }) }));
     };
     rec.onend = () => {
       if (browserRef.current === rec) browserRef.current = null;
-      handleSessionEnd(id);
+      handleSessionEnd(id, generation);
     };
 
     browserRef.current = rec;
@@ -287,9 +301,10 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
       browserRef.current = null;
       setRecording(false);
     }
-  }, [browserCtor, recordSegment, setInterim, handleSessionEnd]);
+  }, [browserCtor, recordSegment, setInterim, handleSessionEnd, isStaleSession]);
 
   const startDeepgram = React.useCallback(async (id: number) => {
+    const startGeneration = generationRef.current;
     setRecording(true);
     // Created before the first await so it's still inside the user's tap —
     // iOS won't start an AudioContext outside a gesture.
@@ -307,6 +322,11 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
       dgAuth = { token: data.token as string, kind: (data.kind as 'token' | 'bearer') || 'bearer' };
     } catch {
       audioCtx?.close().catch(() => { /* ignore */ });
+      if (isStaleSession(id, startGeneration)) return;
+      if (ignoreStaleStopCallbacksRef.current && stopRequestedRef.current) {
+        handleSessionEnd(id, startGeneration);
+        return;
+      }
       setProvider('browser');
       // Stopped (or superseded) while the token was being fetched.
       if (stopRequestedRef.current || id !== sessionIdRef.current) {
@@ -316,24 +336,37 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
       startBrowser(id);
       return;
     }
+    if (isStaleSession(id, startGeneration)) {
+      audioCtx?.close().catch(() => { /* ignore */ });
+      return;
+    }
+    if (ignoreStaleStopCallbacksRef.current && stopRequestedRef.current) {
+      audioCtx?.close().catch(() => { /* ignore */ });
+      handleSessionEnd(id, startGeneration);
+      return;
+    }
     // Holder rather than the const below: onClose can fire while
     // startDeepgramSession is still awaiting (socket error during setup),
     // before `session` exists.
     const holder: { session: DeepgramSession | null } = { session: null };
-    const generation = generationRef.current;
+    const generation = ignoreStaleStopCallbacksRef.current ? startGeneration : generationRef.current;
     try {
       const session = await startDeepgramSession(dgAuth, {
-        onInterim: (t) => { if (id === sessionIdRef.current) setInterim(t); },
+        onInterim: (t) => { if (id === sessionIdRef.current && !isStaleSession(id, generation)) setInterim(t); },
         // A stopped session's last words still count — unless the user
         // has since cleared/started fresh.
-        onFinal: (seg) => { if (generation === generationRef.current) recordSegment(seg); },
-        onError: (msg) => { if (id === sessionIdRef.current) setError(msg); },
+        onFinal: (seg) => { if (generation === generationRef.current && !isStaleSession(id, generation)) recordSegment(seg); },
+        onError: (msg) => { if (id === sessionIdRef.current && !isStaleSession(id, generation)) setError(msg); },
         onClose: () => {
           if (holder.session && deepgramRef.current === holder.session) deepgramRef.current = null;
-          handleSessionEnd(id);
+          handleSessionEnd(id, generation);
         },
       }, audioCtx, lngRef.current);
       holder.session = session;
+      if (isStaleSession(id, generation)) {
+        session.stop();
+        return;
+      }
       // Stopped during the handshake: tear straight back down.
       if (stopRequestedRef.current || id !== sessionIdRef.current) {
         session.stop();
@@ -344,7 +377,7 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
       sessionLiveRef.current = true;
       setReady(true);
     } catch (err) {
-      if (id !== sessionIdRef.current) return;
+      if (id !== sessionIdRef.current || isStaleSession(id, generation)) return;
       const name = err instanceof Error ? err.name : '';
       if (name === 'NotAllowedError' || name === 'SecurityError') {
         setError(i18n.t('errors.micBlocked', { ns: 'voice' }));
@@ -355,7 +388,7 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
       }
       setRecording(false);
     }
-  }, [recordSegment, setInterim, handleSessionEnd, startBrowser]);
+  }, [recordSegment, setInterim, handleSessionEnd, startBrowser, isStaleSession]);
 
   const begin = React.useCallback(() => {
     const id = ++sessionIdRef.current;
@@ -368,7 +401,7 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
     // A dictation keeps one language: resuming mid-transcript stays in it
     // even if the app language changed meanwhile. A fresh one (nothing
     // heard yet, or after clear()/start()) takes the current app language.
-    if (allSegmentsRef.current.length === 0) lngRef.current = appLanguage();
+    if (allSegmentsRef.current.length === 0) lngRef.current = forcedFreshLanguageRef.current ?? appLanguage();
     setLng(lngRef.current);
     if (provider === 'deepgram') startDeepgram(id);
     else startBrowser(id);
@@ -381,6 +414,11 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
     clear();
     begin();
   }, [clear, begin]);
+
+  const startInLanguage = React.useCallback((language: AppLanguage) => {
+    forcedFreshLanguageRef.current = language;
+    try { start(); } finally { forcedFreshLanguageRef.current = null; }
+  }, [start]);
 
   const resume = React.useCallback(() => {
     if (isListening()) return;
@@ -463,7 +501,7 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
   }, []);
 
   return {
-    supported, recording, ready, transcript, interim, start, clear, stop, setMuted, error,
+    supported, recording, ready, transcript, interim, start, startInLanguage, clear, stop, setMuted, error,
     consumeFinalSegments, recentSegments, allSegments, startedAt,
     provider, interrupted, resume, dismissInterruption, lng,
   };

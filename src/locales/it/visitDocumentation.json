@@ -40,6 +40,23 @@
     "dischargeFollowUp": {
       "label": "Controllo successivo",
       "helper": "Registri il controllo discusso; utilizzi la data di richiamo esistente per un controllo programmato."
+    },
+    "gpVitals": {
+      "label": "Parametri vitali",
+      "helper": "Registri i valori misurati con le relative unità e le eventuali incertezze."
+    },
+    "gpPhysicalExam": {
+      "label": "Esame obiettivo",
+      "helper": "Registri solo i reperti osservati o riferiti durante l’esame."
+    },
+    "gpDiagnostics": {
+      "label": "Diagnostica",
+      "helper": "Registri i risultati diagnostici e gli esami in attesa, mantenendo le eventuali incertezze."
     }
+  },
+  "gp-exam": {
+    "title": "Visita generale",
+    "purpose": "Registri i parametri vitali, l’esame obiettivo e i risultati diagnostici di questa visita.",
+    "review": "Verifichi la cartella clinica"
   }
 }

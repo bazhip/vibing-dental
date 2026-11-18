@@ -50,3 +50,5 @@
 }
 
 .visit-documentation__review { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+
+.visit-documentation--gp-exam .visit-documentation__fields { grid-template-columns: minmax(0, 1fr); }

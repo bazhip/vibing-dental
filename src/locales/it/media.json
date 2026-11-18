@@ -112,7 +112,10 @@
       "consultationPlan": "Piano della visita",
       "dischargeMedications": "Farmaci alla dimissione",
       "dischargeInstructions": "Istruzioni alla dimissione",
-      "dischargeFollowUp": "Controllo dopo la dimissione"
+      "dischargeFollowUp": "Controllo dopo la dimissione",
+      "gpVitals": "Parametri vitali",
+      "gpPhysicalExam": "Esame obiettivo",
+      "gpDiagnostics": "Diagnostica"
     },
     "alreadyMissing": "Già mancanti: {{teeth}}",
     "extracted": "Estratti: {{teeth}}",

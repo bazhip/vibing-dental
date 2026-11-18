@@ -40,6 +40,23 @@
     "dischargeFollowUp": {
       "label": "Nachsorge",
       "helper": "Dokumentieren Sie die besprochene Nachsorge; nutzen Sie das vorhandene Erinnerungsdatum für eine geplante Kontrolle."
+    },
+    "gpVitals": {
+      "label": "Vitalparameter",
+      "helper": "Dokumentieren Sie die Messwerte mit Einheiten und etwaigen Unsicherheiten."
+    },
+    "gpPhysicalExam": {
+      "label": "Körperliche Untersuchung",
+      "helper": "Dokumentieren Sie nur beobachtete oder berichtete Untersuchungsbefunde."
+    },
+    "gpDiagnostics": {
+      "label": "Diagnostik",
+      "helper": "Dokumentieren Sie diagnostische Befunde und ausstehende Tests unter Beibehaltung etwaiger Unsicherheiten."
     }
+  },
+  "gp-exam": {
+    "title": "Allgemeinuntersuchung",
+    "purpose": "Dokumentieren Sie die Vitalparameter, die körperliche Untersuchung und die diagnostischen Befunde dieses Besuchs.",
+    "review": "Klinische Dokumentation prüfen"
   }
 }

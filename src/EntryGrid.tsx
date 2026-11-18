@@ -1,3 +1,8 @@
+import { ClinicalDictationButton } from './components/ClinicalDictationButton';
+import { appendClinicalDictationSource } from './utils/clinicalDictationSources';
+import { allowedClinicalFields } from './utils/clinicalDictationAi';
+import { LocalizedError } from './utils/apiErrors';
+import type { ClinicalDictationKind, ClinicalDictationSource } from './types';
 import { appendRadiologyDictation, radiologyRecordedText } from './utils/radiologyReportState';
 import { VisitDocumentationSection } from './components/VisitDocumentationSection';
 import { RadiologyReportSection } from './components/RadiologyReportSection';
@@ -142,6 +147,7 @@ const CHARTING_COMPANIONS: Record<string, string> = { charting: 'diagnosis' };
 const FULL_DATE_TIME: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
 const OWNER_REPORT_SECTION = 'discharge';
 const CT_REPORT_KIND = 'ct';
+const CLINICAL_WORKFLOWS = { consultation: 'consultation', gpVisit: 'gp-visit', discharge: 'discharge' } as const;
 const WARNING_TONE = 'warning' as const;
 const CHARTING_VIEWS = ['grid', 'tooth'] as const;
 const CHARTING_VIEW_KEYS = { grid: 'chartingView.grid', tooth: 'chartingView.tooth' } as const;
@@ -414,6 +420,35 @@ const EntryGrid: React.FC<EntryGridProps> = ({
 
   const activeSectionRef = React.useRef(activeSection);
   activeSectionRef.current = activeSection;
+  const [dentalDictationBusy, setDentalDictationBusy] = React.useState(false);
+  const [clinicalDictationActive, setClinicalDictationActive] = React.useState(false);
+  const hideDentalVoiceForClinical = ['consultation', 'gp-exam', OWNER_REPORT_SECTION].includes(activeSection) && !dentalDictationBusy;
+  const clinicalSession = JSON.stringify([chart.cloudChartId, chart.chartSession]);
+  const clinicalAuthEpoch = React.useRef(0);
+  const renderedClinicalAuthEpoch = clinicalAuthEpoch.current;
+  const clinicalApplyContext = React.useRef({ chart, readOnly, enabled: profile.aiEnabled && !trial && cloud.enabled, session: clinicalSession });
+  clinicalApplyContext.current = { chart, readOnly, enabled: profile.aiEnabled && !trial && cloud.enabled, session: clinicalSession };
+  React.useEffect(() => {
+    const subscription = supabase?.auth?.onAuthStateChange?.(event => {
+      if (['SIGNED_OUT', 'SIGNED_IN', 'USER_UPDATED', 'PASSWORD_RECOVERY'].includes(event)) clinicalAuthEpoch.current++;
+    });
+    return () => subscription?.data.subscription.unsubscribe();
+  }, []);
+  const applyClinicalDictation = (changes: Partial<PatientInfo>, source: ClinicalDictationSource) => {
+    const live = clinicalApplyContext.current;
+    if (live.readOnly || !live.enabled || live.session !== clinicalSession || clinicalAuthEpoch.current !== renderedClinicalAuthEpoch) throw new LocalizedError(i18n.t('voice:clinical.stale'));
+    const allowed: readonly string[] = source.kind === 'ct' ? ['ctReport', 'ctReportLanguage', 'ctReviewedBasis'] : allowedClinicalFields(source.kind);
+    if (!Object.keys(changes).length || Object.keys(changes).some(field => !allowed.includes(field))) throw new LocalizedError(i18n.t('voice:clinical.invalidSource'));
+    appendClinicalDictationSource(live.chart.clinicalDictations, source);
+    // The source append validates synchronously before any clinical fields change.
+    live.chart.appendClinicalDictation(source);
+    live.chart.setPatientInfo(previous => ({ ...previous, ...changes }));
+  };
+  const clinicalDictationControl = (kind: ClinicalDictationKind) => profile.aiEnabled && !trial && cloud.enabled
+    ? <ClinicalDictationButton kind={kind} snapshot={chart.getSnapshot()} chartId={chart.cloudChartId}
+        chartSession={chart.chartSession} readOnly={readOnly} aiEnabled
+        disabled={dentalDictationBusy || clinicalDictationActive} onApply={applyClinicalDictation}
+        onOpenChange={setClinicalDictationActive} /> : undefined;
   const radiologyDictatedSession = React.useRef<string | null>(null);
   const radiologyRefineSerial = React.useRef(0);
   const [radiologyRefineRequest, setRadiologyRefineRequest] = React.useState<{ id: number; language: AppLanguage; session: string }>();
@@ -1054,9 +1089,16 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     {
       id: 'consultation',
       label: i18n.t('visitDocumentation:consultation.title'),
-      content: <VisitDocumentationSection kind="consultation" patientInfo={chart.patientInfo} readOnly={readOnly}
+      content: <VisitDocumentationSection dictation={clinicalDictationControl(CLINICAL_WORKFLOWS.consultation)} kind="consultation" patientInfo={chart.patientInfo} readOnly={readOnly}
         onChange={changes => { if (!readOnly) chart.setPatientInfo(previous => ({ ...previous, ...changes })); }}
         onReview={() => openDocuments('note')} />,
+    },
+    {
+      id: 'gp-exam',
+      label: i18n.t('visitDocumentation:gp-exam.title'),
+      content: <VisitDocumentationSection kind="gp-exam" patientInfo={chart.patientInfo} readOnly={readOnly}
+        dictation={clinicalDictationControl(CLINICAL_WORKFLOWS.gpVisit)} onReview={() => openDocuments('note')}
+        onChange={changes => { if (!readOnly) chart.setPatientInfo(previous => ({ ...previous, ...changes })); }} />,
     },
     {
       id: 'exam',
@@ -1253,6 +1295,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           readOnly={readOnly} aiEnabled={profile.aiEnabled && !trial && cloud.enabled}
           onChange={(changes) => chart.setPatientInfo((previous) => ({ ...previous, ...changes }))} />
         <RadiologyReportSection key={`ct:${chart.cloudChartId}:${chart.chartSession}`} reportKind={CT_REPORT_KIND} showAiNotice={false}
+          onDictationApply={applyClinicalDictation} dictationDisabled={dentalDictationBusy || clinicalDictationActive}
+          onDictationOpenChange={setClinicalDictationActive}
           chartId={chart.cloudChartId} chartSession={chart.chartSession} snapshot={chart.getSnapshot()}
           readOnly={readOnly} aiEnabled={profile.aiEnabled && !trial && cloud.enabled}
           onChange={changes => { if (!readOnly) chart.setPatientInfo(previous => ({ ...previous, ...changes })); }} />
@@ -1277,7 +1321,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     {
       id: OWNER_REPORT_SECTION,
       label: i18n.t('visitDocumentation:discharge.title'),
-      content: <VisitDocumentationSection kind="discharge" patientInfo={chart.patientInfo} readOnly={readOnly}
+      content: <VisitDocumentationSection dictation={clinicalDictationControl(CLINICAL_WORKFLOWS.discharge)} kind="discharge" patientInfo={chart.patientInfo} readOnly={readOnly}
         onReview={ownerReportOn ? undefined : () => openDocuments('note')}
         reviewLabel={i18n.t('visitDocumentation:consultation.review')}
         onChange={changes => { if (!readOnly) chart.setPatientInfo(previous => ({ ...previous, ...changes })); }}>
@@ -1669,7 +1713,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       />
     </form>
   );
-  const pdfButton = activeSection === 'consultation' || activeSection === 'imaging' || activeSection === OWNER_REPORT_SECTION ? null : (
+  const pdfButton = activeSection === 'consultation' || activeSection === 'gp-exam' || activeSection === 'imaging' || activeSection === OWNER_REPORT_SECTION ? null : (
     <button
       type="submit"
       form="chart-form"
@@ -2026,15 +2070,16 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             (fixed position). Mounted on every tab so a recording keeps
             going; shown on the Chart tab only. */}
         {profile.aiEnabled && !trial && (
-          <div className="ios-chart-dictate" hidden={appTab !== 'chart' || readOnly} role="region" aria-label={t('ios.form.dictate', { ns: 'chart' })}>
+          <div className="ios-chart-dictate" hidden={appTab !== 'chart' || readOnly || clinicalDictationActive || hideDentalVoiceForClinical} role="region" aria-label={t('ios.form.dictate', { ns: 'chart' })}>
             <VoiceInputButton
               context={aiContext}
               handlers={aiHandlers}
               onActivity={handleAiActivity}
               onDictationComplete={handleDictationComplete}
+              onBusyChange={setDentalDictationBusy}
               activeSection={activeSection}
               sessionKey={String(chart.chartSession)}
-              locked={readOnly}
+              locked={readOnly || clinicalDictationActive}
               onOpenFeedback={canFeedback ? (transcript) => setFeedback({ transcript }) : undefined}
             />
           </div>
@@ -2158,14 +2203,15 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               behind JWT-gated edge functions, so trial (no account) and
               Basic practices don't get it. */}
           {profile.aiEnabled && !trial && (
-            <span hidden={workspacePage || animalTabs.empty || readOnly}><VoiceInputButton
+            <span hidden={workspacePage || animalTabs.empty || readOnly || clinicalDictationActive || hideDentalVoiceForClinical}><VoiceInputButton
               context={aiContext}
               handlers={aiHandlers}
               onActivity={handleAiActivity}
               onDictationComplete={handleDictationComplete}
+              onBusyChange={setDentalDictationBusy}
               activeSection={activeSection}
               sessionKey={String(chart.chartSession)}
-              locked={readOnly}
+              locked={readOnly || clinicalDictationActive}
               onOpenFeedback={canFeedback ? (transcript) => setFeedback({ transcript }) : undefined}
             /></span>
           )}

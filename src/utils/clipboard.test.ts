@@ -53,4 +53,28 @@ describe('copyRichText', () => {
     await expect(copyRichText('<p>a</p>', 'a', 'Copy this')).resolves.toBe('prompt');
     expect(prompt).toHaveBeenCalledWith('Copy this', 'a');
   });
+
+it('does not expose a cancelled patient transcript through fallback after a pending rich write fails', async () => {
+  let reject!: (error: unknown) => void;
+  let current = true;
+  const write = vi.fn(() => new Promise<void>((_resolve, fail) => { reject = fail; }));
+  const writeText = vi.fn();
+  vi.stubGlobal('ClipboardItem', class { constructor(_items: unknown) {} });
+  Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { write, writeText } });
+  const prompt = vi.spyOn(window, 'prompt').mockReturnValue(null);
+  const result = copyRichText('<p>Private transcript</p>', 'Private transcript', 'Copy', () => current);
+  current = false; reject(new TypeError());
+  await expect(result).rejects.toMatchObject({ name: 'AbortError' });
+  expect(writeText).not.toHaveBeenCalled(); expect(prompt).not.toHaveBeenCalled();
+});
+it('does not open a transcript prompt after a pending plain write fails on another visit', async () => {
+  let reject!: (error: unknown) => void; let current = true;
+  const writeText = vi.fn(() => new Promise<void>((_resolve, fail) => { reject = fail; }));
+  Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText } });
+  const prompt = vi.spyOn(window, 'prompt').mockReturnValue(null);
+  const result = copyRichText('', 'Private transcript', 'Copy', () => current);
+  current = false; reject(new TypeError());
+  await expect(result).rejects.toMatchObject({ name: 'AbortError' }); expect(prompt).not.toHaveBeenCalled();
+});
+
 });

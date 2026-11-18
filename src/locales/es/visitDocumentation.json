@@ -40,6 +40,23 @@
     "dischargeFollowUp": {
       "label": "Seguimiento",
       "helper": "Registre el seguimiento comentado; utilice la fecha de recordatorio existente para una revisión programada."
+    },
+    "gpVitals": {
+      "label": "Constantes vitales",
+      "helper": "Registre los valores medidos con sus unidades y cualquier incertidumbre."
+    },
+    "gpPhysicalExam": {
+      "label": "Exploración física",
+      "helper": "Registre solo los hallazgos observados o comunicados durante la exploración."
+    },
+    "gpDiagnostics": {
+      "label": "Pruebas diagnósticas",
+      "helper": "Registre los hallazgos diagnósticos y las pruebas pendientes, manteniendo cualquier incertidumbre."
     }
+  },
+  "gp-exam": {
+    "title": "Exploración general",
+    "purpose": "Registre las constantes vitales, la exploración física y los hallazgos diagnósticos de esta visita.",
+    "review": "Revisar la historia clínica"
   }
 }

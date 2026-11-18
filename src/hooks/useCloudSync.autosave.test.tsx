@@ -796,7 +796,7 @@ it('ignores a delayed number reservation after switching to another chart', asyn
   expect(setter).not.toHaveBeenCalled();
 });
 
-it.each(['consultationHistory', 'consultationAssessment', 'consultationPlan', 'dischargeMedications', 'dischargeInstructions', 'dischargeFollowUp'] as const)('counts %s as clinical content even without chart findings', key => {
+it.each(['gpVitals', 'gpPhysicalExam', 'gpDiagnostics', 'consultationHistory', 'consultationAssessment', 'consultationPlan', 'dischargeMedications', 'dischargeInstructions', 'dischargeFollowUp'] as const)('counts %s as clinical content even without chart findings', key => {
   const snapshot = snap({});
   snapshot.patientInfo = { ...snapshot.patientInfo, [key]: 'Recorded source?' };
   expect(hasClinicalContent(snapshot)).toBe(true);
@@ -818,4 +818,12 @@ it('counts CT-only report text as clinical content for autosave', () => {
   const value = snap({}); value.patientInfo.ctReport = 'CT: 409 lesion; extent uncertain.';
   expect(hasClinicalContent(value)).toBe(true);
   value.patientInfo.ctReport = ''; expect(hasClinicalContent(value)).toBe(false);
+});
+
+it('counts persisted dictation provenance as meaningful clinical content', () => {
+  const value = snap({});
+  value.clinicalDictations = [{ id: 'source', kind: 'ct', language: 'en', transcript: 'Uncertain extent', recordedAt: '2026-11-18T12:00:00Z', fields: ['ctReport'] }];
+  expect(hasClinicalContent(value)).toBe(true);
+  value.clinicalDictations = [];
+  expect(hasClinicalContent(value)).toBe(false);
 });

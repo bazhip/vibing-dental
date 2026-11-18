@@ -55,6 +55,9 @@ export const HEADING_KEYS = {
   consultationHistory: 'media:recordNote.h.consultationHistory',
   consultationAssessment: 'media:recordNote.h.consultationAssessment',
   consultationPlan: 'media:recordNote.h.consultationPlan',
+  gpVitals: 'media:recordNote.h.gpVitals',
+  gpPhysicalExam: 'media:recordNote.h.gpPhysicalExam',
+  gpDiagnostics: 'media:recordNote.h.gpDiagnostics',
   anesthesia: 'app:sections.anesthesia',
   exam: 'media:recordNote.h.exam',
   findings: 'media:recordNote.h.findings',
@@ -122,6 +125,9 @@ export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): Record
   add('consultationHistory', textLines(info.consultationHistory));
   add('consultationAssessment', textLines(info.consultationAssessment));
   add('consultationPlan', textLines(info.consultationPlan));
+  add('gpVitals', textLines(info.gpVitals));
+  add('gpPhysicalExam', textLines(info.gpPhysicalExam));
+  add('gpDiagnostics', textLines(info.gpDiagnostics));
 
   // 2. Anesthesia
   const nb = info.nerveBlocks;
@@ -248,6 +254,7 @@ export function recordNoteBasis(snapshot: ChartSnapshot): string {
     i.dischargeMedications ?? '',
     i.dischargeInstructions ?? '',
     i.dischargeFollowUp ?? '',
+    ...(i.gpVitals || i.gpPhysicalExam || i.gpDiagnostics ? [i.gpVitals ?? '', i.gpPhysicalExam ?? '', i.gpDiagnostics ?? ''] : []),
     ...(typeof i.ctReport === 'string' ? [i.ctReport] : []),
 
     snapshot.toothData.map((td) => GRID_FIELDS.map((f) => td[f] ?? '')),

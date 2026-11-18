@@ -112,7 +112,10 @@
       "consultationPlan": "Plan der Konsultation",
       "dischargeMedications": "Medikamente bei Entlassung",
       "dischargeInstructions": "Entlassungshinweise",
-      "dischargeFollowUp": "Nachsorge nach Entlassung"
+      "dischargeFollowUp": "Nachsorge nach Entlassung",
+      "gpVitals": "Vitalparameter",
+      "gpPhysicalExam": "Körperliche Untersuchung",
+      "gpDiagnostics": "Diagnostik"
     },
     "alreadyMissing": "Bereits fehlend: {{teeth}}",
     "extracted": "Extrahiert: {{teeth}}",

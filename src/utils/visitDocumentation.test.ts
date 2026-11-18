@@ -6,11 +6,14 @@ describe('visit source templates', () => {
     expect(VISIT_DOCUMENT_TEMPLATES.consultation.id).toBe('consultation-v1');
     expect(VISIT_DOCUMENT_TEMPLATES.discharge.id).toBe('discharge-v1');
     expect(VISIT_DOCUMENT_TEMPLATES.consultation.fields.map(f => f.id)).toEqual(['complaint', 'consultationHistory', 'consultationAssessment', 'consultationPlan']);
-    expect(VISIT_DOCUMENT_FIELDS).toHaveLength(6);
+    expect(VISIT_DOCUMENT_FIELDS).toHaveLength(9);
+    expect(VISIT_DOCUMENT_TEMPLATES['gp-exam']).toMatchObject({ id: 'gp-exam-v1' });
+    expect(VISIT_DOCUMENT_TEMPLATES['gp-exam'].fields.map(f => f.id)).toEqual(['gpVitals', 'gpPhysicalExam', 'gpDiagnostics']);
   });
   it('keeps entered wording verbatim and drops malformed or oversized imported values', () => {
     expect(normalizeVisitDocumentation({ consultationHistory: '  uncertain\n  2 mg?  ', consultationPlan: [], dischargeInstructions: 'x'.repeat(20001) } as never))
       .toEqual({ consultationHistory: '  uncertain\n  2 mg?  ' });
     expect(normalizeVisitDocumentation({} as never)).toEqual({});
+    expect(normalizeVisitDocumentation({ gpVitals: [], gpPhysicalExam: 'x'.repeat(20001), gpDiagnostics: 'CBC pending?' } as never)).toEqual({ gpDiagnostics: 'CBC pending?' });
   });
 });

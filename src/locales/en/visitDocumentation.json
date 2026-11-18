@@ -40,6 +40,23 @@
     "dischargeFollowUp": {
       "label": "Follow-up",
       "helper": "Record the follow-up discussed; use the existing recall date for a scheduled recheck."
+    },
+    "gpVitals": {
+      "label": "Vital signs",
+      "helper": "Record measured values with their units and any uncertainty."
+    },
+    "gpPhysicalExam": {
+      "label": "Physical examination",
+      "helper": "Record only examination findings observed or reported."
+    },
+    "gpDiagnostics": {
+      "label": "Diagnostics",
+      "helper": "Record diagnostic findings and pending tests, keeping uncertainty."
     }
+  },
+  "gp-exam": {
+    "title": "GP examination",
+    "purpose": "Record the vital signs, physical examination, and diagnostic findings for this visit.",
+    "review": "Review clinical record"
   }
 }
