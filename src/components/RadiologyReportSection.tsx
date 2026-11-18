@@ -1,4 +1,5 @@
 import React from 'react';
+import { ctReportChanges, ctReportSnapshot } from '../utils/ctReportState';
 import { useTranslation } from 'react-i18next';
 import type { ChartSnapshot, PatientInfo } from '../types';
 import { APP_LANGUAGES, LANGUAGE_NAMES, isAppLanguage, type AppLanguage } from '../i18n/config';
@@ -15,6 +16,7 @@ import './RadiologyReportSection.css';
 
 interface Props {
   snapshot: ChartSnapshot;
+  reportKind?: 'radiology' | 'ct';
   chartId?: string | null;
   chartSession?: number;
   readOnly?: boolean;
@@ -26,8 +28,11 @@ type Guard = { epoch: number; source: string; report: string; reviewed: string; 
 const reportFields = ['radiologyReport', 'radiologyReportLanguage', 'radiologyReportBasis', 'radiologyReviewedBasis', 'radiologyReportGeneratedAt'] as const;
 const escapeHtml = (value: string) => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-export function RadiologyReportSection({ snapshot, chartId = null, chartSession = 0, readOnly = false, aiEnabled = false, refineRequest, onChange }: Props): React.ReactElement {
+export function RadiologyReportSection({ snapshot: originalSnapshot, reportKind = 'radiology', chartId = null, chartSession = 0, readOnly = false, aiEnabled = false, refineRequest, onChange: onPatientChange }: Props): React.ReactElement {
   const { t, i18n } = useTranslation('app');
+  const snapshot = reportKind === 'ct' ? ctReportSnapshot(originalSnapshot) : originalSnapshot;
+  const onChange = (changes: Partial<PatientInfo>) => onPatientChange(reportKind === 'ct' ? ctReportChanges(changes) : changes);
+  const reportKey = (key: 'title' | 'editorHelp' | 'editorPlaceholder' | 'filename' | 'copyPrompt') => reportKind === 'ct' ? `ctReport.${key}` as const : `radiologyReport.${key}` as const;
   const info = snapshot.patientInfo;
   const fieldId = React.useId();
   const source = radiologySourceBasis(snapshot), report = info.radiologyReport ?? '';
@@ -39,20 +44,20 @@ export function RadiologyReportSection({ snapshot, chartId = null, chartSession 
   const [feedback, setFeedback] = React.useState<'copied' | 'downloaded' | 'shared' | 'copyPromptShown' | null>(null);
   const [undo, setUndo] = React.useState<{ previous: Partial<PatientInfo>; applied: string; source: string } | null>(null);
   const mounted = React.useRef(true), epoch = React.useRef(0), locked = React.useRef(false);
-  const inputKey = [source, report, info.radiologyReviewedBasis, info.radiologyReportBasis, info.radiologyReportLanguage, readOnly, aiEnabled, language] as const;
+  const inputKey = [source, report, info.radiologyReviewedBasis, info.radiologyReportBasis, info.radiologyReportLanguage, readOnly, aiEnabled, language, reportKind] as const;
   const observedInput = React.useRef(inputKey);
   if (inputKey.some((value, index) => value !== observedInput.current[index])) {
     epoch.current++; observedInput.current = inputKey;
   }
   React.useEffect(() => {
     locked.current = false; setBusy(false); setError(null); setFeedback(null);
-  }, [source, report, info.radiologyReviewedBasis, info.radiologyReportBasis, info.radiologyReportLanguage, readOnly, aiEnabled, language]);
+  }, [source, report, info.radiologyReviewedBasis, info.radiologyReportBasis, info.radiologyReportLanguage, readOnly, aiEnabled, language, reportKind]);
   const current = React.useRef({ snapshot, chartId, chartSession, readOnly, aiEnabled, language });
   current.current = { snapshot, chartId, chartSession, readOnly, aiEnabled, language };
   React.useEffect(() => { mounted.current = true; return () => { mounted.current = false; epoch.current++; }; }, []);
   React.useEffect(() => {
     epoch.current++; locked.current = false; setBusy(false); setError(null); setFeedback(null); setUndo(null);
-  }, [chartId, chartSession]);
+  }, [chartId, chartSession, reportKind]);
   React.useEffect(() => {
     const subscription = supabase?.auth?.onAuthStateChange(event => {
       if (['SIGNED_OUT', 'SIGNED_IN', 'USER_UPDATED'].includes(event)) {
@@ -83,7 +88,8 @@ export function RadiologyReportSection({ snapshot, chartId = null, chartSession 
     const request = guard();
     try {
       if (!(await ensureAiConsent()) || !active(request) || !current.current.aiEnabled) return;
-      const body = await draftRadiologyReport({ ...snapshot, patientInfo: { ...info, radiologyReport: draft } }, targetLanguage);
+      const requestSnapshot = { ...snapshot, patientInfo: { ...info, radiologyReport: draft } };
+      const body = reportKind === 'ct' ? await draftRadiologyReport(requestSnapshot, targetLanguage, 'ct') : await draftRadiologyReport(requestSnapshot, targetLanguage);
       if (!active(request) || !current.current.aiEnabled) return;
       if (!body.trim() || body.length > 60000) throw { code: 'empty' };
       const previous = Object.fromEntries(reportFields.map(field => [field, info[field] ?? ''])) as Partial<PatientInfo>;
@@ -112,14 +118,14 @@ export function RadiologyReportSection({ snapshot, chartId = null, chartSession 
     const stillReviewed = () => active(request, false) && isRadiologyReportReviewed(current.current.snapshot, storedLanguage);
     try {
       if (!stillReviewed()) return;
-      const text = radiologyReportText(snapshot, storedLanguage);
+      const text = radiologyReportText(snapshot, storedLanguage, reportKind);
       if (format === 'copy') {
-        const result = await copyRichText(`<pre>${escapeHtml(text)}</pre>`, text, t('radiologyReport.copyPrompt'));
+        const result = await copyRichText(`<pre>${escapeHtml(text)}</pre>`, text, t(reportKey('copyPrompt')));
         if (stillReviewed()) setFeedback(result === 'prompt' ? 'copyPromptShown' : 'copied');
       } else {
-        const bytes = await renderClinicalTextPdf(text, i18n.getFixedT(storedLanguage, 'app')('radiologyReport.title'));
+        const bytes = await renderClinicalTextPdf(text, i18n.getFixedT(storedLanguage, 'app')(reportKey('title')));
         if (!stillReviewed()) return;
-        const result = await savePdf(new Blob([bytes], { type: 'application/pdf' }), t('radiologyReport.filename'));
+        const result = await savePdf(new Blob([bytes], { type: 'application/pdf' }), t(reportKey('filename')));
         if (!stillReviewed()) return;
         if (result === 'unsupported') throw { code: 'unsupported' };
         if (result !== 'cancelled') setFeedback(result === 'shared' ? 'shared' : 'downloaded');
@@ -133,13 +139,13 @@ export function RadiologyReportSection({ snapshot, chartId = null, chartSession 
       if (mounted.current && request.epoch === epoch.current) { locked.current = false; setBusy(false); }
     }
   };
-  return <section className="radiology-report patient-form" aria-label={t('radiologyReport.title')} aria-busy={busy}>
-    <SectionHeader title={t('radiologyReport.title')} />
-    <p className="patient-form__hint" id={`${fieldId}-help`}>{t('radiologyReport.editorHelp')}</p>
+  return <section className="radiology-report patient-form" aria-label={t(reportKey('title'))} aria-busy={busy}>
+    <SectionHeader title={t(reportKey('title'))} />
+    <p className="patient-form__hint" id={`${fieldId}-help`}>{t(reportKey('editorHelp'))}</p>
     <div className="radiographic-findings radiology-report__field">
       <label className="patient-form__label radiographic-findings__title" htmlFor={`${fieldId}-report`}>{t('radiologyReport.body')}</label>
       <textarea id={`${fieldId}-report`} className="patient-form__textarea radiographic-findings__text radiology-report__editor"
-        aria-describedby={`${fieldId}-help`} placeholder={t('radiologyReport.editorPlaceholder')} rows={12} maxLength={60000}
+        aria-describedby={`${fieldId}-help`} placeholder={t(reportKey('editorPlaceholder'))} rows={12} maxLength={60000}
         value={draft} disabled={readOnly || busy} onChange={event => update({ radiologyReport: event.target.value,
           radiologyReportBasis: source, radiologyReportLanguage: storedLanguage })} />
     </div>

@@ -31,6 +31,7 @@ export const DEFAULT_EZYVET_MAP: Record<SourceKey, string | null> = {
   findings: 'Physical Exam',
   procedures: 'Plan',
   radiographs: 'Physical Exam',
+  ctReport: null,
   treatment: 'Plan',
   recheck: 'Plan',
   chart: 'Discharge Summary',

@@ -399,5 +399,14 @@
     "editorLanguage": "Idioma del informe",
     "refineUnavailable": "Inicie sesión con acceso a la IA para mejorar el texto. Puede seguir escribiendo y editando su informe.",
     "refineFailed": "No se pudo mejorar el informe. Su texto se ha conservado."
+  },
+  "ctReport": {
+    "title": "Informe de TC",
+    "editorHelp": "Escriba su informe de TC y mejore la redacción con IA cuando sea necesario. Incluya solo las observaciones documentadas y revise el informe antes de compartirlo. Las imágenes de TC no se analizan.",
+    "editorPlaceholder": "Antecedentes clínicos / pregunta\nRegión examinada por TC, cobertura, técnica y contraste si están documentados\nHallazgos de TC — ubicación, lateralidad, medidas e incertidumbre\nImpresión clínica\nRecomendaciones\n\nIncluya solo lo que haya documentado; estas indicaciones son opcionales.",
+    "filename": "ToothOps-informe-TC.pdf",
+    "copyPrompt": "Copie el informe de TC revisado:",
+    "headingTechnique": "Técnica de TC",
+    "headingFindings": "Hallazgos de TC"
   }
 }

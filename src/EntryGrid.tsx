@@ -141,6 +141,7 @@ const CHARTING_COMPANIONS: Record<string, string> = { charting: 'diagnosis' };
 // What toLocaleString() prints by default: the saved-at tooltip's old format.
 const FULL_DATE_TIME: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
 const OWNER_REPORT_SECTION = 'discharge';
+const CT_REPORT_KIND = 'ct';
 const WARNING_TONE = 'warning' as const;
 const CHARTING_VIEWS = ['grid', 'tooth'] as const;
 const CHARTING_VIEW_KEYS = { grid: 'chartingView.grid', tooth: 'chartingView.tooth' } as const;
@@ -1245,11 +1246,17 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           pdfExcludedImages={chart.pdfExcludedImages}
           onImageInPdfChange={chart.setImageInPdf}
         />
+        <div className="imaging-reports">
         <RadiologyReportSection key={`${chart.cloudChartId}:${chart.chartSession}`}
           chartId={chart.cloudChartId} chartSession={chart.chartSession} snapshot={chart.getSnapshot()}
           refineRequest={radiologyRefineRequest?.session === radiologySession ? radiologyRefineRequest : undefined}
           readOnly={readOnly} aiEnabled={profile.aiEnabled && !trial && cloud.enabled}
           onChange={(changes) => chart.setPatientInfo((previous) => ({ ...previous, ...changes }))} />
+        <RadiologyReportSection key={`ct:${chart.cloudChartId}:${chart.chartSession}`} reportKind={CT_REPORT_KIND}
+          chartId={chart.cloudChartId} chartSession={chart.chartSession} snapshot={chart.getSnapshot()}
+          readOnly={readOnly} aiEnabled={profile.aiEnabled && !trial && cloud.enabled}
+          onChange={changes => { if (!readOnly) chart.setPatientInfo(previous => ({ ...previous, ...changes })); }} />
+        </div>
         <ImageHistory visits={imageHistoryVisits} onOpenVisit={switchVisit} toothLabel={imageToothLabel} />
         </>
       ),

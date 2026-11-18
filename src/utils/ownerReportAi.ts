@@ -1,3 +1,4 @@
+import { ctRecordedText } from './ctReportState';
 import { radiologyRecordedText } from './radiologyReportState';
 import type Anthropic from '@anthropic-ai/sdk';
 import i18n from '../i18n';
@@ -94,6 +95,7 @@ export function ownerReportFacts(snapshot: ChartSnapshot, context?: OwnerReportC
       ? `Oral exam — abnormal areas: ${model.examNotes.map((n) => `${n.area}${n.comment ? ` (${n.comment})` : ''}`).join('; ')}`
       : 'Oral exam: nothing abnormal recorded',
     radiologyRecordedText(info).trim() ? `${typeof info.radiologyReport === 'string' ? 'Radiology report (clinician-edited text; may include an unreviewed AI refinement)' : 'Radiographic findings (written by the vet)'}:\n${radiologyRecordedText(info).trim()}` : '',
+    ctRecordedText(info).trim() ? `CT report (clinician-edited text; may include an unreviewed AI refinement):\n${ctRecordedText(info).trim()}` : '',
     info.treatmentReport?.trim() ? `Treatment report (written by the vet):\n${info.treatmentReport.trim()}` : '',
     info.consultationHistory?.trim() ? `consultationHistory (recorded source, preserve doses and uncertainty):\n${info.consultationHistory}` : '',
     info.consultationAssessment?.trim() ? `consultationAssessment (recorded source, preserve doses and uncertainty):\n${info.consultationAssessment}` : '',

@@ -44,11 +44,11 @@ export function isRadiologyReportReviewed(snapshot: ChartSnapshot, lng?: AppLang
     && info.radiologyReviewedBasis === radiologyReviewBasis(snapshot, language);
 }
 
-export function radiologyReportText(snapshot: ChartSnapshot, lng?: AppLanguage): string {
+export function radiologyReportText(snapshot: ChartSnapshot, lng?: AppLanguage, reportKind: 'radiology' | 'ct' = 'radiology'): string {
   const language = reportLanguage(snapshot, lng);
   if (!isRadiologyReportReviewed(snapshot, language)) return '';
   const t = i18n.getFixedT(language, 'app'), info = snapshot.patientInfo;
-  return [t('radiologyReport.title'), t('radiologyReport.attribution', {
+  return [t(reportKind === 'ct' ? 'ctReport.title' : 'radiologyReport.title'), t('radiologyReport.attribution', {
     patient: info.patientName || t('radiologyReport.notRecorded'), number: info.patientNumber || t('radiologyReport.notRecorded'),
     date: info.date || t('radiologyReport.notRecorded'),
   }), text(info.radiologyReport)].join('\n\n');

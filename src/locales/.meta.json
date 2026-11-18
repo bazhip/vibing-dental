@@ -508,6 +508,34 @@
       "hash": "bf5e4bdfc769",
       "status": "machine"
     },
+    "app:ctReport.copyPrompt": {
+      "hash": "398ea85de54f",
+      "status": "machine"
+    },
+    "app:ctReport.editorHelp": {
+      "hash": "0ec0246f8c23",
+      "status": "machine"
+    },
+    "app:ctReport.editorPlaceholder": {
+      "hash": "8a0dd3356b20",
+      "status": "machine"
+    },
+    "app:ctReport.filename": {
+      "hash": "12c7a9ee1e40",
+      "status": "machine"
+    },
+    "app:ctReport.headingFindings": {
+      "hash": "b3e3fe4239d4",
+      "status": "machine"
+    },
+    "app:ctReport.headingTechnique": {
+      "hash": "d1cf9538af5f",
+      "status": "machine"
+    },
+    "app:ctReport.title": {
+      "hash": "89cb8fb91c09",
+      "status": "machine"
+    },
     "app:customize.hint": {
       "hash": "fb6c656e4a3b",
       "status": "machine"
@@ -14432,6 +14460,34 @@
     },
     "app:chartsMenu.thisPatient": {
       "hash": "bf5e4bdfc769",
+      "status": "machine"
+    },
+    "app:ctReport.copyPrompt": {
+      "hash": "398ea85de54f",
+      "status": "machine"
+    },
+    "app:ctReport.editorHelp": {
+      "hash": "0ec0246f8c23",
+      "status": "machine"
+    },
+    "app:ctReport.editorPlaceholder": {
+      "hash": "8a0dd3356b20",
+      "status": "machine"
+    },
+    "app:ctReport.filename": {
+      "hash": "12c7a9ee1e40",
+      "status": "machine"
+    },
+    "app:ctReport.headingFindings": {
+      "hash": "b3e3fe4239d4",
+      "status": "machine"
+    },
+    "app:ctReport.headingTechnique": {
+      "hash": "d1cf9538af5f",
+      "status": "machine"
+    },
+    "app:ctReport.title": {
+      "hash": "89cb8fb91c09",
       "status": "machine"
     },
     "app:customize.hint": {
@@ -28472,6 +28528,34 @@
       "hash": "bf5e4bdfc769",
       "status": "machine"
     },
+    "app:ctReport.copyPrompt": {
+      "hash": "398ea85de54f",
+      "status": "machine"
+    },
+    "app:ctReport.editorHelp": {
+      "hash": "0ec0246f8c23",
+      "status": "machine"
+    },
+    "app:ctReport.editorPlaceholder": {
+      "hash": "8a0dd3356b20",
+      "status": "machine"
+    },
+    "app:ctReport.filename": {
+      "hash": "12c7a9ee1e40",
+      "status": "machine"
+    },
+    "app:ctReport.headingFindings": {
+      "hash": "b3e3fe4239d4",
+      "status": "machine"
+    },
+    "app:ctReport.headingTechnique": {
+      "hash": "d1cf9538af5f",
+      "status": "machine"
+    },
+    "app:ctReport.title": {
+      "hash": "89cb8fb91c09",
+      "status": "machine"
+    },
     "app:customize.hint": {
       "hash": "fb6c656e4a3b",
       "status": "machine"
@@ -42508,6 +42592,34 @@
     },
     "app:chartsMenu.thisPatient": {
       "hash": "bf5e4bdfc769",
+      "status": "machine"
+    },
+    "app:ctReport.copyPrompt": {
+      "hash": "398ea85de54f",
+      "status": "machine"
+    },
+    "app:ctReport.editorHelp": {
+      "hash": "0ec0246f8c23",
+      "status": "machine"
+    },
+    "app:ctReport.editorPlaceholder": {
+      "hash": "8a0dd3356b20",
+      "status": "machine"
+    },
+    "app:ctReport.filename": {
+      "hash": "12c7a9ee1e40",
+      "status": "machine"
+    },
+    "app:ctReport.headingFindings": {
+      "hash": "b3e3fe4239d4",
+      "status": "machine"
+    },
+    "app:ctReport.headingTechnique": {
+      "hash": "d1cf9538af5f",
+      "status": "machine"
+    },
+    "app:ctReport.title": {
+      "hash": "89cb8fb91c09",
       "status": "machine"
     },
     "app:customize.hint": {

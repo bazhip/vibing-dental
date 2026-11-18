@@ -399,5 +399,14 @@
     "editorLanguage": "Langue du compte rendu",
     "refineUnavailable": "Connectez-vous avec un accès à l’IA pour affiner le texte. Vous pouvez toujours saisir et modifier votre compte rendu.",
     "refineFailed": "Impossible d’affiner le compte rendu. Votre texte a été conservé."
+  },
+  "ctReport": {
+    "title": "Compte rendu de scanner",
+    "editorHelp": "Saisissez votre compte rendu de scanner et affinez la formulation avec l’IA si nécessaire. Incluez uniquement les observations consignées et vérifiez le compte rendu avant de le partager. Les images du scanner ne sont pas analysées.",
+    "editorPlaceholder": "Antécédents cliniques / question\nRégion explorée au scanner, couverture, technique et produit de contraste si consignés\nObservations au scanner — localisation, latéralité, mesures et incertitude\nImpression clinique\nRecommandations\n\nIncluez uniquement les éléments que vous avez consignés ; ces indications sont facultatives.",
+    "filename": "ToothOps-compte-rendu-scanner.pdf",
+    "copyPrompt": "Copiez le compte rendu de scanner vérifié :",
+    "headingTechnique": "Technique du scanner",
+    "headingFindings": "Observations au scanner"
   }
 }

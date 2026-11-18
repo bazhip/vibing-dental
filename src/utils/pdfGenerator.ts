@@ -335,7 +335,7 @@ export async function buildDentalChartPDFBytes(
     pdfDoc, postSlot, postDiagram.png,
     diagramBottomIn(1, usedByPage.page2)
   );
-  drawTreatmentReportField(page2, treatmentCardText(patientInfo.treatmentReport, patientInfo.radiographicFindings, lng, patientInfo.radiologyReport), regular, bold, lng);
+  drawTreatmentReportField(page2, treatmentCardText(patientInfo.treatmentReport, patientInfo.radiographicFindings, lng, patientInfo.radiologyReport, patientInfo.ctReport), regular, bold, lng);
   drawFooter(page2, regular, bold, 2, totalPages, generatedAt, identityLine, lng);
 
   // ---- Page-2 codes-used legend (page 1 drew its own above) ------------

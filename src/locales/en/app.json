@@ -397,5 +397,14 @@
     "editorLanguage": "Report language",
     "refineUnavailable": "Sign in with AI access to refine. You can still type and edit your report.",
     "refineFailed": "Could not refine the report. Your text has been kept."
+  },
+  "ctReport": {
+    "title": "CT report",
+    "editorHelp": "Type your CT report and refine the wording with AI when needed. Include only recorded observations and review before sharing. CT images are not analyzed.",
+    "editorPlaceholder": "Clinical history / question\nCT scan region, coverage, technique and contrast if recorded\nCT findings — location, laterality, measurements and uncertainty\nClinical impression\nRecommendations\n\nInclude only what you have recorded; these prompts are optional.",
+    "filename": "ToothOps-CT-report.pdf",
+    "copyPrompt": "Copy the reviewed CT report:",
+    "headingTechnique": "CT technique",
+    "headingFindings": "CT findings"
   }
 }

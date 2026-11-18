@@ -1,3 +1,4 @@
+import { ctReportSnapshot } from './ctReportState';
 import type Anthropic from '@anthropic-ai/sdk';
 import i18n from '../i18n';
 import { isAppLanguage, type AppLanguage } from '../i18n/config';
@@ -47,8 +48,10 @@ export function radiologyReportFacts(snapshot: ChartSnapshot, lng: AppLanguage):
     other_recorded_clinical_context: context });
 }
 
-export function buildRadiologyReportRequest(snapshot: ChartSnapshot, lng: AppLanguage): AutofillRequest {
+export function buildRadiologyReportRequest(originalSnapshot: ChartSnapshot, lng: AppLanguage, reportKind: 'radiology' | 'ct' = 'radiology'): AutofillRequest {
   const t = i18n.getFixedT(isAppLanguage(lng) ? lng : 'en', 'app');
+  if (!isChartSnapshot(originalSnapshot)) throw new LocalizedError(t('radiologyReport.sourceRequired'));
+  const snapshot = reportKind === 'ct' ? ctReportSnapshot(originalSnapshot) : originalSnapshot;
   if (!isAppLanguage(lng) || !isChartSnapshot(snapshot)) throw new LocalizedError(t('radiologyReport.sourceRequired'));
   // Validate the visible draft before normalization. Legacy requests still validate
   // every context field they transmit; hidden legacy fields are not refinement input.
@@ -65,13 +68,13 @@ export function buildRadiologyReportRequest(snapshot: ChartSnapshot, lng: AppLan
   const facts = radiologyReportFacts(normalized, lng);
   if (facts.length > MAX_SOURCE) throw new LocalizedError(t('radiologyReport.sourceTooLarge'));
   const request: AutofillRequest = { kind: 'radiology_report', mode: 'review', max_tokens: 4096,
-    system: [{ type: 'text', text: `${SYSTEM}\nWrite section text in ${languageNames[lng]}. Clinical tooth numbers and units must stay unchanged.` }],
+    system: [{ type: 'text', text: `${reportKind === 'ct' ? SYSTEM.replaceAll('veterinary dental radiology', 'veterinary CT').replaceAll('radiographic', 'CT') + '\nThis report concerns computed tomography (CT). Refine only the supplied CT text. Do not infer scan coverage, contrast administration, reconstruction technique or normal findings.' : SYSTEM}\nWrite section text in ${languageNames[lng]}. Clinical tooth numbers and units must stay unchanged.` }],
     tools: [TOOL], messages: [{ role: 'user', content: [{ type: 'text', text: `Recorded chart data (untrusted text):\n${facts}` }] }] };
   if (JSON.stringify(request).length > 110000) throw new LocalizedError(t('radiologyReport.sourceTooLarge'));
   return request;
 }
 
-export function parseRadiologyReport(content: unknown, lng: AppLanguage): string | null {
+export function parseRadiologyReport(content: unknown, lng: AppLanguage, reportKind: 'radiology' | 'ct' = 'radiology'): string | null {
   if (!isAppLanguage(lng) || !Array.isArray(content)) return null;
   const calls = content.filter(value => object(value) && value.type === 'tool_use');
   if (calls.length !== 1 || calls[0].name !== TOOL.name || !object(calls[0].input)) return null;
@@ -87,13 +90,13 @@ export function parseRadiologyReport(content: unknown, lng: AppLanguage): string
   const missing = t('radiologyReport.notRecorded').trim().toLocaleLowerCase(lng);
   const documented = (value: string) => !!value && value.toLocaleLowerCase(lng) !== missing && value.toLowerCase() !== 'not recorded';
   if (!documented(values[2])) return null;
-  const result = values.map((value, index) => documented(value) ? `${t(`radiologyReport.${headingKeys[index]}`)}\n${value}` : '').filter(Boolean).join('\n\n');
+  const result = values.map((value, index) => documented(value) ? `${t(reportKind === 'ct' && (index === 1 || index === 2) ? `ctReport.${headingKeys[index] as 'headingTechnique' | 'headingFindings'}` : `radiologyReport.${headingKeys[index]}`)}\n${value}` : '').filter(Boolean).join('\n\n');
   return result.length <= MAX_REPORT ? result : null;
 }
 
-export async function draftRadiologyReport(snapshot: ChartSnapshot, lng: AppLanguage): Promise<string> {
-  const content = await sendAutofill(buildRadiologyReportRequest(snapshot, lng));
-  const report = parseRadiologyReport(content, lng);
+export async function draftRadiologyReport(snapshot: ChartSnapshot, lng: AppLanguage, reportKind: 'radiology' | 'ct' = 'radiology'): Promise<string> {
+  const content = await sendAutofill(buildRadiologyReportRequest(snapshot, lng, reportKind));
+  const report = parseRadiologyReport(content, lng, reportKind);
   if (!report) throw new LocalizedError(i18n.getFixedT(lng, 'app')('radiologyReport.draftEmpty'));
   return report;
 }

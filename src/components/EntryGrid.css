@@ -4614,3 +4614,6 @@ a, button, input, select, textarea, label, summary, [role='button'] {
   .chart-readonly-notice { flex-wrap: wrap; gap: 8px; }
   .chart-readonly-notice button { margin-left: 26px; }
 }
+
+/* Independent imaging reports share a layout with consistent section spacing. */
+.imaging-reports { display: grid; gap: 24px; min-width: 0; }

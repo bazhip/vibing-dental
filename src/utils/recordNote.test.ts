@@ -135,3 +135,11 @@ it('uses the visible radiology report in records/PIMS, tracks edits, and respect
   expect(recordNoteBasis(value)).not.toBe(basis);
   expect(buildRecordNote(value, en()).sections.some(item => item.key === 'radiographs')).toBe(false);
 });
+it('includes CT as a separate record/PIMS section and invalidates on CT edits', () => {
+  const value = snap({}, { radiologyReport: 'X-ray report unchanged.', ctReport: 'CT: 409 lesion, extent uncertain.' });
+  const before = recordNoteBasis(value), note = buildRecordNote(value, en());
+  expect(note.sections.find(item => item.key === 'ctReport')).toMatchObject({ heading: 'CT report', lines: ['CT: 409 lesion, extent uncertain.'] });
+  expect(recordNoteText(note)).toContain('X-ray report unchanged.');
+  value.patientInfo.ctReport = ''; expect(recordNoteBasis(value)).not.toBe(before);
+  expect(buildRecordNote(value, en()).sections.some(item => item.key === 'ctReport')).toBe(false);
+});

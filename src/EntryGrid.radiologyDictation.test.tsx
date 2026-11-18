@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { beforeAll, beforeEach, expect, it, vi } from 'vitest';
 import { localDateISO } from './utils/localDate';
 import { sampleOwnerReportSnapshot } from './utils/ownerReportSample';
@@ -43,12 +43,12 @@ it('appends radiology dictation to the visible text and refines after completion
   render(<><EntryGrid /><DialogHost /></>);
   await waitFor(() => expect(state.voice).not.toBeNull());
   act(() => state.voice!.handlers.appendRadiographicFindings!('409: possible resorption.', 'fr'));
-  expect(screen.getByLabelText('Report text')).toHaveValue('Typed clinical context.\n409: possible resorption.');
+  expect(within(screen.getByRole('region', { name: 'Radiology report' })).getByLabelText('Report text')).toHaveValue('Typed clinical context.\n409: possible resorption.');
   expect(state.refine).not.toHaveBeenCalled();
   expect(state.voice!.context.patientInfo.radiologyReportLanguage).toBe('fr');
   expect(state.voice!.context.patientInfo.radiographicFindings).toBe('Typed clinical context.\n409: possible resorption.');
   act(() => state.voice!.onDictationComplete?.('fr'));
-  await waitFor(() => expect(screen.getByLabelText('Report text')).toHaveValue('Refined: 409 possible resorption.'));
+  await waitFor(() => expect(within(screen.getByRole('region', { name: 'Radiology report' })).getByLabelText('Report text')).toHaveValue('Refined: 409 possible resorption.'));
   expect(state.refine).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ patientInfo: expect.objectContaining({ radiologyReport: 'Typed clinical context.\n409: possible resorption.' }) }), 'fr');
   act(() => state.voice!.onDictationComplete?.('fr'));
   expect(state.refine).toHaveBeenCalledOnce();

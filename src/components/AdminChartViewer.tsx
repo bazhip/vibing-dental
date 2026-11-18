@@ -1,3 +1,4 @@
+import { ctRecordedText } from '../utils/ctReportState';
 import { radiologyRecordedText } from '../utils/radiologyReportState';
 import { useTranslation } from 'react-i18next';
 import React from 'react';
@@ -263,6 +264,10 @@ function ChartBody({ snap }: { snap: ChartSnapshot }) {
         </section>
       )}
 
+      {ctRecordedText(p).trim() && <section>
+        <h3 className="ai-settings-subhead">{t('ctReport.title')}</h3>
+        <p className="admin-chart-viewer__report">{ctRecordedText(p)}</p>
+      </section>}
       <section>
         <h3 className="ai-settings-subhead">Treatment report</h3>
         {p.treatmentReport.trim()

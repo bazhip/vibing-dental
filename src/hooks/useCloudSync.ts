@@ -1,3 +1,4 @@
+import { ctRecordedText } from '../utils/ctReportState';
 import { radiologyRecordedText } from '../utils/radiologyReportState';
 import { hasVisitDocumentation } from '../utils/visitDocumentation';
 import React from 'react';
@@ -116,7 +117,7 @@ function hasContent(s: ChartSnapshot): boolean {
   const p = s?.patientInfo;
   if (!p || typeof p !== 'object' || !Array.isArray(s.toothData)) return false;
   if ((p.patientName ?? '').trim() || ((p.patientNumber ?? '').trim() && !isGeneratedPatientNumber(p)) || (p.ownerName ?? '').trim() || (p.ownerPhone ?? '').trim() || (p.ownerEmail ?? '').trim() || (p.complaint ?? '').trim() || (p.treatmentReport ?? '').trim()) return true;
-  if (hasVisitDocumentation(p) || radiologyRecordedText(p).trim()) return true;
+  if (hasVisitDocumentation(p) || radiologyRecordedText(p).trim() || ctRecordedText(p).trim()) return true;
   // Values are strings, except the drug list (and legacy `drug`); only a
   // named drug counts as content.
   if (Object.values(p.nerveBlocks ?? {}).some((v) =>

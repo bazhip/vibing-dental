@@ -294,6 +294,12 @@ export interface PatientInfo {
   radiologyReportBasis?: string;
   radiologyReviewedBasis?: string;
   radiologyReportGeneratedAt?: string;
+  /** Independent computed-tomography report; absent on older visits. */
+  ctReport?: string;
+  ctReportLanguage?: 'en' | 'fr' | 'de' | 'it' | 'es';
+  ctReportBasis?: string;
+  ctReviewedBasis?: string;
+  ctReportGeneratedAt?: string;
   /** Custom anesthesia entries (see utils/customAnesthesia). Each value
    *  carries its own label/type so the chart reads correctly for anyone,
    *  whatever fields they've defined. Optional: absent on older charts. */

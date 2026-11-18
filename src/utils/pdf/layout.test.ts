@@ -128,3 +128,10 @@ it('prints the visible radiology report, not superseded hidden findings, and res
   const empty = await capture({ ...p, radiologyReport: '' });
   expect(empty.allTexts.map(item => item.text).join('\n')).not.toContain('Hidden superseded');
 });
+it('prints an independent CT report alongside the x-ray report and preserves CT in the PDF stash', async () => {
+  const p = { ...patient, ctReport: 'CT recorded finding at 409.', radiologyReport: 'X-ray recorded finding at 108.' };
+  const output = await capture(p), text = output.allTexts.map(item => item.text).join('\n');
+  expect(text).toContain('CT report'); expect(text).toContain(p.ctReport); expect(text).toContain(p.radiologyReport);
+  const { parseDentalChartPDF } = await import('../pdfGenerator');
+  expect((await parseDentalChartPDF({ arrayBuffer: async () => output.bytes.slice().buffer } as File)).patientInfo.ctReport).toBe(p.ctReport);
+});

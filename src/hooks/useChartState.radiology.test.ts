@@ -62,3 +62,13 @@ describe('radiology report chart persistence',()=>{
   for(const key of ['radiologyHistory','radiologyReport','radiologyReportLanguage','radiologyReportBasis','radiologyReviewedBasis','radiologyReportGeneratedAt']) expect(normalized.patientInfo).not.toHaveProperty(key);
  });
 });
+it('persists CT independently, normalizes imported CT metadata and clears it for a new visit', () => {
+  const { result } = renderHook(() => useChartState());
+  act(() => result.current.setPatientInfo(previous => ({ ...previous, patientName: 'Milo', radiologyReport: 'X-ray report', ctReport: 'CT: 409 lesion.', ctReportLanguage: 'en' })));
+  const snapshot = result.current.getSnapshot();
+  expect(normalizeSnapshot(snapshot).patientInfo).toMatchObject({ ctReport: 'CT: 409 lesion.', radiologyReport: 'X-ray report' });
+  const normalized = normalizeSnapshot({ ...snapshot, patientInfo: { ...snapshot.patientInfo, ctReport: [], ctReportLanguage: 'xx', ctReviewedBasis: 'untrusted' } } as never);
+  expect(normalized.patientInfo).not.toHaveProperty('ctReport'); expect(normalized.patientInfo).not.toHaveProperty('ctReviewedBasis');
+  act(() => result.current.startNewVisit());
+  expect(result.current.patientInfo.patientName).toBe('Milo'); expect(result.current.patientInfo).not.toHaveProperty('ctReport');
+});

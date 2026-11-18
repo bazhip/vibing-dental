@@ -195,7 +195,8 @@ export function isChartSnapshot(s: unknown): s is ChartSnapshot {
 function normalizeRadiologyInfo(info: PatientInfo): PatientInfo {
   const result = { ...info };
   const limits = { radiologyHistory: 20000, radiologyTechnique: 20000, radiologyQuestion: 20000,
-    radiologyReport: 60000, radiologyReportBasis: 1000000, radiologyReviewedBasis: 1000000, radiologyReportGeneratedAt: 100 } as const;
+    radiologyReport: 60000, radiologyReportBasis: 1000000, radiologyReviewedBasis: 1000000, radiologyReportGeneratedAt: 100,
+    ctReport: 60000, ctReportBasis: 1000000, ctReviewedBasis: 1000000, ctReportGeneratedAt: 100 } as const;
   for (const [field, limit] of Object.entries(limits)) {
     const key = field as keyof typeof limits;
     const value: unknown = result[key];
@@ -204,6 +205,10 @@ function normalizeRadiologyInfo(info: PatientInfo): PatientInfo {
   if (!['en', 'fr', 'de', 'it', 'es'].includes(result.radiologyReportLanguage ?? '')) delete result.radiologyReportLanguage;
   if (!result.radiologyReport?.trim() || !result.radiologyReportLanguage) {
     delete result.radiologyReportBasis; delete result.radiologyReviewedBasis; delete result.radiologyReportGeneratedAt;
+  }
+  if (!['en', 'fr', 'de', 'it', 'es'].includes(result.ctReportLanguage ?? '')) delete result.ctReportLanguage;
+  if (!result.ctReport?.trim() || !result.ctReportLanguage) {
+    delete result.ctReportBasis; delete result.ctReviewedBasis; delete result.ctReportGeneratedAt;
   }
   return result;
 }

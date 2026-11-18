@@ -91,3 +91,8 @@ it('uses visible radiology report text instead of superseded legacy findings', (
   value.patientInfo.radiologyReport = '';
   expect(ownerReportFacts(value)).not.toContain('Old hidden');
 });
+it('includes recorded CT text separately from x-ray observations', () => {
+  const value = { ...snap, patientInfo: { ...snap.patientInfo, ctReport: 'CT: 409 lesion; extent uncertain.', radiologyReport: 'Separate x-ray report.' } };
+  expect(ownerReportFacts(value)).toContain('CT: 409 lesion; extent uncertain.');
+  expect(ownerReportFacts(value)).toContain('Separate x-ray report.');
+});

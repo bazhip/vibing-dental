@@ -814,3 +814,8 @@ it('autosaves report-only radiology content and respects a cleared report over l
   value.patientInfo.radiologyReport = ''; value.patientInfo.radiographicFindings = 'Old hidden finding';
   expect(hasClinicalContent(value)).toBe(false);
 });
+it('counts CT-only report text as clinical content for autosave', () => {
+  const value = snap({}); value.patientInfo.ctReport = 'CT: 409 lesion; extent uncertain.';
+  expect(hasClinicalContent(value)).toBe(true);
+  value.patientInfo.ctReport = ''; expect(hasClinicalContent(value)).toBe(false);
+});

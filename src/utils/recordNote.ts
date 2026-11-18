@@ -1,3 +1,4 @@
+import { ctRecordedText } from './ctReportState';
 import { radiologyRecordedText } from './radiologyReportState';
 import type { TFunction } from 'i18next';
 import i18n from '../i18n';
@@ -59,6 +60,7 @@ export const HEADING_KEYS = {
   findings: 'media:recordNote.h.findings',
   procedures: 'media:recordNote.h.procedures',
   radiographs: 'media:recordNote.h.radiographs',
+  ctReport: 'app:ctReport.title',
   treatment: 'forms:report.title',
   dischargeMedications: 'media:recordNote.h.dischargeMedications',
   dischargeInstructions: 'media:recordNote.h.dischargeInstructions',
@@ -188,6 +190,7 @@ export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): Record
 
   // 6–8. Free text and recheck
   add('radiographs', textLines(radiologyRecordedText(info)), t(typeof info.radiologyReport === 'string' ? 'app:radiologyReport.title' : HEADING_KEYS.radiographs));
+  add('ctReport', textLines(ctRecordedText(info)));
   add('treatment', textLines(info.treatmentReport));
   add('dischargeMedications', textLines(info.dischargeMedications));
   add('dischargeInstructions', textLines(info.dischargeInstructions));
@@ -245,6 +248,7 @@ export function recordNoteBasis(snapshot: ChartSnapshot): string {
     i.dischargeMedications ?? '',
     i.dischargeInstructions ?? '',
     i.dischargeFollowUp ?? '',
+    ...(typeof i.ctReport === 'string' ? [i.ctReport] : []),
 
     snapshot.toothData.map((td) => GRID_FIELDS.map((f) => td[f] ?? '')),
     snapshot.preMarks, snapshot.postMarks,

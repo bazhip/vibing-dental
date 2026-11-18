@@ -190,3 +190,49 @@ it('releases a pending refinement when the app language changes on a legacy draf
  await act(async()=>resolve('Obsolete response'));expect(changed).not.toHaveBeenCalled();
  } finally {await act(async()=>{await i18n.changeLanguage('en');});}
 });
+it('keeps CT text, refinement, Undo and review independent from radiology', async () => {
+  const value = snapshot(); value.patientInfo.radiologyReport = 'Existing x-ray report'; value.patientInfo.ctReport = 'CT: 108 distal root lesion, extent uncertain.';
+  const changes = vi.fn();
+  function CtEditor() { const [s, setS] = React.useState(value); return <RadiologyReportSection reportKind="ct" snapshot={s} aiEnabled onChange={change => { changes(change); setS(previous => ({ ...previous, patientInfo: { ...previous.patientInfo, ...change } })); }} />; }
+  render(<CtEditor />);
+  expect(screen.getByRole('heading', { name: 'CT report' })).toBeInTheDocument();
+  const editor = screen.getByLabelText('Report text'); expect(editor).toHaveValue(value.patientInfo.ctReport);
+  expect(editor).toHaveAttribute('placeholder', expect.stringMatching(/CT[\s\S]*contrast/i));
+  fireEvent.change(editor, { target: { value: 'CT: corrected 409 finding.' } });
+  expect(changes).toHaveBeenLastCalledWith(expect.objectContaining({ ctReport: 'CT: corrected 409 finding.', ctReviewedBasis: '' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Refine with AI' })); await screen.findByRole('button', { name: 'Undo refinement' });
+  expect(mocks.generate).toHaveBeenCalledWith(expect.anything(), 'en', 'ct');
+  fireEvent.click(screen.getByRole('button', { name: 'Undo refinement' })); expect(editor).toHaveValue('CT: corrected 409 finding.');
+  fireEvent.click(screen.getByLabelText('I reviewed this report against the current chart.'));
+  expect(screen.getByRole('button', { name: 'Copy report' })).toBeEnabled();
+  expect(changes.mock.calls.every(([change]) => Object.keys(change).every(key => key.startsWith('ct')))).toBe(true);
+  fireEvent.click(screen.getByRole('button', { name: 'Copy report' })); await waitFor(() => expect(mocks.copy).toHaveBeenCalledOnce());
+  expect(mocks.copy).toHaveBeenCalledWith(expect.any(String), expect.stringContaining('CT report'), expect.any(String));
+  expect(mocks.copy).not.toHaveBeenCalledWith(expect.any(String), expect.stringContaining('Existing x-ray report'), expect.any(String));
+});
+it('does not offer CT refinement based on x-ray findings alone', () => {
+  render(<RadiologyReportSection reportKind="ct" snapshot={snapshot()} aiEnabled onChange={vi.fn()} />);
+  expect(screen.getByLabelText('Report text')).toHaveValue(''); expect(screen.getByRole('button', { name: 'Refine with AI' })).toBeDisabled();
+});
+it('drops a pending CT refinement if CT text changes while the x-ray report stays unchanged', async () => {
+  let resolve!: (body: string) => void; mocks.generate.mockImplementationOnce(() => new Promise(done => { resolve = done; }));
+  const value = snapshot(); value.patientInfo.radiologyReport = 'Unchanged x-ray'; value.patientInfo.ctReport = 'Original CT'; const changed = vi.fn();
+  const view = render(<RadiologyReportSection reportKind="ct" snapshot={value} aiEnabled onChange={changed} />);
+  fireEvent.click(screen.getByRole('button', { name: 'Refine with AI' })); await waitFor(() => expect(mocks.generate).toHaveBeenCalledOnce());
+  view.rerender(<RadiologyReportSection reportKind="ct" snapshot={{ ...value, patientInfo: { ...value.patientInfo, ctReport: 'Corrected CT' } }} aiEnabled onChange={changed} />);
+  await act(async () => resolve('Obsolete CT refinement')); expect(changed).not.toHaveBeenCalled();
+});
+
+it('drops a CT response after switching modality even when report text and source match', async()=>{
+ let resolve!:(body:string)=>void;mocks.generate.mockImplementationOnce(()=>new Promise(done=>{resolve=done;}));
+ const value=snapshot();Object.assign(value.patientInfo,{radiographicFindings:'',radiologyReport:'Matching text',ctReport:'Matching text'});const changed=vi.fn();
+ const view=render(<RadiologyReportSection reportKind="ct" snapshot={value} aiEnabled onChange={changed}/>);
+ fireEvent.click(screen.getByRole('button',{name:'Refine with AI'}));await waitFor(()=>expect(mocks.generate).toHaveBeenCalledOnce());
+ view.rerender(<RadiologyReportSection snapshot={value} aiEnabled onChange={changed}/>);
+ await act(async()=>resolve('Obsolete CT'));expect(changed).not.toHaveBeenCalled();
+});
+it('treats malformed local CT text as empty rather than displaying an object or borrowing x-ray text',()=>{
+ const value=snapshot();value.patientInfo.ctReport={untrusted:true} as never;
+ render(<RadiologyReportSection reportKind="ct" snapshot={value} aiEnabled onChange={vi.fn()}/>);
+ expect(screen.getByLabelText('Report text')).toHaveValue('');expect(screen.getByRole('button',{name:'Refine with AI'})).toBeDisabled();
+});

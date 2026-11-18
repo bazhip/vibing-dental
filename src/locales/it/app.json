@@ -399,5 +399,14 @@
     "editorLanguage": "Lingua del referto",
     "refineUnavailable": "Acceda con accesso all’IA per rielaborare il testo. Può comunque scrivere e modificare il Suo referto.",
     "refineFailed": "Impossibile rielaborare il referto. Il Suo testo è stato conservato."
+  },
+  "ctReport": {
+    "title": "Referto TC",
+    "editorHelp": "Scriva il Suo referto TC e rielabori la formulazione con l’IA se necessario. Includa solo le osservazioni documentate e verifichi il referto prima di condividerlo. Le immagini TC non vengono analizzate.",
+    "editorPlaceholder": "Anamnesi clinica / quesito\nRegione esaminata con TC, copertura, tecnica e mezzo di contrasto se documentati\nReperti TC — sede, lateralità, misurazioni e incertezza\nImpressione clinica\nRaccomandazioni\n\nIncluda solo ciò che ha documentato; queste indicazioni sono facoltative.",
+    "filename": "ToothOps-referto-TC.pdf",
+    "copyPrompt": "Copi il referto TC verificato:",
+    "headingTechnique": "Tecnica TC",
+    "headingFindings": "Reperti TC"
   }
 }

@@ -92,3 +92,11 @@ it('refines report-only text and does not restore hidden legacy source into the 
  chart.patientInfo.radiographicFindings='';chart.patientInfo.radiologyHistory='h'.repeat(20001);expect(()=>buildRadiologyReportRequest(chart,'en')).not.toThrow();
  chart.patientInfo.radiologyReport='';expect(()=>buildRadiologyReportRequest(chart,'en')).toThrow();
 });
+it('builds a CT-specific request from CT text only and formats CT findings headings', () => {
+  const chart = radiologySnapshot(); chart.patientInfo.radiologyReport = 'Private x-ray report'; chart.patientInfo.ctReport = 'CT: 409 lesion; extent uncertain. No contrast details recorded.';
+  const request = buildRadiologyReportRequest(chart, 'en', 'ct'), text = JSON.stringify(request);
+  expect(text).toContain('409 lesion'); expect(text).not.toContain('Private x-ray'); expect(text).not.toContain('108: 4.5');
+  expect(request.system[0].text).toContain('computed tomography');
+  expect(parseRadiologyReport([tool({ ...fields, findings: '409 lesion; extent uncertain.' })], 'en', 'ct')).toContain('CT findings');
+  chart.patientInfo.ctReport = ''; expect(() => buildRadiologyReportRequest(chart, 'en', 'ct')).toThrow();
+});

@@ -24,3 +24,8 @@ it('translates the single editor, refinement, Undo, review and export controls',
  fireEvent.click(screen.getByLabelText(i18n.t('app:radiologyReport.checked')));
  expect(findUntranslated(document.body,allowed)).toEqual([]);
 });
+it('translates CT-specific guidance and export labels in the shared editor', () => {
+ const snapshot=sampleOwnerReportSnapshot();snapshot.patientInfo.ctReport='CT recorded text';
+ render(<RadiologyReportSection reportKind="ct" snapshot={snapshot} onChange={vi.fn()}/>);
+ expect(findUntranslated(document.body,['CT recorded text','English','Français','Deutsch','Italiano','Español'])).toEqual([]);
+});

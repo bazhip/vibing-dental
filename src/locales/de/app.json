@@ -397,5 +397,14 @@
     "editorLanguage": "Berichtssprache",
     "refineUnavailable": "Melden Sie sich mit KI-Zugriff an, um den Text zu überarbeiten. Sie können Ihren Bericht weiterhin eingeben und bearbeiten.",
     "refineFailed": "Der Bericht konnte nicht überarbeitet werden. Ihr Text wurde beibehalten."
+  },
+  "ctReport": {
+    "title": "CT-Bericht",
+    "editorHelp": "Geben Sie Ihren CT-Bericht ein und überarbeiten Sie die Formulierung bei Bedarf mit KI. Nehmen Sie nur dokumentierte Beobachtungen auf und prüfen Sie den Bericht vor dem Teilen. CT-Bilder werden nicht analysiert.",
+    "editorPlaceholder": "Klinische Vorgeschichte / Fragestellung\nCT-Untersuchungsregion, Abdeckung, Technik und Kontrastmittel, sofern dokumentiert\nCT-Befunde — Lokalisation, Seite, Messwerte und Unsicherheit\nKlinische Beurteilung\nEmpfehlungen\n\nNehmen Sie nur dokumentierte Angaben auf; diese Hinweise sind optional.",
+    "filename": "ToothOps-CT-Bericht.pdf",
+    "copyPrompt": "Kopieren Sie den geprüften CT-Bericht:",
+    "headingTechnique": "CT-Technik",
+    "headingFindings": "CT-Befunde"
   }
 }
