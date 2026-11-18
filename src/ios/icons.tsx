@@ -39,6 +39,9 @@ export const ICON_NAMES = [
   'tooth',
   'camera',
   'photo',
+  'pencil-tip',
+  'text-bubble',
+  'plus-bubble',
 ] as const;
 
 export type IconName = (typeof ICON_NAMES)[number];
@@ -197,6 +200,9 @@ const SPECS: Record<IconName, Spec> = {
   photo: {
     outline: <><rect x="2.8" y="4.5" width="18.4" height="15" rx="2.8" /><path d="M3.4 17.4l5.1-5.1 4 4 2.6-2.6 5.6 5.4" /><circle cx="15.6" cy="9.2" r="1.7" /></>,
   },
+  'pencil-tip': { outline: <path d="M15.25 4.75a2.12 2.12 0 0 1 3 3L8.5 17.5l-4 1 1-4 9.75-9.75ZM13.5 6.5l3 3" /> },
+  'text-bubble': { outline: <><path d="M6 4.75h12a2.5 2.5 0 0 1 2.5 2.5v7.5a2.5 2.5 0 0 1-2.5 2.5h-6.25L7.5 20.5v-3.25H6a2.5 2.5 0 0 1-2.5-2.5v-7.5A2.5 2.5 0 0 1 6 4.75Z" /><path d="M8 9.25h8M8 12.75h5" /></> },
+  'plus-bubble': { outline: <><path d="M6 4.75h12a2.5 2.5 0 0 1 2.5 2.5v7.5a2.5 2.5 0 0 1-2.5 2.5h-6.25L7.5 20.5v-3.25H6a2.5 2.5 0 0 1-2.5-2.5v-7.5A2.5 2.5 0 0 1 6 4.75Z" /><path d="M12 7.75v6M9 10.75h6" /></> },
 };
 
 export interface IconProps {

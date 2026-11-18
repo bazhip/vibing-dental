@@ -205,6 +205,27 @@ describe('DiagramView toolbar', () => {
       expect.objectContaining({ text: '', anchorTriadan: null, x: expect.any(Number), y: expect.any(Number) }),
     ]);
   });
+  it('orders Draw, Mark, Comment, Free comment in one group and starts on Mark', () => {
+    render(<DiagramView title="Diagnosis" species="canine" toothMarks={{}} onToothMarksChange={vi.fn()} comments={[]} onCommentsChange={vi.fn()} strokes={[]} onStrokesChange={vi.fn()} />);
+    const group = screen.getByRole('group', { name: 'Diagram tool' });
+    expect(within(group).getAllByRole('button').map((b) => b.textContent)).toEqual(['Draw', 'MarkMark', 'Comment', '+ Free comment']);
+    expect(within(group).getAllByRole('button')[1]).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.queryByRole('group', { name: 'Draw settings' })).toBeNull();
+  });
+  it('shows Draw settings only while drawing, and they fold away', () => {
+    renderIt();
+    const panel = screen.getByRole('group', { name: 'Draw settings' });
+    const more = screen.getByRole('button', { name: 'More diagram tools' });
+    expect(document.getElementById(more.getAttribute('aria-controls')!)).not.toContainElement(panel);
+    const toggle = within(panel).getByRole('button', { name: 'Draw settings' });
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    expect(within(panel).getByRole('button', { name: 'Clear strokes' })).toBeInTheDocument();
+    fireEvent.click(toggle);
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    expect(within(panel).queryByRole('button', { name: 'Clear strokes' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Comment' }));
+    expect(screen.queryByRole('group', { name: 'Draw settings' })).toBeNull();
+  });
   it('never exposes drawing mutations in a locked chart’s More tools panel', () => {
     renderIt(true);
     fireEvent.click(screen.getByRole('button', { name: 'More diagram tools' }));
@@ -216,9 +237,9 @@ describe('DiagramView toolbar', () => {
   it('app: Undo / Redo are icons', () => {
     flags.native = true;
     renderIt();
-    expect(screen.getByRole('button', { name: 'Undo' }).querySelector('[data-icon="arrow-uturn-backward"]')).not.toBeNull();
-    expect(screen.getByRole('button', { name: 'Redo' }).querySelector('[data-icon="arrow-uturn-forward"]')).not.toBeNull();
-    expect(screen.getByRole('button', { name: 'Undo' }).textContent).toBe('');
+    expect(within(screen.getByRole('group', { name: 'Undo / Redo' })).getByRole('button', { name: 'Undo' }).querySelector('[data-icon="arrow-uturn-backward"]')).not.toBeNull();
+    expect(within(screen.getByRole('group', { name: 'Undo / Redo' })).getByRole('button', { name: 'Redo' }).querySelector('[data-icon="arrow-uturn-forward"]')).not.toBeNull();
+    expect(within(screen.getByRole('group', { name: 'Undo / Redo' })).getByRole('button', { name: 'Undo' }).textContent).toBe('');
     expect(screen.getByRole('button', { name: 'Numbers' })).toBeInTheDocument();
   });
   it('returns keyboard focus to More tools when its panel closes with Escape', () => {
@@ -234,8 +255,8 @@ describe('DiagramView toolbar', () => {
   });
   it('website: Undo / Redo use the same SVG icons', () => {
     renderIt();
-    expect(screen.getByRole('button', { name: 'Undo' }).querySelector('[data-icon="arrow-uturn-backward"]')).not.toBeNull();
-    expect(screen.getByRole('button', { name: 'Redo' }).querySelector('[data-icon="arrow-uturn-forward"]')).not.toBeNull();
+    expect(within(screen.getByRole('group', { name: 'Undo / Redo' })).getByRole('button', { name: 'Undo' }).querySelector('[data-icon="arrow-uturn-backward"]')).not.toBeNull();
+    expect(within(screen.getByRole('group', { name: 'Undo / Redo' })).getByRole('button', { name: 'Redo' }).querySelector('[data-icon="arrow-uturn-forward"]')).not.toBeNull();
     expect(screen.getByRole('button', { name: '# Numbers' })).toBeInTheDocument();
   });
 });

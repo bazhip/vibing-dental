@@ -1160,7 +1160,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               onStrokesChange={chart.setPreDiagramStrokes}
               markMode="missing-only"
               quickCodes={prefs.quickCodes}
-              defaultTool="comment"
               highlightTriadan={aiHighlightTriadan}
             />
           </div>

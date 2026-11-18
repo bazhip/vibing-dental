@@ -18,6 +18,12 @@ const ARROW_UTURN_BACKWARD_ICON = 'arrow-uturn-backward';
 const ARROW_UTURN_FORWARD_ICON = 'arrow-uturn-forward';
 const MINUS_ICON = 'minus';
 const PLUS_ICON = 'plus';
+const PENCIL_ICON = 'pencil-tip';
+const MARK_ICON = 'xmark';
+const COMMENT_ICON = 'text-bubble';
+const FREE_COMMENT_ICON = 'plus-bubble';
+const CHEVRON_DOWN_ICON = 'chevron-down';
+const TRASH_ICON = 'trash';
 
 interface DiagramViewProps {
   title: string;
@@ -116,6 +122,9 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
   const [zoom, setZoom] = React.useState(1);
   // Secondary controls move inline when the diagram has enough room.
   const [moreOpen, setMoreOpen] = React.useState(false);
+  // Draw settings show while Draw is picked; they can be folded away.
+  const [drawOpen, setDrawOpen] = React.useState(true);
+  const drawId = React.useId();
   const moreRef = React.useRef<HTMLDivElement>(null);
   const moreButtonRef = React.useRef<HTMLButtonElement>(null);
   const moreId = React.useId();
@@ -201,11 +210,23 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
         style={{ ['--diagram-comment-font-size' as string]: `${0.95 * commentTextScale * zoom}rem` }}
       >
         <div className={`diagram-view__toolbar${readOnly ? ' diagram-view__toolbar--readonly' : ''}`}>
+          {/* Always one line: modes + Free comment, history, then More. */}
+          <div className="diagram-view__toolbar-main">
           <div
             className="diagram-view__tool-group"
             role="group"
             aria-label={t('diagramView.toolGroup')}
           >
+            <button
+              type="button"
+              className={`diagram-view__tool ${tool === 'draw' ? 'diagram-view__tool--active' : ''}`}
+              onClick={() => setTool('draw')}
+              aria-pressed={tool === 'draw'}
+              title={t('diagramView.draw')}
+            >
+              <Icon name={PENCIL_ICON} size={18} />
+              <span className="diagram-view__tool-label">{t('diagramView.draw')}</span>
+            </button>
             <button
               type="button"
               className={`diagram-view__tool ${tool === 'mark' ? 'diagram-view__tool--active' : ''}`}
@@ -219,25 +240,33 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
                     : t('diagramView.markTitle')
               }
             >
-              <span className="diagram-view__long">{markMode === 'missing-only' ? t('diagramView.markMissing') : markMode === 'extracted-only' ? t('diagramView.markExtracted') : t('diagramView.mark')}</span>
-              <span className="diagram-view__short">{t('diagramView.mark')}</span>
+              <Icon name={MARK_ICON} size={16} />
+              <span className="diagram-view__tool-label">
+                <span className="diagram-view__long">{markMode === 'missing-only' ? t('diagramView.markMissing') : markMode === 'extracted-only' ? t('diagramView.markExtracted') : t('diagramView.mark')}</span>
+                <span className="diagram-view__short">{t('diagramView.mark')}</span>
+              </span>
             </button>
             <button
               type="button"
               className={`diagram-view__tool ${tool === 'comment' ? 'diagram-view__tool--active' : ''}`}
               onClick={() => setTool('comment')}
               aria-pressed={tool === 'comment'}
+              title={t('diagramView.comment')}
             >
-              {t('diagramView.comment')}
+              <Icon name={COMMENT_ICON} size={18} />
+              <span className="diagram-view__tool-label">{t('diagramView.comment')}</span>
             </button>
-            <button
-              type="button"
-              className={`diagram-view__tool ${tool === 'draw' ? 'diagram-view__tool--active' : ''}`}
-              onClick={() => setTool('draw')}
-              aria-pressed={tool === 'draw'}
-            >
-              {t('diagramView.draw')}
-            </button>
+            {!readOnly && (
+              <button
+                type="button"
+                className="diagram-view__tool diagram-view__free-comment"
+                onClick={() => { addFreeComment(); setMoreOpen(false); }}
+                title={t('ios.diagram.freeComment')}
+              >
+                <Icon name={FREE_COMMENT_ICON} size={18} />
+                <span className="diagram-view__tool-label">{native ? t('ios.diagram.freeComment') : t('diagramView.freeComment')}</span>
+              </button>
+            )}
           </div>
 
           <div
@@ -267,9 +296,6 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
             </button>
           </div>
 
-          {!readOnly && <button type="button" className="diagram-view__action diagram-view__free-comment" onClick={() => { addFreeComment(); setMoreOpen(false); }}>
-            {native ? <><Icon name={PLUS_ICON} size={15} /> {t('ios.diagram.freeComment')}</> : t('diagramView.freeComment')}
-          </button>}
 
           {/* One set of secondary controls: inline when wide, disclosed when narrow. */}
           <div className="diagram-view__more-wrap" ref={moreRef}>
@@ -288,6 +314,25 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
             <span>{t('diagramView.moreLabel')}</span>
           </button>
           <div id={moreId} className={`diagram-view__extras${moreOpen ? ' diagram-view__extras--open' : ''}`}>
+          {/* Undo / Redo move in here when the row is too narrow for them. */}
+          <button
+            type="button"
+            className="diagram-view__action diagram-view__undo-overflow"
+            onClick={history.undo}
+            disabled={!history.canUndo}
+          >
+            <Icon name={ARROW_UTURN_BACKWARD_ICON} size={16} />
+            {t('diagramView.undo')}
+          </button>
+          <button
+            type="button"
+            className="diagram-view__action diagram-view__redo-overflow"
+            onClick={history.redo}
+            disabled={!history.canRedo}
+          >
+            <Icon name={ARROW_UTURN_FORWARD_ICON} size={16} />
+            {t('diagramView.redo')}
+          </button>
           <button
             type="button"
             className={`diagram-view__tool diagram-view__numbers ${showNumbers ? 'diagram-view__tool--active' : ''}`}
@@ -357,12 +402,39 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
             </div>
           )}
 
+          </div>
+          </div>
+          </div>
+
           {tool === 'draw' && !readOnly && (
             <div
-              className="diagram-view__draw-controls"
+              className={`diagram-view__draw-panel${drawOpen ? '' : ' diagram-view__draw-panel--collapsed'}`}
               role="group"
               aria-label={t('diagramView.drawSettings')}
             >
+              <button
+                type="button"
+                className="diagram-view__draw-toggle"
+                onClick={() => setDrawOpen((o) => !o)}
+                aria-expanded={drawOpen}
+                aria-controls={drawId}
+              >
+                <span className="diagram-view__draw-swatch" style={{ backgroundColor: strokeColor }} aria-hidden="true" />
+                {t('diagramView.drawSettings')}
+                <Icon name={CHEVRON_DOWN_ICON} size={14} />
+              </button>
+              {drawOpen && (
+                <button
+                  type="button"
+                  className="diagram-view__action diagram-view__action--danger diagram-view__clear-strokes"
+                  onClick={clearStrokes}
+                >
+                  <Icon name={TRASH_ICON} size={16} />
+                  <span className="diagram-view__clear-label">{t('diagramView.clearStrokes')}</span>
+                </button>
+              )}
+              {drawOpen && (
+              <div id={drawId} className="diagram-view__draw-controls">
               <div role="group" aria-label={t('diagramView.strokeColor')}>
                 {STROKE_COLORS.map((c) => (
                   <button
@@ -390,18 +462,10 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
                   aria-valuetext={t('diagramView.strokeWidthValue', { width: strokeWidth })}
                 />
               </label>
-              <button
-                type="button"
-                className="diagram-view__action diagram-view__action--danger"
-                onClick={clearStrokes}
-              >
-                {t('diagramView.clearStrokes')}
-              </button>
+            </div>
+              )}
             </div>
           )}
-          </div>
-          </div>
-
         </div>
 
         {!readOnly && quickCodes.length > 0 && (
