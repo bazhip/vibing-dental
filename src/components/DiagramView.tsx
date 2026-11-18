@@ -267,6 +267,10 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
             </button>
           </div>
 
+          {!readOnly && <button type="button" className="diagram-view__action diagram-view__free-comment" onClick={() => { addFreeComment(); setMoreOpen(false); }}>
+            {native ? <><Icon name={PLUS_ICON} size={15} /> {t('ios.diagram.freeComment')}</> : t('diagramView.freeComment')}
+          </button>}
+
           {/* One set of secondary controls: inline when wide, disclosed when narrow. */}
           <div className="diagram-view__more-wrap" ref={moreRef}>
           <button
@@ -284,10 +288,6 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
             <span>{t('diagramView.moreLabel')}</span>
           </button>
           <div id={moreId} className={`diagram-view__extras${moreOpen ? ' diagram-view__extras--open' : ''}`}>
-          {!readOnly && <button type="button" className="diagram-view__action diagram-view__free-comment" onClick={() => { addFreeComment(); setMoreOpen(false); }}>
-            {native ? <><Icon name={PLUS_ICON} size={15} /> {t('ios.diagram.freeComment')}</> : t('diagramView.freeComment')}
-          </button>}
-
           <button
             type="button"
             className={`diagram-view__tool diagram-view__numbers ${showNumbers ? 'diagram-view__tool--active' : ''}`}

@@ -192,6 +192,19 @@ describe('DiagramView toolbar', () => {
         onStrokesChange={vi.fn()}
       />
     );
+  it('offers Free comment without opening More tools', () => {
+    const onCommentsChange = vi.fn();
+    render(<DiagramView title="Diagnosis" species="canine" toothMarks={{}} onToothMarksChange={vi.fn()} comments={[]} onCommentsChange={onCommentsChange} strokes={[]} onStrokesChange={vi.fn()} />);
+    const more = screen.getByRole('button', { name: 'More diagram tools' });
+    const freeComment = screen.getByRole('button', { name: '+ Free comment' });
+    const disclosure = document.getElementById(more.getAttribute('aria-controls')!);
+    expect(more).toHaveAttribute('aria-expanded', 'false');
+    expect(disclosure).not.toContainElement(freeComment);
+    fireEvent.click(freeComment);
+    expect(onCommentsChange).toHaveBeenCalledWith([
+      expect.objectContaining({ text: '', anchorTriadan: null, x: expect.any(Number), y: expect.any(Number) }),
+    ]);
+  });
   it('never exposes drawing mutations in a locked chart’s More tools panel', () => {
     renderIt(true);
     fireEvent.click(screen.getByRole('button', { name: 'More diagram tools' }));
