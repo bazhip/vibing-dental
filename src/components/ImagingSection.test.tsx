@@ -156,11 +156,17 @@ describe('ImagingSection uploads, teeth and viewer', () => {
     expect(invalidateReview).toHaveBeenCalledOnce();
   });
 
-  it('keeps image classification disabled and uploader absent on read-only visits', () => {
+  it('keeps every image control visible but locked on read-only visits', () => {
     store.items = [img('jpeg-image')];
     const { container } = render(<ImagingSection chartId="c1" cloudActive readOnly />);
-    expect(screen.getByRole('combobox', { name: 'Image type' })).toBeDisabled();
-    expect(container.querySelector('input[type="file"]')).toBeNull();
+    const kind = screen.getByRole('combobox', { name: 'Image type' });
+    expect(kind.closest('.lock-wrap--locked')).not.toBeNull();
+    expect(screen.getByRole('button', { name: 'Remove image' })).toBeInTheDocument();
+    const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+    expect(input).not.toBeNull();
+    // Even a file that reaches the input isn't uploaded on a locked chart.
+    fireEvent.change(input, { target: { files: [file('x.png')] } });
+    expect(store.upload).not.toHaveBeenCalled();
   });
 
   it('uploads several picked files in order and refuses the ones past the limit', async () => {

@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { lockGuard, notifyLocked } from '../utils/lockGuard';
 import { hapticTap } from '../native/haptics';
 import { isNativeApp } from '../native/platform';
 import { createPortal } from 'react-dom';
@@ -544,6 +545,8 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   // churn renders. The default carries jsdom/hidden-panel mounts until
   // the observer reports a real width (no remount — columns just update).
   const wrapperRef = useRef<HTMLDivElement>(null);
+  // Locked: measurements stay readable; editing explains it must be turned on.
+  const guard = lockGuard(readOnly);
   const [containerWidth, setContainerWidth] = React.useState(1100);
   React.useEffect(() => {
     const el = wrapperRef.current;
@@ -788,7 +791,6 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
               type="checkbox"
               className="dental-grid__missing-check"
               checked={isMissing}
-              disabled={readOnly}
               onChange={() => { hapticTap(); onToggleMissing(row.triadan); }}
               aria-label={t(carried ? 'grid.missingCheck.labelCarried' : 'grid.missingCheck.label', { triadan: row.triadan })}
               title={
@@ -906,7 +908,6 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
           <button
             type="button"
             className="dental-grid__set-all"
-            hidden={readOnly}
             onClick={() => setAllForColumn(key, name)}
             title={t('grid.setAllHint', { name })}
             aria-label={t('grid.setAllHint', { name })}
@@ -959,7 +960,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
           </div>
         )}
       </div>
-      {!readOnly && (selected.size > 0 ? (
+      {(selected.size > 0 && !readOnly ? (
         <div className="dental-grid__bulk" role="region" aria-label={t('grid.bulk.region')}>
           <strong>{t('grid.bulk.selected', { count: selected.size })}</strong>
           <label className="dental-grid__bulk-field">
@@ -1017,8 +1018,8 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       )}
       <div
         dir="ltr"
-        className="dental-grid"
-        ref={wrapperRef}
+        className={`dental-grid${readOnly ? ' lock-wrap--locked' : ''}`}
+        ref={(el) => { wrapperRef.current = el; return guard(el); }}
         style={narrow ? ({
           '--grid-min-width': `${narrowMinWidth - 2}px`,
           '--pin-1': `${NARROW_LEAD[0]}px`,
@@ -1046,7 +1047,12 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
             // is a plain focus when the column has no editor).
             onCellClick={(args, event) => {
               // Tooth / Triadan cells select teeth for "set on several".
-              if (!readOnly && args.column.key === 'triadan') {
+              if (readOnly) {
+                // Locked: say why a cell won't open or select.
+                if (args.column.editable || args.column.key === 'triadan') notifyLocked();
+                return;
+              }
+              if (args.column.key === 'triadan') {
                 toggleSelect(args.row.triadan, event.shiftKey);
                 return;
               }

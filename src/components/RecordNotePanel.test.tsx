@@ -64,9 +64,12 @@ describe('RecordNotePanel', () => {
 
   it('locked chart: copy only', async () => {
     const stored: StoredRecordNote = { text: 'Old', source: 'edited', lng: 'en', basedOn: 'old' };
-    setup({ readOnly: true, stored });
+    const { onChange } = setup({ readOnly: true, stored });
     expect(textarea().readOnly).toBe(true);
-    expect(screen.getByRole('button', { name: /rebuild from chart/i })).toBeDisabled();
+    const rebuild = screen.getByRole('button', { name: /rebuild from chart/i });
+    expect(rebuild).toHaveAttribute('aria-disabled', 'true');
+    fireEvent.click(rebuild);
+    expect(onChange).not.toHaveBeenCalled();
     expect(screen.getByText(/unlock the chart/i)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /^copy$/i }));
     await waitFor(() => expect(mocks.copy).toHaveBeenCalled());

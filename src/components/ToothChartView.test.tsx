@@ -104,9 +104,14 @@ test('missing teeth lock findings and extraction; out-of-range values are flagge
 test('read-only charts can be browsed but not edited', () => {
   render(<Harness readOnly initialPlanned={[110]} />);
   fireEvent.click(screen.getByRole('button', { name: /start at 110/i }));
-  expect(screen.getByLabelText('Pocket')).toBeDisabled();
-  expect(screen.getByLabelText(/diagnosis note/i)).toBeDisabled();
-  expect(screen.queryByRole('button', { name: /mark it extracted/i })).toBeNull();
+  // Everything stays on screen; edits are refused at the lock.
+  const pocket = screen.getByLabelText('Pocket');
+  expect(pocket.closest('.lock-wrap--locked')).not.toBeNull();
+  const typing = new InputEvent('beforeinput', { bubbles: true, cancelable: true, inputType: 'insertText', data: '4' });
+  pocket.dispatchEvent(typing);
+  expect(typing.defaultPrevented).toBe(true);
+  expect(screen.getByLabelText(/diagnosis note/i).closest('.lock-wrap--locked')).not.toBeNull();
+  expect(screen.getByRole('button', { name: /mark it extracted/i })).toHaveAttribute('aria-disabled', 'true');
   fireEvent.click(screen.getByRole('button', { name: /next tooth/i }));
   expect(screen.getByText('109')).toBeInTheDocument();
 });
@@ -145,7 +150,9 @@ test('a quick code adds to the diagnosis note and a second tap takes it out', ()
 test('quick codes are off on a view-only chart and absent when none are set', () => {
   const { unmount } = render(<Harness readOnly quickCodes={['T/SN']} />);
   fireEvent.click(screen.getByRole('button', { name: /start at 110/i }));
-  expect(screen.getByRole('button', { name: 'T/SN: Supernumerary tooth' })).toBeDisabled();
+  const chip = screen.getByRole('button', { name: 'T/SN: Supernumerary tooth' });
+  fireEvent.click(chip);
+  expect(chip).toHaveAttribute('aria-pressed', 'false');
   unmount();
   render(<Harness />);
   fireEvent.click(screen.getByRole('button', { name: /start at 110/i }));
@@ -210,7 +217,7 @@ test('touch map can select teeth in a read-only chart', () => {
   fireEvent.click(screen.getByRole('button', { name: 'Tooth map' }));
   fireEvent.change(screen.getByLabelText('Quadrant'), { target: { value: '2' } });
   fireEvent.click(screen.getByRole('button', { name: /Select tooth 201:/ }));
-  expect(screen.getByLabelText('Pocket')).toBeDisabled();
+  expect(screen.getByLabelText('Pocket').closest('.lock-wrap--locked')).not.toBeNull();
   expect(screen.getByRole('button', { name: /next tooth \(202\)/i })).toBeEnabled();
 });
 

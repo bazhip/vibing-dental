@@ -21,7 +21,6 @@ interface ExamFormProps {
   onCustomChange?: (row: CustomExamValue, patch: Partial<Pick<CustomExamValue, 'status' | 'comment'>>) => void;
   customAreas?: CustomExamAreaDef[];
   onAddArea?: (label: string) => void;
-  readOnly?: boolean;
   /** Open this page's settings (Customize in the header). */
   onCustomize?: () => void;
 }
@@ -86,7 +85,6 @@ export const ExamForm: React.FC<ExamFormProps> = ({
   onCustomize,
   customAreas = [],
   onAddArea,
-  readOnly = false,
 }) => {
   const { t } = useTranslation(['forms', 'settings', 'common']);
   const [adding, setAdding] = React.useState(false);
@@ -96,7 +94,9 @@ export const ExamForm: React.FC<ExamFormProps> = ({
   const duplicate = [...EXAM_ITEMS.map(({ key }) => t(`exam.items.${key}`)), ...customAreas.map((a) => a.label), ...customRows.map((r) => r.label)]
     .some((label) => label.trim().toLocaleLowerCase() === name.toLocaleLowerCase());
   const atLimit = customAreas.length >= MAX_CUSTOM_EXAM_AREAS;
-  const canAdd = !!name && !duplicate && !atLimit && !readOnly;
+  // Adding an area is a preference (it doesn't change the chart), so it
+  // works on a locked chart too.
+  const canAdd = !!name && !duplicate && !atLimit;
   const closeAdd = () => { setAdding(false); setAreaName(''); };
   const addArea = () => {
     if (!canAdd || !onAddArea) return;
@@ -104,11 +104,11 @@ export const ExamForm: React.FC<ExamFormProps> = ({
     closeAdd();
   };
   const addControl = onAddArea && (
-    <div className="exam-add-area">
+    <div className="exam-add-area" data-lock-exempt>
       {atLimit ? <p className="chart-settings__note">{t('settings:chart.list.limit')}</p> : adding ? <>
         <input autoFocus type="text" className="patient-form__input exam-add-area__input" maxLength={MAX_EXAM_LABEL}
           aria-label={t('settings:chart.exam.areaAria', { n: customAreas.length + 1 })}
-          placeholder={t('settings:chart.exam.areaPlaceholder')} value={areaName} disabled={readOnly}
+          placeholder={t('settings:chart.exam.areaPlaceholder')} value={areaName}
           aria-invalid={!!name && duplicate} aria-describedby={name && duplicate ? duplicateId : undefined}
           onChange={(e) => setAreaName(e.target.value)}
           onKeyDown={(e) => {
@@ -118,7 +118,7 @@ export const ExamForm: React.FC<ExamFormProps> = ({
         <button type="button" className="anesthesia-drug__add" disabled={!canAdd} onClick={addArea}>{t('settings:chart.exam.add')}</button>
         <button type="button" className="diagram-view__action" onClick={closeAdd}>{t('common:actions.cancel')}</button>
         {name && duplicate && <p id={duplicateId} role="alert" className="chart-settings__note exam-add-area__message">{t('exam.duplicateArea')}</p>}
-      </> : <button type="button" className="anesthesia-drug__add" disabled={readOnly} onClick={() => setAdding(true)}>
+      </> : <button type="button" className="anesthesia-drug__add" onClick={() => setAdding(true)}>
         <span aria-hidden="true">+</span> {t('settings:chart.exam.add')}
       </button>}
     </div>

@@ -1,3 +1,4 @@
+import { lockGuard, notifyLocked } from '../utils/lockGuard';
 import { SectionHeader } from './SectionHeader';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -90,7 +91,13 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
   const cameraRef = React.useRef<HTMLInputElement>(null);
   const chartIdRef = React.useRef(chartId);
   chartIdRef.current = chartId;
-  const rootRef = React.useRef<HTMLDivElement>(null);
+  const rootRef = React.useRef<HTMLDivElement | null>(null);
+  // Locked: images stay viewable and the Add-to-PDF preference works;
+  // upload, labels, per-image choices and delete explain that editing
+  // must be turned on.
+  const guard = lockGuard(readOnly);
+  const readOnlyRef = React.useRef(readOnly);
+  readOnlyRef.current = readOnly;
   const uploadingRef = React.useRef(false);
   const teeth = React.useMemo(() => imageTeeth(species), [species]);
   const toothLabel = React.useCallback((triadan: number) => imageToothLabel(triadan), []);
@@ -109,6 +116,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
    *  Files past the chart's limit fail up front with the limit message. */
   const addFiles = React.useCallback(async (files: File[]) => {
     if (files.length === 0 || uploadingRef.current) return;
+    if (readOnlyRef.current) { notifyLocked(); return; }
     uploadingRef.current = true;
     const s = storeRef.current;
     const room = Math.max(0, s.maxImages - s.items.length);
@@ -240,18 +248,22 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
   };
 
   return (
-    <div ref={rootRef} className={dragging ? 'patient-form imaging imaging--dragging' : 'patient-form imaging'} {...dropProps}>
+    <div
+      ref={(el) => { rootRef.current = el; return guard(el); }}
+      className={`patient-form imaging${dragging ? ' imaging--dragging' : ''}${readOnly ? ' lock-wrap--locked' : ''}`}
+      {...dropProps}
+    >
       <SectionHeader title={t('imaging.title')} onCustomize={onCustomize} customizeTitle={t('imaging.customizeTitle')} />
 
       {onIncludeInPdfChange && (store.maxImages > 0 || store.items.length > 0) && (
         <label
           className="dental-grid__option imaging__pdf-option"
           title={t('imaging.pdfOptionTitle')}
+          data-lock-exempt
         >
           <input
             type="checkbox"
             {...switchProps}
-            disabled={readOnly}
             checked={includeInPdf}
             onChange={(e) => onIncludeInPdfChange(e.target.checked)}
           />
@@ -276,7 +288,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
         </p>
       )}
 
-      {store.maxImages > 0 && !readOnly && (
+      {store.maxImages > 0 && (
         <div className={`imaging-upload${dragging ? ' imaging-upload--dragging' : ''}${atLimit ? ' imaging-upload--full' : ''}`} aria-busy={busy || capturing}>
           <button
             type="button"
@@ -343,11 +355,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
       {!store.loaded ? (
         <p className="practice-logo-empty">{t('imaging.loading')}</p>
       ) : store.items.length === 0 ? (
-        store.maxImages > 0 && readOnly ? (
-          <p className="practice-logo-empty">
-            {t('imaging.empty')}
-          </p>
-        ) : null
+        null
       ) : (
         <ul className="imaging__grid">
           {store.items.map((a, i) => (
@@ -375,7 +383,6 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                 <div className="imaging__classification">
                   <label className="imaging__field"><span>{t('imaging.typeAria')}</span>
                 <select
-                  disabled={readOnly}
                   className="imaging__kind-select"
                   value={a.kind}
                   onChange={(e) => {
@@ -392,7 +399,6 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                   </label>
                   <label className="imaging__field"><span>{t('imaging.toothLabel')}</span>
                 <select
-                  disabled={readOnly}
                   className="imaging__tooth-select"
                   value={a.toothTriadan ?? ''}
                   onChange={(e) => {
@@ -439,7 +445,6 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                     <input
                       type="checkbox"
                       {...switchProps}
-            disabled={readOnly}
                       checked={!pdfExcludedImages.includes(a.id)}
                       onChange={(e) => onImageInPdfChange(a.id, e.target.checked)}
                     />
@@ -449,7 +454,6 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                 {onImageRoleChange && (
                   <label className="imaging__field"><span>{t('imaging.ownerReportLabel')}</span>
                   <select
-                  disabled={readOnly}
                     className="imaging__role"
                     value={imageRoles[a.id] ?? ''}
                     onChange={(e) =>
@@ -480,14 +484,14 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                     </span>
                   )
                 )}
-                {!readOnly && <button
+                <button
                   type="button"
                   className="diagram-view__action diagram-view__action--danger imaging__delete"
                   onClick={() => onDelete(a.id, a.caption)}
                   disabled={busy}
                 >
                   {t('imaging.remove')}
-                </button>}
+                </button>
                 </div>
               </div>
             </li>

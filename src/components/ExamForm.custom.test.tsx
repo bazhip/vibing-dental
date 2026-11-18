@@ -69,12 +69,12 @@ test('hidden empty rows stay out of bulk marking while saved findings remain vis
 });
 
 const outerSubmit = vi.fn();
-function AddHarness({ areas = [], readOnly = false }: { areas?: { id: string; label: string }[]; readOnly?: boolean }) {
+function AddHarness({ areas = [] }: { areas?: { id: string; label: string }[] }) {
   const [defs, setDefs] = React.useState(areas);
   return <form onSubmit={(e) => { e.preventDefault(); outerSubmit(); }}>
     <ExamForm exam={EMPTY_EXAM_FINDINGS} onStatusChange={() => {}} onCommentChange={() => {}}
       customRows={customExamRows(defs)} customAreas={defs} hiddenAreas={['tongue', ...areas.map((a) => a.id)]}
-      onCustomChange={() => {}} readOnly={readOnly}
+      onCustomChange={() => {}}
       onAddArea={(label) => setDefs([...defs, { id: 'added', label }])} />
     <output data-testid="definitions">{JSON.stringify(defs)}</output>
   </form>;
@@ -114,12 +114,11 @@ test('inline editor enforces the personal area cap', () => {
   expect(screen.getByText('Limit reached. Remove an item to add another.')).toBeInTheDocument();
 });
 
-test('locking the chart while the inline editor is open prevents adding', () => {
-  const { rerender } = render(<AddHarness />);
+test('adding an area is a preference, so it works on a locked chart too', () => {
+  render(<div className="lock-wrap--locked"><AddHarness /></div>);
   fireEvent.click(screen.getByRole('button', { name: /Add area/ }));
   fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Lips' } });
-  rerender(<AddHarness readOnly />);
-  expect(screen.getByRole('button', { name: /Add area/ })).toBeDisabled();
   fireEvent.keyDown(screen.getByRole('textbox'), { key: 'Enter' });
-  expect(JSON.parse(screen.getByTestId('definitions').textContent!)).toEqual([]);
+  expect(JSON.parse(screen.getByTestId('definitions').textContent!)).toEqual([expect.objectContaining({ label: 'Lips' })]);
+  expect(screen.getByRole('button', { name: /Add area/ }).closest('[data-lock-exempt]')).not.toBeNull();
 });

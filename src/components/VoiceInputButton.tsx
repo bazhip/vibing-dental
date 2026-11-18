@@ -1,4 +1,5 @@
 import React from 'react';
+import { lockGuard } from '../utils/lockGuard';
 import { saveFile } from '../native/saveFile';
 import { isNativeApp } from '../native/platform';
 import { Icon } from '../ios/icons';
@@ -907,9 +908,10 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     <div className="voice-input-wrap">
       <button
         type="button"
-        className={className}
+        className={`${className}${locked && !voice.recording ? ' is-locked' : ''}`}
         onClick={handleButton}
         aria-pressed={voice.recording}
+        aria-disabled={(locked && !voice.recording) || undefined}
         title={voice.recording ? t('button.titleStop') : t('button.titleDictate')}
       >
         {voice.recording ? (
@@ -1020,18 +1022,18 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
                             {r.flag.applied ? t('panel.guess', { reason: r.flag.reason }) : t('panel.notCharted', { reason: r.flag.reason })}
                           </span>
                         </button>
-                        <div className="ai-review__actions">
+                        <div className={`ai-review__actions${locked ? ' lock-wrap--locked' : ''}`} ref={lockGuard(locked)}>
                           {r.flag.options.map((o, i) => (
-                            <button key={i} type="button" className="ai-review__opt" disabled={locked} onClick={() => resolveReview(r.id, o)}>
+                            <button key={i} type="button" className="ai-review__opt" onClick={() => resolveReview(r.id, o)}>
                               {o.label}
                             </button>
                           ))}
                           {r.flag.applied && (
-                            <button type="button" className="ai-review__opt ai-review__opt--keep" disabled={locked} onClick={() => resolveReview(r.id, 'keep')}>
+                            <button type="button" className="ai-review__opt ai-review__opt--keep" onClick={() => resolveReview(r.id, 'keep')}>
                               {t('panel.keep')}
                             </button>
                           )}
-                          <button type="button" className="ai-review__opt ai-review__opt--quiet" disabled={locked} onClick={() => resolveReview(r.id, 'remove')}>
+                          <button type="button" className="ai-review__opt ai-review__opt--quiet" onClick={() => resolveReview(r.id, 'remove')}>
                             {r.flag.applied && r.revert ? t('panel.remove') : t('panel.dismiss')}
                           </button>
                         </div>

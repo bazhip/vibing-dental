@@ -11,6 +11,7 @@ import { useDiagramHistory } from '../hooks/useDiagramHistory';
 import { usePersistedState } from '../hooks/usePersistedState';
 import { isNativeApp } from '../native/platform';
 import { Icon } from '../ios/icons';
+import { notifyLocked } from '../utils/lockGuard';
 import { QuickCodeChips } from './QuickCodeChips';
 
 // SF Symbol names (not text).
@@ -100,6 +101,11 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
   const setTool = (next: DiagramTool) => {
     setToolState(next);
     if (next !== 'stamp') setStampCode(null);
+  };
+  // Locked: the tools stay visible but explain that editing must be on.
+  const pickTool = (next: DiagramTool) => {
+    if (readOnly) notifyLocked();
+    else setTool(next);
   };
   // Tap a code to stamp with it; tap it again to go back to Comment.
   const pickStamp = (code: string) => {
@@ -204,7 +210,8 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
             <button
               type="button"
               className={`diagram-view__tool ${tool === 'draw' ? 'diagram-view__tool--active' : ''}`}
-              onClick={() => setTool('draw')}
+              onClick={() => pickTool('draw')}
+              aria-disabled={readOnly || undefined}
               aria-pressed={tool === 'draw'}
               title={t('diagramView.draw')}
             >
@@ -214,7 +221,8 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
             <button
               type="button"
               className={`diagram-view__tool ${tool === 'mark' ? 'diagram-view__tool--active' : ''}`}
-              onClick={() => setTool('mark')}
+              onClick={() => pickTool('mark')}
+              aria-disabled={readOnly || undefined}
               aria-pressed={tool === 'mark'}
               title={
                 markMode === 'missing-only'
@@ -233,24 +241,24 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
             <button
               type="button"
               className={`diagram-view__tool ${tool === 'comment' ? 'diagram-view__tool--active' : ''}`}
-              onClick={() => setTool('comment')}
+              onClick={() => pickTool('comment')}
+              aria-disabled={readOnly || undefined}
               aria-pressed={tool === 'comment'}
               title={t('diagramView.comment')}
             >
               <Icon name={COMMENT_ICON} size={18} />
               <span className="diagram-view__tool-label">{t('diagramView.comment')}</span>
             </button>
-            {!readOnly && (
-              <button
-                type="button"
-                className="diagram-view__tool diagram-view__free-comment"
-                onClick={addFreeComment}
-                title={t('ios.diagram.freeComment')}
-              >
-                <Icon name={FREE_COMMENT_ICON} size={18} />
-                <span className="diagram-view__tool-label">{native ? t('ios.diagram.freeComment') : t('diagramView.freeComment')}</span>
-              </button>
-            )}
+            <button
+              type="button"
+              className="diagram-view__tool diagram-view__free-comment"
+              onClick={readOnly ? notifyLocked : addFreeComment}
+              aria-disabled={readOnly || undefined}
+              title={t('ios.diagram.freeComment')}
+            >
+              <Icon name={FREE_COMMENT_ICON} size={18} />
+              <span className="diagram-view__tool-label">{native ? t('ios.diagram.freeComment') : t('diagramView.freeComment')}</span>
+            </button>
           </div>
 
           <div
@@ -261,8 +269,9 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
             <button
               type="button"
               className="diagram-view__action"
-              onClick={history.undo}
-              disabled={!history.canUndo}
+              onClick={readOnly ? notifyLocked : history.undo}
+              disabled={!readOnly && !history.canUndo}
+              aria-disabled={readOnly || undefined}
               aria-label={t('diagramView.undo')}
               title={t('diagramView.undoTitle', { shortcut: IS_MAC ? '⌘Z' : 'Ctrl+Z' })}
             >
@@ -271,8 +280,9 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
             <button
               type="button"
               className="diagram-view__action"
-              onClick={history.redo}
-              disabled={!history.canRedo}
+              onClick={readOnly ? notifyLocked : history.redo}
+              disabled={!readOnly && !history.canRedo}
+              aria-disabled={readOnly || undefined}
               aria-label={t('diagramView.redo')}
               title={t('diagramView.redoTitle', { shortcut: IS_MAC ? '⌘⇧Z' : 'Ctrl+Y' })}
             >
@@ -428,10 +438,10 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
           )}
         </div>
 
-        {!readOnly && quickCodes.length > 0 && (
-          <div className="diagram-view__quick-codes">
+        {quickCodes.length > 0 && (
+          <div className={`diagram-view__quick-codes${readOnly ? ' diagram-view__quick-codes--locked' : ''}`}>
             <span className="diagram-view__quick-codes-label">{activeStamp ? t('quickCodes.stampHint', { code: activeStamp }) : t('quickCodes.label')}</span>
-            <QuickCodeChips codes={quickCodes} isPressed={(code) => code === activeStamp} onPick={pickStamp} />
+            <QuickCodeChips codes={quickCodes} isPressed={(code) => code === activeStamp} onPick={readOnly ? notifyLocked : pickStamp} />
           </div>
         )}
 

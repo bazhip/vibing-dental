@@ -3706,9 +3706,16 @@ button.save-status--manual:hover {
 .tooth-diagram-wrapper--readonly .diagram-comment textarea { pointer-events: none; }
 .tooth-diagram-wrapper--readonly .tooth-diagram { touch-action: auto !important; }
 
-/* Locked form sections: a hint on hover instead of silently dead clicks. */
-.lock-wrap--locked { cursor: not-allowed; }
-.diagram-view__toolbar.diagram-view__toolbar--readonly :is(.diagram-view__tool-group, .diagram-view__history, .diagram-view__free-comment, .diagram-view__draw-panel) { display: none; }
+/* Locked chart (utils/lockGuard): nothing disappears. Editing controls stay
+   in place, greyed, and say why when pressed; display controls
+   ([data-lock-exempt], zoom, numbers, text size) look and work as usual. */
+.lock-wrap--locked :is(input, textarea, select, button, [role='checkbox'], [role='radio'], [role='switch']):not(:where([data-lock-exempt], [data-lock-exempt] *)),
+.diagram-view__toolbar--readonly :is(.diagram-view__tool-group .diagram-view__tool, .diagram-view__history .diagram-view__action),
+.diagram-view__quick-codes--locked :is(button, [role='button']),
+.is-locked {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
 
 /* Tour anchor around the Settings menu — layout-neutral. */
 .topbar-tour-anchor { display: inline-flex; }

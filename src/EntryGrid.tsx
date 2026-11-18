@@ -4,6 +4,7 @@ import { imageToothLabel } from './utils/imageTeeth';
 import React from 'react';
 import { createPortal } from 'react-dom';
 import { Trans, useTranslation } from 'react-i18next';
+import { lockGuard, notifyLocked } from './utils/lockGuard';
 import type { TFunction } from 'i18next';
 import i18n from './i18n';
 import {
@@ -1005,16 +1006,15 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // Read-only lock for a section's editable content. Applied per block
   // (not around the whole section) so reference-only content — the codes
   // panel beside each diagram — stays scrollable and searchable while a
-  // saved chart is locked. Styling + pointer blocking come from
-  // .sidebar-layout__fieldset:disabled.
+  // saved chart is locked. Everything stays visible: display controls
+  // (owner details, Customize) still work, and the editing controls look
+  // greyed out and explain that editing must be turned on (utils/lockGuard).
   const lock = (node: React.ReactNode) => (
     <div
       className={readOnly ? 'lock-wrap lock-wrap--locked' : 'lock-wrap'}
-      title={readOnly ? t('lock.title') : undefined}
+      ref={lockGuard(readOnly)}
     >
-      <fieldset className="sidebar-layout__fieldset" disabled={readOnly}>
-        {node}
-      </fieldset>
+      {node}
     </div>
   );
 
@@ -1048,9 +1048,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             chart.setPatientInfo((prev: PatientInfo) => ({ ...prev, customExam: setCustomExamValue(prev.customExam, row, patch) }))
           }
           customAreas={prefs.customExamAreas}
-          readOnly={readOnly}
           onAddArea={(label) => {
-            if (readOnly || prefs.customExamAreas.length >= MAX_CUSTOM_EXAM_AREAS) return;
+            if (prefs.customExamAreas.length >= MAX_CUSTOM_EXAM_AREAS) return;
             setPref({ customExamAreas: [...prefs.customExamAreas, { id: newExamAreaId(), label }] });
           }}
           hiddenAreas={prefs.hiddenExamAreas}
@@ -1245,7 +1244,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     {
       id: 'treatment',
       label: t('sections.treatment'),
-      content: (
+      content: lock(
         <SurgeryReportForm
           readOnly={readOnly}
           value={chart.patientInfo.treatmentReport}
@@ -1541,16 +1540,16 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       {whatsNewOpen && <WhatsNewModal onClose={closeWhatsNew} />}
 
       {historyFor && (() => {
-        // Restore only on the open, editable chart; from My charts it's
-        // view-only with a shortcut to open the visit.
+        // Restore only on the open chart (greyed while it's locked); from
+        // My charts it's view-only with a shortcut to open the visit.
         const isOpenChart = historyFor.id === chart.cloudChartId;
-        const canRestore = isOpenChart && !readOnly;
         return (
           <ChartHistoryModal
             chartId={historyFor.id}
             label={historyFor.label}
             onClose={() => setHistoryFor(null)}
-            onRestore={canRestore ? (snap) => cloud.restoreRevision(historyFor.id, snap) : undefined}
+            onRestore={isOpenChart ? (snap) => cloud.restoreRevision(historyFor.id, snap) : undefined}
+            restoreLocked={readOnly}
             restoreHint={isOpenChart ? undefined : t('historyRestoreHint')}
             onOpenChart={historyFor.fromLibrary && !isOpenChart ? () => {
               const id = historyFor.id;
@@ -2006,7 +2005,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             (fixed position). Mounted on every tab so a recording keeps
             going; shown on the Chart tab only. */}
         {profile.aiEnabled && !trial && (
-          <div className="ios-chart-dictate" hidden={appTab !== 'chart' || readOnly} role="region" aria-label={t('ios.form.dictate', { ns: 'chart' })}>
+          <div className="ios-chart-dictate" hidden={appTab !== 'chart'} role="region" aria-label={t('ios.form.dictate', { ns: 'chart' })}>
             <VoiceInputButton
               context={aiContext}
               handlers={aiHandlers}
@@ -2137,7 +2136,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               behind JWT-gated edge functions, so trial (no account) and
               Basic practices don't get it. */}
           {profile.aiEnabled && !trial && (
-            <span hidden={workspacePage || animalTabs.empty || readOnly}><VoiceInputButton
+            <span hidden={workspacePage || animalTabs.empty}><VoiceInputButton
               context={aiContext}
               handlers={aiHandlers}
               onActivity={handleAiActivity}

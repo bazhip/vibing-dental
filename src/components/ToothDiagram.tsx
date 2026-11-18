@@ -1,4 +1,5 @@
 import React from 'react';
+import { notifyLocked } from '../utils/lockGuard';
 import { useTranslation } from 'react-i18next';
 import {
   Species,
@@ -668,8 +669,8 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
       onToothSelect(triadan);
       return;
     }
-    if (readOnly) return;
     if (tool === 'draw') return;
+    if (readOnly) { notifyLocked(); return; }
     e.stopPropagation();
     if (tool === 'mark') {
       // Marks are locked for pre-missing teeth in the post diagram —

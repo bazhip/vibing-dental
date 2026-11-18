@@ -169,10 +169,10 @@ describe('saved visit on the website (unchanged)', () => {
     const { container } = await renderApp();
     const notice = screen.getByRole('note', { name: 'View only' });
     expect(notice).toHaveTextContent('Editing is off for this saved visit.');
-    expect(container.querySelector('.sidebar-layout__fieldset')).toBeDisabled();
+    expect(container.querySelector('.lock-wrap--locked')).not.toBeNull();
     fireEvent.click(within(notice).getByRole('button', { name: 'Edit chart' }));
     expect(screen.queryByRole('note', { name: 'View only' })).toBeNull();
-    expect(container.querySelector('.sidebar-layout__fieldset')).not.toBeDisabled();
+    expect(container.querySelector('.lock-wrap--locked')).toBeNull();
   });
   it('keeps view-only context beside the chart rather than in the header', async () => {
     flags.native = false;
@@ -248,12 +248,13 @@ it.each(['/', '/#/library'])('opens Patients as a modal over the saved chart on 
   expect(container.querySelector('#chart-form')).toBeVisible();
 });
 
-it.each([false, true])('hides dictation on a read-only chart (native=%s)', async native => {
+it.each([false, true])('keeps dictation visible but locked on a read-only chart (native=%s)', async native => {
   flags.native = native;
   const { container } = await renderApp();
   const dictate = container.querySelector('.voice-input-wrap > button');
   expect(dictate).not.toBeNull();
-  expect(dictate).not.toBeVisible();
+  expect(dictate).toBeVisible();
+  expect(dictate).toHaveAttribute('aria-disabled', 'true');
 });
 
 it('reopens the last closed animal when choosing today’s visit from the library', async () => {

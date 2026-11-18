@@ -29,9 +29,10 @@ describe('treatment report customization', () => {
     const onChange = vi.fn();
     render(<SurgeryReportForm value="Saved visit text" onChange={onChange} readOnly />);
     const report = screen.getByRole('textbox', { name: 'Treatment report' });
-    expect(report).toBeDisabled();
-    expect(screen.getByRole('combobox', { name: 'Insert a report template' })).toBeDisabled();
-    expect(screen.getByRole('button', { name: 'Save as template' })).toBeDisabled();
+    expect(report).toHaveAttribute('readonly');
+    // Saving the report as a template doesn't change the chart.
+    expect(screen.getByRole('button', { name: 'Save as template' })).not.toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Save as template' })).toHaveAttribute('data-lock-exempt');
     fireEvent.change(report, { target: { value: 'Attempted edit' } });
     fireEvent.change(screen.getByRole('combobox', { name: 'Insert a report template' }), { target: { value: 't1' } });
     expect(onChange).not.toHaveBeenCalled();

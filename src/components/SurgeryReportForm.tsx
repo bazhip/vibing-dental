@@ -40,8 +40,9 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
     onChange(existing ? `${existing}\n\n${tpl.body}` : tpl.body);
   };
 
+  // Saving the report as a practice template doesn't change the chart, so
+  // it works on a locked chart too.
   const saveCurrentAsTemplate = async () => {
-    if (readOnly) return;
     const name = await promptDialog({
       title: t('report.dialog.title'),
       message: t('report.dialog.message'),
@@ -68,7 +69,7 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
             className="surgery-report__template-select"
             aria-label={t('report.insertAria')}
             value=""
-            disabled={readOnly || !store.loaded || store.templates.length === 0}
+            disabled={!store.loaded || store.templates.length === 0}
             onChange={(e) => {
               if (e.target.value) insertTemplate(e.target.value);
               e.target.value = '';
@@ -91,8 +92,9 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
             type="button"
             className="diagram-view__action"
             onClick={saveCurrentAsTemplate}
-            disabled={readOnly || !value.trim()}
+            disabled={!value.trim()}
             title={t('report.saveTitle')}
+            data-lock-exempt
           >
             {t('report.save')}
           </button>
@@ -104,7 +106,7 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
         aria-label={t('report.textareaAria')}
         placeholder={t('report.placeholder')}
         value={value}
-        disabled={readOnly}
+        readOnly={readOnly}
         onChange={(e) => { if (!readOnly) onChange(e.target.value); }}
       />
 

@@ -82,11 +82,15 @@ describe('OwnerReportSection — Write with AI and Customize', () => {
     expect(draftOwnerReport).not.toHaveBeenCalled();
   });
 
-  it('no AI button without AI or on a view-only chart', () => {
+  it('no AI button without AI; on a view-only chart it stays, locked, and explains', async () => {
     const { rerender } = render(<OwnerReportSection snapshot={snap} overrides={{}} onOverrideChange={() => {}} onPreview={() => {}} />);
     expect(screen.queryByRole('button', { name: /Write with AI/ })).not.toBeInTheDocument();
     rerender(<OwnerReportSection snapshot={snap} overrides={{}} onOverrideChange={() => {}} onPreview={() => {}} aiEnabled readOnly />);
-    expect(screen.queryByRole('button', { name: /Write with AI/ })).not.toBeInTheDocument();
+    const ai = screen.getByRole('button', { name: /Write with AI/ });
+    expect(ai).toHaveAttribute('aria-disabled', 'true');
+    fireEvent.click(ai);
+    await waitFor(() => expect(toast).toHaveBeenCalledWith('View only — choose Edit chart to make changes'));
+    expect(draftOwnerReport).not.toHaveBeenCalled();
   });
 
   it('Customize opens the report templates editor', () => {
