@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { isNativeApp } from '../native/platform';
 import { Sheet } from '../ios/Sheet';
 import { useModalFocus } from '../hooks/useModalFocus';
-import { PdfPreviewModal, type ChartSnapshot as PreviewSnapshot } from './PdfPreviewModal';
+import { PdfPreviewModal, type ChartSnapshot as PreviewSnapshot, type PdfExportLifecycle } from './PdfPreviewModal';
 import { OwnerReportModal } from './OwnerReportModal';
 import { RecordNotePanel, type RecordNotePims } from './RecordNotePanel';
 import type { ChartSnapshot, ImageRole, StoredRecordNote } from '../types';
@@ -21,6 +21,7 @@ interface DocumentsModalProps {
   initialTab?: DocumentTab;
   /** Clinical chart snapshot (with the live diagram SVGs). */
   chartSnapshot: PreviewSnapshot | null;
+  chartLifecycle?: PdfExportLifecycle;
   /** Owner report: off for practices without the feature. */
   ownerReport?: {
     snapshot: ChartSnapshot;
@@ -67,7 +68,7 @@ const TAB_WHO: Record<DocumentTab, 'documents.chartWho' | 'documents.ownerWho' |
  * just the clinical chart.
  */
 export const DocumentsModal: React.FC<DocumentsModalProps> = ({
-  open, onClose, initialTab, chartSnapshot, ownerReport, recordNote,
+  open, onClose, initialTab, chartSnapshot, chartLifecycle, ownerReport, recordNote,
 }) => {
   const { t } = useTranslation('media');
   const readSaved = (): DocumentTab => {
@@ -141,7 +142,7 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
         aria-labelledby="documents-tab-chart"
         hidden={active !== 'chart'}
       >
-        {chartVisited && <PdfPreviewModal open bare onClose={onClose} snapshot={chartSnapshot} />}
+        {chartVisited && <PdfPreviewModal open={open} bare onClose={onClose} snapshot={chartSnapshot} lifecycle={chartLifecycle} />}
       </div>
       {ownerReport && (
         <div

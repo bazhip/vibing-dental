@@ -60,5 +60,15 @@
     "firefoxAndroid": "Firefox 会在新标签页打开 PDF，请轻点顶部的“下载”保存文件。",
     "inAppBrowser": "此应用内置的浏览器可能无法保存文件。请轻点“下载”获取下载链接，或在 Chrome 中打开 ToothOps（⋮ 菜单 →“在浏览器中打开”）。",
     "inAppBrowserMessage": "此应用内置的浏览器无法保存文件。请在 Chrome 中打开 ToothOps（⋮ 菜单 →“在浏览器中打开”），以下载 PDF。"
+  },
+  "exportWarning": {
+    "title": "下载前",
+    "both": "此图表有未保存的更改，且尚未定稿。",
+    "unsaved": "此图表有未保存的更改。",
+    "unfinalized": "此图表尚未定稿。",
+    "finalize": "定稿并下载",
+    "anyway": "仍然下载",
+    "finalizing": "正在定稿…",
+    "failed": "无法将此图表定稿。您可以重试或仍然下载。"
   }
 }

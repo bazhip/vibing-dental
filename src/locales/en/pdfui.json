@@ -46,5 +46,15 @@
     "firefoxAndroid": "Firefox opens the PDF in a new tab — tap Download at the top of it to save the file.",
     "inAppBrowser": "This app’s built-in browser can’t always save files. Tap Download for a download link — or open ToothOps in Chrome (⋮ menu → “Open in browser”).",
     "inAppBrowserMessage": "This app’s built-in browser can’t save files. Open ToothOps in Chrome (⋮ menu → “Open in browser”) to download the PDF."
+  },
+  "exportWarning": {
+    "title": "Before downloading",
+    "both": "This chart has unsaved changes and has not been finalized.",
+    "unsaved": "This chart has unsaved changes.",
+    "unfinalized": "This chart has not been finalized.",
+    "finalize": "Finalize and download",
+    "anyway": "Download anyway",
+    "finalizing": "Finalizing…",
+    "failed": "Could not finalize this chart. You can try again or download anyway."
   }
 }

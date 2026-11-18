@@ -544,6 +544,16 @@ describe('PDF chrome', () => {
     expect(findUntranslated(container, ['Bella'])).toEqual([]);
   });
 
+  it('the chart export warning and finalization failure are translated', async () => {
+    render(<PdfPreviewModal open onClose={() => {}} snapshot={snapshot} lifecycle={{ unsaved: true, unfinalized: true, canFinalize: true, finalize: async () => false }} />);
+    await waitFor(() => expect(screen.getByRole('button', { name: '⟦Download PDF⟧' })).toBeEnabled());
+    fireEvent.click(screen.getByRole('button', { name: '⟦Download PDF⟧' }));
+    expect(findUntranslated(document.body, ['Bella'])).toEqual([]);
+    fireEvent.click(screen.getByRole('button', { name: '⟦Finalize and download⟧' }));
+    await screen.findByRole('alert');
+    expect(findUntranslated(document.body, ['Bella'])).toEqual([]);
+  });
+
   it('the preview modal with image warnings and a failed build', async () => {
     const { listChartAttachments } = await import('../hooks/useAttachments');
     vi.mocked(listChartAttachments).mockResolvedValue(null);

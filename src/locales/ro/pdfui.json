@@ -60,5 +60,15 @@
     "firefoxAndroid": "Firefox deschide PDF-ul într-o filă nouă — atingeți Descărcați în partea de sus pentru a salva fișierul.",
     "inAppBrowser": "Browserul integrat al acestei aplicații nu poate salva întotdeauna fișiere. Atingeți Descărcați pentru un link de descărcare sau deschideți ToothOps în Chrome (meniul ⋮ → „Deschideți în browser”).",
     "inAppBrowserMessage": "Browserul integrat al acestei aplicații nu poate salva fișiere. Deschideți ToothOps în Chrome (meniul ⋮ → „Deschideți în browser”) pentru a descărca PDF-ul."
+  },
+  "exportWarning": {
+    "title": "Înainte de descărcare",
+    "both": "Această fișă conține modificări nesalvate și nu a fost finalizată.",
+    "unsaved": "Această fișă conține modificări nesalvate.",
+    "unfinalized": "Această fișă nu a fost finalizată.",
+    "finalize": "Finalizați și descărcați",
+    "anyway": "Descărcați oricum",
+    "finalizing": "Se finalizează…",
+    "failed": "Fișa nu a putut fi finalizată. Puteți încerca din nou sau o puteți descărca oricum."
   }
 }

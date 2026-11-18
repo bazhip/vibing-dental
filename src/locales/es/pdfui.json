@@ -60,5 +60,15 @@
     "firefoxAndroid": "Firefox abre el PDF en una pestaña nueva — toque Descargar en la parte superior para guardar el archivo.",
     "inAppBrowser": "El navegador integrado de esta aplicación no siempre puede guardar archivos. Toque Descargar para obtener un enlace de descarga — o abra ToothOps en Chrome (menú ⋮ → «Abrir en el navegador»).",
     "inAppBrowserMessage": "El navegador integrado de esta aplicación no puede guardar archivos. Abra ToothOps en Chrome (menú ⋮ → «Abrir en el navegador») para descargar el PDF."
+  },
+  "exportWarning": {
+    "title": "Antes de descargar",
+    "both": "Este historial tiene cambios sin guardar y no se ha finalizado.",
+    "unsaved": "Este historial tiene cambios sin guardar.",
+    "unfinalized": "Este historial no se ha finalizado.",
+    "finalize": "Finalizar y descargar",
+    "anyway": "Descargar de todos modos",
+    "finalizing": "Finalizando…",
+    "failed": "No se pudo finalizar este historial. Usted puede volver a intentarlo o descargarlo de todos modos."
   }
 }
