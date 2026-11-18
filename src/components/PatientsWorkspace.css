@@ -163,7 +163,7 @@
   outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
-.chart-library__actions-panel { position: fixed; z-index: 1200; box-sizing: border-box; max-height: calc(100dvh - 24px); overflow-y: auto; box-shadow: 0 8px 24px rgb(0 0 0 / 20%); display: grid; gap: 2px; padding: 4px; margin-top: 0; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); }
+.chart-library__actions-panel { position: fixed; z-index: 1200; box-sizing: border-box; max-height: calc(100dvh - 24px); overflow-y: auto; box-shadow: var(--shadow-md); display: grid; gap: 2px; padding: 4px; margin-top: 0; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-overlay, var(--surface)); }
 .chart-library__actions-panel :is(.chart-library__act, .chart-library__delete) {
   width: 100%;
   border: 0;
