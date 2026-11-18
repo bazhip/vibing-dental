@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rabbit chart preview</title>
+<div id="root"></div>
+<script type="module">
+import RefreshRuntime from '/@react-refresh';
+RefreshRuntime.injectIntoGlobalHook(window);
+window.$RefreshReg$ = () => {};
+window.$RefreshSig$ = () => type => type;
+await import('./rabbit-preview.jsx');
+</script>
+</html>

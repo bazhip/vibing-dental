@@ -73,6 +73,27 @@ describe('PatientForm', () => {
     expect(screen.queryByRole('button', { name: 'Customize' })).toBeNull();
   });
 
+  it.each([false, true])('groups rabbit and equine under Other, native=%s', native => {
+    flags.native = native;
+    const onSpecies = vi.fn();
+    const props = { patientInfo, onPatientInfoChange: vi.fn(), onSpeciesChange: onSpecies };
+    const { rerender } = render(<PatientForm {...props} species="canine-deciduous" />);
+    const other = screen.getByRole('combobox', { name: 'Other species' });
+    expect(within(other).getByRole('option', { name: 'Rabbit' })).toBeInTheDocument();
+    expect(within(other).getByRole('option', { name: 'Equine' })).toBeInTheDocument();
+    fireEvent.change(other, { target: { value: 'rabbit' } });
+    expect(onSpecies).toHaveBeenLastCalledWith('rabbit');
+    rerender(<PatientForm {...props} species="rabbit" />);
+    expect(screen.getByText('Other: Rabbit')).toBeVisible();
+    expect(screen.getByRole('radio', { name: 'Deciduous' })).toBeDisabled();
+    fireEvent.change(screen.getByRole('combobox', { name: 'Other species' }), { target: { value: 'equine' } });
+    expect(onSpecies).toHaveBeenLastCalledWith('equine');
+    rerender(<PatientForm {...props} species="equine" />);
+    expect(screen.getByText('Other: Equine')).toBeVisible();
+    fireEvent.click(screen.getByRole('radio', { name: 'Canine' }));
+    expect(onSpecies).toHaveBeenLastCalledWith('canine');
+  });
+
   it('website: unchanged markup', () => {
     const { container } = renderIt();
     expect(screen.getByRole('combobox', { name: /common interval/ }).querySelector('option')!.textContent).toBe('+ interval');
@@ -281,7 +302,7 @@ it('offers equine on native with the same permanent-dentition restriction', () =
   flags.native = true;
   const onSpecies = vi.fn();
   const { rerender } = render(<PatientForm patientInfo={patientInfo} species="canine" onPatientInfoChange={vi.fn()} onSpeciesChange={onSpecies} />);
-  fireEvent.click(screen.getByRole('radio', { name: 'Equine' }));
+  fireEvent.change(screen.getByRole('combobox', { name: 'Other species' }), { target: { value: 'equine' } });
   expect(onSpecies).toHaveBeenCalledWith('equine');
   rerender(<PatientForm patientInfo={patientInfo} species="equine" onPatientInfoChange={vi.fn()} onSpeciesChange={onSpecies} />);
   expect(screen.getByRole('radio', { name: 'Deciduous' })).toBeDisabled();

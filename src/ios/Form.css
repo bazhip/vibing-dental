@@ -189,3 +189,9 @@
 @media (prefers-reduced-motion: reduce) {
   :where(html.native-ios) .ios-segmented__segment { transition: none; }
 }
+
+/* Species and dentition have their label above the choices on narrow
+   native forms. Give each choice group the entire available row width. */
+:where(html.native-ios) .patient-form--ios .patient-form__choice-row .ios-field__control > * {
+  width: 100%;
+}

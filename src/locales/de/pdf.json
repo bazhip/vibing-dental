@@ -5,7 +5,8 @@
       "canineDeciduous": "Zahnschema Hund (Milchgebiss)",
       "feline": "Zahnschema Katze",
       "felineDeciduous": "Zahnschema Katze (Milchgebiss)",
-      "equine": "Zahnschema Pferd"
+      "equine": "Zahnschema Pferd",
+      "rabbit": "Zahnschema Kaninchen"
     },
     "subtitle": "Parodontaler Befund & Behandlungsplan",
     "tech": "Assistenz: {{name}}"

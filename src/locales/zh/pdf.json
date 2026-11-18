@@ -5,7 +5,8 @@
       "canineDeciduous": "犬（乳牙）牙科图表",
       "feline": "猫牙科图表",
       "felineDeciduous": "猫（乳牙）牙科图表",
-      "equine": "马牙科图表"
+      "equine": "马牙科图表",
+      "rabbit": "兔牙科记录"
     },
     "subtitle": "牙周评估与治疗计划",
     "tech": "技师：{{name}}"

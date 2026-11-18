@@ -78,7 +78,8 @@
     "canine-deciduous": "Filhote de cão",
     "feline": "Gato",
     "feline-deciduous": "Filhote de gato",
-    "equine": "Cavalo"
+    "equine": "Cavalo",
+    "rabbit": "Coelho"
   },
   "tooth": {
     "deciduous": "de leite",
@@ -155,5 +156,10 @@
     "single": " (grau {{level}})",
     "range": " (grau {{from}} a {{to}})"
   },
-  "otherFindings": "Outros achados"
+  "otherFindings": "Outros achados",
+  "homecareTipsRabbit": {
+    "hay": "Ofereça feno de gramíneas à vontade para favorecer o desgaste normal dos dentes e siga as instruções de alimentação da sua equipa veterinária após o tratamento.",
+    "checkups": "Compareça às consultas de revisão dentária recomendadas pela sua equipa veterinária; os dentes do coelho crescem continuamente.",
+    "warningSigns": "Contacte prontamente a sua equipa veterinária se o seu coelho comer menos, deixar de comer, produzir menos fezes, se babar ou perder peso."
+  }
 }

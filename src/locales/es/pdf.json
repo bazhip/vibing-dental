@@ -5,7 +5,8 @@
       "canineDeciduous": "Odontograma canino (dientes deciduos)",
       "feline": "Odontograma felino",
       "felineDeciduous": "Odontograma felino (dientes deciduos)",
-      "equine": "Odontograma equino"
+      "equine": "Odontograma equino",
+      "rabbit": "Odontograma de conejo"
     },
     "subtitle": "Evaluación periodontal y plan de tratamiento",
     "tech": "Auxiliar: {{name}}"

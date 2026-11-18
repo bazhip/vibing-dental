@@ -61,6 +61,8 @@ export interface ReportStrings {
   homecareTips: string[];
   /** Defaults for a horse (no brushing or chews). */
   homecareTipsEquine: string[];
+  /** Rabbit defaults: hay, follow-up and urgent appetite changes. */
+  homecareTipsRabbit: string[];
   fieldPhrases: Record<DentalField, (value: string) => string>;
   fieldPlain: Record<DentalField, string>;
   /** One mouth-wide line: "Gum inflammation on most teeth (mild to moderate)".
@@ -181,9 +183,10 @@ const EXAM_AREAS = [
   'extraoral', 'lymph', 'buccal', 'tongue', 'palate', 'pharynx',
 ] as const satisfies readonly (keyof ExamFindings)[];
 
-const SPECIES_KEYS = ['feline', 'canine', 'feline-deciduous', 'canine-deciduous', 'equine'] as const;
+const SPECIES_KEYS = ['feline', 'canine', 'feline-deciduous', 'canine-deciduous', 'equine', 'rabbit'] as const;
 
 const HOMECARE_TIP_KEYS = ['brushing', 'products', 'warningSigns'] as const;
+const RABBIT_HOMECARE_TIP_KEYS = ['hay', 'checkups', 'warningSigns'] as const;
 const EQUINE_HOMECARE_TIP_KEYS = ['checkups', 'forage', 'warningSigns'] as const;
 
 function buildStrings(locale: ReportLocale): ReportStrings {
@@ -208,6 +211,7 @@ function buildStrings(locale: ReportLocale): ReportStrings {
     intro: (pet) => t('intro', { pet: pet || cap(yourPet) }),
     homecareTips: HOMECARE_TIP_KEYS.map((k) => t(`homecareTips.${k}`)),
     homecareTipsEquine: EQUINE_HOMECARE_TIP_KEYS.map((k) => t(`homecareTipsEquine.${k}`)),
+    homecareTipsRabbit: RABBIT_HOMECARE_TIP_KEYS.map((k) => t(`homecareTipsRabbit.${k}`)),
     fieldPhrases: map(DENTAL_FIELDS, (f) => (value: string) => t(`fieldPhrases.${f}`, { value })),
     fieldPlain: map(DENTAL_FIELDS, (f) => t(`fieldPlain.${f}`)),
     summaryLine: (field, extent, severity) => t(`summary.${field}`, { extent: t(`extent.${extent}`), severity }),

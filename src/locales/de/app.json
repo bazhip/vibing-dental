@@ -20,7 +20,8 @@
     "canine": "Hund",
     "felineDeciduous": "Katze · Milchzähne",
     "canineDeciduous": "Hund · Milchzähne",
-    "equine": "Pferd"
+    "equine": "Pferd",
+    "rabbit": "Kaninchen"
   },
   "chartingView": {
     "label": "Ansicht des Zahnschemas",

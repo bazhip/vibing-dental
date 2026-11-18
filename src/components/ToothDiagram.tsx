@@ -602,7 +602,8 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
       // (104 103 102 101 | 201 202 203 204); a canine label beside its
       // tooth would collide with the ends of an incisor-only arc.
       // A horse's canines sit well behind the incisors: label them beside the tooth.
-      const front = jaw.filter((t) => t.type === 'incisor' || (t.type === 'canine' && !diagram.frontArcIncisorsOnly));
+      const front = jaw.filter((t) => !diagram.numberLabelPositions?.[t.triadan] &&
+        (t.type === 'incisor' || (t.type === 'canine' && !diagram.frontArcIncisorsOnly)));
       arcLabelPositions(front, outward, { w: labelW, h: labelH, gap: 12 })
         .forEach((pos, triadan) => arcPos.set(triadan, pos));
     }
@@ -610,7 +611,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
     for (const tooth of diagram.teeth) {
       const info = renderInfoByTriadan.get(tooth.triadan);
       if (!info) continue;
-      const onArc = arcPos.get(tooth.triadan);
+      const onArc = diagram.numberLabelPositions?.[tooth.triadan] ?? arcPos.get(tooth.triadan);
       const pos = onArc ?? numberLabelPosition(info.bbox, archCenter, 16);
       seeds.push({ triadan: tooth.triadan, ...pos, w: labelW, h: labelH, fixed: !!onArc });
     }

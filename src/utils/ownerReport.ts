@@ -148,6 +148,7 @@ export function templateHomecareTips(template: OwnerReportTemplate, values: Plac
   const tips = template.homecareTips.map((t) => t.trim()).filter(Boolean);
   if (tips.length > 0) return tips.map((t) => fillPlaceholders(t, values));
   const strings = reportStrings(template.language);
+  if (species === 'rabbit') return strings.homecareTipsRabbit;
   return species === 'equine' ? strings.homecareTipsEquine : strings.homecareTips;
 }
 

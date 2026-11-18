@@ -97,6 +97,7 @@ const SPECIES_KEYS = {
   'feline-deciduous': 'species.felineDeciduous',
   'canine-deciduous': 'species.canineDeciduous',
   equine: 'species.equine',
+  rabbit: 'species.rabbit',
 } as const;
 
 /** The species name in the active language (an unknown species is shown as stored). */
@@ -115,7 +116,7 @@ const ERROR_KEYS = {
 } as const satisfies Record<LibraryError['kind'], string>;
 
 /** Species offered in the filter (the stored species values). */
-const FILTER_SPECIES = ['canine', 'feline', 'equine'] as const;
+const FILTER_SPECIES = ['canine', 'feline', 'equine', 'rabbit'] as const;
 
 const SORT_LABELS = { patient: 'table.patient', updated: 'table.updated', recall: 'table.recheck' } as const;
 

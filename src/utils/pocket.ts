@@ -40,7 +40,8 @@ export function rootLabels(species: Species, triadan: number): string[] {
   const feline = species.startsWith('feline');
   // Horse cheek teeth are hypsodont (no furcation to probe per root):
   // one pocket box per tooth.
-  if (species === 'equine') return [];
+  // Rabbit teeth are aradicular: no divided-root probing fields.
+  if (species === 'equine' || species === 'rabbit') return [];
 
   if (pos <= 5) return []; // incisors, canine, P1
   if (feline) {

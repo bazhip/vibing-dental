@@ -871,6 +871,57 @@
   color: var(--ios-on-tint, white);
 }
 
+/* Common species stay inline; the less common species share one control. */
+.patient-form__species-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.patient-form__common-species {
+  display: flex;
+  flex: 2 1 auto;
+  gap: 0.5rem;
+}
+
+.patient-form__other {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+}
+
+.patient-form__other-select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.patient-form__other:focus-within {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+
+.patient-form--ios .patient-form__species-controls > .ios-segmented {
+  flex: 1 1 auto;
+}
+
+.patient-form--ios .patient-form__choice-row .ios-segmented__segment {
+  min-height: 44px;
+}
+
+.patient-form--ios .patient-form__other {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+}
+
 /* Dental Grid Styles */
 .dental-grid-section {
   /* No top margin — the section title should sit flush at the top of the

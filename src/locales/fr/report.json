@@ -78,7 +78,8 @@
     "canine-deciduous": "Chiot",
     "feline": "Chat",
     "feline-deciduous": "Chaton",
-    "equine": "Cheval"
+    "equine": "Cheval",
+    "rabbit": "Lapin"
   },
   "tooth": {
     "deciduous": "de lait",
@@ -155,5 +156,10 @@
     "single": " (degré {{level}})",
     "range": " (degré {{from}} à {{to}})"
   },
-  "otherFindings": "Autres observations"
+  "otherFindings": "Autres observations",
+  "homecareTipsRabbit": {
+    "hay": "Proposez du foin de graminées à volonté pour favoriser une usure normale des dents, en suivant les consignes alimentaires de votre équipe vétérinaire après le traitement.",
+    "checkups": "Respectez les rendez-vous de contrôle dentaire recommandés par votre équipe vétérinaire ; les dents du lapin poussent en continu.",
+    "warningSigns": "Contactez rapidement votre équipe vétérinaire si votre lapin mange moins, cesse de manger, produit moins de crottes, bave ou perd du poids."
+  }
 }

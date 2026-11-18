@@ -306,13 +306,16 @@ export const DEFAULT_VCA_DOCTOR = '';
  * the lower jaw also has no p2). Triadan quadrants 5-8. `equine` = the
  * adult horse, 44 positions (101-111 per quadrant: I1-I3, C, wolf tooth
  * P1 at 05, P2-P4, M1-M3); canines and wolf teeth are often absent.
+ * `rabbit` = 28 adult teeth: upper I1/I2 (peg), P2-P4, M1-M3;
+ * lower I1, P3/P4, M1-M3. No rabbit deciduous chart is offered.
  */
 export type Species =
   | 'feline'
   | 'canine'
   | 'canine-deciduous'
   | 'feline-deciduous'
-  | 'equine';
+  | 'equine'
+  | 'rabbit';
 
 /**
  * Per-tooth visual mark on the interactive diagram.
