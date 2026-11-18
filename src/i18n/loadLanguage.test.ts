@@ -31,3 +31,12 @@ test('a failed chunk load resolves false, and a later attempt refetches', async 
 test('languages with nothing to fetch resolve true', async () => {
   expect(await loadLanguage('en')).toBe(true);
 });
+
+test('Romanian pending-review counts keep the meaning “to review” in every plural form', async () => {
+  await loadLanguage('ro');
+  const t = i18n.getFixedT('ro', 'voice');
+  for (const count of [0, 1, 2, 19, 20, 101]) {
+    expect(t('toReview', { count })).toBe(`${count} de verificat`);
+    expect(t('peek.review', { count })).toContain(`${count} de verificat`);
+  }
+});

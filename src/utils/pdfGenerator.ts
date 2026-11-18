@@ -1,5 +1,5 @@
 import { PDFDocument, PDFHexString } from 'pdf-lib';
-import { safeFont } from './pdf/safeFont';
+import { embedPdfFonts } from './pdf/fonts';
 import { optionalClinicalContinuations, drawClinicalContinuations, drawContinuationNotice } from './pdf/continuation';
 import download from 'downloadjs';
 import i18n, { loadLanguage } from '../i18n';
@@ -17,7 +17,6 @@ import {
   ACTIVE,
   applyPdfStyle,
   resolvePdfStyle,
-  FONT_MAP,
   PDF_STYLES,
   DEFAULT_PDF_STYLE_ID,
   type CommentStyle,
@@ -154,11 +153,7 @@ export async function buildDentalChartPDFBytes(
   const page2 = pdfDoc.addPage([PAGE_WIDTH_PT, PAGE_HEIGHT_PT]);
   const form  = pdfDoc.getForm();
 
-  const fontIds = FONT_MAP[ACTIVE.fontFamilyKey];
-  // Safe fonts: unsupported characters (emoji, arrows…) are replaced or
-  // dropped instead of failing the whole PDF.
-  const regular = safeFont(await pdfDoc.embedFont(fontIds.regular));
-  const bold    = safeFont(await pdfDoc.embedFont(fontIds.bold));
+  const { regular, bold } = await embedPdfFonts(pdfDoc, lng, ACTIVE.fontFamilyKey);
 
   // Preflight the same card layouts without drawing: supported custom settings
   // can exceed the compact column or its text limits. Move complete sections

@@ -25,7 +25,7 @@ test('clean catalogs have no problems', () => {
   const c = { en, fr: { common: { a: 'Bonjour {{pet}}' } } };
   expect(checkCatalogs(c, { fr: { 'common:a': fresh } })).toEqual(
     // other app languages are absent here, so only they are missing
-    ['de', 'it', 'es'].map((lng) => ({ lng, key: 'common:a', kind: 'missing' })),
+    ['de', 'it', 'es', 'hu', 'ro'].map((lng) => ({ lng, key: 'common:a', kind: 'missing' })),
   );
 });
 test('flags missing translation', () => {
@@ -62,11 +62,13 @@ test('pt is required for report and client only', () => {
 test('required plural forms the language needs are reported missing (fr many), de needs none', () => {
   const enP = { common: { n_one: '{{c}} tooth', n_other: '{{c}} teeth' } };
   const c: Catalogs = { en: enP };
-  for (const l of ['fr', 'de', 'it', 'es']) c[l] = { common: { n_one: 'a {{c}}', n_other: 'b {{c}}' } };
+  for (const l of ['fr', 'de', 'it', 'es', 'hu', 'ro']) c[l] = { common: { n_one: 'a {{c}}', n_other: 'b {{c}}' } };
   const problems = checkCatalogs(c, metaFor(c));
   expect(problems.filter((p) => p.lng === 'de')).toEqual([]);
   expect(problems.filter((p) => p.lng === 'fr')).toEqual([{ lng: 'fr', key: 'common:n_many', kind: 'missing' }]);
-  expect(problems).toHaveLength(3);
+  expect(problems.filter((p) => p.lng === 'hu')).toEqual([]);
+  expect(problems.filter((p) => p.lng === 'ro')).toEqual([{ lng: 'ro', key: 'common:n_few', kind: 'missing' }]);
+  expect(problems).toHaveLength(4);
 });
 
 test('stray namespaces and languages are extra', () => {

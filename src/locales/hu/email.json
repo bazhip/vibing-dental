@@ -1,0 +1,44 @@
+{
+  "common": {
+    "setPasswordButton": "Jelszó beállítása és csatlakozás"
+  },
+  "invite": {
+    "body1": "{{who}} hozzáadta Önt csapatához a ToothOps alkalmazásban – állatorvosi fogászati dokumentáció a kezelőasztal mellett.",
+    "body2": "Állítsa be jelszavát a fiók aktiválásához és a rendelő fogászati lapjainak megtekintéséhez.",
+    "fallback": {
+      "preheader": "a rendelő",
+      "title": "egy rendelő",
+      "who": "Egy rendelő"
+    },
+    "footnote": "Ha nem számított erre, figyelmen kívül hagyhatja ezt az e-mailt.",
+    "preheader": "Állítsa be jelszavát a(z) {{practice}} rendelőhöz való csatlakozáshoz a ToothOps alkalmazásban.",
+    "subject": "{{who}} meghívta Önt a ToothOps alkalmazásba",
+    "title": "Meghívást kapott a(z) {{practice}} rendelőhöz"
+  },
+  "join": {
+    "body1": "{{name}} meghívta Önt a csapatába a ToothOps alkalmazásban. Az elfogadáshoz jelentkezzen be meglévő fiókjával.",
+    "body2": "Az elfogadásig semmi nem változik – meglévő fogászati lapjainak megosztásáról a csatlakozáskor külön dönthet.",
+    "button": "Meghívás áttekintése",
+    "fallback": "egy rendelő",
+    "footnote": "A hivatkozás 14 napig érvényes. Ha nem számított erre, hagyja figyelmen kívül ezt az e-mailt.",
+    "preheader": "{{name}} meghívta Önt csapatába a ToothOps alkalmazásban.",
+    "subject": "Csatlakozik a(z) {{name}} rendelőhöz a ToothOps alkalmazásban?",
+    "title": "Csatlakozik a(z) {{name}} rendelőhöz?"
+  },
+  "layout": {
+    "linkFallback": "Ha a gomb nem működik, másolja ezt a hivatkozást a böngészőjébe:",
+    "tagline": "Állatorvosi fogászati dokumentáció"
+  },
+  "reminder": {
+    "body1": "{{who}} meghívta Önt a ToothOps állatorvosi fogászati dokumentációs alkalmazásba. Fiókja készen áll – a kezdéshez csak állítson be jelszót.",
+    "body2": "Az alábbi hivatkozás 24 órán át érvényes.",
+    "fallback": "az Ön rendelője",
+    "footnote": "Nem számított erre, vagy nem szeretne csatlakozni? Hagyja figyelmen kívül ezt az e-mailt – legfeljebb még egy emlékeztetőt küldünk.",
+    "footnoteFinal": "Ez az utolsó emlékeztetőnk. Ha {{date}} dátumig nem csatlakozik, a meghívás lejár, és a függőben lévő fiók törlődik – {{who}} bármikor újra meghívhatja Önt.",
+    "preheader": "{{who}} várja Önt a ToothOps alkalmazásban – állítsa be jelszavát a csatlakozáshoz.",
+    "subject": "Emlékeztető: {{who}} meghívta Önt a ToothOps alkalmazásba",
+    "subjectFinal": "Utolsó emlékeztető: csatlakozzon a(z) {{who}} csapatához a ToothOps alkalmazásban",
+    "title": "Meghívást kapott a(z) {{who}} csapatához",
+    "titleFinal": "Meghívása továbbra is várja"
+  }
+}

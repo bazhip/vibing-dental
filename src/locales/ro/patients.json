@@ -1,0 +1,73 @@
+{
+  "title": "Pacienți",
+  "search": {
+    "placeholder": "Căutați",
+    "label": "Căutați pacienți după nume, număr sau proprietar",
+    "clear": "Ștergeți căutarea"
+  },
+  "signIn": "Autentificați-vă pentru a vedea fișele salvate.",
+  "unnamed": "Pacient fără nume",
+  "empty": "Nu există încă fișe salvate. Se salvează automat pe măsură ce le completați.",
+  "retry": "Încercați din nou",
+  "loadMore": "Încărcați mai multe",
+  "filter": {
+    "button": "Filtrare și sortare",
+    "sortBy": "Sortați după",
+    "sortPatient": "Nume",
+    "sortUpdated": "Ultima actualizare",
+    "sortRecall": "Data recontrolului",
+    "order": "Ordine",
+    "patientAsc": "De la A la Z",
+    "patientDesc": "De la Z la A",
+    "updatedDesc": "Cele mai recente întâi",
+    "updatedAsc": "Cele mai vechi întâi",
+    "recallAsc": "Cele mai apropiate întâi",
+    "recallDesc": "Cele mai îndepărtate întâi",
+    "species": "Specie",
+    "allSpecies": "Toate speciile",
+    "doctor": "Medic",
+    "allDoctors": "Toți medicii",
+    "due": "Recontrol scadent",
+    "dueCount": "Recontrol scadent ({{count}})"
+  },
+  "add": {
+    "button": "Adăugați",
+    "newPatient": "Pacient nou"
+  },
+  "row": {
+    "number": "#{{number}}",
+    "visits_one": "{{count}} vizită",
+    "visits_other": "{{count}} de vizite",
+    "updated": "Actualizat la {{date}}",
+    "visits_few": "{{count}} vizite"
+  },
+  "recall": {
+    "overdue": "Întârziat · {{date}}",
+    "today": "Scadent astăzi",
+    "upcoming": "Recontrol la {{date}}"
+  },
+  "actions": {
+    "open": "Deschideți",
+    "delete": "Ștergeți",
+    "newVisit": "Vizită nouă"
+  },
+  "confirmDelete": {
+    "title": "Ștergeți {{name}}?",
+    "titleDated": "Ștergeți {{name}} ({{date}})?",
+    "confirm": "Ștergeți vizita"
+  },
+  "visits": {
+    "undated": "Vizită fără dată",
+    "byDoctor": "{{doctor}} · Actualizat la {{date}}",
+    "updated": "Actualizat la {{date}}",
+    "empty": "Nicio vizită.",
+    "historyLabel": "{{name}} · {{date}}"
+  },
+  "rechecks": {
+    "title": "Recontroale",
+    "overdue": "Întârziate",
+    "today": "Scadente astăzi",
+    "empty": "Niciun recontrol scadent",
+    "emptyHint": "Pacienții apar aici în ziua în care este scadent recontrolul."
+  }
+}

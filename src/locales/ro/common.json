@@ -1,0 +1,161 @@
+{
+  "actions": {
+    "cancel": "Anulați",
+    "close": "Închideți",
+    "copy": "Copiați",
+    "delete": "Ștergeți",
+    "dismiss": "Închideți",
+    "duplicate": "Duplicați",
+    "edit": "Editați",
+    "ok": "OK",
+    "save": "Salvați",
+    "done": "Gata",
+    "signOut": "Deconectați-vă",
+    "tryAgain": "Încercați din nou"
+  },
+  "errors": {
+    "network": "Nu se poate contacta ToothOps — verificați conexiunea și încercați din nou.",
+    "notFound": "Fișa nu a fost găsită — este posibil să fi fost ștearsă.",
+    "permission": "Nu aveți acces.",
+    "rateLimit": "Prea multe încercări. Așteptați un minut și încercați din nou.",
+    "generic": "A apărut o problemă. Încercați din nou.",
+    "withDetail": "A apărut o problemă (detalii: {{detail}})",
+    "detailOnly": "Detalii: {{detail}}",
+    "api": {
+      "unauthorized": "neautorizat",
+      "already_member": "Persoana este deja membră a acestui cabinet.",
+      "invite_failed": "Invitația nu a putut fi trimisă: {{detail}}",
+      "practice_name_required": "Dați un nume cabinetului.",
+      "already_owner": "Dețineți deja un cabinet.",
+      "owner_of_other_practice": "Dețineți alt cabinet, deci nu vă puteți alătura unuia diferit. Închideți mai întâi cabinetul propriu sau contactați-ne.",
+      "invite_invalid": "Acest link de invitație nu este valid. Cereți cabinetului să trimită unul nou.",
+      "invite_wrong_account": "Această invitație a fost trimisă altui cont. Autentificați-vă cu adresa de e-mail invitată.",
+      "invite_expired": "Această invitație a expirat. Cereți cabinetului să trimită una nouă.",
+      "practice_gone": "Cabinetul nu mai există.",
+      "email_required": "Introduceți un e-mail.",
+      "not_owner": "Doar proprietarul cabinetului poate adăuga membri.",
+      "not_owner_resend": "Doar proprietarul cabinetului poate retrimite invitații.",
+      "not_owner_remove": "Doar proprietarul cabinetului poate elimina membri.",
+      "not_owner_roles": "Doar proprietarul cabinetului poate modifica roluri.",
+      "not_owner_transfer": "Doar proprietarul cabinetului poate transfera proprietatea.",
+      "not_owner_report_templates": "Doar proprietarul cabinetului poate modifica șabloanele de raport pentru proprietar.",
+      "seat_limit_individual": "Planul Individual permite un singur utilizator — treceți la un plan Cabinet (până la 5 persoane) pentru a adăuga echipa.",
+      "seat_limit": "Planurile Cabinet includ până la 5 membri ai echipei — contactați-ne pentru un plan mai mare.",
+      "not_on_team": "Acea persoană nu face parte din echipă.",
+      "account_not_found": "Contul nu a fost găsit.",
+      "account_already_active": "Contul este deja activ — nu există o invitație de retrimis.",
+      "remove_primary_owner": "Transferați proprietatea înainte de a elimina proprietarul principal.",
+      "demote_primary_owner": "Transferați proprietatea principală înainte de a retrograda acest proprietar.",
+      "report_config_not_object": "Setările raportului pentru proprietar trebuie să fie un obiect.",
+      "report_config_no_templates": "Setările raportului pentru proprietar necesită o listă de șabloane.",
+      "report_config_too_large": "Setările raportului pentru proprietar sunt prea mari (maximum 50 KB) — scurtați textul sau eliminați un șablon.",
+      "report_config_stale": "Aceste șabloane au fost modificate pe alt dispozitiv sau în altă filă de când le-ați deschis. Închideți această fereastră, reîncărcați pagina și efectuați din nou modificările.",
+      "not_in_practice": "Nu faceți parte dintr-un cabinet.",
+      "not_primary_owner": "Doar proprietarul principal poate șterge cabinetul.",
+      "confirm_delete_word": "Introduceți exact DELETE pentru a confirma.",
+      "confirm_practice_name": "Introduceți exact numele cabinetului pentru a confirma.",
+      "confirm_email": "Introduceți exact adresa de e-mail pentru a confirma.",
+      "admin_not_deletable": "Conturile de administrator nu pot fi șterse de aici.",
+      "owner_has_members_one": "Sunteți proprietarul principal al cabinetului „{{name}}”, care are încă {{count}} membru. Transferați proprietatea sau ștergeți mai întâi cabinetul.",
+      "owner_has_members_other": "Sunteți proprietarul principal al cabinetului „{{name}}”, care are încă {{count}} de membri. Transferați proprietatea sau ștergeți mai întâi cabinetul.",
+      "owner_has_members_unnamed_one": "Sunteți proprietarul principal al cabinetului, care are încă {{count}} membru. Transferați proprietatea sau ștergeți mai întâi cabinetul.",
+      "owner_has_members_unnamed_other": "Sunteți proprietarul principal al cabinetului, care are încă {{count}} de membri. Transferați proprietatea sau ștergeți mai întâi cabinetul.",
+      "billing_not_configured": "Facturarea nu este încă configurată (lipsește STRIPE_API_KEY).",
+      "plan_required": "Alegeți mai întâi un plan.",
+      "not_owner_subscription": "Doar proprietarul cabinetului poate gestiona abonamentul.",
+      "comped": "Acest cabinet beneficiază de acces gratuit — nu este necesar un abonament.",
+      "already_subscribed": "Acest cabinet are deja un abonament — folosiți Gestionați facturarea.",
+      "no_practice": "Încă nu există un cabinet de gestionat.",
+      "not_owner_billing": "Doar proprietarul cabinetului poate gestiona facturarea.",
+      "no_stripe_customer": "Acest cabinet nu are un abonament Stripe.",
+      "not_owner_plan": "Doar proprietarul cabinetului poate schimba planul.",
+      "no_subscription": "Nu există un abonament de schimbat — abonați-vă mai întâi.",
+      "team_too_large_one": "Echipa dumneavoastră are {{members}} membri — eliminați mai întâi membri sau păstrați un plan Cabinet ({{count}} loc în {{plan}}).",
+      "team_too_large_other": "Echipa dumneavoastră are {{members}} membri — eliminați mai întâi membri sau păstrați un plan Cabinet ({{count}} de locuri în {{plan}}).",
+      "subscription_no_items": "Abonamentul nu conține elemente — contactați asistența.",
+      "chart_required": "Este necesară o fișă salvată pentru a trimite un memento.",
+      "subject_and_message_required": "Subiectul și mesajul sunt obligatorii.",
+      "chart_gone": "Fișa nu mai există.",
+      "chart_forbidden": "Nu aveți acces la această fișă.",
+      "no_owner_email": "Acest pacient nu are un e-mail al proprietarului. Adăugați-l în fișă, apoi trimiteți.",
+      "message_too_long": "Mesajul este prea lung.",
+      "daily_reminder_limit": "Limita zilnică de mementouri a fost atinsă (100). Încercați mâine.",
+      "email_not_configured": "E-mailul nu este configurat.",
+      "email_failed": "Trimiterea e-mailului a eșuat: {{detail}}",
+      "ai_not_configured": "IA nu este încă configurată.",
+      "request_too_large": "Solicitarea este prea mare.",
+      "unsupported_request": "Solicitare neacceptată.",
+      "ai_rate_limit": "Așteptați puțin — prea multe solicitări IA în ultimul minut.",
+      "ai_daily_limit": "Limita zilnică IA a fost atinsă. Se resetează în 24 de ore.",
+      "ai_failed": "Solicitarea IA a eșuat: {{detail}}",
+      "ai_unreadable": "IA a returnat un răspuns ilizibil.",
+      "dictation_rate_limit": "Prea multe sesiuni de dictare începute în această oră — încercați din nou în curând.",
+      "voice_not_configured": "Transcrierea vocală nu este încă configurată.",
+      "voice_token_failed": "Nu s-a putut genera un token de transcriere: {{detail}}",
+      "voice_unreadable": "Deepgram a returnat un răspuns ilizibil.",
+      "voice_no_token": "Deepgram nu a returnat un token.",
+      "report_chart_required": "Salvați fișa înainte de a trimite raportul prin e-mail.",
+      "attachment_invalid": "Fișierul raportului nu a putut fi citit. Încercați din nou.",
+      "attachment_too_large": "Raportul este prea mare pentru e-mail (maximum 10 MB). Eliminați câteva fotografii și încercați din nou.",
+      "daily_owner_report_limit": "Limita zilnică de rapoarte trimise prin e-mail a fost atinsă (100). Încercați mâine.",
+      "owner_report_recipient_changed": "Adresa de e-mail a proprietarului s-a schimbat. Redeschideți raportul și confirmați din nou destinatarul.",
+      "owner_has_members_few": "Sunteți proprietarul principal al cabinetului „{{name}}”, care are încă {{count}} membri. Transferați proprietatea sau ștergeți mai întâi cabinetul.",
+      "owner_has_members_unnamed_few": "Sunteți proprietarul principal al cabinetului, care are încă {{count}} membri. Transferați proprietatea sau ștergeți mai întâi cabinetul.",
+      "team_too_large_few": "Echipa dumneavoastră are {{members}} membri — eliminați mai întâi membri sau păstrați un plan Cabinet ({{count}} locuri în {{plan}})."
+    },
+    "saveFile": "Fișierul nu a putut fi salvat."
+  },
+  "language": {
+    "label": "Limbă"
+  },
+  "ios": {
+    "back": "Înapoi",
+    "moreActions": "Mai multe acțiuni",
+    "copy": "Copiați",
+    "moreActionsFor": "Mai multe acțiuni pentru {{title}}",
+    "tabs": {
+      "chart": "Fișă",
+      "patients": "Pacienți",
+      "rechecks": "Recontroale",
+      "settings": "Setări"
+    },
+    "shell": {
+      "appName": "ToothOps",
+      "hideSidebar": "Ascundeți bara laterală",
+      "showSidebar": "Afișați bara laterală"
+    },
+    "settings": {
+      "account": "Cont",
+      "help": "Ajutor",
+      "gettingStarted": "Primii pași",
+      "whatsNew": "Noutăți",
+      "signIn": "Autentificați-vă",
+      "signOutTitle": "Vă deconectați de la ToothOps?"
+    },
+    "sheets": {
+      "documents": {
+        "title": "Documente",
+        "share": "Partajați PDF-ul"
+      },
+      "reminder": {
+        "send": "Trimiteți"
+      },
+      "discard": {
+        "title": "Renunțați la modificări?",
+        "discard": "Renunțați la modificări",
+        "keep": "Continuați editarea"
+      },
+      "join": {
+        "join": "Alăturați-vă"
+      },
+      "customColor": "Culoare personalizată…",
+      "sendingBusy": "Se trimite…"
+    }
+  },
+  "appearance": {
+    "label": "Aspect",
+    "system": "Sistem",
+    "light": "Luminos",
+    "dark": "Întunecat"
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "common": {
+    "fallback": "Ha a gomb nem működik, másolja ezt a hivatkozást a böngészőjébe:",
+    "tagline": "Állatorvosi fogászati dokumentáció"
+  },
+  "confirmSignup": {
+    "subject": "Erősítse meg ToothOps-fiókját",
+    "title": "Erősítse meg e-mail-címét",
+    "preheader": "Erősítse meg e-mail-címét ToothOps-fiókja aktiválásához.",
+    "body": "Üdvözöljük a ToothOps alkalmazásban! Erősítse meg a(z) <strong>{{email}}</strong> címet rendelői fiókja aktiválásához – azonnal bejelentkeztetjük.",
+    "button": "E-mail-cím megerősítése és bejelentkezés",
+    "ignore": "Nem Ön regisztrált a ToothOps alkalmazásba? Hagyja figyelmen kívül ezt az e-mailt – a fiók inaktív marad, amíg ezt a hivatkozást nem használják."
+  },
+  "resetPassword": {
+    "subject": "ToothOps-jelszó visszaállítása",
+    "title": "Állítsa vissza jelszavát",
+    "preheader": "Állítsa vissza ToothOps-fiókja jelszavát.",
+    "body": "Jelszó-visszaállítási kérelmet kaptunk a(z) <strong>{{email}}</strong> címhez. A hivatkozás egy órán át érvényes.",
+    "button": "Új jelszó választása",
+    "ignore": "Nem Ön kérte? Hagyja figyelmen kívül ezt az e-mailt – a jelszava változatlan marad."
+  },
+  "changeEmail": {
+    "subject": "Erősítse meg új ToothOps e-mail-címét",
+    "title": "Erősítse meg új e-mail-címét",
+    "preheader": "Erősítse meg ToothOps-fiókja új e-mail-címét.",
+    "body": "Erősítse meg, hogy a(z) <strong>{{newEmail}}</strong> váltsa fel a(z) <strong>{{email}}</strong> címet ToothOps-fiókja bejelentkezési e-mail-címeként.",
+    "button": "Új e-mail-cím megerősítése",
+    "ignore": "Nem Ön kérte ezt a módosítást? Hagyja figyelmen kívül ezt az e-mailt, és a bejelentkezési e-mail-címe változatlan marad."
+  },
+  "invite": {
+    "subject": "Meghívást kapott a ToothOps alkalmazásba",
+    "title": "Fogadja el a meghívást",
+    "preheader": "Meghívták egy ToothOps-fiók létrehozására.",
+    "body": "Meghívták egy ToothOps-fiók létrehozására a(z) <strong>{{email}}</strong> címhez. Fogadja el a meghívást jelszava beállításához és a használat megkezdéséhez.",
+    "button": "Meghívás elfogadása",
+    "ignore": "Nem számított erre a meghívásra? Hagyja figyelmen kívül ezt az e-mailt – csak a hivatkozás használatával jön létre fiók."
+  },
+  "magiclink": {
+    "subject": "ToothOps bejelentkezési hivatkozása",
+    "title": "Jelentkezzen be a ToothOps alkalmazásba",
+    "preheader": "Hivatkozás a ToothOps alkalmazásba való bejelentkezéshez.",
+    "body": "Az alábbi gombbal jelentkezhet be a ToothOps alkalmazásba a(z) <strong>{{email}}</strong> címmel. A hivatkozás csak egyszer használható.",
+    "button": "Bejelentkezés",
+    "ignore": "Nem próbált bejelentkezni? Hagyja figyelmen kívül ezt az e-mailt – e hivatkozás nélkül senki nem tud bejelentkezni."
+  },
+  "reauthentication": {
+    "subject": "ToothOps ellenőrző kódja",
+    "title": "Erősítse meg személyazonosságát",
+    "preheader": "Az Ön ToothOps ellenőrző kódja.",
+    "body": "Személyazonossága megerősítéséhez adja meg ezt a kódot a ToothOps alkalmazásban:",
+    "ignore": "Nem Ön kérte ezt a kódot? Hagyja figyelmen kívül ezt az e-mailt, és fontolja meg jelszava módosítását."
+  },
+  "notice": {
+    "footnote": "Ha nem Ön végezte ezt a módosítást, azonnal állítsa vissza jelszavát.",
+    "passwordChanged": {
+      "subject": "ToothOps-jelszava megváltozott",
+      "body": "ToothOps-fiókja jelszavát módosították."
+    },
+    "emailChanged": {
+      "subject": "ToothOps bejelentkezési e-mail-címe megváltozott",
+      "body": "ToothOps-fiókja bejelentkezési e-mail-címét módosították."
+    },
+    "phoneChanged": {
+      "subject": "ToothOps telefonszáma megváltozott",
+      "body": "ToothOps-fiókja telefonszámát módosították."
+    },
+    "identityLinked": {
+      "subject": "Új bejelentkezési módot adtak ToothOps-fiókjához",
+      "body": "Új bejelentkezési módot kapcsoltak ToothOps-fiókjához."
+    },
+    "identityUnlinked": {
+      "subject": "Eltávolítottak egy bejelentkezési módot ToothOps-fiókjából",
+      "body": "Eltávolítottak egy bejelentkezési módot ToothOps-fiókjából."
+    },
+    "mfaEnrolled": {
+      "subject": "Kétlépcsős hitelesítést adtak ToothOps-fiókjához",
+      "body": "Kétlépcsős hitelesítési módot adtak ToothOps-fiókjához."
+    },
+    "mfaUnenrolled": {
+      "subject": "Eltávolították a kétlépcsős hitelesítést ToothOps-fiókjából",
+      "body": "Eltávolítottak egy kétlépcsős hitelesítési módot ToothOps-fiókjából."
+    },
+    "generic": {
+      "subject": "ToothOps-fiókja frissült",
+      "body": "ToothOps-fiókja egyik biztonsági beállítását módosították."
+    }
+  }
+}

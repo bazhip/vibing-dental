@@ -1,0 +1,68 @@
+{
+  "gotIt": "Értem",
+  "groups": {
+    "dictation": "Diktálás",
+    "charting": "Fogászati lap kitöltése",
+    "records": "Nyilvántartás",
+    "ownerReport": "Gazdinak szóló lelet",
+    "everyday": "Mindennapi használat"
+  },
+  "intro": "Számos újítás érkezett, többségük közvetlenül az Önök visszajelzései alapján – köszönjük!",
+  "title": "Újdonságok a ToothOps alkalmazásban",
+  "dictateAnywhere": {
+    "title": "Diktáljon bármely oldalról",
+    "body": "A gomb neve most 🎤 Diktálás. Mondja el a leleteket bárhonnan – mindegyik a megfelelő helyre kerül."
+  },
+  "finalCheck": {
+    "title": "Pontosabb működés, végső ellenőrzéssel",
+    "body": "Felismeri a szünetekkel megszakított leleteket és a javításokat. A Leállítás gombra koppintva újra átnézi a teljes felvételt, és az Ellenőrzést igényel részben felsorolja a bizonytalan elemeket."
+  },
+  "phones": {
+    "title": "Jobb használhatóság telefonon",
+    "body": "A diktálás teljes képernyőn nyílik meg, és beszéd közben ébren tartja a képernyőt."
+  },
+  "understandsMore": {
+    "title": "Több mindent megért",
+    "body": "„GE 3” ínymegnagyobbodásra, gyökerenkénti tasakmélységek, kaudális maxilláris blokád és röntgenleletek."
+  },
+  "pocketPerRoot": {
+    "title": "Tasakmélység gyökerenként",
+    "body": "Fogászati lap → Testreszabás → Gyökerenként egy. Többgyökerű fogaknál minden gyökérhez feliratozott mező tartozik (M / D vagy MB / MP / D)."
+  },
+  "severalTeeth": {
+    "title": "Több fog beállítása egyszerre",
+    "body": "Kattintson a fogszámokra a táblázatban (tartományhoz Shift+kattintás), majd állítson be mindegyikre egy pontszámot."
+  },
+  "makeItYours": {
+    "title": "Szabja saját igényeire",
+    "body": "Minden oldalon van Testreszabás gomb: elrejthet oszlopokat, kiválaszthatja a fogak mellett látható adatokat, a szóköz működését és más beállításokat. A beállítások a fiókjával minden eszközre átkerülnek."
+  },
+  "radiographicFindings": {
+    "title": "Röntgenleletek",
+    "body": "Külön mező a Képalkotás oldalon. A PDF-en a kezelési leírás fölött jelenik meg."
+  },
+  "anesthesia": {
+    "title": "Érzéstelenítés",
+    "body": "Bekerült a kaudális maxilláris blokád. Rejtse el a nem használt blokádokat, és mentse a szokásos érzéstelenítőszert az egykoppintásos bevitelhez."
+  },
+  "skipRecheck": {
+    "title": "Rejtse el a kontrollvizsgálat mezőjét",
+    "body": "Nem használ kontrollvizsgálati emlékeztetőket? Páciens → Testreszabás → Kontroll esedékessége mező elrejtése."
+  },
+  "writeWithAi": {
+    "title": "✨ Írás MI-vel",
+    "body": "A fogászati lap alapján elkészíti a bevezető összefoglalót és az otthoni ápolási tanácsokat, kizárólag a rögzített adatokból. Nyomtatás előtt Ön ellenőrzi."
+  },
+  "customizeReport": {
+    "title": "A lelet testreszabása",
+    "body": "Módosítsa az elrendezést, szövegezést és nyelvet közvetlenül a Gazdinak szóló lelet oldalon."
+  },
+  "startsWhereLeft": {
+    "title": "Ott folytatja, ahol abbahagyta",
+    "body": "A ToothOps friss megnyitásakor a Páciensek oldal jelenik meg – kivéve, ha a mai vizit még nyitva van –, a mai vizit pedig szerkesztésre készen nyílik meg."
+  },
+  "sendFeedback": {
+    "title": "Visszajelzés két koppintással",
+    "body": "Súgó → Visszajelzés küldése, vagy Visszajelzés a diktálási panelen az átirat csatolásához."
+  }
+}

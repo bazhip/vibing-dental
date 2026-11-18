@@ -14,6 +14,8 @@ type DictationLanguage = Exclude<AppLanguage, 'en'>;
 /** How each language is named in the (English) prompt, and how a decimal
  *  dose is said in it. */
 const LANGUAGE: Record<DictationLanguage, { name: string; decimal: string; percent: string }> = {
+  hu: { name: 'Hungarian', decimal: 'nulla egész három tized', percent: 'nulla egész öt tized százalék' },
+  ro: { name: 'Romanian', decimal: 'zero virgulă trei', percent: 'zero virgulă cinci la sută' },
   fr: { name: 'French', decimal: 'zéro virgule trois', percent: 'zéro virgule cinq pour cent' },
   de: { name: 'German', decimal: 'null Komma drei', percent: 'null Komma fünf Prozent' },
   it: { name: 'Italian', decimal: 'zero virgola tre', percent: 'zero virgola cinque per cento' },
@@ -242,5 +244,111 @@ const ES = `SPANISH EXAMPLES — same patterns, as Spanish-speaking vets dictate
 → append_radiographic_findings(text="108: pérdida ósea vertical, raíz distal.")
 `;
 
+const HU = `HUNGARIAN EXAMPLES — native clinical dictation.
+
+[HU 1] "száznégy mobilitás kettő, fogkő egy"
+→ set_tooth_field(triadan=104, field=mobility, value=2)
+→ set_tooth_field(triadan=104, field=calculus, value=1)
+
+[HU 2] "kétszázkilencet ma valószínűleg ki kell húzni"
+→ NO TOOL CALL — speculative. Wait for definitive extraction language.
+
+[HU 3] "kétszázkilenc eltávolítva"
+→ set_tooth_mark(diagram=post, triadan=209, mark=extracted)
+
+[HU 4] "száznégy már a vizsgálatkor hiányzik"
+→ set_tooth_mark(diagram=pre, triadan=104, mark=missing)
+
+[HU 5] "nyelv és szájpad ép"
+→ set_exam_finding(area=tongue, status=normal)
+→ set_exam_finding(area=palate, status=normal)
+
+[HU 6] "extraorális vizsgálat negatív, nyirokcsomók épek"
+→ set_exam_finding(area=extraoral, status=normal)
+→ set_exam_finding(area=lymph, status=normal)
+
+[HU 7] "pofanyálkahártya kóros, enyhe fekély a jobb pofán"
+→ set_exam_finding(area=buccal, status=abnormal, comment="Enyhe fekély a jobb pofán")
+
+[HU 8] "nulla egész három tized milliliter bupivakain, jobb infraorbitális blokk"
+→ set_anesthetic_drug(drug=Bupivacaine)
+→ set_nerve_block(site=infraorbitalRight, mL=0.3)
+
+[HU 9] "nulla egész négy tized a bal mentális blokkhoz" (drug already discussed earlier)
+→ set_nerve_block(site=mentalLeft, mL=0.4)
+
+[HU 9b] "a blokkokhoz bupivakain nulla egész öt tized százalék és lidokain két százalék keveréke"
+→ set_anesthetic_drug(drug=Bupivacaine, concentration=0.5)
+→ set_anesthetic_drug(drug=Lidocaine, concentration=2)
+
+[HU C1] "száznégy T per FX per CCF, százöt hiányzik"
+→ add_comment(diagram=pre, triadan=104, text="T/FX/CCF")
+→ set_tooth_mark(diagram=pre, triadan=105, mark=missing)
+
+[HU C2] "Lidocaine two percent, 0,2 ml bal kaudális maxilláris blokk"
+→ set_anesthetic_drug(drug=Lidocaine, concentration=2)
+→ set_nerve_block(site=caudalMaxillaryLeft, mL=0.2)
+
+[HU C3] "százhat GI 2, GE 3, calc 1. Röntgenen száznyolc disztális gyökerén függőleges csontveszteség"
+→ set_tooth_field(triadan=106, field=gingivitis, value=2)
+→ set_tooth_field(triadan=106, field=hyperplasia, value=3)
+→ set_tooth_field(triadan=106, field=calculus, value=1)
+→ append_radiographic_findings(text="108: függőleges csontveszteség a disztális gyökéren.")
+
+`;
+
+const RO = `ROMANIAN EXAMPLES — native clinical dictation.
+
+[RO 1] "o sută patru mobilitate doi, tartru grad unu"
+→ set_tooth_field(triadan=104, field=mobility, value=2)
+→ set_tooth_field(triadan=104, field=calculus, value=1)
+
+[RO 2] "două sute nouă probabil va trebui extras astăzi"
+→ NO TOOL CALL — speculative. Wait for definitive extraction language.
+
+[RO 3] "două sute nouă extras"
+→ set_tooth_mark(diagram=post, triadan=209, mark=extracted)
+
+[RO 4] "o sută patru lipsește deja la examinare"
+→ set_tooth_mark(diagram=pre, triadan=104, mark=missing)
+
+[RO 5] "limbă și palat normale"
+→ set_exam_finding(area=tongue, status=normal)
+→ set_exam_finding(area=palate, status=normal)
+
+[RO 6] "examen extraoral normal, ganglioni limfatici normali"
+→ set_exam_finding(area=extraoral, status=normal)
+→ set_exam_finding(area=lymph, status=normal)
+
+[RO 7] "mucoasă bucală anormală, ulcerație ușoară pe obrazul drept"
+→ set_exam_finding(area=buccal, status=abnormal, comment="Ulcerație ușoară pe obrazul drept")
+
+[RO 8] "zero virgulă trei mililitri de bupivacaină, bloc infraorbital drept"
+→ set_anesthetic_drug(drug=Bupivacaine)
+→ set_nerve_block(site=infraorbitalRight, mL=0.3)
+
+[RO 9] "zero virgulă patru la blocul mentonier stâng" (drug already discussed earlier)
+→ set_nerve_block(site=mentalLeft, mL=0.4)
+
+[RO 9b] "pentru blocuri un amestec de bupivacaină zero virgulă cinci la sută și lidocaină doi la sută"
+→ set_anesthetic_drug(drug=Bupivacaine, concentration=0.5)
+→ set_anesthetic_drug(drug=Lidocaine, concentration=2)
+
+[RO C1] "o sută patru T bară FX bară CCF, o sută cinci absent"
+→ add_comment(diagram=pre, triadan=104, text="T/FX/CCF")
+→ set_tooth_mark(diagram=pre, triadan=105, mark=missing)
+
+[RO C2] "Lidocaine two percent, 0,2 ml bloc maxilar caudal stâng"
+→ set_anesthetic_drug(drug=Lidocaine, concentration=2)
+→ set_nerve_block(site=caudalMaxillaryLeft, mL=0.2)
+
+[RO C3] "o sută șase GI 2, GE 3, calc 1. Radiografic o sută opt, pierdere osoasă verticală la rădăcina distală"
+→ set_tooth_field(triadan=106, field=gingivitis, value=2)
+→ set_tooth_field(triadan=106, field=hyperplasia, value=3)
+→ set_tooth_field(triadan=106, field=calculus, value=1)
+→ append_radiographic_findings(text="108: pierdere osoasă verticală la rădăcina distală.")
+
+`;
+
 /** Native few-shot examples, appended after the English ones. */
-export const NATIVE_FEW_SHOT: Record<DictationLanguage, string> = { fr: FR, de: DE, it: IT, es: ES };
+export const NATIVE_FEW_SHOT: Record<DictationLanguage, string> = { fr: FR, de: DE, it: IT, es: ES, hu: HU, ro: RO };

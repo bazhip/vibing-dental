@@ -1,0 +1,121 @@
+{
+  "walkthrough": {
+    "aria": "Első lépések",
+    "progress": "{{current}} / {{total}}",
+    "skip": "Kihagyás",
+    "back": "Vissza",
+    "next": "Tovább",
+    "finish": "Kitöltés megkezdése",
+    "steps": {
+      "firstPatient": {
+        "title": "Azonosítsa a pácienst",
+        "body": "Adja meg a páciens nevét, majd válassza ki az állatfajt és a fogazatot. Szükség szerint adja hozzá a gazdi és a vizit adatait."
+      },
+      "firstFinding": {
+        "title": "Rögzítsen egy leletet",
+        "body": "Válasszon fogat, és adjon meg egy mérést vagy leletet. Munkáját automatikusan mentjük; a bemutató után további részleteket is hozzáadhat."
+      },
+      "firstOutput": {
+        "title": "Tekintse át az eredményt",
+        "body": "Megosztás előtt nyissa meg a PDF-előnézetet a vizit áttekintéséhez. A teljes munkafelület-bemutatóhoz válassza a Súgó → Első lépések lehetőséget."
+      },
+      "welcome": {
+        "title": "Üdvözöljük a ToothOps alkalmazásban",
+        "body": "Rövid bemutató a munkafelületről. Bármikor újra megnyithatja a Súgó → Első lépések menüből."
+      },
+      "sections": {
+        "title": "A vizit egy helyen",
+        "body": "Az első vizsgálattól a kezelési leírásig haladjon sorban, vagy ugorjon a szükséges szakaszra. A fogászati lapot munka közben mentjük."
+      },
+      "patient": {
+        "title": "Páciens és gazdi",
+        "body": "Kezdje a páciens nevével, majd amikor készen áll, adja meg a gazdi adatait. Itt válassza ki az állatfajt és a fogazatot – a fogak automatikusan alkalmazkodnak."
+      },
+      "species": {
+        "title": "Állatfaj és fogazat",
+        "body": "Válasszon macskát, kutyát vagy lovat, majd fogazatot – a fogak elrendezése ehhez igazodik."
+      },
+      "grid": {
+        "title": "Töltse ki saját módszerével",
+        "body": "Teljes szájüregi nézetet szeretne? Használja a Táblázatot a mérésekhez és pontszámokhoz. A Tab oldalra, az Enter lefelé lép. Több fogszámot kiválasztva azonos pontszámot adhat nekik."
+      },
+      "diagrams": {
+        "title": "Diagramok",
+        "body": "Kattintson egy fogra a jelöléshez, megjegyzéshez vagy rajzos feljegyzéshez. A Diagnózis és Beavatkozás mellett kereshető AVDC-kódok találhatók. Visszavonás: ⌘Z."
+      },
+      "codes": {
+        "title": "Kódjegyzék",
+        "body": "Itt kereshet a teljes AVDC-kódkészletben; görgetés közben a diagram mellett rögzítve marad."
+      },
+      "treatment": {
+        "title": "Kezelési leírás és sablonok",
+        "body": "Írja meg a leletet, vagy illesszen be mentett sablont a legördülő menüből – az újakat pedig mentse későbbi használatra."
+      },
+      "library": {
+        "title": "Páciensek",
+        "body": "Keressen pácienseket, és nyissa meg vizitjeiket. Az Új páciens üres fogászati lapot nyit. Az aktuális páciensnél a Vizitműveletek menüből indíthat új vizitet vagy tekintheti meg a verzióelőzményeket."
+      },
+      "dictate": {
+        "title": "Diktálás",
+        "body": "Koppintson a Diktálás gombra, és mondja el a leleteket bármely oldalról. Mindegyik a megfelelő helyre kerül, az élő panel pedig minden változást megjelenít, így bármit visszavonhat."
+      },
+      "settings": {
+        "title": "Rendelő beállításai",
+        "body": "Itt kezelheti a rendelőt, csapatot, sablonokat és emlékeztetőket. A személyes beállítások a Saját fiók alatt, az útmutatás és visszajelzés a Súgó alatt található."
+      },
+      "pdf": {
+        "title": "PDF előnézete és letöltése",
+        "body": "Amikor készen áll, készítse el a gazdinak átadható, saját logós fogászati PDF-et."
+      },
+      "byTooth": {
+        "title": "Egyszerre egy fog",
+        "body": "Váltson a Foganként nézetre, és kattintson egy fogra a diagramon. Rögzítse együtt a méréseket, diagnózist és beavatkozást, majd lépjen a következő fogra. A Táblázat és Foganként nézet ugyanazokat a leleteket használja."
+      },
+      "customize": {
+        "title": "Szabja saját igényeire",
+        "body": "Keresse a Testreszabás gombot a Páciens, Vizsgálat, Érzéstelenítés, Fogászati lap, Diagnózis és Képek oldalon. Válasszon oszlopokat, fogankénti, gyökerenkénti vagy pontonkénti tasakmélységeket, gyorskódokat és egyebeket. Bejelentkezve beállításai követik a fiókját."
+      },
+      "images": {
+        "title": "Fényképek és röntgenfelvételek",
+        "body": "Tárolja a képeket a vizittel együtt, és itt adja meg a röntgenleleteket. Válassza ki, mely képek kerüljenek a fogászati PDF-be."
+      },
+      "ownerReport": {
+        "title": "Hazavihető lelet",
+        "body": "A Gazdinak szóló lelet világos összefoglalót és otthoni ápolási tanácsokat ad a családoknak. Megosztás előtt ellenőrizze, és a Testreszabás segítségével igazítsa rendelőjéhez az elrendezést, szöveget és az ügyfél nyelvét."
+      }
+    }
+  },
+  "finishSetup": {
+    "title": "Beállítás befejezése",
+    "both": "A rendelő és az orvos neve minden nyomtatott fogászati lapon megjelenik.",
+    "practiceOnly": "A rendelő neve minden nyomtatott fogászati lapon megjelenik.",
+    "doctorOnly": "Az orvos neve minden nyomtatott fogászati lapon megjelenik.",
+    "practiceName": "Rendelő neve",
+    "doctorName": "Orvos neve",
+    "doctorPlaceholder": "pl. Dr. Kovács Anna",
+    "logoOptional": "Rendelő logója (nem kötelező)",
+    "logoNamed": "Logó: {{name}}",
+    "logoHint": "A fogászati lapok tetejére nyomtatva. PNG, JPG vagy WebP.",
+    "later": "Később",
+    "save": "Mentés",
+    "saving": "Mentés…",
+    "namesNeeded": "Mindkét név szükséges – megjelennek a fogászati lapokon.",
+    "logoFailed": "A neveket mentettük, de a logót nem sikerült feltölteni – később hozzáadhatja a Rendelő beállításaiban.",
+    "allSet": "Minden készen áll.",
+    "saveFailed": "Nem sikerült menteni."
+  },
+  "join": {
+    "title": "Csatlakozik a(z) {{practice}} rendelőhöz?",
+    "invitation": "Rendelői meghívás",
+    "checking": "Meghívás ellenőrzése…",
+    "thisPractice": "ez a rendelő",
+    "alreadyMember": "Ön már a(z) {{practice}} rendelő tagja.",
+    "leaves": "A csatlakozással kilép a(z) {{practice}} rendelőből: annak fogászati lapjait többé nem látja.",
+    "invited": "Meghívták a(z) <strong>{{practice}}</strong> rendelőhöz a ToothOps alkalmazásban. A tagok közösen használják a rendelő fogászati lapjait, leletsablonjait és kontrollvizsgálati listáját, az új mentett lapok pedig megosztásra kerülnek a csapattal.",
+    "shareExisting": "A már elkészített fogászati lapjaimat is megosztom",
+    "close": "Bezárás",
+    "notNow": "Most nem",
+    "joining": "Csatlakozás…",
+    "joinButton": "Csatlakozás: {{practice}}"
+  }
+}

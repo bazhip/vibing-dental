@@ -1,0 +1,68 @@
+{
+  "gotIt": "Am înțeles",
+  "groups": {
+    "dictation": "Dictare",
+    "charting": "Completarea fișei",
+    "records": "Evidențe",
+    "ownerReport": "Raport pentru proprietar",
+    "everyday": "Utilizare zilnică"
+  },
+  "intro": "O serie amplă de actualizări, majoritatea inspirate direct din sugestiile dumneavoastră — vă mulțumim!",
+  "title": "Noutăți în ToothOps",
+  "dictateAnywhere": {
+    "title": "Dictați de pe orice pagină",
+    "body": "Butonul se numește acum 🎤 Dictați. Descrieți constatările de oriunde vă aflați — fiecare ajunge la locul potrivit."
+  },
+  "finalCheck": {
+    "title": "Mai precis, cu o verificare finală",
+    "body": "Recunoaște constatările separate de pauze și corecturile dumneavoastră. Când atingeți Opriți, recitește întreaga înregistrare și listează elementele incerte la Necesită verificare."
+  },
+  "phones": {
+    "title": "Mai bine pe telefon",
+    "body": "Dictarea se deschide pe tot ecranul și menține ecranul activ în timp ce vorbiți."
+  },
+  "understandsMore": {
+    "title": "Înțelege mai mult",
+    "body": "„GE 3” pentru mărire gingivală, adâncimi ale pungilor pe rădăcină, blocul maxilar caudal și constatările radiografice."
+  },
+  "pocketPerRoot": {
+    "title": "Adâncimea pungii pe rădăcină",
+    "body": "Fișă dentară → Personalizați → Una pe rădăcină. Dinții pluriradiculari primesc o casetă etichetată pentru fiecare rădăcină (M / D sau MB / MP / D)."
+  },
+  "severalTeeth": {
+    "title": "Setați mai mulți dinți simultan",
+    "body": "Faceți clic pe numerele dinților din grilă (Shift-clic pentru un interval), apoi atribuiți același scor tuturor."
+  },
+  "makeItYours": {
+    "title": "Adaptați aplicația nevoilor dumneavoastră",
+    "body": "Fiecare pagină are un buton Personalizați: ascundeți coloane, alegeți ce apare lângă dinți, ce face tasta Spațiu și multe altele. Setările contului vă urmează pe orice dispozitiv."
+  },
+  "radiographicFindings": {
+    "title": "Constatări radiografice",
+    "body": "O casetă dedicată pe pagina Imagistică. Se tipărește în PDF deasupra raportului de tratament."
+  },
+  "anesthesia": {
+    "title": "Anestezie",
+    "body": "A fost adăugat blocul maxilar caudal. Ascundeți blocurile pe care nu le utilizați și salvați anestezicul obișnuit pentru introducere printr-o atingere."
+  },
+  "skipRecheck": {
+    "title": "Ascundeți câmpul de recontrol",
+    "body": "Nu folosiți mementouri pentru recontrol? Pacient → Personalizați → Ascundeți câmpul Recontrol scadent."
+  },
+  "writeWithAi": {
+    "title": "✨ Scrieți cu IA",
+    "body": "Redactează rezumatul introductiv și recomandările pentru îngrijirea la domiciliu pe baza fișei, folosind doar informațiile consemnate. Verificați înainte de tipărire."
+  },
+  "customizeReport": {
+    "title": "Personalizați raportul",
+    "body": "Modificați aspectul, formulările și limba direct de pe pagina Raport pentru proprietar."
+  },
+  "startsWhereLeft": {
+    "title": "Pornește de unde ați rămas",
+    "body": "La o nouă deschidere, ToothOps afișează Pacienți — cu excepția cazului în care vizita de astăzi este încă deschisă — iar vizita de astăzi se deschide gata de editare."
+  },
+  "sendFeedback": {
+    "title": "Trimiteți sugestii în două atingeri",
+    "body": "Ajutor → Trimiteți sugestii sau Sugestii în panoul de dictare pentru a include transcrierea."
+  }
+}

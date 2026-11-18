@@ -1,0 +1,156 @@
+{
+  "extension": {
+    "name": "ToothOps pentru ezyVet",
+    "description": "Introduce notele din ToothOps în consultația ezyVet deschisă."
+  },
+  "dialog": {
+    "open": "Trimiteți în ezyVet",
+    "title": "Trimiteți în ezyVet",
+    "loading": "Se caută ezyVet…",
+    "retry": "Reîncercați",
+    "sentOn": "Trimis în ezyVet la {{date}}."
+  },
+  "install": {
+    "title": "Extensia ToothOps pentru ezyVet nu răspunde",
+    "body": "Asigurați-vă că extensia ToothOps pentru ezyVet este instalată și activată în Chrome, apoi încercați din nou. Dacă nu o aveți încă, contactați asistența ToothOps pentru linkul de instalare."
+  },
+  "noTab": "Deschideți consultația în ezyVet, apoi încercați din nou.",
+  "severalTabs": "Sunt deschise mai multe file ezyVet. Se folosește: {{title}}",
+  "target": "ezyVet: {{patient}} — {{title}}",
+  "targetNoPatient": "ezyVet: {{title}}",
+  "state": {
+    "notConsult": "Fila ezyVet nu afișează o consultație. Deschideți consultația pacientului, apoi încercați din nou.",
+    "notMedicalTab": "Deschideți fila Medical a consultației, apoi încercați din nou.",
+    "locked": "Această consultație este blocată în ezyVet. Deschideți o consultație deblocată, apoi încercați din nou.",
+    "combined": "ezyVet este în vizualizarea Combined. Treceți la vizualizarea Standard, apoi încercați din nou."
+  },
+  "rows": {
+    "heading": "Destinație",
+    "chart": "Imaginea fișei",
+    "edited": "Notă editată →",
+    "dontSend": "Nu trimiteți",
+    "notOnPage": "{{title}} (nu este pe această pagină)",
+    "reset": "Restabiliți valorile implicite"
+  },
+  "editedNotice": "Nota a fost editată, deci nu mai poate fi împărțită în secțiuni. Va fi trimisă ca un singur bloc.",
+  "picture": {
+    "pre": "Fișă preoperatorie",
+    "post": "Fișă postoperatorie"
+  },
+  "actions": {
+    "send": "Trimiteți",
+    "sending": "Se trimite…",
+    "copyDiagnostic": "Copiați raportul de diagnosticare",
+    "diagnosticCopied": "Raportul de diagnosticare a fost copiat. Lipiți-l în mesajul către asistența ToothOps.",
+    "diagnosticPrompt": "Copiați raportul de diagnosticare"
+  },
+  "mismatch": {
+    "title": "Alt pacient?",
+    "message": "Fișa ToothOps: {{chart}} · Consultația ezyVet: {{ezyvet}}",
+    "messageNumbers": "Fișa este pentru {{chart}} (număr {{chartNumber}}), dar ezyVet afișează {{ezyvet}} (număr {{ezyvetNumber}}).",
+    "unknown": "(nume negăsit)",
+    "noName": "(fără nume de pacient)",
+    "sendAnyway": "Trimiteți oricum"
+  },
+  "alreadySent": {
+    "title": "Deja trimis la {{date}}. Trimiteți din nou?",
+    "message": "Trimiterea din nou adaugă o a doua copie în ezyVet.",
+    "confirm": "Trimiteți din nou"
+  },
+  "results": {
+    "title": "Rezultate",
+    "sent": "Trimis",
+    "stampFailed": "Trimis, dar ToothOps nu a putut înregistra data trimiterii în această fișă.",
+    "saved": "Salvat în ezyVet",
+    "summary": "Câmpuri salvate: {{saved}} · Necesită atenție: {{attention}}"
+  },
+  "errors": {
+    "extension_error": "ToothOps nu a putut contacta extensia ezyVet. Verificați dacă este instalată și activată, apoi încercați din nou.",
+    "timeout": "Extensia nu a răspuns la timp. Verificați fila ezyVet și încercați din nou.",
+    "no_tab": "Fila ezyVet a fost închisă. Deschideți consultația în ezyVet și încercați din nou.",
+    "not_writable": "Consultația nu mai poate fi modificată (este blocată, închisă sau nu mai este în fila Medical). Deschideți fila Medical a consultației și încercați din nou.",
+    "patient_changed": "În ezyVet este deschis acum alt pacient sau altă consultație, așa că nu s-a mai trimis nimic. Deschideți consultația corectă și încercați din nou.",
+    "field_not_found": "Acest câmp nu este pe pagina consultației. Alegeți alt câmp la Destinație.",
+    "editor_not_found": "ToothOps nu a găsit caseta de text a acestui câmp. Verificați câmpul în ezyVet înainte de retrimitere. Dacă problema persistă, copiați raportul de diagnosticare pentru asistența ToothOps.",
+    "popup_not_found": "Fereastra de editare a acestui câmp nu s-a deschis. Verificați câmpul în ezyVet înainte de retrimitere. Dacă problema persistă, copiați raportul de diagnosticare pentru asistența ToothOps.",
+    "popup_not_closed": "Fereastra de editare a acestui câmp nu s-a închis după salvare. Verificați câmpul în ezyVet înainte de retrimitere.",
+    "save_button_not_found": "ToothOps nu a găsit butonul Save pentru acest câmp. Verificați câmpul în ezyVet înainte de retrimitere.",
+    "save_not_confirmed": "ezyVet nu a confirmat salvarea. Verificați câmpul în ezyVet înainte de retrimitere.",
+    "no_preferred_email": "Clientul nu are o adresă de e-mail preferată în ezyVet. Adăugați una sau alegeți alt câmp.",
+    "image_not_accepted": "Acest câmp nu acceptă imagini. Alegeți Discharge Summary sau alt câmp care le acceptă.",
+    "invalid_image": "Imaginea fișei nu a putut fi pregătită. Verificați câmpul în ezyVet înainte de retrimitere.",
+    "picture_failed": "ToothOps nu a putut desena imaginea fișei, așa că nu a trimis-o.",
+    "maybe_sent": "Unele câmpuri pot fi deja completate. Verificați consultația în ezyVet înainte de retrimitere.",
+    "item_extension_error": "A apărut o problemă la completarea acestui câmp. Verificați câmpul în ezyVet înainte de retrimitere.",
+    "item_not_writable": "Consultația nu mai acceptă modificări (este blocată, închisă sau nu mai este în fila Medical), așa că acest câmp nu a fost trimis. Verificați consultația în ezyVet înainte de retrimitere.",
+    "item_patient_changed": "În ezyVet a fost deschis alt pacient sau altă consultație, așa că acest câmp nu a fost trimis. Verificați consultația în ezyVet înainte de retrimitere."
+  },
+  "panel": {
+    "notConnected": "Această versiune nu este conectată la ToothOps.",
+    "signIn": {
+      "title": "Autentificați-vă pe ToothOps",
+      "lead": "Trimiteți note din fișele ToothOps în consultația ezyVet deschisă.",
+      "password": "Parolă",
+      "submit": "Autentificați-vă",
+      "busy": "Autentificare…",
+      "or": "sau",
+      "createAccount": "Creați un cont",
+      "forgotPassword": "Ați uitat parola?"
+    },
+    "header": {
+      "signedInAs": "Autentificat ca {{email}}",
+      "signOut": "Deconectați-vă"
+    },
+    "list": {
+      "unnamed": "(fără nume de pacient)",
+      "matches": "Corespunde acestei consultații",
+      "matchCount": "{{matches}} fișe corespund acestui pacient. Se afișează cea mai recentă.",
+      "searchLabel": "Căutați fișe",
+      "searchPlaceholder": "Căutați după pacient, proprietar sau număr",
+      "empty": "Nu au fost găsite fișe.",
+      "loading": "Se încarcă fișele…",
+      "loadMore": "Încărcați mai multe",
+      "possible": "Posibilă potrivire pentru pacientul ezyVet {{patient}}"
+    },
+    "chart": {
+      "back": "← Înapoi la fișe",
+      "loading": "Se deschide fișa…",
+      "noteLabel": "Notă pentru dosarul medical",
+      "flagLoading": "Se verifică dacă trimiterea este activată pentru cabinet…",
+      "flagFailed": "Nu s-a putut verifica dacă trimiterea în ezyVet este activată pentru cabinet.",
+      "sendOff": "Trimiterea în ezyVet nu este activată pentru cabinet.",
+      "destination": "Destinație"
+    },
+    "today": {
+      "title": "Pacienții de astăzi (ezyVet)",
+      "refresh": "Reîmprospătați",
+      "load": "Încărcați pacienții de astăzi",
+      "loadHint": "Aceasta comută fila ezyVet la calendar.",
+      "noTab": "Deschideți ezyVet pentru a vedea pacienții de astăzi.",
+      "empty": "Nu există pacienți în programul ezyVet de astăzi.",
+      "failed_one": "{{count}} programare nu a putut fi citită.",
+      "failed_other": "{{count}} de programări nu au putut fi citite.",
+      "start": "Începeți fișa",
+      "open": "Deschideți fișa",
+      "newVisit": "Vizită nouă",
+      "startAnyway": "Începeți o fișă nouă",
+      "loading": "Se încarcă pacienții de astăzi…",
+      "errors": {
+        "no_dashboard": "Panoul Dashboard ezyVet nu a fost găsit.",
+        "no_date_input": "Data din calendarul ezyVet nu a putut fi setată.",
+        "no_calendar_refresh": "Calendarul ezyVet nu a răspuns. Reîncărcați ezyVet și încercați din nou.",
+        "unknown": "Programul ezyVet de astăzi nu a putut fi citit."
+      },
+      "startFailed": "ToothOps nu a putut fi deschis. Încercați din nou.",
+      "failed_few": "{{count}} programări nu au putut fi citite."
+    }
+  },
+  "send": {
+    "targetChanged": "Consultația ezyVet s-a schimbat. Verificați destinația și apăsați din nou Trimiteți."
+  },
+  "handover": {
+    "filled": "Datele pacientului au fost completate din ezyVet.",
+    "failed": "Pacientul nu a putut fi preluat din ezyVet. Completați detaliile.",
+    "otherUser": "Acest pacient a fost ales în extensie de alt utilizator. Autentificați-vă cu același cont în ambele."
+  }
+}

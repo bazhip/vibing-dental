@@ -1,0 +1,393 @@
+{
+  "lng": "ro",
+  "lines": [
+    {
+      "heard": "Speaker 0: Bine, începem cu maxilarul drept.",
+      "cleaned": "Speaker 0: Bine, începem cu maxilarul drept.",
+      "finding": false
+    },
+    {
+      "heard": "Speaker 0: O sută unu, GI doi, tartru doi.",
+      "cleaned": "Speaker 0: 101, GI 2, tartru 2.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: O sută doi, la fel,",
+      "cleaned": "Speaker 0: 102, la fel,",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: și mobilitate unu.",
+      "cleaned": "Speaker 0: și mobilitate 1.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 1: Am notat.",
+      "cleaned": "Speaker 1: Am notat.",
+      "finding": false
+    },
+    {
+      "heard": "Speaker 0: O sută patru este fracturat, fractură coronară complicată, pulpa este expusă.",
+      "cleaned": "Speaker 0: 104 este fracturat, fractură coronară complicată, pulpa este expusă.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: O sută opt stadiu trei, pungă de cinci milimetri distal, ef doi.",
+      "cleaned": "Speaker 0: 108 stadiu 3, pungă de 5 milimetri distal, F2.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 1: Ați spus o sută opt sau o sută nouă?",
+      "cleaned": "Speaker 1: Ați spus 108 sau 109?",
+      "finding": false
+    },
+    {
+      "heard": "Speaker 0: O sută opt. Iar o sută nouă prezintă atriție.",
+      "cleaned": "Speaker 0: 108. Iar 109 prezintă atriție.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: Nu, corectare: o sută doi, mobilitate doi, nu unu.",
+      "cleaned": "Speaker 0: Nu, corectare: 102, mobilitate 2, nu unu.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: Cinci sute patru, resorbit.",
+      "cleaned": "Speaker 0: 504, resorbit.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: Limbă și palat normale.",
+      "cleaned": "Speaker 0: Limbă și palat normale.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: Trecem la maxilarul stâng. 204 T bară FX bară UCF.",
+      "cleaned": "Speaker 0: Trecem la maxilarul stâng. 204 T/FX/UCF.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: Două sute cinci este absent.",
+      "cleaned": "Speaker 0: 205 este absent.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: Îmi puteți da sonda?",
+      "cleaned": "Speaker 0: Îmi puteți da sonda?",
+      "finding": false
+    },
+    {
+      "heard": "Speaker 1: Da, poftiți.",
+      "cleaned": "Speaker 1: Da, poftiți.",
+      "finding": false
+    },
+    {
+      "heard": "Speaker 0: Șase sute patru, canin decidual persistent.",
+      "cleaned": "Speaker 0: 604, canin decidual persistent.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: 309 GI 1, tartru 1.",
+      "cleaned": "Speaker 0: 309 GI 1, tartru 1.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: Trei sute cinci absent.",
+      "cleaned": "Speaker 0: 305 absent.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: Patru sute nouă, GI doi, tartru trei.",
+      "cleaned": "Speaker 0: 409, GI 2, tartru 3.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: Patru sute nouă probabil va trebui extras, vedem la radiografie.",
+      "cleaned": "Speaker 0: 409 probabil va trebui extras, vedem la radiografie.",
+      "finding": false
+    },
+    {
+      "heard": "Speaker 0: Examen extraoral normal, ganglioni limfatici normali.",
+      "cleaned": "Speaker 0: Examen extraoral normal, ganglioni limfatici normali.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: Mucoasă bucală anormală, ulcerație ușoară pe obrazul stâng.",
+      "cleaned": "Speaker 0: Mucoasă bucală anormală, ulcerație ușoară pe obrazul stâng.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 1: Puls nouăzeci, este stabil.",
+      "cleaned": "Speaker 1: Puls nouăzeci, este stabil.",
+      "finding": false
+    },
+    {
+      "heard": "Speaker 0: Pentru blocuri, bupivacaină zero virgulă cinci la sută, 0,3 ml infraorbital drept.",
+      "cleaned": "Speaker 0: Pentru blocuri, bupivacaină zero virgulă cinci la sută, 0,3 ml infraorbital drept.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: Și zero virgulă doi la alveolar inferior stâng.",
+      "cleaned": "Speaker 0: Și zero virgulă doi la alveolar inferior stâng.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: Detartraj complet și lustruire efectuate.",
+      "cleaned": "Speaker 0: Detartraj complet și lustruire efectuate.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: O sută opt extras.",
+      "cleaned": "Speaker 0: 108 extras.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: Șase sute patru extras de asemenea.",
+      "cleaned": "Speaker 0: 604 extras de asemenea.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 1: Bine.",
+      "cleaned": "Speaker 1: Bine.",
+      "finding": false
+    },
+    {
+      "heard": "Speaker 0: Am terminat fișa dentară.",
+      "cleaned": "Speaker 0: Am terminat fișa dentară.",
+      "finding": false
+    }
+  ],
+  "actions": [
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 101,
+        "field": "gingivitis",
+        "value": "2"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 101,
+        "field": "calculus",
+        "value": "2"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 102,
+        "field": "gingivitis",
+        "value": "2"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 102,
+        "field": "calculus",
+        "value": "2"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 102,
+        "field": "mobility",
+        "value": "2"
+      }
+    },
+    {
+      "name": "add_comment",
+      "input": {
+        "diagram": "pre",
+        "triadan": 104,
+        "text": "T/FX/CCF"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 108,
+        "field": "pdstate",
+        "value": "3"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 108,
+        "field": "pocket",
+        "value": "5"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 108,
+        "field": "furcation",
+        "value": "2"
+      }
+    },
+    {
+      "name": "add_comment",
+      "input": {
+        "diagram": "pre",
+        "triadan": 109,
+        "text": "AT"
+      }
+    },
+    {
+      "name": "add_comment",
+      "input": {
+        "diagram": "pre",
+        "triadan": 504,
+        "text": "TR"
+      }
+    },
+    {
+      "name": "set_exam_finding",
+      "input": {
+        "area": "tongue",
+        "status": "normal"
+      }
+    },
+    {
+      "name": "set_exam_finding",
+      "input": {
+        "area": "palate",
+        "status": "normal"
+      }
+    },
+    {
+      "name": "add_comment",
+      "input": {
+        "diagram": "pre",
+        "triadan": 204,
+        "text": "T/FX/UCF"
+      }
+    },
+    {
+      "name": "set_tooth_mark",
+      "input": {
+        "diagram": "pre",
+        "triadan": 205,
+        "mark": "missing"
+      }
+    },
+    {
+      "name": "add_comment",
+      "input": {
+        "diagram": "pre",
+        "triadan": 604,
+        "text": "DT/P"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 309,
+        "field": "gingivitis",
+        "value": "1"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 309,
+        "field": "calculus",
+        "value": "1"
+      }
+    },
+    {
+      "name": "set_tooth_mark",
+      "input": {
+        "diagram": "pre",
+        "triadan": 305,
+        "mark": "missing"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 409,
+        "field": "gingivitis",
+        "value": "2"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 409,
+        "field": "calculus",
+        "value": "3"
+      }
+    },
+    {
+      "name": "set_exam_finding",
+      "input": {
+        "area": "extraoral",
+        "status": "normal"
+      }
+    },
+    {
+      "name": "set_exam_finding",
+      "input": {
+        "area": "lymph",
+        "status": "normal"
+      }
+    },
+    {
+      "name": "set_exam_finding",
+      "input": {
+        "area": "buccal",
+        "status": "abnormal",
+        "comment": "Ulcerație ușoară pe obrazul stâng"
+      }
+    },
+    {
+      "name": "set_anesthetic_drug",
+      "input": {
+        "drug": "Bupivacaine",
+        "concentration": "0.5"
+      }
+    },
+    {
+      "name": "set_nerve_block",
+      "input": {
+        "site": "infraorbitalRight",
+        "mL": "0.3"
+      }
+    },
+    {
+      "name": "set_nerve_block",
+      "input": {
+        "site": "inferiorAlveolarLeft",
+        "mL": "0.2"
+      }
+    },
+    {
+      "name": "append_treatment_report",
+      "input": {
+        "text": "Detartraj complet și lustruire."
+      }
+    },
+    {
+      "name": "set_tooth_mark",
+      "input": {
+        "diagram": "post",
+        "triadan": 108,
+        "mark": "extracted"
+      }
+    },
+    {
+      "name": "set_tooth_mark",
+      "input": {
+        "diagram": "post",
+        "triadan": 604,
+        "mark": "extracted"
+      }
+    }
+  ]
+}

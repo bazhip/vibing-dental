@@ -1,0 +1,88 @@
+{
+  "common": {
+    "fallback": "Dacă butonul nu funcționează, copiați acest link în browser:",
+    "tagline": "Fișe stomatologice veterinare"
+  },
+  "confirmSignup": {
+    "subject": "Confirmați contul dumneavoastră ToothOps",
+    "title": "Confirmați adresa de e-mail",
+    "preheader": "Confirmați adresa de e-mail pentru a activa contul ToothOps.",
+    "body": "Bun venit la ToothOps. Confirmați <strong>{{email}}</strong> pentru a activa contul cabinetului — veți fi autentificat imediat.",
+    "button": "Confirmați e-mailul și autentificați-vă",
+    "ignore": "Nu v-ați înregistrat pe ToothOps? Puteți ignora acest e-mail — contul rămâne inactiv dacă acest link nu este folosit."
+  },
+  "resetPassword": {
+    "subject": "Resetați parola ToothOps",
+    "title": "Resetați parola",
+    "preheader": "Resetați parola contului dumneavoastră ToothOps.",
+    "body": "Am primit o solicitare de resetare a parolei pentru <strong>{{email}}</strong>. Linkul este valabil o oră.",
+    "button": "Alegeți o parolă nouă",
+    "ignore": "Nu ați solicitat acest lucru? Ignorați acest e-mail — parola rămâne neschimbată."
+  },
+  "changeEmail": {
+    "subject": "Confirmați noua adresă de e-mail pentru ToothOps",
+    "title": "Confirmați noua adresă de e-mail",
+    "preheader": "Confirmați noua adresă de e-mail pentru contul dumneavoastră ToothOps.",
+    "body": "Confirmați că <strong>{{newEmail}}</strong> trebuie să înlocuiască <strong>{{email}}</strong> ca adresă de autentificare pentru contul ToothOps.",
+    "button": "Confirmați noul e-mail",
+    "ignore": "Nu ați solicitat această schimbare? Ignorați acest e-mail și adresa de autentificare rămâne neschimbată."
+  },
+  "invite": {
+    "subject": "Sunteți invitat pe ToothOps",
+    "title": "Acceptați invitația",
+    "preheader": "Ați fost invitat să creați un cont ToothOps.",
+    "body": "Ați fost invitat să creați un cont ToothOps pentru <strong>{{email}}</strong>. Acceptați invitația pentru a seta parola și a începe.",
+    "button": "Acceptați invitația",
+    "ignore": "Nu vă așteptați la această invitație? Puteți ignora acest e-mail — nu se creează niciun cont dacă acest link nu este folosit."
+  },
+  "magiclink": {
+    "subject": "Linkul dumneavoastră de autentificare ToothOps",
+    "title": "Autentificați-vă pe ToothOps",
+    "preheader": "Linkul dumneavoastră pentru autentificare pe ToothOps.",
+    "body": "Folosiți butonul de mai jos pentru a vă autentifica pe ToothOps ca <strong>{{email}}</strong>. Linkul poate fi folosit o singură dată.",
+    "button": "Autentificați-vă",
+    "ignore": "Nu ați încercat să vă autentificați? Ignorați acest e-mail — nimeni nu se poate autentifica fără acest link."
+  },
+  "reauthentication": {
+    "subject": "Codul dumneavoastră de verificare ToothOps",
+    "title": "Confirmați identitatea",
+    "preheader": "Codul dumneavoastră de verificare ToothOps.",
+    "body": "Introduceți acest cod în ToothOps pentru a vă confirma identitatea:",
+    "ignore": "Nu ați solicitat acest cod? Ignorați acest e-mail și luați în considerare schimbarea parolei."
+  },
+  "notice": {
+    "footnote": "Dacă nu ați făcut această schimbare, resetați imediat parola.",
+    "passwordChanged": {
+      "subject": "Parola dumneavoastră ToothOps a fost schimbată",
+      "body": "Parola contului dumneavoastră ToothOps a fost schimbată."
+    },
+    "emailChanged": {
+      "subject": "Adresa de autentificare ToothOps a fost schimbată",
+      "body": "Adresa de e-mail pentru autentificarea în contul ToothOps a fost schimbată."
+    },
+    "phoneChanged": {
+      "subject": "Numărul dumneavoastră de telefon ToothOps a fost schimbat",
+      "body": "Numărul de telefon al contului dumneavoastră ToothOps a fost schimbat."
+    },
+    "identityLinked": {
+      "subject": "O metodă de autentificare a fost adăugată contului ToothOps",
+      "body": "O nouă metodă de autentificare a fost asociată contului dumneavoastră ToothOps."
+    },
+    "identityUnlinked": {
+      "subject": "O metodă de autentificare a fost eliminată din contul ToothOps",
+      "body": "O metodă de autentificare a fost eliminată din contul dumneavoastră ToothOps."
+    },
+    "mfaEnrolled": {
+      "subject": "Autentificarea în doi pași a fost adăugată contului ToothOps",
+      "body": "O metodă de autentificare în doi pași a fost adăugată contului dumneavoastră ToothOps."
+    },
+    "mfaUnenrolled": {
+      "subject": "Autentificarea în doi pași a fost eliminată din contul ToothOps",
+      "body": "O metodă de autentificare în doi pași a fost eliminată din contul dumneavoastră ToothOps."
+    },
+    "generic": {
+      "subject": "Contul dumneavoastră ToothOps a fost actualizat",
+      "body": "O setare de securitate a contului dumneavoastră ToothOps a fost schimbată."
+    }
+  }
+}

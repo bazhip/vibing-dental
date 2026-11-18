@@ -46,11 +46,20 @@ test('lists every language by its own name and switches', async () => {
   render(<LanguageSwitcher />);
   const select = screen.getByRole('combobox');
   expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual([
-    'English', 'Français', 'Deutsch', 'Italiano', 'Español',
+    'English', 'Français', 'Deutsch', 'Italiano', 'Español', 'Magyar', 'Română',
   ]);
   await userEvent.selectOptions(select, 'de');
   expect(localStorage.getItem('app.language')).toBe('de');
   await waitFor(() => expect(i18n.language).toBe('de'));
+});
+
+test.each(['hu', 'ro'])('switches to %s and remembers it on this device', async (lng) => {
+  render(<LanguageSwitcher />);
+  await userEvent.selectOptions(screen.getByRole('combobox'), lng);
+  await waitFor(() => expect(i18n.language).toBe(lng));
+  expect(localStorage.getItem('app.language')).toBe(lng);
+  expect(document.documentElement.lang).toBe(lng);
+  expect(screen.getByRole('combobox')).toHaveValue(lng);
 });
 
 test('renders nothing while switching is disabled', () => {

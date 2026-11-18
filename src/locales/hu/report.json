@@ -1,0 +1,159 @@
+{
+  "draftLabel": "PISZKOZAT – NINCS ELLENŐRIZVE",
+  "draftNotice": "Ezt a leletet még nem ellenőrizték az aktuális fogászati lap alapján. Az adatok hiányosak lehetnek.",
+  "abnormalityNoted": "eltérés észlelhető",
+  "after": "Utána",
+  "alreadyMissingLine": "Már a vizit előtt hiányzott: {{list}}.",
+  "before": "Előtte",
+  "defaultTitle": "Fogászati vizit lelete",
+  "examAreas": {
+    "buccal": "Pofanyálkahártya",
+    "extraoral": "Szájüregen kívüli terület / arc",
+    "lymph": "Nyirokcsomók",
+    "palate": "Szájpadlás",
+    "pharynx": "Garat / mandulák",
+    "tongue": "Nyelv"
+  },
+  "extractionsLead": "A dokumentáció szerint ezeket a fogakat a vizit során eltávolították:",
+  "fieldPhrases": {
+    "calculus": "fogkőlerakódás ({{value}}. fokozat)",
+    "furcation": "csontveszteség a gyökerek között ({{value}}. fokozat)",
+    "gingivitis": "ínygyulladás ({{value}}. fokozat)",
+    "hyperplasia": "ínyszövet-túlburjánzás ({{value}})",
+    "mobility": "mozgó fog (mozgathatóság: {{value}})",
+    "pdstate": "fogágybetegség, {{value}}. stádium",
+    "pocket": "mélyült ínytasak ({{value}} mm)",
+    "recession": "ínyvisszahúzódás ({{value}})"
+  },
+  "fieldPlain": {
+    "calculus": "fogkőlerakódás",
+    "furcation": "csontveszteség a gyökerek között",
+    "gingivitis": "ínygyulladás",
+    "hyperplasia": "ínyszövet-túlburjánzás",
+    "mobility": "mozgó fog",
+    "pdstate": "fogágybetegség",
+    "pocket": "mélyült ínytasak",
+    "recession": "ínyvisszahúzódás"
+  },
+  "headings": {
+    "alreadyMissing": "Már a vizit előtt hiányzott",
+    "diagram_named": "{{pet}} szájürege",
+    "diagram_unnamed": "Kedvence szájürege",
+    "examNotes": "Egyéb vizsgálati megjegyzések",
+    "extractions": "A vizit során eltávolított fogak",
+    "findings": "Amit találtunk",
+    "homecare_named": "{{pet}} fogainak otthoni ápolása",
+    "homecare_unnamed": "Kedvence fogainak otthoni ápolása",
+    "photos": "Előtte és utána",
+    "recheck": "Javasolt kontrollvizsgálat",
+    "teamNote": "Állatorvosi csapatának üzenete"
+  },
+  "homecareTips": {
+    "brushing": "A napi fogmosás állatok számára biztonságos fogkrémmel a leghatékonyabb, amit tehet.",
+    "products": "A VOHC-jelöléssel ellátott fogászati tápok, rágók és ivóvíz-adalékok segítenek a fogmosások között.",
+    "warningSigns": "Figyelje a kellemetlen szájszagot, nyálzást, eledel elejtését vagy a száj manccsal dörzsölését – ha ilyet észlel, hívjon minket."
+  },
+  "homecareTipsEquine": {
+    "checkups": "A legtöbb lónak 6–12 havonta fogászati ellenőrzésre van szüksége; fiatal és idős lovaknál gyakoribb ellátás is szükséges lehet.",
+    "forage": "Biztosítson bőséges szálastakarmányt – a hosszú szálú széna és a legelés segíti a fogak egyenletes kopását.",
+    "warningSigns": "Figyelje a takarmány elejtését, fogyást, lassú evést, fejrázást vagy a zabla elleni ellenállást, kellemetlen szájszagot és orrfolyást – ha ilyet észlel, hívjon minket."
+  },
+  "intro": "Ez a lelet {{pet}} fogászati vizitjének dokumentált adatait foglalja össze. Kérdéseit beszélje meg állatorvosi csapatával.",
+  "legendFilled": "kitöltött = már a vizit előtt hiányzott",
+  "legendNumbers": "A számok az alábbi leleteknek felelnek meg",
+  "legendRemoved": "piros ✕ = ma eltávolítva",
+  "noProblems": "Ehhez a vizithez nem rögzítettek fogászati leletet.",
+  "ourPractice": "rendelőnk",
+  "ownerLabel": "Gazdi",
+  "patientLabel": "Páciens",
+  "preparedBy": {
+    "byTeam": "Készítette az Ön állatorvosi csapata.",
+    "byTeamAtPractice": "Készítette az Ön állatorvosi csapata, {{practice}}.",
+    "doctor": "Készítette: {{doctor}}.",
+    "doctorAtPractice": "Készítette: {{doctor}}, {{practice}}."
+  },
+  "removedToday": "ma eltávolítva",
+  "species": {
+    "canine": "Kutya",
+    "canine-deciduous": "Kölyökkutya",
+    "feline": "Macska",
+    "feline-deciduous": "Kölyökmacska",
+    "equine": "Ló"
+  },
+  "tooth": {
+    "deciduous": "tej",
+    "kinds": {
+      "canine": "szemfog",
+      "incisor": "metszőfog",
+      "molar": "nagyőrlőfog",
+      "premolar": "kisőrlőfog"
+    },
+    "ordinals": {
+      "first": "első",
+      "fourth": "negyedik",
+      "second": "második",
+      "third": "harmadik"
+    },
+    "sides": {
+      "lowerLeft": "bal alsó",
+      "lowerRight": "jobb alsó",
+      "upperLeft": "bal felső",
+      "upperRight": "jobb felső"
+    }
+  },
+  "yourPet": "kedvence",
+  "yourTeam": "az Ön állatorvosi csapata",
+  "plainCodes": {
+    "T/FX": "törött fog",
+    "T/FX/EI": "repedés a fogzománcban",
+    "T/FX/EF": "lepattant fog (csak a zománc érintett)",
+    "T/FX/UCF": "törött fog (a fogbél nem nyílt meg)",
+    "T/FX/CCF": "törött fog megnyílt fogbéllel",
+    "T/FX/UCRF": "az íny alá terjedő fogtörés (a fogbél nem nyílt meg)",
+    "T/FX/CCRF": "az íny alá terjedő fogtörés megnyílt fogbéllel",
+    "T/FX/RF": "törött foggyökér",
+    "T/PE": "a fogbél megnyílt",
+    "T/NV": "elhalt fog",
+    "TR": "fogfelszívódás (a szervezet lebontja a fogat)",
+    "T/A": "kiütött fog",
+    "T/U": "az ínyen át nem tört fog",
+    "T/I": "az íny alatt rekedt fog",
+    "DT": "tejfog",
+    "AT": "fogak egymáshoz dörzsölődése okozta kopás",
+    "AB": "kemény tárgyak rágása okozta fogkopás",
+    "E/D": "fogzománchiány",
+    "E/H": "vékony vagy rendellenesen képződött zománc",
+    "CA": "szuvas üreg a fogban (fogszuvasodás)",
+    "GR": "ínyvisszahúzódás",
+    "GH": "ínyszövet-túlburjánzás",
+    "OM": "szájüregi növedék",
+    "B": "biopszia (szövetminta laborvizsgálatra)",
+    "B/I": "biopszia (minta a növedékből laborvizsgálatra)",
+    "B/E": "a növedék eltávolítása laborvizsgálatra",
+    "X": "fog eltávolítva",
+    "XS": "fog eltávolítása darabolással",
+    "XSS": "fog műtéti eltávolítása",
+    "RCT": "gyökérkezelés",
+    "VPT": "a fog életben tartását célzó kezelés",
+    "PRO": "szakszerű fogtisztítás (fogkő-eltávolítás és polírozás)"
+  },
+  "summary": {
+    "gingivitis": "Ínygyulladás: {{extent}}{{severity}}",
+    "calculus": "Fogkő: {{extent}}{{severity}}",
+    "recession": "Ínyvisszahúzódás: {{extent}}",
+    "hyperplasia": "Ínyszövet-túlburjánzás: {{extent}}"
+  },
+  "extent": {
+    "most": "a legtöbb fogon",
+    "many": "sok fogon",
+    "some": "néhány fogon"
+  },
+  "severity": {
+    "mild": "enyhe",
+    "moderate": "közepes",
+    "severe": "súlyos",
+    "single": " ({{level}})",
+    "range": " ({{from}}–{{to}})"
+  },
+  "otherFindings": "Egyéb leletek"
+}

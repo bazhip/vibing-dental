@@ -1,0 +1,358 @@
+{
+  "done": "Kész",
+  "saving": "Mentés…",
+  "practice": {
+    "title": "Rendelő beállításai",
+    "profile": "Profil",
+    "nameLabel": "Rendelő neve",
+    "namePlaceholder": "Az alkalmazásban és minden fogászati lapon megjelenik",
+    "nameLockedLoading": "A rendelő neve a csapat betöltéséig zárolva van – próbálja újra alább.",
+    "nameLockedShared": "A rendelő nevét az egész csapat közösen használja – csak az elsődleges tulajdonos módosíthatja.",
+    "nameSaved": "Rendelő neve mentve.",
+    "nameSaveFailed": "Nem sikerült menteni a rendelő nevét.",
+    "discard": {
+      "title": "Elveti a rendelő nevének módosítását?",
+      "message": "Az új rendelőnév nincs mentve.",
+      "confirm": "Elvetés",
+      "cancel": "Szerkesztés folytatása"
+    },
+    "logo": {
+      "label": "Rendelő logója",
+      "alt": "Rendelő logója",
+      "replace": "Csere",
+      "remove": "Eltávolítás",
+      "working": "Feldolgozás…",
+      "empty": "Nincs feltöltött logó – a fogászati lapok a sablon beépített jelét használják.",
+      "upload": "Logó feltöltése",
+      "uploading": "Feltöltés…",
+      "choose": "Válasszon logóképet",
+      "updated": "Logó frissítve.",
+      "uploadFailed": "Nem sikerült feltölteni a logót.",
+      "removed": "Logó eltávolítva.",
+      "removeFailed": "Nem sikerült eltávolítani a logót.",
+      "removeTitle": "Eltávolítja a rendelő logóját?",
+      "removeMessage": "Amíg másikat nem tölt fel, az új fogászati lapok és PDF-ek a sablon beépített jelét használják.",
+      "removeConfirm": "Logó eltávolítása"
+    },
+    "team": {
+      "title": "Csapat",
+      "loading": "Csapat betöltése…",
+      "settingUp": "A rendelő beállítása még folyamatban van.",
+      "checkAgain": "Újraellenőrzés",
+      "checking": "Ellenőrzés…",
+      "retry": "Újrapróbálkozás",
+      "retrying": "Újrapróbálkozás…",
+      "loadError": "Nem sikerült betölteni a csapatot. {{error}}",
+      "ownerBlurb": "A hozzáadott munkatársak közösen használják a rendelő fogászati lapjait, sablonjait és képeit.",
+      "memberBlurb": "Ön a(z) {{practice}} rendelő tagja. A rendelő fogászati lapjait közösen használják.",
+      "you": "(Ön)",
+      "pending": "Függőben lévő meghívás",
+      "roles": {
+        "primaryOwner": "Elsődleges tulajdonos",
+        "owner": "Tulajdonos",
+        "member": "Tag"
+      },
+      "resend": "Meghívás újraküldése",
+      "makeOwner": "Tulajdonossá tétel",
+      "makeMember": "Taggá tétel",
+      "transfer": "Tulajdonjog átadása",
+      "remove": "Eltávolítás",
+      "emailLabel": "Munkatárs e-mail-címe",
+      "add": "Hozzáadás",
+      "adding": "Hozzáadás…",
+      "inviteHint": "Még nincs fiókja? E-mailben meghívjuk, hogy jelszót állítson be és csatlakozzon.",
+      "invalidEmail": "Adjon meg érvényes e-mail-címet.",
+      "invited": "Meghívás elküldve ide: {{email}} – jelszót állít be, és már csatlakozhat is.",
+      "existingAccount": "A(z) {{email}} címhez már tartozik ToothOps-fiók – elküldtük az elfogadási hivatkozást. Csatlakozás után itt jelenik meg.",
+      "addFailed": "Nem sikerült hozzáadni.",
+      "failed": "Ez nem sikerült. Próbálja újra.",
+      "loadFailed": "Nem sikerült betölteni a csapatot.",
+      "transferTitle": "A(z) {{email}} legyen az elsődleges tulajdonos?",
+      "transferMessage": "Az elsődleges tulajdonos kezeli a számlázást és a rendelő nevét. Ön továbbra is a rendelő tulajdonosa marad.",
+      "transferConfirm": "Tulajdonjog átadása",
+      "transferred": "Tulajdonjog átadva.",
+      "removeTitle": "Eltávolítja a(z) {{email}} tagot a rendelőből?",
+      "removePendingMessage": "A meghívását visszavonjuk.",
+      "removeMessage": "Elveszíti a hozzáférést a rendelő megosztott fogászati lapjaihoz, de saját lapjait megtartja.",
+      "cancelInvite": "Meghívás visszavonása",
+      "removeConfirm": "Eltávolítás",
+      "keep": "Megtartás",
+      "inviteCancelled": "Meghívás visszavonva.",
+      "memberRemoved": "Tag eltávolítva.",
+      "inviteResent": "Meghívás újraküldve ide: {{email}}.",
+      "nowOwner": "{{email}} mostantól tulajdonos.",
+      "nowMember": "{{email}} mostantól tag."
+    },
+    "ownerReport": {
+      "title": "Gazdinak szóló lelet",
+      "blurb": "A családok által a fogászati vizit után hazavihető lelet – szakaszok, fejlécek, szövegezés, nyelv és a rendelő alapértelmezett elrendezése.",
+      "customize": "Gazdinak szóló lelet testreszabása"
+    },
+    "clientLanguage": {
+      "title": "Gazdik nyelve",
+      "blurb": "A családoknak küldött szövegek, például a gazdinak szóló lelet alapértékeinek nyelve. A beírt szöveget nem fordítjuk le.",
+      "saveFailed": "Nem sikerült menteni a nyelvet."
+    },
+    "deletion": {
+      "title": "Rendelő törlése",
+      "blurb": "Véglegesen törli a rendelőt és minden vele megosztott fogászati lapot, a csapatéit is, és megszünteti az előfizetést. A csapattagok megtartják fiókjaikat és privát fogászati lapjaikat.",
+      "button": "Rendelő törlése…"
+    },
+    "treatmentReport": {
+      "title": "Kezelési leírás",
+      "blurb": "Gyakori beavatkozások mentett szövegei, azonnal beilleszthetők a kezelési leírásba.",
+      "customize": "Kezelési leírás testreszabása"
+    }
+  },
+  "logoErrors": {
+    "unreadable": "Nem sikerült beolvasni a képet.",
+    "canvas": "A rajzvászon nem érhető el",
+    "convert": "Nem sikerült átalakítani a képet.",
+    "tooLarge": "Ez a kép túl nagy – a logófájlnak 10 MB-nál kisebbnek kell lennie.",
+    "reportTooLarge": "A gazdinak szóló lelet beállításai túl nagyok (legfeljebb 50 KB) – rövidítsen szöveget vagy távolítson el egy sablont.",
+    "reportNotLoaded": "A mentett gazdilelet-sablonok nem töltődtek be, ezért a mentés felülírhatná őket. Töltse újra az oldalt, és próbálja újra."
+  },
+  "chart": {
+    "title": "Fogászati lap beállításai",
+    "sections": {
+      "patient": "Páciensoldal beállításai",
+      "anesthesia": "Érzéstelenítés beállításai",
+      "charting": "Kitöltés beállításai",
+      "diagnosis": "Diagnózis beállításai",
+      "images": "Képalkotás beállításai",
+      "exam": "Vizsgálat beállításai",
+      "procedure": "Beavatkozás beállításai"
+    },
+    "noteAccount": "Személyes beállításai minden eszközön követik a fiókját. A módosításokat automatikusan mentjük.",
+    "noteBrowser": "Személyes beállítások automatikusan mentve ebben a böngészőben.",
+    "all": "Minden fogászatilap-beállítás",
+    "charting": {
+      "title": "Fogászati lap kitöltése",
+      "view": "Fogászati lap elrendezése",
+      "grid": "Táblázat",
+      "byTooth": "Foganként",
+      "pocket": "Tasakmélység rögzítése",
+      "pocketTooth": "Foganként egy",
+      "pocketRoot": "Gyökerenként egy",
+      "pocketRootHint": "M / D vagy háromgyökerű fogaknál MB / MP / D",
+      "pocketSite": "Foganként hat pont",
+      "pocketSiteHint": "MB / B / DB / ML / L / DL",
+      "space": "Szóköz a táblázatban",
+      "spaceDown": "A következő fogra lép lefelé",
+      "spaceDownHint": "gyors megoldás mélységsorozatok bemondásához",
+      "spaceType": "Szóközt ír be",
+      "scoreTap": "Pontszámra koppintás után a táblázatban",
+      "scoreFinding": "Ugrás ugyanazon fog következő leletére",
+      "scoreFindingHint": "mozgathatóság → ínyvisszahúzódás → … fogankénti vizsgálathoz",
+      "scoreTooth": "Lépés lefelé a következő fogra",
+      "scoreToothHint": "egy lelettípus teljes szájüregi pontozásához",
+      "scoreStay": "Az aktuális cella marad kijelölve",
+      "columns": "Látható mérések",
+      "scorePicker": "Pontszámgombok a táblázatban",
+      "scorePickerOptions": {
+        "touch": "Csak érintőfelületeken",
+        "always": "Mindig látható",
+        "never": "Soha nem látható"
+      }
+    },
+    "beside": {
+      "title": "Diagram leletei",
+      "show": "Leletek megjelenítése a Diagnózis diagramon",
+      "showHint": "(és a PDF-ben)",
+      "include": "Megjelenítendő leletek"
+    },
+    "anesthesia": {
+      "title": "Érzéstelenítés",
+      "blocks": "Megjelenő idegblokádok",
+      "blocksNote": "A rejtett blokád is megjelenik azon a fogászati lapon, ahol adagja van.",
+      "blockNames": {
+        "infraorbital": "Infraorbitális",
+        "caudalMaxillary": "Kaudális maxilláris",
+        "inferiorAlveolar": "Alsó alveoláris",
+        "mental": "Mentális",
+        "other": "Egyéb"
+      },
+      "usual": "Előnyben részesített helyi érzéstelenítőszer",
+      "usualNote": "Gyorsbeviteli lehetőségként elérhető, ha még nincs érzéstelenítőszer rögzítve. Ön dönti el, mikor alkalmazza.",
+      "drugPlaceholder": "pl. Bupivakain",
+      "drugAria": "Előnyben részesített helyi érzéstelenítőszer",
+      "strengthAria": "Helyi érzéstelenítőszer koncentrációja (%)",
+      "adjunct": "Kiegészítő gyógyszer",
+      "adjunctNote": "Az előnyben részesített érzéstelenítőszerrel együtt mentett, nem kötelező gyógyszer. A gyorsbevitel mindkettőt rögzíti.",
+      "adjunctPlaceholder": "pl. Buprenorfin",
+      "adjunctAria": "Kiegészítő gyógyszer",
+      "adjunctStrengthAria": "Kiegészítő gyógyszer koncentrációja"
+    },
+    "patient": {
+      "title": "Páciensoldal",
+      "hideRecheck": "Kontroll esedékessége mező elrejtése",
+      "visibilityNote": "Válassza ki az üres viziteken megjelenő mezőket. A rögzített adatokat tartalmazó mezők láthatók maradnak."
+    },
+    "pdf": {
+      "title": "PDF",
+      "grid": "Kitöltési táblázat szerepeltetése",
+      "gridHint": "Kötelező, ha a diagramleletek ki vannak kapcsolva, hogy a rögzített mérések a PDF-ben maradjanak.",
+      "images": "Képek szerepeltetése",
+      "imagesHint": "(oldalanként 4, a fogászati lap után)"
+    },
+    "noteDevice": "Személyes beállítások automatikusan mentve ezen az eszközön.",
+    "spaceMovesDownHint": "Gyors megoldás mélységsorozatok bemondásához",
+    "scoreTapFindingHint": "Mozgathatóság → ínyvisszahúzódás → … fogankénti vizsgálathoz",
+    "scoreTapToothHint": "Egy lelettípus teljes szájüregi pontozásához",
+    "columnsFooter": "A kitöltési táblázatban megjelenő oszlopok. Legalább egynek láthatónak kell maradnia.",
+    "mirrorHint": "És a PDF-ben",
+    "drugName": "Gyógyszer",
+    "drugStrength": "Koncentráció",
+    "pdfGridHint": "Kötelező, ha a diagramleletek ki vannak kapcsolva, hogy a rögzített mérések a PDF-ben maradjanak.",
+    "pdfImagesHint": "Oldalanként 4, a fogászati lap után",
+    "quickCodes": {
+      "title": "Diagnosztikai gyorsgombok",
+      "note": "Adjon hozzá AVDC- vagy egyéni kódokat a fogmegjegyzésekhez és a Diagnózis diagramhoz. Az itteni sorrend adja a gyorsgombok sorrendjét.",
+      "remove": "Eltávolítás",
+      "removeAria": "{{code}} eltávolítása",
+      "placeholder": "Kód, pl. T/SR",
+      "addAria": "Hozzáadandó kód",
+      "add": "Hozzáadás",
+      "duplicate": "Ez a kód már szerepel a gyorsgombok között."
+    },
+    "exam": {
+      "title": "Vizsgálat",
+      "areas": "Vizsgálati területek",
+      "areasNote": "Válassza ki a Vizsgálat oldalon megjelenő területeket. A mentett lelettel rendelkező területek kikapcsolva is láthatók maradnak. Az egyéni területek az alábbi sorrendben jelennek meg.",
+      "areaPlaceholder": "pl. Ajkak",
+      "areaAria": "{{n}}. vizsgálati terület neve",
+      "areaN": "{{n}}. terület",
+      "remove": "Eltávolítás",
+      "removeAria": "{{name}} eltávolítása",
+      "add": "Terület hozzáadása",
+      "addPreset": "Javasolt területek hozzáadása",
+      "presets": {
+        "lips": "Ajkak / bőr-nyálkahártya átmenet",
+        "gingiva": "Íny / mukogingivális határ",
+        "salivary": "Nyálmirigykivezető nyílások",
+        "floor": "Szájfenék / nyelvfék"
+      },
+      "suggestions": "Javasolt területek",
+      "showArea": "{{name}} megjelenítése",
+      "customCount": "Hozzáadott egyéni területek: {{used}} · Korlát: {{max}}"
+    },
+    "customization": {
+      "navigation": "Fogászatilap-beállítások kategóriái",
+      "categories": {
+        "patient": "Páciens részletei",
+        "exam": "Szájüregi vizsgálat",
+        "diagnosis": "Diagnózis",
+        "images": "Képalkotás és PDF",
+        "procedure": "Beavatkozás"
+      },
+      "descriptions": {
+        "patient": "Válassza ki, megjelenjen-e a kontrollvizsgálat dátuma a Páciens oldalon.",
+        "exam": "Válassza ki a szájüregi vizsgálat során rögzítendő további területeket.",
+        "anesthesia": "Állítsa be az idegblokádokat, egyéni mezőket és szokásos gyógyszereit.",
+        "charting": "Állítsa be a fogászati lap elrendezését, méréseit és adatbeviteli működését.",
+        "diagnosis": "Válassza ki a diagnosztikai diagramon megjelenő leleteket és a gyorskódokat.",
+        "images": "Válassza ki a létrehozott PDF-ekben szereplő fogászati lapot és képeket.",
+        "procedure": "Válassza ki a beavatkozási diagramon elérhető gyorskódokat."
+      },
+      "showRecheck": "Kontroll esedékessége mező megjelenítése",
+      "layout": "Elrendezés és mérések",
+      "input": "Adatbevitel"
+    },
+    "procedureQuickCodes": {
+      "title": "Beavatkozási gyorsgombok",
+      "note": "Adjon hozzá kódokat a gyakran rögzített beavatkozásokhoz. Ezek a gyorsgombok csak a Beavatkozás diagramon jelennek meg; a diagnosztikai gyorskódok külön maradnak.",
+      "placeholder": "Kód, pl. XSS"
+    },
+    "list": {
+      "moveUp": "{{name}} mozgatása felfelé",
+      "moveDown": "{{name}} mozgatása lefelé",
+      "count": "{{used}} / {{max}} beállítva",
+      "limit": "Elérte a korlátot. Új elemhez távolítson el egy meglévőt."
+    },
+    "autosave": {
+      "label": "Automatikus mentés",
+      "hint": "A fogászati lap módosításainak automatikus mentése. Kézi mentéshez kapcsolja ki."
+    }
+  },
+  "feedback": {
+    "title": "Visszajelzés küldése",
+    "kinds": {
+      "bug": "Valami nem működik",
+      "idea": "Ötlet",
+      "other": "Egyéb"
+    },
+    "kindsAria": "Visszajelzés típusa",
+    "promptBug": "Mi történt?",
+    "promptIdea": "Mi segítene?",
+    "promptOther": "Az Ön üzenete",
+    "bugPlaceholder": "Mit tett, mit várt, és mi történt helyette…",
+    "attach": "Diktálási átiratom csatolása",
+    "note": "Közvetlenül a ToothOps fejlesztőjéhez kerül, aki e-mailben válaszol.",
+    "sent": "Köszönjük! Visszajelzését elküldtük.",
+    "sendFailed": "Nem sikerült elküldeni. Próbálja újra.",
+    "needsAccount": "A visszajelzéshez fiók szükséges.",
+    "send": "Küldés",
+    "sending": "Küldés…"
+  },
+  "gettingStarted": {
+    "takeTour": "Bemutató indítása",
+    "tourFooter": "Rövid bemutató arról, hol található minden a fogászati lapon.",
+    "chartParts": "A fogászati lap részei"
+  },
+  "tour": {
+    "steps": {
+      "sections": {
+        "body": "Fogászati dokumentáció fentről lefelé. A szakaszok közötti ugráshoz koppintson a fogászati lap címére – mindent automatikusan mentünk."
+      },
+      "grid": {
+        "body": "Fogankénti mérések. Koppintson egy cellára és írjon, vagy koppintson egy pontszámra – dolgozzon felnézés nélkül."
+      },
+      "diagrams": {
+        "body": "Koppintson egy fogra a jelöléshez, megjegyzéshez vagy rajzos feljegyzéshez. Keressen AVDC-kódokat a Diagnózis és Beavatkozás mellett. A Visszavonás és Ismétlés a diagram eszköztárán található."
+      },
+      "codes": {
+        "body": "Itt kereshet a teljes AVDC-kódkészletben, közvetlenül a diagram mellett."
+      },
+      "treatment": {
+        "body": "Írja meg a leletet, vagy illesszen be mentett sablont – az újakat pedig mentse későbbi használatra."
+      },
+      "patients": {
+        "title": "Páciensek",
+        "body": "Minden páciens vizitjei. A mentett vizitek a Szerkesztés gombra koppintásig csak olvashatók. A Kontrollvizsgálatok az esedékes pácienseket sorolja fel."
+      },
+      "share": {
+        "title": "PDF megosztása",
+        "body": "Készítse el a gazdinak átadható, saját logós fogászati PDF-et, majd ossza meg vagy mentse, amikor készen áll."
+      },
+      "byTooth": {
+        "body": "Váltson Foganként nézetre, és koppintson egy fogra a diagramon. Rögzítse együtt a méréseit, diagnózisát és beavatkozását, majd lépjen a következő fogra. A Táblázat és Foganként nézet ugyanazokat a leleteket használja."
+      },
+      "customize": {
+        "body": "Nyissa meg a fogászati lap Továbbiak menüjét, és válassza az aktuális oldal Testreszabás lehetőségét. Állítsa be az oszlopokat, fogankénti, gyökerenkénti vagy pontonkénti tasakmélységeket, gyorskódokat és egyebeket. Bejelentkezve beállításai követik a fiókját."
+      }
+    }
+  },
+  "whatsNew": {
+    "severalTeeth": "Koppintson a fogszámokra a táblázatban több fog kiválasztásához, majd állítson be mindegyikre azonos pontszámot.",
+    "customize": "Minden oldal Továbbiak menüjében van Testreszabás: elrejthet oszlopokat, kiválaszthatja a fogak melletti adatokat és egyebeket. Beállításai a fiókjával minden eszközre átkerülnek.",
+    "leftOff": "A ToothOps friss megnyitásakor a Páciensek oldal jelenik meg – kivéve, ha a mai vizit még nyitva van –, a mai vizit pedig szerkesztésre készen nyílik meg."
+  },
+  "reminders": {
+    "sendFrom": "Egy páciensnek a Páciensek vagy Kontrollvizsgálatok oldalról küldhet emlékeztetőt.",
+    "settingUp": "A rendelő beállítása folyamatban van – nézzen vissza rövidesen."
+  },
+  "workspace": {
+    "personalScope": "Személyes fogászatilap-beállítások – a módosítások csak az Ön fiókjára vonatkoznak.",
+    "accountScope": "Ezek a beállítások a fiókjához tartoznak. Minden szakaszt külön mentsen; az e-mail-cím és a jelszó módosítása külön megerősítést igényel.",
+    "languageImmediate": "A nyelvmódosítás azonnal érvénybe lép.",
+    "general": "Általános",
+    "team": "Csapat",
+    "templates": "Sablonok",
+    "billing": "Számlázás",
+    "reminders": "Kontrollvizsgálati emlékeztetők",
+    "charting": "Kitöltési beállítások",
+    "back": "Vissza az aktuális vizithez",
+    "scope": "A rendelő közös beállításainak kezelése.",
+    "saveHint": "Mentse a rendelő nevének módosításait. A többi beállítás azonnal érvénybe lép."
+  }
+}

@@ -9,6 +9,8 @@ const LANGUAGE_NAMES: Record<string, string> = {
   it: 'Italian (formal: Lei, with the courtesy capital: Suo, Sua, Suoi, Sue)',
   es: 'Spanish (formal: usted)',
   pt: 'Portuguese (formal)',
+  hu: 'Hungarian (formal: Ön)',
+  ro: 'Romanian (formal: dumneavoastră)',
 };
 
 export function systemPrompt(lng: string, glossary: GlossaryTerm[]): string {

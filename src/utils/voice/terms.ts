@@ -25,6 +25,9 @@ export const SURFACE_GLOSSARY_IDS: readonly string[] = ['mesial', 'distal', 'pal
 /** What vets actually say before a score that the glossary doesn't hold as a
  *  clinical value: short column labels, lay words and grade/class words. */
 export const SPOKEN_SYNONYMS: Record<AppLanguage, string[]> = {
+  hu: ['mobilitás', 'tasak', 'recesszió', 'furkáció', 'stádium', 'fok', 'fokozat', 'osztály'],
+  ro: ['mobilitate', 'pungă', 'recesiune', 'furcație', 'tartru', 'stadiu', 'grad', 'clasă'],
+
   en: [], // English keeps its own SCORE_TERMS list in numbers.ts.
   fr: [
     'mobilité', // column label; glossary value is "mobilité dentaire"
@@ -80,6 +83,9 @@ export const DANGLING_ABBREVIATIONS = ['GI', 'GE', 'G', 'calc', 'F', 'PD'];
 
 /** "and" at the end of an utterance: the vet is going on ("GI deux et"). */
 export const AND_WORDS: Record<AppLanguage, string[]> = {
+  hu: ['és'],
+  ro: ['și'],
+
   en: [], // English keeps "and" in DANGLING_RE.
   fr: ['et'],
   de: ['und'],
@@ -112,6 +118,9 @@ export const GERMAN_COMPOUND_ENDS = [
 
 /** Millimetre words, said after a measurement. */
 export const UNIT_WORDS: Record<AppLanguage, string[]> = {
+  hu: ['mm', 'milliméter', 'milliméteres'],
+  ro: ['mm', 'milimetru', 'milimetri'],
+
   en: [], // English keeps its own unit pattern in numbers.ts.
   fr: ['mm', 'millimètre', 'millimètres'],
   de: ['mm', 'Millimeter', 'Millimetern'],
@@ -121,6 +130,9 @@ export const UNIT_WORDS: Record<AppLanguage, string[]> = {
 
 /** What STT writes when a vet says "/" inside an AVDC code ("T slash FX"). */
 export const SLASH_WORDS: Record<AppLanguage, string[]> = {
+  hu: ['per', 'törtvonal', 'slash'],
+  ro: ['bară oblică', 'bară', 'slash'],
+
   en: ['slash'],
   fr: ['barre oblique', 'slash'],
   de: ['Schrägstrich', 'slash'],
@@ -135,6 +147,9 @@ const ENGLISH_LETTER_NAMES: Record<string, string> = {
   'gee eye': 'GI', 'gee i': 'GI', 'pee dee': 'PD', 'eff': 'F',
 };
 export const SPELLED_LETTERS: Record<AppLanguage, Record<string, string>> = {
+  hu: { 'gé i': 'GI', 'gé-i': 'GI', 'pé dé': 'PD', 'ef': 'F', ...ENGLISH_LETTER_NAMES },
+  ro: { 'ge i': 'GI', 'ge-i': 'GI', 'pe de': 'PD', 'ef': 'F', 'efe': 'F', ...ENGLISH_LETTER_NAMES },
+
   en: {}, // English keeps its own letter passes in normalizeTranscript.
   fr: { 'gé i': 'GI', 'gé-i': 'GI', 'pé dé': 'PD', 'effe': 'F', 'èf': 'F', ...ENGLISH_LETTER_NAMES },
   de: { 'ge i': 'GI', 'ge-i': 'GI', 'pe de': 'PD', 'eff': 'F', 'ef': 'F', ...ENGLISH_LETTER_NAMES },
@@ -146,6 +161,9 @@ export const SPELLED_LETTERS: Record<AppLanguage, Record<string, string>> = {
  *  (side talk, acknowledgements) is not sent to the model. Multi-word and
  *  elided entries ("d'accord", "va bene") are matched as phrases. */
 export const FILLER_WORDS: Record<AppLanguage, string[]> = {
+  hu: ['öö', 'öhm', 'igen', 'nem', 'rendben', 'jó', 'köszönöm', 'tehát', 'és'],
+  ro: ['ăă', 'ăhm', 'da', 'nu', 'bine', 'mulțumesc', 'deci', 'și'],
+
   en: [], // English keeps its own FILLER_WORDS set in aiAutofill.ts.
   fr: ['euh', 'hein', 'bon', 'voilà', "d'accord", 'ok', 'merci', 'oui', 'non', 'alors', 'donc', 'et'],
   de: ['äh', 'ähm', 'ähmm', 'öhm', 'also', 'okay', 'ja', 'nein', 'danke', 'gut', 'und', 'so'],
@@ -158,6 +176,9 @@ export const UNIVERSAL_FILLERS = ['ok', 'okay', 'hm', 'hmm', 'mm', 'mhm'];
 
 /** Words between a score term and its number ("poche de 5 mm"). */
 export const SCORE_LINK_WORDS: Record<AppLanguage, string[]> = {
+  hu: ['értéke', 'foka'],
+  ro: ['de', 'este'],
+
   en: [],
   fr: ['de', 'à'],
   de: ['von'],

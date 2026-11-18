@@ -13,15 +13,14 @@ import type { BuiltInSectionId } from './ownerReportConfig';
  *
  * Free text the team typed (chart comments, exam comments, custom
  * sections, per-chart edits) prints as written — it is never machine
- * translated. Only Latin-script languages are offered: the PDF uses the
- * standard Helvetica font (WinAnsi), which covers Western European
- * accents but not other scripts.
+ * translated. Hungarian and Romanian PDFs embed fonts covering their
+ * Latin-script diacritics; other report languages retain standard fonts.
  *
  * Defaults describe documented information without assuming procedures
  * were completed or unrecorded findings were normal.
  */
 
-export const REPORT_LOCALES = ['en', 'es', 'fr', 'de', 'it', 'pt'] as const;
+export const REPORT_LOCALES = ['en', 'es', 'fr', 'de', 'it', 'pt', 'hu', 'ro'] as const;
 export type ReportLocale = (typeof REPORT_LOCALES)[number];
 
 export const LOCALE_LABELS: Record<ReportLocale, string> = {
@@ -31,6 +30,8 @@ export const LOCALE_LABELS: Record<ReportLocale, string> = {
   de: 'Deutsch (German)',
   it: 'Italiano (Italian)',
   pt: 'Português (Portuguese)',
+  hu: 'Magyar (Hungarian)',
+  ro: 'Română (Romanian)',
 };
 
 export function isReportLocale(v: unknown): v is ReportLocale {
@@ -108,6 +109,8 @@ const INTL_LOCALES: Record<ReportLocale, string> = {
   de: 'de',
   it: 'it',
   pt: 'pt',
+  hu: 'hu-HU',
+  ro: 'ro-RO',
 };
 
 const SIDE_KEYS = { 1: 'upperRight', 2: 'upperLeft', 3: 'lowerLeft', 4: 'lowerRight' } as const;
@@ -152,6 +155,8 @@ const TOOTH_GRAMMAR: Record<ReportLocale, ToothGrammar> = {
   de: germanGrammar,
   it: romanceGrammar,
   pt: romanceGrammar,
+  hu: (w, deciduous) => `${w.side} ${w.isCanine ? '' : `${w.ordinal} `}${deciduous ? w.deciduous : ''}${w.kind}`.trim(),
+  ro: romanceGrammar,
 };
 
 /** Headings that name the pet have a `_named` and `_unnamed` key, so each

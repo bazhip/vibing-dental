@@ -1,0 +1,117 @@
+{
+  "title": "Fiókbeállítások",
+  "doctor": {
+    "heading": "Orvos neve",
+    "blurb": "Minden Ön által készített fogászati lapon a logó alatt jelenik meg.",
+    "placeholder": "pl. Dr. Kovács Anna, DVM, DAVDC",
+    "save": "Orvos nevének mentése",
+    "saving": "Mentés…",
+    "saved": "Orvos neve mentve.",
+    "saveFailed": "Nem sikerült menteni az orvos nevét."
+  },
+  "language": {
+    "heading": "Nyelv"
+  },
+  "email": {
+    "heading": "E-mail",
+    "label": "Bejelentkezési e-mail-cím",
+    "change": "E-mail-cím módosítása",
+    "sending": "Küldés…",
+    "invalid": "Adjon meg érvényes e-mail-címet.",
+    "sent": "Megerősítő e-mailek elküldve.",
+    "changeFailed": "Nem sikerült módosítani az e-mail-címet.",
+    "pending": "Ellenőrizze a postaládáját – a befejezéshez erősítse meg a módosítást a(z) {{current}} és {{requested}} címről is. Addig továbbra is a(z) {{current}} címmel jelentkezzen be."
+  },
+  "password": {
+    "heading": "Jelszó",
+    "newLabel": "Új jelszó",
+    "confirmLabel": "Új jelszó megerősítése",
+    "placeholder": "Legalább {{min}} karakter",
+    "hideAll": "Jelszavak elrejtése",
+    "showAll": "Jelszavak megjelenítése",
+    "hide": "Elrejtés",
+    "show": "Megjelenítés",
+    "hintShort": "Legalább {{min}} karakter · {{current}}/{{min}}",
+    "hintMismatch": "A két jelszó még nem egyezik.",
+    "update": "Jelszó módosítása",
+    "updating": "Módosítás…",
+    "tooShort": "Legalább {{min}} karaktert használjon.",
+    "mismatch": "A két jelszó nem egyezik.",
+    "updated": "Jelszó módosítva.",
+    "updateFailed": "Nem sikerült módosítani a jelszót."
+  },
+  "delete": {
+    "heading": "Fiók törlése",
+    "blurb": "Véglegesen törli a fiókját, a privát fogászati lapjait és azok képeit. A rendelővel megosztott fogászati lapok a rendelőnél maradnak.",
+    "button": "Fiók törlése…"
+  },
+  "done": "Kész",
+  "unsaved": {
+    "title": "Elveti a nem mentett módosításokat?",
+    "message_one": "A(z) {{list}} módosítása nincs mentve.",
+    "message_other": "A(z) {{list}} módosításai nincsenek mentve.",
+    "confirm": "Elvetés",
+    "cancel": "Szerkesztés folytatása",
+    "field": {
+      "doctor": "orvos neve",
+      "email": "e-mail",
+      "password": "jelszó"
+    }
+  },
+  "deletion": {
+    "account": {
+      "confirmTitle": "Törli a fiókját?",
+      "confirmMessage": "Ez véglegesen törli a fiókját, privát fogászati lapjait, valamint azok fényképeit és röntgenfelvételeit. A rendelővel megosztott fogászati lapok a rendelőnél maradnak. Ha Ön a rendelő egyetlen tagja, a rendelő és minden fogászati lapja is törlődik, az előfizetés pedig megszűnik. Ez nem vonható vissza.",
+      "continue": "Folytatás",
+      "promptTitle": "Fióktörlés megerősítése",
+      "promptMessage": "Fiókja végleges törléséhez írja be az e-mail-címét ({{email}}).",
+      "emailLabel": "E-mail",
+      "confirmButton": "Fiókom törlése",
+      "mismatch": "Pontosan írja be az e-mail-címét.",
+      "failed": "Nem sikerült törölni a fiókját.",
+      "done": "Fiókja törölve."
+    },
+    "practice": {
+      "confirmTitle": "Törli a(z) „{{name}}” rendelőt?",
+      "confirmTitleUnnamed": "Törli ezt a rendelőt?",
+      "confirmMessage": "Ez véglegesen törli a rendelőt és a vele megosztott összes fogászati lapot – a csapattagok által készítetteket is –, valamint azok fényképeit és röntgenfelvételeit. Az előfizetés azonnal megszűnik. A csapattagok megtartják fiókjukat és privát fogászati lapjaikat. Ez nem vonható vissza.",
+      "continue": "Folytatás",
+      "promptTitle": "Rendelő törlésének megerősítése",
+      "promptMessage": "A végleges törléshez írja be a rendelő nevét ({{name}}).",
+      "promptMessageUnnamed": "A rendelő végleges törléséhez írja be: DELETE.",
+      "nameLabel": "Rendelő neve",
+      "confirmationLabel": "Megerősítés",
+      "confirmButton": "Rendelő törlése",
+      "mismatch": "Pontosan írja be a rendelő nevét.",
+      "mismatchUnnamed": "Írja be: DELETE.",
+      "failed": "Nem sikerült törölni a rendelőt.",
+      "done": "A rendelő törölve."
+    }
+  },
+  "auth": {
+    "apple": {
+      "continue": "Folytatás Apple-fiókkal",
+      "signUp": "Regisztráció Apple-fiókkal",
+      "busy": "Bejelentkezés Apple-fiókkal…",
+      "failed": "Nem sikerült bejelentkezni Apple-fiókkal.",
+      "hint": "Már van fiókja, vagy meghívást kapott? Jelentkezzen be az e-mail-címével."
+    },
+    "signUpOnWeb": "Új a ToothOps alkalmazásban? Regisztráljon a toothops.app oldalon.",
+    "incomplete": "A bejelentkezés nem fejeződött be. Próbálja újra."
+  },
+  "plan": {
+    "inactive": {
+      "title": "Csomagja nem aktív",
+      "manage": "Kezelje a toothops.app oldalon."
+    }
+  },
+  "lock": {
+    "title": "A ToothOps zárolva van",
+    "prompt": "Oldja fel a páciensadatok védelméhez.",
+    "unavailable": "A Face ID és az eszköz jelkódja nem érhető el ezen az eszközön. A ToothOps feloldásához állítson be jelkódot a Beállítások alkalmazásban, majd koppintson az Újrapróbálkozás gombra, vagy jelentkezzen ki.",
+    "reason": "ToothOps feloldása"
+  },
+  "team": {
+    "seatLimit": "A rendelő elérte a csapattagok maximális számát."
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "features": {
+    "fullCharting": "Teljes fogászati dokumentáció, diagramok és arculatos PDF-ek",
+    "photos_one": "Fényképek és röntgenfelvételek – {{count}} kép fogászati laponként",
+    "photos_other": "Fényképek és röntgenfelvételek – {{count}} kép fogászati laponként",
+    "visitHistory": "Vizitelőzmények és kontrollvizsgálati emlékeztetők",
+    "users_one": "{{count}} felhasználó",
+    "users_other": "{{count}} felhasználó",
+    "everythingIn": "A(z) {{plan}} minden funkciója",
+    "aiAutofill": "MI-alapú hangvezérelt kitöltés – diktáljon, a fogászati lap magától kitöltődik",
+    "imagesPerChart_one": "{{count}} kép fogászati laponként",
+    "imagesPerChart_other": "{{count}} kép fogászati laponként",
+    "teamMembers_one": "Legfeljebb {{count}} csapattag",
+    "teamMembers_other": "Legfeljebb {{count}} csapattag",
+    "sharedCharts": "Közös fogászati lapok, sablonok és rendelői logó",
+    "teamRoles": "Csapatszerepkörök és tulajdonjog átadása",
+    "aiAutofillTeam": "MI-alapú hangvezérelt kitöltés az egész csapatnak"
+  },
+  "plans": {
+    "individual_basic": {
+      "name": "Egyéni",
+      "tagline": "Önállóan dolgozó állatorvosnak"
+    },
+    "individual_pro": {
+      "name": "Egyéni Pro",
+      "tagline": "Önálló munka, MI-vel a mikrofonnál"
+    },
+    "practice_basic": {
+      "name": "Rendelő",
+      "tagline": "Az egész csapat, egy nyilvántartás"
+    },
+    "practice_pro": {
+      "name": "Rendelő Pro",
+      "tagline": "A teljes klinika, kézhasználat nélkül"
+    }
+  },
+  "perMonth": "/hó",
+  "gate": {
+    "settingUpTitle": "Előfizetés beállítása…",
+    "settingUpSub": "Fizetés megerősítve – fiókja feloldása folyamatban.",
+    "loading": "Betöltés",
+    "checkFailedTitle": "Nem sikerült ellenőrizni az előfizetését",
+    "checkFailed": "Nem sikerült ellenőrizni az előfizetését.",
+    "tryAgain": "Újrapróbálkozás",
+    "memberTitle": "A(z) {{practice}} rendelőnek előfizetésre van szüksége",
+    "yourPractice": "Az Ön rendelője",
+    "memberNone": "A rendelő előfizetése még nincs beállítva. Kérje meg a következő személyt a számlázás rendezésére: <strong>{{owner}}</strong> – amint ez megtörténik, újra hozzáférhet.",
+    "yourOwner": "a rendelő tulajdonosa",
+    "opening": "Megnyitás…",
+    "chooseTitle": "Válasszon csomagot",
+    "trialSub": "Minden csomag {{days}} napos ingyenes próbaidőszakkal indul – bármikor lemondható.",
+    "openingCheckout": "Fizetési oldal megnyitása…",
+    "startTrial": "{{days}} napos ingyenes próbaidőszak indítása – utána {{price}}/hó",
+    "pickPlan": "Válasszon fent egy csomagot",
+    "checkoutFailed": "Nem sikerült elindítani a fizetést.",
+    "larger": "Több mint 5 csapattag, vagy több telephelyes csoport? Egyedi árajánlatért <a>lépjen kapcsolatba velünk</a>.",
+    "slowConfirm": "A fizetés sikeres, de a megerősítés a szokásosnál tovább tart – egy perc múlva töltse újra az oldalt, vagy ha a probléma fennáll, forduljon hozzánk."
+  },
+  "settings": {
+    "title": "Számlázás",
+    "loading": "Számlázás betöltése…",
+    "loadFailed": "Nem sikerült betölteni a számlázást.",
+    "retry": "Újrapróbálkozás",
+    "comped": "A rendelő díjmentes hozzáféréssel rendelkezik – nincs szükség előfizetésre.",
+    "lapsed": "Előfizetése lejárt, ezért a rendelő az ingyenes csomagot használja. Minden fogászati lapja megmarad.",
+    "resubscribe": "Új előfizetés",
+    "freeBeta": "<strong>Ingyenes bétaverzió</strong> · {{seats}} férőhely · {{images}} kép fogászati laponként · MI-diktálással",
+    "noCard": "A bétaverzióhoz nem kell bankkártya.",
+    "seatsInUse": "{{used}} / {{seats}} férőhely használatban.",
+    "needMoreBeta": "Több mint {{seats}} férőhelyre van szüksége? <a>Lépjen kapcsolatba velünk</a>.",
+    "history": "Számlázási előzmények",
+    "noPlan": "Nincs csomag",
+    "seatsUsed": "{{used}}/{{seats}} férőhely",
+    "changePlan": "Csomagváltás",
+    "planOption": "{{name}} – {{price}}/hó",
+    "manage": "Számlázás kezelése",
+    "hintStripe": "A Számlázás kezelése megnyitja a Stripe oldalát – bankkártya, számlák és lemondás.",
+    "hintNoStripe": "Amikor a hozzáféréshez szükség lesz rá, csomagot választhat.",
+    "needMore": "Több mint 5 férőhelyre van szüksége? <a>Lépjen kapcsolatba velünk</a>.",
+    "managedBy": "A számlázást {{owner}} kezeli.",
+    "theOwner": "a rendelő tulajdonosa",
+    "planUpdated": "Csomag frissítve.",
+    "switchTitle": "Átvált erre: {{plan}}?",
+    "switchMessage": "{{price}}/hó. A különbözetet a következő számlán időarányosan számoljuk el.",
+    "switchConfirm": "Csomagváltás",
+    "changeFailed": "Nem sikerült csomagot váltani.",
+    "portalFailed": "Nem sikerült megnyitni a számlázási portált.",
+    "status": {
+      "trialing": "ingyenes próbaidőszak",
+      "trialingDate": "ingyenes próbaidőszak – első fizetés: {{date}}",
+      "active": "aktív",
+      "activeDate": "aktív – megújulás: {{date}}",
+      "past_due": "sikertelen fizetés – frissítse bankkártyáját",
+      "none": "még nincs előfizetés",
+      "canceled": "lemondva",
+      "incomplete": "befejezetlen",
+      "incomplete_expired": "lejárt, befejezetlen",
+      "unpaid": "kifizetetlen",
+      "paused": "szünetel"
+    }
+  },
+  "errors": {
+    "checkoutLink": "A Stripe nem adott vissza fizetési hivatkozást.",
+    "portalLink": "A Stripe nem adott vissza portálhivatkozást."
+  }
+}
