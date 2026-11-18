@@ -1660,7 +1660,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     <button
       type="submit"
       form="chart-form"
-      className={`entry-grid__button visit-export__button${activeSection === 'treatment' || activeSection === 'owner-report' ? '' : ' visit-export__button--secondary'}`}
+      className="entry-grid__button visit-export__button"
       aria-haspopup="dialog"
       aria-label={t('fab.review')}
     >

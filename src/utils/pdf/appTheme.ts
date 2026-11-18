@@ -6,7 +6,8 @@ import { rgb } from 'pdf-lib';
  *
  * The default "Clinic Teal" PDF preset doesn't hardcode its colors —
  * at export time it reads the live tokens off `document.documentElement`,
- * so re-theming the app in themes.css automatically re-themes the PDF.
+ * so the PDF follows the brand accent. Record neutrals have explicit
+ * `--pdf-*` tokens to keep screen appearance changes out of exported charts.
  * Static fallbacks (kept in sync as of the teal/ink system) cover
  * non-browser environments (tests) and older browsers.
  */
@@ -72,6 +73,14 @@ const TOKEN_VARS: Record<keyof AppTokenColors, string> = {
   dangerTint:   '--danger-tint',
 };
 
+/** Screen neutrals may be warmer or more muted than the clinical record. */
+const RECORD_VARS: Partial<Record<keyof AppTokenColors, string>> = {
+  text: '--pdf-text',
+  muted: '--pdf-muted',
+  border: '--pdf-border',
+  borderStrong: '--pdf-border-strong',
+};
+
 /** Resolve the app tokens, falling back per-token when a var is missing
  *  or isn't a parseable hex color. */
 export function readAppTokens(): AppTokenColors {
@@ -85,7 +94,10 @@ export function readAppTokens(): AppTokenColors {
     return out;
   }
   for (const key of Object.keys(TOKEN_VARS) as Array<keyof AppTokenColors>) {
-    out[key] = hexToRgb(cssVar(TOKEN_VARS[key])) ?? (hexToRgb(FALLBACKS[key]) as RGB);
+    const recordVar = RECORD_VARS[key];
+    out[key] = (recordVar ? hexToRgb(cssVar(recordVar)) : null)
+      ?? hexToRgb(cssVar(TOKEN_VARS[key]))
+      ?? (hexToRgb(FALLBACKS[key]) as RGB);
   }
   return out;
 }

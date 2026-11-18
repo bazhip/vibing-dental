@@ -248,7 +248,6 @@ html:not(.native-ios) .entry-grid-container .entry-grid-form .surgery-report__te
   html:not(.native-ios) .entry-grid-container .entry-grid-form .patient-form__selectors { gap: 12px; }
 }
 
-.visit-export__button--secondary { background: var(--surface); color: var(--primary); border: 1px solid var(--border-strong); }
 html:not(.native-ios) .entry-grid-form .section-header__actions .entry-grid__button { min-height: var(--clinical-action-height, 40px); }
 @media (max-width: 600px) {
   html:not(.native-ios) .entry-grid-container .entry-grid-form { --clinical-action-height: 44px; }

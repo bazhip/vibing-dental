@@ -1,7 +1,7 @@
 /* =============================================================================
  * Design tokens — single source of truth for the app's visual language.
  *
- * One opinionated clinical design: calm teal accent on cool slate neutrals,
+ * One opinionated clinical design: calm teal accent on warm light neutrals,
  * system type, quiet elevation. Every component consumes these variables;
  * changing the look of the app means changing this file.
  *
@@ -68,6 +68,12 @@
   --border:         #e2e7eb;
   --border-strong:  #9cabb7;
 
+  /* Record colors stay stable when screen appearance changes. */
+  --pdf-text:          #17232e;
+  --pdf-muted:         #55677a;
+  --pdf-border:        #e2e7eb;
+  --pdf-border-strong: #9cabb7;
+
   /* Elevation: one scale for the whole web app. Cool slate shadow colour
      (never pure black in light mode); each tier pairs a tight contact
      shadow with a soft ambient one. Borders stay — shadows add lift. */
@@ -94,6 +100,44 @@
   --case-display:   none;
 
   --container-max:  1500px;
+}
+
+/* Web light appearance. Keep the paper/record and native palettes above
+   independent; legacy --ios-* consumers on the web share these same roles. */
+@media screen {
+  html:not(.native-ios):not([data-theme="dark"]) {
+    --bg-page:        #f6f3ed;
+    --surface-alt:    #fbf9f5;
+    --surface-2:      var(--surface-alt);
+    --surface-sunken: #efebe3;
+    --text:           #24312f;
+    --text-muted:     #62665f;
+    --border:         #ddd8ce;
+    --border-strong:  #85887b;
+    --primary-tint:   #e7f0ec;
+    --action-tint:    var(--primary-tint);
+
+    --ios-bg:               var(--surface);
+    --ios-bg-grouped:       var(--bg-page);
+    --ios-bg-elevated:      var(--surface-overlay);
+    --ios-cell:             var(--surface);
+    --ios-cell-alt:         var(--surface-alt);
+    --ios-cell-sunken:      var(--surface-sunken);
+    --ios-label:            var(--text);
+    --ios-label-muted:      var(--text-muted);
+    --ios-separator:        var(--border);
+    --ios-separator-opaque: var(--border-strong);
+    --ios-fill:             rgb(88 78 58 / 0.06);
+    --ios-fill-2:           rgb(88 78 58 / 0.12);
+    --ios-tint-fill:        var(--primary-tint);
+    --ios-grid-stripe:      var(--surface-alt);
+    --ios-grid-hover:       var(--surface-sunken);
+
+    --shadow-xs: 0 1px 2px rgb(55 46 31 / 0.06);
+    --shadow-sm: 0 1px 2px rgb(55 46 31 / 0.05), 0 3px 8px -2px rgb(55 46 31 / 0.08);
+    --shadow-md: 0 1px 3px rgb(55 46 31 / 0.10), 0 12px 32px -4px rgb(55 46 31 / 0.20);
+    --shadow-lg: 0 2px 6px rgb(55 46 31 / 0.10), 0 24px 56px -8px rgb(55 46 31 / 0.28);
+  }
 }
 
 /* Shared dark palette. The legacy --ios-* names are also consumed by web
