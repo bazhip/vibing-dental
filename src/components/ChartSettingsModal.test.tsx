@@ -180,3 +180,13 @@ it('defaults autosave on and lets the user switch to manual saving', () => {
   fireEvent.click(toggle);
   expect(onChange).toHaveBeenCalledWith({ autosave: false });
 });
+
+
+it('defaults score buttons to touch interfaces and allows explicit overrides', () => {
+  const { onChange } = setup();
+  expect(screen.getByRole('radio', { name: 'Touch interfaces only' })).toBeChecked();
+  fireEvent.click(screen.getByRole('radio', { name: 'Always show' }));
+  expect(onChange).toHaveBeenLastCalledWith({ scorePicker: 'always' });
+  fireEvent.click(screen.getByRole('radio', { name: 'Never show' }));
+  expect(onChange).toHaveBeenLastCalledWith({ scorePicker: 'never' });
+});

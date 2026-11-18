@@ -4,7 +4,7 @@ import { List, ListRow, ListSection, SwitchRow } from '../ios/List';
 import { AnesthesiaCustomEditor } from './AnesthesiaCustomEditor';
 import { QuickCodesEditor } from './QuickCodesEditor';
 import { ExamAreasEditor } from './ExamAreasEditor';
-import { BLOCK_ROW_OPTIONS, ChartPrefs, PERIO_FIELDS, PATIENT_FIELD_OPTIONS } from '../utils/chartSettings';
+import { SCORE_PICKER_OPTIONS, BLOCK_ROW_OPTIONS, ChartPrefs, PERIO_FIELDS, PATIENT_FIELD_OPTIONS } from '../utils/chartSettings';
 import { USUAL_ADJUNCTS, USUAL_DRUGS, toggleField, useChartSettingsModel } from './useChartSettingsModel';
 import { ADJUNCT_DRUGS, drugUnit, strengthHasUnit } from '../types';
 import '../ios/settings.css';
@@ -89,6 +89,11 @@ export function ChartSettingsList({ prefs, followsAccount, onChange, only, onSho
               onClick={() => onChange({ spaceMovesDown: true })}
             />
             <ListRow title={t('chart.charting.spaceType')} selected={!prefs.spaceMovesDown} onClick={() => onChange({ spaceMovesDown: false })} />
+          </ListSection>
+          <ListSection header={t('chart.charting.scorePicker')}>
+            {SCORE_PICKER_OPTIONS.map((value) => (
+              <ListRow key={value} title={t(`chart.charting.scorePickerOptions.${value}`)} selected={prefs.scorePicker === value} onClick={() => onChange({ scorePicker: value })} />
+            ))}
           </ListSection>
           <ListSection header={t('chart.charting.scoreTap')}>
             <ListRow

@@ -147,7 +147,13 @@
       "scoreTooth": "Bajar al siguiente diente",
       "scoreToothHint": "para puntuar un mismo hallazgo en toda la boca",
       "scoreStay": "Mantener seleccionada la celda actual",
-      "columns": "Mediciones visibles"
+      "columns": "Mediciones visibles",
+      "scorePicker": "Botones de puntuación en la tabla",
+      "scorePickerOptions": {
+        "touch": "Solo en interfaces táctiles",
+        "always": "Mostrar siempre",
+        "never": "No mostrar nunca"
+      }
     },
     "beside": {
       "title": "Hallazgos en el diagrama",

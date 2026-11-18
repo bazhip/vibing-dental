@@ -208,7 +208,7 @@ test('Space moves down by default (unchanged)', () => {
 });
 
 test('short-scale columns: tapping a score saves the bare number and opens the same tooth\'s next finding', async () => {
-  const { props } = renderGrid();
+  const { props } = renderGrid({ scorePicker: 'always' });
   fireEvent.click(rowFor(101).querySelectorAll('[role="gridcell"]')[2] as HTMLElement); // Mobility
   fireEvent.click(screen.getByRole('button', { name: 'M2' }));
   const last = (props.onToothDataChange as Mock).mock.calls.at(-1)![0] as ToothData[];
@@ -219,14 +219,14 @@ test('short-scale columns: tapping a score saves the bare number and opens the s
 });
 
 test('short-scale columns: the last finding wraps to the next tooth\'s first', async () => {
-  renderGrid();
+  renderGrid({ scorePicker: 'always' });
   fireEvent.click(rowFor(101).querySelectorAll('[role="gridcell"]')[9] as HTMLElement); // PD State
   fireEvent.click(screen.getByRole('button', { name: 'PD1' }));
   expect(await screen.findByRole('group', { name: 'Tooth 102 Mobility score' })).toBeInTheDocument();
 });
 
 test('short-scale columns: "stay put" saves without moving', async () => {
-  const { props } = renderGrid({ scoreTapMoves: 'stay' });
+  const { props } = renderGrid({ scorePicker: 'always', scoreTapMoves: 'stay' });
   fireEvent.click(rowFor(101).querySelectorAll('[role="gridcell"]')[2] as HTMLElement);
   fireEvent.click(screen.getByRole('button', { name: 'M3' }));
   const last = (props.onToothDataChange as Mock).mock.calls.at(-1)![0] as ToothData[];
@@ -237,7 +237,7 @@ test('short-scale columns: "stay put" saves without moving', async () => {
 });
 
 test('short-scale columns: "next tooth" sweeps down the column', async () => {
-  const { props } = renderGrid({ scoreTapMoves: 'tooth' });
+  const { props } = renderGrid({ scorePicker: 'always', scoreTapMoves: 'tooth' });
   const mobility101 = rowFor(101).querySelectorAll('[role="gridcell"]')[2] as HTMLElement;
   fireEvent.click(mobility101);
   const group = screen.getByRole('group', { name: 'Tooth 101 Mobility score' });
@@ -252,7 +252,7 @@ test('short-scale columns: "next tooth" sweeps down the column', async () => {
 
 test('short-scale columns: furcation reads F1–F3, and "–" clears a score', () => {
   const toothData = getInitialToothData('canine').map((t) => (t.triadan === 108 ? { ...t, furcation: '2' } : t));
-  const { props } = renderGrid({ toothData });
+  const { props } = renderGrid({ toothData, scorePicker: 'always' });
   fireEvent.click(rowFor(108).querySelectorAll('[role="gridcell"]')[5] as HTMLElement); // …, Pocket, Furcation
   expect(screen.getByRole('button', { name: 'F2' })).toHaveAttribute('aria-pressed', 'true');
   fireEvent.click(screen.getByRole('button', { name: 'Clear Tooth 108 Furcation' }));
@@ -292,4 +292,27 @@ test('compact lead columns: a red ✕ titles Missing (still read as "Missing"), 
   expect(screen.queryByRole('columnheader', { name: 'Tooth' })).not.toBeInTheDocument(); // merged
   const cell = rowFor(101).querySelectorAll('[role="gridcell"]')[1] as HTMLElement;
   expect(cell.textContent).toBe('101–I1');
+});
+
+
+test.each([
+  [false, undefined, false],
+  [true, undefined, true],
+  [false, 'always', true],
+  [true, 'never', false],
+] as const)('score buttons: coarse=%s, preference=%s, visible=%s', (coarse, scorePicker, visible) => {
+  const original = window.matchMedia;
+  window.matchMedia = vi.fn((query: string) => ({
+    matches: query === '(pointer: coarse)' && coarse,
+    addEventListener() {}, removeEventListener() {},
+  } as unknown as MediaQueryList));
+  try {
+    renderGrid({ scorePicker });
+    fireEvent.click(rowFor(101).querySelectorAll('[role="gridcell"]')[2] as HTMLElement);
+    expect(!!screen.queryByRole('group', { name: 'Tooth 101 Mobility score' })).toBe(visible);
+    expect(screen.getByRole('textbox', { name: 'Tooth 101 Mobility' }))
+      .toHaveAttribute('inputmode', coarse && visible ? 'none' : 'decimal');
+  } finally {
+    window.matchMedia = original;
+  }
 });
