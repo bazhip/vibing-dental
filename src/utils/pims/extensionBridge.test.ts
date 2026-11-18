@@ -186,3 +186,78 @@ describe('extensionBridge', () => {
     expect(sendMessage).toHaveBeenCalledTimes(1);
   });
 });
+
+
+describe('Instinct submission transport', () => {
+  const request = { operation: 'submit' as const, ticket: 'ticket', id: 'attempt', expires_at: '2099-01-01T00:00:00Z',
+    bytes: [37,80,68,70,45,1], label: 'Record', recorded_at: '2026-11-17T00:00:00Z', location_id: '1',
+    source: { chartId: 'chart', draftId: 'draft', version: 1 } };
+  it('pins the tab and sends once; timeout is an unknown outcome', async () => {
+    const channel = { sendMessage: vi.fn() };
+    const transport = createTransport(() => channel);
+    const pending = transport.instinctSubmission!(7, request);
+    await vi.advanceTimersByTimeAsync(120_000);
+    expect(await pending).toEqual({ state: 'unknown', id: 'attempt' });
+    expect(channel.sendMessage).toHaveBeenCalledExactlyOnceWith({ type: 'instinctSubmission', tabId: 7, request }, expect.any(Function));
+  });
+  it.each([undefined, { state: 'prepared', ticket: 't' }, { state: 'submitted', id: 'another' }, { state: 'unknown', id: 'another' }])('rejects malformed or wrong-operation replies: %j', async response => {
+    const transport = createTransport(() => ({ sendMessage: (_message, callback) => callback(response) }));
+    expect(await transport.instinctSubmission!(7, request)).toEqual({ state: 'unknown', id: 'attempt' });
+  });
+  it('blocks invalid tab and malformed input before messaging', async () => {
+    const channel = { sendMessage: vi.fn() };
+    const transport = createTransport(() => channel);
+    expect(await transport.instinctSubmission!(-1, request)).toEqual({ state: 'blocked' });
+    expect(await transport.instinctSubmission!(7, { ...request, bytes: [] })).toEqual({ state: 'blocked' });
+    expect(channel.sendMessage).not.toHaveBeenCalled();
+  });
+  it('accepts prepared replies only for prepare and treats missing extension as blocked', async () => {
+    const prepared = { state: 'prepared', ticket: 't', patient_id: 'p', location_id: '1', location_source: 'compatibility_default', origin: 'https://app.instinctvet.com', expires_at: '2099-01-01T00:00:00Z' };
+    const transport = createTransport(() => ({ sendMessage: (_message, callback) => callback(prepared) }));
+    expect(await transport.instinctSubmission!(7, { operation: 'prepare' })).toEqual(prepared);
+    expect(await createTransport(() => undefined).instinctSubmission!(7, { operation: 'prepare' })).toEqual({ state: 'blocked' });
+  });
+});
+
+describe('radiology autofill transport', () => {
+  it('pins messages and never retries a lost fill reply', async () => {
+    const channel = { sendMessage: vi.fn() };
+    const transport = createTransport(() => channel);
+    const request = { operation: 'fill' as const, tabId: 9, ticket: 'one', text: 'Radiology findings' };
+    const pending = transport.radiologyAutofill!(request);
+    await vi.advanceTimersByTimeAsync(20_000);
+    expect(await pending).toEqual({ state: 'unknown' });
+    expect(channel.sendMessage).toHaveBeenCalledExactlyOnceWith({ type: 'radiologyAutofill', request }, expect.any(Function));
+  });
+  it('rejects malformed and wrong-phase replies and allows bounded target lists', async () => {
+    const channel = { sendMessage: vi.fn((_message: unknown, callback: Cb) => callback({ state: 'filled' })) };
+    const transport = createTransport(() => channel);
+    expect(await transport.radiologyAutofill!({ operation: 'prepare', tabId: 1 })).toEqual({ state: 'blocked' });
+    channel.sendMessage.mockImplementation((_message, callback) => callback({ state: 'targets', targets: [] }));
+    expect(await transport.radiologyAutofill!({ operation: 'list' })).toEqual({ state: 'targets', targets: [] });
+    expect(await transport.radiologyAutofill!({ operation: 'fill', tabId: 1, ticket: 'one', text: 'Findings' })).toEqual({ state: 'unknown' });
+  });
+});
+
+
+describe('note autofill transport', () => {
+  it('pins messages and never retries a lost fill reply', async () => {
+    const channel = { sendMessage: vi.fn() };
+    const transport = createTransport(() => channel);
+    const request = { operation: 'fill' as const, tabId: 9, ticket: 'one', text: 'Reviewed notes' };
+    const pending = transport.noteAutofill!(request);
+    await vi.advanceTimersByTimeAsync(20_000);
+    expect(await pending).toEqual({ state: 'unknown' });
+    expect(channel.sendMessage).toHaveBeenCalledExactlyOnceWith({ type: 'noteAutofill', request }, expect.any(Function));
+  });
+  it('validates reply phases and preserves read-only blocked results', async () => {
+    let response: unknown = { state: 'filled' };
+    const transport = createTransport(() => ({ sendMessage: (_message, callback) => callback(response) }));
+    expect(await transport.noteAutofill!({ operation: 'inspect', tabId: 1 })).toEqual({ state: 'blocked' });
+    response = { state: 'targets', targets: [] };
+    expect(await transport.noteAutofill!({ operation: 'list' })).toEqual(response);
+    expect(await transport.noteAutofill!({ operation: 'fill', tabId: 1, ticket: 'one', text: 'Notes' })).toEqual({ state: 'unknown' });
+    response = { state: 'blocked' };
+    expect(await transport.noteAutofill!({ operation: 'fill', tabId: 1, ticket: 'one', text: 'Notes' })).toEqual(response);
+  });
+});

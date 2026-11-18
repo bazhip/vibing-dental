@@ -1,13 +1,21 @@
+import { CONFIGURED_SYNC_PROVIDERS } from './setup';
 import type { PimsTransport } from './extensionBridge';
 import type { SetupConnection } from './setup';
 import type { RpcClient, SyncIdentity, SyncScope, SyncSource } from './sync';
 import { createSyncBackend, syncAppointments } from './sync';
 
-export async function openBrowserSync(transport: PimsTransport, identity: SyncIdentity, alive: () => boolean): Promise<SyncSource> {
-  const inspect = await transport.inspect();
-  if (!alive() || !transport.providerSync || inspect.tab === null || inspect.status?.provider !== identity.provider) throw { code: 'invalid' };
-  const tabId = inspect.tab.id;
-  const opened = await transport.providerSync(tabId, { operation: 'open', identity });
+export async function openBrowserSync(transport: PimsTransport, identity: SyncIdentity, alive: () => boolean, userConfirmed?: boolean, reviewedTabId?: number): Promise<SyncSource> {
+  const configured = CONFIGURED_SYNC_PROVIDERS.includes(identity.provider);
+  if (configured && (userConfirmed !== true || !Number.isSafeInteger(reviewedTabId) || reviewedTabId! < 0)) throw { code: 'invalid' };
+  if (!alive() || !transport.providerSync) throw { code: 'invalid' };
+  let tabId: number;
+  if (configured) tabId = reviewedTabId!;
+  else {
+    const inspect = await transport.inspect();
+    if (!alive() || inspect.tab === null || inspect.status?.provider !== identity.provider) throw { code: 'invalid' };
+    tabId = inspect.tab.id;
+  }
+  const opened = await transport.providerSync(tabId, { operation: 'open', identity, ...(configured ? { userConfirmed: true } : {}) });
   const same = (value: SyncIdentity) => value?.provider === identity.provider && value.origin === identity.origin && value.tenant_id === identity.tenant_id && value.connection_revision === identity.connection_revision;
   if (!alive() || !opened?.ok || opened.operation !== 'open' || !same(opened.identity) || !opened.session) throw { code: 'invalid' };
   const session = opened.session;
@@ -37,11 +45,14 @@ export async function openBrowserSync(transport: PimsTransport, identity: SyncId
 }
 
 export async function runBrowserSync(options: {
-  connection: SetupConnection; scope?: SyncScope; client: RpcClient; transport: PimsTransport; alive: () => boolean;
+  connection: SetupConnection; scope?: SyncScope; client: RpcClient; transport: PimsTransport; alive: () => boolean; userConfirmed?: boolean; reviewedTabId?: number;
 }) {
   const { connection, client, transport, alive } = options;
+  const configured = CONFIGURED_SYNC_PROVIDERS.includes(connection.provider);
+  if (configured && options.userConfirmed !== true) throw { code: 'invalid' };
+  if (configured && options.scope && connection.binding_mode !== 'user_confirmed') throw { code: 'invalid' };
   const identity: SyncIdentity = { provider: connection.provider, origin: connection.origin, tenant_id: connection.tenant_id, connection_revision: connection.revision };
-  const source = await openBrowserSync(transport, identity, alive);
+  const source = await openBrowserSync(transport, identity, alive, options.userConfirmed, options.reviewedTabId);
   const guarded: RpcClient = { rpc: async (name, args) => {
     if (!alive()) throw { code: 'conflict' };
     const response = await client.rpc(name, args);
@@ -50,6 +61,16 @@ export async function runBrowserSync(options: {
   } };
   if (!options.scope) {
     const observed = await source.readIdentity();
+    if (configured) {
+      const { data, error } = await guarded.rpc('pims_confirm_configured_connection', { payload: {
+        connection_id: connection.id, expected_revision: connection.revision, acknowledged: true,
+      } });
+      const saved = data as SetupConnection | null;
+      if (error || !saved || saved.id !== connection.id || saved.revision !== connection.revision + 1 || saved.state !== 'active'
+        || saved.binding_mode !== 'user_confirmed' || saved.provider !== observed.provider || saved.origin !== observed.origin
+        || saved.tenant_id !== observed.tenant_id) throw { code: 'conflict' };
+      return null;
+    }
     const { data, error } = await guarded.rpc('pims_verify_connection', { payload: { connection_id: connection.id, expected_revision: connection.revision,
       provider: observed.provider, origin: observed.origin, tenant_id: observed.tenant_id, observed_at: new Date().toISOString() } });
     const saved = data as SetupConnection | null;

@@ -22,7 +22,7 @@ import { confirmDialog, toast } from '../components/ui/dialogs';
 import type { SelectedImageTransfer } from '../utils/pims/images';
 
 export type FailCode = Extract<ItemResult, { ok: false }>['code'] | 'picture_failed';
-export type ResultRow = { fieldTitle: string; code: FailCode | null };
+export type ResultRow = { fieldTitle: string; code: FailCode | null; editorSubmitted?: boolean };
 
 /** Failures that may come after ezyVet already saved the field: the next Send asks first. */
 const MAYBE_WRITTEN: ReadonlySet<FailCode> = new Set<FailCode>([
@@ -231,7 +231,7 @@ export function usePimsSend({
       : [{ key: 'edited', label: t('pims:rows.edited'), options: targets, wanted: editedWanted }]
     : [];
   if (writable && hasChartPicture) rows.push({ key: 'chart', label: t('pims:rows.chart'), options: imageTargets, wanted: wantedFor('chart') });
-  const hasSavedImage = !!savedImage?.dispatch && savedImage.chartId === chartId && provider === 'ezyvet';
+  const hasSavedImage = !!(savedImage?.dispatch || savedImage?.editorTransfer) && savedImage.chartId === chartId && provider === 'ezyvet';
   if (writable && hasSavedImage) rows.push({ key: 'attachment', label: t('pims:images.transferRow'), options: imageTargets, wanted: wantedFor('attachment') });
 
   const choose = (key: RowKey, value: string) => {
@@ -335,11 +335,18 @@ export function usePimsSend({
 
       if (!active()) return;
       const rowsOut: ResultRow[] = [];
+      let editorDestination: string | null = null;
       if (hasSavedImage && effective.attachment != null) {
         const destination = selectValue(effective.attachment, info2.fields.filter(field => field.acceptsImage && field.kind !== 'email'));
         if (destination === MISSING) unresolved.push(effective.attachment);
         else {
           try {
+            if (savedImage!.editorTransfer && !savedImage!.dispatch) {
+              const pngDataUrl = await savedImage!.render();
+              if (!active()) return;
+              items.push({ fieldTitle: destination, pngDataUrl });
+              editorDestination = destination;
+            } else {
             const result = await savedImage!.dispatch!(destination, active);
             if (!active()) return;
             if (result.state !== 'confirmed') {
@@ -347,6 +354,7 @@ export function usePimsSend({
               return;
             }
             rowsOut.push({ fieldTitle: destination, code: null });
+            }
           } catch {
             if (active()) setPhase({ kind: 'error', message: t('pims:images.errors.stale'), tabId: tab.id });
             return;
@@ -390,7 +398,8 @@ export function usePimsSend({
           const code = result.code === 'no_tab' ? 'extension_error' : result.code;
           for (const item of items) rowsOut.push({ fieldTitle: item.fieldTitle, code });
         } else {
-          for (const r of result.results) rowsOut.push({ fieldTitle: r.fieldTitle, code: r.result.ok ? null : r.result.code });
+          for (const [index, r] of result.results.entries()) rowsOut.push({ fieldTitle: r.fieldTitle, code: r.result.ok ? null : r.result.code,
+            ...(r.result.ok && editorDestination === r.fieldTitle && index === items.length - 1 ? { editorSubmitted: true } : {}) });
         }
       }
       for (const title of unresolved) rowsOut.push({ fieldTitle: title, code: 'field_not_found' });
@@ -398,7 +407,7 @@ export function usePimsSend({
       if (pictureFailed) rowsOut.push({ fieldTitle: t('pims:rows.chart'), code: 'picture_failed' });
 
       let stampFailed = false;
-      if (rowsOut.some((r) => r.code === null)) {
+      if (rowsOut.some((r) => r.code === null && !r.editorSubmitted)) {
         // Remember the send even when it can't be recorded on the chart.
         let at = new Date().toISOString();
         if (chartId) {
@@ -411,7 +420,7 @@ export function usePimsSend({
         if (!active()) return;
         setJustSentAt(at);
         onSent(at);
-      } else if (rowsOut.some((r) => r.code !== null && MAYBE_WRITTEN.has(r.code))) {
+      } else if (rowsOut.some((r) => r.editorSubmitted || r.code !== null && MAYBE_WRITTEN.has(r.code))) {
         // Nothing confirmed, but a field may have been saved: like a lost send, the next Send asks.
         const at = new Date().toISOString();
         setJustSentAt(at);

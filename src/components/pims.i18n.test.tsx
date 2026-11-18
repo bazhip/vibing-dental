@@ -23,6 +23,9 @@ vi.mock('../utils/pims/extensionBridge', () => ({
   startChart: vi.fn(),
   takePendingPatient: vi.fn(),
   physicalExam: vi.fn(),
+  instinctSubmission: vi.fn(),
+  radiologyAutofill: vi.fn(),
+  noteAutofill: vi.fn(),
   extensionAvailable: () => true,
 }));
 vi.mock('../hooks/usePimsFieldMap', () => ({

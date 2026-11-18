@@ -1,3 +1,4 @@
+import { configuredSyncSource, instinctSession, type ConfiguredCapture } from './configuredSync';
 import { identifyPims } from './hosts';
 import { dayBounds, isVisible, plainHtml, readFailed, readJson, routeStatus } from './shared';
 import type { AdapterContext, Appointment, AppointmentsResult, PimsAdapter, SendItem, WriteResult } from './types';
@@ -199,8 +200,81 @@ async function patientNumber(recordId: string, context: AdapterContext): Promise
   }
 }
 
+/** Existing calendar and visit contracts expose independent opaque ID namespaces. */
+export async function captureInstinctAppointments(date: string, context: AdapterContext, guard: () => void = () => {}): Promise<ConfiguredCapture> {
+  const bounds = dayBounds(date), initialUrl = context.url.href, initialDoc = context.doc, initialRoot = context.doc.documentElement;
+  if (!bounds || identifyPims(initialUrl) !== 'instinct' || context.url.port) throw { code: 'invalid_capture' };
+  const captured = instinctSession(context);
+  let invalid = false;
+  const check = () => {
+    try {
+      guard();
+      invalid ||= (context.currentUrl?.() ?? context.url).href !== initialUrl || context.doc !== initialDoc || context.doc.documentElement !== initialRoot
+        || instinctSession(context).fingerprint !== captured.fingerprint;
+    } catch { invalid = true; }
+    if (invalid) throw { code: 'identity_changed' };
+  };
+  const post = async (operationName: string, query: string, variables: Row): Promise<Row> => {
+    check();
+    const response = await context.fetch(captured.endpoint, { method: 'POST', redirect: 'error', credentials: 'omit', signal: AbortSignal.timeout(15_000),
+      headers: { authorization: `Bearer ${captured.token}`, 'content-type': 'application/json' }, body: JSON.stringify({ operationName, query, variables }) }).finally(check);
+    check();
+    if (!response.ok) throw { code: 'read_failed' };
+    check();const result: unknown = await response.json().finally(check);check();
+    if (!isRow(result) || result.errors !== undefined && (!Array.isArray(result.errors) || result.errors.length > 0) || !isRow(result.data)) throw { code: 'invalid_capture' };
+    return result.data;
+  };
+  const key = (value: unknown): string | null => {
+    const result = identifier(value);
+    return result && result.trim() === result && result.length <= 180 && !/[\u0000-\u001f\u007f]/.test(result) ? result : null;
+  };
+  const users = await post('listActiveUsers', usersQuery, {});
+  if (!Array.isArray(users.users) || !users.users.every(user => isRow(user) && key(user.id))) throw { code: 'invalid_capture' };
+  const calendars = await post('GetCalendarAppointments', appointmentsQuery, { params: { startDate: date, endDate: date, providerIds: users.users.map((user: Row) => user.id) } });
+  if (!Array.isArray(calendars.calendars)) throw { code: 'invalid_capture' };
+  const capture: ConfiguredCapture = { items: [], failures: [] }, seen = new Map<string, string>();
+  const add = (row: Row, visit: boolean) => {
+    const rawId = key(row.id), appointmentId = rawId ? `${visit ? 'visit' : 'appointment'}:${rawId}` : null;
+    const patient = row.patient, clinician = visit ? row.assignedTo ?? row.user : isRow(row.calendar) ? row.calendar.provider : undefined;
+    if (patient != null && !isRow(patient) || clinician != null && !isRow(clinician)) throw { code: 'invalid_capture' };
+    const startsAt = visit ? row.checkInAt ?? row.scheduledAt : row.startsAt;
+    if (typeof startsAt !== 'string' || !Number.isFinite(Date.parse(startsAt))) throw { code: 'invalid_capture' };
+    const patientId = isRow(patient) ? key(patient.id) : null, clinicianId = isRow(clinician) ? key(clinician.id) : null;
+    const normalized = { appointment_id: appointmentId, patient_id: patientId, clinician_id: clinicianId, encounter_id: visit ? rawId : null,
+      starts_at: new Date(startsAt).toISOString(), ends_at: null, status: 'active' as const };
+    if (appointmentId) {
+      const fingerprint = JSON.stringify(normalized), previous = seen.get(appointmentId);
+      if (previous !== undefined) { if (previous !== fingerprint) throw { code: 'invalid_capture' }; return; }
+      seen.set(appointmentId, fingerprint);
+    }
+    if (Date.parse(startsAt) < Date.parse(bounds.start) || Date.parse(startsAt) >= Date.parse(bounds.end)) return;
+    if (!appointmentId || !patientId || !clinicianId) { capture.failures.push({ appointment_id: appointmentId, code: 'identity_missing' }); return; }
+    capture.items.push({ ...normalized, appointment_id: appointmentId, patient_id: patientId, clinician_id: clinicianId });
+  };
+  for (const calendar of calendars.calendars) {
+    if (!isRow(calendar) || !Array.isArray(calendar.schedule)) throw { code: 'invalid_capture' };
+    for (const row of calendar.schedule) {
+      if (!isRow(row)) throw { code: 'invalid_capture' };
+      if (typeof row.__typename === 'string' && row.__typename !== 'CalendarAppointment') continue;
+      if (typeof row.status !== 'string') throw { code: 'invalid_capture' };
+      if (row.status !== 'ACTIVE') continue;
+      if (!isRow(row.calendar)) throw { code: 'invalid_capture' };
+      add(row, false);
+    }
+  }
+  const visits = await post('GetVisitPatientBoardList', visitsQuery, { since: bounds.start });
+  if (!Array.isArray(visits.activeVisits) || !Array.isArray(visits.listRecentlyCheckedOutVisits)) throw { code: 'invalid_capture' };
+  for (const row of [...visits.activeVisits, ...visits.listRecentlyCheckedOutVisits]) {
+    if (!isRow(row)) throw { code: 'invalid_capture' };
+    if (row.checkOutAt != null) continue;
+    add(row, true);
+  }
+  check();return capture;
+}
+
 export const instinct: PimsAdapter = {
   id: 'instinct',
+  syncSource: (context, binding, options) => configuredSyncSource(context, binding, (date, check) => captureInstinctAppointments(date, context, check), options),
   status: (context) => {
     const target = identity(context);
     return routeStatus(context, target?.patientId ?? null, target?.recordId ?? null, fields(context).length > 0);

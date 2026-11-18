@@ -1,3 +1,5 @@
+import type { NoteRequest } from './noteProtocol';
+import type { RadiologyRequest } from './radiologyProtocol';
 // Message types shared by the web app and the extension's background worker.
 // Plain TypeScript only: the web app imports this file, so no `chrome` types here.
 import type { FieldInfo, SendItem } from '../utils/pims/mapping';
@@ -6,6 +8,7 @@ import type { ConsultId, Diagnostics, EzyvetState, Status } from './ezyvet/read'
 import type { WriteCode, WriteResult } from './ezyvet/write';
 import type { PimsId } from './pims/types';
 import type { PhysicalExamRequest } from './pims/types';
+import type { InstinctSubmissionRequest } from './pims/instinctSubmission';
 import type { ProviderSyncRequest } from './pims/syncBridge';
 
 // The local web app dev server, allowed only by the unpacked dev build (`npm run build:extension`).
@@ -29,6 +32,9 @@ export const HANDOVER_TTL_MS = 120_000;
 export type { AppointmentsResult, ConsultId, Diagnostics, EzyvetState, FieldInfo, SendItem, Status, WriteCode, WriteResult };
 
 export type Request =
+  | { type: 'noteAutofill'; request: NoteRequest }
+  | { type: 'radiologyAutofill'; request: RadiologyRequest }
+  | { type: 'instinctSubmission'; tabId: number; request: InstinctSubmissionRequest }
   | { type: 'physicalExam'; tabId: number; request: PhysicalExamRequest }
   | { type: 'providerSync'; tabId: number; request: ProviderSyncRequest }
   | { type: 'ping' }

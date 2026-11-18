@@ -37,3 +37,38 @@ it.each([{ provider: 'vetspire' }, { origin: 'https://other.rhapsody.vet' }, { t
   const rpc = vi.fn(async () => ({ data: { ...connection, state: 'active', revision: 2, ...change }, error: null }));
   await expect(runBrowserSync({ connection, client: { rpc }, transport: transport(), alive: () => true })).rejects.toEqual({ code: 'conflict' });
 });
+
+it('requires per-operation user confirmation for configured provider sync', async () => {
+  const current = { ...connection, provider:'daysmart' as const, origin:'https://clinic.vettersoftware.com' };
+  const bridge = transport(), rpc = vi.fn();
+  await expect(runBrowserSync({connection:current,client:{rpc},transport:bridge,alive:()=>true})).rejects.toEqual({code:'invalid'});
+  expect(bridge.inspect).not.toHaveBeenCalled(); expect(rpc).not.toHaveBeenCalled();
+});
+it('activates configured practice with owner confirmation and never calls observed verification', async () => {
+  const current = { ...connection, provider:'daysmart' as const, origin:'https://clinic.vettersoftware.com' };
+  const manualIdentity = { ...identity,provider:current.provider,origin:current.origin };
+  const bridge = {inspect:vi.fn(async()=>({tab:{id:7},status:{provider:'daysmart'}})), providerSync:vi.fn(async (_tab:number,request:{operation:string})=>request.operation==='open'
+    ? {ok:true,operation:'open',session:'manual',identity:manualIdentity}:{ok:true,operation:'identity',identity:manualIdentity})} as unknown as PimsTransport;
+  const rpc = vi.fn(async()=>({data:{...current,state:'active',revision:2,binding_mode:'user_confirmed'},error:null}));
+  await runBrowserSync({connection:current,client:{rpc},transport:bridge,alive:()=>true,userConfirmed:true,reviewedTabId:7});
+  expect(bridge.providerSync).toHaveBeenCalledWith(7,{operation:'open',identity:manualIdentity,userConfirmed:true});
+  expect(rpc).toHaveBeenCalledExactlyOnceWith('pims_confirm_configured_connection',{payload:{connection_id:current.id,expected_revision:1,acknowledged:true}});
+});
+
+it('uses the reviewed configured tab even if another same-provider tab becomes most recent', async () => {
+  const current={...connection,provider:'daysmart' as const,origin:'https://clinic.vettersoftware.com'};
+  const manualIdentity={...identity,provider:current.provider,origin:current.origin};
+  const bridge={inspect:vi.fn(async()=>({tab:{id:8},status:{provider:'daysmart'}})),providerSync:vi.fn(async (_tab:number,request:{operation:string})=>request.operation==='open'
+    ? {ok:true,operation:'open',session:'manual',identity:manualIdentity}:{ok:true,operation:'identity',identity:manualIdentity})} as unknown as PimsTransport;
+  const rpc=vi.fn(async()=>({data:{...current,state:'active',revision:2,binding_mode:'user_confirmed'},error:null}));
+  await runBrowserSync({connection:current,client:{rpc},transport:bridge,alive:()=>true,userConfirmed:true,reviewedTabId:7});
+  expect(bridge.inspect).not.toHaveBeenCalled();
+  expect(bridge.providerSync).toHaveBeenCalledWith(7,{operation:'open',identity:manualIdentity,userConfirmed:true});
+  expect(vi.mocked(bridge.providerSync!).mock.calls.every(([id])=>id===7)).toBe(true);
+});
+it('refuses configured confirmation without a reviewed tab', async () => {
+  const current={...connection,provider:'daysmart' as const,origin:'https://clinic.vettersoftware.com'};
+  const bridge=transport(),rpc=vi.fn();
+  await expect(runBrowserSync({connection:current,client:{rpc},transport:bridge,alive:()=>true,userConfirmed:true})).rejects.toMatchObject({code:'invalid'});
+  expect(bridge.inspect).not.toHaveBeenCalled();expect(rpc).not.toHaveBeenCalled();
+});

@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { createPageBridge } from './bridge';
+import { instinct } from './instinct';
 import { shepherd } from './shepherd';
 import type { AdapterContext, PimsAdapter, Status } from './types';
 
@@ -102,4 +103,136 @@ describe('provider-neutral page bridge', () => {
     expect(await bridge.write(item, target)).toEqual({ ok: true });
     expect(adapter.write).toHaveBeenCalledOnce();
   });
+});
+
+
+describe('Instinct submission page lifetime', () => {
+  function fixture() {
+    const initialUrl = new URL('https://clinic.instinctvet.cloud/#/patient/123/charts/documents');
+    let url = initialUrl, doc = document;
+    const initialState = JSON.stringify({ value: { accessToken: 'secret', practice: { apiUrl: 'https://api.instinctvet.com/graphql' } } });
+    let state = initialState;
+    let adapter: PimsAdapter = instinct;
+    const fetcher = vi.fn(async () => ({ ok: true, json: async () => ({ data: { uploadChartFile: { id: 'file' } } }) }) as Response);
+    const context = (): AdapterContext => ({ doc, url, currentUrl: () => url, fetch: fetcher, localStorage,
+      sessionStorage: { getItem: () => state } as unknown as Storage, wait: async () => undefined });
+    const bridge = createPageBridge(() => adapter, context);
+    return { bridge, fetcher, change: (kind: string) => {
+      if (kind === 'navigation') url = new URL('https://clinic.instinctvet.cloud/#/patient/456/charts/documents');
+      if (kind === 'session') state = '{}';
+      if (kind === 'provider') adapter = shepherd;
+      if (kind === 'document') doc = document.implementation.createHTMLDocument();
+      if (kind === 'event') window.dispatchEvent(new PopStateEvent('popstate'));
+    }, restore: () => { url = initialUrl; state = initialState; adapter = instinct; doc = document; } };
+  }
+  const submission = (prepared: { ticket: string; expires_at: string }) => ({ operation: 'submit' as const,
+    ticket: prepared.ticket, expires_at: prepared.expires_at, id: 'attempt', location_id: '1', label: 'Record',
+    recorded_at: '2026-11-17T00:00:00Z', bytes: [37,80,68,70,45,1], source: { chartId: 'chart', draftId: 'draft', version: 1 } });
+  it('retains the page preparation across calls and submits it once', async () => {
+    const { bridge, fetcher } = fixture();
+    const prepared = await bridge.instinctSubmission({ operation: 'prepare' });
+    expect(prepared.state).toBe('prepared');
+    if (prepared.state !== 'prepared') return;
+    expect(await bridge.instinctSubmission(submission(prepared))).toEqual({ state: 'submitted', id: 'attempt', file_id: 'file' });
+    expect(await bridge.instinctSubmission(submission(prepared))).toEqual({ state: 'blocked' });
+    expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+  it.each(['navigation', 'session', 'provider', 'document', 'event'])('invalidates tickets after observed %s and restoration', async kind => {
+    const { bridge, fetcher, change, restore } = fixture();
+    const prepared = await bridge.instinctSubmission({ operation: 'prepare' });
+    expect(prepared.state).toBe('prepared');
+    if (prepared.state !== 'prepared') return;
+    change(kind);
+    bridge.status();
+    restore();
+    expect(await bridge.instinctSubmission(submission(prepared))).toEqual({ state: 'blocked' });
+    expect(fetcher).not.toHaveBeenCalled();
+  });
+});
+
+describe('radiology preparation bridge lifetime', () => {
+  it.each(['navigation', 'document'])('does not revive a ticket after an observed %s change and restoration', async change => {
+    const initialDoc = document.implementation.createHTMLDocument('Radiology request');
+    initialDoc.body.innerHTML = '<textarea name="notes"></textarea>';
+    let doc = initialDoc;
+    const initialUrl = new URL('https://app.radimal.ai/request-consult');
+    let url = initialUrl;
+    const context = (): AdapterContext => ({ doc, url, currentUrl: () => url, fetch: vi.fn(), localStorage,
+      sessionStorage, wait: async () => undefined });
+    const bridge = createPageBridge(() => null, context);
+    const prepared = await bridge.radiologyAutofill({ operation: 'prepare' });
+    expect(prepared.state).toBe('prepared');
+    if (prepared.state !== 'prepared') return;
+    if (change === 'navigation') url = new URL('https://app.radimal.ai/other');
+    else doc = document.implementation.createHTMLDocument('Another page');
+    bridge.status();
+    doc = initialDoc; url = initialUrl;
+    expect(await bridge.radiologyAutofill({ operation: 'fill', ticket: prepared.ticket, text: 'Reviewed findings' })).toEqual({ state: 'blocked' });
+    expect(doc.querySelector('textarea')!.value).toBe('');
+  });
+});
+
+
+it('invalidates configured sync when the current document changes on the same origin', async () => {
+  const initial = document.implementation.createHTMLDocument();let doc=initial;
+  const url = new URL('https://clinic.vettersoftware.com/schedule');
+  const context=():AdapterContext=>({doc,url,localStorage:{getItem:()=> 'token'} as unknown as Storage,sessionStorage,fetch:vi.fn(),wait:async()=>{}});
+  const {daysmart}=await import('./daysmart');
+  const bridge=createPageBridge(()=>daysmart,context);
+  const opened=await bridge.providerSync({operation:'open',identity:{provider:'daysmart',origin:url.origin,tenant_id:'Clinic',connection_revision:1},userConfirmed:true});
+  expect(opened.ok).toBe(true);
+  if(!opened.ok||opened.operation!=='open')return;
+  doc=document.implementation.createHTMLDocument();
+  expect(await bridge.providerSync({operation:'identity',session:opened.session})).toEqual({ok:false,code:'unavailable'});
+});
+
+
+describe('note autofill bridge lifetime', () => {
+  it.each(['document', 'url', 'provider'])('invalidates a ticket permanently after an observed %s switch and restoration', async change => {
+    const originalDoc = document.implementation.createHTMLDocument('Clinical note');
+    originalDoc.body.innerHTML = '<div id="sectionContainer"><div id="Assessment"><div class="ql-editor" contenteditable="true"><p>Existing note</p></div></div></div>';
+    let doc = originalDoc;
+    const originalUrl = new URL('https://clinic.vetspire.com/notes');
+    let url = originalUrl;
+    const storage = { getItem: (key: string) => key === 'authToken' ? 'token' : key === '__pref-location' ? 'location' : null } as Storage;
+    let provider: PimsAdapter['id'] = 'vetspire';
+    const adapter = (): PimsAdapter => ({ id: provider, status: () => ({ state: 'notConsult', patientName: null, patientNumber: null, consult: null }) } as unknown as PimsAdapter);
+    const context = (): AdapterContext => ({ doc, url, currentUrl: () => url, localStorage: storage, sessionStorage, fetch: vi.fn(), wait: async () => undefined });
+    const bridge = createPageBridge(adapter, context);
+    const prepared = await bridge.noteAutofill({ operation: 'prepare', field: 'Assessment' });
+    expect(prepared.state).toBe('prepared');
+    if (prepared.state !== 'prepared') return;
+    if (change === 'document') doc = document.implementation.createHTMLDocument();
+    if (change === 'url') url = new URL('https://clinic.vetspire.com/other');
+    if (change === 'provider') provider = 'pulse';
+    bridge.status();
+    doc = originalDoc; url = originalUrl; provider = 'vetspire';
+    expect(await bridge.noteAutofill({ operation: 'fill', ticket: prepared.ticket, text: 'Reviewed note' })).toEqual({ state: 'blocked' });
+    expect(doc.querySelector('.ql-editor')!.textContent).toBe('Existing note');
+  });
+});
+
+it('starts a fresh note source only after an explicit inspect following a session change',async()=>{
+ const doc=document.implementation.createHTMLDocument('Clinical note');doc.body.innerHTML='<div id="sectionContainer"><div id="Assessment"><div class="ql-editor" contenteditable="true">Existing</div></div></div>';
+ let token='first';const storage={getItem:(key:string)=>key==='authToken'?token:key==='__pref-location'?'location':null} as Storage;
+ const url=new URL('https://clinic.vetspire.com/notes');
+ const context:AdapterContext={doc,url,currentUrl:()=>url,localStorage:storage,sessionStorage,fetch:vi.fn(),wait:async()=>{}};
+ const bridge=createPageBridge(()=>({id:'vetspire'} as PimsAdapter),()=>context);
+ const old=await bridge.noteAutofill({operation:'prepare',field:'Assessment'});expect(old.state).toBe('prepared');if(old.state!=='prepared')return;
+ token='second';expect(await bridge.noteAutofill({operation:'fill',ticket:old.ticket,text:'Old note'})).toEqual({state:'blocked'});
+ expect(await bridge.noteAutofill({operation:'inspect'})).toMatchObject({state:'fields',fields:['Assessment']});
+ const fresh=await bridge.noteAutofill({operation:'prepare',field:'Assessment'});expect(fresh.state).toBe('prepared');if(fresh.state!=='prepared')return;
+ expect(await bridge.noteAutofill({operation:'fill',ticket:old.ticket,text:'Replay'})).toEqual({state:'blocked'});
+ expect(await bridge.noteAutofill({operation:'fill',ticket:fresh.ticket,text:'Fresh reviewed note'})).toEqual({state:'filled'});
+});
+it('makes an in-flight note fill unknown when a fresh inspect disposes its source',async()=>{
+ const doc=document.implementation.createHTMLDocument('Clinical note');doc.body.innerHTML='<div id="sectionContainer"><div id="Assessment"><div class="ql-editor" contenteditable="true">Existing</div></div></div>';
+ const storage={getItem:(key:string)=>key==='authToken'?'token':key==='__pref-location'?'location':null} as Storage;
+ const url=new URL('https://clinic.vetspire.com/notes');let settle!:()=>void;
+ const context:AdapterContext={doc,url,currentUrl:()=>url,localStorage:storage,sessionStorage,fetch:vi.fn(),wait:()=>new Promise<void>(done=>{settle=done;})};
+ const bridge=createPageBridge(()=>({id:'vetspire'} as PimsAdapter),()=>context);
+ const ready=await bridge.noteAutofill({operation:'prepare',field:'Assessment'});if(ready.state!=='prepared')throw new TypeError();
+ const pending=bridge.noteAutofill({operation:'fill',ticket:ready.ticket,text:'Append once'});
+ await bridge.noteAutofill({operation:'inspect'});settle();expect(await pending).toEqual({state:'unknown'});
+ expect(doc.querySelector('.ql-editor')!.textContent).toBe('ExistingAppend once');
 });

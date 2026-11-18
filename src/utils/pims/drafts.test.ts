@@ -1,6 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 import { PDFDocument } from 'pdf-lib';
 import { composeDraft, createDraftBackend, draftError, draftText, renderDraftPdf } from './drafts';
+import { radiologySourceBasis, radiologyReviewBasis } from '../radiologyReportState';
+import { normalizeSnapshot } from '../../hooks/useChartState';
+import type { ChartSnapshot } from '../../types';
 
 export const source = { chart_id: 'chart', practice_id: 'practice', patient_name: 'Milo', patient_number: 'P-1',
   chart_date: '2026-11-16', updated_at: '2026-11-16T12:00:00Z', hash: 'a'.repeat(64), data: {} };
@@ -73,4 +76,13 @@ describe('clinical manual export', () => {
     await expect(renderDraftPdf({ ...draft, body: '犬: 4.5 mm' })).rejects.toEqual({ code: 'font' });
     expect(draftText({ ...draft, body: '犬: 4.5 mm' })).toContain('犬: 4.5 mm');
   });
+});
+
+it('reuses a reviewed current radiology report only in its recorded language', () => {
+  const data=normalizeSnapshot({patientInfo:{patientName:'Milo',patientNumber:'P-1',radiographicFindings:'108 lucency',radiologyReport:'Reviewed clinical report',radiologyReportLanguage:'en'},toothData:[],species:'canine'} as unknown as ChartSnapshot);
+  data.patientInfo.radiologyReportBasis=radiologySourceBasis(data);data.patientInfo.radiologyReviewedBasis=radiologyReviewBasis(data,'en');
+  expect(composeDraft({...source,data},'radiology','en')).toBe('Reviewed clinical report');
+  expect(composeDraft({...source,data},'radiology','fr')).not.toBe('Reviewed clinical report');
+  data.patientInfo.radiographicFindings='Changed source';
+  expect(composeDraft({...source,data},'radiology','en')).not.toBe('Reviewed clinical report');
 });

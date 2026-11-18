@@ -1,0 +1,23 @@
+.radiology-report { display: grid; gap: 12px; min-width: 0; border-top: 1px solid var(--sp-border, #d5dedd); padding-top: 20px; }
+.radiology-report h3, .radiology-report p { margin: 0; overflow-wrap: anywhere; }
+.radiology-report details, .radiology-report fieldset { min-width: 0; }
+.radiology-report summary[hidden] { display: none; }
+.radiology-report summary { cursor: pointer; min-height: 44px; display: list-item; padding-block: 10px; box-sizing: border-box; }
+.radiology-report fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 12px; }
+.radiology-report .radiology-report__context { padding-top: 8px; }
+.radiology-report label { min-width: 0; }
+.radiology-report textarea, .radiology-report select, .radiology-report button { box-sizing: border-box; max-width: 100%; min-width: 0; min-height: 44px; padding: 8px 12px; font: inherit; color: inherit; border: 1px solid var(--sp-border, #b8ccca); border-radius: 6px; background: var(--sp-surface, #fff); }
+.radiology-report textarea { width: 100%; resize: vertical; line-height: 1.5; }
+.radiology-report select { width: 100%; }
+.radiology-report button { cursor: pointer; text-align: start; overflow-wrap: anywhere; }
+.radiology-report button:disabled { cursor: not-allowed; opacity: .55; }
+.radiology-report button.radiology-report__primary { color: #fff; background: var(--sp-accent, #0c6b63); border-color: var(--sp-accent, #0c6b63); }
+.radiology-report__actions { display: flex; gap: 8px; align-items: end; flex-wrap: wrap; }
+.radiology-report__actions > label { flex: 1 1 160px; }
+.radiology-report__check { display: flex; align-items: center; gap: 8px; min-height: 44px; }
+.radiology-report__check input { flex: 0 0 auto; width: auto; }
+.radiology-report .radiology-report__preview { padding: 12px; border: 1px solid var(--sp-border, #b8ccca); border-radius: 6px; }
+.radiology-report__error { color: var(--sp-error, #b42318); }
+.radiology-report :is(button,textarea,select,summary,input):focus-visible { outline: 2px solid var(--sp-accent, #0c6b63); outline-offset: 2px; }
+
+.radiology-report .code-field textarea { min-height: 136px; }

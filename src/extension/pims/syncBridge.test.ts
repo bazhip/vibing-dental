@@ -21,3 +21,17 @@ describe('provider sync page sessions', () => {
     expect(await bridge({ operation: 'identity', session: 'unknown' })).toEqual({ ok: false, code: 'unavailable' });
   });
 });
+
+it('passes explicit configured-practice confirmation to the selected source factory', async () => {
+  const factory = vi.fn(() => ({readIdentity: async () => identity,capture:vi.fn()}));
+  const bridge = createSyncBridge(factory);
+  await bridge({operation:'open',identity,userConfirmed:true});
+  expect(factory).toHaveBeenCalledWith(identity,{userConfirmed:true});
+});
+
+it('disposes the replaced configured source before opening a fresh page session', async () => {
+  const source={readIdentity:async()=>identity,capture:vi.fn(),dispose:vi.fn()};
+  const bridge=createSyncBridge(()=>source);
+  await bridge({operation:'open',identity});await bridge({operation:'open',identity});
+  expect(source.dispose).toHaveBeenCalledOnce();
+});

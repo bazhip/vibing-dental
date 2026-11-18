@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../../utils/supabaseClient';
 import { pimsRolloutEnabled } from '../../utils/pims/rollout';
-import { createSetupBackend, SETUP_PROVIDERS, setupError, setupRowKey } from '../../utils/pims/setup';
+import { createSetupBackend, CONFIGURED_SYNC_PROVIDERS, SETUP_PROVIDERS, setupError, setupRowKey } from '../../utils/pims/setup';
 import type { SetupBackend, SetupChart, SetupCollection, SetupContext, SetupError, SetupPage } from '../../utils/pims/setup';
 import type { PimsId } from '../../extension/pims/types';
 import { dayBounds } from '../../extension/pims/shared';
@@ -28,6 +28,8 @@ function EnabledPimsSetup({ practiceId, members = [], backend = defaultBackend }
   const [page, setPage] = React.useState<SetupPage>({ rows: [], next_cursor: null });
   const [busy, setBusy] = React.useState(false), [blocked, setBlocked] = React.useState(false);
   const [error, setError] = React.useState<SetupError | null>(null);
+  const [userConfirmed, setUserConfirmed] = React.useState(false);
+  const [reviewedTab, setReviewedTab] = React.useState<{ id: number; title: string } | null>(null);
   const [syncDate, setSyncDate] = React.useState(''), [syncNotice, setSyncNotice] = React.useState<string | null>(null);
   const [creating, setCreating] = React.useState(false), [provider, setProvider] = React.useState<PimsId>('ezyvet');
   const [origin, setOrigin] = React.useState(''), [tenant, setTenant] = React.useState('');
@@ -43,7 +45,7 @@ function EnabledPimsSetup({ practiceId, members = [], backend = defaultBackend }
     setConnection(''); setChart(null); setBusy(false); locked.current = false;
     setBlocked(false); setError(null); setCreating(false); setProvider('ezyvet'); setOrigin(''); setTenant('');
     setExternalId(''); setMemberId(''); setReason(''); setCollection('patients'); cursors.current.clear();
-    setSyncDate(''); setSyncNotice(null);
+    setSyncDate(''); setSyncNotice(null); setUserConfirmed(false); setReviewedTab(null);
   }, []);
   React.useEffect(() => {
     reset();
@@ -58,7 +60,7 @@ function EnabledPimsSetup({ practiceId, members = [], backend = defaultBackend }
 
   const load = async (selected = connection, view = collection, append = false) => {
     if (locked.current) return;
-    setOpen(true); setError(null); setPending(null); setChart(null);
+    setOpen(true); setError(null); setPending(null); setChart(null); setUserConfirmed(false); setReviewedTab(null);
     if (!backend) { setError('schema'); return; }
     const request = ++sequence.current;
     locked.current = true; setBusy(true);
@@ -116,8 +118,26 @@ function EnabledPimsSetup({ practiceId, members = [], backend = defaultBackend }
   };
   const disabled = busy || blocked || !!pending;
   const current = context?.connections.find((entry) => entry.id === connection);
+  const configured = !!current && CONFIGURED_SYNC_PROVIDERS.includes(current.provider);
+  const configuredActive = configured && current?.state === 'active' && current.binding_mode === 'user_confirmed';
+  const reviewPimsTab = async () => {
+    if (!current || !configured || current.state === 'disabled' || locked.current || disabled) return;
+    const request = ++sequence.current;
+    locked.current = true; setBusy(true); setError(null); setSyncNotice(null); setUserConfirmed(false); setReviewedTab(null);
+    try {
+      const result = await externalTransport.inspect();
+      if (request !== sequence.current) return;
+      if (!result?.tab || !Number.isSafeInteger(result.tab.id) || result.tab.id < 0 || typeof result.tab.title !== 'string'
+        || !result.tab.title.trim() || result.tab.title.length > 2000 || result.status?.provider !== current.provider) throw { code: 'invalid' };
+      setReviewedTab({ id: result.tab.id, title: result.tab.title });
+    } catch (cause) {
+      if (request === sequence.current) { setError(setupError(cause)); setReviewedTab(null); setUserConfirmed(false); }
+    } finally {
+      if (request === sequence.current) { locked.current = false; setBusy(false); }
+    }
+  };
   const browserSync = async (verify: boolean) => {
-    if (!current || !supabase || locked.current || disabled) return;
+    if (!current || !supabase || locked.current || disabled || current.state === 'disabled' || configured && (!userConfirmed || !reviewedTab)) return;
     const bounds = dayBounds(syncDate);
     if (!verify && !bounds) { setError('invalid'); return; }
     const request = ++sequence.current;
@@ -125,18 +145,19 @@ function EnabledPimsSetup({ practiceId, members = [], backend = defaultBackend }
     try {
       const result = await runBrowserSync({ connection: current, client: supabase, transport: externalTransport,
         alive: () => sequence.current === request,
+        ...(configured ? { userConfirmed: true, reviewedTabId: reviewedTab!.id } : {}),
         ...(!verify && bounds ? { scope: { requested_date: syncDate, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, window_start: bounds.start, window_end: bounds.end } } : {}) });
       if (request !== sequence.current) return;
       if (result?.state === 'blocked') throw { code: 'invalid' };
       setSyncNotice(result ? t('setup.syncResult', { saved: result.outcomes.filter((row) => row.outcome === 'applied').length,
-        review: result.outcomes.filter((row) => row.outcome === 'skipped' || row.outcome === 'conflict').length, failed: result.failures.length }) : t('setup.verified'));
+        review: result.outcomes.filter((row) => row.outcome === 'skipped' || row.outcome === 'conflict').length, failed: result.failures.length }) : t(configured ? 'setup.configuredConfirmed' : 'setup.verified'));
       if (result?.state === 'interrupted') throw { code: 'conflict' };
       locked.current = false; setBusy(false);
       await load();
     } catch (cause) {
       if (request === sequence.current) { setError(setupError(cause)); setBlocked(true); }
     } finally {
-      if (request === sequence.current) { locked.current = false; setBusy(false); }
+      if (request === sequence.current) { locked.current = false; setBusy(false); setUserConfirmed(false); setReviewedTab(null); }
     }
   };
   return <section className="pims-review pims-setup">
@@ -159,7 +180,7 @@ function EnabledPimsSetup({ practiceId, members = [], backend = defaultBackend }
           <fieldset disabled={disabled} className="pims-setup__form">
             <label>{t('setup.provider')}<select value={provider} onChange={(event) => setProvider(event.target.value as PimsId)}>{SETUP_PROVIDERS.map((value) => <option key={value} value={value}>{t(`setup.providers.${value}`)}</option>)}</select></label>
             <label>{t('setup.origin')}<input required maxLength={200} type="url" value={origin} onChange={(event) => setOrigin(event.target.value)} /></label>
-            <label>{t('setup.tenant')}<input required maxLength={200} value={tenant} onChange={(event) => setTenant(event.target.value)} /></label>
+            <label>{t(CONFIGURED_SYNC_PROVIDERS.includes(provider) ? 'setup.configuredTenant' : 'setup.tenant')}<input required maxLength={200} value={tenant} onChange={(event) => setTenant(event.target.value)} /></label>
             <button type="submit">{t('setup.reviewConnection')}</button>
           </fieldset>
         </form>}
@@ -168,12 +189,18 @@ function EnabledPimsSetup({ practiceId, members = [], backend = defaultBackend }
           <label>{t('setup.connection')}<select disabled={disabled} value={connection} onChange={(event) => { setExternalId(''); setMemberId(''); void load(event.target.value); }}>
             {context.connections.map((entry) => <option key={entry.id} value={entry.id}>{t('setup.connectionLabel', { provider: t(`setup.providers.${entry.provider}`), origin: entry.origin, tenant: entry.tenant_id })}</option>)}
           </select></label>
-          {current && <p>{t(`setup.states.${current.state}`)}</p>}
-          {current && ['rhapsody', 'vetspire'].includes(current.provider) && <div className="pims-setup__form">
-            <p>{t('setup.syncHint')}</p>
-            <button type="button" disabled={disabled || !supabase} onClick={() => void browserSync(true)}>{t('setup.verifyBrowser')}</button>
-            <label>{t('setup.syncDate')}<input type="date" value={syncDate} disabled={disabled} onChange={(event) => { setSyncDate(event.target.value); setSyncNotice(null); }} /></label>
-            <button type="button" disabled={disabled || current.state !== 'active' || !dayBounds(syncDate) || !supabase} onClick={() => void browserSync(false)}>{t('setup.sync')}</button>
+          {current && <p>{t(configured && current.state !== 'disabled' ? configuredActive ? 'setup.configuredActive' : 'setup.configuredUnverified' : `setup.states.${current.state}`)}</p>}
+          {current && (configured || ['rhapsody', 'vetspire'].includes(current.provider)) && <div className="pims-setup__form">
+            <p>{t(configured ? 'setup.configuredHint' : 'setup.syncHint')}</p>
+            {configured && <button type="button" disabled={disabled || current.state === 'disabled'} onClick={() => void reviewPimsTab()}>{t('setup.reviewTab')}</button>}
+            {configured && reviewedTab && <p>{t('setup.reviewedTab', { title: reviewedTab.title })}</p>}
+            {configured && <label className="pims-setup__check"><input type="checkbox" checked={userConfirmed} disabled={disabled || current.state === 'disabled' || !reviewedTab}
+              onChange={(event) => setUserConfirmed(event.target.checked)} />{t('setup.configuredChecked')}</label>}
+            {configured ? !configuredActive && <button type="button" className="pims-setup__primary" disabled={disabled || !supabase || !userConfirmed || !reviewedTab || current.state === 'disabled'} onClick={() => void browserSync(true)}>{t('setup.confirmConfigured')}</button>
+              : <button type="button" disabled={disabled || !supabase} onClick={() => void browserSync(true)}>{t('setup.verifyBrowser')}</button>}
+            <label>{t('setup.syncDate')}<input type="date" value={syncDate} disabled={disabled} onChange={(event) => { setSyncDate(event.target.value); setSyncNotice(null); setUserConfirmed(false); setReviewedTab(null); }} /></label>
+            {(!configured || configuredActive) && <button type="button" className={configured ? 'pims-setup__primary' : undefined}
+              disabled={disabled || current.state !== 'active' || !dayBounds(syncDate) || !supabase || configured && (!userConfirmed || !reviewedTab)} onClick={() => void browserSync(false)}>{t('setup.sync')}</button>}
             {syncNotice && <p role="status">{syncNotice}</p>}
           </div>}
           <div className="pims-review__actions">{collections.map((value) => <button key={value} type="button" aria-pressed={collection === value} disabled={disabled} onClick={() => { setExternalId(''); setMemberId(''); void load(connection, value); }}>{t(`setup.collections.${value}`)}</button>)}</div>

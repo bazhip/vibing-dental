@@ -9,6 +9,13 @@ import type { ImageTransferTarget } from '../../utils/pims/imageTransfer';
 
 beforeEach(async () => { vi.stubEnv('VITE_PIMS_ROLLOUT_ENABLED', 'true'); await installPseudoLocale(); });
 afterEach(async () => { cleanup(); vi.unstubAllEnvs(); vi.unstubAllGlobals(); vi.restoreAllMocks(); await restoreLocale(); });
+it('translates the mounted image review heading and shared review controls', () => {
+  render(<PimsImages chartId={null} store={null} />);
+  expect(screen.getByRole('heading', { name: i18n.t('pims:uploadReview.imageTitle') })).toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: i18n.t('pims:uploadReview.open') }));
+  expect(screen.getByText(i18n.t('pims:uploadReview.saveFirst'))).toBeInTheDocument();
+  expect(findUntranslated(document.body)).toEqual([]);
+});
 it('translates preview, inclusion and removal in the automatic transfer flow', async () => {
   vi.stubGlobal('crypto', webcrypto);
   vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:preview');

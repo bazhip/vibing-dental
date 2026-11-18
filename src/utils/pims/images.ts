@@ -19,6 +19,7 @@ export type PreparedImage = ImageDimensions & {
 };
 export type SelectedImageTransfer = {
   chartId: string;
+  editorTransfer?: true;
   render: () => Promise<string>;
   dispatch?: (destination: string, alive: () => boolean) => Promise<ImageTransferResult>;
 };
@@ -168,6 +169,8 @@ export async function renderSavedImage(store: ImageStore, prepared: PreparedImag
   if (header.width !== prepared.width || header.height !== prepared.height || decoded.width !== header.width || decoded.height !== header.height) return invalid();
   const contentHash = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)), byte => byte.toString(16).padStart(2, '0')).join('');
   if (!alive() || transfer.contentHash !== contentHash) throw { code: 'stale' };
+  await revalidateImage(store, prepared, decode);
+  if (!alive()) throw { code: 'stale' };
   let binary = '';
   for (const byte of bytes) binary += String.fromCharCode(byte);
   return `data:image/png;base64,${btoa(binary)}`;

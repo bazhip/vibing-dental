@@ -32,3 +32,11 @@ describe('transfer results', () => {
     expect(screen.getByRole('alert')).toHaveTextContent('couldn’t record the send date');
   });
 });
+
+it('distinguishes editor-submitted images from confirmed saves', () => {
+  render(<SendResults rows={[{ fieldTitle: 'Image', code: null, editorSubmitted: true }]}
+    stampFailed={false} sentOn={null} onCopyDiagnostic={vi.fn()} />);
+  expect(screen.getByRole('status')).toHaveTextContent('Saved fields: 0 · Submitted images: 1 · Need attention: 0');
+  expect(screen.queryByText('Saved in PIMS')).not.toBeInTheDocument();
+  expect(screen.getByText(/Submitted to ezyVet/)).toHaveTextContent('not been independently verified');
+});

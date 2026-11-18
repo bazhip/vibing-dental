@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { AdminChartViewer } from './AdminChartViewer';
 import { AdminChartList, type AdminChartMeta } from './AdminChartList';
 import { SortButton, dateValue, sortRows, useTableSort, type SortState } from '../utils/tableSort';
@@ -261,6 +262,7 @@ interface AdminPanelProps {
 }
 
 export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose, presentation = 'modal' }) => {
+  const { t } = useTranslation('app');
   const asScreen = presentation === 'screen';
   const stack = useOptionalStack();
   const [stats, setStats] = React.useState<AdminStats | null>(null);
@@ -747,7 +749,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose, presentat
   const handleSetModel = (feature: AiFeature, model: string) => {
     if (!model) return;
     const label = AI_FEATURE_INFO.find((f) => f.id === feature)?.label ?? feature;
-    run(`${label} now uses ${modelLabel(model)}.`, async () => {
+    run(feature === 'radiology_report' ? t('radiologyReport.modelUpdated', { model: modelLabel(model) }) : `${label} now uses ${modelLabel(model)}.`, async () => {
       const r = await adminCall<{ featureModels?: Partial<Record<AiFeature, string>> }>({ action: 'set_ai_model', feature, model });
       setAiFeatureModels((cur) => r.featureModels ?? { ...cur, [feature]: model });
     });
@@ -1473,7 +1475,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose, presentat
                       value={current}
                       onChange={(e) => handleSetModel(f.id, e.target.value)}
                       disabled={busy || !aiConfigured}
-                      aria-label={`Model for ${f.label}`}
+                      aria-label={f.id === 'radiology_report' ? t('radiologyReport.modelLabel') : `Model for ${f.label}`}
                     >
                       {current && !AI_MODEL_CHOICES.some((c) => c.id === current) && (
                         <option value={current}>{current} (current — not tuned)</option>
@@ -1493,7 +1495,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose, presentat
                   </label>
                   <p className="patient-form__hint">
                     {f.hint}{' '}
-                    {AI_MODEL_CHOICES.find((c) => c.id === current)?.note ?? ''}
+                    {f.id === 'radiology_report' ? '' : AI_MODEL_CHOICES.find((c) => c.id === current)?.note ?? ''}
                   </p>
                 </div>
               );

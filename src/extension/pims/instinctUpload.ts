@@ -4,7 +4,7 @@ import type { AdapterContext } from './types';
 import { sameUploadTarget, uploadHash, validPdfUpload, validUploadTarget } from '../../utils/pims/uploads';
 import type { UploadProvider, UploadReceipt, UploadTarget } from '../../utils/pims/uploads';
 
-type Observers = { readTarget(): Promise<UploadTarget | null>; readFile(fileId: string): Promise<UploadReceipt | null> };
+type Observers = { readTarget(): Promise<UploadTarget | null>; readFile(fileId: string): Promise<(UploadReceipt & { bytes: Uint8Array<ArrayBuffer> }) | null> };
 const record = (value: unknown): value is Record<string, unknown> => !!value && typeof value === 'object' && !Array.isArray(value);
 const mutation = `mutation uploadChartFile($params: UploadChartFileParams) {
   uploadChartFile(params: $params) { id patient { id } visit { id patient { id } } contentType type isShared isVoided }
@@ -43,11 +43,11 @@ export function createInstinctDocumentUploader(context: AdapterContext, observer
     readTarget,
     upload: async (request) => {
       try {
-        const target = { ...request.target }, bytes = new Uint8Array(request.bytes);
+        const target = { ...request.target }, bytes = new Uint8Array(request.bytes), contentHash = request.content_hash;
         const expires = Date.parse(request.expires_at);
         if (!observers || !validPdfUpload(bytes) || typeof request.attempt_id !== 'string' || !request.attempt_id || consumed.has(request.attempt_id) || consumed.size >= 256
           || !Number.isFinite(expires) || Date.now() >= expires || !request.label.trim() || request.label.length > 200 || !Number.isFinite(Date.parse(request.recorded_at))
-          || await uploadHash(bytes) !== request.content_hash || !sameUploadTarget(await readTarget(), target)) return null;
+          || await uploadHash(bytes) !== contentHash || !sameUploadTarget(await readTarget(), target)) return null;
         const current = session();
         const body = new FormData();
         body.append('query', mutation);
@@ -63,10 +63,14 @@ export function createInstinctDocumentUploader(context: AdapterContext, observer
         const file = response.data.uploadChartFile;
         if (typeof file.id !== 'string' || !file.id.trim() || file.id.length > 200 || !record(file.patient) || file.patient.id !== target.patient_id
           || file.visit !== null || file.contentType !== 'application/pdf' || file.type !== 'MEDICAL' || file.isShared !== false || file.isVoided !== false) return null;
-        const verified = await observers.readFile(file.id);
-        if (!sameUploadTarget(await readTarget(), target) || verified?.file_id !== file.id || verified.patient_id !== target.patient_id
-          || verified.location_id !== target.location_id || verified.content_hash !== request.content_hash) return null;
-        return verified;
+        const fileId = file.id, verified = { ...await observers.readFile(fileId) };
+        const savedBytes = verified.bytes;
+        if (verified.file_id !== fileId || verified.patient_id !== target.patient_id || verified.location_id !== target.location_id
+          || verified.content_hash !== contentHash || !savedBytes || !validPdfUpload(savedBytes)
+          || savedBytes.byteLength !== bytes.byteLength || Object.prototype.toString.call(savedBytes.buffer) !== '[object ArrayBuffer]') return null;
+        if (await uploadHash(new Uint8Array(savedBytes)) !== contentHash || !sameUploadTarget(await readTarget(), target)
+          || session().token !== current.token || Date.now() >= expires) return null;
+        return { file_id: fileId, patient_id: target.patient_id, location_id: target.location_id, content_hash: contentHash };
       } catch { return null; }
     },
   };

@@ -1,3 +1,5 @@
+import i18n from '../i18n';
+
 /**
  * Models the admin panel offers for each AI feature. Each one has request
  * settings tuned in the ai-autofill edge function (MODEL_SETTINGS) and is
@@ -18,7 +20,7 @@ export interface AiModelChoice {
 }
 
 /** The AI features that each get their own model (app_config.ai_models). */
-export type AiFeature = 'live' | 'review' | 'owner_report';
+export type AiFeature = 'live' | 'review' | 'owner_report' | 'radiology_report';
 
 export const AI_FEATURE_INFO: Array<{ id: AiFeature; label: string; hint: string }> = [
   {
@@ -35,6 +37,11 @@ export const AI_FEATURE_INFO: Array<{ id: AiFeature; label: string; hint: string
     id: 'owner_report',
     label: 'Owner report drafts',
     hint: 'One call per "Draft with AI" on an owner report.',
+  },
+  {
+    id: 'radiology_report',
+    get label() { return i18n.t('radiologyReport.aiFeatureLabel', { ns: 'app' }); },
+    get hint() { return i18n.t('radiologyReport.aiFeatureHint', { ns: 'app' }); },
   },
 ];
 

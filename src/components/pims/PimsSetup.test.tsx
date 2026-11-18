@@ -4,6 +4,8 @@ import type { SetupBackend, SetupContext } from '../../utils/pims/setup';
 
 const auth = vi.hoisted(() => ({ event: (_event: string) => {}, unsubscribe: vi.fn() }));
 const sync = vi.hoisted(() => vi.fn());
+const inspect = vi.hoisted(() => vi.fn());
+vi.mock('../../utils/pims/extensionBridge', () => ({ externalTransport: { inspect } }));
 vi.mock('../../utils/pims/browserSync', () => ({ runBrowserSync: sync }));
 vi.mock('../../utils/supabaseClient', () => ({ supabase: { auth: { onAuthStateChange: (callback: (event: string) => void) => {
   auth.event = callback;
@@ -22,7 +24,7 @@ function backend(): SetupBackend {
     linkChart: vi.fn(async (input) => ({ ...input, version: input.expected_version + 1 })),
   };
 }
-beforeEach(() => { vi.stubEnv('VITE_PIMS_ROLLOUT_ENABLED', 'true'); sync.mockReset(); });
+beforeEach(() => { vi.stubEnv('VITE_PIMS_ROLLOUT_ENABLED', 'true'); sync.mockReset(); inspect.mockReset(); inspect.mockResolvedValue({ tab: { id: 7, title: 'Reviewed clinic tab' }, candidates: 1, status: { provider: 'ezyvet', state: 'not_on_calendar' }, fields: [] }); });
 afterEach(() => { cleanup(); vi.unstubAllEnvs(); });
 async function open(api: SetupBackend) {
   render(<PimsSetup practiceId="practice" owner backend={api} members={[{ userId: 'member', label: 'Dr Test' }]} />);
@@ -101,7 +103,7 @@ it('loads only on open and requires confirmation before configuring an unverifie
   await screen.findByLabelText('External patient ID');
   fireEvent.click(screen.getByRole('button', { name: 'Add connection' }));
   fireEvent.change(screen.getByLabelText('PIMS origin'), { target: { value: connection.origin } });
-  fireEvent.change(screen.getByLabelText('Clinic or tenant ID'), { target: { value: 'new-clinic' } });
+  fireEvent.change(screen.getByLabelText('Configured clinic label'), { target: { value: 'new-clinic' } });
   fireEvent.click(screen.getByRole('button', { name: 'Review connection' }));
   expect(api.configure).not.toHaveBeenCalled();
   fireEvent.click(screen.getByRole('button', { name: 'Confirm setup change' }));
@@ -167,4 +169,100 @@ it('discards previous-practice reads and does not carry a pending confirmation a
   view.rerender(<PimsSetup practiceId="new" owner backend={api} />);
   resolve({ connections: [connection], members: [] });
   await waitFor(() => expect(screen.queryByLabelText('External patient ID')).not.toBeInTheDocument());
+});
+
+it.each(['ezyvet', 'daysmart', 'pulse', 'shepherd'] as const)('requires explicit configured-practice confirmation to activate %s', async provider => {
+  const api = backend();
+  const domains = { ezyvet: 'ezyvet.com', daysmart: 'vettersoftware.com', pulse: 'evetpractice.com', shepherd: 'shepherd.vet' };
+  const current = { ...connection, provider, origin: `https://clinic.${domains[provider]}` };
+  vi.mocked(api.context).mockResolvedValue({ connections: [current], members: [] });
+  sync.mockResolvedValue(null);
+  await open(api);
+  inspect.mockResolvedValue({ tab: { id: 7, title: 'Reviewed clinic tab' }, status: { provider: current.provider } });
+  fireEvent.click(screen.getByRole('button', { name: 'Review PIMS tab' }));
+  await screen.findByText('Reviewed PIMS tab: Reviewed clinic tab');
+  expect(screen.queryByRole('button', { name: 'Verify open PIMS tab' })).not.toBeInTheDocument();
+  const confirm = screen.getByRole('button', { name: 'Confirm configured connection' });
+  expect(confirm).toBeDisabled();
+  fireEvent.click(screen.getByLabelText('I checked that the selected PIMS tab belongs to this practice.'));
+  expect(confirm).toBeEnabled();
+  fireEvent.click(confirm);
+  await screen.findByText('Configured connection confirmed. The active clinic is not detected automatically.');
+  expect(sync).toHaveBeenCalledWith(expect.objectContaining({ connection: current, userConfirmed: true }));
+  expect(sync.mock.lastCall?.[0]).not.toHaveProperty('scope');
+  expect(screen.getByLabelText('I checked that the selected PIMS tab belongs to this practice.')).not.toBeChecked();
+});
+
+it('requires a fresh practice confirmation for each configured sync and date', async () => {
+  const api = backend();
+  const current = { ...connection, state: 'active' as const, binding_mode: 'user_confirmed' as const };
+  vi.mocked(api.context).mockResolvedValue({ connections: [current], members: [] });
+  sync.mockResolvedValue({ state: 'completed', outcomes: [], failures: [], reconciled: [], completeness: 'unknown' });
+  await open(api);
+  expect(screen.queryByRole('button', { name: 'Confirm configured connection' })).not.toBeInTheDocument();
+  fireEvent.change(screen.getByLabelText('Appointment date (this device’s timezone)'), { target: { value: '2026-11-16' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Review PIMS tab' }));
+  await screen.findByText('Reviewed PIMS tab: Reviewed clinic tab');
+  const checked = screen.getByLabelText('I checked that the selected PIMS tab belongs to this practice.');
+  expect(screen.getByRole('button', { name: 'Sync appointments' })).toBeDisabled();
+  fireEvent.click(checked);
+  fireEvent.change(screen.getByLabelText('Appointment date (this device’s timezone)'), { target: { value: '2026-11-17' } });
+  expect(checked).not.toBeChecked();
+  expect(checked).toBeDisabled();
+  fireEvent.click(screen.getByRole('button', { name: 'Review PIMS tab' }));
+  await screen.findByText('Reviewed PIMS tab: Reviewed clinic tab');
+  fireEvent.click(checked);
+  fireEvent.click(screen.getByRole('button', { name: 'Sync appointments' }));
+  await screen.findByText(/Visits saved: 0/);
+  expect(sync).toHaveBeenCalledWith(expect.objectContaining({ userConfirmed: true, scope: expect.objectContaining({ requested_date: '2026-11-17' }) }));
+  expect(checked).not.toBeChecked();
+  expect(screen.getByRole('button', { name: 'Sync appointments' })).toBeDisabled();
+});
+
+it('clears configured practice confirmation after switching connections or authentication', async () => {
+  const api = backend();
+  vi.mocked(api.context).mockResolvedValue({ connections: [connection, { ...connection, id: 'second', tenant_id: 'other' }], members: [] });
+  await open(api);
+  fireEvent.click(screen.getByRole('button', { name: 'Review PIMS tab' }));
+  await screen.findByText('Reviewed PIMS tab: Reviewed clinic tab');
+  fireEvent.click(screen.getByLabelText('I checked that the selected PIMS tab belongs to this practice.'));
+  fireEvent.change(screen.getByLabelText('Configured connection'), { target: { value: 'second' } });
+  await waitFor(() => expect(screen.getByLabelText('Configured connection')).toHaveValue('second'));
+  expect(screen.getByLabelText('I checked that the selected PIMS tab belongs to this practice.')).not.toBeChecked();
+  fireEvent.click(screen.getByRole('button', { name: 'Review PIMS tab' }));
+  await screen.findByText('Reviewed PIMS tab: Reviewed clinic tab');
+  fireEvent.click(screen.getByLabelText('I checked that the selected PIMS tab belongs to this practice.'));
+  act(() => auth.event('SIGNED_OUT'));
+  expect(screen.queryByLabelText('I checked that the selected PIMS tab belongs to this practice.')).not.toBeInTheDocument();
+});
+
+
+it('pins the actually reviewed tab even if the most recent same-provider tab changes before sync', async () => {
+  const api = backend();
+  const current = { ...connection, state: 'active' as const, binding_mode: 'user_confirmed' as const };
+  vi.mocked(api.context).mockResolvedValue({ connections: [current], members: [] });
+  sync.mockResolvedValue({ state: 'completed', outcomes: [], failures: [] });
+  await open(api);
+  fireEvent.change(screen.getByLabelText('Appointment date (this device’s timezone)'), { target: { value: '2026-11-16' } });
+  expect(screen.getByLabelText('I checked that the selected PIMS tab belongs to this practice.')).toBeDisabled();
+  fireEvent.click(screen.getByRole('button', { name: 'Review PIMS tab' }));
+  await screen.findByText('Reviewed PIMS tab: Reviewed clinic tab');
+  fireEvent.click(screen.getByLabelText('I checked that the selected PIMS tab belongs to this practice.'));
+  inspect.mockResolvedValue({ tab: { id: 8, title: 'Other clinic on same origin' }, candidates: 2, status: { provider: 'ezyvet' }, fields: [] });
+  fireEvent.click(screen.getByRole('button', { name: 'Sync appointments' }));
+  await screen.findByText(/Visits saved: 0/);
+  expect(inspect).toHaveBeenCalledOnce();
+  expect(sync).toHaveBeenCalledWith(expect.objectContaining({ reviewedTabId: 7, userConfirmed: true }));
+  expect(screen.queryByText('Reviewed PIMS tab: Reviewed clinic tab')).not.toBeInTheDocument();
+  expect(screen.getByLabelText('I checked that the selected PIMS tab belongs to this practice.')).toBeDisabled();
+});
+
+it.each([null, { tab: { id: -1, title: 'Bad' }, status: { provider: 'ezyvet' } }, { tab: { id: 7, title: 'Different provider' }, status: { provider: 'shepherd' } }])('does not permit confirmation after an invalid reviewed destination: %j', async response => {
+  const api = backend();
+  inspect.mockResolvedValue(response);
+  await open(api);
+  fireEvent.click(screen.getByRole('button', { name: 'Review PIMS tab' }));
+  await screen.findByRole('alert');
+  expect(screen.getByLabelText('I checked that the selected PIMS tab belongs to this practice.')).toBeDisabled();
+  expect(sync).not.toHaveBeenCalled();
 });

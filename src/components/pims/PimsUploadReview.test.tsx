@@ -11,6 +11,10 @@ const row: UploadReviewItem = { id: 'attempt', chart_id: 'chart', connection_id:
   identity: { provider: 'instinct', origin: 'https://clinic.instinctvet.cloud', tenant_id: 'clinic-1', connection_revision: 2 },
   patient_id: 'patient-1', location_id: 'location-2', draft_id: 'draft', draft_version: 2, content_hash: 'a'.repeat(64),
   dispatched_at: '2026-11-17T12:00:00Z', state: 'unknown', review_version: 0, observation: null };
+const imageRow: UploadReviewItem = { kind: 'image', id: 'image-attempt', chart_id: 'chart', connection_id: 'connection', connection_revision: 2,
+  identity: { provider: 'ezyvet', origin: 'https://clinic.ezyvet.com', tenant_id: 'clinic-1', connection_revision: 2 },
+  patient_id: 'patient-1', encounter_id: 'encounter-2', destination: 'Medical', document_generation: 'document-3', image_id: 'image-1',
+  content_hash: 'b'.repeat(64), dispatched_at: row.dispatched_at, state: 'unknown', review_version: 0, observation: null };
 function fixture() {
   let current = { ...row };
   const backend: UploadReviewBackend = {
@@ -123,4 +127,54 @@ it.each([null, 'chart'])('handles unsaved charts and missing schema without assu
   if (chartId) expect(await screen.findByRole('alert')).toHaveTextContent(/not available/);
   else expect(await screen.findByText('Save this chart before reviewing uploads.')).toBeInTheDocument();
   expect(screen.queryByText('No uncertain uploads on this page.')).not.toBeInTheDocument();
+});
+it('reuses manual review controls with the original image and encounter destination', async () => {
+  const backend = fixture();
+  vi.mocked(backend.page).mockResolvedValue({ rows: [imageRow], next_cursor: null });
+  render(<PimsUploadReview chartId="chart" kind="image" backend={backend} />);
+  expect(screen.getByRole('heading', { name: 'Uncertain image transfers' })).toBeInTheDocument();
+  expect(backend.page).not.toHaveBeenCalled();
+  fireEvent.click(screen.getByRole('button', { name: 'Review uncertain uploads' }));
+  await screen.findByLabelText('Your observation');
+  expect(screen.getByText('Saved image ID: image-1')).toBeInTheDocument();
+  expect(screen.getByText('Original destination: https://clinic.ezyvet.com · clinic clinic-1 · encounter encounter-2 · field Medical')).toBeInTheDocument();
+  expect(screen.queryByText(/Reviewed draft:|location undefined/)).not.toBeInTheDocument();
+  fill(); fireEvent.click(screen.getByRole('button', { name: 'Record manual observation' }));
+  await screen.findByRole('status');
+  expect(backend.observe).toHaveBeenCalledWith(expect.objectContaining({ attempt_id: 'image-attempt', expected_version: 0 }));
+  expect(screen.getByRole('status')).toHaveTextContent('Automatic retry remains blocked');
+  expect(screen.queryByRole('button', { name: /retry|confirm/i })).not.toBeInTheDocument();
+});
+it.each([
+  ['page', 'pdf', 'image'], ['observe', 'pdf', 'image'], ['page', 'image', 'pdf'], ['observe', 'image', 'pdf'],
+] as const)('rejects delayed %s replies after switching %s to %s with the same backend', async (operation, from, to) => {
+  const backend = fixture();
+  const item = from === 'image' ? imageRow : row;
+  vi.mocked(backend.page).mockResolvedValue({ rows: [item], next_cursor: null });
+  let resolve!: (value: any) => void;
+  if (operation === 'page') vi.mocked(backend.page).mockImplementationOnce(() => new Promise(done => { resolve = done; }));
+  else vi.mocked(backend.observe).mockImplementationOnce(() => new Promise(done => { resolve = done; }));
+  const view = render(<PimsUploadReview chartId="chart" kind={from} backend={backend} />);
+  fireEvent.click(screen.getByRole('button', { name: 'Review uncertain uploads' }));
+  if (operation === 'observe') { await screen.findByLabelText('Your observation'); fill(); fireEvent.click(screen.getByRole('button', { name: 'Record manual observation' })); }
+  view.rerender(<PimsUploadReview chartId="chart" kind={to} backend={backend} />);
+  await act(async () => resolve(operation === 'page' ? { rows: [item], next_cursor: null } : { version: 1 }));
+  expect(screen.queryByLabelText('Your observation')).not.toBeInTheDocument();
+  expect(screen.queryByRole('status')).not.toBeInTheDocument();
+  expect(backend.page).toHaveBeenCalledTimes(1);
+});
+it.each(['SIGNED_OUT', 'SIGNED_IN', 'USER_UPDATED'])('clears image review and pending replies on %s', async event => {
+  const backend = fixture();
+  vi.mocked(backend.page).mockResolvedValue({ rows: [imageRow], next_cursor: null });
+  let resolve!: (value: any) => void;
+  vi.mocked(backend.observe).mockImplementationOnce(() => new Promise(done => { resolve = done; }));
+  render(<PimsUploadReview chartId="chart" kind="image" backend={backend} />);
+  fireEvent.click(screen.getByRole('button', { name: 'Review uncertain uploads' }));
+  await screen.findByLabelText('Your observation'); fill();
+  fireEvent.click(screen.getByRole('button', { name: 'Record manual observation' }));
+  act(() => auth.event(event));
+  expect(screen.queryByText('Saved image ID: image-1')).not.toBeInTheDocument();
+  await act(async () => resolve({ version: 1 }));
+  expect(screen.queryByRole('status')).not.toBeInTheDocument();
+  expect(backend.page).toHaveBeenCalledTimes(1);
 });

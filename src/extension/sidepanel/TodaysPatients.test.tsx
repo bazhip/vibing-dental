@@ -48,6 +48,28 @@ afterEach(() => {
 });
 
 describe('TodaysPatients', () => {
+  it('keeps SOAP and appointment rows with the same provider ID distinct during refresh', async () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    try {
+      const soap = { ...appt('shared', '2026-11-16T09:00:00Z', 'Max', 'M-42', 'Ada Smith'), sourceKind: 'soap' as const };
+      const appointment = { ...appt('shared', '2026-11-16T10:00:00Z', 'Bella', 'B-99', 'Alex Jones'), sourceKind: 'appointment' as const };
+      m.appointments.mockResolvedValue(ok([soap, appointment]));
+      render(<TodaysPatients userId="u1" />);
+      await screen.findByText(/Bella/);
+      expect(screen.getAllByTestId('today-row')).toHaveLength(2);
+      const soapRow = screen.getAllByTestId('today-row')[0];
+      m.appointments.mockResolvedValue(ok([soap]));
+      fireEvent.click(screen.getByRole('button', { name: 'Refresh' }));
+      await waitFor(() => expect(screen.queryByText(/Bella/)).not.toBeInTheDocument());
+      expect(screen.getAllByTestId('today-row')).toHaveLength(1);
+      expect(screen.getAllByTestId('today-row')[0].textContent).toContain('Max');
+      expect(soapRow.textContent).toContain('Max');
+      expect(error.mock.calls.flat().join(' ')).not.toMatch(/same key/i);
+    } finally {
+      error.mockRestore();
+    }
+  });
+
   it('loads without navigating; not on the calendar offers Load, which navigates, and Refresh then navigates too', async () => {
     m.appointments.mockResolvedValue(fail('not_on_calendar'));
     render(<TodaysPatients userId="u1" />);

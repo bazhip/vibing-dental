@@ -244,7 +244,7 @@ describe('background', () => {
   });
 
   it('ping', async () => {
-    expect(await handleExternal({ type: 'ping' }, okSender, makeDeps().deps)).toEqual({ version: 'dev', protocol: 1, capabilities: ['inspect', 'send', 'diagnose', 'physicalExam'] });
+    expect(await handleExternal({ type: 'ping' }, okSender, makeDeps().deps)).toEqual({ version: 'dev', protocol: 1, capabilities: ['inspect', 'send', 'diagnose', 'physicalExam', 'instinctSubmission', 'radiologyAutofill', 'noteAutofill'] });
   });
 
   it('picks active ezyVet tab of focused window, else most recent', () => {
@@ -623,7 +623,7 @@ describe('internal messages', () => {
   it('internal messages accepted only from own extension pages', async () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     const { deps } = makeDeps();
-    expect(await handleInternal({ type: 'ping' }, panel, ID, deps)).toEqual({ version: 'dev', protocol: 1, capabilities: ['inspect', 'send', 'diagnose', 'physicalExam'] });
+    expect(await handleInternal({ type: 'ping' }, panel, ID, deps)).toEqual({ version: 'dev', protocol: 1, capabilities: ['inspect', 'send', 'diagnose', 'physicalExam', 'instinctSubmission', 'radiologyAutofill', 'noteAutofill'] });
     const refused = [
       { id: 'otherextensionidotherextensionid', url: `chrome-extension://otherextensionidotherextensionid/x.html` },
       { id: 'otherextensionidotherextensionid', url: panel.url },
@@ -664,12 +664,60 @@ describe('internal messages', () => {
     const [listener] = api.runtime.onMessage.listeners;
     const reply = vi.fn();
     expect(listener({ type: 'ping' }, panel, reply)).toBe(true);
-    await vi.waitFor(() => expect(reply).toHaveBeenCalledWith({ version: 'dev', protocol: 1, capabilities: ['inspect', 'send', 'diagnose', 'physicalExam'] }));
+    await vi.waitFor(() => expect(reply).toHaveBeenCalledWith({ version: 'dev', protocol: 1, capabilities: ['inspect', 'send', 'diagnose', 'physicalExam', 'instinctSubmission', 'radiologyAutofill', 'noteAutofill'] }));
     const ignored = vi.fn();
     expect(listener({ type: 'ping' }, { id: ID, url: 'https://clinic.ezyvet.com/' }, ignored)).toBe(false);
     expect(listener({ type: 'unknown' }, panel, ignored)).toBe(false);
     expect(ignored).not.toHaveBeenCalled();
     warn.mockRestore();
+  });
+
+  it('real listeners route note requests for authorized web and panel senders only', async () => {
+    const api = fakeChrome();
+    const { deps } = makeDeps([{ ...tab(7), url: 'https://clinic.vetspire.com/notes' }]);
+    const result = { state: 'fields' as const, provider: 'vetspire' as const, origin: 'https://clinic.vetspire.com', title: 'Note', fields: ['Assessment'] };
+    deps.page.noteAutofill = vi.fn(async () => result);
+    installListeners(api as unknown as typeof chrome, deps);
+    const message: Request = { type: 'noteAutofill', request: { operation: 'inspect', tabId: 7 } };
+    const [external] = api.runtime.onMessageExternal.listeners;
+    const [internal] = api.runtime.onMessage.listeners;
+    const externalReply = vi.fn(), internalReply = vi.fn(), ignored = vi.fn();
+    expect(external(message, webTab(2), externalReply)).toBe(true);
+    expect(internal(message, panel, internalReply)).toBe(true);
+    await vi.waitFor(() => {
+      expect(externalReply).toHaveBeenCalledWith(result);
+      expect(internalReply).toHaveBeenCalledWith(result);
+    });
+    expect(external(message, { origin: 'https://attacker.example' }, ignored)).toBe(false);
+    expect(internal(message, { id: ID, url: 'https://clinic.vetspire.com/' }, ignored)).toBe(false);
+    expect(internal(message, { ...panel, id: 'another-extension' }, ignored)).toBe(false);
+    expect(ignored).not.toHaveBeenCalled();
+    expect(deps.page.noteAutofill).toHaveBeenCalledTimes(2);
+  });
+
+  it.each(['rhapsody', 'vetspire'] as const)('real listeners pass authorized %s sync requests to the page', async provider => {
+    const api = fakeChrome();
+    const origin = provider === 'rhapsody' ? 'https://clinic.rhapsody.vet' : 'https://app.vetspire.com';
+    const identity = { provider, origin, tenant_id: 'clinic', connection_revision: 1 };
+    const { deps } = makeDeps([{ ...tab(7), url: `${origin}/schedule` }]);
+    const result = { ok: true as const, operation: 'open' as const, session: 'page-session', identity };
+    deps.page.providerSync = vi.fn(async () => result);
+    installListeners(api as unknown as typeof chrome, deps);
+    const message: Request = { type: 'providerSync', tabId: 7, request: { operation: 'open', identity } };
+    const [external] = api.runtime.onMessageExternal.listeners;
+    const [internal] = api.runtime.onMessage.listeners;
+    const externalReply = vi.fn(), internalReply = vi.fn(), ignored = vi.fn();
+    expect(external(message, webTab(2), externalReply)).toBe(true);
+    expect(internal(message, panel, internalReply)).toBe(true);
+    await vi.waitFor(() => {
+      expect(externalReply).toHaveBeenCalledWith(result);
+      expect(internalReply).toHaveBeenCalledWith(result);
+    });
+    expect(deps.page.providerSync).toHaveBeenCalledTimes(2);
+    expect(external(message, { origin: 'https://attacker.example' }, ignored)).toBe(false);
+    expect(internal(message, { id: ID, url: 'https://clinic.ezyvet.com/' }, ignored)).toBe(false);
+    expect(ignored).not.toHaveBeenCalled();
+    expect(deps.page.providerSync).toHaveBeenCalledTimes(2);
   });
 
   it('the listeners route the new requests to the right side only', async () => {
@@ -725,7 +773,7 @@ describe('manifest', () => {
     expect(manifest.host_permissions).toEqual([
       'https://*.ezyvet.com/*', 'https://*.vettersoftware.com/*', 'https://*.instinctvet.cloud/*',
       'https://*.instinctvet.com/*', 'https://*.evetpractice.com/*', 'https://*.rhapsody.vet/*',
-      'https://*.shepherd.vet/*', 'https://*.vetspire.com/*',
+      'https://*.shepherd.vet/*', 'https://*.vetspire.com/*', 'https://*.radimal.ai/*', 'https://*.vetology.net/*',
     ]);
     expect(manifest.externally_connectable.matches).toEqual(['https://toothops.app/*', 'http://localhost:5173/*']);
   });
@@ -754,5 +802,207 @@ describe('manifest', () => {
     const hex = createHash('sha256').update(Buffer.from(manifest.key, 'base64')).digest('hex').slice(0, 32);
     const id = [...hex].map((c) => String.fromCharCode(97 + parseInt(c, 16))).join('');
     expect(id).toBe(DEV_EXTENSION_ID);
+  });
+});
+
+
+describe('Instinct PDF submission routing', () => {
+  beforeEach(() => vi.stubGlobal('crypto', webcrypto));
+  afterEach(() => vi.unstubAllGlobals());
+  const url = 'https://clinic.instinctvet.cloud/#/patient/123/charts/documents';
+  const prepare = { type: 'instinctSubmission', tabId: 1, request: { operation: 'prepare' } } as unknown as Request;
+  const submit = (id = 'attempt') => ({ type: 'instinctSubmission', tabId: 1, request: {
+    operation: 'submit', ticket: 'ticket', id, expires_at: new Date(Date.now() + 60000).toISOString(),
+    bytes: [37,80,68,70,45,49], label: 'Record', recorded_at: new Date().toISOString(), location_id: '1',
+    source: { chartId: 'chart', draftId: 'draft', version: 1 },
+  } }) as unknown as Request;
+  function setup() {
+    const tabs: EzyvetTab[] = [{ id: 1, url } as EzyvetTab];
+    const { deps } = makeDeps(tabs);
+    const execute = vi.fn(async (_tab: number, req: { operation: string; id?: string }) =>
+      req.operation === 'prepare' ? { state: 'blocked' } : { state: 'submitted', id: req.id });
+    Object.assign(deps.page, { instinctSubmission: execute });
+    return { deps, tabs, execute };
+  }
+  it('rejects unauthenticated senders, wrong providers and malformed requests', async () => {
+    const { deps, tabs, execute } = setup();
+    expect(await handleExternal(prepare, { origin: 'https://evil.example' }, deps)).toBeUndefined();
+    tabs[0].url = 'https://clinic.ezyvet.com/';
+    expect(await handleExternal(prepare, webTab(2), deps)).toEqual({ state: 'blocked' });
+    tabs[0].url = url;
+    expect(await handleExternal({ ...prepare, request: {} } as unknown as Request, webTab(2), deps)).toEqual({ state: 'blocked' });
+    expect(execute).not.toHaveBeenCalled();
+  });
+  it('routes preparation without recording a write', async () => {
+    const { deps, execute } = setup();
+    expect(await handleExternal(prepare, webTab(2), deps)).toEqual({ state: 'blocked' });
+    expect(execute).toHaveBeenCalledWith(1, { operation: 'prepare' });
+    expect(deps.examAttempts!.set).not.toHaveBeenCalled();
+  });
+  it('persists before dispatch and blocks concurrent or restarted attempts with new IDs', async () => {
+    const { deps, execute } = setup();
+    const results = await Promise.all([handleExternal(submit(), webTab(2), deps), handleExternal(submit('second'), webTab(2), deps)]);
+    // Either digest may finish first; the duplicate guard must allow exactly one write.
+    expect(results.map(result => result && 'state' in result ? result.state : null).sort()).toEqual(['submitted', 'unknown']);
+    expect(results.map(result => result && 'id' in result ? result.id : null)).toEqual(['attempt', 'second']);
+    expect(execute).toHaveBeenCalledOnce();
+    expect(deps.examAttempts!.set).toHaveBeenCalledOnce();
+    expect(await handleExternal(submit('restart'), webTab(2), { ...deps })).toEqual({ state: 'unknown', id: 'restart' });
+    expect(execute).toHaveBeenCalledOnce();
+  });
+  it('keeps the duplicate claim across equivalent encoded patient routes', async () => {
+    const { deps, tabs, execute } = setup();
+    expect(await handleExternal(submit(), webTab(2), deps)).toEqual({ state: 'submitted', id: 'attempt' });
+    tabs[0].url = url.replace('/123/', '/%31%32%33/');
+    expect(await handleExternal(submit('encoded'), webTab(2), deps)).toEqual({ state: 'unknown', id: 'encoded' });
+    expect(execute).toHaveBeenCalledOnce();
+  });
+  it('retains the lock when dispatch throws or returns a mismatched receipt', async () => {
+    const { deps, execute } = setup();
+    execute.mockRejectedValueOnce(new TypeError());
+    expect(await handleExternal(submit(), webTab(2), deps)).toEqual({ state: 'unknown', id: 'attempt' });
+    expect(await handleExternal(submit('retry'), webTab(2), deps)).toEqual({ state: 'unknown', id: 'retry' });
+    expect(execute).toHaveBeenCalledOnce();
+  });
+  it('treats a mismatched dispatch receipt as unknown and retains its claim', async () => {
+    const { deps, execute } = setup();
+    execute.mockResolvedValueOnce({ state: 'submitted', id: 'someone-else' });
+    expect(await handleExternal(submit(), webTab(2), deps)).toEqual({ state: 'unknown', id: 'attempt' });
+    expect(await handleExternal(submit('retry'), webTab(2), deps)).toEqual({ state: 'unknown', id: 'retry' });
+    expect(execute).toHaveBeenCalledOnce();
+  });
+  it('fails closed when durable storage fails', async () => {
+    const { deps, execute } = setup();
+    vi.mocked(deps.examAttempts!.set).mockRejectedValueOnce(new TypeError());
+    expect(await handleExternal(submit(), webTab(2), deps)).toEqual({ state: 'unknown', id: 'attempt' });
+    expect(execute).not.toHaveBeenCalled();
+  });
+});
+
+describe('radiology autofill routing', () => {
+  const request = (operation: Record<string, unknown>) => ({ type: 'radiologyAutofill', request: operation }) as unknown as Request;
+  function setup() {
+    const { deps } = makeDeps();
+    const tabs = [
+      { id: 10, title: 'Radimal', url: 'https://app.radimal.ai/request-consult' },
+      { id: 11, title: 'Vetology', url: 'https://app.vetology.net/request' },
+      { id: 12, title: 'Other', url: 'https://radimal.ai.evil.example/request-consult' },
+    ];
+    const execute = vi.fn(async () => ({ state: 'filled' }));
+    Object.assign(deps, { queryRadiologyTabs: vi.fn(async () => tabs) });
+    Object.assign(deps.page, { radiologyAutofill: execute });
+    return { deps, tabs, execute };
+  }
+  it('lists supported radiology tabs without touching their forms', async () => {
+    const { deps, execute } = setup();
+    expect(await handleExternal(request({ operation: 'list' }), webTab(2), deps)).toEqual({ state: 'targets', targets: [
+      { tabId: 10, title: 'Radimal', origin: 'https://app.radimal.ai', provider: 'radimal' },
+      { tabId: 11, title: 'Vetology', origin: 'https://app.vetology.net', provider: 'vetology' },
+    ] });
+    expect(execute).not.toHaveBeenCalled();
+  });
+  it('rejects unknown senders, malformed requests, unsupported tabs and wrong result phases', async () => {
+    const { deps, execute } = setup();
+    expect(await handleExternal(request({ operation: 'list' }), { origin: 'https://evil.example' }, deps)).toBeUndefined();
+    expect(await handleExternal(request({ operation: 'prepare', tabId: 12 }), webTab(2), deps)).toEqual({ state: 'blocked' });
+    expect(await handleExternal(request({ operation: 'fill', tabId: 10, text: 'abc' }), webTab(2), deps)).toEqual({ state: 'blocked' });
+    expect(execute).not.toHaveBeenCalled();
+    expect(await handleExternal(request({ operation: 'prepare', tabId: 10 }), webTab(2), deps)).toEqual({ state: 'blocked' });
+  });
+  it('only routes fill to the explicitly selected supported tab and returns unknown after a lost result', async () => {
+    const { deps, execute } = setup();
+    const fill = { operation: 'fill', tabId: 11, ticket: 'one', text: 'Reviewed radiology findings' };
+    expect(await handleExternal(request(fill), webTab(2), deps)).toEqual({ state: 'filled' });
+    expect(execute).toHaveBeenCalledWith(11, { operation: 'fill', ticket: 'one', text: fill.text });
+    execute.mockRejectedValueOnce(new TypeError());
+    expect(await handleExternal(request(fill), webTab(2), deps)).toEqual({ state: 'unknown' });
+  });
+});
+
+
+it.each([['ezyvet','ezyvet.com'],['daysmart','vettersoftware.com'],['pulse','evetpractice.com'],['shepherd','shepherd.vet']] as const)('routes configured %s only after explicit user confirmation', async (provider,domain) => {
+  const origin = `https://clinic.${domain}`;
+  const {deps} = makeDeps([{...tab(7),url:`${origin}/schedule`}]);
+  const identity = {provider,origin,tenant_id:'Configured clinic',connection_revision:1};
+  deps.page.providerSync = vi.fn(async()=>({ok:true as const,operation:'open' as const,session:'session',identity}));
+  expect(await handleExternal({type:'providerSync',tabId:7,request:{operation:'open',identity}},okSender,deps)).toEqual({ok:false,code:'unavailable'});
+  expect(deps.page.providerSync).not.toHaveBeenCalled();
+  expect(await handleExternal({type:'providerSync',tabId:7,request:{operation:'open',identity,userConfirmed:true}},okSender,deps)).toMatchObject({ok:true,operation:'open'});
+  expect(deps.page.providerSync).toHaveBeenCalledOnce();
+});
+
+
+describe('note autofill routing', () => {
+  const request = (operation: Record<string, unknown>) => ({ type: 'noteAutofill', request: operation }) as unknown as Request;
+  function setup() {
+    const tabs = [
+      { id: 10, title: 'Pulse', url: 'https://clinic.evetpractice.com/Medical' },
+      { id: 11, title: 'Rhapsody', url: 'https://clinic.rhapsody.vet/patient/1' },
+      { id: 12, title: 'Spoof', url: 'https://rhapsody.vet.evil.example/' },
+      { id: 13, title: 'Other PIMS', url: 'https://clinic.ezyvet.com/' },
+    ];
+    const { deps } = makeDeps(tabs.map(entry => ({ ...tab(entry.id), ...entry })));
+    deps.queryEzyvetTabs = async () => tabs.map(entry => ({ ...tab(entry.id), ...entry }));
+    const execute = vi.fn(async (): Promise<unknown> => ({ state: 'filled' }));
+    Object.assign(deps.page, { noteAutofill: execute });
+    return { deps, tabs, execute };
+  }
+  it('lists only supported targets without choosing a recent tab or touching editors', async () => {
+    const { deps, execute } = setup();
+    expect(await handleExternal(request({ operation: 'list' }), okSender, deps)).toEqual({ state: 'targets', targets: [
+      { tabId: 10, provider: 'pulse', origin: 'https://clinic.evetpractice.com', title: 'Pulse' },
+      { tabId: 11, provider: 'rhapsody', origin: 'https://clinic.rhapsody.vet', title: 'Rhapsody' },
+    ] });
+    expect(execute).not.toHaveBeenCalled();
+  });
+  it('rejects unauthorized senders, malformed requests and spoofed/unsupported hosts', async () => {
+    const { deps, execute } = setup();
+    expect(await handleExternal(request({ operation: 'list' }), { origin: 'https://evil.example' }, deps)).toBeUndefined();
+    expect(await handleInternal(request({ operation: 'list' }), { id: ID, url: 'https://clinic.rhapsody.vet/' }, ID, deps)).toBeUndefined();
+    for (const value of [{ operation: 'inspect', tabId: 12 }, { operation: 'inspect', tabId: 13 }, { operation: 'prepare', tabId: 10 }, { operation: 'fill', tabId: -1, ticket: 'one', text: 'Notes' }]) {
+      expect(await handleExternal(request(value), okSender, deps)).toEqual({ state: 'blocked' });
+    }
+    expect(execute).not.toHaveBeenCalled();
+  });
+  it('checks inspect/prepare metadata and response phase', async () => {
+    const { deps, execute } = setup();
+    const fields = { state: 'fields', provider: 'rhapsody', origin: 'https://clinic.rhapsody.vet', title: 'Rhapsody', fields: ['Plan'] };
+    execute.mockResolvedValue(fields);
+    expect(await handleExternal(request({ operation: 'inspect', tabId: 11 }), okSender, deps)).toEqual(fields);
+    execute.mockResolvedValue({ ...fields, provider: 'pulse' });
+    expect(await handleExternal(request({ operation: 'inspect', tabId: 11 }), okSender, deps)).toEqual({ state: 'blocked' });
+    execute.mockResolvedValue(fields);
+    expect(await handleExternal(request({ operation: 'prepare', tabId: 11, field: 'Plan' }), okSender, deps)).toEqual({ state: 'blocked' });
+  });
+  it('refuses a selected tab that switches URL before dispatch', async () => {
+    const { deps, tabs, execute } = setup();
+    let count = 0;
+    deps.queryEzyvetTabs = async () => {
+      count++;
+      return tabs.map(entry => ({ ...tab(entry.id), ...entry, url: count > 1 && entry.id === 11 ? 'https://clinic.rhapsody.vet/other' : entry.url }));
+    };
+    expect(await handleExternal(request({ operation: 'fill', tabId: 11, ticket: 'one', text: 'Notes' }), okSender, deps)).toEqual({ state: 'blocked' });
+    expect(execute).not.toHaveBeenCalled();
+  });
+  it('refuses a read-only result after the destination switches during its page call', async () => {
+    const { deps, tabs, execute } = setup();
+    execute.mockImplementationOnce(async () => {
+      tabs[1] = { ...tabs[1], url: 'https://another.rhapsody.vet/patient/1' };
+      return { state: 'fields', provider: 'rhapsody', origin: 'https://clinic.rhapsody.vet', title: 'Note', fields: ['Plan'] };
+    });
+    expect(await handleExternal(request({ operation: 'inspect', tabId: 11 }), okSender, deps)).toEqual({ state: 'blocked' });
+  });
+  it('dispatches one fill and reports unknown for switched tabs, lost and invalid replies', async () => {
+    const { deps, tabs, execute } = setup();
+    const fill = { operation: 'fill', tabId: 11, ticket: 'one', text: 'Reviewed notes' };
+    expect(await handleExternal(request(fill), okSender, deps)).toEqual({ state: 'filled' });
+    expect(execute).toHaveBeenCalledExactlyOnceWith(11, { operation: 'fill', ticket: 'one', text: 'Reviewed notes' });
+    execute.mockImplementationOnce(async () => { tabs[1] = { ...tabs[1], url: tabs[1].url + '?changed' }; return { state: 'filled' }; });
+    expect(await handleExternal(request(fill), okSender, deps)).toEqual({ state: 'unknown' });
+    execute.mockRejectedValueOnce(new TypeError());
+    expect(await handleExternal(request(fill), okSender, deps)).toEqual({ state: 'unknown' });
+    execute.mockResolvedValueOnce({ state: 'saved' });
+    expect(await handleExternal(request(fill), okSender, deps)).toEqual({ state: 'unknown' });
+    expect(execute).toHaveBeenCalledTimes(4);
   });
 });

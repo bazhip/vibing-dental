@@ -19,6 +19,6 @@ function contextNow(): AdapterContext {
   };
 }
 
-if (window.__toothopsPims?.version !== EXTENSION_VERSION || !window.__toothopsPims.providerSync || !window.__toothopsPims.physicalExam) {
+if (window.__toothopsPims?.version !== EXTENSION_VERSION || !window.__toothopsPims.providerSync || !window.__toothopsPims.physicalExam || !window.__toothopsPims.instinctSubmission || !window.__toothopsPims.noteAutofill) {
   window.__toothopsPims = createPageBridge(() => adapterFor(location.href), contextNow);
 }

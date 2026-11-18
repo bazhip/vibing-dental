@@ -11,7 +11,7 @@
 
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { apiError } from '../_shared/apiErrors.ts';
-import { featureForRequest, resolveAiModels } from '../_shared/aiModels.ts';
+import { AI_REQUEST_KINDS, featureForRequest, resolveAiModels, usesReviewSettings } from '../_shared/aiModels.ts';
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -91,11 +91,10 @@ Deno.serve(async (req: Request) => {
   } catch {
     return json({ error: 'bad json' }, 400);
   }
-  const review = body.mode === 'review';
+  const review = usesReviewSettings(body.mode, body.kind);
   // Which feature this call is for — logged with usage so cost can be
   // split by feature. Unknown values are dropped.
-  const KINDS = ['live', 'review', 'owner_report', 'warmup'];
-  const kind = typeof body.kind === 'string' && KINDS.includes(body.kind) ? body.kind : '';
+  const kind = typeof body.kind === 'string' && (AI_REQUEST_KINDS as readonly string[]).includes(body.kind) ? body.kind : '';
   if (!review && raw.length > LIVE_MAX_CHARS) return json(apiError('request_too_large'), 413);
   const msgs = body.messages;
   if (!Array.isArray(msgs) || msgs.length !== 1 || (msgs[0] as { role?: string })?.role !== 'user') {

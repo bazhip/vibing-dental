@@ -335,3 +335,39 @@ describe('usePimsSend', () => {
     expect(hook.result.current.changedTarget).toBe(false);
   });
 });
+
+it('sends explicitly selected editor-compatibility images through the existing ezyVet writer', async () => {
+  const savedImage = { chartId: 'chart', editorTransfer: true as const, render: vi.fn(async () => 'data:image/png;base64,AAAA') };
+  const { hook, transport } = setup({ savedImage, chartId: 'chart' });
+  await waitFor(() => expect(hook.result.current.phase.kind).toBe('ready'));
+  expect(hook.result.current.rows.find(row => row.key === 'attachment')?.wanted).toBeNull();
+  act(() => { hook.result.current.choose('attachment', 'Discharge Summary'); hook.result.current.choose('chart', DONT_SEND); });
+  await act(async () => { await hook.result.current.doSend(); });
+  expect(savedImage.render).toHaveBeenCalledOnce();
+  expect(transport.send).toHaveBeenCalledWith(expect.objectContaining({ expectedPims: 'ezyvet',
+    expectedConsult: info.status!.consult, items: expect.arrayContaining([{ fieldTitle: 'Discharge Summary', pngDataUrl: 'data:image/png;base64,AAAA' }]) }));
+});
+it('abandons editor compatibility writes when reviewed image validation fails', async () => {
+  const savedImage = { chartId: 'chart', editorTransfer: true as const, render: vi.fn(async () => { throw { code: 'stale' }; }) };
+  const { hook, transport } = setup({ savedImage, chartId: 'chart' });
+  await waitFor(() => expect(hook.result.current.phase.kind).toBe('ready'));
+  act(() => hook.result.current.choose('attachment', 'Discharge Summary'));
+  await act(async () => { await hook.result.current.doSend(); });
+  expect(savedImage.render).toHaveBeenCalledOnce();
+  expect(transport.send).not.toHaveBeenCalled();
+});
+
+it('does not persist a saved stamp for an editor-only image acknowledgment', async () => {
+  const savedImage = { chartId: 'chart', editorTransfer: true as const, render: vi.fn(async () => 'data:image/png;base64,AAAA') };
+  const { hook, transport } = setup({ savedImage, chartId: 'chart' });
+  await waitFor(() => expect(hook.result.current.phase.kind).toBe('ready'));
+  act(() => {
+    for (const row of hook.result.current.rows) hook.result.current.choose(row.key, DONT_SEND);
+    hook.result.current.choose('attachment', 'Discharge Summary');
+  });
+  vi.mocked(transport.send).mockImplementationOnce(async request => ({ ok: true, results: request.items.map(item => ({fieldTitle: item.fieldTitle, result: {ok: true}})) }));
+  vi.mocked(markPimsSent).mockClear();
+  await act(async () => { await hook.result.current.doSend(); });
+  expect(markPimsSent).not.toHaveBeenCalled();
+  expect(hook.result.current.phase).toMatchObject({ kind: 'results', rows: [{ editorSubmitted: true }] });
+});

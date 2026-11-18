@@ -720,6 +720,210 @@
       "hash": "765d13d0fbd7",
       "status": "machine"
     },
+    "app:radiologyReport.aiFeatureHint": {
+      "hash": "6afeb2605ef2",
+      "status": "machine"
+    },
+    "app:radiologyReport.aiFeatureLabel": {
+      "hash": "12799147f6a9",
+      "status": "machine"
+    },
+    "app:radiologyReport.aiUnavailable": {
+      "hash": "250d2b5581c5",
+      "status": "machine"
+    },
+    "app:radiologyReport.attribution": {
+      "hash": "355e5879a1cb",
+      "status": "machine"
+    },
+    "app:radiologyReport.body": {
+      "hash": "0cd7bbefe7b8",
+      "status": "machine"
+    },
+    "app:radiologyReport.checked": {
+      "hash": "83c05d746196",
+      "status": "machine"
+    },
+    "app:radiologyReport.context": {
+      "hash": "ed15fa58138a",
+      "status": "machine"
+    },
+    "app:radiologyReport.copied": {
+      "hash": "0a9184fccf20",
+      "status": "machine"
+    },
+    "app:radiologyReport.copy": {
+      "hash": "ffedb1c8424a",
+      "status": "machine"
+    },
+    "app:radiologyReport.copyPrompt": {
+      "hash": "b07d78883bef",
+      "status": "machine"
+    },
+    "app:radiologyReport.copyPromptShown": {
+      "hash": "db8dcb03361e",
+      "status": "machine"
+    },
+    "app:radiologyReport.description": {
+      "hash": "c8706f2c6446",
+      "status": "machine"
+    },
+    "app:radiologyReport.discard": {
+      "hash": "cb30147eec19",
+      "status": "machine"
+    },
+    "app:radiologyReport.downloaded": {
+      "hash": "b72dda686036",
+      "status": "machine"
+    },
+    "app:radiologyReport.draftEmpty": {
+      "hash": "e1ffb700b3ec",
+      "status": "machine"
+    },
+    "app:radiologyReport.exportFailed": {
+      "hash": "c6a2b49d60ec",
+      "status": "machine"
+    },
+    "app:radiologyReport.filename": {
+      "hash": "e7a6e564bb39",
+      "status": "machine"
+    },
+    "app:radiologyReport.findingsPlaceholder": {
+      "hash": "ad5b666bf1ab",
+      "status": "machine"
+    },
+    "app:radiologyReport.generate": {
+      "hash": "12696858926c",
+      "status": "machine"
+    },
+    "app:radiologyReport.generateFailed": {
+      "hash": "930753b0cfc6",
+      "status": "machine"
+    },
+    "app:radiologyReport.generating": {
+      "hash": "9b3496f7d803",
+      "status": "machine"
+    },
+    "app:radiologyReport.headingFindings": {
+      "hash": "de45e3646b2b",
+      "status": "machine"
+    },
+    "app:radiologyReport.headingHistory": {
+      "hash": "00c1e23a2689",
+      "status": "machine"
+    },
+    "app:radiologyReport.headingImpression": {
+      "hash": "fb91e781f3e9",
+      "status": "machine"
+    },
+    "app:radiologyReport.headingQuestion": {
+      "hash": "f93f000c7d22",
+      "status": "machine"
+    },
+    "app:radiologyReport.headingRecommendations": {
+      "hash": "1b550a70d58f",
+      "status": "machine"
+    },
+    "app:radiologyReport.headingTechnique": {
+      "hash": "47289b3c35f1",
+      "status": "machine"
+    },
+    "app:radiologyReport.language": {
+      "hash": "b67c4fe5f96f",
+      "status": "machine"
+    },
+    "app:radiologyReport.manual": {
+      "hash": "225b9cd056b0",
+      "status": "machine"
+    },
+    "app:radiologyReport.missingContext": {
+      "hash": "165d8209cb20",
+      "status": "machine"
+    },
+    "app:radiologyReport.modelLabel": {
+      "hash": "af5a09328762",
+      "status": "machine"
+    },
+    "app:radiologyReport.modelUpdated": {
+      "hash": "8154b38af260",
+      "status": "machine"
+    },
+    "app:radiologyReport.notRecorded": {
+      "hash": "b37c7879f6c3",
+      "status": "machine"
+    },
+    "app:radiologyReport.pdf": {
+      "hash": "6183be0883d2",
+      "status": "machine"
+    },
+    "app:radiologyReport.pdfFont": {
+      "hash": "90a2c22dadda",
+      "status": "machine"
+    },
+    "app:radiologyReport.pdfLimit": {
+      "hash": "47474a5bf83d",
+      "status": "machine"
+    },
+    "app:radiologyReport.pdfUnsupported": {
+      "hash": "03d495b900f3",
+      "status": "machine"
+    },
+    "app:radiologyReport.preview": {
+      "hash": "7d99a6eabd4d",
+      "status": "machine"
+    },
+    "app:radiologyReport.previewStale": {
+      "hash": "47da83919977",
+      "status": "machine"
+    },
+    "app:radiologyReport.radiologyHistory": {
+      "hash": "40f03b2b7abc",
+      "status": "machine"
+    },
+    "app:radiologyReport.radiologyQuestion": {
+      "hash": "cf868e3899c4",
+      "status": "machine"
+    },
+    "app:radiologyReport.radiologyTechnique": {
+      "hash": "c13088734702",
+      "status": "machine"
+    },
+    "app:radiologyReport.reviewed": {
+      "hash": "8857054975a6",
+      "status": "machine"
+    },
+    "app:radiologyReport.shared": {
+      "hash": "6a03074b82c9",
+      "status": "machine"
+    },
+    "app:radiologyReport.sourceRequired": {
+      "hash": "997f4ef95d43",
+      "status": "machine"
+    },
+    "app:radiologyReport.sourceTooLarge": {
+      "hash": "805961ce43b9",
+      "status": "machine"
+    },
+    "app:radiologyReport.stale": {
+      "hash": "4cb811fb73c8",
+      "status": "machine"
+    },
+    "app:radiologyReport.title": {
+      "hash": "08b4250df82d",
+      "status": "machine"
+    },
+    "app:radiologyReport.undo": {
+      "hash": "69ef9bf0c498",
+      "status": "machine"
+    },
+    "app:radiologyReport.unreviewed": {
+      "hash": "302c54554ef5",
+      "status": "machine"
+    },
+    "app:radiologyReport.use": {
+      "hash": "15e45f1ce74a",
+      "status": "machine"
+    },
     "app:revert.confirm": {
       "hash": "0c202c1c284e",
       "status": "machine"
@@ -8916,6 +9120,30 @@
       "hash": "c284a4263831",
       "status": "machine"
     },
+    "pims:drafts.aiRadiology.discard": {
+      "hash": "04adc473bc3f",
+      "status": "machine"
+    },
+    "pims:drafts.aiRadiology.failed": {
+      "hash": "1e99dd054727",
+      "status": "machine"
+    },
+    "pims:drafts.aiRadiology.generate": {
+      "hash": "bfd47f77dfa7",
+      "status": "machine"
+    },
+    "pims:drafts.aiRadiology.hint": {
+      "hash": "03dba4a89673",
+      "status": "machine"
+    },
+    "pims:drafts.aiRadiology.preview": {
+      "hash": "f6c024d2bc06",
+      "status": "machine"
+    },
+    "pims:drafts.aiRadiology.use": {
+      "hash": "b85b030056af",
+      "status": "machine"
+    },
     "pims:drafts.attribution": {
       "hash": "d1e3da90dc94",
       "status": "machine"
@@ -8992,6 +9220,38 @@
       "hash": "8a60a14b0096",
       "status": "machine"
     },
+    "pims:drafts.instinct.blocked": {
+      "hash": "7267f9b09989",
+      "status": "machine"
+    },
+    "pims:drafts.instinct.checked": {
+      "hash": "48e54e997809",
+      "status": "machine"
+    },
+    "pims:drafts.instinct.compatibility": {
+      "hash": "0244e90036e6",
+      "status": "machine"
+    },
+    "pims:drafts.instinct.destination": {
+      "hash": "2ca8f55ef1d6",
+      "status": "machine"
+    },
+    "pims:drafts.instinct.prepare": {
+      "hash": "c1b8204656f6",
+      "status": "machine"
+    },
+    "pims:drafts.instinct.submit": {
+      "hash": "473f5c5a6e13",
+      "status": "machine"
+    },
+    "pims:drafts.instinct.submitted": {
+      "hash": "d72f1a0a0acd",
+      "status": "machine"
+    },
+    "pims:drafts.instinct.unknown": {
+      "hash": "98a960eb712d",
+      "status": "machine"
+    },
     "pims:drafts.kind": {
       "hash": "907b28418e5f",
       "status": "machine"
@@ -9022,6 +9282,62 @@
     },
     "pims:drafts.radiology": {
       "hash": "d89571996efc",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.append": {
+      "hash": "142848191038",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.blocked": {
+      "hash": "441a72a7a308",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.checked": {
+      "hash": "3afbca1e51bc",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.choose": {
+      "hash": "37f232b574a4",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.destination": {
+      "hash": "1e9b609cdc30",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.empty": {
+      "hash": "0c9ef11a74bc",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.fill": {
+      "hash": "baa993c10acf",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.filled": {
+      "hash": "ac2e4414a15b",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.option": {
+      "hash": "64a4a8883b0e",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.providers.radimal": {
+      "hash": "a0a63485cd2d",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.providers.vetology": {
+      "hash": "4982c6cae8f8",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.review": {
+      "hash": "8178ca4911a7",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.summary": {
+      "hash": "a41b3fba488c",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.unknown": {
+      "hash": "833ce9686897",
       "status": "machine"
     },
     "pims:drafts.refresh": {
@@ -9372,6 +9688,98 @@
       "hash": "bd3ab291b0ae",
       "status": "machine"
     },
+    "pims:noteAutofill.all": {
+      "hash": "71ecec88cebe",
+      "status": "machine"
+    },
+    "pims:noteAutofill.blocked": {
+      "hash": "e3753916dd93",
+      "status": "machine"
+    },
+    "pims:noteAutofill.chooseField": {
+      "hash": "f1ceaf17a2ca",
+      "status": "machine"
+    },
+    "pims:noteAutofill.chooseTab": {
+      "hash": "2ac0544983d7",
+      "status": "machine"
+    },
+    "pims:noteAutofill.close": {
+      "hash": "4abe35008b62",
+      "status": "machine"
+    },
+    "pims:noteAutofill.destination": {
+      "hash": "26f9e374e06d",
+      "status": "machine"
+    },
+    "pims:noteAutofill.expired": {
+      "hash": "7019a8ccb5e3",
+      "status": "machine"
+    },
+    "pims:noteAutofill.field": {
+      "hash": "f7782f1c7946",
+      "status": "machine"
+    },
+    "pims:noteAutofill.fill": {
+      "hash": "e0872c702651",
+      "status": "machine"
+    },
+    "pims:noteAutofill.filled": {
+      "hash": "754cfcfde561",
+      "status": "machine"
+    },
+    "pims:noteAutofill.hint": {
+      "hash": "f78eb7aaa10d",
+      "status": "machine"
+    },
+    "pims:noteAutofill.inspect": {
+      "hash": "cf2bff5bf7d6",
+      "status": "machine"
+    },
+    "pims:noteAutofill.noFields": {
+      "hash": "a3cb076917a5",
+      "status": "machine"
+    },
+    "pims:noteAutofill.noTabs": {
+      "hash": "429cbbb794e3",
+      "status": "machine"
+    },
+    "pims:noteAutofill.open": {
+      "hash": "65ccbee65525",
+      "status": "machine"
+    },
+    "pims:noteAutofill.prepare": {
+      "hash": "97f0fa37753e",
+      "status": "machine"
+    },
+    "pims:noteAutofill.preparedField": {
+      "hash": "e00f65ff44f0",
+      "status": "machine"
+    },
+    "pims:noteAutofill.preview": {
+      "hash": "2d75d34e5262",
+      "status": "machine"
+    },
+    "pims:noteAutofill.review": {
+      "hash": "5c20a6dd3851",
+      "status": "machine"
+    },
+    "pims:noteAutofill.source": {
+      "hash": "9ddee823d43b",
+      "status": "machine"
+    },
+    "pims:noteAutofill.tab": {
+      "hash": "9a8f35b9ff1e",
+      "status": "machine"
+    },
+    "pims:noteAutofill.unknown": {
+      "hash": "e9a8756b16ef",
+      "status": "machine"
+    },
+    "pims:noteAutofill.working": {
+      "hash": "5e3adf51dfae",
+      "status": "machine"
+    },
     "pims:panel.chart.back": {
       "hash": "d1915d48235a",
       "status": "machine"
@@ -9562,6 +9970,14 @@
     },
     "pims:picture.pre": {
       "hash": "888401626a4f",
+      "status": "machine"
+    },
+    "pims:results.editorSubmitted": {
+      "hash": "9d722d406974",
+      "status": "machine"
+    },
+    "pims:results.editorSummary": {
+      "hash": "909f52b88d1e",
       "status": "machine"
     },
     "pims:results.saved": {
@@ -9824,8 +10240,36 @@
       "hash": "ce0e9c7a7afd",
       "status": "machine"
     },
+    "pims:setup.configuredActive": {
+      "hash": "1ac9189d1673",
+      "status": "machine"
+    },
+    "pims:setup.configuredChecked": {
+      "hash": "364de506d81f",
+      "status": "machine"
+    },
+    "pims:setup.configuredConfirmed": {
+      "hash": "8ea27038eb77",
+      "status": "machine"
+    },
+    "pims:setup.configuredHint": {
+      "hash": "ce3527bdde9a",
+      "status": "machine"
+    },
+    "pims:setup.configuredTenant": {
+      "hash": "70411857aa94",
+      "status": "machine"
+    },
+    "pims:setup.configuredUnverified": {
+      "hash": "1b2c4b54eae7",
+      "status": "machine"
+    },
     "pims:setup.confirm": {
       "hash": "4bddfff95427",
+      "status": "machine"
+    },
+    "pims:setup.confirmConfigured": {
+      "hash": "76bc619be19a",
       "status": "machine"
     },
     "pims:setup.confirmHint": {
@@ -9942,6 +10386,14 @@
     },
     "pims:setup.reviewLink.patients": {
       "hash": "8238a2026e94",
+      "status": "machine"
+    },
+    "pims:setup.reviewTab": {
+      "hash": "597d47c89bfe",
+      "status": "machine"
+    },
+    "pims:setup.reviewedTab": {
+      "hash": "2572e80d5ebc",
       "status": "machine"
     },
     "pims:setup.selectChart": {
@@ -10062,6 +10514,18 @@
     },
     "pims:uploadReview.fingerprint": {
       "hash": "599571918993",
+      "status": "machine"
+    },
+    "pims:uploadReview.imageDestination": {
+      "hash": "e885c3909f1f",
+      "status": "machine"
+    },
+    "pims:uploadReview.imageSource": {
+      "hash": "8024d8744472",
+      "status": "machine"
+    },
+    "pims:uploadReview.imageTitle": {
+      "hash": "9926a0cacd69",
       "status": "machine"
     },
     "pims:uploadReview.next": {
@@ -13872,6 +14336,210 @@
     },
     "app:radiographic.title": {
       "hash": "765d13d0fbd7",
+      "status": "machine"
+    },
+    "app:radiologyReport.aiFeatureHint": {
+      "hash": "6afeb2605ef2",
+      "status": "machine"
+    },
+    "app:radiologyReport.aiFeatureLabel": {
+      "hash": "12799147f6a9",
+      "status": "machine"
+    },
+    "app:radiologyReport.aiUnavailable": {
+      "hash": "250d2b5581c5",
+      "status": "machine"
+    },
+    "app:radiologyReport.attribution": {
+      "hash": "355e5879a1cb",
+      "status": "machine"
+    },
+    "app:radiologyReport.body": {
+      "hash": "0cd7bbefe7b8",
+      "status": "machine"
+    },
+    "app:radiologyReport.checked": {
+      "hash": "83c05d746196",
+      "status": "machine"
+    },
+    "app:radiologyReport.context": {
+      "hash": "ed15fa58138a",
+      "status": "machine"
+    },
+    "app:radiologyReport.copied": {
+      "hash": "0a9184fccf20",
+      "status": "machine"
+    },
+    "app:radiologyReport.copy": {
+      "hash": "ffedb1c8424a",
+      "status": "machine"
+    },
+    "app:radiologyReport.copyPrompt": {
+      "hash": "b07d78883bef",
+      "status": "machine"
+    },
+    "app:radiologyReport.copyPromptShown": {
+      "hash": "db8dcb03361e",
+      "status": "machine"
+    },
+    "app:radiologyReport.description": {
+      "hash": "c8706f2c6446",
+      "status": "machine"
+    },
+    "app:radiologyReport.discard": {
+      "hash": "cb30147eec19",
+      "status": "machine"
+    },
+    "app:radiologyReport.downloaded": {
+      "hash": "b72dda686036",
+      "status": "machine"
+    },
+    "app:radiologyReport.draftEmpty": {
+      "hash": "e1ffb700b3ec",
+      "status": "machine"
+    },
+    "app:radiologyReport.exportFailed": {
+      "hash": "c6a2b49d60ec",
+      "status": "machine"
+    },
+    "app:radiologyReport.filename": {
+      "hash": "e7a6e564bb39",
+      "status": "machine"
+    },
+    "app:radiologyReport.findingsPlaceholder": {
+      "hash": "ad5b666bf1ab",
+      "status": "machine"
+    },
+    "app:radiologyReport.generate": {
+      "hash": "12696858926c",
+      "status": "machine"
+    },
+    "app:radiologyReport.generateFailed": {
+      "hash": "930753b0cfc6",
+      "status": "machine"
+    },
+    "app:radiologyReport.generating": {
+      "hash": "9b3496f7d803",
+      "status": "machine"
+    },
+    "app:radiologyReport.headingFindings": {
+      "hash": "de45e3646b2b",
+      "status": "machine"
+    },
+    "app:radiologyReport.headingHistory": {
+      "hash": "00c1e23a2689",
+      "status": "machine"
+    },
+    "app:radiologyReport.headingImpression": {
+      "hash": "fb91e781f3e9",
+      "status": "machine"
+    },
+    "app:radiologyReport.headingQuestion": {
+      "hash": "f93f000c7d22",
+      "status": "machine"
+    },
+    "app:radiologyReport.headingRecommendations": {
+      "hash": "1b550a70d58f",
+      "status": "machine"
+    },
+    "app:radiologyReport.headingTechnique": {
+      "hash": "47289b3c35f1",
+      "status": "machine"
+    },
+    "app:radiologyReport.language": {
+      "hash": "b67c4fe5f96f",
+      "status": "machine"
+    },
+    "app:radiologyReport.manual": {
+      "hash": "225b9cd056b0",
+      "status": "machine"
+    },
+    "app:radiologyReport.missingContext": {
+      "hash": "165d8209cb20",
+      "status": "machine"
+    },
+    "app:radiologyReport.modelLabel": {
+      "hash": "af5a09328762",
+      "status": "machine"
+    },
+    "app:radiologyReport.modelUpdated": {
+      "hash": "8154b38af260",
+      "status": "machine"
+    },
+    "app:radiologyReport.notRecorded": {
+      "hash": "b37c7879f6c3",
+      "status": "machine"
+    },
+    "app:radiologyReport.pdf": {
+      "hash": "6183be0883d2",
+      "status": "machine"
+    },
+    "app:radiologyReport.pdfFont": {
+      "hash": "90a2c22dadda",
+      "status": "machine"
+    },
+    "app:radiologyReport.pdfLimit": {
+      "hash": "47474a5bf83d",
+      "status": "machine"
+    },
+    "app:radiologyReport.pdfUnsupported": {
+      "hash": "03d495b900f3",
+      "status": "machine"
+    },
+    "app:radiologyReport.preview": {
+      "hash": "7d99a6eabd4d",
+      "status": "machine"
+    },
+    "app:radiologyReport.previewStale": {
+      "hash": "47da83919977",
+      "status": "machine"
+    },
+    "app:radiologyReport.radiologyHistory": {
+      "hash": "40f03b2b7abc",
+      "status": "machine"
+    },
+    "app:radiologyReport.radiologyQuestion": {
+      "hash": "cf868e3899c4",
+      "status": "machine"
+    },
+    "app:radiologyReport.radiologyTechnique": {
+      "hash": "c13088734702",
+      "status": "machine"
+    },
+    "app:radiologyReport.reviewed": {
+      "hash": "8857054975a6",
+      "status": "machine"
+    },
+    "app:radiologyReport.shared": {
+      "hash": "6a03074b82c9",
+      "status": "machine"
+    },
+    "app:radiologyReport.sourceRequired": {
+      "hash": "997f4ef95d43",
+      "status": "machine"
+    },
+    "app:radiologyReport.sourceTooLarge": {
+      "hash": "805961ce43b9",
+      "status": "machine"
+    },
+    "app:radiologyReport.stale": {
+      "hash": "4cb811fb73c8",
+      "status": "machine"
+    },
+    "app:radiologyReport.title": {
+      "hash": "08b4250df82d",
+      "status": "machine"
+    },
+    "app:radiologyReport.undo": {
+      "hash": "69ef9bf0c498",
+      "status": "machine"
+    },
+    "app:radiologyReport.unreviewed": {
+      "hash": "302c54554ef5",
+      "status": "machine"
+    },
+    "app:radiologyReport.use": {
+      "hash": "15e45f1ce74a",
       "status": "machine"
     },
     "app:revert.confirm": {
@@ -22150,6 +22818,30 @@
       "hash": "c284a4263831",
       "status": "machine"
     },
+    "pims:drafts.aiRadiology.discard": {
+      "hash": "04adc473bc3f",
+      "status": "machine"
+    },
+    "pims:drafts.aiRadiology.failed": {
+      "hash": "1e99dd054727",
+      "status": "machine"
+    },
+    "pims:drafts.aiRadiology.generate": {
+      "hash": "bfd47f77dfa7",
+      "status": "machine"
+    },
+    "pims:drafts.aiRadiology.hint": {
+      "hash": "03dba4a89673",
+      "status": "machine"
+    },
+    "pims:drafts.aiRadiology.preview": {
+      "hash": "f6c024d2bc06",
+      "status": "machine"
+    },
+    "pims:drafts.aiRadiology.use": {
+      "hash": "b85b030056af",
+      "status": "machine"
+    },
     "pims:drafts.attribution": {
       "hash": "d1e3da90dc94",
       "status": "machine"
@@ -22226,6 +22918,38 @@
       "hash": "8a60a14b0096",
       "status": "machine"
     },
+    "pims:drafts.instinct.blocked": {
+      "hash": "7267f9b09989",
+      "status": "machine"
+    },
+    "pims:drafts.instinct.checked": {
+      "hash": "48e54e997809",
+      "status": "machine"
+    },
+    "pims:drafts.instinct.compatibility": {
+      "hash": "0244e90036e6",
+      "status": "machine"
+    },
+    "pims:drafts.instinct.destination": {
+      "hash": "2ca8f55ef1d6",
+      "status": "machine"
+    },
+    "pims:drafts.instinct.prepare": {
+      "hash": "c1b8204656f6",
+      "status": "machine"
+    },
+    "pims:drafts.instinct.submit": {
+      "hash": "473f5c5a6e13",
+      "status": "machine"
+    },
+    "pims:drafts.instinct.submitted": {
+      "hash": "d72f1a0a0acd",
+      "status": "machine"
+    },
+    "pims:drafts.instinct.unknown": {
+      "hash": "98a960eb712d",
+      "status": "machine"
+    },
     "pims:drafts.kind": {
       "hash": "907b28418e5f",
       "status": "machine"
@@ -22256,6 +22980,62 @@
     },
     "pims:drafts.radiology": {
       "hash": "d89571996efc",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.append": {
+      "hash": "142848191038",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.blocked": {
+      "hash": "441a72a7a308",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.checked": {
+      "hash": "3afbca1e51bc",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.choose": {
+      "hash": "37f232b574a4",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.destination": {
+      "hash": "1e9b609cdc30",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.empty": {
+      "hash": "0c9ef11a74bc",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.fill": {
+      "hash": "baa993c10acf",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.filled": {
+      "hash": "ac2e4414a15b",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.option": {
+      "hash": "64a4a8883b0e",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.providers.radimal": {
+      "hash": "a0a63485cd2d",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.providers.vetology": {
+      "hash": "4982c6cae8f8",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.review": {
+      "hash": "8178ca4911a7",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.summary": {
+      "hash": "a41b3fba488c",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.unknown": {
+      "hash": "833ce9686897",
       "status": "machine"
     },
     "pims:drafts.refresh": {
@@ -22606,6 +23386,98 @@
       "hash": "bd3ab291b0ae",
       "status": "machine"
     },
+    "pims:noteAutofill.all": {
+      "hash": "71ecec88cebe",
+      "status": "machine"
+    },
+    "pims:noteAutofill.blocked": {
+      "hash": "e3753916dd93",
+      "status": "machine"
+    },
+    "pims:noteAutofill.chooseField": {
+      "hash": "f1ceaf17a2ca",
+      "status": "machine"
+    },
+    "pims:noteAutofill.chooseTab": {
+      "hash": "2ac0544983d7",
+      "status": "machine"
+    },
+    "pims:noteAutofill.close": {
+      "hash": "4abe35008b62",
+      "status": "machine"
+    },
+    "pims:noteAutofill.destination": {
+      "hash": "26f9e374e06d",
+      "status": "machine"
+    },
+    "pims:noteAutofill.expired": {
+      "hash": "7019a8ccb5e3",
+      "status": "machine"
+    },
+    "pims:noteAutofill.field": {
+      "hash": "f7782f1c7946",
+      "status": "machine"
+    },
+    "pims:noteAutofill.fill": {
+      "hash": "e0872c702651",
+      "status": "machine"
+    },
+    "pims:noteAutofill.filled": {
+      "hash": "754cfcfde561",
+      "status": "machine"
+    },
+    "pims:noteAutofill.hint": {
+      "hash": "f78eb7aaa10d",
+      "status": "machine"
+    },
+    "pims:noteAutofill.inspect": {
+      "hash": "cf2bff5bf7d6",
+      "status": "machine"
+    },
+    "pims:noteAutofill.noFields": {
+      "hash": "a3cb076917a5",
+      "status": "machine"
+    },
+    "pims:noteAutofill.noTabs": {
+      "hash": "429cbbb794e3",
+      "status": "machine"
+    },
+    "pims:noteAutofill.open": {
+      "hash": "65ccbee65525",
+      "status": "machine"
+    },
+    "pims:noteAutofill.prepare": {
+      "hash": "97f0fa37753e",
+      "status": "machine"
+    },
+    "pims:noteAutofill.preparedField": {
+      "hash": "e00f65ff44f0",
+      "status": "machine"
+    },
+    "pims:noteAutofill.preview": {
+      "hash": "2d75d34e5262",
+      "status": "machine"
+    },
+    "pims:noteAutofill.review": {
+      "hash": "5c20a6dd3851",
+      "status": "machine"
+    },
+    "pims:noteAutofill.source": {
+      "hash": "9ddee823d43b",
+      "status": "machine"
+    },
+    "pims:noteAutofill.tab": {
+      "hash": "9a8f35b9ff1e",
+      "status": "machine"
+    },
+    "pims:noteAutofill.unknown": {
+      "hash": "e9a8756b16ef",
+      "status": "machine"
+    },
+    "pims:noteAutofill.working": {
+      "hash": "5e3adf51dfae",
+      "status": "machine"
+    },
     "pims:panel.chart.back": {
       "hash": "d1915d48235a",
       "status": "machine"
@@ -22800,6 +23672,14 @@
     },
     "pims:picture.pre": {
       "hash": "888401626a4f",
+      "status": "machine"
+    },
+    "pims:results.editorSubmitted": {
+      "hash": "9d722d406974",
+      "status": "machine"
+    },
+    "pims:results.editorSummary": {
+      "hash": "909f52b88d1e",
       "status": "machine"
     },
     "pims:results.saved": {
@@ -23062,8 +23942,36 @@
       "hash": "ce0e9c7a7afd",
       "status": "machine"
     },
+    "pims:setup.configuredActive": {
+      "hash": "1ac9189d1673",
+      "status": "machine"
+    },
+    "pims:setup.configuredChecked": {
+      "hash": "364de506d81f",
+      "status": "machine"
+    },
+    "pims:setup.configuredConfirmed": {
+      "hash": "8ea27038eb77",
+      "status": "machine"
+    },
+    "pims:setup.configuredHint": {
+      "hash": "ce3527bdde9a",
+      "status": "machine"
+    },
+    "pims:setup.configuredTenant": {
+      "hash": "70411857aa94",
+      "status": "machine"
+    },
+    "pims:setup.configuredUnverified": {
+      "hash": "1b2c4b54eae7",
+      "status": "machine"
+    },
     "pims:setup.confirm": {
       "hash": "4bddfff95427",
+      "status": "machine"
+    },
+    "pims:setup.confirmConfigured": {
+      "hash": "76bc619be19a",
       "status": "machine"
     },
     "pims:setup.confirmHint": {
@@ -23180,6 +24088,14 @@
     },
     "pims:setup.reviewLink.patients": {
       "hash": "8238a2026e94",
+      "status": "machine"
+    },
+    "pims:setup.reviewTab": {
+      "hash": "597d47c89bfe",
+      "status": "machine"
+    },
+    "pims:setup.reviewedTab": {
+      "hash": "2572e80d5ebc",
       "status": "machine"
     },
     "pims:setup.selectChart": {
@@ -23300,6 +24216,18 @@
     },
     "pims:uploadReview.fingerprint": {
       "hash": "599571918993",
+      "status": "machine"
+    },
+    "pims:uploadReview.imageDestination": {
+      "hash": "e885c3909f1f",
+      "status": "machine"
+    },
+    "pims:uploadReview.imageSource": {
+      "hash": "8024d8744472",
+      "status": "machine"
+    },
+    "pims:uploadReview.imageTitle": {
+      "hash": "9926a0cacd69",
       "status": "machine"
     },
     "pims:uploadReview.next": {
@@ -27140,6 +28068,210 @@
       "hash": "765d13d0fbd7",
       "status": "machine"
     },
+    "app:radiologyReport.aiFeatureHint": {
+      "hash": "6afeb2605ef2",
+      "status": "machine"
+    },
+    "app:radiologyReport.aiFeatureLabel": {
+      "hash": "12799147f6a9",
+      "status": "machine"
+    },
+    "app:radiologyReport.aiUnavailable": {
+      "hash": "250d2b5581c5",
+      "status": "machine"
+    },
+    "app:radiologyReport.attribution": {
+      "hash": "355e5879a1cb",
+      "status": "machine"
+    },
+    "app:radiologyReport.body": {
+      "hash": "0cd7bbefe7b8",
+      "status": "machine"
+    },
+    "app:radiologyReport.checked": {
+      "hash": "83c05d746196",
+      "status": "machine"
+    },
+    "app:radiologyReport.context": {
+      "hash": "ed15fa58138a",
+      "status": "machine"
+    },
+    "app:radiologyReport.copied": {
+      "hash": "0a9184fccf20",
+      "status": "machine"
+    },
+    "app:radiologyReport.copy": {
+      "hash": "ffedb1c8424a",
+      "status": "machine"
+    },
+    "app:radiologyReport.copyPrompt": {
+      "hash": "b07d78883bef",
+      "status": "machine"
+    },
+    "app:radiologyReport.copyPromptShown": {
+      "hash": "db8dcb03361e",
+      "status": "machine"
+    },
+    "app:radiologyReport.description": {
+      "hash": "c8706f2c6446",
+      "status": "machine"
+    },
+    "app:radiologyReport.discard": {
+      "hash": "cb30147eec19",
+      "status": "machine"
+    },
+    "app:radiologyReport.downloaded": {
+      "hash": "b72dda686036",
+      "status": "machine"
+    },
+    "app:radiologyReport.draftEmpty": {
+      "hash": "e1ffb700b3ec",
+      "status": "machine"
+    },
+    "app:radiologyReport.exportFailed": {
+      "hash": "c6a2b49d60ec",
+      "status": "machine"
+    },
+    "app:radiologyReport.filename": {
+      "hash": "e7a6e564bb39",
+      "status": "machine"
+    },
+    "app:radiologyReport.findingsPlaceholder": {
+      "hash": "ad5b666bf1ab",
+      "status": "machine"
+    },
+    "app:radiologyReport.generate": {
+      "hash": "12696858926c",
+      "status": "machine"
+    },
+    "app:radiologyReport.generateFailed": {
+      "hash": "930753b0cfc6",
+      "status": "machine"
+    },
+    "app:radiologyReport.generating": {
+      "hash": "9b3496f7d803",
+      "status": "machine"
+    },
+    "app:radiologyReport.headingFindings": {
+      "hash": "de45e3646b2b",
+      "status": "machine"
+    },
+    "app:radiologyReport.headingHistory": {
+      "hash": "00c1e23a2689",
+      "status": "machine"
+    },
+    "app:radiologyReport.headingImpression": {
+      "hash": "fb91e781f3e9",
+      "status": "machine"
+    },
+    "app:radiologyReport.headingQuestion": {
+      "hash": "f93f000c7d22",
+      "status": "machine"
+    },
+    "app:radiologyReport.headingRecommendations": {
+      "hash": "1b550a70d58f",
+      "status": "machine"
+    },
+    "app:radiologyReport.headingTechnique": {
+      "hash": "47289b3c35f1",
+      "status": "machine"
+    },
+    "app:radiologyReport.language": {
+      "hash": "b67c4fe5f96f",
+      "status": "machine"
+    },
+    "app:radiologyReport.manual": {
+      "hash": "225b9cd056b0",
+      "status": "machine"
+    },
+    "app:radiologyReport.missingContext": {
+      "hash": "165d8209cb20",
+      "status": "machine"
+    },
+    "app:radiologyReport.modelLabel": {
+      "hash": "af5a09328762",
+      "status": "machine"
+    },
+    "app:radiologyReport.modelUpdated": {
+      "hash": "8154b38af260",
+      "status": "machine"
+    },
+    "app:radiologyReport.notRecorded": {
+      "hash": "b37c7879f6c3",
+      "status": "machine"
+    },
+    "app:radiologyReport.pdf": {
+      "hash": "6183be0883d2",
+      "status": "machine"
+    },
+    "app:radiologyReport.pdfFont": {
+      "hash": "90a2c22dadda",
+      "status": "machine"
+    },
+    "app:radiologyReport.pdfLimit": {
+      "hash": "47474a5bf83d",
+      "status": "machine"
+    },
+    "app:radiologyReport.pdfUnsupported": {
+      "hash": "03d495b900f3",
+      "status": "machine"
+    },
+    "app:radiologyReport.preview": {
+      "hash": "7d99a6eabd4d",
+      "status": "machine"
+    },
+    "app:radiologyReport.previewStale": {
+      "hash": "47da83919977",
+      "status": "machine"
+    },
+    "app:radiologyReport.radiologyHistory": {
+      "hash": "40f03b2b7abc",
+      "status": "machine"
+    },
+    "app:radiologyReport.radiologyQuestion": {
+      "hash": "cf868e3899c4",
+      "status": "machine"
+    },
+    "app:radiologyReport.radiologyTechnique": {
+      "hash": "c13088734702",
+      "status": "machine"
+    },
+    "app:radiologyReport.reviewed": {
+      "hash": "8857054975a6",
+      "status": "machine"
+    },
+    "app:radiologyReport.shared": {
+      "hash": "6a03074b82c9",
+      "status": "machine"
+    },
+    "app:radiologyReport.sourceRequired": {
+      "hash": "997f4ef95d43",
+      "status": "machine"
+    },
+    "app:radiologyReport.sourceTooLarge": {
+      "hash": "805961ce43b9",
+      "status": "machine"
+    },
+    "app:radiologyReport.stale": {
+      "hash": "4cb811fb73c8",
+      "status": "machine"
+    },
+    "app:radiologyReport.title": {
+      "hash": "08b4250df82d",
+      "status": "machine"
+    },
+    "app:radiologyReport.undo": {
+      "hash": "69ef9bf0c498",
+      "status": "machine"
+    },
+    "app:radiologyReport.unreviewed": {
+      "hash": "302c54554ef5",
+      "status": "machine"
+    },
+    "app:radiologyReport.use": {
+      "hash": "15e45f1ce74a",
+      "status": "machine"
+    },
     "app:revert.confirm": {
       "hash": "0c202c1c284e",
       "status": "machine"
@@ -35416,6 +36548,30 @@
       "hash": "c284a4263831",
       "status": "machine"
     },
+    "pims:drafts.aiRadiology.discard": {
+      "hash": "04adc473bc3f",
+      "status": "machine"
+    },
+    "pims:drafts.aiRadiology.failed": {
+      "hash": "1e99dd054727",
+      "status": "machine"
+    },
+    "pims:drafts.aiRadiology.generate": {
+      "hash": "bfd47f77dfa7",
+      "status": "machine"
+    },
+    "pims:drafts.aiRadiology.hint": {
+      "hash": "03dba4a89673",
+      "status": "machine"
+    },
+    "pims:drafts.aiRadiology.preview": {
+      "hash": "f6c024d2bc06",
+      "status": "machine"
+    },
+    "pims:drafts.aiRadiology.use": {
+      "hash": "b85b030056af",
+      "status": "machine"
+    },
     "pims:drafts.attribution": {
       "hash": "d1e3da90dc94",
       "status": "machine"
@@ -35492,6 +36648,38 @@
       "hash": "8a60a14b0096",
       "status": "machine"
     },
+    "pims:drafts.instinct.blocked": {
+      "hash": "7267f9b09989",
+      "status": "machine"
+    },
+    "pims:drafts.instinct.checked": {
+      "hash": "48e54e997809",
+      "status": "machine"
+    },
+    "pims:drafts.instinct.compatibility": {
+      "hash": "0244e90036e6",
+      "status": "machine"
+    },
+    "pims:drafts.instinct.destination": {
+      "hash": "2ca8f55ef1d6",
+      "status": "machine"
+    },
+    "pims:drafts.instinct.prepare": {
+      "hash": "c1b8204656f6",
+      "status": "machine"
+    },
+    "pims:drafts.instinct.submit": {
+      "hash": "473f5c5a6e13",
+      "status": "machine"
+    },
+    "pims:drafts.instinct.submitted": {
+      "hash": "d72f1a0a0acd",
+      "status": "machine"
+    },
+    "pims:drafts.instinct.unknown": {
+      "hash": "98a960eb712d",
+      "status": "machine"
+    },
     "pims:drafts.kind": {
       "hash": "907b28418e5f",
       "status": "machine"
@@ -35522,6 +36710,62 @@
     },
     "pims:drafts.radiology": {
       "hash": "d89571996efc",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.append": {
+      "hash": "142848191038",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.blocked": {
+      "hash": "441a72a7a308",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.checked": {
+      "hash": "3afbca1e51bc",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.choose": {
+      "hash": "37f232b574a4",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.destination": {
+      "hash": "1e9b609cdc30",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.empty": {
+      "hash": "0c9ef11a74bc",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.fill": {
+      "hash": "baa993c10acf",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.filled": {
+      "hash": "ac2e4414a15b",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.option": {
+      "hash": "64a4a8883b0e",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.providers.radimal": {
+      "hash": "a0a63485cd2d",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.providers.vetology": {
+      "hash": "4982c6cae8f8",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.review": {
+      "hash": "8178ca4911a7",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.summary": {
+      "hash": "a41b3fba488c",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.unknown": {
+      "hash": "833ce9686897",
       "status": "machine"
     },
     "pims:drafts.refresh": {
@@ -35872,6 +37116,98 @@
       "hash": "bd3ab291b0ae",
       "status": "machine"
     },
+    "pims:noteAutofill.all": {
+      "hash": "71ecec88cebe",
+      "status": "machine"
+    },
+    "pims:noteAutofill.blocked": {
+      "hash": "e3753916dd93",
+      "status": "machine"
+    },
+    "pims:noteAutofill.chooseField": {
+      "hash": "f1ceaf17a2ca",
+      "status": "machine"
+    },
+    "pims:noteAutofill.chooseTab": {
+      "hash": "2ac0544983d7",
+      "status": "machine"
+    },
+    "pims:noteAutofill.close": {
+      "hash": "4abe35008b62",
+      "status": "machine"
+    },
+    "pims:noteAutofill.destination": {
+      "hash": "26f9e374e06d",
+      "status": "machine"
+    },
+    "pims:noteAutofill.expired": {
+      "hash": "7019a8ccb5e3",
+      "status": "machine"
+    },
+    "pims:noteAutofill.field": {
+      "hash": "f7782f1c7946",
+      "status": "machine"
+    },
+    "pims:noteAutofill.fill": {
+      "hash": "e0872c702651",
+      "status": "machine"
+    },
+    "pims:noteAutofill.filled": {
+      "hash": "754cfcfde561",
+      "status": "machine"
+    },
+    "pims:noteAutofill.hint": {
+      "hash": "f78eb7aaa10d",
+      "status": "machine"
+    },
+    "pims:noteAutofill.inspect": {
+      "hash": "cf2bff5bf7d6",
+      "status": "machine"
+    },
+    "pims:noteAutofill.noFields": {
+      "hash": "a3cb076917a5",
+      "status": "machine"
+    },
+    "pims:noteAutofill.noTabs": {
+      "hash": "429cbbb794e3",
+      "status": "machine"
+    },
+    "pims:noteAutofill.open": {
+      "hash": "65ccbee65525",
+      "status": "machine"
+    },
+    "pims:noteAutofill.prepare": {
+      "hash": "97f0fa37753e",
+      "status": "machine"
+    },
+    "pims:noteAutofill.preparedField": {
+      "hash": "e00f65ff44f0",
+      "status": "machine"
+    },
+    "pims:noteAutofill.preview": {
+      "hash": "2d75d34e5262",
+      "status": "machine"
+    },
+    "pims:noteAutofill.review": {
+      "hash": "5c20a6dd3851",
+      "status": "machine"
+    },
+    "pims:noteAutofill.source": {
+      "hash": "9ddee823d43b",
+      "status": "machine"
+    },
+    "pims:noteAutofill.tab": {
+      "hash": "9a8f35b9ff1e",
+      "status": "machine"
+    },
+    "pims:noteAutofill.unknown": {
+      "hash": "e9a8756b16ef",
+      "status": "machine"
+    },
+    "pims:noteAutofill.working": {
+      "hash": "5e3adf51dfae",
+      "status": "machine"
+    },
     "pims:panel.chart.back": {
       "hash": "d1915d48235a",
       "status": "machine"
@@ -36066,6 +37402,14 @@
     },
     "pims:picture.pre": {
       "hash": "888401626a4f",
+      "status": "machine"
+    },
+    "pims:results.editorSubmitted": {
+      "hash": "9d722d406974",
+      "status": "machine"
+    },
+    "pims:results.editorSummary": {
+      "hash": "909f52b88d1e",
       "status": "machine"
     },
     "pims:results.saved": {
@@ -36328,8 +37672,36 @@
       "hash": "ce0e9c7a7afd",
       "status": "machine"
     },
+    "pims:setup.configuredActive": {
+      "hash": "1ac9189d1673",
+      "status": "machine"
+    },
+    "pims:setup.configuredChecked": {
+      "hash": "364de506d81f",
+      "status": "machine"
+    },
+    "pims:setup.configuredConfirmed": {
+      "hash": "8ea27038eb77",
+      "status": "machine"
+    },
+    "pims:setup.configuredHint": {
+      "hash": "ce3527bdde9a",
+      "status": "machine"
+    },
+    "pims:setup.configuredTenant": {
+      "hash": "70411857aa94",
+      "status": "machine"
+    },
+    "pims:setup.configuredUnverified": {
+      "hash": "1b2c4b54eae7",
+      "status": "machine"
+    },
     "pims:setup.confirm": {
       "hash": "4bddfff95427",
+      "status": "machine"
+    },
+    "pims:setup.confirmConfigured": {
+      "hash": "76bc619be19a",
       "status": "machine"
     },
     "pims:setup.confirmHint": {
@@ -36446,6 +37818,14 @@
     },
     "pims:setup.reviewLink.patients": {
       "hash": "8238a2026e94",
+      "status": "machine"
+    },
+    "pims:setup.reviewTab": {
+      "hash": "597d47c89bfe",
+      "status": "machine"
+    },
+    "pims:setup.reviewedTab": {
+      "hash": "2572e80d5ebc",
       "status": "machine"
     },
     "pims:setup.selectChart": {
@@ -36566,6 +37946,18 @@
     },
     "pims:uploadReview.fingerprint": {
       "hash": "599571918993",
+      "status": "machine"
+    },
+    "pims:uploadReview.imageDestination": {
+      "hash": "e885c3909f1f",
+      "status": "machine"
+    },
+    "pims:uploadReview.imageSource": {
+      "hash": "8024d8744472",
+      "status": "machine"
+    },
+    "pims:uploadReview.imageTitle": {
+      "hash": "9926a0cacd69",
       "status": "machine"
     },
     "pims:uploadReview.next": {
@@ -40406,6 +41798,210 @@
       "hash": "765d13d0fbd7",
       "status": "machine"
     },
+    "app:radiologyReport.aiFeatureHint": {
+      "hash": "6afeb2605ef2",
+      "status": "machine"
+    },
+    "app:radiologyReport.aiFeatureLabel": {
+      "hash": "12799147f6a9",
+      "status": "machine"
+    },
+    "app:radiologyReport.aiUnavailable": {
+      "hash": "250d2b5581c5",
+      "status": "machine"
+    },
+    "app:radiologyReport.attribution": {
+      "hash": "355e5879a1cb",
+      "status": "machine"
+    },
+    "app:radiologyReport.body": {
+      "hash": "0cd7bbefe7b8",
+      "status": "machine"
+    },
+    "app:radiologyReport.checked": {
+      "hash": "83c05d746196",
+      "status": "machine"
+    },
+    "app:radiologyReport.context": {
+      "hash": "ed15fa58138a",
+      "status": "machine"
+    },
+    "app:radiologyReport.copied": {
+      "hash": "0a9184fccf20",
+      "status": "machine"
+    },
+    "app:radiologyReport.copy": {
+      "hash": "ffedb1c8424a",
+      "status": "machine"
+    },
+    "app:radiologyReport.copyPrompt": {
+      "hash": "b07d78883bef",
+      "status": "machine"
+    },
+    "app:radiologyReport.copyPromptShown": {
+      "hash": "db8dcb03361e",
+      "status": "machine"
+    },
+    "app:radiologyReport.description": {
+      "hash": "c8706f2c6446",
+      "status": "machine"
+    },
+    "app:radiologyReport.discard": {
+      "hash": "cb30147eec19",
+      "status": "machine"
+    },
+    "app:radiologyReport.downloaded": {
+      "hash": "b72dda686036",
+      "status": "machine"
+    },
+    "app:radiologyReport.draftEmpty": {
+      "hash": "e1ffb700b3ec",
+      "status": "machine"
+    },
+    "app:radiologyReport.exportFailed": {
+      "hash": "c6a2b49d60ec",
+      "status": "machine"
+    },
+    "app:radiologyReport.filename": {
+      "hash": "e7a6e564bb39",
+      "status": "machine"
+    },
+    "app:radiologyReport.findingsPlaceholder": {
+      "hash": "ad5b666bf1ab",
+      "status": "machine"
+    },
+    "app:radiologyReport.generate": {
+      "hash": "12696858926c",
+      "status": "machine"
+    },
+    "app:radiologyReport.generateFailed": {
+      "hash": "930753b0cfc6",
+      "status": "machine"
+    },
+    "app:radiologyReport.generating": {
+      "hash": "9b3496f7d803",
+      "status": "machine"
+    },
+    "app:radiologyReport.headingFindings": {
+      "hash": "de45e3646b2b",
+      "status": "machine"
+    },
+    "app:radiologyReport.headingHistory": {
+      "hash": "00c1e23a2689",
+      "status": "machine"
+    },
+    "app:radiologyReport.headingImpression": {
+      "hash": "fb91e781f3e9",
+      "status": "machine"
+    },
+    "app:radiologyReport.headingQuestion": {
+      "hash": "f93f000c7d22",
+      "status": "machine"
+    },
+    "app:radiologyReport.headingRecommendations": {
+      "hash": "1b550a70d58f",
+      "status": "machine"
+    },
+    "app:radiologyReport.headingTechnique": {
+      "hash": "47289b3c35f1",
+      "status": "machine"
+    },
+    "app:radiologyReport.language": {
+      "hash": "b67c4fe5f96f",
+      "status": "machine"
+    },
+    "app:radiologyReport.manual": {
+      "hash": "225b9cd056b0",
+      "status": "machine"
+    },
+    "app:radiologyReport.missingContext": {
+      "hash": "165d8209cb20",
+      "status": "machine"
+    },
+    "app:radiologyReport.modelLabel": {
+      "hash": "af5a09328762",
+      "status": "machine"
+    },
+    "app:radiologyReport.modelUpdated": {
+      "hash": "8154b38af260",
+      "status": "machine"
+    },
+    "app:radiologyReport.notRecorded": {
+      "hash": "b37c7879f6c3",
+      "status": "machine"
+    },
+    "app:radiologyReport.pdf": {
+      "hash": "6183be0883d2",
+      "status": "machine"
+    },
+    "app:radiologyReport.pdfFont": {
+      "hash": "90a2c22dadda",
+      "status": "machine"
+    },
+    "app:radiologyReport.pdfLimit": {
+      "hash": "47474a5bf83d",
+      "status": "machine"
+    },
+    "app:radiologyReport.pdfUnsupported": {
+      "hash": "03d495b900f3",
+      "status": "machine"
+    },
+    "app:radiologyReport.preview": {
+      "hash": "7d99a6eabd4d",
+      "status": "machine"
+    },
+    "app:radiologyReport.previewStale": {
+      "hash": "47da83919977",
+      "status": "machine"
+    },
+    "app:radiologyReport.radiologyHistory": {
+      "hash": "40f03b2b7abc",
+      "status": "machine"
+    },
+    "app:radiologyReport.radiologyQuestion": {
+      "hash": "cf868e3899c4",
+      "status": "machine"
+    },
+    "app:radiologyReport.radiologyTechnique": {
+      "hash": "c13088734702",
+      "status": "machine"
+    },
+    "app:radiologyReport.reviewed": {
+      "hash": "8857054975a6",
+      "status": "machine"
+    },
+    "app:radiologyReport.shared": {
+      "hash": "6a03074b82c9",
+      "status": "machine"
+    },
+    "app:radiologyReport.sourceRequired": {
+      "hash": "997f4ef95d43",
+      "status": "machine"
+    },
+    "app:radiologyReport.sourceTooLarge": {
+      "hash": "805961ce43b9",
+      "status": "machine"
+    },
+    "app:radiologyReport.stale": {
+      "hash": "4cb811fb73c8",
+      "status": "machine"
+    },
+    "app:radiologyReport.title": {
+      "hash": "08b4250df82d",
+      "status": "machine"
+    },
+    "app:radiologyReport.undo": {
+      "hash": "69ef9bf0c498",
+      "status": "machine"
+    },
+    "app:radiologyReport.unreviewed": {
+      "hash": "302c54554ef5",
+      "status": "machine"
+    },
+    "app:radiologyReport.use": {
+      "hash": "15e45f1ce74a",
+      "status": "machine"
+    },
     "app:revert.confirm": {
       "hash": "0c202c1c284e",
       "status": "machine"
@@ -48682,6 +50278,30 @@
       "hash": "c284a4263831",
       "status": "machine"
     },
+    "pims:drafts.aiRadiology.discard": {
+      "hash": "04adc473bc3f",
+      "status": "machine"
+    },
+    "pims:drafts.aiRadiology.failed": {
+      "hash": "1e99dd054727",
+      "status": "machine"
+    },
+    "pims:drafts.aiRadiology.generate": {
+      "hash": "bfd47f77dfa7",
+      "status": "machine"
+    },
+    "pims:drafts.aiRadiology.hint": {
+      "hash": "03dba4a89673",
+      "status": "machine"
+    },
+    "pims:drafts.aiRadiology.preview": {
+      "hash": "f6c024d2bc06",
+      "status": "machine"
+    },
+    "pims:drafts.aiRadiology.use": {
+      "hash": "b85b030056af",
+      "status": "machine"
+    },
     "pims:drafts.attribution": {
       "hash": "d1e3da90dc94",
       "status": "machine"
@@ -48758,6 +50378,38 @@
       "hash": "8a60a14b0096",
       "status": "machine"
     },
+    "pims:drafts.instinct.blocked": {
+      "hash": "7267f9b09989",
+      "status": "machine"
+    },
+    "pims:drafts.instinct.checked": {
+      "hash": "48e54e997809",
+      "status": "machine"
+    },
+    "pims:drafts.instinct.compatibility": {
+      "hash": "0244e90036e6",
+      "status": "machine"
+    },
+    "pims:drafts.instinct.destination": {
+      "hash": "2ca8f55ef1d6",
+      "status": "machine"
+    },
+    "pims:drafts.instinct.prepare": {
+      "hash": "c1b8204656f6",
+      "status": "machine"
+    },
+    "pims:drafts.instinct.submit": {
+      "hash": "473f5c5a6e13",
+      "status": "machine"
+    },
+    "pims:drafts.instinct.submitted": {
+      "hash": "d72f1a0a0acd",
+      "status": "machine"
+    },
+    "pims:drafts.instinct.unknown": {
+      "hash": "98a960eb712d",
+      "status": "machine"
+    },
     "pims:drafts.kind": {
       "hash": "907b28418e5f",
       "status": "machine"
@@ -48788,6 +50440,62 @@
     },
     "pims:drafts.radiology": {
       "hash": "d89571996efc",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.append": {
+      "hash": "142848191038",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.blocked": {
+      "hash": "441a72a7a308",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.checked": {
+      "hash": "3afbca1e51bc",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.choose": {
+      "hash": "37f232b574a4",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.destination": {
+      "hash": "1e9b609cdc30",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.empty": {
+      "hash": "0c9ef11a74bc",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.fill": {
+      "hash": "baa993c10acf",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.filled": {
+      "hash": "ac2e4414a15b",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.option": {
+      "hash": "64a4a8883b0e",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.providers.radimal": {
+      "hash": "a0a63485cd2d",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.providers.vetology": {
+      "hash": "4982c6cae8f8",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.review": {
+      "hash": "8178ca4911a7",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.summary": {
+      "hash": "a41b3fba488c",
+      "status": "machine"
+    },
+    "pims:drafts.radiologyAutofill.unknown": {
+      "hash": "833ce9686897",
       "status": "machine"
     },
     "pims:drafts.refresh": {
@@ -49138,6 +50846,98 @@
       "hash": "bd3ab291b0ae",
       "status": "machine"
     },
+    "pims:noteAutofill.all": {
+      "hash": "71ecec88cebe",
+      "status": "machine"
+    },
+    "pims:noteAutofill.blocked": {
+      "hash": "e3753916dd93",
+      "status": "machine"
+    },
+    "pims:noteAutofill.chooseField": {
+      "hash": "f1ceaf17a2ca",
+      "status": "machine"
+    },
+    "pims:noteAutofill.chooseTab": {
+      "hash": "2ac0544983d7",
+      "status": "machine"
+    },
+    "pims:noteAutofill.close": {
+      "hash": "4abe35008b62",
+      "status": "machine"
+    },
+    "pims:noteAutofill.destination": {
+      "hash": "26f9e374e06d",
+      "status": "machine"
+    },
+    "pims:noteAutofill.expired": {
+      "hash": "7019a8ccb5e3",
+      "status": "machine"
+    },
+    "pims:noteAutofill.field": {
+      "hash": "f7782f1c7946",
+      "status": "machine"
+    },
+    "pims:noteAutofill.fill": {
+      "hash": "e0872c702651",
+      "status": "machine"
+    },
+    "pims:noteAutofill.filled": {
+      "hash": "754cfcfde561",
+      "status": "machine"
+    },
+    "pims:noteAutofill.hint": {
+      "hash": "f78eb7aaa10d",
+      "status": "machine"
+    },
+    "pims:noteAutofill.inspect": {
+      "hash": "cf2bff5bf7d6",
+      "status": "machine"
+    },
+    "pims:noteAutofill.noFields": {
+      "hash": "a3cb076917a5",
+      "status": "machine"
+    },
+    "pims:noteAutofill.noTabs": {
+      "hash": "429cbbb794e3",
+      "status": "machine"
+    },
+    "pims:noteAutofill.open": {
+      "hash": "65ccbee65525",
+      "status": "machine"
+    },
+    "pims:noteAutofill.prepare": {
+      "hash": "97f0fa37753e",
+      "status": "machine"
+    },
+    "pims:noteAutofill.preparedField": {
+      "hash": "e00f65ff44f0",
+      "status": "machine"
+    },
+    "pims:noteAutofill.preview": {
+      "hash": "2d75d34e5262",
+      "status": "machine"
+    },
+    "pims:noteAutofill.review": {
+      "hash": "5c20a6dd3851",
+      "status": "machine"
+    },
+    "pims:noteAutofill.source": {
+      "hash": "9ddee823d43b",
+      "status": "machine"
+    },
+    "pims:noteAutofill.tab": {
+      "hash": "9a8f35b9ff1e",
+      "status": "machine"
+    },
+    "pims:noteAutofill.unknown": {
+      "hash": "e9a8756b16ef",
+      "status": "machine"
+    },
+    "pims:noteAutofill.working": {
+      "hash": "5e3adf51dfae",
+      "status": "machine"
+    },
     "pims:panel.chart.back": {
       "hash": "d1915d48235a",
       "status": "machine"
@@ -49332,6 +51132,14 @@
     },
     "pims:picture.pre": {
       "hash": "888401626a4f",
+      "status": "machine"
+    },
+    "pims:results.editorSubmitted": {
+      "hash": "9d722d406974",
+      "status": "machine"
+    },
+    "pims:results.editorSummary": {
+      "hash": "909f52b88d1e",
       "status": "machine"
     },
     "pims:results.saved": {
@@ -49594,8 +51402,36 @@
       "hash": "ce0e9c7a7afd",
       "status": "machine"
     },
+    "pims:setup.configuredActive": {
+      "hash": "1ac9189d1673",
+      "status": "machine"
+    },
+    "pims:setup.configuredChecked": {
+      "hash": "364de506d81f",
+      "status": "machine"
+    },
+    "pims:setup.configuredConfirmed": {
+      "hash": "8ea27038eb77",
+      "status": "machine"
+    },
+    "pims:setup.configuredHint": {
+      "hash": "ce3527bdde9a",
+      "status": "machine"
+    },
+    "pims:setup.configuredTenant": {
+      "hash": "70411857aa94",
+      "status": "machine"
+    },
+    "pims:setup.configuredUnverified": {
+      "hash": "1b2c4b54eae7",
+      "status": "machine"
+    },
     "pims:setup.confirm": {
       "hash": "4bddfff95427",
+      "status": "machine"
+    },
+    "pims:setup.confirmConfigured": {
+      "hash": "76bc619be19a",
       "status": "machine"
     },
     "pims:setup.confirmHint": {
@@ -49712,6 +51548,14 @@
     },
     "pims:setup.reviewLink.patients": {
       "hash": "8238a2026e94",
+      "status": "machine"
+    },
+    "pims:setup.reviewTab": {
+      "hash": "597d47c89bfe",
+      "status": "machine"
+    },
+    "pims:setup.reviewedTab": {
+      "hash": "2572e80d5ebc",
       "status": "machine"
     },
     "pims:setup.selectChart": {
@@ -49832,6 +51676,18 @@
     },
     "pims:uploadReview.fingerprint": {
       "hash": "599571918993",
+      "status": "machine"
+    },
+    "pims:uploadReview.imageDestination": {
+      "hash": "e885c3909f1f",
+      "status": "machine"
+    },
+    "pims:uploadReview.imageSource": {
+      "hash": "8024d8744472",
+      "status": "machine"
+    },
+    "pims:uploadReview.imageTitle": {
+      "hash": "9926a0cacd69",
       "status": "machine"
     },
     "pims:uploadReview.next": {

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import type { ChartSnapshot as PreviewSnapshot } from './PdfPreviewModal';
 import type { StoredRecordNote } from '../types';
 import type { RecordNote } from '../utils/recordNote';
-import { appointments, diagnose, inspect, physicalExam, ping, send, startChart, takePendingPatient, type PimsTransport } from '../utils/pims/extensionBridge';
+import { appointments, diagnose, inspect, instinctSubmission, radiologyAutofill, noteAutofill, physicalExam, ping, send, startChart, takePendingPatient, type PimsTransport } from '../utils/pims/extensionBridge';
 import { renderChartPicture } from '../utils/pims/chartPicture';
 import { usePimsSend } from '../hooks/usePimsSend';
 import { useModalFocus } from '../hooks/useModalFocus';
@@ -14,11 +14,13 @@ import { CopyActions } from './pims/CopyActions';
 import { PimsDrafts } from './pims/PimsDrafts';
 import { PimsImages } from './pims/PimsImages';
 import { PimsExam } from './pims/PimsExam';
+import { PimsNoteAutofill } from './pims/PimsNoteAutofill';
 import type { SelectedImageTransfer } from '../utils/pims/images';
 import { PimsUploadReview } from './pims/PimsUploadReview';
 import { DiagnosticLink, SendResults } from './pims/SendResults';
 
 export interface SendToEzyvetDialogProps {
+  aiEnabled?: boolean;
   open: boolean;
   onClose: () => void;
   /** The generated note (in `stored.lng` when there is a stored note, so it can be split). */
@@ -38,7 +40,7 @@ export interface SendToEzyvetDialogProps {
 }
 
 // Built here (not imported as `externalTransport`) from the bridge's own functions.
-const transport: PimsTransport = { ping, inspect, send, diagnose, appointments, startChart, takePendingPatient, physicalExam };
+const transport: PimsTransport = { ping, inspect, send, diagnose, appointments, startChart, takePendingPatient, physicalExam, instinctSubmission, radiologyAutofill, noteAutofill };
 
 /**
  * Documents → Record note → Send to ezyVet. The send flow lives in `usePimsSend`; this is the
@@ -48,12 +50,13 @@ export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = (props) =>
   pimsRolloutEnabled() ? <EnabledSendToEzyvetDialog {...props} /> : null;
 
 const EnabledSendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
-  open, onClose, note, stored, chartSnapshot, chartId, patientName, patientNumber, sentAt, onSent,
+  open, onClose, note, stored, chartSnapshot, chartId, patientName, patientNumber, sentAt, onSent, aiEnabled = false,
 }) => {
   const { t } = useTranslation(['pims', 'media', 'app', 'forms', 'common']);
   const modalRef = useModalFocus(open);
   const [savedImage, setSavedImage] = React.useState<SelectedImageTransfer | null>(null);
   const [examBusy, setExamBusy] = React.useState(false);
+  const [noteBusy, setNoteBusy] = React.useState(false);
   const {
     phase, rows, split, sending, changedTarget, sentAtSettled, lastSentAt, nothingToSend,
     load, choose, resetToDefaults, doSend, copyDiagnostic, formatDate,
@@ -73,7 +76,7 @@ const EnabledSendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
     open,
   });
 
-  const busy = sending || examBusy;
+  const busy = sending || examBusy || noteBusy;
   if (!open) return null;
 
   const header = (
@@ -206,11 +209,15 @@ const EnabledSendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
         <div className="ai-settings-body">
           {body}
           {(phase.kind === 'ready' || phase.kind === 'results') && <PimsExam inspection={phase.info} transport={transport}
-            chartKey={chartId ?? ''} disabled={sending} onBusyChange={setExamBusy} onOpened={() => void load()} />}
+            chartKey={chartId ?? ''} disabled={sending || noteBusy} onBusyChange={setExamBusy} onOpened={() => void load()} />}
+          <PimsNoteAutofill note={note} stored={stored} chartKey={chartId ?? ''} patientName={patientName}
+            transport={transport} disabled={sending || examBusy} onBusyChange={setNoteBusy} />
           <CopyActions note={note} storedText={stored?.text ?? null} disabled={busy}
             renderImage={chartSnapshot ? () => renderChartPicture(chartSnapshot, { pre: t('pims:picture.pre'), post: t('pims:picture.post') }) : undefined} />
-          <PimsDrafts key={chartId} chartId={chartId} disabled={busy} />
-          <PimsImages chartId={chartId} disabled={busy} onTransferSelect={setSavedImage}
+          <PimsDrafts key={chartId} chartId={chartId} aiEnabled={aiEnabled} radiologyTransport={transport} disabled={busy}
+            instinctUpload={(phase.kind === 'ready' || phase.kind === 'results') && phase.info.tab && phase.info.status?.provider === 'instinct'
+              ? { tabId: phase.info.tab.id, transport } : undefined} />
+          <PimsImages editorTransfer chartId={chartId} disabled={busy} onTransferSelect={setSavedImage}
             canTransfer={phase.kind === 'ready' && phase.info.status?.state === 'writable'
               && (phase.info.status.provider ?? 'ezyvet') === 'ezyvet' && phase.info.fields.some(field => field.acceptsImage && field.kind !== 'email')} />
           <PimsUploadReview chartId={chartId} disabled={busy} />

@@ -3,7 +3,8 @@ import type { PimsId } from '../../extension/pims/types';
 import type { RpcClient } from './sync';
 
 export const SETUP_PROVIDERS: PimsId[] = ['ezyvet', 'daysmart', 'instinct', 'pulse', 'rhapsody', 'shepherd', 'vetspire'];
-export type SetupConnection = { id: string; provider: PimsId; origin: string; tenant_id: string; state: 'unverified' | 'active' | 'disabled'; revision: number };
+export const CONFIGURED_SYNC_PROVIDERS: PimsId[] = ['ezyvet', 'daysmart', 'instinct', 'pulse', 'shepherd'];
+export type SetupConnection = { binding_mode?: 'provider_observed' | 'user_confirmed'; id: string; provider: PimsId; origin: string; tenant_id: string; state: 'unverified' | 'active' | 'disabled'; revision: number };
 export type SetupContext = { connections: SetupConnection[]; members: { user_id: string }[] };
 export type SetupPatient = { patient_id: string; patient_key: string; version: number };
 export type SetupClinician = { clinician_id: string; user_id: string; version: number };
@@ -34,7 +35,8 @@ function validOrigin(origin: unknown, provider: unknown): boolean {
 }
 function validConnection(value: unknown): value is SetupConnection {
   return record(value) && text(value.id) && text(value.tenant_id) && validOrigin(value.origin, value.provider)
-    && version(value.revision) && ['unverified','active','disabled'].includes(String(value.state));
+    && version(value.revision) && ['unverified','active','disabled'].includes(String(value.state))
+    && (value.binding_mode === undefined || ['provider_observed', 'user_confirmed'].includes(String(value.binding_mode)));
 }
 function validPatient(value: unknown): value is SetupPatient {
   return record(value) && text(value.patient_id) && text(value.patient_key) && version(value.version);

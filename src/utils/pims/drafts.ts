@@ -1,3 +1,5 @@
+import { renderClinicalTextPdf } from '../textPdf';
+import { isRadiologyReportReviewed } from '../radiologyReportState';
 import i18n from '../../i18n';
 import { isAppLanguage, type AppLanguage } from '../../i18n/config';
 import { isChartSnapshot, normalizeSnapshot } from '../../hooks/useChartState';
@@ -102,6 +104,7 @@ export function composeDraft(source: DraftSource, kind: DraftKind, language: App
   if (!isChartSnapshot(source.data)) throw { code: 'source' };
   if (source.data.patientInfo.patientName !== source.patient_name || (source.data.patientInfo.patientNumber ?? '') !== source.patient_number) throw { code: 'source' };
   const snapshot = normalizeSnapshot(source.data);
+  if (kind === 'radiology' && isRadiologyReportReviewed(snapshot, language)) return snapshot.patientInfo.radiologyReport!;
   if (kind === 'history' && snapshot.recordNote?.lng === language && snapshot.recordNote.basedOn === recordNoteBasis(snapshot)) return snapshot.recordNote.text;
   const note = buildRecordNote(snapshot, recordNoteT(language));
   return recordNoteText(kind === 'radiology' ? { sections: note.sections.filter((section) => ['header', 'findings', 'radiographs'].includes(section.key)) } : note);
@@ -116,29 +119,5 @@ export function draftText(draft: ClinicalDraft): string {
 }
 
 export async function renderDraftPdf(draft: ClinicalDraft): Promise<Uint8Array<ArrayBuffer>> {
-  const { PDFDocument, StandardFonts } = await import('pdf-lib');
-  const document = await PDFDocument.create();
-  const font = await document.embedFont(StandardFonts.Helvetica);
-  const content = draftText(draft);
-  try { font.encodeText(content.replace(/\r?\n/g, '')); } catch { throw { code: 'font' }; }
-  document.setProducer('ToothOps');
-  document.setTitle(i18n.getFixedT(draft.language, 'pims')(`drafts.${draft.kind}`));
-  let page = document.addPage([595, 842]), position = 796;
-  const line = (value: string) => {
-    if (position < 46) {
-      if (document.getPageCount() >= 200) throw { code: 'limit' };
-      page = document.addPage([595, 842]); position = 796;
-    }
-    page.drawText(value, { x: 42, y: position, size: 11, font });
-    position -= 16;
-  };
-  for (const paragraph of content.split(/\r?\n/)) {
-    let buffer = '';
-    for (const character of paragraph) {
-      if (font.widthOfTextAtSize(buffer + character, 11) > 511) { line(buffer); buffer = ''; }
-      buffer += character;
-    }
-    line(buffer);
-  }
-  return new Uint8Array(await document.save());
+  return renderClinicalTextPdf(draftText(draft), i18n.getFixedT(draft.language, 'pims')(`drafts.${draft.kind}`));
 }

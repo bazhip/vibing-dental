@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createShepherdPhysicalExam, shepherd } from './shepherd';
 import type { AdapterContext } from './types';
+import { appointmentAction } from '../../utils/pims/appointmentCharts';
 
 function storage(): Storage {
   const values = new Map<string, string>();
@@ -354,6 +355,57 @@ describe('Shepherd static-source adapter', () => {
     expect(fetcher).not.toHaveBeenCalled();
   });
 
+  it.each(['{', 'null', '[]', '{}', '{"id":4}', '{"id":" "}'])('rejects malformed optional user information: %s', async (value) => {
+    sessionStorage.setItem('baasic-auth-token-pav2', '{"token":"original"}');
+    sessionStorage.setItem('baasic-user-info-pav2', value);
+    const fetcher = vi.fn().mockResolvedValue(json({ item: [] }));
+    expect(await shepherd.listAppointments('2026-11-16', context(fetcher))).toEqual({ ok: false, code: 'read_failed' });
+    expect(fetcher).not.toHaveBeenCalled();
+  });
+
+  it.each(['token', 'logout', 'malformed token', 'malformed user', 'user', 'user logout', 'user login', 'unreadable'])(
+    'stops later requests after session discontinuity: %s', async (change) => {
+      sessionStorage.setItem('baasic-auth-token-pav2', '{"token":"original"}');
+      if (change !== 'user login') sessionStorage.setItem('baasic-user-info-pav2', '{"id":"original-user"}');
+      const ctx = context();
+      const fetcher = vi.fn().mockImplementationOnce(async () => {
+        if (change === 'logout') sessionStorage.removeItem('baasic-auth-token-pav2');
+        else if (change === 'user logout') sessionStorage.removeItem('baasic-user-info-pav2');
+        else if (change === 'unreadable') ctx.sessionStorage = { getItem: () => { throw new TypeError(); } } as unknown as Storage;
+        else if (change === 'token' || change === 'malformed token') sessionStorage.setItem('baasic-auth-token-pav2', change === 'token' ? '{"token":"replacement"}' : '{');
+        else sessionStorage.setItem('baasic-user-info-pav2', change === 'malformed user' ? '{' : '{"id":"replacement-user"}');
+        return json({ item: [] });
+      }).mockResolvedValue(json({ item: [] }));
+      ctx.fetch = fetcher;
+      expect(await shepherd.listAppointments('2026-11-16', ctx)).toEqual({ ok: false, code: 'read_failed' });
+      expect(fetcher).toHaveBeenCalledOnce();
+    },
+  );
+
+  it.each(['fetch', 'body', 'error'])('stops provider pagination after a session switch during %s', async (stage) => {
+    sessionStorage.setItem('baasic-auth-token-pav2', '{"token":"original"}');
+    const body = vi.fn(async () => {
+      sessionStorage.setItem('baasic-auth-token-pav2', '{"token":"replacement"}');
+      return { item: [{ id: 'doctor' }], totalRecords: 2 };
+    });
+    const fetcher = vi.fn().mockResolvedValueOnce(json({ item: [] })).mockImplementationOnce(async () => {
+      if (stage !== 'body') sessionStorage.setItem('baasic-auth-token-pav2', '{"token":"replacement"}');
+      if (stage === 'error') throw new TypeError();
+      return { ok: true, json: body };
+    }).mockResolvedValue(json({ item: [] }));
+    expect(await shepherd.listAppointments('2026-11-16', context(fetcher))).toEqual({ ok: false, code: 'read_failed' });
+    expect(fetcher).toHaveBeenCalledTimes(2);
+    if (stage === 'fetch') expect(body).not.toHaveBeenCalled();
+  });
+
+  it('accepts unchanged independent user identity without treating it as clinic identity', async () => {
+    sessionStorage.setItem('baasic-auth-token-pav2', '{"token":"original"}');
+    sessionStorage.setItem('baasic-user-info-pav2', '{"id":"user"}');
+    const fetcher = vi.fn().mockResolvedValue(json({ item: [] }));
+    expect(await shepherd.listAppointments('2026-11-16', context(fetcher))).toEqual({ ok: true, appointments: [], failures: [] });
+    expect(fetcher).toHaveBeenCalledTimes(3);
+  });
+
   it.each(['app.shepherd.vet', 'clinic.shepherd.vet'])('uses source POST bodies and routing for %s', async (host) => {
     sessionStorage.setItem('baasic-auth-token-pav2', JSON.stringify({ token: 'secret' }));
     const fetcher = vi.fn().mockResolvedValueOnce(json({ item: [] })).mockResolvedValueOnce(json({ item: [{ id: 'doctor', name: 'Dr Hill' }] }))
@@ -407,6 +459,39 @@ describe('Shepherd static-source adapter', () => {
     expect(await shepherd.listAppointments('2026-11-16', { ...context(fetcher), url: new URL('https://evil.test/') })).toEqual({ ok: false, code: 'read_failed' });
     expect(fetcher).not.toHaveBeenCalled();
     expect(await shepherd.listAppointments('2026-11-16', context(fetcher))).toMatchObject({ ok: true, appointments: [], failures: [{ code: 'invalid_appointment' }] });
+  });
+
+  it('preserves distinct SOAP and appointment identities and their evidenced patient and clinician fields', async () => {
+    sessionStorage.setItem('baasic-auth-token-pav2', '{"token":"secret"}');
+    const fetcher = vi.fn().mockResolvedValueOnce(json({ item: [{
+      id: 'shared-id', patientId: 'internal-soap-patient', dateCheckedIn: '2026-11-16T13:00:00Z',
+      patient: { name: 'Max', identifier: 'M-42', clients: [{ firstName: 'Ada', lastName: 'Smith' }] },
+      supervisingDoctorId: 'doctor-id', supervisingDoctor: { firstName: 'Grace', lastName: 'Hill' },
+    }] })).mockResolvedValueOnce(json({ item: [] })).mockResolvedValueOnce(json({ item: [{
+      id: 'shared-id', startDate: '2026-11-16T14:00:00Z',
+      appointmentPatients: [{ patient: { id: 'internal-appt-patient', name: 'Bella', identifier: 'B-99' } }],
+      client: { firstName: 'Alex', lastName: 'Jones' }, provider: { id: 'doctor-id', name: 'Dr Hill' },
+    }] }));
+    const result = await shepherd.listAppointments('2026-11-16', context(fetcher));
+    expect(result).toEqual({ ok: true, failures: [], appointments: [
+      { sourceKind: 'soap', appointmentId: 'shared-id', start: '2026-11-16T13:00:00.000Z', patientName: 'Max', patientNumber: 'M-42', ownerName: 'Ada Smith', vet: 'Grace Hill' },
+      { sourceKind: 'appointment', appointmentId: 'shared-id', start: '2026-11-16T14:00:00.000Z', patientName: 'Bella', patientNumber: 'B-99', ownerName: 'Alex Jones', vet: 'Dr Hill' },
+    ] });
+    if (!result.ok) return;
+    const chart = { id: 'existing-chart', patient_name: 'Bella', patient_number: 'B-99', owner_name: 'Alex Jones', owner_phone: '',
+      owner_email: '', species: 'canine', dentition: 'adult', chart_date: '2026-11-16', recall_date: '', updated_at: '', created_by: 'user' };
+    expect(appointmentAction(result.appointments[1], [chart], '2026-11-16')).toEqual({ kind: 'open', chart });
+    expect(appointmentAction(result.appointments[1], [chart], '2026-11-17')).toEqual({ kind: 'newVisit', latest: chart });
+  });
+
+  it('does not substitute internal patient IDs or invent absent owner and doctor names', async () => {
+    sessionStorage.setItem('baasic-auth-token-pav2', '{"token":"secret"}');
+    const fetcher = vi.fn().mockResolvedValueOnce(json({ item: [{ id: 'soap', patientId: 'internal',
+      dateCheckedIn: '2026-11-16T13:00:00Z', patient: { name: 'Max', clients: [] }, supervisingDoctorId: 'internal-doctor' }] }))
+      .mockResolvedValueOnce(json({ item: [] })).mockResolvedValueOnce(json({ item: [] }));
+    expect(await shepherd.listAppointments('2026-11-16', context(fetcher))).toMatchObject({ ok: true, failures: [], appointments: [
+      { sourceKind: 'soap', appointmentId: 'soap', patientName: 'Max', patientNumber: '', ownerName: '', vet: null },
+    ] });
   });
 
   it('filters cancelled/deleted/out-of-day appointments and includes checked-in dashboard patients', async () => {

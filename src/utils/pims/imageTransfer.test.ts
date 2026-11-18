@@ -29,17 +29,18 @@ async function fixture() {
   });
   const provider = { readTarget: vi.fn(async () => ({ ...target })), readTargetNow: vi.fn(() => ({ ...target })),
     write: vi.fn((_input: Parameters<ImageTransferProvider['write']>[0]) => ({ receipt: Promise.resolve({ resource_id: 'file-1' }) })),
-    readSaved: vi.fn(async () => ({ target: { ...target }, content_hash: prepared.transfer.contentHash, saved: true })) };
+    readSaved: vi.fn(async () => ({ target: { ...target }, resource_id: 'file-1', bytes: new Uint8Array(await prepared.transfer.blob.arrayBuffer()), content_hash: prepared.transfer.contentHash, saved: true })) };
   const input = { target, prepared, store, decode, chart_link_version: 1, client: { rpc }, provider, alive: () => true };
   return { input, rpc, provider, store, source };
 }
-afterEach(() => vi.unstubAllEnvs());
+afterEach(() => { vi.unstubAllEnvs(); vi.restoreAllMocks(); });
 it('claims once, writes the reviewed PNG and independently reads saved content before confirmation', async () => {
   const { input, rpc, provider } = await fixture();
   expect(await transferReviewedImage(input)).toEqual({ state: 'confirmed', attempt_id: 'attempt-1', resource_id: 'file-1' });
   expect(rpc.mock.calls.map(([name]) => name)).toEqual(['pims_prepare_image_transfer', 'pims_dispatch_image_transfer', 'pims_confirm_image_transfer']);
   expect(provider.write).toHaveBeenCalledOnce();
   expect(provider.readSaved).toHaveBeenCalledExactlyOnceWith('file-1');
+  expect(rpc.mock.calls[2][1]).toEqual({ payload: { attempt_id: 'attempt-1', resource_id: 'file-1', content_hash: input.prepared.transfer.contentHash } });
   expect(provider.write.mock.calls[0][0]).toMatchObject({ target, content_hash: input.prepared.transfer.contentHash, pngDataUrl: expect.stringMatching(/^data:image\/png;base64,/) });
 });
 it.each(['unknown', 'confirmed', 'prepared'])('never dispatches a duplicate %s claim, even with a fresh UUID', async (state) => {
@@ -125,11 +126,27 @@ it('does not treat a successful write receipt as independently saved evidence', 
   expect(await transferReviewedImage(input)).toEqual({ state: 'unknown', attempt_id: 'attempt-1' });
   expect(rpc).toHaveBeenCalledTimes(2); expect(provider.write).toHaveBeenCalledOnce();
 });
+it.each(['wrong-resource', 'missing-resource', 'missing-bytes', 'different-bytes', 'truncated-bytes', 'oversized-bytes', 'wrong-byte-type'])('does not confirm %s even with a matching claimed hash', async (failure) => {
+  const { input, rpc, provider } = await fixture();
+  const saved = await provider.readSaved();
+  if (failure === 'wrong-resource') saved.resource_id = 'another-file';
+  if (failure === 'missing-resource') delete (saved as Partial<typeof saved>).resource_id;
+  if (failure === 'missing-bytes') delete (saved as Partial<typeof saved>).bytes;
+  if (failure === 'different-bytes') saved.bytes[32] ^= 1;
+  if (failure === 'truncated-bytes') saved.bytes = saved.bytes.slice(0, -1);
+  if (failure === 'oversized-bytes') saved.bytes = new Uint8Array(saved.bytes.length + 1);
+  if (failure === 'wrong-byte-type') saved.bytes = Array.from(saved.bytes) as never;
+  provider.readSaved.mockResolvedValue(saved);
+  expect(await transferReviewedImage(input)).toEqual({ state: 'unknown', attempt_id: 'attempt-1' });
+  expect(rpc.mock.calls.map(([name]) => name)).toEqual(['pims_prepare_image_transfer', 'pims_dispatch_image_transfer']);
+  expect(provider.write).toHaveBeenCalledOnce();
+});
 it.each(['identity', 'hash', 'unsaved', 'write-error', 'confirmation-error'])('leaves %s as unknown, never retries writes', async (failure) => {
   const { input, rpc, provider } = await fixture();
-  if (failure === 'identity') provider.readSaved.mockResolvedValue({ target: { ...target, encounter_id: 'other' }, content_hash: input.prepared.transfer.contentHash, saved: true });
-  if (failure === 'hash') provider.readSaved.mockResolvedValue({ target, content_hash: 'b'.repeat(64), saved: true });
-  if (failure === 'unsaved') provider.readSaved.mockResolvedValue({ target, content_hash: input.prepared.transfer.contentHash, saved: false });
+  const saved = await provider.readSaved();
+  if (failure === 'identity') provider.readSaved.mockResolvedValue({ ...saved, target: { ...target, encounter_id: 'other' } });
+  if (failure === 'hash') provider.readSaved.mockResolvedValue({ ...saved, content_hash: 'b'.repeat(64) });
+  if (failure === 'unsaved') provider.readSaved.mockResolvedValue({ ...saved, saved: false });
   if (failure === 'write-error') provider.write.mockImplementation(() => ({ receipt: Promise.reject(new TypeError()) }));
   if (failure === 'confirmation-error') {
     const original = rpc.getMockImplementation()!;
@@ -137,6 +154,36 @@ it.each(['identity', 'hash', 'unsaved', 'write-error', 'confirmation-error'])('l
   }
   expect(await transferReviewedImage(input)).toEqual({ state: 'unknown', attempt_id: 'attempt-1' });
   expect(provider.write).toHaveBeenCalledOnce();
+});
+it('pins the write receipt ID before asynchronous readback', async () => {
+  const { input, rpc, provider } = await fixture();
+  const receipt = { resource_id: 'file-1' };
+  const saved = await provider.readSaved();
+  provider.write.mockReturnValue({ receipt: Promise.resolve(receipt) });
+  provider.readSaved.mockImplementation(async () => {
+    receipt.resource_id = 'file-2';
+    return { ...saved, resource_id: 'file-2' };
+  });
+  expect(await transferReviewedImage(input)).toEqual({ state: 'unknown', attempt_id: 'attempt-1' });
+  expect(rpc.mock.calls.map(([name]) => name)).toEqual(['pims_prepare_image_transfer', 'pims_dispatch_image_transfer']);
+});
+it.each(['patient', 'expired', 'unmounted'])('rechecks %s after saved-byte hashing before confirmation', async (change) => {
+  const { input, rpc, provider } = await fixture();
+  const digest = crypto.subtle.digest.bind(crypto.subtle);
+  let readingSaved = false, alive = true;
+  const readSaved = provider.readSaved.getMockImplementation()!;
+  provider.readSaved.mockImplementation(async () => { readingSaved = true; return readSaved(); });
+  vi.spyOn(crypto.subtle, 'digest').mockImplementation(async (algorithm, data) => {
+    const result = await digest(algorithm, data);
+    if (readingSaved) {
+      if (change === 'patient') provider.readTarget.mockResolvedValue({ ...target, patient_id: 'another-patient' });
+      if (change === 'expired') vi.spyOn(Date, 'now').mockReturnValue(Date.now() + 300001);
+      if (change === 'unmounted') alive = false;
+    }
+    return result;
+  });
+  expect(await transferReviewedImage({ ...input, alive: () => alive })).toEqual({ state: 'unknown', attempt_id: 'attempt-1' });
+  expect(rpc.mock.calls.map(([name]) => name)).toEqual(['pims_prepare_image_transfer', 'pims_dispatch_image_transfer']);
 });
 it('fails closed for no review, no saved-content observer, disabled rollout and expired claims', async () => {
   const { input, rpc, provider } = await fixture();

@@ -1,3 +1,4 @@
+import { RadiologyReportSection } from './components/RadiologyReportSection';
 import { ImageHistory } from './components/ImageHistory';
 import { imageToothLabel } from './utils/imageTeeth';
 import React from 'react';
@@ -21,7 +22,6 @@ import { ChartMenu } from './components/ChartMenu';
 import type { ChartSnapshot } from './components/PdfPreviewModal';
 import { VoiceInputButton, actionFocus } from './components/VoiceInputButton';
 import { FeedbackModal } from './components/FeedbackModal';
-import { CodeField } from './components/CodeField';
 import { ChartSettingsModal, type SettingsSection } from './components/ChartSettingsModal';
 import { WhatsNewModal } from './components/WhatsNewModal';
 import { ChartHistoryModal } from './components/ChartHistoryModal';
@@ -1232,21 +1232,10 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           pdfExcludedImages={chart.pdfExcludedImages}
           onImageInPdfChange={chart.setImageInPdf}
         />
-        {lock(
-          <div className="patient-form radiographic-findings">
-            <label className="patient-form__label">
-              <span className="patient-form__section-title radiographic-findings__title">{t('radiographic.title')}</span>
-              <CodeField
-                multiline
-                className="patient-form__textarea radiographic-findings__text"
-                placeholder={t('radiographic.placeholder')}
-                value={chart.patientInfo.radiographicFindings ?? ''}
-                onChange={(value) => chart.handlePatientInfoChange('radiographicFindings', value)}
-              />
-              <span className="patient-form__hint">{t('radiographic.hint')}</span>
-            </label>
-          </div>
-        )}
+        <RadiologyReportSection key={`${chart.cloudChartId}:${chart.chartSession}`}
+          chartId={chart.cloudChartId} chartSession={chart.chartSession} snapshot={chart.getSnapshot()}
+          readOnly={readOnly} aiEnabled={profile.aiEnabled && !trial && cloud.enabled}
+          onChange={(changes) => chart.setPatientInfo((previous) => ({ ...previous, ...changes }))} />
         <ImageHistory visits={imageHistoryVisits} onOpenVisit={switchVisit} toothLabel={imageToothLabel} />
         </>
       ),
@@ -1711,6 +1700,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               readOnly,
               pims: {
                 enabled: profile.pimsSendEnabled,
+                aiEnabled: profile.aiEnabled && !trial && cloud.enabled,
                 chartId: cloud.enabled ? chart.cloudChartId : null,
                 patientName: chart.patientInfo.patientName,
                 patientNumber: chart.patientInfo.patientNumber,

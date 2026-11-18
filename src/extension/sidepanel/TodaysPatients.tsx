@@ -64,7 +64,7 @@ export const TodaysPatients: React.FC<{ userId: string }> = ({ userId }) => {
   const open = (chartId: string) => void chrome.tabs.create({ url: `${WEB_APP_ORIGIN}/#/chart/${chartId}` });
 
   const row = ({ appt, action }: TodayRow) => (
-    <li key={appt.appointmentId} className="sp-chart sp-appt" data-testid="today-row">
+    <li key={JSON.stringify([appt.provider, appt.sourceKind ?? 'appointment', appt.appointmentId])} className="sp-chart sp-appt" data-testid="today-row">
       <span className="sp-chart__name">
         <span className="sp-appt__time">{formatTime(appt.start, i18n.language)}</span> {appt.patientName}
       </span>

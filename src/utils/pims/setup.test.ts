@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { createSetupBackend } from './setup';
+import { CONFIGURED_SYNC_PROVIDERS, createSetupBackend } from './setup';
 
 const connection = { id: 'connection', provider: 'ezyvet', origin: 'https://clinic.ezyvet.com', tenant_id: 'clinic', state: 'unverified', revision: 1 };
 const configured = { practice_id: 'practice', provider: 'ezyvet' as const, origin: connection.origin, tenant_id: 'clinic' };
@@ -44,4 +44,16 @@ describe('PIMS setup client', () => {
     await expect(createSetupBackend(rpc).configure(configured)).rejects.toEqual({ code: 'unknown' });
     expect(rpc.rpc).toHaveBeenCalledOnce();
   });
+});
+
+it('preserves explicit binding assurance and rejects unrecognized binding modes', async () => {
+  for (const binding_mode of ['provider_observed', 'user_confirmed']) {
+    const saved = { ...connection, binding_mode };
+    expect((await createSetupBackend(client({ connections: [saved], members: [] })).context('practice')).connections[0]).toEqual(saved);
+  }
+  await expect(createSetupBackend(client({ connections: [{ ...connection, binding_mode: 'verified_by_guess' }], members: [] })).context('practice')).rejects.toEqual({ code: 'unknown' });
+});
+
+it('allows explicit configured-practice confirmation for Instinct', () => {
+  expect(CONFIGURED_SYNC_PROVIDERS).toContain('instinct');
 });

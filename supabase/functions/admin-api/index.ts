@@ -700,7 +700,7 @@ Deno.serve(async (req: Request) => {
       }
 
       case 'set_ai_model': {
-        // body.feature: 'live' | 'review' | 'owner_report'.
+        // body.feature: 'live' | 'review' | 'owner_report' | 'radiology_report'.
         const feature = body.feature;
         if (!isAiFeature(feature)) return json({ error: `unknown feature: ${String(feature)}` }, 400);
         const model = typeof body.model === 'string' ? body.model.trim() : '';

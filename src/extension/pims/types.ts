@@ -29,7 +29,7 @@ export type PimsAdapter = {
   listAppointments(date: string, context: AdapterContext, options?: { navigate: boolean }): Promise<AppointmentsResult>;
   patientNumber(recordId: string, context: AdapterContext): Promise<string | null>;
   diagnostics?(context: AdapterContext): Diagnostics;
-  syncSource?(context: AdapterContext, binding: SyncIdentity): SyncSource;
+  syncSource?(context: AdapterContext, binding: SyncIdentity, options?: { userConfirmed?: boolean }): SyncSource;
 };
 
 export type WriteTarget = { provider: PimsId; consult: Status['consult']; patientName: string | null };

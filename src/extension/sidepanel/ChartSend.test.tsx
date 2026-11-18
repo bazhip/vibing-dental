@@ -1,3 +1,4 @@
+vi.mock('../../hooks/useProfile', () => ({ useProfile: () => ({ loaded: true, aiEnabled: false }) }));
 import { vi } from 'vitest';
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS } from '../../types';
@@ -8,7 +9,7 @@ import { effectiveMap } from '../../utils/pims/mapping';
 const mocks = vi.hoisted(() => ({
   load: vi.fn(),
   confirm: vi.fn(async (_o: unknown) => true),
-  transport: { ping: vi.fn(), inspect: vi.fn(), send: vi.fn(), diagnose: vi.fn(), appointments: vi.fn(), startChart: vi.fn(), takePendingPatient: vi.fn(), physicalExam: vi.fn() },
+  transport: { ping: vi.fn(), inspect: vi.fn(), send: vi.fn(), diagnose: vi.fn(), appointments: vi.fn(), startChart: vi.fn(), takePendingPatient: vi.fn(), noteAutofill: vi.fn(), physicalExam: vi.fn() },
   supabase: null as unknown,
   tab: { activated: null as null | (() => void) },
 }));
@@ -341,4 +342,35 @@ describe('ChartSend', () => {
     expect(onBusyChange).toHaveBeenCalledWith(true);
     expect(onBusyChange).toHaveBeenLastCalledWith(false);
   });
+});
+
+
+it('offers note autofill without a strict encounter and locks Back during dispatch', async () => {
+  mocks.supabase = { auth: { onAuthStateChange: (callback: (event: string, session: unknown) => void) => {
+    callback('INITIAL_SESSION', { user: { id: 'user' } });
+    return { data: { subscription: { unsubscribe: vi.fn() } } };
+  } } };
+  const destination = { provider: 'pulse', origin: 'https://pulse.example', title: 'Open encounter' };
+  let finish: (value: { state: string }) => void = () => {};
+  mocks.transport.noteAutofill.mockImplementation(async (request: { operation: string }) => request.operation === 'list'
+    ? { state: 'targets', targets: [{ ...destination, tabId: 7 }] } : request.operation === 'inspect'
+      ? { state: 'fields', ...destination, fields: ['Notes'] } : request.operation === 'prepare'
+        ? { state: 'prepared', ...destination, field: 'Notes', ticket: 'ticket', existing_characters: 0, expires_at: new Date(Date.now() + 60_000).toISOString() }
+        : new Promise(resolve => { finish = resolve; }));
+  const onBusyChange = vi.fn(), onSent = vi.fn(); open({ onBusyChange, onSent });
+  mocks.transport.inspect.mockResolvedValue({ tab: { id: 7, title: 'Open encounter' }, candidates: 1, fields: [], status: { state: 'notConsult', provider: 'pulse', patientName: null, patientNumber: null, consult: null } });
+  fireEvent.click(await screen.findByRole('button', { name: 'Fill an open PIMS note' }));
+  await screen.findByRole('option', { name: /Open encounter/ });
+  fireEvent.change(screen.getByLabelText('Destination tab'), { target: { value: '7' } });
+  await screen.findByRole('option', { name: 'Notes' });
+  fireEvent.change(screen.getByLabelText('Open field'), { target: { value: 'Notes' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Prepare autofill' }));
+  fireEvent.click(await screen.findByRole('checkbox'));
+  fireEvent.click(screen.getByRole('button', { name: 'Fill selected field' }));
+  expect(screen.getByRole('button', { name: /Back to charts/ })).toBeDisabled();
+  expect(onBusyChange).toHaveBeenLastCalledWith(true);
+  await act(async () => finish({ state: 'filled' }));
+  await screen.findByText('Filled. Verify the notes and save them in PIMS.');
+  expect(onSent).not.toHaveBeenCalled();
+  expect(onBusyChange).toHaveBeenLastCalledWith(false);
 });

@@ -119,7 +119,7 @@ describe('DaySmart static-source adapter', () => {
     localStorage.setItem('Vetter-Token', 'secret');
     const row = { id: 1, start: '2026-11-16T14:00:00Z', patient: { id: 2, name: 'Bella', index: 77 }, client: { firstname: 'Ada', lastname: 'Smith' } };
     const fetcher = vi.fn().mockResolvedValueOnce(json({ response: { resources: [row, { ...row, id: 3, status: { value: 'Canceled' } }] } }))
-      .mockResolvedValueOnce(json({ response: { resources: { provider: { display_name: ' Dr Hill ' } } } }));
+      .mockResolvedValueOnce(json({ response: { resources: { start: row.start, provider: { display_name: ' Dr Hill ' } } } }));
     expect(await daysmart.listAppointments('2026-11-16', context(fetcher))).toEqual({ ok: true, failures: [], appointments: [
       { appointmentId: '1', start: '2026-11-16T14:00:00.000Z', patientName: 'Bella Smith', patientNumber: '77', ownerName: 'Ada Smith', vet: 'Dr Hill' },
     ] });
@@ -129,6 +129,39 @@ describe('DaySmart static-source adapter', () => {
     expect(Date.parse(request.searchParams.get('end')!) - Date.parse(request.searchParams.get('start')!)).toBe(86_399_999);
     expect(fetcher.mock.calls[0][1].headers['vetter-token']).toBe('secret');
     expect(fetcher.mock.calls[1][0]).toBe('/barramundi/schedule/appointment/1');
+  });
+
+  it.each(['replace', 'logout', 'login', 'malformed', 'unreadable', 'navigation'])('aborts same-page session discontinuity after the calendar read: %s', async (change) => {
+    const ctx = context();
+    if (change !== 'login') localStorage.setItem('Vetter-Token', 'original');
+    const fetcher = vi.fn().mockImplementationOnce(async () => {
+      if (change === 'logout') localStorage.removeItem('Vetter-Token');
+      else if (change === 'navigation') ctx.currentUrl = () => new URL('https://clinic.vettersoftware.com/login');
+      else if (change === 'unreadable') ctx.localStorage = { getItem: () => { throw new TypeError(); } } as unknown as Storage;
+      else localStorage.setItem('Vetter-Token', change === 'malformed' ? ' ' : 'replacement');
+      return json({ response: { resources: [{ id: 'one', start: '2026-11-16T14:00:00Z', patient: { name: 'Bella' }, client: {} }] } });
+    }).mockResolvedValue(json({ response: { resources: {} } }));
+    ctx.fetch = fetcher;
+    expect(await daysmart.listAppointments('2026-11-16', ctx)).toEqual({ ok: false, code: 'read_failed' });
+    expect(fetcher).toHaveBeenCalledOnce();
+  });
+
+  it.each(['fetch', 'body', 'error'])('stops later detail requests on a session switch during detail %s', async (stage) => {
+    localStorage.setItem('Vetter-Token', 'original');
+    const row = { id: 'one', start: '2026-11-16T14:00:00Z', patient: { name: 'Bella' }, client: {} };
+    const body = vi.fn(async () => {
+      localStorage.setItem('Vetter-Token', 'replacement');
+      return { response: { resources: {} } };
+    });
+    const fetcher = vi.fn().mockResolvedValueOnce(json({ response: { resources: [row, { ...row, id: 'two' }] } }))
+      .mockImplementationOnce(async () => {
+        if (stage !== 'body') localStorage.setItem('Vetter-Token', 'replacement');
+        if (stage === 'error') throw new TypeError();
+        return { ok: true, json: body };
+      }).mockResolvedValue(json({ response: { resources: {} } }));
+    expect(await daysmart.listAppointments('2026-11-16', context(fetcher))).toEqual({ ok: false, code: 'read_failed' });
+    expect(fetcher).toHaveBeenCalledTimes(2);
+    if (stage === 'fetch') expect(body).not.toHaveBeenCalled();
   });
 
   it('accepts singleton resources and absent optional token without fabricating identity', async () => {
@@ -179,12 +212,172 @@ describe('DaySmart static-source adapter', () => {
     expect(fetcher).toHaveBeenCalledOnce();
   });
 
-  it('reports malformed appointments and unavailable provider details without invented values', async () => {
+  it('reports malformed appointments and failed details without importing unverified rows', async () => {
     const row = { id: 'one', start: '2026-11-16T14:00:00Z', patient: { name: 'Bella' }, client: {} };
     const fetcher = vi.fn().mockResolvedValueOnce(json({ response: { resources: [row, { ...row, start: 'bad' }] } }))
       .mockResolvedValueOnce({ ok: false });
     expect(await daysmart.listAppointments('2026-11-16', context(fetcher))).toMatchObject({ ok: true,
-      appointments: [{ patientNumber: '', vet: null }], failures: [{ code: 'tooltip_fetch_failed' }, { code: 'invalid_appointment' }],
+      appointments: [], failures: [{ code: 'tooltip_fetch_failed' }, { code: 'invalid_appointment' }],
+    });
+  });
+
+  describe('appointment detail verification', () => {
+    const row = { id: 'one', start: '2026-11-16T14:00:00Z', patient: { name: 'Bella' }, client: {} };
+    const failure = { code: 'tooltip_fetch_failed', startsAt: '2026-11-16T14:00:00.000Z' };
+
+    it.each([
+      ['appointmentStatus', ' cAnCeLeD '], ['status', ' cAnCeLeD '],
+      ['appointmentStatus', ' Cancelled '], ['status', ' Cancelled '],
+    ])('excludes detail cancellations from %s (%s) even without a start', async (field, label) => {
+      const fetcher = vi.fn().mockResolvedValueOnce(json({ response: { resources: [row] } }))
+        .mockResolvedValueOnce(json({ response: { resources: { [field]: { value: label } } } }));
+      expect(await daysmart.listAppointments('2026-11-16', context(fetcher))).toEqual({ ok: true, appointments: [], failures: [] });
+      expect(fetcher).toHaveBeenCalledTimes(2);
+    });
+
+    it.each([
+      ['Confirmed', 'Cancelled'], ['Cancelled', 'Confirmed'], ['Confirmed', ' Canceled '],
+    ])('excludes detail cancellations in either status label: %s / %s', async (appointmentStatus, status) => {
+      const fetcher = vi.fn().mockResolvedValueOnce(json({ response: { resources: [row] } }))
+        .mockResolvedValueOnce(json({ response: { resources: { start: row.start,
+          appointmentStatus: { value: appointmentStatus }, status: { value: status } } } }));
+      expect(await daysmart.listAppointments('2026-11-16', context(fetcher))).toEqual({ ok: true, appointments: [], failures: [] });
+      expect(fetcher).toHaveBeenCalledTimes(2);
+    });
+
+    it('ignores cancellation_date on verified active details', async () => {
+      const fetcher = vi.fn().mockResolvedValueOnce(json({ response: { resources: [row] } }))
+        .mockResolvedValueOnce(json({ response: { resources: { start: row.start, appointmentStatus: { value: 'Scheduled' },
+          status: { value: 'Confirmed' }, cancellation_date: '2026-11-15' } } }));
+      expect(await daysmart.listAppointments('2026-11-16', context(fetcher))).toMatchObject({ ok: true, failures: [],
+        appointments: [{ appointmentId: 'one', vet: null }],
+      });
+      expect(fetcher).toHaveBeenCalledTimes(2);
+    });
+
+    it.each(['2026-11-16T14:00:00Z', '2026-11-15T14:00:00Z'])('uses verified rescheduling instead of stale feed time %s', async (feedStart) => {
+      const fetcher = vi.fn().mockResolvedValueOnce(json({ response: { resources: [{ ...row, start: feedStart }] } }))
+        .mockResolvedValueOnce(json({ response: { resources: { start: '2026-11-16T16:30:00Z' } } }));
+      expect(await daysmart.listAppointments('2026-11-16', context(fetcher))).toEqual({ ok: true, failures: [], appointments: [
+        { appointmentId: 'one', start: '2026-11-16T16:30:00.000Z', patientName: 'Bella', patientNumber: '', ownerName: '', vet: null },
+      ] });
+      expect(fetcher).toHaveBeenCalledTimes(2);
+    });
+
+    it.each(['2026-11-15T14:00:00Z', '2026-11-17T14:00:00Z'])('excludes appointments rescheduled outside the selected day: %s', async (detailStart) => {
+      const fetcher = vi.fn().mockResolvedValueOnce(json({ response: { resources: [row] } }))
+        .mockResolvedValueOnce(json({ response: { resources: { start: detailStart } } }));
+      expect(await daysmart.listAppointments('2026-11-16', context(fetcher))).toEqual({ ok: true, appointments: [], failures: [] });
+      expect(fetcher).toHaveBeenCalledTimes(2);
+    });
+
+    it.each([
+      { id: 'another' }, { patient: { id: 3 } },
+      { id: 'another', status: { value: 'Cancelled' } },
+      { patient: { id: 3 }, status: { value: 'Cancelled' } },
+    ])('reports explicit detail identity mismatch without history: %j', async (identity) => {
+      const feedRow = { ...row, patient: { ...row.patient, id: 2 } };
+      const fetcher = vi.fn().mockResolvedValueOnce(json({ response: { resources: [feedRow, { ...feedRow, id: 'two' }] } }))
+        .mockResolvedValueOnce(json({ response: { resources: { start: row.start, ...identity } } }))
+        .mockResolvedValueOnce(json({ response: { resources: { start: row.start, id: 'two', patient: { id: '2' } } } }));
+      expect(await daysmart.listAppointments('2026-11-16', context(fetcher))).toMatchObject({ ok: true,
+        appointments: [{ appointmentId: 'two', patientName: 'Bella', vet: null }], failures: [failure],
+      });
+      expect(fetcher.mock.calls.map(([path]) => path)).toEqual([
+        expect.stringContaining('/barramundi/schedule/appointment?'), '/barramundi/schedule/appointment/one', '/barramundi/schedule/appointment/two',
+      ]);
+    });
+
+    it.each([
+      [{ id: 2 }, {}], [{}, { patient: { id: 2 } }], [{}, {}],
+      [{ id: 2 }, { id: 'one', patient: { id: '2' } }],
+    ])('preserves matching or absent optional identity compatibility: %j / %j', async (patientIdentity, detailIdentity) => {
+      const fetcher = vi.fn().mockResolvedValueOnce(json({ response: { resources: [{ ...row, patient: { ...row.patient, ...patientIdentity } }] } }))
+        .mockResolvedValueOnce(json({ response: { resources: { start: row.start, ...detailIdentity } } }));
+      expect(await daysmart.listAppointments('2026-11-16', context(fetcher))).toEqual({ ok: true, failures: [], appointments: [
+        { appointmentId: 'one', start: '2026-11-16T14:00:00.000Z', patientName: 'Bella', patientNumber: '', ownerName: '', vet: null },
+      ] });
+      expect(fetcher).toHaveBeenCalledTimes(2);
+    });
+
+    it.each([[], null, undefined].map((absent) => [absent]))('checks latest history only after successful detail absence: %j', async (absent) => {
+      localStorage.setItem('Vetter-Token', 'secret');
+      const fetcher = vi.fn().mockResolvedValueOnce(json({ response: { resources: [row] } }))
+        .mockResolvedValueOnce(json({ response: { resources: absent } }))
+        .mockResolvedValueOnce(json({ response: { resources: [{ title: ' Cancelled ' }, { title: 'Scheduled' }] } }));
+      expect(await daysmart.listAppointments('2026-11-16', context(fetcher))).toEqual({ ok: true, appointments: [], failures: [] });
+      expect(fetcher.mock.calls.map(([path]) => path)).toEqual([
+        expect.stringContaining('/barramundi/schedule/appointment?'), '/barramundi/schedule/appointment/one',
+        '/barramundi/schedule/appointment-history/one',
+      ]);
+      expect(fetcher.mock.calls[2][1]).toMatchObject({ method: 'GET', credentials: 'include', redirect: 'error', headers: { 'vetter-token': 'secret' } });
+    });
+
+    it.each([
+      {}, { response: null }, { response: { resources: 'invalid' } }, { response: { resources: 42 } },
+      { response: { resources: [row] } }, { response: { resources: {} } },
+      { response: { resources: { provider: { display_name: 'Dr Hill' } } } },
+      { response: { resources: { start: 'invalid', cancellation_date: '2026-11-15' } } },
+    ])('reports malformed or indeterminate details without consulting history: %j', async (detail) => {
+      const fetcher = vi.fn().mockResolvedValueOnce(json({ response: { resources: [row] } })).mockResolvedValueOnce(json(detail));
+      expect(await daysmart.listAppointments('2026-11-16', context(fetcher))).toEqual({ ok: true, appointments: [], failures: [failure] });
+      expect(fetcher).toHaveBeenCalledTimes(2);
+    });
+
+    it.each(['http', 'network', 'json'])('never consults history after a %s detail failure', async (stage) => {
+      const fetcher = vi.fn().mockResolvedValueOnce(json({ response: { resources: [row] } }))
+        .mockImplementationOnce(async () => {
+          if (stage === 'network') throw new TypeError();
+          return { ok: stage !== 'http', json: async () => { throw new SyntaxError(); } };
+        });
+      expect(await daysmart.listAppointments('2026-11-16', context(fetcher))).toEqual({ ok: true, appointments: [], failures: [failure] });
+      expect(fetcher).toHaveBeenCalledTimes(2);
+    });
+
+    it.each([
+      {}, { response: {} }, { response: { resources: null } }, { response: { resources: [] } },
+      { response: { resources: { title: 'Cancelled' } } },
+      { response: { resources: [{ title: 'Scheduled' }, { title: 'Cancelled' }] } },
+      { response: { resources: [{ status: { value: 'Cancelled' }, cancellation_date: '2026-11-15' }] } },
+    ])('reports absent appointments with unconfirmed history rather than importing them: %j', async (history) => {
+      const fetcher = vi.fn().mockResolvedValueOnce(json({ response: { resources: [row] } }))
+        .mockResolvedValueOnce(json({ response: { resources: [] } })).mockResolvedValueOnce(json(history));
+      expect(await daysmart.listAppointments('2026-11-16', context(fetcher))).toEqual({ ok: true, appointments: [], failures: [failure] });
+      expect(fetcher).toHaveBeenCalledTimes(3);
+    });
+
+    it.each(['http', 'network', 'json'])('isolates a %s history failure and imports a later verified appointment', async (stage) => {
+      const fetcher = vi.fn().mockResolvedValueOnce(json({ response: { resources: [row, { ...row, id: 'two' }] } }))
+        .mockResolvedValueOnce(json({ response: { resources: [] } }))
+        .mockImplementationOnce(async () => {
+          if (stage === 'network') throw new TypeError();
+          return { ok: stage !== 'http', json: async () => { throw new SyntaxError(); } };
+        }).mockResolvedValueOnce(json({ response: { resources: { start: row.start } } }));
+      expect(await daysmart.listAppointments('2026-11-16', context(fetcher))).toMatchObject({ ok: true,
+        appointments: [{ appointmentId: 'two', vet: null }], failures: [failure],
+      });
+      expect(fetcher).toHaveBeenCalledTimes(4);
+    });
+
+    it.each(['fetch', 'body', 'error', 'navigation'])('aborts later requests on a session change during history %s', async (stage) => {
+      localStorage.setItem('Vetter-Token', 'original');
+      const ctx = context();
+      const body = vi.fn(async () => {
+        localStorage.setItem('Vetter-Token', 'replacement');
+        return { response: { resources: [{ title: 'Cancelled' }] } };
+      });
+      const fetcher = vi.fn().mockResolvedValueOnce(json({ response: { resources: [row, { ...row, id: 'two' }] } }))
+        .mockResolvedValueOnce(json({ response: { resources: [] } }))
+        .mockImplementationOnce(async () => {
+          if (stage === 'navigation') ctx.currentUrl = () => new URL('https://clinic.vettersoftware.com/login');
+          else if (stage !== 'body') localStorage.setItem('Vetter-Token', 'replacement');
+          if (stage === 'error') throw new TypeError();
+          return { ok: true, json: body };
+        });
+      ctx.fetch = fetcher;
+      expect(await daysmart.listAppointments('2026-11-16', ctx)).toEqual({ ok: false, code: 'read_failed' });
+      expect(fetcher).toHaveBeenCalledTimes(3);
+      if (stage === 'fetch' || stage === 'navigation') expect(body).not.toHaveBeenCalled();
     });
   });
 });

@@ -1,6 +1,7 @@
 import { identifyPims } from '../../extension/pims/hosts';
 import { renderSavedImage, revalidateImage, type ImageDecoder, type ImageStore, type PreparedImage } from './images';
 import { pimsRolloutEnabled } from './rollout';
+import { uploadHash } from './uploads';
 import type { RpcClient, SyncIdentity } from './sync';
 
 export type ImageTransferTarget = SyncIdentity & {
@@ -10,7 +11,7 @@ export type ImageTransferProvider = {
   readTarget(): Promise<ImageTransferTarget | null>;
   readTargetNow(): ImageTransferTarget | null;
   write(input: { target: ImageTransferTarget; attempt_id: string; expires_at: string; content_hash: string; pngDataUrl: string }): { receipt: Promise<{ resource_id: string } | null> } | null;
-  readSaved(resourceId: string): Promise<{ target: ImageTransferTarget; content_hash: string; saved: boolean } | null>;
+  readSaved(resourceId: string): Promise<{ target: ImageTransferTarget; resource_id: string; bytes: Uint8Array<ArrayBuffer>; content_hash: string; saved: boolean } | null>;
 };
 export type ImageTransferResult = { state: 'blocked' }
   | { state: 'duplicate' | 'unknown'; attempt_id: string }
@@ -89,14 +90,19 @@ export async function transferReviewedImage(input: {
     const pending = input.provider.write({ target, attempt_id: attemptId, expires_at: attempt.expires_at as string, content_hash: contentHash, pngDataUrl });
     if (!pending?.receipt) throw new TypeError();
     const receipt = await pending.receipt;
+    const resourceId = receipt?.resource_id;
     await guard();
-    if (!receipt || !text(receipt.resource_id)) throw new TypeError();
-    const saved = await input.provider.readSaved(receipt.resource_id);
+    if (!text(resourceId)) throw new TypeError();
+    const saved = await input.provider.readSaved(resourceId);
     await guard();
-    if (!saved || saved.saved !== true || saved.content_hash !== contentHash || !sameImageTransferTarget(saved.target, target)) throw new TypeError();
-    const confirmed = await invoke('pims_confirm_image_transfer', { attempt_id: attemptId, resource_id: receipt.resource_id, content_hash: contentHash });
-    if (!matches(confirmed) || confirmed.id !== attemptId || confirmed.state !== 'confirmed' || confirmed.resource_id !== receipt.resource_id) throw new TypeError();
+    if (!saved || saved.saved !== true || saved.resource_id !== resourceId || saved.content_hash !== contentHash
+      || !sameImageTransferTarget(saved.target, target) || !ArrayBuffer.isView(saved.bytes)
+      || Object.prototype.toString.call(saved.bytes) !== '[object Uint8Array]' || saved.bytes.byteLength !== payload.content_bytes) throw new TypeError();
+    if (await uploadHash(new Uint8Array(saved.bytes)) !== contentHash) throw new TypeError();
     await guard();
-    return { state: 'confirmed', attempt_id: attemptId, resource_id: receipt.resource_id };
+    const confirmed = await invoke('pims_confirm_image_transfer', { attempt_id: attemptId, resource_id: resourceId, content_hash: contentHash });
+    if (!matches(confirmed) || confirmed.id !== attemptId || confirmed.state !== 'confirmed' || confirmed.resource_id !== resourceId) throw new TypeError();
+    await guard();
+    return { state: 'confirmed', attempt_id: attemptId, resource_id: resourceId };
   } catch { return dispatched && attemptId ? { state: 'unknown', attempt_id: attemptId } : { state: 'blocked' }; }
 }

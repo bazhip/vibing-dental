@@ -154,3 +154,28 @@ describe('AdminPanel', () => {
     expect(invoke).not.toHaveBeenCalledWith('admin-api', expect.objectContaining({ body: expect.objectContaining({ action: 'delete_user' }) }));
   });
 });
+
+it('configures the translated radiology report model through the existing admin action', async () => {
+  const { default: i18n } = await import('../i18n');
+  i18n.addResourceBundle('en', 'app', { radiologyReport: {
+    aiFeatureLabel: 'Radiology report drafts',
+    aiFeatureHint: 'One call per generated radiology report, drafted from recorded chart findings for clinical review.',
+    modelLabel: 'Model for radiology report drafts',
+    modelUpdated: 'Radiology report drafts now use {{model}}.',
+  } }, true, true);
+  respond({
+    get_ai_config: { configured: true, models: [], featureModels: {
+      live: 'claude-haiku-5-5', review: 'claude-sonnet-5-5', owner_report: 'claude-sonnet-5-5', radiology_report: 'claude-sonnet-5-5',
+    } },
+    ai_usage: { users: [], totalEstCostUsd: 0 },
+    ai_balance: { deepgram: null, note: '' },
+    set_ai_model: { featureModels: { radiology_report: 'claude-opus-4-8' } },
+  });
+  renderPanel();
+  await userEvent.click(screen.getByRole('tab', { name: 'AI' }));
+  const select = await screen.findByRole('combobox', { name: 'Model for radiology report drafts' });
+  expect(select).toHaveValue('claude-sonnet-5-5');
+  await userEvent.selectOptions(select, 'claude-opus-4-8');
+  await waitFor(() => expect(invoke).toHaveBeenCalledWith('admin-api', { body: { action: 'set_ai_model', feature: 'radiology_report', model: 'claude-opus-4-8' } }));
+  expect(await screen.findByText('Radiology report drafts now use Claude Opus 4.8 (previous default).')).toBeInTheDocument();
+});

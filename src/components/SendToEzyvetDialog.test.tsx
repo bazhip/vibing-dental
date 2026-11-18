@@ -14,6 +14,7 @@ const mocks = vi.hoisted(() => ({
   send: vi.fn(),
   diagnose: vi.fn(),
   physicalExam: vi.fn(),
+  noteAutofill: vi.fn(),
   available: vi.fn(() => true),
   save: vi.fn(async () => {}),
   reset: vi.fn(async () => {}),
@@ -32,6 +33,9 @@ vi.mock('../utils/pims/extensionBridge', () => ({
   send: mocks.send,
   diagnose: mocks.diagnose,
   physicalExam: mocks.physicalExam,
+  instinctSubmission: vi.fn(),
+  radiologyAutofill: vi.fn(),
+  noteAutofill: mocks.noteAutofill,
   appointments: vi.fn(),
   startChart: vi.fn(),
   takePendingPatient: vi.fn(),
@@ -717,4 +721,36 @@ describe('RecordNotePanel Send to ezyVet button', () => {
     render(panel({ pims }));
     expect(button()).toBeNull();
   });
+});
+
+
+it('offers note autofill without a strict encounter and locks dialog close during fill', async () => {
+  mocks.supabase = { auth: { onAuthStateChange: (callback: (event: string, session: unknown) => void) => {
+    callback('INITIAL_SESSION', { user: { id: 'user' } });
+    return { data: { subscription: { unsubscribe: vi.fn() } } };
+  } } };
+  mocks.inspect.mockResolvedValue(writableWith({ state: 'notConsult' }));
+  const destination = { provider: 'pulse', origin: 'https://pulse.example', title: 'Open encounter' };
+  let finish: (value: { state: string }) => void = () => {};
+  mocks.noteAutofill.mockImplementation(async (request: { operation: string }) => request.operation === 'list'
+    ? { state: 'targets', targets: [{ ...destination, tabId: 7 }] } : request.operation === 'inspect'
+      ? { state: 'fields', ...destination, fields: ['Notes'] } : request.operation === 'prepare'
+        ? { state: 'prepared', ...destination, field: 'Notes', ticket: 'ticket', existing_characters: 0, expires_at: new Date(Date.now() + 60_000).toISOString() }
+        : new Promise(resolve => { finish = resolve; }));
+  const { el, props } = dlg(); render(el);
+  fireEvent.click(await screen.findByRole('button', { name: 'Fill an open PIMS note' }));
+  await screen.findByRole('option', { name: /Open encounter/ });
+  fireEvent.change(screen.getByLabelText('Destination tab'), { target: { value: '7' } });
+  await screen.findByRole('option', { name: 'Notes' });
+  fireEvent.change(screen.getByLabelText('Open field'), { target: { value: 'Notes' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Prepare autofill' }));
+  fireEvent.click(await screen.findByRole('checkbox'));
+  fireEvent.click(screen.getByRole('button', { name: 'Fill selected field' }));
+  expect(screen.getAllByRole('button', { name: 'Close' }).every(button => (button as HTMLButtonElement).disabled)).toBe(true);
+  fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
+  expect(props.onClose).not.toHaveBeenCalled();
+  await act(async () => finish({ state: 'filled' }));
+  await screen.findByText('Filled. Verify the notes and save them in PIMS.');
+  expect(props.onSent).not.toHaveBeenCalled();
+  expect(mocks.markPimsSent).not.toHaveBeenCalled();
 });

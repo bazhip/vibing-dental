@@ -26,7 +26,7 @@ describe('shared Send to ezyVet components (pseudo-locale)', () => {
     render(
       <SendResults
         rows={[
-          { fieldTitle: 'Plan', code: null },
+          { fieldTitle: 'Plan', code: null, editorSubmitted: true },
           { fieldTitle: 'Discharge Summary', code: 'save_not_confirmed' },
           { fieldTitle: 'Assessment', code: 'patient_changed' },
         ]}

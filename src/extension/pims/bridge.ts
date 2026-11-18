@@ -1,6 +1,9 @@
+import { createNoteAutofill, identifyNoteProvider, isNoteAutofillRequest, type NoteAutofillRequest, type NoteAutofillResult, type NoteProvider } from './noteAutofill';
+import { createRadiologyAutofill, type RadiologyAutofillRequest } from './radiologyAutofill';
 import { normaliseName } from '../../utils/pims/patientMatch';
 import type { Diagnostics } from '../ezyvet/read';
 import { EXTENSION_VERSION } from '../version';
+import { createInstinctSubmission, isInstinctSubmissionRequest, type InstinctSubmissionRequest, type InstinctSubmissionResult } from './instinctSubmission';
 import { createSyncBridge } from './syncBridge';
 import { createShepherdPhysicalExam } from './shepherd';
 import { isVisible } from './shared';
@@ -133,20 +136,128 @@ function createPhysicalExamBridge(adapterNow: () => PimsAdapter | null, contextN
   return Object.assign(execute, { observe });
 }
 
+function createInstinctSubmissionBridge(adapterNow: () => PimsAdapter | null, contextNow: () => AdapterContext) {
+  let active: { doc: Document; identity: string; uploader: ReturnType<typeof createInstinctSubmission>; valid: boolean } | undefined;
+  const observe = (context: AdapterContext, adapter: PimsAdapter | null) => {
+    let identity: string;
+    try { identity = JSON.stringify([adapter?.id, context.url.href, context.currentUrl?.().href,
+      context.sessionStorage.getItem('instinct:user-state')]); }
+    catch { identity = ''; }
+    if (active && (active.doc !== context.doc || active.identity !== identity || !identity)) {
+      active.valid = false;
+      active = undefined;
+    }
+    return identity;
+  };
+  const execute = async (request: InstinctSubmissionRequest): Promise<InstinctSubmissionResult> => {
+    if (!isInstinctSubmissionRequest(request)) return { state: 'blocked' };
+    const context = contextNow(), adapter = adapterNow();
+    const identity = observe(context, adapter);
+    if (adapter?.id !== 'instinct' || !identity) return { state: 'blocked' };
+    if (!active) {
+      if (request.operation !== 'prepare') return { state: 'blocked' };
+      const entry = { doc: context.doc, identity, valid: true, uploader: undefined as unknown as ReturnType<typeof createInstinctSubmission> };
+      entry.uploader = createInstinctSubmission({ ...context, currentUrl: () => {
+        const live = contextNow();
+        observe(live, adapterNow());
+        return entry.valid ? live.currentUrl?.() ?? live.url : new URL('https://invalid.invalid/');
+      } });
+      const invalidate = () => { entry.valid = false; if (active === entry) active = undefined; };
+      const view = context.doc.defaultView;
+      for (const event of ['popstate', 'hashchange', 'pagehide']) view?.addEventListener(event, invalidate, { once: true });
+      (view as (Window & { navigation?: EventTarget }) | null)?.navigation?.addEventListener('navigate', invalidate, { once: true });
+      active = entry;
+    }
+    return active.uploader.execute(request);
+  };
+  return Object.assign(execute, { observe });
+}
+
+function createNoteAutofillBridge(adapterNow: () => PimsAdapter | null, contextNow: () => AdapterContext) {
+  type Entry = { doc: Document; href: string; provider: NoteProvider; valid: boolean; writer: ReturnType<typeof createNoteAutofill> };
+  let active: Entry | undefined;
+  const observe = (context: AdapterContext, adapter: PimsAdapter | null) => {
+    if (!active) return;
+    const href = (context.currentUrl?.() ?? context.url).href;
+    if (active && (active.doc !== context.doc || active.href !== href || context.url.href !== href
+      || identifyNoteProvider(href) !== active.provider || adapter?.id !== active.provider)) {
+      active.valid = false;
+      active.writer.dispose();
+      active = undefined;
+    }
+  };
+  const execute = async (request: NoteAutofillRequest): Promise<NoteAutofillResult> => {
+    if (!isNoteAutofillRequest(request)) return { state: 'blocked' };
+    const context = contextNow(), adapter = adapterNow();
+    observe(context, adapter);
+    // Explicit inspection starts a newly reviewed source after session/navigation invalidation.
+    // Fills never rebuild a lost source or reuse its tickets.
+    if (request.operation === 'inspect' && active) {
+      active.valid = false; active.writer.dispose(); active = undefined;
+    }
+    const provider = identifyNoteProvider(context.url.href);
+    if (!provider || adapter?.id !== provider || (context.currentUrl?.() ?? context.url).href !== context.url.href) return { state: 'blocked' };
+    if (!active) {
+      // A fill must refer to an existing in-page preparation; never reconstruct it.
+      if (request.operation === 'fill') return { state: 'blocked' };
+      const entry: Entry = { doc: context.doc, href: context.url.href, provider, valid: true, writer: undefined as unknown as Entry['writer'] };
+      entry.writer = createNoteAutofill({ ...context, currentUrl: () => {
+        const live = contextNow();
+        observe(live, adapterNow());
+        return entry.valid && live.doc === entry.doc && adapterNow()?.id === entry.provider
+          ? live.currentUrl?.() ?? live.url : new URL('https://invalid.invalid/');
+      } });
+      active = entry;
+    }
+    try { return await active.writer.execute(request); }
+    catch { return { state: request.operation === 'fill' ? 'unknown' : 'blocked' }; }
+  };
+  return Object.assign(execute, { observe });
+}
+
 export function createPageBridge(adapterNow: () => PimsAdapter | null, contextNow: () => AdapterContext) {
   const physicalExam = createPhysicalExamBridge(adapterNow, contextNow);
+  const noteAutofill = createNoteAutofillBridge(adapterNow, contextNow);
+  let radiology: { doc: Document; url: string; writer: ReturnType<typeof createRadiologyAutofill> } | undefined;
+  const observeRadiology = (context: AdapterContext) => {
+    if (radiology && (radiology.doc !== context.doc || radiology.url !== (context.currentUrl?.() ?? context.url).href)) {
+      radiology.writer.dispose();
+      radiology = undefined;
+    }
+  };
+  const radiologyAutofill = (request: RadiologyAutofillRequest) => {
+    const context = contextNow();
+    observeRadiology(context);
+    if (!radiology) {
+      radiology = { doc: context.doc, url: context.url.href, writer: createRadiologyAutofill({ ...context, currentUrl: () => {
+        const live = contextNow();
+        return live.doc === context.doc ? live.currentUrl?.() ?? live.url : new URL('https://invalid.invalid/');
+      } }) };
+    }
+    return radiology.writer.execute(request);
+  };
+  const instinctSubmission = createInstinctSubmissionBridge(adapterNow, contextNow);
   return {
     version: EXTENSION_VERSION,
+    radiologyAutofill,
+    noteAutofill,
     physicalExam,
-    providerSync: createSyncBridge((identity) => {
-      const adapter = adapterNow();
-      return adapter?.id === identity?.provider ? adapter.syncSource?.(contextNow(), identity) : undefined;
+    instinctSubmission,
+    providerSync: createSyncBridge((identity, options) => {
+      const adapter = adapterNow(), context = contextNow();
+      return adapter?.id === identity?.provider ? adapter.syncSource?.({ ...context, currentUrl: () => {
+        const live = contextNow();
+        return live.doc === context.doc && adapterNow()?.id === identity.provider ? live.currentUrl?.() ?? live.url : new URL('https://invalid.invalid/');
+      } }, identity, options) : undefined;
     }),
     status(): Status {
       const adapter = adapterNow();
       const context = contextNow();
+      observeRadiology(context);
+      noteAutofill.observe(context, adapter);
       const status = adapter?.status(context);
       physicalExam.observe(context, adapter, status);
+      instinctSubmission.observe(context, adapter);
       return adapter && status ? { ...status, provider: adapter.id } : unavailable();
     },
     listFields() {

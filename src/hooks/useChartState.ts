@@ -190,11 +190,27 @@ export function isChartSnapshot(s: unknown): s is ChartSnapshot {
 
 /** Fill any holes a snapshot from an older schema might have, so
  *  downstream code can dereference nested fields without guards. */
+function normalizeRadiologyInfo(info: PatientInfo): PatientInfo {
+  const result = { ...info };
+  const limits = { radiologyHistory: 20000, radiologyTechnique: 20000, radiologyQuestion: 20000,
+    radiologyReport: 60000, radiologyReportBasis: 1000000, radiologyReviewedBasis: 1000000, radiologyReportGeneratedAt: 100 } as const;
+  for (const [field, limit] of Object.entries(limits)) {
+    const key = field as keyof typeof limits;
+    const value: unknown = result[key];
+    if (value !== undefined && (typeof value !== 'string' || value.length > limit)) delete result[key];
+  }
+  if (!['en', 'fr', 'de', 'it', 'es'].includes(result.radiologyReportLanguage ?? '')) delete result.radiologyReportLanguage;
+  if (!result.radiologyReport?.trim() || !result.radiologyReportLanguage) {
+    delete result.radiologyReportBasis; delete result.radiologyReviewedBasis; delete result.radiologyReportGeneratedAt;
+  }
+  return result;
+}
+
 export function normalizeSnapshot(s: ChartSnapshot): ChartSnapshot {
   return {
     ...s,
     patientInfo: {
-      ...s.patientInfo,
+      ...normalizeRadiologyInfo(s.patientInfo),
       complaint: s.patientInfo.complaint ?? '',
       treatmentReport: s.patientInfo.treatmentReport ?? '',
       radiographicFindings: s.patientInfo.radiographicFindings ?? '',

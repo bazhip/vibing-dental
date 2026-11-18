@@ -7,14 +7,15 @@ import type { UploadObservationKind, UploadReviewBackend, UploadReviewError, Upl
 import './PimsDrafts.css';
 
 const defaultBackend = supabase ? createUploadReviewBackend(supabase) : null;
+const defaultImageBackend = supabase ? createUploadReviewBackend(supabase, 'image') : null;
 const observations: UploadObservationKind[] = ['present', 'not_found', 'uncertain'];
-type Props = { chartId: string | null; disabled?: boolean; backend?: UploadReviewBackend | null };
+type Props = { chartId: string | null; disabled?: boolean; backend?: UploadReviewBackend | null; kind?: 'pdf' | 'image' };
 
 export function PimsUploadReview(props: Props): React.ReactElement | null {
-  return pimsRolloutEnabled() ? <EnabledUploadReview key={props.chartId} {...props} /> : null;
+  return pimsRolloutEnabled() ? <EnabledUploadReview key={JSON.stringify([props.chartId, props.kind ?? 'pdf'])} {...props} /> : null;
 }
 
-function EnabledUploadReview({ chartId, disabled = false, backend = defaultBackend }: Props): React.ReactElement {
+function EnabledUploadReview({ chartId, disabled = false, kind = 'pdf', backend = kind === 'image' ? defaultImageBackend : defaultBackend }: Props): React.ReactElement {
   const { t, i18n } = useTranslation('pims');
   const heading = React.useId();
   const [open, setOpen] = React.useState(false);
@@ -85,7 +86,7 @@ function EnabledUploadReview({ chartId, disabled = false, backend = defaultBacke
   const blocked = disabled || busy || reloadRequired;
   return <section className="pims-drafts" aria-labelledby={heading}>
     <div className="pims-drafts__heading">
-      <h3 id={heading}>{t('uploadReview.title')}</h3>
+      <h3 id={heading}>{t(kind === 'image' ? 'uploadReview.imageTitle' : 'uploadReview.title')}</h3>
       <button type="button" disabled={disabled || busy} onClick={() => open ? reset() : void load()}>{t(open ? 'uploadReview.close' : 'uploadReview.open')}</button>
     </div>
     {open && <>
@@ -104,9 +105,12 @@ function EnabledUploadReview({ chartId, disabled = false, backend = defaultBacke
             {page?.rows.map(item => <option key={item.id} value={item.id}>{t('uploadReview.option', { patient: item.patient_id, date: date(item.dispatched_at) })}</option>)}
           </select>
         </label>
-        <p>{t('uploadReview.destination', { origin: selected.identity.origin, tenant: selected.identity.tenant_id, location: selected.location_id })}</p>
+        <p>{selected.kind === 'image'
+          ? t('uploadReview.imageDestination', { origin: selected.identity.origin, tenant: selected.identity.tenant_id, encounter: selected.encounter_id, destination: selected.destination })
+          : t('uploadReview.destination', { origin: selected.identity.origin, tenant: selected.identity.tenant_id, location: selected.location_id })}</p>
         <p>{t('uploadReview.patient', { patient: selected.patient_id })}</p>
-        <p>{t('uploadReview.source', { draft: selected.draft_id, version: selected.draft_version })}</p>
+        <p>{selected.kind === 'image' ? t('uploadReview.imageSource', { image: selected.image_id })
+          : t('uploadReview.source', { draft: selected.draft_id, version: selected.draft_version })}</p>
         <p>{t('uploadReview.attempt', { attempt: selected.id })}</p>
         <p>{t('uploadReview.fingerprint', { hash: selected.content_hash })}</p>
         {selected.observation && <>

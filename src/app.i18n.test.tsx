@@ -4,6 +4,8 @@ import i18n, { loadLanguage } from './i18n';
 import { installPseudoLocale, restoreLocale, findUntranslated } from './i18n/testing/pseudo';
 import type { ChartSnapshot } from './types';
 
+vi.mock('./components/RadiologyReportSection', () => ({ RadiologyReportSection: () => null }));
+
 // ---------------------------------------------------------------------------
 // Mocks. The chart frame (topbar, menus, status pill, banners, dialogs) is what this
 // area owns, so every section's content and every modal is stubbed out: those belong

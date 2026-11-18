@@ -7,6 +7,7 @@ import type { RpcClient } from '../../utils/pims/sync';
 import { imageError, prepareImage, prepareImageTransfer, revalidateImage, renderSavedImage, validSavedImage, type ImageDecoder, type ImageError, type ImageStore, type PreparedImage, type SavedImage, type SelectedImageTransfer } from '../../utils/pims/images';
 import { isInAppBrowser } from '../../utils/savePdf';
 import { supabase } from '../../utils/supabaseClient';
+import { PimsUploadReview } from './PimsUploadReview';
 import './PimsDrafts.css';
 import './PimsImages.css';
 
@@ -14,6 +15,7 @@ type Props = {
   chartId: string | null; disabled?: boolean; store?: ImageStore | null; decode?: ImageDecoder;
   download?: (blob: Blob, filename: string) => void;
   canTransfer?: boolean;
+  editorTransfer?: boolean;
   transfer?: { target: ImageTransferTarget; chart_link_version: number; client: RpcClient; provider: ImageTransferProvider };
   onTransferSelect?: (image: SelectedImageTransfer | null) => void;
 };
@@ -36,7 +38,7 @@ function downloadImage(blob: Blob, filename: string): void {
 export function PimsImages(props: Props): React.ReactElement | null {
   return pimsRolloutEnabled() ? <EnabledPimsImages key={props.chartId} {...props} /> : null;
 }
-function EnabledPimsImages({ chartId, disabled = false, store = defaultImageStore, decode, download = downloadImage, canTransfer = false, transfer, onTransferSelect }: Props): React.ReactElement {
+function EnabledPimsImages({ chartId, disabled = false, store = defaultImageStore, decode, download = downloadImage, canTransfer = false, editorTransfer = false, transfer, onTransferSelect }: Props): React.ReactElement {
   const { t } = useTranslation('pims');
   const [expanded, setExpanded] = React.useState(false);
   const [busy, setBusy] = React.useState(false);
@@ -49,7 +51,9 @@ function EnabledPimsImages({ chartId, disabled = false, store = defaultImageStor
   const [included, setIncluded] = React.useState(false);
   const selection = React.useRef(onTransferSelect);
   selection.current = onTransferSelect;
-  const transferEnabled = canTransfer && validTransferBinding(transfer);
+  const strictTransferEnabled = canTransfer && validTransferBinding(transfer);
+  const editorEnabled = canTransfer && editorTransfer && !transfer;
+  const transferEnabled = strictTransferEnabled || editorEnabled;
   const transferAllowed = React.useRef(transferEnabled);
   transferAllowed.current = transferEnabled;
   const activeBinding = React.useRef(transfer);
@@ -57,7 +61,7 @@ function EnabledPimsImages({ chartId, disabled = false, store = defaultImageStor
   const target = transfer?.target;
   const bindingKey = JSON.stringify([target?.provider, target?.origin, target?.tenant_id, target?.connection_id,
     target?.connection_revision, target?.patient_id, target?.encounter_id, target?.destination,
-    target?.document_generation, transfer?.chart_link_version]);
+    target?.document_generation, transfer?.chart_link_version, editorEnabled]);
   const transferRevision = React.useRef(0);
   const clearTransfer = React.useCallback(() => { transferRevision.current++; setIncluded(false); selection.current?.(null); }, []);
   const sequence = React.useRef(0);
@@ -154,7 +158,22 @@ function EnabledPimsImages({ chartId, disabled = false, store = defaultImageStor
         {transferEnabled && prepared.transfer && onTransferSelect && <>
           <button type="button" disabled={disabled || busy} onClick={() => {
             if (included) { clearTransfer(); return; }
-            if (!store || !chartId || disabled || busy || !transferAllowed.current || !validTransferBinding(transfer)) return;
+            if (!store || !chartId || disabled || busy || !transferAllowed.current) return;
+            if (editorEnabled) {
+              const request = sequence.current, revision = transferRevision.current;
+              const valid = () => request === sequence.current && revision === transferRevision.current
+                && transferAllowed.current && activeStore.current === store;
+              onTransferSelect({ chartId, editorTransfer: true, render: async () => {
+                try { return await renderSavedImage(store, prepared, valid, decode); }
+                catch (cause) {
+                  if (valid()) { clearTransfer(); setPrepared(null); setError(imageError(cause)); }
+                  throw cause;
+                }
+              } });
+              setIncluded(true);
+              return;
+            }
+            if (!validTransferBinding(transfer)) return;
             const request = sequence.current;
             const revision = transferRevision.current;
             const binding = { ...transfer, target: Object.freeze({ ...transfer.target }) };
@@ -180,5 +199,6 @@ function EnabledPimsImages({ chartId, disabled = false, store = defaultImageStor
         <button type="button" className={transferEnabled ? undefined : 'pims-drafts__primary'} disabled={disabled || busy} onClick={() => void exportImage()}>{t('images.download')}</button>
       </div>}
     </div>}
+    <PimsUploadReview chartId={chartId} disabled={disabled} kind="image" />
   </section>;
 }

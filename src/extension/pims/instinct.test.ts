@@ -278,3 +278,103 @@ describe('Instinct source-derived adapter', () => {
     expect(fetcher).not.toHaveBeenCalled();
   });
 });
+
+describe('Instinct configured durable capture', () => {
+  beforeEach(() => sessionStorage.setItem('instinct:user-state', JSON.stringify({ value: { accessToken: 'secret', practice: { id: 'clinic', apiUrl: 'https://api.instinctvet.com/graphql' } } })));
+  async function capture(fetcher = requests()) {
+    const { captureInstinctAppointments } = await import('./instinct');
+    return captureInstinctAppointments(date, context(fetcher));
+  }
+  it('captures raw identifiers with distinct appointment/visit namespaces and no display requirements', async () => {
+    const rawPatient = { id: 'raw-patient', pimsId: 'wrong' }, rawProvider = { id: 'raw-doctor' };
+    const result = await capture(requests({
+      GetCalendarAppointments: { calendars: [{ schedule: [{ ...appointment, id: 'same', patient: rawPatient, calendar: { provider: rawProvider } }] }] },
+      GetVisitPatientBoardList: { activeVisits: [{ ...visit, id: 'same', patient: rawPatient, assignedTo: null, user: rawProvider }], listRecentlyCheckedOutVisits: [] },
+    }));
+    expect(result).toEqual({ items: [
+      { appointment_id: 'appointment:same', patient_id: 'raw-patient', clinician_id: 'raw-doctor', encounter_id: null, starts_at: start, ends_at: null, status: 'active' },
+      { appointment_id: 'visit:same', patient_id: 'raw-patient', clinician_id: 'raw-doctor', encounter_id: 'same', starts_at: start, ends_at: null, status: 'active' },
+    ], failures: [] });
+  });
+  it('deduplicates identical visits and rejects conflicting duplicate identity', async () => {
+    const response = (rows: unknown[]) => requests({ GetVisitPatientBoardList: { activeVisits: rows, listRecentlyCheckedOutVisits: [visit] } });
+    expect((await capture(response([visit]))).items).toHaveLength(2);
+    await expect(capture(response([{ ...visit, patient: { id: 'other' } }]))).rejects.toMatchObject({ code: 'invalid_capture' });
+  });
+  it('emits missing identity failures and skips excluded statuses and dates without inferring cancellation', async () => {
+    expect(await capture(requests({ GetCalendarAppointments: { calendars: [{ schedule: [
+      { ...appointment, patient: { pimsId: 'P123' } }, { ...appointment, id: 'cancelled', status: 'CANCELLED' },
+      { ...appointment, id: 'later', startsAt: dayBounds(date)!.end },
+    ] }] }, GetVisitPatientBoardList: { activeVisits: [], listRecentlyCheckedOutVisits: [{ ...visit, checkOutAt: start }] } })))
+      .toEqual({ items: [], failures: [{ appointment_id: 'appointment:appointment-1', code: 'identity_missing' }] });
+  });
+  it.each([['fetch', 1], ['body', 1], ['fetch', 2], ['body', 2], ['fetch', 3], ['body', 3]] as const)('stops after a practice switch during %s request %s', async (phase, changedRequest) => {
+    const current = context();
+    let count = 0;
+    current.fetch = vi.fn(async () => {
+      count++;
+      const change = () => sessionStorage.setItem('instinct:user-state', JSON.stringify({ value: { accessToken: 'secret', practice: { id: 'other', apiUrl: 'https://api.instinctvet.com/graphql' } } }));
+      if (phase === 'fetch' && count === changedRequest) change();
+      return { ok: true, json: async () => { if (phase === 'body' && count === changedRequest) change(); return { data: count === 1 ? { users: [provider] } : count === 2 ? { calendars: [] } : { activeVisits: [], listRecentlyCheckedOutVisits: [] } }; } } as Response;
+    });
+    const { captureInstinctAppointments } = await import('./instinct');
+    await expect(captureInstinctAppointments(date, current)).rejects.toMatchObject({ code: 'identity_changed' });
+    expect(current.fetch).toHaveBeenCalledTimes(changedRequest);
+  });
+  it.each(['https://api.instinctvet.com/graphql?secret=yes', 'https://api.instinctvet.com/graphql#fragment', 'https://api.instinctvet.com:444/graphql', 'https://api.instinctvet.com:443/graphql'])('rejects noncanonical endpoints %s', async apiUrl => {
+    sessionStorage.setItem('instinct:user-state', JSON.stringify({ value: { accessToken: 'secret', practice: { apiUrl } } }));
+    const fetcher = requests(); await expect(capture(fetcher)).rejects.toMatchObject({ code: 'identity_changed' }); expect(fetcher).not.toHaveBeenCalled();
+  });
+  it.each([null, { ...appointment, startsAt: 'invalid' }, { ...appointment, patient: [] }, { ...appointment, calendar: null }])('rejects malformed calendar rows %j', async row => {
+    await expect(capture(requests({ GetCalendarAppointments: { calendars: [{ schedule: [row] }] } }))).rejects.toMatchObject({ code: 'invalid_capture' });
+  });
+  it('reports absent row and clinician IDs without substituting patient numbers or names', async () => {
+    expect(await capture(requests({ GetCalendarAppointments: { calendars: [{ schedule: [{ ...appointment, id: null }] }] },
+      GetVisitPatientBoardList: { activeVisits: [{ ...visit, assignedTo: { nameFirst: 'Ada' } }], listRecentlyCheckedOutVisits: [] } })))
+      .toEqual({ items: [], failures: [{ appointment_id: null, code: 'identity_missing' }, { appointment_id: 'visit:visit-1', code: 'identity_missing' }] });
+  });
+  it('permanently invalidates the configured source after a mid-capture switch even after restoration', async () => {
+    const original = sessionStorage.getItem('instinct:user-state')!;
+    const current = context();
+    current.fetch = vi.fn(async () => { sessionStorage.clear(); return json({ users: [] }); });
+    const binding = { provider: 'instinct' as const, origin: current.url.origin, tenant_id: 'configured', connection_revision: 1 };
+    const source = instinct.syncSource!(current, binding, { userConfirmed: true }), bounds = dayBounds(date)!;
+    await expect(source.capture({ id: 'run', connection_id: 'connection', connection_revision: 1, generation: 1, state: 'capturing', started_at: new Date().toISOString(), expires_at: new Date(Date.now()+60000).toISOString(), scope: { requested_date: date, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, window_start: bounds.start, window_end: bounds.end } })).rejects.toMatchObject({ code: 'identity_changed' });
+    sessionStorage.setItem('instinct:user-state', original);
+    await expect(source.readIdentity()).rejects.toMatchObject({ code: 'identity_changed' });
+  });
+  it('stops a configured capture immediately after page lifecycle invalidation', async () => {
+    const current = context(requests());
+    const originalFetch = current.fetch;
+    current.fetch = vi.fn(async (...args: Parameters<typeof fetch>) => {
+      const response = await originalFetch(...args);window.dispatchEvent(new Event('hashchange'));return response;
+    });
+    const binding = { provider: 'instinct' as const, origin: current.url.origin, tenant_id: 'configured', connection_revision: 1 };
+    const source = instinct.syncSource!(current, binding, { userConfirmed: true }), bounds = dayBounds(date)!;
+    await expect(source.capture({ id: 'run', connection_id: 'connection', connection_revision: 1, generation: 1, state: 'capturing', started_at: new Date().toISOString(), expires_at: new Date(Date.now()+60000).toISOString(), scope: { requested_date: date, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, window_start: bounds.start, window_end: bounds.end } })).rejects.toMatchObject({ code: 'identity_changed' });
+    expect(current.fetch).toHaveBeenCalledTimes(1);
+  });
+  it('exposes a confirmed configured source with unknown completeness', async () => {
+    const current = context(requests()), binding = { provider: 'instinct' as const, origin: current.url.origin, tenant_id: 'configured', connection_revision: 1 };
+    expect(instinct.syncSource).toBeTypeOf('function');
+    const source = instinct.syncSource!(current, binding, { userConfirmed: true });
+    const bounds = dayBounds(date)!;
+    expect(await source.capture({ id: 'run', connection_id: 'connection', connection_revision: 1, generation: 1, state: 'capturing', started_at: new Date().toISOString(), expires_at: new Date(Date.now()+60000).toISOString(), scope: { requested_date: date, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, window_start: bounds.start, window_end: bounds.end } })).toMatchObject({ completeness: 'unknown', identity: binding, items: [{ appointment_id: 'appointment:appointment-1' }, { appointment_id: 'visit:visit-1' }] });
+  });
+  it.each(['fetch', 'body'] as const)('retains session invalidation when %s rejects during a switch', async phase => {
+    const original = sessionStorage.getItem('instinct:user-state')!;
+    const current = context();
+    const reject = () => { sessionStorage.clear(); throw new TypeError(); };
+    current.fetch = vi.fn(async () => {
+      if (phase === 'fetch') return reject();
+      return { ok: true, json: async () => reject() } as unknown as Response;
+    });
+    const binding = { provider: 'instinct' as const, origin: current.url.origin, tenant_id: 'configured', connection_revision: 1 };
+    const source = instinct.syncSource!(current, binding, { userConfirmed: true }), bounds = dayBounds(date)!;
+    await expect(source.capture({ id: 'run', connection_id: 'connection', connection_revision: 1, generation: 1, state: 'capturing', started_at: new Date().toISOString(), expires_at: new Date(Date.now()+60000).toISOString(), scope: { requested_date: date, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, window_start: bounds.start, window_end: bounds.end } })).rejects.toMatchObject({ code: 'identity_changed' });
+    sessionStorage.setItem('instinct:user-state', original);
+    await expect(source.readIdentity()).rejects.toMatchObject({ code: 'identity_changed' });
+    expect(current.fetch).toHaveBeenCalledTimes(1); source.dispose?.();
+  });
+
+});

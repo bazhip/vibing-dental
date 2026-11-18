@@ -1,3 +1,4 @@
+import { RADIOLOGY_HOST_PERMISSIONS } from './radiologyAutofill';
 import { describe, expect, it } from 'vitest';
 import { identifyPims, PIMS_HOST_PERMISSIONS } from './hosts';
 import manifest from '../manifest.json';
@@ -21,7 +22,7 @@ describe('PIMS origin registry', () => {
   ])('refuses an unrelated or insecure origin %s', (url) => expect(identifyPims(url)).toBeNull());
 
   it('matches manifest grants without expanding external messaging access', () => {
-    expect(manifest.host_permissions).toEqual(PIMS_HOST_PERMISSIONS);
+    expect(manifest.host_permissions).toEqual([...PIMS_HOST_PERMISSIONS, ...RADIOLOGY_HOST_PERMISSIONS]);
     expect(manifest.externally_connectable.matches).toEqual(['https://toothops.app/*', 'http://localhost:5173/*']);
   });
 });

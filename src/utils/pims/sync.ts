@@ -22,6 +22,7 @@ export type AppointmentStatus =
   | { appointment_id: string; status: 'active'; appointment: ObservedAppointment }
   | { appointment_id: string; status: 'cancelled' | 'deleted' | 'unknown' };
 export type SyncSource = {
+  dispose?(): void;
   readIdentity(): Promise<SyncIdentity>;
   capture(ticket: SyncTicket): Promise<SyncCapture>;
   lookupStatus?(request: { ticket: SyncTicket; appointment_ids: string[] }): Promise<{

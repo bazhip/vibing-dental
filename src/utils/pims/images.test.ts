@@ -46,7 +46,7 @@ describe('saved image preparation', () => {
     const reviewed = await prepareImageTransfer(store, prepared, () => true, decode, encode);
     expect(await renderSavedImage(store, reviewed, () => true, decode)).toMatch(/^data:image\/png;base64,iVBOR/);
     expect(encode).toHaveBeenCalledOnce();
-    expect(store.download).toHaveBeenCalledTimes(4);
+    expect(store.download).toHaveBeenCalledTimes(5);
   });
   it('sends exactly the converted artifact previewed, without converting again', async () => {
     const { store, decode } = fixture();
@@ -159,4 +159,16 @@ describe('bounded image headers', () => {
     bytes[20] = 2;
     expect(() => imageHeader(bytes, 'image/webp')).toThrow();
   });
+});
+
+it('rejects source changes while reviewed PNG bytes are being decoded', async () => {
+  const { store, decode } = fixture();
+  const prepared = await prepareImage(store, 'chart-1', 'image-1', decode);
+  const reviewed = await prepareImageTransfer(store, prepared, () => true, decode);
+  let calls = 0;
+  decode.mockImplementation(async () => {
+    if (++calls === 2) vi.mocked(store.context).mockResolvedValue({ ...source, hash: 'b'.repeat(64) });
+    return { width: 20, height: 10 };
+  });
+  await expect(renderSavedImage(store, reviewed, () => true, decode)).rejects.toMatchObject({ code: 'stale' });
 });

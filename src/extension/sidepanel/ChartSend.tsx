@@ -1,3 +1,4 @@
+import { useProfile } from '../../hooks/useProfile';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CloudChartMeta } from '../../utils/chartQueries';
@@ -11,6 +12,7 @@ import { CopyActions } from '../../components/pims/CopyActions';
 import { PimsDrafts } from '../../components/pims/PimsDrafts';
 import { PimsImages } from '../../components/pims/PimsImages';
 import { PimsExam } from '../../components/pims/PimsExam';
+import { PimsNoteAutofill } from '../../components/pims/PimsNoteAutofill';
 import type { SelectedImageTransfer } from '../../utils/pims/images';
 import { PimsUploadReview } from '../../components/pims/PimsUploadReview';
 import { DiagnosticLink, SendResults } from '../../components/pims/SendResults';
@@ -117,6 +119,7 @@ const ChartSendReady: React.FC<ReadyProps> = ({
   chart, snapshot, initialSentAt, back, sendFlag, onRetrySendFlag, onSent, onBusyChange,
 }) => {
   const { t, i18n } = useTranslation(['pims', 'media', 'common']);
+  const aiProfile = useProfile();
   const lng = i18n.language as AppLanguage;
   const stored = snapshot.recordNote ?? null;
   // The stored note is split on its headings in the language it was written in.
@@ -134,6 +137,7 @@ const ChartSendReady: React.FC<ReadyProps> = ({
   const canSend = sendFlag === 'on';
   const [savedImage, setSavedImage] = React.useState<SelectedImageTransfer | null>(null);
   const [examBusy, setExamBusy] = React.useState(false);
+  const [noteBusy, setNoteBusy] = React.useState(false);
   // The panel proposed this chart itself, so without two patient numbers to compare only an exact
   // name (or name + owner surname) skips the "Different patient?" confirmation.
   const patientMatcher = React.useCallback(
@@ -166,7 +170,7 @@ const ChartSendReady: React.FC<ReadyProps> = ({
 
   const busy = React.useRef(onBusyChange);
   busy.current = onBusyChange;
-  const actionsBusy = sending || examBusy;
+  const actionsBusy = sending || examBusy || noteBusy;
   React.useEffect(() => { busy.current?.(actionsBusy); }, [actionsBusy]);
   React.useEffect(() => () => busy.current?.(false), []);
 
@@ -295,11 +299,15 @@ const ChartSendReady: React.FC<ReadyProps> = ({
       {stale && <p className="sp-hint" role="status">{t('media:recordNote.stale')}</p>}
       {picture.element}
       {canSend && destination && <PimsExam inspection={destination} transport={internalTransport} chartKey={chart.id}
-        disabled={sending} onBusyChange={setExamBusy} onOpened={() => void load()} />}
+        disabled={sending || noteBusy} onBusyChange={setExamBusy} onOpened={() => void load()} />}
+      {canSend && <PimsNoteAutofill note={note} stored={stored} chartKey={chart.id} patientName={patientName}
+        transport={internalTransport} disabled={sending || examBusy} onBusyChange={setNoteBusy} />}
       {canSend && <CopyActions note={note} storedText={stored?.text ?? null}
         renderImage={picture.hasDiagrams ? picture.render : undefined} disabled={actionsBusy} />}
-      {canSend && <PimsDrafts key={chart.id} chartId={chart.id} disabled={actionsBusy} />}
-      {canSend && <PimsImages chartId={chart.id} disabled={actionsBusy} onTransferSelect={setSavedImage}
+      {canSend && <PimsDrafts key={chart.id} chartId={chart.id} aiEnabled={aiProfile.loaded && aiProfile.aiEnabled} radiologyTransport={internalTransport} disabled={actionsBusy}
+        instinctUpload={destination?.tab && destination.status?.provider === 'instinct'
+          ? { tabId: destination.tab.id, transport: internalTransport } : undefined} />}
+      {canSend && <PimsImages editorTransfer chartId={chart.id} disabled={actionsBusy} onTransferSelect={setSavedImage}
         canTransfer={phase.kind === 'ready' && destination?.status?.state === 'writable' && (destination.status.provider ?? 'ezyvet') === 'ezyvet'
           && destination.fields.some(field => field.acceptsImage && field.kind !== 'email')} />}
       {canSend && <PimsUploadReview chartId={chart.id} disabled={actionsBusy} />}

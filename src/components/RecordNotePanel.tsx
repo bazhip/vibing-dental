@@ -19,6 +19,7 @@ import { SendToEzyvetDialog } from './SendToEzyvetDialog';
 
 /** Send to ezyVet (Chrome extension). Omitted = no button. */
 export interface RecordNotePims {
+  aiEnabled?: boolean;
   /** The practice has Send to ezyVet on. */
   enabled: boolean;
   /** Cloud chart id, to record when it was sent (null = not saved to the cloud). */
@@ -107,6 +108,7 @@ export const RecordNotePanel: React.FC<RecordNotePanelProps> = ({
       {canSend && pims && sendOpen && (
         <SendToEzyvetDialog
           open
+          aiEnabled={pims.aiEnabled}
           onClose={() => setSendOpen(false)}
           note={sendNote}
           stored={stored}

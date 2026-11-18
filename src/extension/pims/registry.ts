@@ -1,3 +1,4 @@
+import { ezyvetConfiguredSyncSource } from './configuredEzyvet';
 import { diagnostics, listFields, status } from '../ezyvet/read';
 import { consultPatientNumber, listAppointments } from '../ezyvet/appointments';
 import { write } from '../ezyvet/write';
@@ -12,6 +13,7 @@ import type { PimsAdapter, PimsId } from './types';
 
 const ezyvet: PimsAdapter = {
   id: 'ezyvet',
+  syncSource: ezyvetConfiguredSyncSource,
   status: (context) => status(context.doc),
   listFields: (context) => listFields(context.doc),
   write: (item, context) => write(item, context.doc, () => (context.currentUrl?.() ?? context.url).href === context.url.href),

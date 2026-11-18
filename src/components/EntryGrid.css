@@ -3170,8 +3170,7 @@ button.save-status--error {
 }
 
 /* Images & radiographs section */
-.radiographic-findings { margin-top: 16px; border-top: 1px solid var(--border); }
-.radiographic-findings > .patient-form__label { padding-top: 16px; }
+.radiographic-findings { min-width: 0; }
 .imaging__pdf-option {
   margin: 0 0 0.75rem;
   flex-wrap: wrap;

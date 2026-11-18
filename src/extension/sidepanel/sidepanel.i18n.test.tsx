@@ -1,3 +1,4 @@
+vi.mock('../../hooks/useProfile', () => ({ useProfile: () => ({ loaded: true, aiEnabled: false }) }));
 import { vi } from 'vitest';
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 

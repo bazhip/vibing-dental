@@ -20,3 +20,10 @@
 .pims-setup__form { display: grid; gap: 10px; min-width: 0; border: 0; padding: 0; margin: 0; overflow-wrap: anywhere; }
 .pims-setup { min-width: 0; overflow-wrap: anywhere; }
 .pims-setup :is(button, input, select) { box-sizing: border-box; min-height: 44px; max-width: 100%; }
+
+.pims-setup label.pims-setup__check { display: flex; align-items: center; gap: 8px; min-height: 44px; }
+.pims-setup .pims-setup__check input { width: auto; min-height: 0; flex: 0 0 auto; padding: 0; }
+.pims-setup button.pims-setup__primary { background: var(--sp-accent, #0c6b63); border-color: var(--sp-accent, #0c6b63); color: #fff; }
+
+.pims-note-autofill textarea { box-sizing: border-box; width: 100%; min-width: 0; min-height: 140px; padding: 10px; border: 1px solid var(--sp-border, #b2c6c0); border-radius: 6px; background: transparent; color: inherit; font: inherit; resize: vertical; }
+.pims-note-autofill textarea:focus-visible { outline: 2px solid var(--sp-accent, #0c6b63); outline-offset: 3px; }

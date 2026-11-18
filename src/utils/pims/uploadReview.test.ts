@@ -12,10 +12,61 @@ const row = { id: attempt, chart_id: chart, connection_id: connection, connectio
   dispatched_at: '2026-11-17T12:00:00Z', state: 'unknown', review_version: 0, observation: null };
 const command = { chart_id: chart, attempt_id: attempt, request_id: request, expected_version: 0,
   observation: 'not_found' as const, note: receipt.note };
-function fixture(data: unknown) {
+function fixture(data: unknown, reviewKind: 'pdf' | 'image' = 'pdf') {
   const rpc = vi.fn(async () => ({ data, error: null }));
-  return { rpc, backend: createUploadReviewBackend({ rpc }) };
+  return { rpc, backend: createUploadReviewBackend({ rpc }, reviewKind) };
 }
+const imageRow = { kind: 'image', id: attempt, chart_id: chart, connection_id: connection, connection_revision: 2,
+  identity: { provider: 'ezyvet', origin: 'https://clinic.ezyvet.com', tenant_id: 'clinic-1', connection_revision: 2 },
+  patient_id: 'patient-1', encounter_id: 'encounter-2', destination: 'Medical', document_generation: 'document-3',
+  image_id: request, content_hash: 'a'.repeat(64), dispatched_at: row.dispatched_at, state: 'unknown', review_version: 0, observation: null };
+it('routes saved-image review and manual observations to image RPCs only', async () => {
+  const { backend, rpc } = fixture({ rows: [imageRow], next_cursor: null }, 'image');
+  expect(await backend.page({ chart_id: chart })).toEqual({ rows: [imageRow], next_cursor: null });
+  expect(rpc).toHaveBeenCalledWith('pims_image_review_page', { payload: { chart_id: chart } });
+  const write = fixture(receipt, 'image');
+  expect(await write.backend.observe(command)).toEqual(receipt);
+  expect(write.rpc.mock.calls).toEqual([['pims_record_image_observation', { payload: command }]]);
+});
+it.each([
+  { kind: undefined }, { kind: 'pdf' }, { image_id: 'image' }, { encounter_id: '' }, { destination: ' Medical' },
+  { document_generation: 'has\nnewline' }, { review_version: -1 }, { connection_revision: 0 }, { content_hash: 'invalid' },
+  { chart_id: connection }, { patient_id: '' }, { dispatched_at: 'yesterday' }, { state: 'confirmed' },
+  { identity: row.identity }, { identity: { ...imageRow.identity, connection_revision: 3 } },
+  { identity: { ...imageRow.identity, origin: 'https://attacker.test' } }, { review_version: 1 },
+  { observation: receipt }, { review_version: 1, observation: { ...receipt, attempt_id: connection } },
+])('rejects invalid image review rows %j', async change => {
+  await expect(fixture({ rows: [{ ...imageRow, ...change }], next_cursor: null }, 'image').backend.page({ chart_id: chart }))
+    .rejects.toEqual({ code: 'unknown' });
+});
+it.each([['pdf', imageRow], ['image', row], ['pdf', { ...row, kind: 'image' }], ['pdf', { ...row, kind: 'other' }]] as const)
+  ('rejects cross-mode rows in %s review', async (reviewKind, item) => {
+    await expect(fixture({ rows: [item], next_cursor: null }, reviewKind).backend.page({ chart_id: chart })).rejects.toEqual({ code: 'unknown' });
+  });
+it('accepts explicit PDF kinds without changing existing PDF callers', async () => {
+  const item = { ...row, kind: 'pdf' };
+  expect((await fixture({ rows: [item], next_cursor: null }).backend.page({ chart_id: chart })).rows).toEqual([item]);
+});
+it('accepts reviewed image unknowns without promoting their state', async () => {
+  const item = { ...imageRow, review_version: 1, observation: receipt };
+  expect((await fixture({ rows: [item], next_cursor: null }, 'image').backend.page({ chart_id: chart })).rows).toEqual([item]);
+});
+it.each([
+  { rows: [imageRow, imageRow], next_cursor: null }, { rows: [imageRow], next_cursor: attempt },
+  { rows: [], next_cursor: attempt }, { rows: Array.from({ length: 51 }, () => imageRow), next_cursor: null },
+])('enforces image pagination bounds %j', async page => {
+  await expect(fixture(page, 'image').backend.page({ chart_id: chart })).rejects.toEqual({ code: 'unknown' });
+});
+it('accepts a full ordered image page and passes its exact cursor', async () => {
+  const rows = Array.from({ length: 50 }, (_, index) => ({ ...imageRow, id: `99999999-9999-4999-8999-${String(index).padStart(12, '0')}` }));
+  const cursor = rows[49].id;
+  expect(await fixture({ rows, next_cursor: cursor }, 'image').backend.page({ chart_id: chart })).toEqual({ rows, next_cursor: cursor });
+  const next = fixture({ rows: [], next_cursor: null }, 'image');
+  await next.backend.page({ chart_id: chart, cursor });
+  expect(next.rpc).toHaveBeenCalledWith('pims_image_review_page', { payload: { chart_id: chart, cursor } });
+  await expect(fixture({ rows: [imageRow], next_cursor: null }, 'image').backend.page({ chart_id: chart, cursor: attempt }))
+    .rejects.toEqual({ code: 'unknown' });
+});
 it('reads only the selected chart and validates the bounded review page', async () => {
   const { backend, rpc } = fixture({ rows: [row], next_cursor: null });
   expect(await backend.page({ chart_id: chart })).toEqual({ rows: [row], next_cursor: null });

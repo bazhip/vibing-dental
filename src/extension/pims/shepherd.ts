@@ -1,5 +1,6 @@
+import { configuredSyncSource, type ConfiguredCapture } from './configuredSync';
 import { identifyPims } from './hosts';
-import { dayBounds, isVisible, plainHtml, readFailed, readJson, routeStatus } from './shared';
+import { dayBounds, isVisible, plainHtml, readFailed, routeStatus } from './shared';
 import type { AdapterContext, Appointment, AppointmentsResult, PimsAdapter, SendItem, WriteResult } from './types';
 
 const fixed = [
@@ -223,14 +224,38 @@ async function listAppointments(date: string, context: AdapterContext): Promise<
   if (!bounds || identifyPims(context.url.href) !== 'shepherd' || context.url.port) return readFailed();
   try {
     if ((context.currentUrl?.() ?? context.url).href !== context.url.href) return readFailed();
-    const token = object(JSON.parse(context.sessionStorage.getItem('baasic-auth-token-pav2') || '{}')).token;
-    if (!text(token)) return readFailed();
+    const session = () => {
+      const token = object(JSON.parse(context.sessionStorage.getItem('baasic-auth-token-pav2') || '{}')).token;
+      const userInfo = context.sessionStorage.getItem('baasic-user-info-pav2');
+      const userId = userInfo === null ? null : object(JSON.parse(userInfo)).id;
+      if (!text(token) || userInfo !== null && !text(userId)) throw new TypeError();
+      return { token, userId };
+    };
+    const captured = session();
+    let discontinued = false;
+    const unchanged = () => {
+      if (discontinued) return false;
+      try {
+        const current = session();
+        discontinued = (context.currentUrl?.() ?? context.url).href !== context.url.href || current.token !== captured.token || current.userId !== captured.userId;
+      } catch {
+        discontinued = true;
+      }
+      return !discontinued;
+    };
     const host = context.url.hostname;
     const base = host.startsWith('app.') ? `https://api.${host.slice(4)}/pav2/` : `${context.url.origin}/api/pav2/`;
-    const post = (path: string, body: Record<string, unknown>) => readJson(context, `${base}${path}`, {
-      method: 'POST', headers: { Authorization: `BEARER ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body),
-    });
-    const unchanged = () => (context.currentUrl?.() ?? context.url).href === context.url.href;
+    const post = async (path: string, body: Record<string, unknown>): Promise<unknown> => {
+      if (!unchanged()) throw new TypeError();
+      const response = await context.fetch(`${base}${path}`, {
+        method: 'POST', headers: { Authorization: `BEARER ${captured.token}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+        credentials: 'include', redirect: 'error', signal: AbortSignal.timeout(15_000),
+      });
+      if (!unchanged() || !response.ok) throw new TypeError();
+      const result = await response.json();
+      if (!unchanged()) throw new TypeError();
+      return result;
+    };
     const dashboard = items(await post('soaps/dashboard', { pageNumber: 1, pageSize: 1000,
       embed: 'supervisingDoctor,pav2User,patient,patient.clients,location,soapAssignedUsers,soapAssignedUsers.coreUser,soapAssignedUsers.pav2User',
       isDeleted: false, rpp: 1000, page: 1 }), true);
@@ -272,8 +297,16 @@ async function listAppointments(date: string, context: AdapterContext): Promise<
         continue;
       }
       for (const patient of patients) {
-        appointments.push({ appointmentId: text(row.id), start: new Date(start).toISOString(), patientName: text(object(patient).name),
-          patientNumber: '', ownerName: text(object(row.client).name), vet: text(object(value.dashboard ? row.supervisingDoctor : row.provider).name) || null });
+        const patientRecord = object(patient);
+        const client = value.dashboard
+          ? object(Array.isArray(patientRecord.clients) ? patientRecord.clients[0] : undefined) : object(row.client);
+        const doctor = object(value.dashboard ? row.supervisingDoctor : row.provider);
+        const doctorName = value.dashboard ? [text(doctor.firstName), text(doctor.lastName)].filter(Boolean).join(' ') : '';
+        appointments.push({ sourceKind: value.dashboard ? 'soap' : 'appointment', appointmentId: text(row.id), start: new Date(start).toISOString(),
+          patientName: text(patientRecord.name),
+          patientNumber: text(patientRecord.identifier),
+          ownerName: [text(client.firstName), text(client.lastName)].filter(Boolean).join(' ') || text(client.name),
+          vet: doctorName || text(doctor.name) || null });
       }
     }
     return { ok: true, appointments, failures };
@@ -282,8 +315,83 @@ async function listAppointments(date: string, context: AdapterContext): Promise<
   }
 }
 
+
+/** SOAP and appointment IDs are distinct source namespaces in the recovered provider contract. */
+export async function captureShepherdAppointments(date: string, context: AdapterContext): Promise<ConfiguredCapture> {
+  const bounds = dayBounds(date);
+  if (!bounds || identifyPims(context.url.href) !== 'shepherd' || context.url.port) throw { code: 'invalid_capture' };
+  const key = (value: unknown): string | null => typeof value === 'string' && value.trim() === value && value.length > 0 && value.length <= 180 && !/[\u0000-\u001f\u007f]/.test(value) ? value : null;
+  const session = () => {
+    const token = object(JSON.parse(context.sessionStorage.getItem('baasic-auth-token-pav2') || '{}')).token;
+    const userInfo = context.sessionStorage.getItem('baasic-user-info-pav2');
+    const userId = userInfo === null ? null : object(JSON.parse(userInfo)).id;
+    if (!text(token) || userInfo !== null && !key(userId)) throw { code: 'identity_changed' };
+    return { token, userId };
+  };
+  const captured = session();let discontinued = false;
+  const check = () => {
+    try { const current = session();discontinued ||= (context.currentUrl?.() ?? context.url).href !== context.url.href || current.token !== captured.token || current.userId !== captured.userId; }
+    catch { discontinued = true; }
+    if (discontinued) throw { code: 'identity_changed' };
+  };
+  const host = context.url.hostname;
+  const base = host.startsWith('app.') ? `https://api.${host.slice(4)}/pav2/` : `${context.url.origin}/api/pav2/`;
+  const post = async (path: string, body: Record<string, unknown>): Promise<unknown> => {
+    check();
+    const response = await context.fetch(`${base}${path}`, { method: 'POST', headers: { Authorization: `BEARER ${captured.token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body), credentials: 'include', redirect: 'error', signal: AbortSignal.timeout(15_000) });
+    check();if (!response.ok) throw { code: 'read_failed' };
+    const result: unknown = await response.json();check();return result;
+  };
+  const dashboard = items(await post('soaps/dashboard', { pageNumber: 1, pageSize: 1000,
+    embed: 'supervisingDoctor,pav2User,patient,patient.clients,location,soapAssignedUsers,soapAssignedUsers.coreUser,soapAssignedUsers.pav2User',
+    isDeleted: false, rpp: 1000, page: 1 }), true);
+  if (!dashboard) throw { code: 'invalid_capture' };
+  const providerIds: string[] = [];
+  for (let page = 1; page <= 50; page++) {
+    const result = await post('providers/search', { reactDisposers: 'function () { [native code] }', pageNumber: page, pageSize: 100,
+      orderBy: 'coreUser.firstName', orderDirection: 'asc', embed: 'coreUser,coreUser.coreMembership,coreUser.roles,clinicUser,userLicenseType,userTeams',
+      search: null, fields: null, isApproved: true, roleIds: null, userLicenseTypeIds: null, teamIds: null, isClient: false,
+      fetchClinicLoginUsers: true, sort: 'coreUser.firstName|asc', searchQuery: null, page, rpp: 100 });
+    const providers = items(result), total = object(result).totalRecords;
+    if (!providers || total !== undefined && (typeof total !== 'number' || !Number.isSafeInteger(total) || total < 0)) throw { code: 'invalid_capture' };
+    for (const provider of providers) {
+      const providerId = key(object(provider).id);
+      if (!providerId || providerIds.includes(providerId)) throw { code: 'invalid_capture' };
+      providerIds.push(providerId);
+    }
+    if (typeof total === 'number' ? providerIds.length >= total : providers.length < 100) break;
+    if (!providers.length || page === 50) throw { code: 'invalid_capture' };
+  }
+  const appointments = items(await post('appointments/search', { pageNumber: 1, pageSize: 1000,
+    embed: 'appointmentPatients,appointmentPatients.patient,appointmentPatients.patient.patientPreferredProviders,appointmentPatients.patient.patientPreferredProviders.provider,appointmentPatients.patient.soapId,client,client.clientInfo,appointmentStatus,appointmentType,provider',
+    startDate: bounds.start, endDate: new Date(Date.parse(bounds.end) - 1).toISOString(), providerIds: providerIds.join(','), showCanceled: false, page: 1, rpp: 1000 }), true);
+  if (!appointments) throw { code: 'invalid_capture' };
+  const capture: ConfiguredCapture = { items: [], failures: [] }, seen = new Set<string>();
+  for (const source of [...dashboard.map(row => ({ row, soap: true })), ...appointments.map(row => ({ row, soap: false }))]) {
+    const row = object(source.row), rawId = key(row.id), appointmentId = rawId ? `${source.soap ? 'soap' : 'appointment'}:${rawId}` : null;
+    if (appointmentId && seen.has(appointmentId)) throw { code: 'invalid_capture' };
+    if (appointmentId) seen.add(appointmentId);
+    const patients = Array.isArray(row.appointmentPatients) ? row.appointmentPatients : [];
+    const embeddedPatient = object(row.patient);
+    const patientId = source.soap ? key(row.patientId) ?? key(embeddedPatient.id) : patients.length === 1 ? key(object(object(patients[0]).patient).id) : null;
+    const clinicianId = source.soap ? key(row.supervisingDoctorId) : key(object(row.provider).id);
+    const start = Date.parse(text(source.soap ? row.dateCheckedIn : row.startDate));
+    if (!appointmentId || !patientId || !clinicianId || !Number.isFinite(start)
+      || source.soap && row.patientId != null && embeddedPatient.id != null && key(row.patientId) !== key(embeddedPatient.id)) {
+      capture.failures.push({ appointment_id: appointmentId, code: 'identity_missing' });continue;
+    }
+    if (start < Date.parse(bounds.start) || start >= Date.parse(bounds.end)) continue;
+    capture.items.push({ appointment_id: appointmentId, patient_id: patientId, clinician_id: clinicianId,
+      encounter_id: source.soap ? rawId : null, starts_at: new Date(start).toISOString(), ends_at: null,
+      status: row.isDeleted === true ? 'deleted' : text(object(row.appointmentStatus).abrv).toLowerCase() === 'canceled' ? 'cancelled' : 'active' });
+  }
+  check();return capture;
+}
+
 export const shepherd: PimsAdapter = {
   id: 'shepherd',
+  syncSource: (context, binding, options) => configuredSyncSource(context, binding, date => captureShepherdAppointments(date, context), options),
   status: (context) => routeStatus(context, null, record(context.url), fields(context).some(({ editor }) => writable(editor))),
   listFields: (context) => fields(context).map(({ title }) => ({ title, kind: 'note', acceptsImage: false })),
   write,

@@ -5,6 +5,7 @@ import type { PimsId } from '../pims/types';
 
 export type Appointment = {
   provider?: PimsId;
+  sourceKind?: 'appointment' | 'soap';
   appointmentId: string;
   start: string;
   patientName: string;

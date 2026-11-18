@@ -23,10 +23,13 @@ function binding() {
   };
 }
 
-const auth = vi.hoisted(() => ({ event: (_event: string) => {}, unsubscribe: vi.fn() }));
-vi.mock('../../utils/supabaseClient', () => ({ supabase: { auth: { onAuthStateChange: (callback: (event: string) => void) => {
-  auth.event = callback;
-  return { data: { subscription: { unsubscribe: auth.unsubscribe } } };
+const auth = vi.hoisted(() => {
+  const listeners = new Set<(event: string) => void>();
+  return { listeners, event: (event: string) => listeners.forEach(callback => callback(event)), unsubscribe: vi.fn(), rpc: vi.fn() };
+});
+vi.mock('../../utils/supabaseClient', () => ({ supabase: { rpc: auth.rpc, auth: { onAuthStateChange: (callback: (event: string) => void) => {
+  auth.listeners.add(callback);
+  return { data: { subscription: { unsubscribe: () => { auth.listeners.delete(callback); auth.unsubscribe(); } } } };
 } } } }));
 
 const image = { id: 'image-1', chart_id: 'chart-1', path: 'owner/chart-1/image.png', caption: 'Left side', kind: 'xray' as const, original_path: 'owner/chart-1/image.dcm' };
@@ -44,6 +47,7 @@ function fixture() {
   return { store, decode, download, transfer: binding() };
 }
 beforeEach(() => {
+  auth.rpc.mockReset().mockResolvedValue({ data: { rows: [], next_cursor: null }, error: null });
   vi.stubEnv('VITE_PIMS_ROLLOUT_ENABLED', 'true');
   vi.stubGlobal('crypto', webcrypto);
   vi.mocked(transferReviewedImage).mockReset();
@@ -62,7 +66,63 @@ it('has no reads or UI while the rollout is off', () => {
   vi.stubEnv('VITE_PIMS_ROLLOUT_ENABLED', 'false');
   const props = fixture(); const view = render(<PimsImages chartId="chart-1" {...props} />);
   expect(view.container).toBeEmptyDOMElement(); expect(props.store.context).not.toHaveBeenCalled();
+  expect(auth.rpc).not.toHaveBeenCalled();
 });
+const reviewChart = '88888888-8888-4888-8888-888888888888';
+it('mounts lazy image review without requiring automatic transfer or loading stored images', async () => {
+  const props = fixture();
+  render(<PimsImages chartId={reviewChart} {...props} />);
+  expect(screen.getByRole('heading', { name: 'Uncertain image transfers' })).toBeInTheDocument();
+  expect(auth.rpc).not.toHaveBeenCalled();
+  fireEvent.click(screen.getByRole('button', { name: 'Review uncertain uploads' }));
+  await screen.findByText('No uncertain uploads on this page.');
+  expect(auth.rpc.mock.calls).toEqual([['pims_image_review_page', { payload: { chart_id: reviewChart } }]]);
+  expect(props.store.context).not.toHaveBeenCalled();
+  expect(props.store.list).not.toHaveBeenCalled();
+});
+it('records only a manual image observation through the mounted backend', async () => {
+  const props = fixture();
+  const attempt = '99999999-9999-4999-8999-999999999999';
+  const connection = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
+  const item = { kind: 'image', id: attempt, chart_id: reviewChart, connection_id: connection, connection_revision: 1,
+    identity: { provider: 'ezyvet', origin: 'https://clinic.ezyvet.com', tenant_id: 'clinic-1', connection_revision: 1 },
+    patient_id: 'patient-1', encounter_id: 'encounter-2', destination: 'Medical', document_generation: 'document-3',
+    image_id: connection, content_hash: 'a'.repeat(64), dispatched_at: '2026-11-17T12:00:00Z', state: 'unknown', review_version: 0, observation: null };
+  auth.rpc.mockResolvedValue({ data: { rows: [item], next_cursor: null }, error: null });
+  render(<PimsImages chartId={reviewChart} {...props} />);
+  fireEvent.click(screen.getByRole('button', { name: 'Review uncertain uploads' }));
+  await screen.findByLabelText('Your observation');
+  expect(screen.getByText(`Saved image ID: ${connection}`)).toBeInTheDocument();
+  fireEvent.change(screen.getByLabelText('Review note'), { target: { value: 'Checked original encounter' } });
+  fireEvent.click(screen.getByRole('checkbox'));
+  auth.rpc.mockImplementationOnce(async (_name, { payload }) => ({ data: { request_id: payload.request_id, chart_id: reviewChart,
+    attempt_id: attempt, version: 1, observation: 'uncertain', note: payload.note, actor_id: connection, created_at: item.dispatched_at }, error: null }));
+  fireEvent.click(screen.getByRole('button', { name: 'Record manual observation' }));
+  expect(await screen.findByRole('status')).toHaveTextContent('Automatic retry remains blocked');
+  expect(auth.rpc.mock.calls.map(call => call[0])).toEqual(['pims_image_review_page', 'pims_record_image_observation', 'pims_image_review_page']);
+  expect(auth.rpc.mock.calls[1][1]).toEqual({ payload: { chart_id: reviewChart, attempt_id: attempt, expected_version: 0,
+    request_id: expect.any(String), observation: 'uncertain', note: 'Checked original encounter' } });
+  expect(transferReviewedImage).not.toHaveBeenCalled();
+  expect(props.transfer.provider.write).not.toHaveBeenCalled();
+});
+it.each(['SIGNED_OUT', 'SIGNED_IN', 'USER_UPDATED', 'chart', 'disabled', 'unmount', 'rollout'])
+  ('discards pending image review after %s', async change => {
+    const props = fixture();
+    let resolve!: (value: any) => void;
+    auth.rpc.mockImplementationOnce(() => new Promise(done => { resolve = done; }));
+    const view = render(<PimsImages chartId={reviewChart} {...props} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Review uncertain uploads' }));
+    expect(auth.rpc).toHaveBeenCalledTimes(1);
+    if (change === 'chart') view.rerender(<PimsImages chartId="other" {...props} />);
+    else if (change === 'disabled') view.rerender(<PimsImages chartId={reviewChart} {...props} disabled />);
+    else if (change === 'unmount') view.unmount();
+    else if (change === 'rollout') { vi.stubEnv('VITE_PIMS_ROLLOUT_ENABLED', 'false'); view.rerender(<PimsImages chartId={reviewChart} {...props} />); }
+    else act(() => auth.event(change));
+    await act(async () => resolve({ data: { rows: [], next_cursor: null }, error: null }));
+    expect(screen.queryByText('No uncertain uploads on this page.')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Reload uploads' })).not.toBeInTheDocument();
+    expect(auth.rpc).toHaveBeenCalledTimes(1);
+  });
 it('requires preview and explicit inclusion before making an image available to Send', async () => {
   const props = fixture();
   const onTransferSelect = vi.fn();
@@ -328,4 +388,19 @@ it('does not export after the parent disables transfers during revalidation', as
   await waitFor(() => expect(screen.getByRole('button', { name: 'Download for manual transfer' })).toBeDisabled());
   await waitFor(() => expect(props.store.download).toHaveBeenCalledTimes(2));
   expect(props.download).not.toHaveBeenCalled();
+});
+
+it('offers the reviewed editor compatibility path without a strict readback binding', async () => {
+  const props = fixture(), onTransferSelect = vi.fn();
+  render(<PimsImages chartId="chart-1" {...props} transfer={undefined} canTransfer editorTransfer onTransferSelect={onTransferSelect} />);
+  fireEvent.click(screen.getByRole('button', { name: 'Existing images' }));
+  fireEvent.click(await screen.findByRole('button', { name: 'Preview selected image' }));
+  fireEvent.click(await screen.findByRole('button', { name: 'Include in transfer' }));
+  const included = onTransferSelect.mock.lastCall![0];
+  expect(included).toMatchObject({ chartId: 'chart-1', editorTransfer: true, render: expect.any(Function) });
+  expect(included.dispatch).toBeUndefined();
+  expect(await included.render()).toMatch(/^data:image\/png;base64,/);
+  expect(transferReviewedImage).not.toHaveBeenCalled();
+  fireEvent.click(screen.getByRole('button', { name: 'Reload saved images' }));
+  await expect(included.render()).rejects.toBeDefined();
 });
