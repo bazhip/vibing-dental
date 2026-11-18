@@ -94,6 +94,12 @@ export function ownerReportFacts(snapshot: ChartSnapshot, context?: OwnerReportC
       : 'Oral exam: nothing abnormal recorded',
     info.radiographicFindings?.trim() ? `Radiographic findings (written by the vet):\n${info.radiographicFindings.trim()}` : '',
     info.treatmentReport?.trim() ? `Treatment report (written by the vet):\n${info.treatmentReport.trim()}` : '',
+    info.consultationHistory?.trim() ? `consultationHistory (recorded source, preserve doses and uncertainty):\n${info.consultationHistory}` : '',
+    info.consultationAssessment?.trim() ? `consultationAssessment (recorded source, preserve doses and uncertainty):\n${info.consultationAssessment}` : '',
+    info.consultationPlan?.trim() ? `consultationPlan (recorded source, preserve doses and uncertainty):\n${info.consultationPlan}` : '',
+    info.dischargeMedications?.trim() ? `dischargeMedications (recorded source, preserve doses and uncertainty):\n${info.dischargeMedications}` : '',
+    info.dischargeInstructions?.trim() ? `dischargeInstructions (recorded source, preserve doses and uncertainty):\n${info.dischargeInstructions}` : '',
+    info.dischargeFollowUp?.trim() ? `dischargeFollowUp (recorded source, preserve doses and uncertainty):\n${info.dischargeFollowUp}` : '',
     model.recallDate ? `Recommended recheck: ${model.recallDate}` : 'Recommended recheck: none set',
     model.extraNotes ? `Note from the veterinary team (already printed separately): ${model.extraNotes}` : '',
   ];

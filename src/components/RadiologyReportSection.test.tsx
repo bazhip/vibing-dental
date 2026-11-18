@@ -180,3 +180,26 @@ it('keeps the manual editor open when its last character is cleared', () => {
  fireEvent.change(editor,{target:{value:''}});
  expect(editor.closest('details')).toHaveAttribute('open');
 });
+
+it('associates visible source and optional context guidance with their controls', () => {
+  render(<Editor />);
+  expect(screen.getByRole('textbox', { name: 'Radiographic findings' })).toHaveAccessibleDescription(/Describe what you see/);
+  fireEvent.click(screen.getByText('Optional study context'));
+  for (const label of ['Relevant clinical history', 'Study technique and coverage', 'Clinical question or reason for referral']) {
+    expect(screen.getByLabelText(label)).toHaveAccessibleDescription(/Optional/);
+  }
+});
+it('keeps one primary action as generation advances to proposal and reviewed output', async () => {
+  const { container } = render(<Editor />);
+  const primary = () => container.querySelectorAll('.radiology-report__primary');
+  expect(primary()).toHaveLength(1);
+  expect(primary()[0]).toHaveTextContent('Generate draft');
+  fireEvent.click(screen.getByRole('button', { name: 'Generate draft' }));
+  await screen.findByLabelText('Generated draft');
+  expect(primary()).toHaveLength(1);
+  expect(primary()[0]).toHaveTextContent('Use draft');
+  fireEvent.click(screen.getByRole('button', { name: 'Use draft' }));
+  fireEvent.click(screen.getByLabelText('I reviewed this report against the current chart.'));
+  expect(primary()).toHaveLength(1);
+  expect(primary()[0]).toHaveTextContent('Copy report');
+});

@@ -180,12 +180,16 @@ export function createNoteAutofill(context: AdapterContext): { execute(request: 
         const destination = { provider, origin: new URL(href).origin, title: doc.title.slice(0, 500) };
         if (request.operation === 'inspect') return { ...destination, state: 'fields', fields: editors().map(editor => editor.title).slice(0, 100) };
         if (request.operation === 'prepare') {
-          tickets.clear();
           const found = editors().filter(editor => editor.title === request.field);
           if (found.length !== 1) return { state: 'blocked' };
           const editor = found[0], html = editor.read();
           if (html.length > MAX_HTML || plain(html).length > MAX_TEXT || !current()) return { state: 'blocked' };
-          const ticket = crypto.randomUUID(), expires = Date.now() + 120000;
+          const now = Date.now();
+          for (const [id, pending] of tickets) {
+            if (pending.expires <= now || pending.editor.title === editor.title) tickets.delete(id);
+          }
+          if (tickets.size >= 128) return { state: 'blocked' };
+          const ticket = crypto.randomUUID(), expires = now + 120000;
           tickets.set(ticket, { editor, html, expires, generation, title: doc.title });
           return { ...destination, state: 'prepared', ticket, field: editor.title, existing_characters: plain(html).length, expires_at: new Date(expires).toISOString() };
         }

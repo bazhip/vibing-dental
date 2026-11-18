@@ -106,7 +106,13 @@
       "findings": "Findings by tooth",
       "procedures": "Procedures",
       "radiographs": "Radiographic findings",
-      "recheck": "Recheck"
+      "recheck": "Recheck",
+      "consultationHistory": "Consultation history",
+      "consultationAssessment": "Consultation assessment",
+      "consultationPlan": "Consultation plan",
+      "dischargeMedications": "Discharge medications",
+      "dischargeInstructions": "Discharge instructions",
+      "dischargeFollowUp": "Discharge follow-up"
     },
     "alreadyMissing": "Already missing: {{teeth}}",
     "extracted": "Extracted: {{teeth}}",

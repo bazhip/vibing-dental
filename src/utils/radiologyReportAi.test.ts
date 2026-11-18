@@ -72,3 +72,15 @@ it('rejects context-only requests and responses without clinical observations', 
  await expect(draftRadiologyReport(chart,'en')).rejects.toThrow();expect(send).not.toHaveBeenCalled();
  expect(parseRadiologyReport([tool({...fields,findings:''})],'en')).toBeNull();
 });
+it('reuses consultation history unless study-specific history is recorded',()=>{
+ const chart=radiologySnapshot();chart.patientInfo.consultationHistory='Pain while chewing for two weeks.';
+ let request=buildRadiologyReportRequest(chart,'en');let text=request.messages[0].content[0].text;
+ expect(text).toContain('Pain while chewing for two weeks.');
+ chart.patientInfo.radiologyHistory='Study-specific history recorded today.';
+ request=buildRadiologyReportRequest(chart,'en');text=request.messages[0].content[0].text;
+ expect(text).toContain('Study-specific history recorded today.');
+});
+it.each(['consultationHistory','consultationAssessment','consultationPlan'] as const)('does not silently drop oversized %s context before drafting', async field=>{
+ const chart=radiologySnapshot();chart.patientInfo[field]='x'.repeat(20001);
+ await expect(draftRadiologyReport(chart,'en')).rejects.toThrow();expect(send).not.toHaveBeenCalled();
+});

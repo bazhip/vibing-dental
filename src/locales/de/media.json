@@ -106,7 +106,13 @@
       "findings": "Befunde pro Zahn",
       "procedures": "Eingriffe",
       "radiographs": "Röntgenbefunde",
-      "recheck": "Nachkontrolle"
+      "recheck": "Nachkontrolle",
+      "consultationHistory": "Anamnese der Konsultation",
+      "consultationAssessment": "Beurteilung der Konsultation",
+      "consultationPlan": "Plan der Konsultation",
+      "dischargeMedications": "Medikamente bei Entlassung",
+      "dischargeInstructions": "Entlassungshinweise",
+      "dischargeFollowUp": "Nachsorge nach Entlassung"
     },
     "alreadyMissing": "Bereits fehlend: {{teeth}}",
     "extracted": "Extrahiert: {{teeth}}",

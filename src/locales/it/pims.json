@@ -486,6 +486,33 @@
     "filled": "Campo compilato. Verifichi le note e le salvi nel PIMS.",
     "blocked": "Le note non sono state inserite. Verifichi la destinazione e prepari nuovamente la compilazione.",
     "unknown": "L’esito è sconosciuto. Verifichi il PIMS prima di preparare un altro tentativo.",
-    "expired": "La preparazione è scaduta. Verifichi la destinazione e prepari nuovamente la compilazione."
+    "expired": "La preparazione è scaduta. Verifichi la destinazione e prepari nuovamente la compilazione.",
+    "mapSections": "Associare le sezioni ai campi",
+    "singleField": "Utilizzare un solo campo",
+    "mappingHint": "Scelga un campo aperto per ogni sezione di origine. Le sezioni associate allo stesso campo vengono aggiunte insieme nell’ordine originale. Verifichi nuovamente la destinazione prima di incollare.",
+    "skip": "Non incollare",
+    "missingField": "Il campo salvato non è aperto: {{field}}",
+    "saveMapping": "Salvare le associazioni",
+    "reloadMapping": "Ricaricare le associazioni salvate",
+    "resetMapping": "Cancellare le associazioni",
+    "mappingPrivacy": "Nel Suo account vengono salvati solo gli identificativi delle sezioni e le etichette dei campi per questo sito PIMS e modello. Le note e i dati del paziente non vengono mai salvati nelle associazioni.",
+    "pasteAll": "Incollare tutto",
+    "fieldOutcome": "{{field}}: {{outcome}}",
+    "groupSources": "Origini: {{sections}}",
+    "outcomes": {
+      "filled": "Compilato",
+      "blocked": "Bloccato",
+      "unknown": "Esito sconosciuto — verifichi il PIMS",
+      "skipped": "Saltato"
+    },
+    "mappingStatus": {
+      "loading": "Caricamento delle associazioni salvate…",
+      "saving": "Salvataggio delle associazioni…",
+      "saved": "Associazioni salvate. Verifichi la destinazione prima di ogni incollaggio.",
+      "error": "Impossibile caricare o salvare le associazioni. Le ricarichi prima di salvarle nuovamente.",
+      "conflict": "Queste associazioni sono state modificate altrove. Le ricarichi prima di salvarle nuovamente."
+    },
+    "mappingOptions": "Opzioni delle associazioni",
+    "partial": "Alcune note sono state incollate. Verifichi ogni campo nel PIMS prima di preparare un nuovo tentativo; incollare di nuovo può duplicare le note."
   }
 }

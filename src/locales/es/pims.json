@@ -486,6 +486,33 @@
     "filled": "Campo rellenado. Revise las notas y guárdelas en el PIMS.",
     "blocked": "Las notas no se insertaron. Compruebe el destino y prepare el relleno de nuevo.",
     "unknown": "Se desconoce el resultado. Compruebe el PIMS antes de preparar otro intento.",
-    "expired": "La preparación ha caducado. Compruebe el destino y prepare el relleno de nuevo."
+    "expired": "La preparación ha caducado. Compruebe el destino y prepare el relleno de nuevo.",
+    "mapSections": "Asignar secciones a campos",
+    "singleField": "Usar un solo campo",
+    "mappingHint": "Elija un campo abierto para cada sección de origen. Las secciones asignadas al mismo campo se añaden juntas en su orden original. Revise de nuevo el destino antes de pegar.",
+    "skip": "No pegar",
+    "missingField": "El campo guardado no está abierto: {{field}}",
+    "saveMapping": "Guardar asignaciones",
+    "reloadMapping": "Recargar asignaciones guardadas",
+    "resetMapping": "Borrar asignaciones",
+    "mappingPrivacy": "Solo se guardan en su cuenta los identificadores de sección y las etiquetas de campo para este sitio PIMS y esta plantilla. Las notas y los datos del paciente nunca se guardan en las asignaciones.",
+    "pasteAll": "Pegar todo",
+    "fieldOutcome": "{{field}}: {{outcome}}",
+    "groupSources": "Orígenes: {{sections}}",
+    "outcomes": {
+      "filled": "Rellenado",
+      "blocked": "Bloqueado",
+      "unknown": "Resultado desconocido — revise el PIMS",
+      "skipped": "Omitido"
+    },
+    "mappingStatus": {
+      "loading": "Cargando asignaciones guardadas…",
+      "saving": "Guardando asignaciones…",
+      "saved": "Asignaciones guardadas. Revise el destino antes de cada pegado.",
+      "error": "No se pudieron cargar o guardar las asignaciones. Recárguelas antes de volver a guardarlas.",
+      "conflict": "Estas asignaciones se modificaron en otro lugar. Recárguelas antes de volver a guardarlas."
+    },
+    "mappingOptions": "Opciones de asignación",
+    "partial": "Se pegaron algunas notas. Revise todos los campos en el PIMS antes de preparar otro intento; volver a pegar puede duplicar las notas."
   }
 }

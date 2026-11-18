@@ -50,12 +50,18 @@ const BLOCK_SITES = [
 // "Anesthesia" / "Treatment report" exactly as the chart sections do.
 export const HEADING_KEYS = {
   header: 'media:recordNote.h.header',
+  consultationHistory: 'media:recordNote.h.consultationHistory',
+  consultationAssessment: 'media:recordNote.h.consultationAssessment',
+  consultationPlan: 'media:recordNote.h.consultationPlan',
   anesthesia: 'app:sections.anesthesia',
   exam: 'media:recordNote.h.exam',
   findings: 'media:recordNote.h.findings',
   procedures: 'media:recordNote.h.procedures',
   radiographs: 'media:recordNote.h.radiographs',
   treatment: 'forms:report.title',
+  dischargeMedications: 'media:recordNote.h.dischargeMedications',
+  dischargeInstructions: 'media:recordNote.h.dischargeInstructions',
+  dischargeFollowUp: 'media:recordNote.h.dischargeFollowUp',
   recheck: 'media:recordNote.h.recheck',
 } as const;
 
@@ -109,6 +115,10 @@ export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): Record
     clean(info.tech) && `${t('forms:patient.tech')}: ${clean(info.tech)}`,
     clean(info.complaint) && `${t('forms:patient.complaint')}: ${clean(info.complaint)}`,
   ]);
+
+  add('consultationHistory', textLines(info.consultationHistory));
+  add('consultationAssessment', textLines(info.consultationAssessment));
+  add('consultationPlan', textLines(info.consultationPlan));
 
   // 2. Anesthesia
   const nb = info.nerveBlocks;
@@ -178,6 +188,9 @@ export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): Record
   // 6–8. Free text and recheck
   add('radiographs', textLines(info.radiographicFindings));
   add('treatment', textLines(info.treatmentReport));
+  add('dischargeMedications', textLines(info.dischargeMedications));
+  add('dischargeInstructions', textLines(info.dischargeInstructions));
+  add('dischargeFollowUp', textLines(info.dischargeFollowUp));
   add('recheck', [clean(info.recallDate)]);
 
   return { sections };
@@ -225,6 +238,13 @@ export function recordNoteBasis(snapshot: ChartSnapshot): string {
     i.patientName, i.patientNumber, i.date, i.doctor, i.tech, i.complaint,
     i.nerveBlocks, i.customAnesthesia ?? null, i.exam, i.customExam ?? null,
     i.radiographicFindings ?? '', i.treatmentReport, i.recallDate,
+    i.consultationHistory ?? '',
+    i.consultationAssessment ?? '',
+    i.consultationPlan ?? '',
+    i.dischargeMedications ?? '',
+    i.dischargeInstructions ?? '',
+    i.dischargeFollowUp ?? '',
+
     snapshot.toothData.map((td) => GRID_FIELDS.map((f) => td[f] ?? '')),
     snapshot.preMarks, snapshot.postMarks,
     (snapshot.preComments ?? []).map((c) => [c.id, c.text, c.anchorTriadan]),

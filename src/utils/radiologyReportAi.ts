@@ -38,10 +38,10 @@ export function radiologyReportFacts(snapshot: ChartSnapshot, lng: AppLanguage):
   const chart = normalizeSnapshot(snapshot), info = chart.patientInfo;
   const clean = { ...chart, patientInfo: { ...info, ownerName: '', ownerPhone: '', ownerEmail: '' } };
   const context = buildRecordNote(clean, recordNoteT(lng)).sections
-    .filter(section => ['exam', 'findings', 'procedures', 'treatment', 'recheck'].includes(section.key))
+    .filter(section => ['exam', 'findings', 'procedures', 'treatment', 'recheck', 'consultationAssessment', 'consultationPlan'].includes(section.key))
     .map(section => ({ section: section.key, recorded_lines: section.lines }));
   return JSON.stringify({ patient: { name: info.patientName, number: info.patientNumber, species: chart.species, date: info.date },
-    reason_for_visit: info.complaint ?? '', history: info.radiologyHistory ?? '', technique: info.radiologyTechnique ?? '',
+    reason_for_visit: info.complaint ?? '', history: info.radiologyHistory?.trim() ? info.radiologyHistory : info.consultationHistory ?? '', technique: info.radiologyTechnique ?? '',
     recorded_radiographic_findings: info.radiographicFindings ?? '', clinical_question: info.radiologyQuestion ?? '',
     other_recorded_clinical_context: context });
 }
@@ -51,7 +51,7 @@ export function buildRadiologyReportRequest(snapshot: ChartSnapshot, lng: AppLan
   if (!isAppLanguage(lng) || !isChartSnapshot(snapshot)) throw new LocalizedError(t('radiologyReport.sourceRequired'));
   // Loading old snapshots may discard malformed/oversized optional fields. Do not silently
   // discard documented study context while constructing an outbound clinical request.
-  for (const field of ['radiologyHistory', 'radiologyTechnique', 'radiologyQuestion'] as const) {
+  for (const field of ['radiologyHistory', 'radiologyTechnique', 'radiologyQuestion', 'consultationHistory', 'consultationAssessment', 'consultationPlan'] as const) {
     const value: unknown = snapshot.patientInfo[field];
     if (value !== undefined && typeof value !== 'string') throw new LocalizedError(t('radiologyReport.sourceRequired'));
     if (typeof value === 'string' && value.length > 20000) throw new LocalizedError(t('radiologyReport.sourceTooLarge'));

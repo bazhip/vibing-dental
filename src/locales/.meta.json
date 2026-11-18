@@ -781,7 +781,7 @@
       "status": "machine"
     },
     "app:radiologyReport.description": {
-      "hash": "c8706f2c6446",
+      "hash": "d0a25b8be79f",
       "status": "machine"
     },
     "app:radiologyReport.discard": {
@@ -868,6 +868,10 @@
       "hash": "b37c7879f6c3",
       "status": "machine"
     },
+    "app:radiologyReport.outputTitle": {
+      "hash": "b6ce788d9786",
+      "status": "machine"
+    },
     "app:radiologyReport.pdf": {
       "hash": "6183be0883d2",
       "status": "machine"
@@ -888,6 +892,10 @@
       "hash": "7d99a6eabd4d",
       "status": "machine"
     },
+    "app:radiologyReport.previewHelp": {
+      "hash": "c0e23f31618a",
+      "status": "machine"
+    },
     "app:radiologyReport.previewStale": {
       "hash": "47da83919977",
       "status": "machine"
@@ -896,12 +904,24 @@
       "hash": "40f03b2b7abc",
       "status": "machine"
     },
+    "app:radiologyReport.radiologyHistoryHelp": {
+      "hash": "4e75232dbfeb",
+      "status": "machine"
+    },
     "app:radiologyReport.radiologyQuestion": {
       "hash": "cf868e3899c4",
       "status": "machine"
     },
+    "app:radiologyReport.radiologyQuestionHelp": {
+      "hash": "37e825c6c4b4",
+      "status": "machine"
+    },
     "app:radiologyReport.radiologyTechnique": {
       "hash": "c13088734702",
+      "status": "machine"
+    },
+    "app:radiologyReport.radiologyTechniqueHelp": {
+      "hash": "c11cdd9451fe",
       "status": "machine"
     },
     "app:radiologyReport.reviewed": {
@@ -7908,6 +7928,30 @@
       "hash": "1a4ca81992c0",
       "status": "machine"
     },
+    "media:recordNote.h.consultationAssessment": {
+      "hash": "6df991f5b898",
+      "status": "machine"
+    },
+    "media:recordNote.h.consultationHistory": {
+      "hash": "0702f2ba9e19",
+      "status": "machine"
+    },
+    "media:recordNote.h.consultationPlan": {
+      "hash": "40b423fc6f59",
+      "status": "machine"
+    },
+    "media:recordNote.h.dischargeFollowUp": {
+      "hash": "5d4b0cd48d80",
+      "status": "machine"
+    },
+    "media:recordNote.h.dischargeInstructions": {
+      "hash": "a3907fb0dfd2",
+      "status": "machine"
+    },
+    "media:recordNote.h.dischargeMedications": {
+      "hash": "78092c51c186",
+      "status": "machine"
+    },
     "media:recordNote.h.exam": {
       "hash": "47df1ebe796d",
       "status": "machine"
@@ -9748,6 +9792,10 @@
       "hash": "f7782f1c7946",
       "status": "machine"
     },
+    "pims:noteAutofill.fieldOutcome": {
+      "hash": "16a8841c0515",
+      "status": "machine"
+    },
     "pims:noteAutofill.fill": {
       "hash": "e0872c702651",
       "status": "machine"
@@ -9756,12 +9804,56 @@
       "hash": "754cfcfde561",
       "status": "machine"
     },
+    "pims:noteAutofill.groupSources": {
+      "hash": "4aab2253ddb4",
+      "status": "machine"
+    },
     "pims:noteAutofill.hint": {
       "hash": "f78eb7aaa10d",
       "status": "machine"
     },
     "pims:noteAutofill.inspect": {
       "hash": "cf2bff5bf7d6",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mapSections": {
+      "hash": "87c502ef7a55",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingHint": {
+      "hash": "528a3cc482c6",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingOptions": {
+      "hash": "f6478268e9a9",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingPrivacy": {
+      "hash": "2dc3b49c5197",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingStatus.conflict": {
+      "hash": "e42230176f8f",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingStatus.error": {
+      "hash": "83b807b9667c",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingStatus.loading": {
+      "hash": "adc12bcc2432",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingStatus.saved": {
+      "hash": "0919ac43e07b",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingStatus.saving": {
+      "hash": "22040ed2186b",
+      "status": "machine"
+    },
+    "pims:noteAutofill.missingField": {
+      "hash": "11b4b2f7eee6",
       "status": "machine"
     },
     "pims:noteAutofill.noFields": {
@@ -9776,6 +9868,30 @@
       "hash": "65ccbee65525",
       "status": "machine"
     },
+    "pims:noteAutofill.outcomes.blocked": {
+      "hash": "18f2a0947f9d",
+      "status": "machine"
+    },
+    "pims:noteAutofill.outcomes.filled": {
+      "hash": "3a1bc53ffcdf",
+      "status": "machine"
+    },
+    "pims:noteAutofill.outcomes.skipped": {
+      "hash": "12698ce1ea5c",
+      "status": "machine"
+    },
+    "pims:noteAutofill.outcomes.unknown": {
+      "hash": "b128b6a6ba59",
+      "status": "machine"
+    },
+    "pims:noteAutofill.partial": {
+      "hash": "3e87c4edf0d0",
+      "status": "machine"
+    },
+    "pims:noteAutofill.pasteAll": {
+      "hash": "70195f8bf90f",
+      "status": "machine"
+    },
     "pims:noteAutofill.prepare": {
       "hash": "97f0fa37753e",
       "status": "machine"
@@ -9788,8 +9904,28 @@
       "hash": "2d75d34e5262",
       "status": "machine"
     },
+    "pims:noteAutofill.reloadMapping": {
+      "hash": "335d9deb3539",
+      "status": "machine"
+    },
+    "pims:noteAutofill.resetMapping": {
+      "hash": "813b2c1eefe3",
+      "status": "machine"
+    },
     "pims:noteAutofill.review": {
       "hash": "5c20a6dd3851",
+      "status": "machine"
+    },
+    "pims:noteAutofill.saveMapping": {
+      "hash": "bb40e390513c",
+      "status": "machine"
+    },
+    "pims:noteAutofill.singleField": {
+      "hash": "b9f613cd3532",
+      "status": "machine"
+    },
+    "pims:noteAutofill.skip": {
+      "hash": "63808f32dd9c",
       "status": "machine"
     },
     "pims:noteAutofill.source": {
@@ -10794,6 +10930,18 @@
     },
     "report:defaultTitle": {
       "hash": "b4005dfe0bb5",
+      "status": "machine"
+    },
+    "report:dischargeSource.dischargeFollowUp": {
+      "hash": "5d4b0cd48d80",
+      "status": "machine"
+    },
+    "report:dischargeSource.dischargeInstructions": {
+      "hash": "a3907fb0dfd2",
+      "status": "machine"
+    },
+    "report:dischargeSource.dischargeMedications": {
+      "hash": "78092c51c186",
       "status": "machine"
     },
     "report:draftLabel": {
@@ -13008,6 +13156,98 @@
       "hash": "56b564b75c7f",
       "status": "machine"
     },
+    "visitDocumentation:consultation.purpose": {
+      "hash": "b50269a58823",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.review": {
+      "hash": "503e3b0167f5",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.title": {
+      "hash": "537a956d9fb9",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.purpose": {
+      "hash": "ad77f9ecf0f7",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.review": {
+      "hash": "313c911930bc",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.title": {
+      "hash": "1de694364549",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.complaint.helper": {
+      "hash": "2b7ee5ff18f0",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.complaint.label": {
+      "hash": "d960170cd423",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationAssessment.helper": {
+      "hash": "60dbb79f165c",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationAssessment.label": {
+      "hash": "7808eeeb45df",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationHistory.helper": {
+      "hash": "946db2520f54",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationHistory.label": {
+      "hash": "0e7696009337",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationPlan.helper": {
+      "hash": "3cdf1b84b7ac",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationPlan.label": {
+      "hash": "fa8ed0bdabdd",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.dischargeFollowUp.helper": {
+      "hash": "c857f7210ad8",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.dischargeFollowUp.label": {
+      "hash": "09b2d9cd1123",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.dischargeInstructions.helper": {
+      "hash": "c87f8a158486",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.dischargeInstructions.label": {
+      "hash": "934652dce41d",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.dischargeMedications.helper": {
+      "hash": "2bfab3153b18",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.dischargeMedications.label": {
+      "hash": "6b5763afa621",
+      "status": "machine"
+    },
+    "visitDocumentation:noTreatment": {
+      "hash": "1efca4ba966e",
+      "status": "machine"
+    },
+    "visitDocumentation:sourceNotice": {
+      "hash": "be1d5db6480a",
+      "status": "machine"
+    },
+    "visitDocumentation:treatmentRecap": {
+      "hash": "64fbcb2e386c",
+      "status": "machine"
+    },
     "voice:activity.anesthetic": {
       "hash": "c488bfd88e46",
       "status": "machine"
@@ -14435,7 +14675,7 @@
       "status": "machine"
     },
     "app:radiologyReport.description": {
-      "hash": "c8706f2c6446",
+      "hash": "d0a25b8be79f",
       "status": "machine"
     },
     "app:radiologyReport.discard": {
@@ -14522,6 +14762,10 @@
       "hash": "b37c7879f6c3",
       "status": "machine"
     },
+    "app:radiologyReport.outputTitle": {
+      "hash": "b6ce788d9786",
+      "status": "machine"
+    },
     "app:radiologyReport.pdf": {
       "hash": "6183be0883d2",
       "status": "machine"
@@ -14542,6 +14786,10 @@
       "hash": "7d99a6eabd4d",
       "status": "machine"
     },
+    "app:radiologyReport.previewHelp": {
+      "hash": "c0e23f31618a",
+      "status": "machine"
+    },
     "app:radiologyReport.previewStale": {
       "hash": "47da83919977",
       "status": "machine"
@@ -14550,12 +14798,24 @@
       "hash": "40f03b2b7abc",
       "status": "machine"
     },
+    "app:radiologyReport.radiologyHistoryHelp": {
+      "hash": "4e75232dbfeb",
+      "status": "machine"
+    },
     "app:radiologyReport.radiologyQuestion": {
       "hash": "cf868e3899c4",
       "status": "machine"
     },
+    "app:radiologyReport.radiologyQuestionHelp": {
+      "hash": "37e825c6c4b4",
+      "status": "machine"
+    },
     "app:radiologyReport.radiologyTechnique": {
       "hash": "c13088734702",
+      "status": "machine"
+    },
+    "app:radiologyReport.radiologyTechniqueHelp": {
+      "hash": "c11cdd9451fe",
       "status": "machine"
     },
     "app:radiologyReport.reviewed": {
@@ -21634,6 +21894,30 @@
       "hash": "1a4ca81992c0",
       "status": "machine"
     },
+    "media:recordNote.h.consultationAssessment": {
+      "hash": "6df991f5b898",
+      "status": "machine"
+    },
+    "media:recordNote.h.consultationHistory": {
+      "hash": "0702f2ba9e19",
+      "status": "machine"
+    },
+    "media:recordNote.h.consultationPlan": {
+      "hash": "40b423fc6f59",
+      "status": "machine"
+    },
+    "media:recordNote.h.dischargeFollowUp": {
+      "hash": "5d4b0cd48d80",
+      "status": "machine"
+    },
+    "media:recordNote.h.dischargeInstructions": {
+      "hash": "a3907fb0dfd2",
+      "status": "machine"
+    },
+    "media:recordNote.h.dischargeMedications": {
+      "hash": "78092c51c186",
+      "status": "machine"
+    },
     "media:recordNote.h.exam": {
       "hash": "47df1ebe796d",
       "status": "machine"
@@ -23482,6 +23766,10 @@
       "hash": "f7782f1c7946",
       "status": "machine"
     },
+    "pims:noteAutofill.fieldOutcome": {
+      "hash": "16a8841c0515",
+      "status": "machine"
+    },
     "pims:noteAutofill.fill": {
       "hash": "e0872c702651",
       "status": "machine"
@@ -23490,12 +23778,56 @@
       "hash": "754cfcfde561",
       "status": "machine"
     },
+    "pims:noteAutofill.groupSources": {
+      "hash": "4aab2253ddb4",
+      "status": "machine"
+    },
     "pims:noteAutofill.hint": {
       "hash": "f78eb7aaa10d",
       "status": "machine"
     },
     "pims:noteAutofill.inspect": {
       "hash": "cf2bff5bf7d6",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mapSections": {
+      "hash": "87c502ef7a55",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingHint": {
+      "hash": "528a3cc482c6",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingOptions": {
+      "hash": "f6478268e9a9",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingPrivacy": {
+      "hash": "2dc3b49c5197",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingStatus.conflict": {
+      "hash": "e42230176f8f",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingStatus.error": {
+      "hash": "83b807b9667c",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingStatus.loading": {
+      "hash": "adc12bcc2432",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingStatus.saved": {
+      "hash": "0919ac43e07b",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingStatus.saving": {
+      "hash": "22040ed2186b",
+      "status": "machine"
+    },
+    "pims:noteAutofill.missingField": {
+      "hash": "11b4b2f7eee6",
       "status": "machine"
     },
     "pims:noteAutofill.noFields": {
@@ -23510,6 +23842,30 @@
       "hash": "65ccbee65525",
       "status": "machine"
     },
+    "pims:noteAutofill.outcomes.blocked": {
+      "hash": "18f2a0947f9d",
+      "status": "machine"
+    },
+    "pims:noteAutofill.outcomes.filled": {
+      "hash": "3a1bc53ffcdf",
+      "status": "machine"
+    },
+    "pims:noteAutofill.outcomes.skipped": {
+      "hash": "12698ce1ea5c",
+      "status": "machine"
+    },
+    "pims:noteAutofill.outcomes.unknown": {
+      "hash": "b128b6a6ba59",
+      "status": "machine"
+    },
+    "pims:noteAutofill.partial": {
+      "hash": "3e87c4edf0d0",
+      "status": "machine"
+    },
+    "pims:noteAutofill.pasteAll": {
+      "hash": "70195f8bf90f",
+      "status": "machine"
+    },
     "pims:noteAutofill.prepare": {
       "hash": "97f0fa37753e",
       "status": "machine"
@@ -23522,8 +23878,28 @@
       "hash": "2d75d34e5262",
       "status": "machine"
     },
+    "pims:noteAutofill.reloadMapping": {
+      "hash": "335d9deb3539",
+      "status": "machine"
+    },
+    "pims:noteAutofill.resetMapping": {
+      "hash": "813b2c1eefe3",
+      "status": "machine"
+    },
     "pims:noteAutofill.review": {
       "hash": "5c20a6dd3851",
+      "status": "machine"
+    },
+    "pims:noteAutofill.saveMapping": {
+      "hash": "bb40e390513c",
+      "status": "machine"
+    },
+    "pims:noteAutofill.singleField": {
+      "hash": "b9f613cd3532",
+      "status": "machine"
+    },
+    "pims:noteAutofill.skip": {
+      "hash": "63808f32dd9c",
       "status": "machine"
     },
     "pims:noteAutofill.source": {
@@ -24532,6 +24908,18 @@
     },
     "report:defaultTitle": {
       "hash": "b4005dfe0bb5",
+      "status": "machine"
+    },
+    "report:dischargeSource.dischargeFollowUp": {
+      "hash": "5d4b0cd48d80",
+      "status": "machine"
+    },
+    "report:dischargeSource.dischargeInstructions": {
+      "hash": "a3907fb0dfd2",
+      "status": "machine"
+    },
+    "report:dischargeSource.dischargeMedications": {
+      "hash": "78092c51c186",
       "status": "machine"
     },
     "report:draftLabel": {
@@ -26748,6 +27136,98 @@
     },
     "settings:workspace.templates": {
       "hash": "56b564b75c7f",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.purpose": {
+      "hash": "b50269a58823",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.review": {
+      "hash": "503e3b0167f5",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.title": {
+      "hash": "537a956d9fb9",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.purpose": {
+      "hash": "ad77f9ecf0f7",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.review": {
+      "hash": "313c911930bc",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.title": {
+      "hash": "1de694364549",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.complaint.helper": {
+      "hash": "2b7ee5ff18f0",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.complaint.label": {
+      "hash": "d960170cd423",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationAssessment.helper": {
+      "hash": "60dbb79f165c",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationAssessment.label": {
+      "hash": "7808eeeb45df",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationHistory.helper": {
+      "hash": "946db2520f54",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationHistory.label": {
+      "hash": "0e7696009337",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationPlan.helper": {
+      "hash": "3cdf1b84b7ac",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationPlan.label": {
+      "hash": "fa8ed0bdabdd",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.dischargeFollowUp.helper": {
+      "hash": "c857f7210ad8",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.dischargeFollowUp.label": {
+      "hash": "09b2d9cd1123",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.dischargeInstructions.helper": {
+      "hash": "c87f8a158486",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.dischargeInstructions.label": {
+      "hash": "934652dce41d",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.dischargeMedications.helper": {
+      "hash": "2bfab3153b18",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.dischargeMedications.label": {
+      "hash": "6b5763afa621",
+      "status": "machine"
+    },
+    "visitDocumentation:noTreatment": {
+      "hash": "1efca4ba966e",
+      "status": "machine"
+    },
+    "visitDocumentation:sourceNotice": {
+      "hash": "be1d5db6480a",
+      "status": "machine"
+    },
+    "visitDocumentation:treatmentRecap": {
+      "hash": "64fbcb2e386c",
       "status": "machine"
     },
     "voice:activity.anesthetic": {
@@ -28201,7 +28681,7 @@
       "status": "machine"
     },
     "app:radiologyReport.description": {
-      "hash": "c8706f2c6446",
+      "hash": "d0a25b8be79f",
       "status": "machine"
     },
     "app:radiologyReport.discard": {
@@ -28288,6 +28768,10 @@
       "hash": "b37c7879f6c3",
       "status": "machine"
     },
+    "app:radiologyReport.outputTitle": {
+      "hash": "b6ce788d9786",
+      "status": "machine"
+    },
     "app:radiologyReport.pdf": {
       "hash": "6183be0883d2",
       "status": "machine"
@@ -28308,6 +28792,10 @@
       "hash": "7d99a6eabd4d",
       "status": "machine"
     },
+    "app:radiologyReport.previewHelp": {
+      "hash": "c0e23f31618a",
+      "status": "machine"
+    },
     "app:radiologyReport.previewStale": {
       "hash": "47da83919977",
       "status": "machine"
@@ -28316,12 +28804,24 @@
       "hash": "40f03b2b7abc",
       "status": "machine"
     },
+    "app:radiologyReport.radiologyHistoryHelp": {
+      "hash": "4e75232dbfeb",
+      "status": "machine"
+    },
     "app:radiologyReport.radiologyQuestion": {
       "hash": "cf868e3899c4",
       "status": "machine"
     },
+    "app:radiologyReport.radiologyQuestionHelp": {
+      "hash": "37e825c6c4b4",
+      "status": "machine"
+    },
     "app:radiologyReport.radiologyTechnique": {
       "hash": "c13088734702",
+      "status": "machine"
+    },
+    "app:radiologyReport.radiologyTechniqueHelp": {
+      "hash": "c11cdd9451fe",
       "status": "machine"
     },
     "app:radiologyReport.reviewed": {
@@ -35400,6 +35900,30 @@
       "hash": "1a4ca81992c0",
       "status": "machine"
     },
+    "media:recordNote.h.consultationAssessment": {
+      "hash": "6df991f5b898",
+      "status": "machine"
+    },
+    "media:recordNote.h.consultationHistory": {
+      "hash": "0702f2ba9e19",
+      "status": "machine"
+    },
+    "media:recordNote.h.consultationPlan": {
+      "hash": "40b423fc6f59",
+      "status": "machine"
+    },
+    "media:recordNote.h.dischargeFollowUp": {
+      "hash": "5d4b0cd48d80",
+      "status": "machine"
+    },
+    "media:recordNote.h.dischargeInstructions": {
+      "hash": "a3907fb0dfd2",
+      "status": "machine"
+    },
+    "media:recordNote.h.dischargeMedications": {
+      "hash": "78092c51c186",
+      "status": "machine"
+    },
     "media:recordNote.h.exam": {
       "hash": "47df1ebe796d",
       "status": "machine"
@@ -37248,6 +37772,10 @@
       "hash": "f7782f1c7946",
       "status": "machine"
     },
+    "pims:noteAutofill.fieldOutcome": {
+      "hash": "16a8841c0515",
+      "status": "machine"
+    },
     "pims:noteAutofill.fill": {
       "hash": "e0872c702651",
       "status": "machine"
@@ -37256,12 +37784,56 @@
       "hash": "754cfcfde561",
       "status": "machine"
     },
+    "pims:noteAutofill.groupSources": {
+      "hash": "4aab2253ddb4",
+      "status": "machine"
+    },
     "pims:noteAutofill.hint": {
       "hash": "f78eb7aaa10d",
       "status": "machine"
     },
     "pims:noteAutofill.inspect": {
       "hash": "cf2bff5bf7d6",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mapSections": {
+      "hash": "87c502ef7a55",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingHint": {
+      "hash": "528a3cc482c6",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingOptions": {
+      "hash": "f6478268e9a9",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingPrivacy": {
+      "hash": "2dc3b49c5197",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingStatus.conflict": {
+      "hash": "e42230176f8f",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingStatus.error": {
+      "hash": "83b807b9667c",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingStatus.loading": {
+      "hash": "adc12bcc2432",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingStatus.saved": {
+      "hash": "0919ac43e07b",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingStatus.saving": {
+      "hash": "22040ed2186b",
+      "status": "machine"
+    },
+    "pims:noteAutofill.missingField": {
+      "hash": "11b4b2f7eee6",
       "status": "machine"
     },
     "pims:noteAutofill.noFields": {
@@ -37276,6 +37848,30 @@
       "hash": "65ccbee65525",
       "status": "machine"
     },
+    "pims:noteAutofill.outcomes.blocked": {
+      "hash": "18f2a0947f9d",
+      "status": "machine"
+    },
+    "pims:noteAutofill.outcomes.filled": {
+      "hash": "3a1bc53ffcdf",
+      "status": "machine"
+    },
+    "pims:noteAutofill.outcomes.skipped": {
+      "hash": "12698ce1ea5c",
+      "status": "machine"
+    },
+    "pims:noteAutofill.outcomes.unknown": {
+      "hash": "b128b6a6ba59",
+      "status": "machine"
+    },
+    "pims:noteAutofill.partial": {
+      "hash": "3e87c4edf0d0",
+      "status": "machine"
+    },
+    "pims:noteAutofill.pasteAll": {
+      "hash": "70195f8bf90f",
+      "status": "machine"
+    },
     "pims:noteAutofill.prepare": {
       "hash": "97f0fa37753e",
       "status": "machine"
@@ -37288,8 +37884,28 @@
       "hash": "2d75d34e5262",
       "status": "machine"
     },
+    "pims:noteAutofill.reloadMapping": {
+      "hash": "335d9deb3539",
+      "status": "machine"
+    },
+    "pims:noteAutofill.resetMapping": {
+      "hash": "813b2c1eefe3",
+      "status": "machine"
+    },
     "pims:noteAutofill.review": {
       "hash": "5c20a6dd3851",
+      "status": "machine"
+    },
+    "pims:noteAutofill.saveMapping": {
+      "hash": "bb40e390513c",
+      "status": "machine"
+    },
+    "pims:noteAutofill.singleField": {
+      "hash": "b9f613cd3532",
+      "status": "machine"
+    },
+    "pims:noteAutofill.skip": {
+      "hash": "63808f32dd9c",
       "status": "machine"
     },
     "pims:noteAutofill.source": {
@@ -38298,6 +38914,18 @@
     },
     "report:defaultTitle": {
       "hash": "b4005dfe0bb5",
+      "status": "machine"
+    },
+    "report:dischargeSource.dischargeFollowUp": {
+      "hash": "5d4b0cd48d80",
+      "status": "machine"
+    },
+    "report:dischargeSource.dischargeInstructions": {
+      "hash": "a3907fb0dfd2",
+      "status": "machine"
+    },
+    "report:dischargeSource.dischargeMedications": {
+      "hash": "78092c51c186",
       "status": "machine"
     },
     "report:draftLabel": {
@@ -40514,6 +41142,98 @@
     },
     "settings:workspace.templates": {
       "hash": "56b564b75c7f",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.purpose": {
+      "hash": "b50269a58823",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.review": {
+      "hash": "503e3b0167f5",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.title": {
+      "hash": "537a956d9fb9",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.purpose": {
+      "hash": "ad77f9ecf0f7",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.review": {
+      "hash": "313c911930bc",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.title": {
+      "hash": "1de694364549",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.complaint.helper": {
+      "hash": "2b7ee5ff18f0",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.complaint.label": {
+      "hash": "d960170cd423",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationAssessment.helper": {
+      "hash": "60dbb79f165c",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationAssessment.label": {
+      "hash": "7808eeeb45df",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationHistory.helper": {
+      "hash": "946db2520f54",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationHistory.label": {
+      "hash": "0e7696009337",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationPlan.helper": {
+      "hash": "3cdf1b84b7ac",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationPlan.label": {
+      "hash": "fa8ed0bdabdd",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.dischargeFollowUp.helper": {
+      "hash": "c857f7210ad8",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.dischargeFollowUp.label": {
+      "hash": "09b2d9cd1123",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.dischargeInstructions.helper": {
+      "hash": "c87f8a158486",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.dischargeInstructions.label": {
+      "hash": "934652dce41d",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.dischargeMedications.helper": {
+      "hash": "2bfab3153b18",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.dischargeMedications.label": {
+      "hash": "6b5763afa621",
+      "status": "machine"
+    },
+    "visitDocumentation:noTreatment": {
+      "hash": "1efca4ba966e",
+      "status": "machine"
+    },
+    "visitDocumentation:sourceNotice": {
+      "hash": "be1d5db6480a",
+      "status": "machine"
+    },
+    "visitDocumentation:treatmentRecap": {
+      "hash": "64fbcb2e386c",
       "status": "machine"
     },
     "voice:activity.anesthetic": {
@@ -41967,7 +42687,7 @@
       "status": "machine"
     },
     "app:radiologyReport.description": {
-      "hash": "c8706f2c6446",
+      "hash": "d0a25b8be79f",
       "status": "machine"
     },
     "app:radiologyReport.discard": {
@@ -42054,6 +42774,10 @@
       "hash": "b37c7879f6c3",
       "status": "machine"
     },
+    "app:radiologyReport.outputTitle": {
+      "hash": "b6ce788d9786",
+      "status": "machine"
+    },
     "app:radiologyReport.pdf": {
       "hash": "6183be0883d2",
       "status": "machine"
@@ -42074,6 +42798,10 @@
       "hash": "7d99a6eabd4d",
       "status": "machine"
     },
+    "app:radiologyReport.previewHelp": {
+      "hash": "c0e23f31618a",
+      "status": "machine"
+    },
     "app:radiologyReport.previewStale": {
       "hash": "47da83919977",
       "status": "machine"
@@ -42082,12 +42810,24 @@
       "hash": "40f03b2b7abc",
       "status": "machine"
     },
+    "app:radiologyReport.radiologyHistoryHelp": {
+      "hash": "4e75232dbfeb",
+      "status": "machine"
+    },
     "app:radiologyReport.radiologyQuestion": {
       "hash": "cf868e3899c4",
       "status": "machine"
     },
+    "app:radiologyReport.radiologyQuestionHelp": {
+      "hash": "37e825c6c4b4",
+      "status": "machine"
+    },
     "app:radiologyReport.radiologyTechnique": {
       "hash": "c13088734702",
+      "status": "machine"
+    },
+    "app:radiologyReport.radiologyTechniqueHelp": {
+      "hash": "c11cdd9451fe",
       "status": "machine"
     },
     "app:radiologyReport.reviewed": {
@@ -49166,6 +49906,30 @@
       "hash": "1a4ca81992c0",
       "status": "machine"
     },
+    "media:recordNote.h.consultationAssessment": {
+      "hash": "6df991f5b898",
+      "status": "machine"
+    },
+    "media:recordNote.h.consultationHistory": {
+      "hash": "0702f2ba9e19",
+      "status": "machine"
+    },
+    "media:recordNote.h.consultationPlan": {
+      "hash": "40b423fc6f59",
+      "status": "machine"
+    },
+    "media:recordNote.h.dischargeFollowUp": {
+      "hash": "5d4b0cd48d80",
+      "status": "machine"
+    },
+    "media:recordNote.h.dischargeInstructions": {
+      "hash": "a3907fb0dfd2",
+      "status": "machine"
+    },
+    "media:recordNote.h.dischargeMedications": {
+      "hash": "78092c51c186",
+      "status": "machine"
+    },
     "media:recordNote.h.exam": {
       "hash": "47df1ebe796d",
       "status": "machine"
@@ -51014,6 +51778,10 @@
       "hash": "f7782f1c7946",
       "status": "machine"
     },
+    "pims:noteAutofill.fieldOutcome": {
+      "hash": "16a8841c0515",
+      "status": "machine"
+    },
     "pims:noteAutofill.fill": {
       "hash": "e0872c702651",
       "status": "machine"
@@ -51022,12 +51790,56 @@
       "hash": "754cfcfde561",
       "status": "machine"
     },
+    "pims:noteAutofill.groupSources": {
+      "hash": "4aab2253ddb4",
+      "status": "machine"
+    },
     "pims:noteAutofill.hint": {
       "hash": "f78eb7aaa10d",
       "status": "machine"
     },
     "pims:noteAutofill.inspect": {
       "hash": "cf2bff5bf7d6",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mapSections": {
+      "hash": "87c502ef7a55",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingHint": {
+      "hash": "528a3cc482c6",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingOptions": {
+      "hash": "f6478268e9a9",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingPrivacy": {
+      "hash": "2dc3b49c5197",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingStatus.conflict": {
+      "hash": "e42230176f8f",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingStatus.error": {
+      "hash": "83b807b9667c",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingStatus.loading": {
+      "hash": "adc12bcc2432",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingStatus.saved": {
+      "hash": "0919ac43e07b",
+      "status": "machine"
+    },
+    "pims:noteAutofill.mappingStatus.saving": {
+      "hash": "22040ed2186b",
+      "status": "machine"
+    },
+    "pims:noteAutofill.missingField": {
+      "hash": "11b4b2f7eee6",
       "status": "machine"
     },
     "pims:noteAutofill.noFields": {
@@ -51042,6 +51854,30 @@
       "hash": "65ccbee65525",
       "status": "machine"
     },
+    "pims:noteAutofill.outcomes.blocked": {
+      "hash": "18f2a0947f9d",
+      "status": "machine"
+    },
+    "pims:noteAutofill.outcomes.filled": {
+      "hash": "3a1bc53ffcdf",
+      "status": "machine"
+    },
+    "pims:noteAutofill.outcomes.skipped": {
+      "hash": "12698ce1ea5c",
+      "status": "machine"
+    },
+    "pims:noteAutofill.outcomes.unknown": {
+      "hash": "b128b6a6ba59",
+      "status": "machine"
+    },
+    "pims:noteAutofill.partial": {
+      "hash": "3e87c4edf0d0",
+      "status": "machine"
+    },
+    "pims:noteAutofill.pasteAll": {
+      "hash": "70195f8bf90f",
+      "status": "machine"
+    },
     "pims:noteAutofill.prepare": {
       "hash": "97f0fa37753e",
       "status": "machine"
@@ -51054,8 +51890,28 @@
       "hash": "2d75d34e5262",
       "status": "machine"
     },
+    "pims:noteAutofill.reloadMapping": {
+      "hash": "335d9deb3539",
+      "status": "machine"
+    },
+    "pims:noteAutofill.resetMapping": {
+      "hash": "813b2c1eefe3",
+      "status": "machine"
+    },
     "pims:noteAutofill.review": {
       "hash": "5c20a6dd3851",
+      "status": "machine"
+    },
+    "pims:noteAutofill.saveMapping": {
+      "hash": "bb40e390513c",
+      "status": "machine"
+    },
+    "pims:noteAutofill.singleField": {
+      "hash": "b9f613cd3532",
+      "status": "machine"
+    },
+    "pims:noteAutofill.skip": {
+      "hash": "63808f32dd9c",
       "status": "machine"
     },
     "pims:noteAutofill.source": {
@@ -52064,6 +52920,18 @@
     },
     "report:defaultTitle": {
       "hash": "b4005dfe0bb5",
+      "status": "machine"
+    },
+    "report:dischargeSource.dischargeFollowUp": {
+      "hash": "5d4b0cd48d80",
+      "status": "machine"
+    },
+    "report:dischargeSource.dischargeInstructions": {
+      "hash": "a3907fb0dfd2",
+      "status": "machine"
+    },
+    "report:dischargeSource.dischargeMedications": {
+      "hash": "78092c51c186",
       "status": "machine"
     },
     "report:draftLabel": {
@@ -54282,6 +55150,98 @@
       "hash": "56b564b75c7f",
       "status": "machine"
     },
+    "visitDocumentation:consultation.purpose": {
+      "hash": "b50269a58823",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.review": {
+      "hash": "503e3b0167f5",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.title": {
+      "hash": "537a956d9fb9",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.purpose": {
+      "hash": "ad77f9ecf0f7",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.review": {
+      "hash": "313c911930bc",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.title": {
+      "hash": "1de694364549",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.complaint.helper": {
+      "hash": "2b7ee5ff18f0",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.complaint.label": {
+      "hash": "d960170cd423",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationAssessment.helper": {
+      "hash": "60dbb79f165c",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationAssessment.label": {
+      "hash": "7808eeeb45df",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationHistory.helper": {
+      "hash": "946db2520f54",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationHistory.label": {
+      "hash": "0e7696009337",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationPlan.helper": {
+      "hash": "3cdf1b84b7ac",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationPlan.label": {
+      "hash": "fa8ed0bdabdd",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.dischargeFollowUp.helper": {
+      "hash": "c857f7210ad8",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.dischargeFollowUp.label": {
+      "hash": "09b2d9cd1123",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.dischargeInstructions.helper": {
+      "hash": "c87f8a158486",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.dischargeInstructions.label": {
+      "hash": "934652dce41d",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.dischargeMedications.helper": {
+      "hash": "2bfab3153b18",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.dischargeMedications.label": {
+      "hash": "6b5763afa621",
+      "status": "machine"
+    },
+    "visitDocumentation:noTreatment": {
+      "hash": "1efca4ba966e",
+      "status": "machine"
+    },
+    "visitDocumentation:sourceNotice": {
+      "hash": "be1d5db6480a",
+      "status": "machine"
+    },
+    "visitDocumentation:treatmentRecap": {
+      "hash": "64fbcb2e386c",
+      "status": "machine"
+    },
     "voice:activity.anesthetic": {
       "hash": "c488bfd88e46",
       "status": "machine"
@@ -55006,6 +55966,18 @@
     },
     "report:defaultTitle": {
       "hash": "b4005dfe0bb5",
+      "status": "machine"
+    },
+    "report:dischargeSource.dischargeFollowUp": {
+      "hash": "5d4b0cd48d80",
+      "status": "machine"
+    },
+    "report:dischargeSource.dischargeInstructions": {
+      "hash": "a3907fb0dfd2",
+      "status": "machine"
+    },
+    "report:dischargeSource.dischargeMedications": {
+      "hash": "78092c51c186",
       "status": "machine"
     },
     "report:draftLabel": {

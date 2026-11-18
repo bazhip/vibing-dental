@@ -336,7 +336,7 @@
   },
   "radiologyReport": {
     "title": "Informe radiológico",
-    "description": "Describa sus hallazgos radiográficos con sus propias palabras y genere un informe editable. El contexto del estudio es opcional. Las imágenes no se analizan.",
+    "description": "Genere un informe editable a partir de los hallazgos registrados. Las imágenes no se analizan.",
     "context": "Contexto opcional del estudio",
     "radiologyHistory": "Antecedentes clínicos relevantes",
     "radiologyTechnique": "Técnica y alcance del estudio",
@@ -385,6 +385,11 @@
     "modelLabel": "Modelo para borradores de informes radiológicos",
     "modelUpdated": "Los borradores de informes radiológicos ahora usan {{model}}.",
     "findingsPlaceholder": "Describa lo que observa, incluidos los números de los dientes, la ubicación, las mediciones y las incertidumbres. Puede incluir la técnica y su impresión clínica.",
-    "manual": "Redactar el informe manualmente"
+    "manual": "Redactar el informe manualmente",
+    "outputTitle": "Informe",
+    "radiologyHistoryHelp": "Opcional: añada antecedentes específicos del estudio cuando sea necesario. De lo contrario, se utilizan los antecedentes de la consulta.",
+    "radiologyTechniqueHelp": "Opcional: proyecciones, técnica y cobertura documentadas por el veterinario.",
+    "radiologyQuestionHelp": "Opcional: la pregunta que debe responder este estudio.",
+    "previewHelp": "Revise y edite este borrador. Su informe guardado solo cambia cuando elige Usar borrador."
   }
 }

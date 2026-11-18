@@ -106,7 +106,13 @@
       "findings": "Hallazgos por diente",
       "procedures": "Procedimientos",
       "radiographs": "Hallazgos radiográficos",
-      "recheck": "Revisión"
+      "recheck": "Revisión",
+      "consultationHistory": "Antecedentes de la consulta",
+      "consultationAssessment": "Valoración de la consulta",
+      "consultationPlan": "Plan de la consulta",
+      "dischargeMedications": "Medicamentos al alta",
+      "dischargeInstructions": "Instrucciones al alta",
+      "dischargeFollowUp": "Seguimiento tras el alta"
     },
     "alreadyMissing": "Ausentes previamente: {{teeth}}",
     "extracted": "Extraídos: {{teeth}}",

@@ -334,7 +334,7 @@
   },
   "radiologyReport": {
     "title": "Radiology report",
-    "description": "Describe your radiographic findings in your own words, then generate an editable report. Study context is optional. Images are not analyzed.",
+    "description": "Draft an editable report from recorded findings. Images are not analyzed.",
     "context": "Optional study context",
     "radiologyHistory": "Relevant clinical history",
     "radiologyTechnique": "Study technique and coverage",
@@ -383,6 +383,11 @@
     "modelLabel": "Model for radiology report drafts",
     "modelUpdated": "Radiology report drafts now use {{model}}.",
     "findingsPlaceholder": "Describe what you see, including tooth numbers, location, measurements and uncertainty. You can include the technique and your clinical impression.",
-    "manual": "Write report manually"
+    "manual": "Write report manually",
+    "outputTitle": "Report",
+    "radiologyHistoryHelp": "Optional: add study-specific history when needed. Otherwise the consultation history is used.",
+    "radiologyTechniqueHelp": "Optional: views, technique and coverage documented by the clinician.",
+    "radiologyQuestionHelp": "Optional: the question this study should address.",
+    "previewHelp": "Review and edit this draft. Your saved report changes only when you choose Use draft."
   }
 }

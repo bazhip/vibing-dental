@@ -106,7 +106,13 @@
       "findings": "Reperti per dente",
       "procedures": "Procedure",
       "radiographs": "Reperti radiografici",
-      "recheck": "Controllo"
+      "recheck": "Controllo",
+      "consultationHistory": "Anamnesi della visita",
+      "consultationAssessment": "Valutazione della visita",
+      "consultationPlan": "Piano della visita",
+      "dischargeMedications": "Farmaci alla dimissione",
+      "dischargeInstructions": "Istruzioni alla dimissione",
+      "dischargeFollowUp": "Controllo dopo la dimissione"
     },
     "alreadyMissing": "Già mancanti: {{teeth}}",
     "extracted": "Estratti: {{teeth}}",

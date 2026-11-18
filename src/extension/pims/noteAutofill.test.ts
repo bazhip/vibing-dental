@@ -111,3 +111,31 @@ it('stops Pulse keyboard notifications immediately if their handler changes the 
  const prepared=await helper.execute({operation:'prepare',field:'Assessment'});if(prepared.state!=='prepared')throw new TypeError();
  expect(await helper.execute({operation:'fill',ticket:prepared.ticket,text:'New finding'})).toEqual({state:'unknown'});expect(press).not.toHaveBeenCalled();helper.dispose();
 });
+it('keeps one-use preparations for distinct fields so grouped Paste All can append each field once', async () => {
+ const {helper,editor}=fixture();
+ document.getElementById('sectionContainer')!.insertAdjacentHTML('beforeend','<div id="Plan"><div class="ql-editor" contenteditable="true">Plan existing</div></div>');
+ const assessment=await helper.execute({operation:'prepare',field:'Assessment'});
+ const plan=await helper.execute({operation:'prepare',field:'Plan'});
+ expect(assessment.state).toBe('prepared');expect(plan.state).toBe('prepared');if(assessment.state!=='prepared'||plan.state!=='prepared')throw new TypeError();
+ expect(await helper.execute({operation:'fill',ticket:assessment.ticket,text:'Recorded assessment'})).toEqual({state:'filled'});
+ expect(await helper.execute({operation:'fill',ticket:plan.ticket,text:'Recorded plan'})).toEqual({state:'filled'});
+ expect(editor.textContent).toBe('Existing noteRecorded assessment');
+ expect(document.getElementById('Plan')!.textContent).toBe('Plan existingRecorded plan');
+ expect(await helper.execute({operation:'fill',ticket:assessment.ticket,text:'Replay'})).toEqual({state:'blocked'});helper.dispose();
+});
+it('replaces only the ticket for the re-prepared field, preserving other prepared fields', async () => {
+ const {helper}=fixture();document.getElementById('sectionContainer')!.insertAdjacentHTML('beforeend','<div id="Plan"><div class="ql-editor" contenteditable="true">Plan existing</div></div>');
+ const old=await helper.execute({operation:'prepare',field:'Assessment'}),plan=await helper.execute({operation:'prepare',field:'Plan'}),fresh=await helper.execute({operation:'prepare',field:'Assessment'});
+ if(old.state!=='prepared'||plan.state!=='prepared'||fresh.state!=='prepared')throw new TypeError();
+ expect(await helper.execute({operation:'fill',ticket:old.ticket,text:'Old'})).toEqual({state:'blocked'});
+ expect(await helper.execute({operation:'fill',ticket:plan.ticket,text:'New plan'})).toEqual({state:'filled'});
+ expect(await helper.execute({operation:'fill',ticket:fresh.ticket,text:'New assessment'})).toEqual({state:'filled'});helper.dispose();
+});
+it('a changed prepared field blocks without invalidating or mutating another prepared field', async () => {
+ const {helper,editor}=fixture();document.getElementById('sectionContainer')!.insertAdjacentHTML('beforeend','<div id="Plan"><div class="ql-editor" contenteditable="true">Plan existing</div></div>');
+ const assessment=await helper.execute({operation:'prepare',field:'Assessment'}),plan=await helper.execute({operation:'prepare',field:'Plan'});
+ if(assessment.state!=='prepared'||plan.state!=='prepared')throw new TypeError();editor.innerHTML='Concurrent edit';
+ expect(await helper.execute({operation:'fill',ticket:assessment.ticket,text:'Assessment'})).toEqual({state:'blocked'});
+ expect(document.getElementById('Plan')!.textContent).toBe('Plan existing');
+ expect(await helper.execute({operation:'fill',ticket:plan.ticket,text:'Reviewed plan'})).toEqual({state:'filled'});helper.dispose();
+});

@@ -1,0 +1,45 @@
+{
+  "consultation": {
+    "title": "Visita",
+    "purpose": "Registri il motivo della visita, l’anamnesi, la valutazione e il piano insieme all’esame e alla cartella condivisi.",
+    "review": "Verifichi la cartella clinica"
+  },
+  "discharge": {
+    "title": "Dimissione",
+    "purpose": "Registri i farmaci, le istruzioni di cura e il controllo successivo discussi per questa visita.",
+    "review": "Verifichi il resoconto per il cliente"
+  },
+  "sourceNotice": "Il testo registrato rimane come inserito. Verifichi la lingua del cliente prima della condivisione.",
+  "treatmentRecap": "Referto del trattamento",
+  "noTreatment": "Nessun referto del trattamento registrato.",
+  "fields": {
+    "complaint": {
+      "label": "Motivo della visita",
+      "helper": "Condiviso con i dati del paziente per questa visita."
+    },
+    "consultationHistory": {
+      "label": "Anamnesi",
+      "helper": "Registri l’anamnesi riferita e il contesto pertinente."
+    },
+    "consultationAssessment": {
+      "label": "Valutazione",
+      "helper": "Registri la Sua valutazione, comprese eventuali incertezze."
+    },
+    "consultationPlan": {
+      "label": "Piano",
+      "helper": "Registri il piano discusso senza presentare come concluse le cure programmate."
+    },
+    "dischargeMedications": {
+      "label": "Farmaci",
+      "helper": "Inserisca solo i farmaci e le dosi registrati, mantenendo eventuali incertezze."
+    },
+    "dischargeInstructions": {
+      "label": "Istruzioni",
+      "helper": "Registri le istruzioni di cura discusse per questa visita."
+    },
+    "dischargeFollowUp": {
+      "label": "Controllo successivo",
+      "helper": "Registri il controllo discusso; utilizzi la data di richiamo esistente per un controllo programmato."
+    }
+  }
+}

@@ -485,6 +485,33 @@
     "filled": "Filled. Verify the notes and save them in PIMS.",
     "blocked": "Notes were not filled. Check the destination and prepare again.",
     "unknown": "The outcome is unknown. Check PIMS before preparing another attempt.",
-    "expired": "Preparation expired. Check the destination and prepare again."
+    "expired": "Preparation expired. Check the destination and prepare again.",
+    "mapSections": "Map sections to fields",
+    "singleField": "Use a single field",
+    "mappingHint": "Choose an open field for each source section. Sections sharing a field are appended together in source order. Review the destination again before pasting.",
+    "skip": "Do not paste",
+    "missingField": "Saved field is not open: {{field}}",
+    "saveMapping": "Save mapping",
+    "reloadMapping": "Reload saved mapping",
+    "resetMapping": "Clear mapping",
+    "mappingPrivacy": "Only section identifiers and field labels are saved to your account for this PIMS site and template. Notes and patient details are never saved in mappings.",
+    "pasteAll": "Paste all",
+    "fieldOutcome": "{{field}}: {{outcome}}",
+    "groupSources": "Sources: {{sections}}",
+    "outcomes": {
+      "filled": "Filled",
+      "blocked": "Blocked",
+      "unknown": "Unknown — check PIMS",
+      "skipped": "Skipped"
+    },
+    "mappingStatus": {
+      "loading": "Loading saved mapping…",
+      "saving": "Saving mapping…",
+      "saved": "Mapping saved. Review the destination before every paste.",
+      "error": "Couldn’t load or save the mapping. Reload it before saving again.",
+      "conflict": "This mapping changed elsewhere. Reload it before saving again."
+    },
+    "mappingOptions": "Mapping options",
+    "partial": "Some notes were pasted. Check every field in PIMS before preparing another attempt; pasting again can duplicate notes."
   }
 }

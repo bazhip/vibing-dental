@@ -155,5 +155,10 @@
     "single": " (degré {{level}})",
     "range": " (degré {{from}} à {{to}})"
   },
-  "otherFindings": "Autres observations"
+  "otherFindings": "Autres observations",
+  "dischargeSource": {
+    "dischargeMedications": "Médicaments de sortie",
+    "dischargeInstructions": "Consignes de sortie",
+    "dischargeFollowUp": "Suivi après la sortie"
+  }
 }

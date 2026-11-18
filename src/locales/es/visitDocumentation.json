@@ -1,0 +1,45 @@
+{
+  "consultation": {
+    "title": "Consulta",
+    "purpose": "Registre el motivo de consulta, los antecedentes, la valoración y el plan junto con la exploración y el historial compartidos.",
+    "review": "Revisar la historia clínica"
+  },
+  "discharge": {
+    "title": "Alta",
+    "purpose": "Registre los medicamentos, las instrucciones de cuidado y el seguimiento comentados para esta visita.",
+    "review": "Revisar el informe para el cliente"
+  },
+  "sourceNotice": "El texto registrado se conserva tal como se ha introducido. Revise el idioma del cliente antes de compartirlo.",
+  "treatmentRecap": "Informe del tratamiento",
+  "noTreatment": "No se ha registrado ningún informe del tratamiento.",
+  "fields": {
+    "complaint": {
+      "label": "Motivo de consulta",
+      "helper": "Compartido con los datos del paciente para esta visita."
+    },
+    "consultationHistory": {
+      "label": "Antecedentes",
+      "helper": "Registre los antecedentes aportados y el contexto pertinente."
+    },
+    "consultationAssessment": {
+      "label": "Valoración",
+      "helper": "Registre su valoración, incluida cualquier incertidumbre."
+    },
+    "consultationPlan": {
+      "label": "Plan",
+      "helper": "Registre el plan comentado sin presentar los cuidados previstos como ya realizados."
+    },
+    "dischargeMedications": {
+      "label": "Medicamentos",
+      "helper": "Introduzca solo los medicamentos y las dosis registrados, conservando cualquier incertidumbre."
+    },
+    "dischargeInstructions": {
+      "label": "Instrucciones",
+      "helper": "Registre las instrucciones de cuidado comentadas para esta visita."
+    },
+    "dischargeFollowUp": {
+      "label": "Seguimiento",
+      "helper": "Registre el seguimiento comentado; utilice la fecha de recordatorio existente para una revisión programada."
+    }
+  }
+}

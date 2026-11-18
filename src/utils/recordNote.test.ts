@@ -117,3 +117,11 @@ describe('record note builder', () => {
     expect(buildRecordNote(s, en())).toEqual(buildRecordNote(s, en()));
   });
 });
+
+it('adds only explicit consultation/discharge source sections and invalidates the note basis', () => {
+  const original = snap();
+  const info = { consultationHistory: 'History verbatim?', consultationAssessment: 'Possible disease', consultationPlan: 'Discuss options', dischargeMedications: 'Drug 2 mg? confirm', dischargeInstructions: 'Recorded care', dischargeFollowUp: 'Call if concerned' };
+  const updated = snap({}, info);
+  expect(buildRecordNote(updated, en()).sections.filter(s => s.key !== 'header').map(s => s.lines.join('\n'))).toEqual(Object.values(info));
+  expect(recordNoteBasis(updated)).not.toBe(recordNoteBasis(original));
+});

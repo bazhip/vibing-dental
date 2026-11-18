@@ -155,5 +155,10 @@
     "single": " ({{level}})",
     "range": " ({{from}} to {{to}})"
   },
-  "otherFindings": "Other findings"
+  "otherFindings": "Other findings",
+  "dischargeSource": {
+    "dischargeMedications": "Discharge medications",
+    "dischargeInstructions": "Discharge instructions",
+    "dischargeFollowUp": "Discharge follow-up"
+  }
 }

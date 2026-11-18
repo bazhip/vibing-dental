@@ -54,6 +54,7 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
   onCustomize,
 }) => {
   const { t } = useTranslation('reportui');
+  const fieldPrefix = React.useId();
   const model = React.useMemo(() => buildOwnerReportModel(snapshot, context), [snapshot, context]);
   const mounted = React.useRef(true);
   React.useEffect(() => { mounted.current = true; return () => { mounted.current = false; }; }, []);
@@ -129,6 +130,7 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
   };
 
   const block = (
+    field: 'intro' | 'homecare' | 'extraNotes',
     label: string,
     hint: string,
     value: string,
@@ -137,9 +139,9 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
     onChange: (value: string) => void,
     onReset?: () => void
   ) => (
-    <label className="patient-form__label owner-report__block">
+    <div className="patient-form__label owner-report__block">
       <span className="owner-report__block-head">
-        {label}
+        <label htmlFor={`${fieldPrefix}-${field}`}>{label}</label>
         {onReset && edited && (
           <button
             type="button"
@@ -160,16 +162,19 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
         )}
       </span>
       <textarea
+        id={`${fieldPrefix}-${field}`}
+        aria-describedby={`${fieldPrefix}-${field}-hint`}
         className="patient-form__input owner-report__textarea"
         rows={rows}
         value={value}
         onChange={(e) => onChange(e.target.value)}
       />
-      <span className="patient-form__hint">{hint}</span>
-    </label>
+      <span className="patient-form__hint" id={`${fieldPrefix}-${field}-hint`}>{hint}</span>
+    </div>
   );
 
   const summaryBlock = block(
+    'intro',
     t('section.summaryLabel'),
     t('section.summaryHint'),
     overrides.intro ?? introDefault,
@@ -180,15 +185,18 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
   );
 
   const noteBlock = block(
+    'extraNotes',
     t('section.noteLabel'),
     t('section.noteHint'),
-    overrides.extraNotes ?? '',
-    false,
+    overrides.extraNotes ?? model.extraNotes,
+    overrides.extraNotes !== undefined,
     3,
-    (value) => onOverrideChange('extraNotes', value.trim() === '' ? null : value)
+    (value) => onOverrideChange('extraNotes', value),
+    () => onOverrideChange('extraNotes', null)
   );
 
   const homecareBlock = block(
+    'homecare',
     t('section.homecareLabel'),
     t('section.homecareHint'),
     overrides.homecare ?? homecareDefault,

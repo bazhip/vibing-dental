@@ -11,6 +11,7 @@ import {
   isCustomSection,
   resolveTemplate,
 } from './ownerReportConfig';
+import i18n from '../i18n';
 import { ReportLocale, SUMMARY_FIELDS, SummaryExtent, SummaryField, formatReportDate, reportStrings } from './ownerReportI18n';
 import { ownerFriendlyText } from './ownerReportCodes';
 import { isGridComment } from './gridComments';
@@ -201,6 +202,14 @@ export function ownerReportIsReviewed(snapshot: ChartSnapshot, options: BuildOwn
   return snapshot.ownerReport?.reviewedBasis === ownerReportReviewBasis(snapshot, options);
 }
 
+/** Client-language labels; the clinician's wording remains verbatim. */
+function recordedDischargeNotes(info: ChartSnapshot['patientInfo'], locale: ReportLocale): string {
+  const t = i18n.getFixedT(locale, 'report');
+  return (['dischargeMedications', 'dischargeInstructions', 'dischargeFollowUp'] as const).map(key =>
+    info[key]?.trim() ? `${t(`dischargeSource.${key}`)}: ${info[key]}` : ''
+  ).filter(Boolean).join('\n\n');
+}
+
 export function buildOwnerReportModel(
   snapshot: ChartSnapshot,
   options: BuildOwnerReportOptions = {}
@@ -374,7 +383,7 @@ export function buildOwnerReportModel(
     recallDate: formatReportDate(snapshot.patientInfo.recallDate ?? '', locale, template.dateFormat),
     intro: (overrides.intro ?? templateIntro(snapshot, template, values)).trim(),
     homecareTips: homecareSource.split('\n').map((tip) => tip.trim()).filter(Boolean),
-    extraNotes: (overrides.extraNotes ?? '').trim(),
+    extraNotes: (overrides.extraNotes ?? recordedDischargeNotes(snapshot.patientInfo, locale)).trim(),
     alreadyMissing,
     extracted: [...extractedSet].sort((a, b) => a - b).map(layName),
     summaryLines,

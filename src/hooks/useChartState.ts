@@ -1,5 +1,6 @@
 import React from 'react';
 import { createPatientIdentity, patientNumberOf } from '../utils/patientIds';
+import { normalizeVisitDocumentation } from '../utils/visitDocumentation';
 import { normalizeCustomAnesthesia } from '../utils/customAnesthesia';
 import { normalizeCustomExam } from '../utils/customExam';
 import { localDateISO } from '../utils/localDate';
@@ -211,7 +212,7 @@ export function normalizeSnapshot(s: ChartSnapshot): ChartSnapshot {
   return {
     ...s,
     patientInfo: {
-      ...normalizeRadiologyInfo(s.patientInfo),
+      ...normalizeVisitDocumentation(normalizeRadiologyInfo(s.patientInfo)),
       complaint: s.patientInfo.complaint ?? '',
       treatmentReport: s.patientInfo.treatmentReport ?? '',
       radiographicFindings: s.patientInfo.radiographicFindings ?? '',
@@ -273,7 +274,7 @@ export function useChartState(): UseChartStateReturn {
       exam: { ...EMPTY_EXAM_FINDINGS },
     }),
     // Pre-multi-drug builds stored a single `drug` string.
-    (stored) => ({ ...stored, nerveBlocks: normalizeNerveBlocks(stored.nerveBlocks) })
+    (stored) => ({ ...normalizeVisitDocumentation(stored), nerveBlocks: normalizeNerveBlocks(stored.nerveBlocks) })
   );
 
   const [species, setSpecies] = usePersistedState<Species>('chart.species', 1, 'canine');

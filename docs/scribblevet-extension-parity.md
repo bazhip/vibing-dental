@@ -13,6 +13,14 @@ The four remaining bounded feature gaps now have local implementations:
 
 The note-autofill operation is separate from strict Send, so this work does not manufacture encounter IDs, saved receipts or Sent stamps. Completed source code is distinct from deployment/live verification: the new `20261208_pims_instinct_configured_sync.sql` migration and earlier pending migrations/functions are not deployed here; actual provider sessions, installed-extension interoperability and private competitor output/template equivalence remain unverified. Global rollout and browser permissions are unchanged.
 
+## Clinical-day workspace and mapping convenience — November 18
+
+Merged current main (`9ef7eb8`) into the parity branch as `179d9c5`. Saved per-template/provider/site section mappings and reviewed grouped Paste All now cover the convenience gap for Pulse, Rhapsody and Vetspire. Sections sharing a field append together once; blocked/unknown results stop the batch and preserve a warning plus each field result. The clinician still opens the intended editor, checks patient/visit and saves. Mapping persistence requires the new local `20261209_pims_note_mappings.sql` migration; it is not deployed here.
+
+Consultation and Discharge tabs now share the existing visit snapshot, clinical record and owner-report pipeline. Radiology uses the current clinical UI with linked helper text and consultation context. Optional source fields and a declarative `consultation-v1`/`discharge-v1` registry provide a foundation for future GP templates without changing current voice extraction. Vendor public pages/screenshots informed workflow; private vendor schema and generated-output equivalence remain unverified.
+
+Validation: `npm test -- --maxWorkers=4` with the disposable PIMS database passed all 4,600 tests across 345 files; `npm run build` and the extension store package passed; scoped visual coverage includes desktop1440 and phones390/320 in light/dark, source states, saved visits, menus and mapped-paste partial outcomes. See [the implementation plan and coverage matrix](superpowers/plans/2026-11-18-clinical-day-workspace.md). Live provider sessions and native runtime remain unverified. No deployment, rollout or feature-branch merge into main was performed.
+
 ## Scope and evidence
 
 This is a bounded, static audit of ScribbleVet Chrome extension **1.31.3**, performed on November 16, 2026. It is not a claim of live interoperability, exhaustive product parity, or supported access to ScribbleVet's private services.

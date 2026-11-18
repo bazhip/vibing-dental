@@ -155,5 +155,10 @@
     "single": " (grado {{level}})",
     "range": " (grado {{from}} a {{to}})"
   },
-  "otherFindings": "Otros hallazgos"
+  "otherFindings": "Otros hallazgos",
+  "dischargeSource": {
+    "dischargeMedications": "Medicamentos al alta",
+    "dischargeInstructions": "Instrucciones al alta",
+    "dischargeFollowUp": "Seguimiento tras el alta"
+  }
 }

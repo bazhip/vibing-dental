@@ -32,6 +32,7 @@ function allowRouteEvent(event: HashChangeEvent): boolean {
  *  from a chart id in #/chart/… hashes (ids are uuids, never these). */
 export const CHART_SECTION_IDS = [
   'patient',
+  'consultation',
   'exam',
   'anesthesia',
   'charting',
@@ -39,7 +40,8 @@ export const CHART_SECTION_IDS = [
   'procedure',
   'imaging',
   'treatment',
-  'owner-report',
+  'discharge',
+  'owner-report', // Legacy deep-link alias for discharge.
 ] as const;
 
 export interface HashRoute {
@@ -68,8 +70,8 @@ function parse(): HashRoute {
   if (m) {
     const [, first, second] = m;
     // '#/chart/patient' — a bare section, no chart id (trial mode).
-    if (isSection(first)) return { view: 'chart', section: first };
-    return { view: 'chart', chartId: first, section: isSection(second) ? second : undefined };
+    if (isSection(first)) return { view: 'chart', section: first === 'owner-report' ? 'discharge' : first };
+    return { view: 'chart', chartId: first, section: isSection(second) ? second === 'owner-report' ? 'discharge' : second : undefined };
   }
   return { view: 'chart' };
 }

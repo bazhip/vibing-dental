@@ -1,0 +1,48 @@
+import { useId, type ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { PatientInfo } from '../types';
+import { VISIT_DOCUMENT_MAX_LENGTH, VISIT_DOCUMENT_TEMPLATES, type VisitDocumentKind } from '../utils/visitDocumentation';
+import { SectionHeader } from './SectionHeader';
+import './VisitDocumentationSection.css';
+
+export interface VisitDocumentationSectionProps {
+  kind: VisitDocumentKind;
+  patientInfo: PatientInfo;
+  onChange: (patch: Partial<PatientInfo>) => void;
+  readOnly?: boolean;
+  onReview?: () => void;
+  reviewLabel?: string;
+  children?: ReactNode;
+}
+
+/** Source-only forms: generated clinical/client reports keep their existing owners. */
+export function VisitDocumentationSection({ kind, patientInfo, onChange, readOnly, onReview, reviewLabel, children }: VisitDocumentationSectionProps) {
+  const { t } = useTranslation('visitDocumentation');
+  const id = useId();
+  const template = VISIT_DOCUMENT_TEMPLATES[kind];
+  return (
+    <section className="patient-form visit-documentation" aria-labelledby={`${id}-title`}>
+      <div id={`${id}-title`}>
+        <SectionHeader title={t(`${kind}.title`)} actions={onReview && <button type="button" className="entry-grid__button entry-grid__button--topbar visit-documentation__review" onClick={onReview}>{reviewLabel ?? t(`${kind}.review`)}</button>}>
+          {t(`${kind}.purpose`)}
+        </SectionHeader>
+      </div>
+      {kind === 'discharge' && <div className="visit-documentation__recap">
+        <h3>{t('treatmentRecap')}</h3>
+        <p>{patientInfo.treatmentReport?.trim() ? patientInfo.treatmentReport : t('noTreatment')}</p>
+      </div>}
+      <div className="visit-documentation__fields">
+        {template.fields.map(field => <div className="visit-documentation__field" key={field.id}>
+          <label className="patient-form__label" htmlFor={`${id}-${field.id}`}>{t(field.labelKey)}</label>
+          <p className="visit-documentation__helper" id={`${id}-${field.id}-help`}>{t(field.helperKey)}</p>
+          <textarea id={`${id}-${field.id}`} className="patient-form__textarea" rows={3}
+            aria-describedby={`${id}-${field.id}-help`} maxLength={VISIT_DOCUMENT_MAX_LENGTH}
+            value={patientInfo[field.id] ?? ''} readOnly={readOnly}
+            onChange={event => { if (!readOnly) onChange({ [field.id]: event.target.value }); }} />
+        </div>)}
+      </div>
+      {kind === 'discharge' && <p className="visit-documentation__helper visit-documentation__notice">{t('sourceNotice')}</p>}
+      {children}
+    </section>
+  );
+}

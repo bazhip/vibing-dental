@@ -485,6 +485,33 @@
     "filled": "Ausgefüllt. Prüfen Sie die Notizen und speichern Sie sie im PIMS.",
     "blocked": "Die Notizen wurden nicht eingefügt. Prüfen Sie das Ziel und bereiten Sie das Ausfüllen erneut vor.",
     "unknown": "Das Ergebnis ist unbekannt. Prüfen Sie das PIMS, bevor Sie einen weiteren Versuch vorbereiten.",
-    "expired": "Die Vorbereitung ist abgelaufen. Prüfen Sie das Ziel und bereiten Sie das Ausfüllen erneut vor."
+    "expired": "Die Vorbereitung ist abgelaufen. Prüfen Sie das Ziel und bereiten Sie das Ausfüllen erneut vor.",
+    "mapSections": "Abschnitte Feldern zuordnen",
+    "singleField": "Ein einzelnes Feld verwenden",
+    "mappingHint": "Wählen Sie für jeden Quellabschnitt ein geöffnetes Feld. Abschnitte mit demselben Feld werden gemeinsam in ihrer ursprünglichen Reihenfolge angehängt. Prüfen Sie das Ziel vor dem Einfügen erneut.",
+    "skip": "Nicht einfügen",
+    "missingField": "Das gespeicherte Feld ist nicht geöffnet: {{field}}",
+    "saveMapping": "Zuordnung speichern",
+    "reloadMapping": "Gespeicherte Zuordnung neu laden",
+    "resetMapping": "Zuordnung leeren",
+    "mappingPrivacy": "Für diese PIMS-Website und Vorlage werden nur Abschnittskennungen und Feldbezeichnungen in Ihrem Konto gespeichert. Notizen und Patientendaten werden nie in Zuordnungen gespeichert.",
+    "pasteAll": "Alles einfügen",
+    "fieldOutcome": "{{field}}: {{outcome}}",
+    "groupSources": "Quellen: {{sections}}",
+    "outcomes": {
+      "filled": "Ausgefüllt",
+      "blocked": "Blockiert",
+      "unknown": "Ergebnis unbekannt — prüfen Sie das PIMS",
+      "skipped": "Übersprungen"
+    },
+    "mappingStatus": {
+      "loading": "Gespeicherte Zuordnung wird geladen…",
+      "saving": "Zuordnung wird gespeichert…",
+      "saved": "Zuordnung gespeichert. Prüfen Sie das Ziel vor jedem Einfügen.",
+      "error": "Die Zuordnung konnte nicht geladen oder gespeichert werden. Laden Sie sie vor dem erneuten Speichern neu.",
+      "conflict": "Diese Zuordnung wurde an anderer Stelle geändert. Laden Sie sie vor dem erneuten Speichern neu."
+    },
+    "mappingOptions": "Zuordnungsoptionen",
+    "partial": "Einige Notizen wurden eingefügt. Prüfen Sie jedes Feld im PIMS, bevor Sie einen weiteren Versuch vorbereiten; erneutes Einfügen kann Notizen duplizieren."
   }
 }

@@ -336,7 +336,7 @@
   },
   "radiologyReport": {
     "title": "Referto radiologico",
-    "description": "Descriva i Suoi reperti radiografici con parole Sue, quindi generi un referto modificabile. Il contesto dell’esame è facoltativo. Le immagini non vengono analizzate.",
+    "description": "Generi un referto modificabile dai reperti registrati. Le immagini non vengono analizzate.",
     "context": "Contesto facoltativo dell’esame",
     "radiologyHistory": "Anamnesi clinica pertinente",
     "radiologyTechnique": "Tecnica ed estensione dell’esame",
@@ -385,6 +385,11 @@
     "modelLabel": "Modello per le bozze di referti radiologici",
     "modelUpdated": "Le bozze di referti radiologici ora usano {{model}}.",
     "findingsPlaceholder": "Descriva ciò che osserva, includendo numeri dei denti, sede, misurazioni e incertezze. Può includere la tecnica e la Sua valutazione clinica.",
-    "manual": "Scrivere il referto manualmente"
+    "manual": "Scrivere il referto manualmente",
+    "outputTitle": "Referto",
+    "radiologyHistoryHelp": "Facoltativo: aggiunga un’anamnesi specifica per l’esame se necessario. Altrimenti viene utilizzata l’anamnesi della visita.",
+    "radiologyTechniqueHelp": "Facoltativo: proiezioni, tecnica e copertura documentate dal veterinario.",
+    "radiologyQuestionHelp": "Facoltativo: il quesito a cui questo esame deve rispondere.",
+    "previewHelp": "Verifichi e modifichi questa bozza. Il Suo referto salvato cambia solo quando sceglie Usa bozza."
   }
 }

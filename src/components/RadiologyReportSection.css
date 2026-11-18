@@ -1,23 +1,30 @@
-.radiology-report { display: grid; gap: 12px; min-width: 0; border-top: 1px solid var(--sp-border, #d5dedd); padding-top: 20px; }
-.radiology-report h3, .radiology-report p { margin: 0; overflow-wrap: anywhere; }
-.radiology-report details, .radiology-report fieldset { min-width: 0; }
+.radiology-report { display: grid; gap: 16px; min-width: 0; border-top: 1px solid var(--border); padding-top: 20px; }
+.radiology-report p { margin: 0; overflow-wrap: anywhere; }
+.radiology-report__workspace { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+.radiology-report__source, .radiology-report__output { display: grid; gap: 16px; min-width: 0; }
+.radiology-report__output { border-left: 1px solid var(--border); padding-left: 24px; }
+.radiology-report__output-title { font-size: 1rem; font-weight: 600; color: var(--text); margin: 0; }
+.radiology-report__field { display: grid; gap: 8px; min-width: 0; }
+.radiology-report details, .radiology-report fieldset, .radiology-report label { min-width: 0; }
 .radiology-report summary[hidden] { display: none; }
-.radiology-report summary { cursor: pointer; min-height: 44px; display: list-item; padding-block: 10px; box-sizing: border-box; }
-.radiology-report fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 12px; }
+.radiology-report__disclosure > summary { cursor: pointer; min-height: 40px; padding-block: 10px; box-sizing: border-box; color: var(--primary); font-size: .875rem; font-weight: 600; overflow-wrap: anywhere; }
+.radiology-report fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 16px; }
 .radiology-report .radiology-report__context { padding-top: 8px; }
-.radiology-report label { min-width: 0; }
-.radiology-report textarea, .radiology-report select, .radiology-report button { box-sizing: border-box; max-width: 100%; min-width: 0; min-height: 44px; padding: 8px 12px; font: inherit; color: inherit; border: 1px solid var(--sp-border, #b8ccca); border-radius: 6px; background: var(--sp-surface, #fff); }
-.radiology-report textarea { width: 100%; resize: vertical; line-height: 1.5; }
-.radiology-report select { width: 100%; }
-.radiology-report button { cursor: pointer; text-align: start; overflow-wrap: anywhere; }
-.radiology-report button:disabled { cursor: not-allowed; opacity: .55; }
-.radiology-report button.radiology-report__primary { color: #fff; background: var(--sp-accent, #0c6b63); border-color: var(--sp-accent, #0c6b63); }
+.radiology-report .patient-form__textarea, .radiology-report .patient-form__input { box-sizing: border-box; width: 100%; min-width: 0; max-width: 100%; }
+.radiology-report .diagram-view__action { min-height: 40px; max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+.radiology-report .radiology-report__primary { color: var(--on-primary); background: var(--primary); border-color: var(--primary); }
+.radiology-report .radiology-report__primary:hover:not(:disabled) { background: var(--primary-end); border-color: var(--primary-end); }
 .radiology-report__actions { display: flex; gap: 8px; align-items: end; flex-wrap: wrap; }
-.radiology-report__actions > label { flex: 1 1 160px; }
-.radiology-report__check { display: flex; align-items: center; gap: 8px; min-height: 44px; }
+.radiology-report__actions > label { flex: 1 1 150px; }
+.radiology-report__check { display: flex; align-items: center; gap: 8px; min-height: 44px; font-size: .875rem; color: var(--text); }
 .radiology-report__check input { flex: 0 0 auto; width: auto; }
-.radiology-report .radiology-report__preview { padding: 12px; border: 1px solid var(--sp-border, #b8ccca); border-radius: 6px; }
-.radiology-report__error { color: var(--sp-error, #b42318); }
-.radiology-report :is(button,textarea,select,summary,input):focus-visible { outline: 2px solid var(--sp-accent, #0c6b63); outline-offset: 2px; }
-
-.radiology-report .code-field textarea { min-height: 136px; }
+.radiology-report .radiology-report__preview { border-left: 3px solid var(--primary); padding-left: 16px; }
+.radiology-report__error { color: var(--danger); }
+.radiology-report :is(button,summary,input):focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+@media (max-width: 760px) {
+  .radiology-report__workspace { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .radiology-report__output { padding-left: 0; padding-top: 20px; border-left: 0; border-top: 1px solid var(--border); }
+  .radiology-report__actions select.patient-form__input { height: 44px; }
+  .radiology-report .code-field__item { min-height: 44px; }
+  .radiology-report .diagram-view__action, .radiology-report .patient-form__input, .radiology-report__disclosure > summary { min-height: 44px; }
+}

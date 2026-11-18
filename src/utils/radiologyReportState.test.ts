@@ -64,3 +64,10 @@ it('preserves report review across JSONB object-key reordering without ignoring 
   cloud.toothData[0].pocket='4.6';expect(isRadiologyReportReviewed(cloud,'en')).toBe(false);
   cloud.toothData[0].pocket='4.5';cloud.preComments.reverse();expect(isRadiologyReportReviewed(cloud,'en')).toBe(false);
 });
+it.each(['consultationHistory','consultationAssessment','consultationPlan'] as const)('invalidates radiology review when shared %s context changes',field=>{
+ const chart=radiologySnapshot();Object.assign(chart.patientInfo,{radiologyReport:'Recorded report',radiologyReportLanguage:'en'});
+ chart.patientInfo.radiologyReportBasis=radiologySourceBasis(chart);chart.patientInfo.radiologyReviewedBasis=radiologyReviewBasis(chart,'en');
+ expect(isRadiologyReportReviewed(chart,'en')).toBe(true);
+ chart.patientInfo[field]='Updated explicitly recorded clinical context';
+ expect(isRadiologyReportReviewed(chart,'en')).toBe(false);
+});

@@ -77,3 +77,10 @@ it('blank AI facts distinguish missing documentation from health and include dra
   expect(facts).not.toContain('healthy');
   expect(buildOwnerReportAiRequest(blank).system[0].text).toContain('Missing or blank entries mean not recorded');
 });
+
+it('keeps explicit visit sources available to AI even with a manual report override', () => {
+  const sources = { consultationHistory: 'History uncertain?', consultationAssessment: 'Possible disease?', consultationPlan: 'Discuss options', dischargeMedications: 'Drug 2 mg? verify', dischargeInstructions: 'Recorded instructions', dischargeFollowUp: 'As discussed' };
+  const facts = ownerReportFacts({ ...snap, patientInfo: { ...snap.patientInfo, ...sources }, ownerReport: { extraNotes: 'Manual note' } });
+  for (const text of Object.values(sources)) expect(facts).toContain(text);
+  expect(facts).toContain('Manual note');
+});

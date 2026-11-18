@@ -68,3 +68,22 @@ it('returns from practice settings to the visible current visit', async () => {
   await waitFor(() => expect(document.getElementById('chart-form')).toBeVisible());
   expect(screen.queryByRole('heading', { name: 'Practice settings' })).toBeNull();
 });
+
+it.each([['Consultation','consultation'],['Discharge','discharge'],['Imaging','imaging']])('opens the %s entry tab within the current visit', async(label,section)=>{
+ window.history.replaceState(null,'','/#/chart/patient');
+ render(<><EntryGrid trial/><DialogHost/></>);
+ await screen.findAllByText(label);
+ act(()=>navButton(label).click());
+ await waitFor(()=>expect(window.location.hash).toBe('#/chart/'+section));
+ expect(document.querySelector('.sidebar-layout__main')).toHaveAttribute('data-active-section',section);
+ expect(document.querySelector(`[data-section-id="${section}"]`)).toBeVisible();
+ expect(document.querySelector('.visit-export__button')).toBeNull();
+});
+it('opens the Discharge source tab for a legacy owner-report deep link without enabling gated client output', async()=>{
+ window.history.replaceState(null,'','/#/chart/owner-report');
+ render(<><EntryGrid trial/><DialogHost/></>);
+ await screen.findAllByText('Discharge');
+ await waitFor(()=>expect(document.querySelector('.sidebar-layout__main')).toHaveAttribute('data-active-section','discharge'));
+ expect(document.querySelector('[data-section-id="discharge"]')).toBeVisible();
+ expect(window.location.hash).toBe('#/chart/discharge');
+});

@@ -25,6 +25,7 @@ export function radiologySourceBasis(snapshot: ChartSnapshot): string {
     snapshot.species, info.patientName, info.patientNumber, info.date, info.doctor, info.tech,
     text(info.complaint), text(info.treatmentReport), text(info.radiographicFindings),
     text(info.radiologyHistory), text(info.radiologyTechnique), text(info.radiologyQuestion),
+    text(info.consultationHistory), text(info.consultationAssessment), text(info.consultationPlan),
     info.exam ?? null, info.customExam ?? null, info.recallDate ?? '',
     snapshot.toothData, snapshot.preMarks ?? {}, snapshot.postMarks ?? {},
     snapshot.preComments ?? [], snapshot.postComments ?? [],

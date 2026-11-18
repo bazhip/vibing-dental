@@ -155,5 +155,10 @@
     "single": " (grau {{level}})",
     "range": " (grau {{from}} a {{to}})"
   },
-  "otherFindings": "Outros achados"
+  "otherFindings": "Outros achados",
+  "dischargeSource": {
+    "dischargeMedications": "Medicamentos na alta",
+    "dischargeInstructions": "Instruções na alta",
+    "dischargeFollowUp": "Seguimento após a alta"
+  }
 }

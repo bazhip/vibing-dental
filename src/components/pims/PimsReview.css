@@ -27,3 +27,22 @@
 
 .pims-note-autofill textarea { box-sizing: border-box; width: 100%; min-width: 0; min-height: 140px; padding: 10px; border: 1px solid var(--sp-border, #b2c6c0); border-radius: 6px; background: transparent; color: inherit; font: inherit; resize: vertical; }
 .pims-note-autofill textarea:focus-visible { outline: 2px solid var(--sp-accent, #0c6b63); outline-offset: 3px; }
+
+/* Compact settings rows follow the clinical form hierarchy; the paste review owns the primary action. */
+.pims-note-autofill { --sp-accent: var(--primary); --sp-border: var(--border); --sp-muted: var(--text-muted); --sp-error: var(--danger); }
+.pims-note-autofill__mapping { display: grid; gap: 12px; min-width: 0; }
+.pims-note-autofill__mapping-row { display: grid; gap: 6px; min-width: 0; border-block-end: 1px solid var(--border); padding-block-end: 10px; }
+.pims-note-autofill__mapping-row > label { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); align-items: center; gap: 12px; }
+.pims-note-autofill .pims-note-autofill__mode { justify-self: start; }
+.pims-note-autofill__review-field { display: grid; gap: 4px; }
+.pims-note-autofill__results { margin: 0; padding-inline-start: 20px; display: grid; gap: 6px; }
+@media (max-width: 480px) {
+  .pims-note-autofill__mapping-row > label { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .pims-note-autofill .pims-review__actions { display: grid; grid-template-columns: minmax(0, 1fr); }
+}
+.pims-note-autofill__options summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.pims-note-autofill__options summary:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+
+.pims-note-autofill button.pims-setup__primary { color: var(--on-primary, #fff); }
+
+.pims-note-autofill__mapping > .pims-review__actions { align-items: start; }

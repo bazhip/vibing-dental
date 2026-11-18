@@ -795,3 +795,16 @@ it('ignores a delayed number reservation after switching to another chart', asyn
   await act(async () => { resolve('1001'); });
   expect(setter).not.toHaveBeenCalled();
 });
+
+it.each(['consultationHistory', 'consultationAssessment', 'consultationPlan', 'dischargeMedications', 'dischargeInstructions', 'dischargeFollowUp'] as const)('counts %s as clinical content even without chart findings', key => {
+  const snapshot = snap({});
+  snapshot.patientInfo = { ...snapshot.patientInfo, [key]: 'Recorded source?' };
+  expect(hasClinicalContent(snapshot)).toBe(true);
+  snapshot.patientInfo[key] = '   ';
+  expect(hasClinicalContent(snapshot)).toBe(false);
+});
+it('continues to exclude complaint-only charts from automatic saving', () => {
+  const snapshot = snap({});
+  snapshot.patientInfo.complaint = 'Reason for visit';
+  expect(hasClinicalContent(snapshot)).toBe(false);
+});

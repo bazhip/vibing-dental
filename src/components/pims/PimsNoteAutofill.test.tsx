@@ -169,3 +169,172 @@ it('falls back to the whole edited note if the selected section no longer exists
   expect(screen.getByLabelText('Review notes')).toHaveValue('New manually edited note');
   expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
 });
+
+function mappedSetup(outcomes = ['filled', 'filled']) {
+  const base = setup(); let fills = 0;
+  const noteAutofill = vi.fn(async (request: { operation: string; field?: string }) => request.operation === 'list' ? { state: 'targets', targets: [target] }
+    : request.operation === 'inspect' ? { state: 'fields', ...target, fields: ['Notes', 'Plan'] }
+      : request.operation === 'prepare' ? { state: 'prepared', ...target, field: request.field, ticket: `ticket-${request.field}`, existing_characters: 0, expires_at: new Date(Date.now() + 60_000).toISOString() }
+        : { state: outcomes[fills++] ?? 'filled' });
+  const key = { provider: 'pulse' as const, origin: target.origin, template_id: 'record-note-v1' };
+  const mappingBackend = { load: vi.fn(async () => ({ ...key, version: 3, mapping: { exam: 'Notes', treatment: 'Plan', recheck: 'Notes' } })), save: vi.fn(async () => ({ ...key, version: 4, mapping: {} })) };
+  return { props: { ...base.props, note: { sections: [{ key: 'exam' as const, heading: 'Exam', lines: ['Exam facts'] }, { key: 'treatment' as const, heading: 'Treatment', lines: ['Treatment facts'] }, { key: 'recheck' as const, heading: 'Recheck', lines: ['Recheck facts'] }] }, transport: { noteAutofill } as unknown as PimsTransport, mappingBackend }, noteAutofill, mappingBackend };
+}
+async function openMapping() {
+  fireEvent.click(await screen.findByRole('button', { name: 'Fill an open PIMS note' }));
+  fireEvent.change(await screen.findByLabelText('Destination tab'), { target: { value: '7' } });
+  await screen.findByRole('option', { name: 'Notes' });
+  fireEvent.click(screen.getByRole('button', { name: 'Map sections to fields' }));
+  return screen.findByLabelText('Exam');
+}
+it('loads saved mappings, groups same-field sources once and pastes distinct fields in source order', async () => {
+  const { props, noteAutofill, mappingBackend } = mappedSetup(); render(<PimsNoteAutofill {...props} />);
+  await openMapping(); expect(await screen.findByLabelText('Recheck')).toHaveValue('Notes');
+  expect(mappingBackend.load).toHaveBeenCalledWith({ provider: 'pulse', origin: target.origin, template_id: 'record-note-v1' });
+  fireEvent.click(screen.getByRole('button', { name: 'Prepare autofill' }));
+  fireEvent.click(await screen.findByRole('checkbox')); const paste = screen.getByRole('button', { name: 'Paste all' });
+  fireEvent.click(paste); fireEvent.click(paste);
+  await screen.findByText('Filled. Verify the notes and save them in PIMS.');
+  expect(noteAutofill.mock.calls.map(([r]) => r).filter(r => r.operation === 'prepare')).toEqual([{ operation: 'prepare', tabId: 7, field: 'Notes' }, { operation: 'prepare', tabId: 7, field: 'Plan' }]);
+  expect(noteAutofill.mock.calls.map(([r]) => r).filter(r => r.operation === 'fill')).toEqual([
+    { operation: 'fill', tabId: 7, ticket: 'ticket-Notes', text: 'EXAM\nExam facts\n\nRECHECK\nRecheck facts' },
+    { operation: 'fill', tabId: 7, ticket: 'ticket-Plan', text: 'TREATMENT\nTreatment facts' },
+  ]);
+});
+it('shows missing saved fields and blocks preparation until the mapping is fixed', async () => {
+  const { props, mappingBackend } = mappedSetup(); mappingBackend.load.mockResolvedValue({ provider: 'pulse', origin: target.origin, template_id: 'record-note-v1', version: 3, mapping: { exam: 'Missing field', treatment: 'Plan', recheck: 'Notes' } });
+  render(<PimsNoteAutofill {...props} />); await openMapping();
+  expect(await screen.findByText('Saved field is not open: Missing field')).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Prepare autofill' })).toBeDisabled();
+  fireEvent.change(screen.getByLabelText('Exam'), { target: { value: 'Notes' } });
+  expect(screen.getByRole('button', { name: 'Prepare autofill' })).toBeEnabled();
+});
+it.each(['blocked', 'unknown'])('stops after a %s result and reports remaining fields as skipped', async outcome => {
+  const { props, noteAutofill } = mappedSetup([outcome]); render(<PimsNoteAutofill {...props} />); await openMapping();
+  fireEvent.click(screen.getByRole('button', { name: 'Prepare autofill' })); fireEvent.click(await screen.findByRole('checkbox'));
+  fireEvent.click(screen.getByRole('button', { name: 'Paste all' }));
+  await screen.findByText('Plan: Skipped');
+  expect(noteAutofill.mock.calls.filter(([r]) => r.operation === 'fill')).toHaveLength(1);
+  expect(screen.queryByRole('button', { name: 'Paste all' })).not.toBeInTheDocument();
+});
+it('keeps an unsplittable edited note as a single whole-body mapping source', async () => {
+  const { props } = mappedSetup(); render(<PimsNoteAutofill {...props} stored={{ text: 'Edited note', source: 'edited', lng: 'en', basedOn: 'x' }} />);
+  await openMapping().catch(() => {});
+  expect(screen.getByLabelText('All notes')).toBeInTheDocument();
+  expect(screen.queryByLabelText('Exam')).not.toBeInTheDocument();
+});
+it('does not apply a deferred saved map over a user edit', async () => {
+  const { props, mappingBackend } = mappedSetup(); let resolve!: (value: Awaited<ReturnType<typeof mappingBackend.load>>) => void;
+  mappingBackend.load.mockImplementation(() => new Promise(r => { resolve = r; }));
+  render(<PimsNoteAutofill {...props} />); await openMapping();
+  fireEvent.change(screen.getByLabelText('Exam'), { target: { value: 'Plan' } });
+  await act(async () => resolve({ provider: 'pulse', origin: target.origin, template_id: 'record-note-v1', version: 3, mapping: { exam: 'Notes', treatment: 'Plan', recheck: 'Notes' } }));
+  expect(screen.getByLabelText('Exam')).toHaveValue('Plan');
+});
+it('reports a stale save conflict without changing local mappings', async () => {
+  const { props, mappingBackend } = mappedSetup(); mappingBackend.save.mockRejectedValue({ code: 'conflict' });
+  render(<PimsNoteAutofill {...props} />); await openMapping(); fireEvent.change(screen.getByLabelText('Exam'), { target: { value: 'Plan' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Save mapping' }));
+  await screen.findByText('This mapping changed elsewhere. Reload it before saving again.');
+  expect(screen.getByLabelText('Exam')).toHaveValue('Plan');
+  expect(mappingBackend.save).toHaveBeenCalledTimes(1);
+});
+
+it.each(['list','inspect','prepare','fill'] as const)('ignores deferred %s after an account transition and clears prior destination metadata', async stage => {
+  const { props, noteAutofill } = mappedSetup(); const original = noteAutofill.getMockImplementation()!;
+  let resolve!: (value: Awaited<ReturnType<typeof original>>) => void;
+  noteAutofill.mockImplementation(request => request.operation === stage ? new Promise(r => { resolve = r; }) : original(request));
+  render(<PimsNoteAutofill {...props} />);
+  fireEvent.click(await screen.findByRole('button', { name: 'Fill an open PIMS note' }));
+  if (stage !== 'list') {
+    fireEvent.change(await screen.findByLabelText('Destination tab'), { target: { value: '7' } });
+    if (stage !== 'inspect') {
+      await screen.findByRole('option', { name: 'Notes' }); fireEvent.click(screen.getByRole('button', { name: 'Map sections to fields' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Prepare autofill' }));
+      if (stage === 'fill') { fireEvent.click(await screen.findByRole('checkbox')); fireEvent.click(screen.getByRole('button', { name: 'Paste all' })); }
+    }
+  }
+  act(() => auth('SIGNED_OUT', null)); act(() => auth('SIGNED_IN', { user: { id: 'another-account' } }));
+  await act(async () => resolve(await original({ operation: stage, field: 'Notes' })));
+  expect(screen.queryByRole('option', { name: /Patient encounter/ })).not.toBeInTheDocument();
+  expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
+  expect(screen.queryByText('The outcome is unknown. Check PIMS before preparing another attempt.')).not.toBeInTheDocument();
+  if (stage === 'fill') expect(noteAutofill.mock.calls.filter(([r]) => r.operation === 'fill')).toHaveLength(1);
+});
+it.each(['list','inspect','prepare','fill'] as const)('stops deferred %s after a source switch', async stage => {
+  const { props, noteAutofill } = mappedSetup(); const original = noteAutofill.getMockImplementation()!;
+  let resolve!: (value: Awaited<ReturnType<typeof original>>) => void;
+  noteAutofill.mockImplementation(request => request.operation === stage ? new Promise(r => { resolve = r; }) : original(request));
+  const view = render(<PimsNoteAutofill {...props} />);
+  fireEvent.click(await screen.findByRole('button', { name: 'Fill an open PIMS note' }));
+  if (stage !== 'list') {
+    fireEvent.change(await screen.findByLabelText('Destination tab'), { target: { value: '7' } });
+    if (stage !== 'inspect') {
+      await screen.findByRole('option', { name: 'Notes' }); fireEvent.click(screen.getByRole('button', { name: 'Map sections to fields' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Prepare autofill' }));
+      if (stage === 'fill') { fireEvent.click(await screen.findByRole('checkbox')); fireEvent.click(screen.getByRole('button', { name: 'Paste all' })); }
+    }
+  }
+  view.rerender(<PimsNoteAutofill {...props} stored={{ text: 'Changed source', source: 'edited', lng: 'en', basedOn: 'x' }} />);
+  await act(async () => resolve(await original({ operation: stage, field: 'Notes' })));
+  expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
+  expect(noteAutofill.mock.calls.filter(([r]) => r.operation === 'prepare')).toHaveLength(stage === 'prepare' ? 1 : stage === 'fill' ? 2 : 0);
+  if (stage === 'fill') {
+    expect(noteAutofill.mock.calls.filter(([r]) => r.operation === 'fill')).toHaveLength(1);
+    expect(screen.getByText('The outcome is unknown. Check PIMS before preparing another attempt.')).toBeInTheDocument();
+    expect(screen.getByText('Plan: Skipped')).toBeInTheDocument();
+  }
+});
+it('ignores deferred mapping load after a source change', async () => {
+  const { props, mappingBackend } = mappedSetup(); let resolve!: (value: Awaited<ReturnType<typeof mappingBackend.load>>) => void;
+  mappingBackend.load.mockImplementationOnce(() => new Promise(r => { resolve = r; }));
+  const view = render(<PimsNoteAutofill {...props} />); await openMapping();
+  view.rerender(<PimsNoteAutofill {...props} stored={{ text: 'Changed source', source: 'edited', lng: 'en', basedOn: 'x' }} />);
+  await act(async () => resolve({ provider: 'pulse', origin: target.origin, template_id: 'record-note-v1', version: 1, mapping: { exam: 'Plan', treatment: 'Plan', recheck: 'Plan' } }));
+  expect(screen.getByLabelText('All notes')).toHaveValue('');
+});
+it('ignores a stale save response after account switching', async () => {
+  const { props, mappingBackend } = mappedSetup(); let resolve!: (value: Awaited<ReturnType<typeof mappingBackend.save>>) => void;
+  mappingBackend.save.mockImplementation(() => new Promise(r => { resolve = r; }));
+  render(<PimsNoteAutofill {...props} />); await openMapping();
+  fireEvent.click(screen.getByRole('button', { name: 'Save mapping' }));
+  act(() => auth('SIGNED_OUT', null)); act(() => auth('SIGNED_IN', { user: { id: 'another-account' } }));
+  await act(async () => resolve({ provider: 'pulse', origin: target.origin, template_id: 'record-note-v1', version: 4, mapping: {} }));
+  expect(screen.queryByText('Mapping saved. Review the destination before every paste.')).not.toBeInTheDocument();
+});
+it('warns after a partial batch and preserves the warning and per-field results through mapping and mode changes', async () => {
+  const { props, mappingBackend, noteAutofill } = mappedSetup(['filled','blocked']);
+  mappingBackend.load.mockResolvedValue({ provider: 'pulse', origin: target.origin, template_id: 'record-note-v1', version: 3, mapping: { exam: 'Notes', treatment: 'Plan', recheck: 'Follow-up' } });
+  const original = noteAutofill.getMockImplementation()!;
+  noteAutofill.mockImplementation(async request => request.operation === 'inspect' ? { state: 'fields', ...target, fields: ['Notes','Plan','Follow-up'] } : original(request));
+  render(<PimsNoteAutofill {...props} />); await openMapping();
+  fireEvent.click(screen.getByRole('button', { name: 'Prepare autofill' })); fireEvent.click(await screen.findByRole('checkbox'));
+  fireEvent.click(screen.getByRole('button', { name: 'Paste all' }));
+  const warning = 'Some notes were pasted. Check every field in PIMS before preparing another attempt; pasting again can duplicate notes.';
+  await screen.findByText(warning);
+  expect(screen.getByText('Notes: Filled')).toBeInTheDocument(); expect(screen.getByText('Plan: Blocked')).toBeInTheDocument(); expect(screen.getByText('Follow-up: Skipped')).toBeInTheDocument();
+  expect(noteAutofill.mock.calls.filter(([r]) => r.operation === 'fill')).toHaveLength(2);
+  fireEvent.change(screen.getByLabelText('Exam'), { target: { value: 'Plan' } }); expect(screen.getByText(warning)).toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: 'Use a single field' })); expect(screen.getByText(warning)).toBeInTheDocument(); expect(screen.getByText('Follow-up: Skipped')).toBeInTheDocument();
+  fireEvent.change(screen.getByLabelText('Note source'), { target: { value: 'treatment' } }); expect(screen.getByText(warning)).toBeInTheDocument();
+});
+it('keeps saving disabled if a mapping is cleared while the saved version is still loading', async () => {
+  const { props, mappingBackend } = mappedSetup(); let resolve!: (value: Awaited<ReturnType<typeof mappingBackend.load>>) => void;
+  mappingBackend.load.mockImplementation(() => new Promise(r => { resolve = r; }));
+  render(<PimsNoteAutofill {...props} />); await openMapping(); fireEvent.click(screen.getByText('Mapping options'));
+  fireEvent.click(screen.getByRole('button', { name: 'Clear mapping' }));
+  expect(screen.getByRole('button', { name: 'Save mapping' })).toBeDisabled();
+  await act(async () => resolve({ provider: 'pulse', origin: target.origin, template_id: 'record-note-v1', version: 3, mapping: { exam: 'Notes', treatment: 'Plan', recheck: 'Notes' } }));
+  expect(screen.getByLabelText('Exam')).toHaveValue('');
+  fireEvent.click(screen.getByRole('button', { name: 'Save mapping' }));
+  expect(mappingBackend.save).toHaveBeenCalledWith({ provider: 'pulse', origin: target.origin, template_id: 'record-note-v1', expected_version: 3, mapping: {} });
+});
+it('keeps an uncertain paste warning when inspection of a different tab is blocked', async () => {
+  const { props, noteAutofill } = setup('unknown'); const original = noteAutofill.getMockImplementation()!;
+  render(<PimsNoteAutofill {...props} />); fireEvent.click(await prepare()); fireEvent.click(screen.getByRole('button', { name: 'Fill selected field' }));
+  const warning = 'The outcome is unknown. Check PIMS before preparing another attempt.'; await screen.findByText(warning);
+  noteAutofill.mockImplementation(async request => request.operation === 'inspect' ? { state: 'blocked' } : original(request));
+  fireEvent.change(screen.getByLabelText('Destination tab'), { target: { value: '8' } });
+  await act(async () => {});
+  expect(screen.getByText(warning)).toBeInTheDocument();
+});

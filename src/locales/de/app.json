@@ -334,7 +334,7 @@
   },
   "radiologyReport": {
     "title": "Radiologischer Bericht",
-    "description": "Beschreiben Sie Ihre Röntgenbefunde in eigenen Worten und erstellen Sie anschließend einen bearbeitbaren Bericht. Angaben zum Untersuchungskontext sind optional. Bilder werden nicht analysiert.",
+    "description": "Erstellen Sie aus den dokumentierten Befunden einen bearbeitbaren Bericht. Bilder werden nicht analysiert.",
     "context": "Optionaler Untersuchungskontext",
     "radiologyHistory": "Relevante klinische Vorgeschichte",
     "radiologyTechnique": "Untersuchungstechnik und Umfang",
@@ -383,6 +383,11 @@
     "modelLabel": "Modell für radiologische Berichtsentwürfe",
     "modelUpdated": "Radiologische Berichtsentwürfe verwenden jetzt {{model}}.",
     "findingsPlaceholder": "Beschreiben Sie Ihre Beobachtungen mit Zahnnummern, Lokalisation, Messwerten und Unsicherheiten. Sie können die Technik und Ihre klinische Beurteilung ergänzen.",
-    "manual": "Bericht manuell verfassen"
+    "manual": "Bericht manuell verfassen",
+    "outputTitle": "Bericht",
+    "radiologyHistoryHelp": "Optional: Ergänzen Sie bei Bedarf eine untersuchungsspezifische Anamnese. Andernfalls wird die Anamnese der Konsultation verwendet.",
+    "radiologyTechniqueHelp": "Optional: vom Tierarzt dokumentierte Aufnahmen, Technik und Abdeckung.",
+    "radiologyQuestionHelp": "Optional: die Fragestellung dieser Untersuchung.",
+    "previewHelp": "Prüfen und bearbeiten Sie diesen Entwurf. Ihr gespeicherter Bericht ändert sich erst, wenn Sie Entwurf übernehmen wählen."
   }
 }

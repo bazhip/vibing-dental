@@ -1,3 +1,4 @@
+import { VisitDocumentationSection } from './components/VisitDocumentationSection';
 import { RadiologyReportSection } from './components/RadiologyReportSection';
 import { isGeneratedPatientNumber } from './utils/patientIds';
 import { ImageHistory } from './components/ImageHistory';
@@ -138,7 +139,7 @@ const CHARTING_COMPANIONS: Record<string, string> = { charting: 'diagnosis' };
 
 // What toLocaleString() prints by default: the saved-at tooltip's old format.
 const FULL_DATE_TIME: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
-const OWNER_REPORT_SECTION = 'owner-report';
+const OWNER_REPORT_SECTION = 'discharge';
 const WARNING_TONE = 'warning' as const;
 const CHARTING_VIEWS = ['grid', 'tooth'] as const;
 const CHARTING_VIEW_KEYS = { grid: 'chartingView.grid', tooth: 'chartingView.tooth' } as const;
@@ -297,8 +298,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const routeViewRef = React.useRef(route.view);
   routeViewRef.current = route.view;
   const goToSection = React.useCallback((id: string) => {
-    setActiveSection(id);
-    if (routeViewRef.current === 'chart') navigate(`${hashBaseRef.current}/${id}`, { replace: true });
+    const section = id === 'owner-report' ? OWNER_REPORT_SECTION : id;
+    setActiveSection(section);
+    if (routeViewRef.current === 'chart') navigate(`${hashBaseRef.current}/${section}`, { replace: true });
   }, [navigate]);
   /** App: a chart section, shown in the Chart tab. */
   const showChartSection = (id: string) => {
@@ -822,7 +824,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const [previewOpen, setPreviewOpen] = React.useState(false);
   // Owner report — the chart translated for the pet's owner.
   /** Which tab the Documents dialog opens on (undefined = last used). */
-  const [docsTab, setDocsTab] = React.useState<'chart' | 'owner' | undefined>(undefined);
+  const [docsTab, setDocsTab] = React.useState<'chart' | 'owner' | 'note' | undefined>(undefined);
 
   // ----- AI autofill plumbing -------------------------------------------
   // Snapshot of state Claude sees alongside the transcript.
@@ -951,7 +953,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // (open the owner report → flash → nothing → click again).
   React.useEffect(() => whenIdle(() => DocumentsModal.preload()), []);
 
-  const openDocuments = (tab?: 'chart' | 'owner') => {
+  const openDocuments = (tab?: 'chart' | 'owner' | 'note') => {
     setDocsTab(tab);
     try {
       const preHandle  = preDiagramRef.current;
@@ -1034,6 +1036,13 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           onCustomize={native ? undefined : () => setChartSettingsOpen('patient')}
         />
       ),
+    },
+    {
+      id: 'consultation',
+      label: i18n.t('visitDocumentation:consultation.title'),
+      content: <VisitDocumentationSection kind="consultation" patientInfo={chart.patientInfo} readOnly={readOnly}
+        onChange={changes => { if (!readOnly) chart.setPatientInfo(previous => ({ ...previous, ...changes })); }}
+        onReview={() => openDocuments('note')} />,
     },
     {
       id: 'exam',
@@ -1244,26 +1253,26 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         />
       ),
     },
-    // Feature-flagged per practice (admin panel), off by default.
-    ...(ownerReportOn
-      ? [{
-          id: OWNER_REPORT_SECTION,
-          label: t('sections.ownerReport'),
-          content: (
-            <OwnerReportSection
-              chartId={cloud.enabled ? chart.cloudChartId : null}
-              readOnly={readOnly}
-              snapshot={chart.getSnapshot()}
-              overrides={chart.ownerReport}
-              onOverrideChange={chart.setOwnerReportOverride}
-              onPreview={() => openDocuments('owner')}
-              context={{ config: profile.ownerReportConfig, practiceName: profile.practiceName, doctorName: profile.doctorName }}
-              aiEnabled={profile.aiEnabled && !trial && cloud.enabled}
-              onCustomize={cloud.enabled && !trial && !native ? () => setReportCustomizeOpen(true) : undefined}
-            />
-          ),
-        }]
-      : []),
+    {
+      id: OWNER_REPORT_SECTION,
+      label: i18n.t('visitDocumentation:discharge.title'),
+      content: <VisitDocumentationSection kind="discharge" patientInfo={chart.patientInfo} readOnly={readOnly}
+        onReview={ownerReportOn ? undefined : () => openDocuments('note')}
+        reviewLabel={i18n.t('visitDocumentation:consultation.review')}
+        onChange={changes => { if (!readOnly) chart.setPatientInfo(previous => ({ ...previous, ...changes })); }}>
+        {ownerReportOn && <OwnerReportSection
+          chartId={cloud.enabled ? chart.cloudChartId : null}
+          readOnly={readOnly}
+          snapshot={chart.getSnapshot()}
+          overrides={chart.ownerReport}
+          onOverrideChange={chart.setOwnerReportOverride}
+          onPreview={() => openDocuments('owner')}
+          context={{ config: profile.ownerReportConfig, practiceName: profile.practiceName, doctorName: profile.doctorName }}
+          aiEnabled={profile.aiEnabled && !trial && cloud.enabled}
+          onCustomize={cloud.enabled && !trial && !native ? () => setReportCustomizeOpen(true) : undefined}
+        />}
+      </VisitDocumentationSection>,
+    },
   ];
 
   // Editing a saved visit (unlocked): the topbar's action row turns
@@ -1639,11 +1648,11 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       />
     </form>
   );
-  const pdfButton = (
+  const pdfButton = activeSection === 'consultation' || activeSection === 'imaging' || activeSection === OWNER_REPORT_SECTION ? null : (
     <button
       type="submit"
       form="chart-form"
-      className={`entry-grid__button visit-export__button${activeSection === 'treatment' || activeSection === 'owner-report' ? '' : ' visit-export__button--secondary'}`}
+      className={`entry-grid__button visit-export__button${activeSection === 'treatment' || activeSection === OWNER_REPORT_SECTION ? '' : ' visit-export__button--secondary'}`}
       aria-haspopup="dialog"
       aria-label={t('fab.review')}
     >
@@ -1913,7 +1922,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       charting: () => setChartSettingsOpen('charting'),
       diagnosis: () => setChartSettingsOpen('diagnosis'),
       imaging: () => setChartSettingsOpen('images'),
-      'owner-report': cloud.enabled && !trial ? () => setReportCustomizeOpen(true) : undefined,
+      discharge: ownerReportOn && !trial ? () => setReportCustomizeOpen(true) : undefined,
     };
     const hasSavedPatient = cloud.enabled && chart.openedExisting && !!chart.cloudChartId;
     const customize = customizeFor[activeSection];
@@ -2212,7 +2221,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         <div id="animal-chart-panel" role="tabpanel" aria-labelledby={!animalTabs.empty ? `animal-tab-${chart.cloudChartId}` : undefined}
           hidden={workspacePage || animalTabs.empty} inert={animalTabs.busy}>
           {chartForm}
-          <div className="visit-export">{pdfButton}</div>
+          {pdfButton && <div className="visit-export">{pdfButton}</div>}
         </div>
         {dialogsAfterForm}
       </div>

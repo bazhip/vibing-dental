@@ -336,7 +336,7 @@
   },
   "radiologyReport": {
     "title": "Compte rendu radiologique",
-    "description": "Décrivez vos constatations radiographiques avec vos propres mots, puis générez un compte rendu modifiable. Le contexte de l’examen est facultatif. Les images ne sont pas analysées.",
+    "description": "Créez un rapport modifiable à partir des observations consignées. Les images ne sont pas analysées.",
     "context": "Contexte facultatif de l’examen",
     "radiologyHistory": "Antécédents cliniques pertinents",
     "radiologyTechnique": "Technique et étendue de l’examen",
@@ -385,6 +385,11 @@
     "modelLabel": "Modèle des brouillons de comptes rendus radiologiques",
     "modelUpdated": "Les brouillons de comptes rendus radiologiques utilisent désormais {{model}}.",
     "findingsPlaceholder": "Décrivez ce que vous observez, en précisant les numéros des dents, la localisation, les mesures et les incertitudes. Vous pouvez inclure la technique et votre conclusion clinique.",
-    "manual": "Rédiger le compte rendu manuellement"
+    "manual": "Rédiger le compte rendu manuellement",
+    "outputTitle": "Rapport",
+    "radiologyHistoryHelp": "Facultatif : ajoutez des antécédents propres à cet examen si nécessaire. Sinon, les antécédents de la consultation sont utilisés.",
+    "radiologyTechniqueHelp": "Facultatif : incidences, technique et couverture documentées par le vétérinaire.",
+    "radiologyQuestionHelp": "Facultatif : question à laquelle cet examen doit répondre.",
+    "previewHelp": "Vérifiez et modifiez ce brouillon. Votre rapport enregistré ne change que lorsque vous choisissez Utiliser le brouillon."
   }
 }

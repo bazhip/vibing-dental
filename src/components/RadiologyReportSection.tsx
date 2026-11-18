@@ -11,6 +11,7 @@ import { savePdf } from '../utils/savePdf';
 import { supabase } from '../utils/supabaseClient';
 import { friendlyError } from './ui/dialogs';
 import { CodeField } from './CodeField';
+import { SectionHeader } from './SectionHeader';
 import './RadiologyReportSection.css';
 
 interface Props {
@@ -30,6 +31,7 @@ const escapeHtml = (value: string) => value.replace(/&/g, '&amp;').replace(/</g,
 export function RadiologyReportSection({ snapshot, chartId = null, chartSession = 0, readOnly = false, aiEnabled = false, onChange }: Props): React.ReactElement {
   const { t, i18n } = useTranslation('app');
   const info = snapshot.patientInfo;
+  const fieldId = React.useId();
   const source = radiologySourceBasis(snapshot), report = info.radiologyReport ?? '';
   const [language, setLanguage] = React.useState<AppLanguage>(isAppLanguage(info.radiologyReportLanguage) ? info.radiologyReportLanguage : isAppLanguage(i18n.resolvedLanguage) ? i18n.resolvedLanguage : 'en');
   const [proposal, setProposal] = React.useState<Proposal | null>(null);
@@ -132,42 +134,50 @@ export function RadiologyReportSection({ snapshot, chartId = null, chartSession 
   };
   const candidateCurrent = !!proposal && active(proposal.guard);
   return <section className="radiology-report patient-form" aria-label={t('radiologyReport.title')} aria-busy={busy}>
-    <h3 className="patient-form__section-title">{t('radiologyReport.title')}</h3>
-    <p className="patient-form__hint">{t('radiologyReport.description')}</p>
-    <div className="radiographic-findings"><label className="patient-form__label">
-      <span className="radiographic-findings__title">{t('radiographic.title')}</span>
-      <CodeField multiline className="patient-form__textarea radiographic-findings__text" disabled={readOnly || busy}
-        placeholder={t('radiologyReport.findingsPlaceholder')} value={info.radiographicFindings ?? ''}
+    <SectionHeader title={t('radiologyReport.title')}><p className="patient-form__hint">{t('radiologyReport.description')}</p></SectionHeader>
+    <div className="radiology-report__workspace">
+    <div className="radiology-report__source">
+    <div className="radiographic-findings radiology-report__field">
+      <label className="patient-form__label radiographic-findings__title" htmlFor={`${fieldId}-findings`}>{t('radiographic.title')}</label>
+      <p className="patient-form__hint" id={`${fieldId}-findings-help`}>{t('radiologyReport.findingsPlaceholder')}</p>
+      <CodeField multiline id={`${fieldId}-findings`} className="patient-form__textarea radiographic-findings__text" disabled={readOnly || busy}
+        aria-describedby={`${fieldId}-findings-help`} value={info.radiographicFindings ?? ''}
         onChange={value => update({ radiographicFindings: value })} />
-    </label></div>
-    <details><summary>{t('radiologyReport.context')}</summary><fieldset className="radiology-report__context" disabled={readOnly || busy}>
-      {contextFields.map(field => <label className="patient-form__label" key={field}>
-        {t(`radiologyReport.${field}`)}<textarea rows={2} maxLength={10000} value={info[field] ?? ''} onChange={event => update({ [field]: event.target.value })} />
-      </label>)}
+    </div>
+    <details className="radiology-report__disclosure"><summary>{t('radiologyReport.context')}</summary><fieldset className="radiology-report__context" disabled={readOnly || busy}>
+      {contextFields.map(field => <div className="radiology-report__field" key={field}>
+        <label className="patient-form__label" htmlFor={`${fieldId}-${field}`}>{t(`radiologyReport.${field}`)}</label>
+        <p className="patient-form__hint" id={`${fieldId}-${field}-help`}>{t(`radiologyReport.${field}Help`)}</p>
+        <textarea className="patient-form__textarea" id={`${fieldId}-${field}`} aria-describedby={`${fieldId}-${field}-help`} rows={2} maxLength={10000} value={info[field] ?? ''} onChange={event => update({ [field]: event.target.value })} />
+      </div>)}
     </fieldset></details>
     <div className="radiology-report__actions">
-      <label className="patient-form__label">{t('radiologyReport.language')}<select disabled={readOnly || busy} value={language} onChange={event => {
+      <label className="patient-form__label">{t('radiologyReport.language')}<select className="patient-form__input" disabled={readOnly || busy} value={language} onChange={event => {
         if (readOnly || busy) return;
         const next = event.target.value as AppLanguage; invalidate(); setLanguage(next);
         onChange({ radiologyReportLanguage: next, radiologyReviewedBasis: '' });
       }}>
         {APP_LANGUAGES.map(value => <option key={value} value={value}>{LANGUAGE_NAMES[value]}</option>)}
       </select></label>
-      <button type="button" className={!reviewed && !proposal ? 'radiology-report__primary' : undefined} disabled={readOnly || busy || !aiEnabled || !hasRadiologySource(snapshot)} onClick={() => void generate()}>
+      <button type="button" className={`diagram-view__action${!reviewed && !proposal ? ' radiology-report__primary' : ''}`} disabled={readOnly || busy || !aiEnabled || !hasRadiologySource(snapshot)} onClick={() => void generate()}>
         {t(busy && !reviewed ? 'radiologyReport.generating' : 'radiologyReport.generate')}
       </button>
     </div>
     {!aiEnabled && <p className="patient-form__hint">{t('radiologyReport.aiUnavailable')}</p>}
     {!hasRadiologySource(snapshot) && <p className="patient-form__hint">{t('radiologyReport.sourceRequired')}</p>}
+    </div>
+    <div className="radiology-report__output">
+    <h3 className="radiology-report__output-title">{t('radiologyReport.outputTitle')}</h3>
     {proposal && <fieldset className="radiology-report__preview" disabled={readOnly || busy}>
-      <label className="patient-form__label">{t('radiologyReport.preview')}<textarea rows={10} maxLength={60000} value={proposal.body} onChange={event => setProposal({ ...proposal, body: event.target.value })} /></label>
+      <label className="patient-form__label">{t('radiologyReport.preview')}<textarea className="patient-form__textarea" rows={10} maxLength={60000} value={proposal.body} onChange={event => setProposal({ ...proposal, body: event.target.value })} /></label>
+      <p className="patient-form__hint">{t('radiologyReport.previewHelp')}</p>
       {!candidateCurrent && <p role="status">{t('radiologyReport.previewStale')}</p>}
-      <div className="radiology-report__actions"><button type="button" className="radiology-report__primary" disabled={!candidateCurrent || !proposal.body.trim()} onClick={useDraft}>{t('radiologyReport.use')}</button>
-        <button type="button" onClick={() => setProposal(null)}>{t('radiologyReport.discard')}</button></div>
+      <div className="radiology-report__actions"><button type="button" className="diagram-view__action radiology-report__primary" disabled={!candidateCurrent || !proposal.body.trim()} onClick={useDraft}>{t('radiologyReport.use')}</button>
+        <button type="button" className="diagram-view__action" onClick={() => setProposal(null)}>{t('radiologyReport.discard')}</button></div>
     </fieldset>}
-    <details open={!!report || manualOpen} onToggle={event => setManualOpen(event.currentTarget.open)}>
+    <details className="radiology-report__manual radiology-report__disclosure" open={!!report || manualOpen} onToggle={event => setManualOpen(event.currentTarget.open)}>
       <summary hidden={!!report}>{t('radiologyReport.manual')}</summary>
-      <label className="patient-form__label">{t('radiologyReport.body')}<textarea rows={10} maxLength={60000} value={report} disabled={readOnly || busy} onChange={event => { setManualOpen(true); update({ radiologyReport: event.target.value, radiologyReportBasis: source, radiologyReportLanguage: storedLanguage }); }} /></label>
+      <label className="patient-form__label">{t('radiologyReport.body')}<textarea className="patient-form__textarea" rows={10} maxLength={60000} value={report} disabled={readOnly || busy} onChange={event => { setManualOpen(true); update({ radiologyReport: event.target.value, radiologyReportBasis: source, radiologyReportLanguage: storedLanguage }); }} /></label>
     </details>
     {!!report.trim() && <>
     <p role="status" className="patient-form__hint">{t(reviewed ? 'radiologyReport.reviewed' : stale ? 'radiologyReport.stale' : 'radiologyReport.unreviewed')}</p>
@@ -177,11 +187,13 @@ export function RadiologyReportSection({ snapshot, chartId = null, chartSession 
         radiologyReviewedBasis: event.target.checked ? radiologyReviewBasis(snapshot, storedLanguage) : '' });
     }} />{t('radiologyReport.checked')}</label>
     <div className="radiology-report__actions">
-      <button type="button" className={reviewed && !proposal ? 'radiology-report__primary' : undefined} disabled={!reviewed || busy} onClick={() => void transfer('copy')}>{t('radiologyReport.copy')}</button>
-      <button type="button" disabled={!reviewed || busy} onClick={() => void transfer('pdf')}>{t('radiologyReport.pdf')}</button>
-      {undo && undo.source === source && undo.applied === report && <button type="button" disabled={readOnly || busy} onClick={() => { onChange(undo.previous); setUndo(null); setFeedback(null); }}>{t('radiologyReport.undo')}</button>}
+      <button type="button" className={`diagram-view__action${reviewed && !proposal ? ' radiology-report__primary' : ''}`} disabled={!reviewed || busy} onClick={() => void transfer('copy')}>{t('radiologyReport.copy')}</button>
+      <button type="button" className="diagram-view__action" disabled={!reviewed || busy} onClick={() => void transfer('pdf')}>{t('radiologyReport.pdf')}</button>
+      {undo && undo.source === source && undo.applied === report && <button type="button" className="diagram-view__action" disabled={readOnly || busy} onClick={() => { onChange(undo.previous); setUndo(null); setFeedback(null); }}>{t('radiologyReport.undo')}</button>}
     </div>
     </>}
+    </div>
+    </div>
     {error && <p role="alert" className="radiology-report__error">{error}</p>}
     {feedback && <p role="status">{t(`radiologyReport.${feedback}`)}</p>}
   </section>;

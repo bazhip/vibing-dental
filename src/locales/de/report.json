@@ -155,5 +155,10 @@
     "single": " ({{level}})",
     "range": " ({{from}} bis {{to}})"
   },
-  "otherFindings": "Weitere Befunde"
+  "otherFindings": "Weitere Befunde",
+  "dischargeSource": {
+    "dischargeMedications": "Medikamente bei Entlassung",
+    "dischargeInstructions": "Entlassungshinweise",
+    "dischargeFollowUp": "Nachsorge nach Entlassung"
+  }
 }

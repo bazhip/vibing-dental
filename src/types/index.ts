@@ -274,6 +274,13 @@ export interface PatientInfo {
   date: string;
   complaint: string;
   treatmentReport: string;
+  /** Explicit visit sources; absent on older charts. Each is bounded to 20,000 characters. */
+  consultationHistory?: string;
+  consultationAssessment?: string;
+  consultationPlan?: string;
+  dischargeMedications?: string;
+  dischargeInstructions?: string;
+  dischargeFollowUp?: string;
   /** Radiographic findings (free text). Optional: absent on charts saved
    *  before the field existed. */
   radiographicFindings?: string;

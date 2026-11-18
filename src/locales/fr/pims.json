@@ -486,6 +486,33 @@
     "filled": "Champ rempli. Vérifiez les notes et enregistrez-les dans le PIMS.",
     "blocked": "Les notes n’ont pas été insérées. Vérifiez la destination et préparez à nouveau le remplissage.",
     "unknown": "Le résultat est inconnu. Vérifiez le PIMS avant de préparer une nouvelle tentative.",
-    "expired": "La préparation a expiré. Vérifiez la destination et préparez à nouveau le remplissage."
+    "expired": "La préparation a expiré. Vérifiez la destination et préparez à nouveau le remplissage.",
+    "mapSections": "Associer les sections aux champs",
+    "singleField": "Utiliser un seul champ",
+    "mappingHint": "Choisissez un champ ouvert pour chaque section source. Les sections associées au même champ sont ajoutées ensemble dans leur ordre d’origine. Vérifiez à nouveau la destination avant de coller.",
+    "skip": "Ne pas coller",
+    "missingField": "Le champ enregistré n’est pas ouvert : {{field}}",
+    "saveMapping": "Enregistrer les associations",
+    "reloadMapping": "Recharger les associations enregistrées",
+    "resetMapping": "Effacer les associations",
+    "mappingPrivacy": "Seuls les identifiants de section et les libellés de champ sont enregistrés dans votre compte pour ce site PIMS et ce modèle. Les notes et les informations du patient ne sont jamais enregistrées dans les associations.",
+    "pasteAll": "Tout coller",
+    "fieldOutcome": "{{field}} : {{outcome}}",
+    "groupSources": "Sources : {{sections}}",
+    "outcomes": {
+      "filled": "Rempli",
+      "blocked": "Bloqué",
+      "unknown": "Résultat inconnu — vérifiez le PIMS",
+      "skipped": "Ignoré"
+    },
+    "mappingStatus": {
+      "loading": "Chargement des associations enregistrées…",
+      "saving": "Enregistrement des associations…",
+      "saved": "Associations enregistrées. Vérifiez la destination avant chaque collage.",
+      "error": "Impossible de charger ou d’enregistrer les associations. Rechargez-les avant de les enregistrer à nouveau.",
+      "conflict": "Ces associations ont été modifiées ailleurs. Rechargez-les avant de les enregistrer à nouveau."
+    },
+    "mappingOptions": "Options des associations",
+    "partial": "Certaines notes ont été collées. Vérifiez chaque champ dans le PIMS avant de préparer une nouvelle tentative ; un nouveau collage peut créer des doublons."
   }
 }
