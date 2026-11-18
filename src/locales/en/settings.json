@@ -147,7 +147,13 @@
       "scoreTooth": "Go down to the next tooth",
       "scoreToothHint": "for scoring one finding across the mouth",
       "scoreStay": "Keep the current cell selected",
-      "columns": "Visible measurements"
+      "columns": "Visible measurements",
+      "scorePicker": "Score buttons in the grid",
+      "scorePickerOptions": {
+        "touch": "Touch interfaces only",
+        "always": "Always show",
+        "never": "Never show"
+      }
     },
     "beside": {
       "title": "Diagram findings",

@@ -147,7 +147,13 @@
       "scoreTooth": "Nach unten zum nächsten Zahn gehen",
       "scoreToothHint": "um einen Befund im ganzen Gebiss zu bewerten",
       "scoreStay": "Aktuelle Zelle ausgewählt lassen",
-      "columns": "Sichtbare Messwerte"
+      "columns": "Sichtbare Messwerte",
+      "scorePicker": "Bewertungsschaltflächen im Raster",
+      "scorePickerOptions": {
+        "touch": "Nur bei Touchbedienung",
+        "always": "Immer anzeigen",
+        "never": "Nie anzeigen"
+      }
     },
     "beside": {
       "title": "Befunde im Zahnschema",

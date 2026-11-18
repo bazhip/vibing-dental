@@ -147,7 +147,13 @@
       "scoreTooth": "Scendi al dente successivo",
       "scoreToothHint": "per valutare un singolo reperto su tutta la bocca",
       "scoreStay": "Mantenere selezionata la cella corrente",
-      "columns": "Misurazioni visibili"
+      "columns": "Misurazioni visibili",
+      "scorePicker": "Pulsanti dei punteggi nella griglia",
+      "scorePickerOptions": {
+        "touch": "Solo sulle interfacce touch",
+        "always": "Mostra sempre",
+        "never": "Non mostrare mai"
+      }
     },
     "beside": {
       "title": "Reperti sul diagramma",

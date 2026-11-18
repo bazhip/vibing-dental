@@ -10764,6 +10764,22 @@
       "hash": "47c2763d8024",
       "status": "machine"
     },
+    "settings:chart.charting.scorePicker": {
+      "hash": "bd0bb38eb2ee",
+      "status": "machine"
+    },
+    "settings:chart.charting.scorePickerOptions.always": {
+      "hash": "281b63ba336e",
+      "status": "machine"
+    },
+    "settings:chart.charting.scorePickerOptions.never": {
+      "hash": "8777874c7f17",
+      "status": "machine"
+    },
+    "settings:chart.charting.scorePickerOptions.touch": {
+      "hash": "c092e1a7efb2",
+      "status": "machine"
+    },
     "settings:chart.charting.scoreStay": {
       "hash": "0ee5104f260f",
       "status": "machine"
@@ -23168,6 +23184,22 @@
     },
     "settings:chart.charting.scoreFindingHint": {
       "hash": "47c2763d8024",
+      "status": "machine"
+    },
+    "settings:chart.charting.scorePicker": {
+      "hash": "bd0bb38eb2ee",
+      "status": "machine"
+    },
+    "settings:chart.charting.scorePickerOptions.always": {
+      "hash": "281b63ba336e",
+      "status": "machine"
+    },
+    "settings:chart.charting.scorePickerOptions.never": {
+      "hash": "8777874c7f17",
+      "status": "machine"
+    },
+    "settings:chart.charting.scorePickerOptions.touch": {
+      "hash": "c092e1a7efb2",
       "status": "machine"
     },
     "settings:chart.charting.scoreStay": {
@@ -35600,6 +35632,22 @@
       "hash": "47c2763d8024",
       "status": "machine"
     },
+    "settings:chart.charting.scorePicker": {
+      "hash": "bd0bb38eb2ee",
+      "status": "machine"
+    },
+    "settings:chart.charting.scorePickerOptions.always": {
+      "hash": "281b63ba336e",
+      "status": "machine"
+    },
+    "settings:chart.charting.scorePickerOptions.never": {
+      "hash": "8777874c7f17",
+      "status": "machine"
+    },
+    "settings:chart.charting.scorePickerOptions.touch": {
+      "hash": "c092e1a7efb2",
+      "status": "machine"
+    },
     "settings:chart.charting.scoreStay": {
       "hash": "0ee5104f260f",
       "status": "machine"
@@ -48028,6 +48076,22 @@
     },
     "settings:chart.charting.scoreFindingHint": {
       "hash": "47c2763d8024",
+      "status": "machine"
+    },
+    "settings:chart.charting.scorePicker": {
+      "hash": "bd0bb38eb2ee",
+      "status": "machine"
+    },
+    "settings:chart.charting.scorePickerOptions.always": {
+      "hash": "281b63ba336e",
+      "status": "machine"
+    },
+    "settings:chart.charting.scorePickerOptions.never": {
+      "hash": "8777874c7f17",
+      "status": "machine"
+    },
+    "settings:chart.charting.scorePickerOptions.touch": {
+      "hash": "c092e1a7efb2",
       "status": "machine"
     },
     "settings:chart.charting.scoreStay": {

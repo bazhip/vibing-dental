@@ -7,7 +7,7 @@ import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
 import { AnesthesiaCustomEditor } from './AnesthesiaCustomEditor';
 import { QuickCodesEditor } from './QuickCodesEditor';
 import { ExamAreasEditor } from './ExamAreasEditor';
-import { BLOCK_ROW_OPTIONS, ChartPrefs, PERIO_FIELDS, PATIENT_FIELD_OPTIONS } from '../utils/chartSettings';
+import { SCORE_PICKER_OPTIONS, BLOCK_ROW_OPTIONS, ChartPrefs, PERIO_FIELDS, PATIENT_FIELD_OPTIONS } from '../utils/chartSettings';
 import { isNativeApp } from '../native/platform';
 import { Sheet } from '../ios/Sheet';
 import { ChartSettingsList } from './ChartSettingsList';
@@ -200,6 +200,16 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
                 <input type="radio" name="spaceKey" checked={!prefs.spaceMovesDown} onChange={() => onChange({ spaceMovesDown: false })} />
                 {t('chart.charting.spaceType')}
               </label>
+            </fieldset>
+
+            <fieldset className="chart-settings__field">
+              <legend>{t('chart.charting.scorePicker')}</legend>
+              {SCORE_PICKER_OPTIONS.map((value) => (
+                <label key={value} className="chart-settings__choice">
+                  <input type="radio" name="scorePicker" checked={prefs.scorePicker === value} onChange={() => onChange({ scorePicker: value })} />
+                  {t(`chart.charting.scorePickerOptions.${value}`)}
+                </label>
+              ))}
             </fieldset>
 
             <fieldset className="chart-settings__field">

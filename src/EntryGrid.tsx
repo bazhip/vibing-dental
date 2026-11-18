@@ -1131,6 +1131,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             species={chart.species}
             spaceMovesDown={prefs.spaceMovesDown}
             scoreTapMoves={prefs.scoreTapMoves}
+            scorePicker={prefs.scorePicker}
           />
           )
         ) : null

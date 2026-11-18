@@ -16,7 +16,7 @@ import {
 } from 'react-data-grid';
 import 'react-data-grid/lib/styles.css';
 import { DentalField, Species, ToothData, ToothMarks } from '../types';
-import type { ScoreTapMove } from '../utils/chartSettings';
+import type { ScorePicker, ScoreTapMove } from '../utils/chartSettings';
 import { pocketLabels, rootBoxes, formatRootPockets, type PocketMode } from '../utils/pocket';
 
 interface DentalGridProps {
@@ -60,6 +60,7 @@ interface DentalGridProps {
   /** Where a tapped score moves to: next finding (default), next tooth,
    *  or stay on the cell. */
   scoreTapMoves?: ScoreTapMove;
+  scorePicker?: ScorePicker;
 }
 
 /**
@@ -99,6 +100,7 @@ interface EditorWiring {
   focusRootRef: React.MutableRefObject<number>;
   spaceMovesDownRef: React.MutableRefObject<boolean>;
   scoreTapMovesRef: React.MutableRefObject<ScoreTapMove>;
+  scorePickerRef: React.MutableRefObject<ScorePicker>;
 }
 
 const EditorWiringContext = React.createContext<EditorWiring | null>(null);
@@ -153,7 +155,10 @@ function CodeCellEditor({
   const value = typeof current === 'string' ? current : '';
   const lastRowIdx = (wiring?.rowCountRef.current ?? 0) - 1;
   const LAST_EDITABLE = wiring?.lastEditableRef.current ?? FIRST_EDITABLE;
-  const choices = scoreChoices(key as string);
+  const [coarse] = React.useState(isCoarsePointer);
+  const scorePicker = wiring?.scorePickerRef.current ?? 'touch';
+  const showScores = scorePicker === 'always' || (scorePicker === 'touch' && coarse);
+  const choices = showScores ? scoreChoices(key as string) : null;
   const inputRef = useRef<HTMLInputElement>(null);
   const popRef = useRef<HTMLDivElement>(null);
   const popover = usePopoverPosition(inputRef, !!choices);
@@ -165,10 +170,6 @@ function CodeCellEditor({
     const maxLeft = window.innerWidth - el.offsetWidth - 4;
     el.style.left = `${Math.max(4, Math.min(popover.left, maxLeft))}px`;
   });
-  // On touch screens the scores cover every valid value, so keep the
-  // on-screen keyboard down (a hardware keyboard still types).
-  const [coarse] = React.useState(isCoarsePointer);
-
   const advance = (nextRow: number, nextIdx: number, enableEditor: boolean) => {
     if (nextRow < 0 || nextRow > lastRowIdx) return;
     queueMicrotask(() => {
@@ -239,6 +240,7 @@ function CodeCellEditor({
       ref={inputRef}
       autoFocus
       value={value}
+      // Score buttons replace the software keyboard only when visible on touch.
       inputMode={choices && coarse ? 'none' : 'decimal'}
       autoComplete="off"
       aria-label={t('grid.cellAria', { triadan: row.triadan, column: String(column.name) })}
@@ -481,6 +483,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   species = 'canine',
   spaceMovesDown = true,
   scoreTapMoves = 'finding',
+  scorePicker = 'touch',
 }) => {
   // The iOS app: touch wording for the selection tip and tooth title.
   const native = isNativeApp();
@@ -530,7 +533,9 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   spaceMovesDownRef.current = spaceMovesDown;
   const scoreTapMovesRef = useRef<ScoreTapMove>(scoreTapMoves);
   scoreTapMovesRef.current = scoreTapMoves;
-  const wiring = React.useMemo<EditorWiring>(() => ({ gridRef, rowCountRef, lastEditableRef, speciesRef, pocketModeRef, focusRootRef, spaceMovesDownRef, scoreTapMovesRef }), []);
+  const scorePickerRef = useRef<ScorePicker>(scorePicker);
+  scorePickerRef.current = scorePicker;
+  const wiring = React.useMemo<EditorWiring>(() => ({ gridRef, rowCountRef, lastEditableRef, speciesRef, pocketModeRef, focusRootRef, spaceMovesDownRef, scoreTapMovesRef, scorePickerRef }), []);
 
   // Container width for the numeric column widths. Integer-rounded and
   // only committed on change, so subpixel ResizeObserver reports can't
