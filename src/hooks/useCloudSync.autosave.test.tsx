@@ -795,3 +795,141 @@ it('ignores a delayed number reservation after switching to another chart', asyn
   await act(async () => { resolve('1001'); });
   expect(setter).not.toHaveBeenCalled();
 });
+
+describe('explicit finalization saves', () => {
+  function lifecycle() {
+    const chart = useChartState();
+    const cloud = useCloudSync(chart, true, 'practice-a', !chart.finalizedAt, true, false);
+    return { chart, cloud };
+  }
+  it('atomically saves the current content and finalization, and persists reopening', async () => {
+    const { result } = renderHook(lifecycle);
+    act(() => result.current.chart.setPatientInfo(p => ({ ...p, patientName: 'Rex', patientNumber: '7', complaint: 'Fractured tooth' })));
+    await act(async () => { expect(await result.current.cloud.setFinalized(true)).toBe(true); });
+    const saved = db.upserts.at(-1)!.data as ChartSnapshot;
+    expect(saved.patientInfo.complaint).toBe('Fractured tooth');
+    expect(saved.finalizedAt).toBeTruthy();
+    expect(result.current.chart.finalizedAt).toBe(saved.finalizedAt);
+    expect(result.current.cloud.dirty).toBe(false);
+    await act(async () => { expect(await result.current.cloud.setFinalized(false)).toBe(true); });
+    expect((db.upserts.at(-1)!.data as ChartSnapshot).finalizedAt).toBeUndefined();
+    expect(result.current.chart.finalizedAt).toBeNull();
+    expect(result.current.cloud.dirty).toBe(false);
+  });
+  it('leaves the record editable if the finalization save fails', async () => {
+    const { result } = renderHook(lifecycle);
+    act(() => result.current.chart.setPatientInfo(p => ({ ...p, patientName: 'Rex', patientNumber: '7' })));
+    db.failUpserts = 1;
+    await act(async () => { await expect(result.current.cloud.setFinalized(true)).rejects.toBeDefined(); });
+    expect(result.current.chart.finalizedAt).toBeNull();
+    expect(result.current.cloud.status).toBe('error');
+  });
+  it('does not finalize a new record when the duplicate dialog is dismissed', async () => {
+    const { result } = renderHook(lifecycle);
+    act(() => result.current.chart.setPatientInfo(p => ({ ...p, patientName: 'Rex', patientNumber: '7' })));
+    db.visits = [{ id: 'other', patient_name: 'Rex', patient_number: '7', species: 'canine', chart_date: result.current.chart.patientInfo.date }];
+    choose.mockResolvedValueOnce(null);
+    await act(async () => { expect(await result.current.cloud.setFinalized(true)).toBe(false); });
+    expect(result.current.chart.finalizedAt).toBeNull();
+    expect(db.upserts).toHaveLength(0);
+  });
+});
+
+
+describe('finalization and workspace save races', () => {
+  function lifecycle() {
+    const chart = useChartState();
+    const cloud = useCloudSync(chart, true, 'practice-a', !chart.finalizedAt, true, false);
+    return { chart, cloud };
+  }
+  const nameRecord = (result: { current: ReturnType<typeof lifecycle> }) => {
+    act(() => result.current.chart.setPatientInfo(p => ({ ...p, patientName: 'Rex', patientNumber: '7' })));
+  };
+  it('drains an in-flight save before writing the finalized record', async () => {
+    const { result } = renderHook(lifecycle);
+    nameRecord(result);
+    let release!: () => void;
+    db.gate = new Promise(resolve => { release = resolve; });
+    let saving!: Promise<void>;
+    await act(async () => { saving = result.current.cloud.saveNow(); });
+    expect(db.upserts).toHaveLength(1);
+    let finalizing!: Promise<boolean>;
+    await act(async () => { finalizing = result.current.cloud.setFinalized(true); });
+    expect(db.upserts).toHaveLength(1);
+    await act(async () => { release(); await saving; await finalizing; });
+    expect(db.upserts).toHaveLength(2);
+    expect((db.upserts.at(-1)!.data as ChartSnapshot).finalizedAt).toBeTruthy();
+    expect(result.current.chart.finalizedAt).toBeTruthy();
+  });
+  it('does not apply a completed finalization to another chart opened while it was saving', async () => {
+    const { result } = renderHook(lifecycle);
+    nameRecord(result);
+    const next = { ...result.current.chart.getSnapshot(), patientInfo: { ...result.current.chart.patientInfo, patientName: 'Bella' } };
+    let release!: () => void;
+    db.gate = new Promise(resolve => { release = resolve; });
+    let finalizing!: Promise<boolean>;
+    await act(async () => { finalizing = result.current.cloud.setFinalized(true); });
+    expect(db.upserts).toHaveLength(1);
+    act(() => result.current.chart.applySnapshot(next, 'bella'));
+    await act(async () => { release(); await finalizing; });
+    expect(result.current.chart.patientInfo.patientName).toBe('Bella');
+    expect(result.current.chart.finalizedAt).toBeNull();
+  });
+  it('waits for finalization before capturing the workspace for another animal tab', async () => {
+    const { result } = renderHook(lifecycle);
+    nameRecord(result);
+    let release!: () => void;
+    db.gate = new Promise(resolve => { release = resolve; });
+    let finalizing!: Promise<boolean>;
+    await act(async () => { finalizing = result.current.cloud.setFinalized(true); });
+    expect(db.upserts).toHaveLength(1);
+    let captured = false;
+    let workspace!: Promise<import('./useCloudSync').ChartWorkspace>;
+    await act(async () => {
+      workspace = result.current.cloud.captureWorkspace!().then(value => { captured = true; return value; });
+      await vi.advanceTimersByTimeAsync(0);
+    });
+    expect(captured).toBe(false);
+    await act(async () => { release(); await finalizing; });
+    await act(async () => { await vi.advanceTimersByTimeAsync(1); });
+    expect((await workspace).snapshot.finalizedAt).toBeTruthy();
+  });
+});
+
+it('does not finalize a different chart when a forked save completes', async () => {
+  const { result } = renderHook(() => {
+    const chart = useChartState();
+    const cloud = useCloudSync(chart, true, 'practice-a', true, true, false);
+    return { chart, cloud };
+  });
+  act(() => result.current.chart.setPatientInfo(p => ({ ...p, patientName: 'Rex', patientNumber: '7' })));
+  const next = { ...result.current.chart.getSnapshot(), patientInfo: { ...result.current.chart.patientInfo, patientName: 'Bella' } };
+  const forkId = '00000000-0000-4000-8000-000000000099';
+  const uuid = vi.spyOn(crypto, 'randomUUID').mockReturnValue(forkId);
+  let release!: () => void;
+  db.refuseUpserts = 1;
+  db.rowVisible = false;
+  db.gateId = forkId;
+  db.gate = new Promise(resolve => { release = resolve; });
+  let finalizing!: Promise<boolean>;
+  await act(async () => { finalizing = result.current.cloud.setFinalized(true); });
+  expect(db.upserts).toHaveLength(2);
+  act(() => result.current.chart.applySnapshot(next, 'bella'));
+  await act(async () => { release(); await finalizing; });
+  expect(result.current.chart.patientInfo.patientName).toBe('Bella');
+  expect(result.current.chart.finalizedAt).toBeNull();
+  uuid.mockRestore();
+});
+
+it('never autosaves a finalized record, including one originally created on this device', async () => {
+  const { result } = renderHook(() => {
+    const chart = useChartState();
+    return { chart, cloud: useCloudSync(chart, true, 'practice-a', !chart.finalizedAt) };
+  });
+  act(() => {
+    result.current.chart.setPatientInfo(p => ({ ...p, patientName: 'Rex', patientNumber: '7', exam: { ...p.exam, tongue: { status: 'normal', comment: '' } } }));
+    result.current.chart.setFinalizedAt('2026-11-18T12:00:00Z');
+  });
+  await flush();
+  expect(db.upserts).toHaveLength(0);
+});

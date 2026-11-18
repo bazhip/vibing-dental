@@ -34,7 +34,8 @@
     "species": "Specie",
     "visits": "Vizite",
     "updated": "Actualizat",
-    "recheck": "Recontrol"
+    "recheck": "Recontrol",
+    "finalized": "Finalizat"
   },
   "due": "Recontroale scadente",
   "dueCount": "Recontroale scadente ({{n}})",
@@ -141,5 +142,10 @@
     "backToVisit": "Înapoi la vizita curentă"
   },
   "visits_few": "{{count}} vizite",
-  "visitsExpand_few": "{{count}} vizite — extindeți"
+  "visitsExpand_few": "{{count}} vizite — extindeți",
+  "finalized": {
+    "yes": "Da",
+    "no": "Nu",
+    "count": "{{n}} din {{total}}"
+  }
 }

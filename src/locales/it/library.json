@@ -34,7 +34,8 @@
     "species": "Specie",
     "visits": "Visite",
     "updated": "Modificata",
-    "recheck": "Controllo"
+    "recheck": "Controllo",
+    "finalized": "Finalizzato"
   },
   "due": "Controlli in scadenza",
   "dueCount": "Controlli in scadenza ({{n}})",
@@ -141,5 +142,10 @@
   "workspace": {
     "description": "Cerchi le cartelle dei pazienti, consulti le visite e gestisca i controlli.",
     "backToVisit": "Torna alla visita in corso"
+  },
+  "finalized": {
+    "yes": "Sì",
+    "no": "No",
+    "count": "{{n}} di {{total}}"
   }
 }

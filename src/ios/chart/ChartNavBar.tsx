@@ -9,7 +9,7 @@ import './chart.css';
 /**
  * The Chart tab's navigation bar: the patient's name as a large title
  * (tap it to jump between sections), the save status as the subtitle,
- * and the trailing items — Edit / Done for saved visits, Share (opens
+ * and the trailing items — Edit / Finalize for records, Share (opens
  * Documents through the chart form's submit) and a More menu.
  *
  * The leading slot stays empty: on iPad the Show-sidebar button floats
@@ -32,12 +32,13 @@ export interface ChartNavBarProps {
   menu: MenuItem[];
   /** View-only saved visit: Edit unlocks it (same as Edit chart). */
   onEdit?: () => void;
-  /** Editing a saved visit: Done saves and locks it again. */
-  onDone?: () => void;
+  /** Explicitly save and close an editable record. */
+  onFinalize?: () => void;
+  lifecycleBusy?: boolean;
 }
 
-export function ChartNavBar({ title, subtitle, sections, activeSection, onSection, shareLabel, menu, onEdit, onDone }: ChartNavBarProps) {
-  const { t } = useTranslation(['chart', 'common']);
+export function ChartNavBar({ title, subtitle, sections, activeSection, onSection, shareLabel, menu, onEdit, onFinalize, lifecycleBusy }: ChartNavBarProps) {
+  const { t } = useTranslation(['chart', 'common', 'app']);
   const [moreAnchor, setMoreAnchor] = React.useState<MenuAnchor | null>(null);
   const scroller = React.useContext(ScrollContainerContext);
   // Publish the bar's height as --topbar-height (px), like the website's
@@ -75,13 +76,13 @@ export function ChartNavBar({ title, subtitle, sections, activeSection, onSectio
   const trailing = (
     <>
       {onEdit && (
-        <button type="button" className="ios-glass-button ios-glass-button--tint" onClick={onEdit}>
+        <button type="button" className="ios-glass-button ios-glass-button--tint" onClick={onEdit} disabled={lifecycleBusy}>
           {t('common:actions.edit')}
         </button>
       )}
-      {onDone && (
-        <button type="button" className="ios-glass-button ios-glass-button--prominent" onClick={onDone}>
-          {t('common:actions.done')}
+      {onFinalize && (
+        <button type="button" className="ios-glass-button ios-glass-button--prominent" onClick={onFinalize} disabled={lifecycleBusy}>
+          {t('app:finalization.finalize')}
         </button>
       )}
       <span className="ios-glass-group">

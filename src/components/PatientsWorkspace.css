@@ -9,13 +9,16 @@
 }
 .patients-workspace__content.chart-library-modal {
   --lib-cols: minmax(8rem, 1.7fr) minmax(4.5rem, 0.8fr) minmax(5.5rem, 1fr)
-    minmax(7rem, 1fr) minmax(9rem, 1.2fr);
+    minmax(5.5rem, 0.8fr) minmax(7rem, 1fr) minmax(9rem, 1.2fr);
   --lib-actions: 16rem;
   width: 100%;
   max-width: var(--container-max);
   margin: 0 auto;
   max-height: none;
 }
+.patients-workspace .chart-library__visit-date { grid-column: 1 / 4; }
+.patients-workspace .chart-library__visit-main > .chart-library__cell--finalized { grid-column: 4; }
+.patients-workspace .chart-library__visit-main > :last-child { grid-column: 5 / -1; }
 .patients-workspace__header {
   display: flex;
   align-items: flex-start;
@@ -233,13 +236,14 @@
   .patients-workspace .chart-library__patient { flex-basis: 100%; white-space: normal; }
   .patients-workspace .chart-library__cell { white-space: normal; }
   .patients-workspace .chart-library__cell--number::before { content: '#'; }
+  .patients-workspace .chart-library__cell--finalized::before,
   .patients-workspace .chart-library__cell--date::before,
   .patients-workspace .chart-library__cell--recall::before { content: attr(data-label) ' '; }
-  .patients-workspace .chart-library__head-main > :is(:nth-child(2), :nth-child(3), :nth-child(4)) { display: none; }
+  .patients-workspace .chart-library__head-main > :is(:nth-child(2), :nth-child(3), :nth-child(4), :nth-child(5)) { display: none; }
   .patients-workspace .chart-library__head-main { padding-block: 0; }
   .patients-workspace .chart-library__row-actions { max-width: 260px; padding: 8px 12px; }
   .patients-workspace .chart-library__visit-main { padding-left: 24px; }
-  .patients-workspace .chart-library__visit-date { flex-basis: 100%; }
+  .patients-workspace .chart-library__visit-date { padding-inline-start: 0; flex-basis: 100%; }
 }
 @container patient-directory (max-width: 600px) {
   .patients-workspace .chart-library__row { grid-template-columns: minmax(0, 1fr); }

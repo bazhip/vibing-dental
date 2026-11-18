@@ -8,6 +8,7 @@ import { LocalizedError, describeError, detailOnly } from './apiErrors';
 /** Chart queries shared by the cloud-sync hook and the extension side panel. */
 
 export interface CloudChartMeta {
+  finalized_at?: string | null;
   patient_id?: string;
   id: string;
   patient_name: string;
@@ -50,7 +51,7 @@ export interface ChartListPage {
 }
 
 export const CHART_META_COLUMNS =
-  'patient_id:data->patientInfo->>patientId, id, patient_name, patient_number, owner_name, owner_phone, owner_email, species, dentition, chart_date, recall_date, updated_at, created_by';
+  'finalized_at:data->>finalizedAt, patient_id:data->patientInfo->>patientId, id, patient_name, patient_number, owner_name, owner_phone, owner_email, species, dentition, chart_date, recall_date, updated_at, created_by';
 
 const DEFAULT_PAGE_SIZE = 200;
 

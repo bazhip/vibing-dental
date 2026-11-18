@@ -95,7 +95,8 @@
     "local": "Csak ezen az eszközön",
     "localTitle": "A próbalapok ebben a böngészőben maradnak. Hozzon létre ingyenes fiókot a felhőbe mentéshez.",
     "saveHint": "Mentés előtt adjon meg páciensnevet – így találja majd meg újra ezt a fogászati lapot.",
-    "savedRich": "<word>Mentve · </word>{{when}}"
+    "savedRich": "<word>Mentve · </word>{{when}}",
+    "saved": "Mentve"
   },
   "otherTab": {
     "text": "Ez a fogászati lap másik lapon vagy ablakban is nyitva van. Mindkét lap ugyanazt a munkapéldányt szerkeszti – zárja be az egyiket a módosítások felülírásának elkerüléséhez."
@@ -336,5 +337,11 @@
     "saveAndClose": "Mentés és bezárás",
     "closeChoiceMessage": "Bezárás előtt mentse a módosításokat, vagy zárja be mentés nélkül az elvetésükhöz. A mentett fogászati lapok feltöltött képei megmaradnak.",
     "closeImageChoiceMessage": "Bezárás előtt mentse ezt a fogászati lapot, vagy zárja be mentés nélkül a tartalom elvetéséhez és a feltöltött képek végleges törléséhez."
+  },
+  "finalization": {
+    "finalize": "Lezárás",
+    "finalized": "Lezárva",
+    "description": "Ez a kórlap le van zárva. A módosításhoz válassza a Kórlap szerkesztése lehetőséget.",
+    "failed": "Nem sikerült módosítani a kórlap lezárási állapotát. {{error}}"
   }
 }

@@ -157,7 +157,10 @@ function seedChart(over: { name?: string; date?: string; saved?: boolean } = {})
   };
   writeString('chart.patientInfo', 1, JSON.stringify(info));
   writeString('chart.cloudId', 1, JSON.stringify(CHART_ID));
-  if (over.saved) writeString('chart.openedExisting', 1, 'true');
+  if (over.saved) {
+    writeString('chart.openedExisting', 1, 'true');
+    writeString('chart.finalizedAt', 1, JSON.stringify('2026-11-12T12:00:00Z'));
+  }
 }
 
 beforeAll(() => {
@@ -234,11 +237,11 @@ describe('chart frame', () => {
       expect(untranslated()).toEqual([]);
       unmount();
     }
-    // Saved: the word (hidden on phones) and the time of day are one message.
+    // Saved stays on the active patient tab, with the timestamp in its tooltip.
     sync.override = fakeCloud({ status: 'saved', lastSavedAt: new Date().toISOString() });
     await frame();
-    expect(document.querySelector('.save-status__word')!.textContent).toBe('⟦Saved · ⟧');
-    expect(document.querySelector('.save-status--saved')!.textContent).toMatch(/^⟦Saved · ⟧.*⟦.+⟧/);
+    expect(document.querySelector('.animal-tabs__save')!.textContent).toBe('⟦Saved⟧');
+    expect(document.querySelector('.animal-tabs__save')!.getAttribute('title')).toMatch(/^⟦Saved to the cloud/);
     expect(untranslated()).toEqual([]);
   });
 
@@ -260,7 +263,7 @@ describe('chart frame', () => {
     expect(untranslated()).toEqual([]);
   });
 
-  it('a saved visit: viewing, then editing with Undo, with the visit switcher', async () => {
+  it('explicitly finalized and unfinalized past visits, with the visit switcher', async () => {
     seedChart({ date: '2026-11-12', saved: true });
     sync.override = fakeCloud({ status: 'saved', lastSavedAt: new Date().toISOString() });
     const view = await frame();
@@ -281,20 +284,13 @@ describe('chart frame', () => {
     expect(untranslated()).toEqual([]);
     view.unmount();
 
-    // Editing a saved visit that already differs from the version that was opened.
-    session.set(`chart.unlocked.${CHART_ID}`, '1');
-    session.set(`chart.unlockSnapshot.${CHART_ID}`, '{}');
+    // Opening an unfinalized past visit needs no Edit action.
+    local.delete('vibing-dental.chart.finalizedAt.v1');
     await frame();
-    expect(document.querySelector('.animal-tabs__editing')!.textContent).toBe('⟦Editing⟧');
-    expect(screen.getByText('⟦Undo changes⟧')).toBeTruthy();
-    expect(screen.getByText('⟦Done editing⟧')).toBeTruthy();
-    expect(screen.getByText('⟦Done⟧')).toBeTruthy();
+    expect(screen.queryByRole('note', { name: '⟦View only⟧' })).toBeNull();
+    expect(screen.getByRole('button', { name: '⟦Finalize⟧' })).toBeTruthy();
     expect(untranslated()).toEqual([]);
 
-    // The revert confirmation is a dialog of ours.
-    fireEvent.click(screen.getByText('⟦Undo changes⟧').closest('button')!);
-    expect(await screen.findByRole('alertdialog')).toBeTruthy();
-    expect(untranslated()).toEqual([]);
   });
 
   it('the other-tab warning', async () => {
@@ -534,30 +530,30 @@ describe('French', () => {
 describe('English dates', () => {
   beforeEach(() => act(restoreLocale));
   const norm = (s: string) => s.replace(/\s/g, ' ');
-  const pill = () => norm(document.querySelector('.save-status--saved')!.textContent!);
+  const savedTitle = () => norm(document.querySelector('.animal-tabs__save')!.getAttribute('title')!);
 
-  it('visit dates are localized and the transient saved-at time keeps its format', async () => {
+  it('visit dates and the saved timestamp tooltip are localized', async () => {
     seedChart({ date: '2026-11-12', saved: true });
     sync.override = fakeCloud();
     const first = await frame();
     expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual(['Nov 12, 2026', 'Jan 5, 2026']);
     first.unmount();
 
-    // A new chart shows the saved-at pill (a saved visit is view-only and hides it).
+    // Saved status belongs to the patient tab, with the full timestamp in its tooltip.
     local.clear();
     seedChart();
     const at = new Date();
     sync.override = fakeCloud({ status: 'saved', lastSavedAt: at.toISOString() });
     const view = await frame();
-    expect(pill()).toBe(norm(`Saved · ${at.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`));
+    expect(document.querySelector('.animal-tabs__save')).toHaveTextContent('Saved');
+    expect(savedTitle()).toContain(String(at.getFullYear()));
+    expect(savedTitle()).toContain(norm(at.toLocaleTimeString('en', { hour: 'numeric', minute: 'numeric', second: 'numeric' })));
     view.unmount();
 
-    // Another day: short date, then the time.
+    // An earlier date includes the day and the time in the same tooltip.
     const earlier = new Date(2026, 10, 9, 14, 41);
     sync.override = fakeCloud({ status: 'saved', lastSavedAt: earlier.toISOString() });
     await frame();
-    const time = earlier.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-    const day = earlier.toLocaleDateString([], { month: 'short', day: 'numeric' });
-    expect(pill()).toBe(norm(`Saved · ${day}, ${time}`));
+    expect(savedTitle()).toBe('Saved to the cloud 11/9/2026, 2:41:00 PM');
   });
 });

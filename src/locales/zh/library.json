@@ -34,7 +34,8 @@
     "species": "物种",
     "visits": "就诊",
     "updated": "更新于",
-    "recheck": "复查"
+    "recheck": "复查",
+    "finalized": "已完成"
   },
   "due": "到期复查",
   "dueCount": "到期复查（{{n}}）",
@@ -139,5 +140,10 @@
   "workspace": {
     "description": "搜索患者病历、查看就诊并管理复查。",
     "backToVisit": "返回当前就诊"
+  },
+  "finalized": {
+    "yes": "是",
+    "no": "否",
+    "count": "{{n}} / {{total}}"
   }
 }

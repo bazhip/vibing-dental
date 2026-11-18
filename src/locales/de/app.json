@@ -95,7 +95,8 @@
     "local": "Nur auf diesem Gerät",
     "localTitle": "Testakten bleiben in diesem Browser. Erstellen Sie ein kostenloses Konto, um in der Cloud zu speichern.",
     "saveHint": "Tragen Sie vor dem Speichern einen Patientennamen ein — so finden Sie diese Akte wieder.",
-    "savedRich": "<word>Gespeichert · </word>{{when}}"
+    "savedRich": "<word>Gespeichert · </word>{{when}}",
+    "saved": "Gespeichert"
   },
   "otherTab": {
     "text": "Diese Akte ist in einem anderen Tab oder Fenster geöffnet. Beide Tabs bearbeiten dieselbe Arbeitskopie — schließen Sie einen davon, damit Ihre Änderungen nicht überschrieben werden."
@@ -336,5 +337,11 @@
     "saveAndClose": "Speichern und schließen",
     "closeChoiceMessage": "Speichern Sie Ihre Änderungen vor dem Schließen oder schließen Sie ohne Speichern, um sie zu verwerfen. Bilder gespeicherter Akten bleiben erhalten.",
     "closeImageChoiceMessage": "Speichern Sie diese Akte vor dem Schließen oder schließen Sie ohne Speichern, um den Inhalt zu verwerfen und die hochgeladenen Bilder dauerhaft zu löschen."
+  },
+  "finalization": {
+    "finalize": "Abschließen",
+    "finalized": "Abgeschlossen",
+    "description": "Diese Akte ist abgeschlossen. Wählen Sie Akte bearbeiten, um Änderungen vorzunehmen.",
+    "failed": "Der Abschlussstatus der Akte konnte nicht geändert werden. {{error}}"
   }
 }
