@@ -273,10 +273,7 @@
     "strokeColorAria": "Vonal színe: {{color}}",
     "strokeWidth": "Vonalvastagság",
     "strokeWidthValue": "{{width}} képpont",
-    "clearStrokes": "Vonalak törlése",
-    "more": "További diagrameszközök",
-    "moreTitle": "További eszközök – megjegyzések, számok, nagyítás, betűméret",
-    "moreLabel": "További eszközök"
+    "clearStrokes": "Vonalak törlése"
   },
   "codeRef": {
     "all": "Kódok",

@@ -1790,9 +1790,8 @@
 .diagram-view { container: diagram / inline-size; }
 .diagram-view__toolbar {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
+  gap: 8px;
   padding: 8px;
   background: var(--surface, #fff);
   border-radius: var(--radius-sm, 8px);
@@ -1800,6 +1799,14 @@
   position: sticky;
   top: calc(var(--topbar-height, 0px) + 0.5rem);
   z-index: 30;
+}
+/* The main row: labels give way to icons as it narrows. */
+.diagram-view__toolbar-main {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
 }
 .diagram-view__toolbar .diagram-view__tool-group,
 .diagram-view__toolbar .diagram-view__history {
@@ -1820,6 +1827,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
   min-height: 36px;
   padding: 6px 12px;
   font-size: 14px;
@@ -1846,183 +1855,94 @@
 }
 .diagram-view__toolbar .diagram-view__history .diagram-view__action:disabled { color: var(--text-muted); opacity: 0.45; }
 .diagram-view__toolbar button:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
-.diagram-view__toolbar .diagram-view__free-comment {
-  min-height: 36px;
-  padding: 6px 8px;
-  line-height: 1.25;
+.diagram-view__toolbar .diagram-view__tool-group .diagram-view__tool > .ios-icon { display: none; flex: none; }
+/* Free comment is an action beside the modes, never a pressed mode. */
+.diagram-view__toolbar .diagram-view__tool-group .diagram-view__free-comment { color: var(--primary); font-weight: 600; }
+.diagram-view__toolbar .diagram-view__tool-group .diagram-view__free-comment:hover { background: var(--primary-tint, #e6f2ef); }
+.diagram-view__short { display: none; }
+/* Tooth numbers and zoom: always on the toolbar, after the history. */
+.diagram-view__view {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-inline-start: auto;
+  flex: none;
 }
-.diagram-view__more-wrap { display: block; margin-inline-start: auto; min-width: 0; }
-.diagram-view__toolbar .diagram-view__more {
+.diagram-view__toolbar .diagram-view__view .diagram-view__numbers {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 6px;
+  gap: 4px;
   min-height: 36px;
   padding: 6px 10px;
-  font-size: 13px;
-  line-height: 1.25;
-  border-color: transparent;
-  background: transparent;
-}
-.diagram-view__toolbar .diagram-view__more--open,
-.diagram-view__toolbar .diagram-view__more:hover { background: var(--surface-alt); color: var(--primary); }
-.diagram-view__short { display: none; }
-.diagram-view__extras { display: none; }
-.diagram-view__extras--open {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-items: center;
-  gap: 10px;
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  box-sizing: border-box;
-  width: min(360px, 100%);
-  max-height: min(65dvh, 480px);
-  overflow-y: auto;
-  padding: 12px;
-  background: var(--surface-overlay, var(--surface, #fff));
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  box-shadow: var(--shadow-md);
-  z-index: 35;
-}
-.diagram-view__extras--open > .diagram-view__numbers { width: 100%; min-height: 44px; margin: 0; padding: 8px; white-space: normal; }
-.diagram-view__toolbar .diagram-view__extras--open :is(.diagram-view__zoom, .diagram-view__textsize, .diagram-view__draw-controls) {
-  grid-column: 1 / -1;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
   margin: 0;
-  padding: 10px 0 0;
+  white-space: nowrap;
+}
+.diagram-view__numbers-glyph { font-weight: 700; }
+.diagram-view__toolbar .diagram-view__view .diagram-view__zoom {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin: 0;
+  padding: 0 0 0 8px;
   border: 0;
-  border-top: 1px solid var(--border);
+  border-inline-start: 1px solid var(--border);
   border-radius: 0;
   background: transparent;
 }
-.diagram-view__extras--open :is(.diagram-view__zoom, .diagram-view__textsize, .diagram-view__draw-controls)::before {
-  content: attr(aria-label);
-  flex-basis: 100%;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-muted);
+.diagram-view__toolbar .diagram-view__view .diagram-view__zoom :is(.diagram-view__action, .diagram-view__zoom-level) { min-width: 32px; min-height: 36px; }
+/* Quiet like Undo / Redo; Numbers shows the active tint when on. */
+.diagram-view__toolbar .diagram-view__view :is(.diagram-view__action, .diagram-view__zoom-level, .diagram-view__numbers:not(.diagram-view__tool--active)) {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
 }
-.diagram-view__extras--open .diagram-view__textsize-label { display: none; }
-.diagram-view__extras--open :is(.diagram-view__textsize-btn, .diagram-view__zoom-level, .diagram-view__action) { min-width: 44px; min-height: 44px; }
-.diagram-view__extras--open .diagram-view__draw-controls > [role='group'] { display: flex; gap: 4px; flex-wrap: wrap; }
-.diagram-view__extras--open .diagram-view__color { box-sizing: border-box; width: 44px; height: 44px; padding: 10px; background-clip: content-box; border-color: transparent; }
-.diagram-view__extras--open .diagram-view__color--active { transform: none; }
-.diagram-view__extras--open .diagram-view__width { min-height: 44px; }
+.diagram-view__toolbar .diagram-view__view :is(.diagram-view__action, .diagram-view__numbers):hover:not(:disabled) { background: var(--surface-alt); }
+.diagram-view__toolbar .diagram-view__view .diagram-view__action:disabled { color: var(--text-muted); opacity: 0.45; }
 
-/* Promote secondary tools based on diagram width, allowing additional room
-   for translated labels and the contextual drawing controls. */
-@container diagram (min-width: 1050px) {
-  .diagram-view:lang(en) .diagram-view__toolbar:not(:has(.diagram-view__draw-controls)) .diagram-view__more { display: none; }
-  .diagram-view:lang(en) .diagram-view__toolbar:not(:has(.diagram-view__draw-controls)) .diagram-view__more-wrap { display: contents; }
-  .diagram-view:lang(en) .diagram-view__toolbar:not(:has(.diagram-view__draw-controls)) .diagram-view__extras {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    position: static;
-    width: auto;
-    max-height: none;
-    overflow: visible;
-    padding: 0;
-    margin-inline-start: auto;
-    border: 0;
-    border-radius: 0;
-    background: transparent;
-    box-shadow: none;
-  }
-  .diagram-view:lang(en) .diagram-view__toolbar:not(:has(.diagram-view__draw-controls)) .diagram-view__extras > * { flex: none; }
-  .diagram-view:lang(en) .diagram-view__toolbar:not(:has(.diagram-view__draw-controls)) .diagram-view__extras > .diagram-view__numbers {
-    width: auto;
-    margin: 0;
-    padding: 6px 8px;
-    white-space: nowrap;
-  }
-  .diagram-view:lang(en) .diagram-view__toolbar:not(:has(.diagram-view__draw-controls)) .diagram-view__extras :is(.diagram-view__zoom, .diagram-view__textsize, .diagram-view__draw-controls) {
-    display: flex;
-    align-items: center;
-    flex-wrap: nowrap;
-    gap: 4px;
-    margin: 0;
-    padding: 0 0 0 8px;
-    border: 0;
-    border-inline-start: 1px solid var(--border);
-    border-radius: 0;
-    background: transparent;
-  }
-  .diagram-view:lang(en) .diagram-view__toolbar:not(:has(.diagram-view__draw-controls)) .diagram-view__extras :is(.diagram-view__zoom, .diagram-view__textsize, .diagram-view__draw-controls)::before { display: none; }
-  .diagram-view:lang(en) .diagram-view__toolbar:not(:has(.diagram-view__draw-controls)) .diagram-view__extras :is(.diagram-view__action, .diagram-view__tool, .diagram-view__zoom-level, .diagram-view__textsize-btn) { min-height: 36px; }
-  .diagram-view:lang(en) .diagram-view__toolbar:not(:has(.diagram-view__draw-controls)) .diagram-view__extras :is(.diagram-view__textsize-btn, .diagram-view__zoom-level, .diagram-view__action) { min-width: 32px; }
-  .diagram-view:lang(en) .diagram-view__toolbar:not(:has(.diagram-view__draw-controls)) .diagram-view__extras .diagram-view__textsize-label { display: inline; }
-  .diagram-view:lang(en) .diagram-view__toolbar:not(:has(.diagram-view__draw-controls)) .diagram-view__extras .diagram-view__draw-controls > [role='group'] { display: flex; gap: 6px; flex-wrap: nowrap; }
-  .diagram-view:lang(en) .diagram-view__toolbar:not(:has(.diagram-view__draw-controls)) .diagram-view__extras .diagram-view__color { box-sizing: border-box; width: 28px; height: 28px; padding: 3px; background-clip: content-box; }
-  .diagram-view:lang(en) .diagram-view__toolbar:not(:has(.diagram-view__draw-controls)) .diagram-view__extras .diagram-view__width { min-height: 36px; }
-}
-@container diagram (min-width: 1380px) {
-  .diagram-view__toolbar .diagram-view__more { display: none; }
-  .diagram-view__toolbar .diagram-view__more-wrap { display: contents; }
-  .diagram-view__toolbar .diagram-view__extras {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    position: static;
-    width: auto;
-    max-height: none;
-    overflow: visible;
-    padding: 0;
-    margin-inline-start: auto;
-    border: 0;
-    border-radius: 0;
-    background: transparent;
-    box-shadow: none;
-  }
-  .diagram-view__toolbar .diagram-view__extras > * { flex: none; }
-  .diagram-view__toolbar .diagram-view__extras > .diagram-view__numbers {
-    width: auto;
-    margin: 0;
-    padding: 6px 8px;
-    white-space: nowrap;
-  }
-  .diagram-view__toolbar .diagram-view__extras :is(.diagram-view__zoom, .diagram-view__textsize, .diagram-view__draw-controls) {
-    display: flex;
-    align-items: center;
-    flex-wrap: nowrap;
-    gap: 4px;
-    margin: 0;
-    padding: 0 0 0 8px;
-    border: 0;
-    border-inline-start: 1px solid var(--border);
-    border-radius: 0;
-    background: transparent;
-  }
-  .diagram-view__toolbar .diagram-view__extras :is(.diagram-view__zoom, .diagram-view__textsize, .diagram-view__draw-controls)::before { display: none; }
-  .diagram-view__toolbar .diagram-view__extras :is(.diagram-view__action, .diagram-view__tool, .diagram-view__zoom-level, .diagram-view__textsize-btn) { min-height: 36px; }
-  .diagram-view__toolbar .diagram-view__extras :is(.diagram-view__textsize-btn, .diagram-view__zoom-level, .diagram-view__action) { min-width: 32px; }
-  .diagram-view__toolbar .diagram-view__extras .diagram-view__textsize-label { display: inline; }
-  .diagram-view__toolbar .diagram-view__extras .diagram-view__draw-controls > [role='group'] { display: flex; gap: 6px; flex-wrap: nowrap; }
-  .diagram-view__toolbar .diagram-view__extras .diagram-view__color { box-sizing: border-box; width: 28px; height: 28px; padding: 3px; background-clip: content-box; }
-  .diagram-view__toolbar .diagram-view__extras .diagram-view__width { min-height: 36px; }
-}
-
-@container diagram (max-width: 600px) {
+/* Labels step down as the diagram narrows; the row only wraps on phones. */
+@container diagram (max-width: 860px) {
   .diagram-view__toolbar .diagram-view__long { display: none; }
   .diagram-view__toolbar .diagram-view__short { display: inline; }
-  .diagram-view__toolbar .diagram-view__tool-group .diagram-view__tool { padding-inline: 8px; min-height: 44px; }
-  .diagram-view__toolbar .diagram-view__history .diagram-view__action { width: 44px; min-width: 44px; height: 44px; min-height: 44px; }
-  .diagram-view__toolbar .diagram-view__more { width: 44px; min-width: 44px; min-height: 44px; padding: 0; }
-  .diagram-view__toolbar .diagram-view__more > span { display: none; }
-  .diagram-view__toolbar .diagram-view__more-wrap { flex: none; }
-  .diagram-view__toolbar .diagram-view__free-comment { min-height: 44px; min-width: 0; flex: 1; padding-inline: 4px; font-size: 13px; white-space: normal; }
 }
-@container diagram (max-width: 600px) {
-  .diagram-view__toolbar { flex-wrap: wrap; gap: 6px; }
-  .diagram-view__toolbar .diagram-view__tool-group { flex: 1 0 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .diagram-view__toolbar .diagram-view__tool-group .diagram-view__tool { min-width: 0; white-space: normal; }
+@container diagram (max-width: 760px) {
+  .diagram-view__toolbar .diagram-view__numbers .diagram-view__tool-label {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+  .diagram-view__toolbar .diagram-view__view .diagram-view__numbers { justify-content: center; min-width: 36px; padding: 0; }
+}
+@container diagram (max-width: 700px) {
+  .diagram-view__toolbar-main { gap: 6px; }
+  .diagram-view__toolbar .diagram-view__tool-group { flex: 1 1 auto; min-width: 0; gap: 2px; }
+  .diagram-view__toolbar .diagram-view__tool-group .diagram-view__tool { flex: 1 1 0; min-width: 40px; padding: 0; }
+  .diagram-view__toolbar .diagram-view__tool-group .diagram-view__tool > .ios-icon { display: block; }
+  .diagram-view__toolbar .diagram-view__tool-label {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+  .diagram-view__toolbar .diagram-view__history { gap: 2px; padding-inline-start: 6px; }
+  .diagram-view__toolbar .diagram-view__view { gap: 6px; }
+  .diagram-view__toolbar .diagram-view__view .diagram-view__zoom { padding-inline-start: 6px; }
+}
+/* Phones: 44px targets; view controls drop to a second line when needed. */
+@container diagram (max-width: 620px) {
+  .diagram-view__toolbar-main { flex-wrap: wrap; row-gap: 6px; }
+  .diagram-view__toolbar .diagram-view__tool-group .diagram-view__tool { min-height: 44px; }
+  .diagram-view__toolbar .diagram-view__history .diagram-view__action { width: 44px; min-width: 44px; height: 44px; min-height: 44px; }
+  .diagram-view__toolbar .diagram-view__view .diagram-view__numbers { min-width: 44px; min-height: 44px; }
+  .diagram-view__toolbar .diagram-view__view .diagram-view__zoom :is(.diagram-view__action, .diagram-view__zoom-level) { min-width: 44px; min-height: 44px; }
+}
+@container diagram (max-width: 330px) {
+  .diagram-view__toolbar .diagram-view__view .diagram-view__zoom-level { display: none; }
   .diagram-view__toolbar .diagram-view__history { border-inline-start: 0; padding-inline-start: 0; }
+  .diagram-view__clear-label {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+  .diagram-view__toolbar .diagram-view__clear-strokes { width: 44px; min-width: 44px; padding: 0; }
+  .diagram-view__toolbar .diagram-view__clear-strokes > .ios-icon { display: block; }
+  .diagram-view__toolbar .diagram-view__draw-controls { flex-wrap: wrap; row-gap: 0; }
+  .diagram-view__toolbar .diagram-view__draw-controls .diagram-view__width-label { flex: 1 0 100%; }
 }
 
 .diagram-view__tool-group {
@@ -2157,10 +2077,65 @@
   color: var(--ios-on-tint, white);
 }
 
-.diagram-view__draw-controls {
+.diagram-view__panel {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem;
+  gap: 8px 16px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+.diagram-view__panel-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.diagram-view__panel-toggle:hover { background: var(--surface-alt); color: var(--text); }
+.diagram-view__panel-toggle > .ios-icon { transition: transform 0.15s ease; }
+.diagram-view__panel--collapsed .diagram-view__panel-toggle > .ios-icon { transform: rotate(-90deg); }
+[dir='rtl'] .diagram-view__panel--collapsed .diagram-view__panel-toggle > .ios-icon { transform: rotate(90deg); }
+.diagram-view__panel-toggle .diagram-view__textsize-label { padding: 0; margin: 0; border: 0; color: inherit; }
+.diagram-view__text-panel .diagram-view__textsize { gap: 2px; }
+.diagram-view__text-panel .diagram-view__textsize-btn { min-width: 36px; min-height: 30px; }
+@container diagram (max-width: 620px) {
+  .diagram-view__text-panel .diagram-view__textsize { flex: 0 1 auto; }
+  .diagram-view__text-panel .diagram-view__textsize-btn { min-width: 44px; min-height: 44px; }
+}
+.diagram-view__draw-swatch { width: 12px; height: 12px; border-radius: 50%; box-shadow: 0 0 0 1px var(--border-strong); }
+.diagram-view__clear-strokes { order: 2; margin-inline-start: auto; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+.diagram-view__clear-strokes > .ios-icon { display: none; }
+/* Wide: one row (toggle, controls … Clear). Narrow: the controls get
+   their own row under the header. */
+.diagram-view__panel-controls {
+  order: 1;
+  display: flex;
+  flex: 0 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  min-width: 0;
+}
+.diagram-view__draw-controls > [role='group'] { display: flex; align-items: center; gap: 8px; }
+@container diagram (max-width: 620px) {
+  .diagram-view__panel-toggle { min-height: 44px; }
+  .diagram-view__panel-controls { order: 2; flex: 1 0 100%; }
+  .diagram-view__draw-controls > [role='group'] { gap: 0; }
+  .diagram-view__draw-controls .diagram-view__color { box-sizing: border-box; width: 44px; height: 44px; padding: 11px; background-clip: content-box; border-color: transparent; outline-offset: -9px; }
+  .diagram-view__draw-controls .diagram-view__color--active { transform: none; }
+  .diagram-view__clear-strokes { order: 1; }
+  .diagram-view__draw-controls { flex-wrap: nowrap; gap: 8px; }
+  .diagram-view__draw-controls .diagram-view__width-label { flex: 1 1 auto; min-width: 0; display: flex; }
+  .diagram-view__draw-controls .diagram-view__width { width: 100%; min-width: 48px; min-height: 44px; }
 }
 
 .diagram-view__color {
@@ -3733,7 +3708,7 @@ button.save-status--manual:hover {
 
 /* Locked form sections: a hint on hover instead of silently dead clicks. */
 .lock-wrap--locked { cursor: not-allowed; }
-.diagram-view__toolbar.diagram-view__toolbar--readonly :is(.diagram-view__tool-group, .diagram-view__history, .diagram-view__free-comment, .diagram-view__draw-controls) { display: none; }
+.diagram-view__toolbar.diagram-view__toolbar--readonly :is(.diagram-view__tool-group, .diagram-view__history, .diagram-view__free-comment, .diagram-view__draw-panel) { display: none; }
 
 /* Tour anchor around the Settings menu — layout-neutral. */
 .topbar-tour-anchor { display: inline-flex; }
