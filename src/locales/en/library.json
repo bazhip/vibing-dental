@@ -7,7 +7,7 @@
   "title": "Patients",
   "unnamedPatient": "Unnamed patient",
   "search": {
-    "placeholder": "Search by patient name or number…",
+    "placeholder": "Search patients or owners…",
     "aria": "Search charts"
   },
   "filters": {

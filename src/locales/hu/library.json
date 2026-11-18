@@ -7,7 +7,7 @@
   "title": "Páciensek",
   "unnamedPatient": "Névtelen páciens",
   "search": {
-    "placeholder": "Keresés páciensnév vagy azonosító alapján…",
+    "placeholder": "Páciensek vagy tulajdonosok keresése…",
     "aria": "Fogászati lapok keresése"
   },
   "filters": {

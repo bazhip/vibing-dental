@@ -7,7 +7,7 @@
   "title": "Pacienți",
   "unnamedPatient": "Pacient fără nume",
   "search": {
-    "placeholder": "Căutați după numele sau numărul pacientului…",
+    "placeholder": "Căutați pacienți sau proprietari…",
     "aria": "Căutați fișe"
   },
   "filters": {

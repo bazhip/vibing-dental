@@ -150,7 +150,7 @@ export async function listChartsPage(q: ChartListQuery = {}): Promise<ChartListP
   if (term) {
     const pattern = `%${escapeLike(term)}%`;
     query = query.or(
-      ['patient_name', 'patient_number', 'owner_name', 'owner_phone']
+      ['patient_name', 'patient_number', 'owner_name', 'owner_phone', 'owner_email']
         .map((col) => `${col}.ilike.${pattern}`)
         .join(',')
     );
