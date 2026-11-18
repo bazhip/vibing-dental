@@ -97,7 +97,7 @@
   font-size: 0.82rem;
   color: var(--text-muted, #55677a);
   margin-top: -0.55rem;
-  text-align: left;
+  text-align: start;
 }
 
 .login-error {
@@ -190,7 +190,7 @@
   gap: 0.35rem;
   font-size: 0.85rem;
   color: var(--ios-label-muted, #64748b);
-  text-align: left;
+  text-align: start;
 }
 
 .login-logo-field input[type="file"] {
@@ -205,7 +205,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  text-align: left;
+  text-align: start;
 }
 .login-plan__legend {
   font-size: 0.82rem;
@@ -247,11 +247,11 @@
 
 /* Password field with a show/hide toggle inside it. */
 .login-password { position: relative; display: block; }
-.login-password .login-input { width: 100%; padding-right: 4.25rem; }
+.login-password .login-input { width: 100%; padding-inline-end: 4.25rem; }
 .login-password__toggle {
   position: absolute;
   top: 50%;
-  right: 0.35rem;
+  inset-inline-end: 0.35rem;
   transform: translateY(-50%);
   min-height: 36px;
   padding: 0 0.6rem;
@@ -297,7 +297,7 @@
 .login-check__lead { margin: 0; line-height: 1.5; color: var(--text); }
 .login-check__tips {
   margin: 0; padding: 0.75rem 1rem 0.75rem 2rem;
-  text-align: left; font-size: 0.88rem; line-height: 1.5;
+  text-align: start; font-size: 0.88rem; line-height: 1.5;
   color: var(--text-muted, #64748b);
   background: var(--surface-alt, #f7f9fa);
   border-radius: 8px;

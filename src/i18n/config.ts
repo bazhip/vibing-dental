@@ -1,4 +1,4 @@
-export const APP_LANGUAGES = ['en', 'fr', 'de', 'it', 'es', 'hu', 'ro'] as const;
+export const APP_LANGUAGES = ['en', 'fr', 'de', 'it', 'es', 'hu', 'ro', 'zh', 'ar'] as const;
 export type AppLanguage = (typeof APP_LANGUAGES)[number];
 
 /** Endonyms: each language is named in itself, so these are never translated. */
@@ -10,6 +10,8 @@ export const LANGUAGE_NAMES: Record<AppLanguage, string> = {
   es: 'Español',
   hu: 'Magyar',
   ro: 'Română',
+  zh: '简体中文',
+  ar: 'العربية',
 };
 
 // Append new namespaces here (and in i18next.d.ts).
@@ -23,4 +25,8 @@ export const LANGUAGE_SWITCHING_ENABLED = true;
 
 export function isAppLanguage(v: unknown): v is AppLanguage {
   return typeof v === 'string' && (APP_LANGUAGES as readonly string[]).includes(v);
+}
+
+export function languageDirection(lng: string): 'ltr' | 'rtl' {
+  return lng.split('-')[0].toLowerCase() === 'ar' ? 'rtl' : 'ltr';
 }

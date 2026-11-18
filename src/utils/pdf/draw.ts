@@ -135,7 +135,7 @@ export function drawSectionCard(
     v === 'block' ? PALETTE.white
     : v === 'uppercase' || v === 'serif' ? PALETTE.primary
     : PALETTE.ink;
-  page.drawText(text, { x: x + 7, y: baseline, size: textSize, font: fontBold, color });
+  page.drawText(text, { x: isRtlText(text) ? x + widthPt - fontBold.widthOfTextAtSize(text, textSize) - 7 : x + 7, y: baseline, size: textSize, font: fontBold, color });
 
   if (v !== 'block') {
     const sepColor = v === 'hairline' ? PALETTE.borderStrong : PALETTE.primary;
@@ -156,6 +156,12 @@ export function drawSectionCard(
 
 // ---------- Text helpers --------------------------------------------------
 
+/** Direction of the first letter, ignoring leading bullets and numbers. */
+export function isRtlText(text: string): boolean {
+  const first = text.match(/\p{L}/u)?.[0];
+  return !!first && /\p{Script=Arabic}/u.test(first);
+}
+
 /** Word-wrap to fit `maxWidth` at the given `size`. Words wider than
  *  `maxWidth` break into their own line rather than overflow. */
 export function wrapToWidth(
@@ -164,6 +170,32 @@ export function wrapToWidth(
   size: number,
   maxWidth: number
 ): string[] {
+  // CJK has legal line breaks between ideographs and usually no spaces.
+  // Keep Western and Arabic words intact; shape Arabic only after wrapping.
+  if (/\p{Script=Han}/u.test(text)) {
+    const lines: string[] = [];
+    let line = '';
+    const segments = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
+    const tokens: string[] = [];
+    for (const { segment } of segments.segment(text)) {
+      const previous = tokens[tokens.length - 1];
+      if (previous && (/^[\p{Script=Latin}\p{N}\p{M}/:.%+\-]+$/u.test(segment) && /^[\p{Script=Latin}\p{N}\p{M}/:.%+\-]+$/u.test(previous)
+        || /^[\p{Script=Arabic}\p{M}]+$/u.test(segment) && /^[\p{Script=Arabic}\p{M}]+$/u.test(previous)
+        || /^[，。、；：？！）】》”’]$/.test(segment))) tokens[tokens.length - 1] += segment;
+      else tokens.push(segment);
+    }
+    const fitted = tokens.flatMap(token => font.widthOfTextAtSize(token, size) > maxWidth
+      ? [...segments.segment(token)].map(({ segment }) => segment) : [token]);
+    for (const segment of fitted) {
+      if (line && font.widthOfTextAtSize(line + segment, size) > maxWidth) {
+        lines.push(line);
+        line = '';
+      }
+      line += segment;
+    }
+    if (line) lines.push(line);
+    return lines;
+  }
   const words = text.split(/\s+/);
   const lines: string[] = [];
   let current = '';
@@ -224,7 +256,7 @@ export function drawClippedText(
     }
     display = display.trimEnd() + '…';
   }
-  page.drawText(display, { x, y: baselineY, size, font, color });
+  page.drawText(display, { x: isRtlText(display) ? x + maxWidthPt - font.widthOfTextAtSize(display, size) : x, y: baselineY, size, font, color });
 }
 
 /** Multi-paragraph text: split on \n, wrap each paragraph, draw each
@@ -259,7 +291,7 @@ export function drawWrappedText(
     for (const line of wrapped) {
       if (capReached()) break;
       cursorY -= lineHeight;
-      page.drawText(line, { x, y: cursorY, size, font, color });
+      page.drawText(line, { x: isRtlText(line) ? x + widthPt - font.widthOfTextAtSize(line, size) : x, y: cursorY, size, font, color });
       linesDrawn++;
     }
   }
@@ -490,7 +522,7 @@ export function drawTableHeaderStrip(
       const w = font.widthOfTextAtSize(cell.text, fontSize);
       drawX = cell.xPt + (cell.widthPt - w) / 2;
     } else {
-      drawX = cell.xPt + 5;
+      drawX = isRtlText(cell.text) ? cell.xPt + cell.widthPt - font.widthOfTextAtSize(cell.text, fontSize) - 5 : cell.xPt + 5;
     }
     page.drawText(cell.text, { x: drawX, y: baselineY, size: fontSize, font, color: textColor });
   }

@@ -230,7 +230,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
         <p className="ai-settings-blurb">{t('doctor.blurb')}</p>
         <label className="patient-form__label">
           {t('doctor.heading')}
-          <input
+          <input dir="auto"
             ref={firstFieldRef}
             type="text"
             className="patient-form__input"
@@ -281,7 +281,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
         <h3 className="ai-settings-subhead">{t('email.heading')}</h3>
         <label className="patient-form__label">
           {t('email.label')}
-          <input
+          <input dir="ltr"
             type="email"
             className="patient-form__input"
             autoComplete="email"
@@ -314,7 +314,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
         <label className="patient-form__label">
           {t('password.newLabel')}
           <span className="settings-password">
-            <input
+            <input dir="auto"
               type={showPassword ? 'text' : 'password'}
               className="patient-form__input"
               autoComplete="new-password"
@@ -339,7 +339,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
         </label>
         <label className="patient-form__label" style={{ marginTop: '0.6rem' }}>
           {t('password.confirmLabel')}
-          <input
+          <input dir="auto"
             type={showPassword ? 'text' : 'password'}
             className="patient-form__input"
             autoComplete="new-password"

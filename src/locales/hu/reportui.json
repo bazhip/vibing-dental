@@ -155,7 +155,9 @@
     "it": "Italiano (olasz)",
     "pt": "Português (portugál)",
     "hu": "Magyar",
-    "ro": "Română (román)"
+    "ro": "Română (román)",
+    "zh": "简体中文 (egyszerűsített kínai)",
+    "ar": "العربية (arab)"
   },
   "email": {
     "button": "Küldés e-mailben a gazdinak",

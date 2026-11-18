@@ -97,7 +97,7 @@ html:not(.native-ios) .ui-dialog__input {
   font-size: 16px;
   line-height: 1.5;
 }
-html:not(.native-ios) :is(.ai-settings-modal, .practice-workspace) .settings-password .patient-form__input { padding-right: 5rem; }
+html:not(.native-ios) :is(.ai-settings-modal, .practice-workspace) .settings-password .patient-form__input { padding-inline-end: 5rem; }
 html:not(.native-ios) .ai-settings-modal :is(.patient-form__textarea, .feedback-modal__message) { resize: vertical; min-height: 160px; }
 html:not(.native-ios) .ai-settings-modal .settings-password__toggle { min-height: 36px; }
 
@@ -145,7 +145,7 @@ html:not(.native-ios) .ui-btn--danger:hover:not(:disabled) { background: var(--d
 html:not(.native-ios) .documents-modal__tabs { padding: 0 24px; gap: 16px; border-bottom-color: var(--border); }
 html:not(.native-ios) .documents-modal__tab { padding: 14px 4px; font-size: 14px; font-weight: 600; }
 html:not(.native-ios) .documents-modal__subtitle { color: var(--text-muted); }
-html:not(.native-ios) .pdf-preview-styles { padding: 20px; background: var(--surface-alt); border-right-color: var(--border); }
+html:not(.native-ios) .pdf-preview-styles { padding: 20px; background: var(--surface-alt); border-inline-end-color: var(--border); }
 html:not(.native-ios) .pdf-preview-style { border-radius: var(--radius-sm); box-shadow: none; padding: 12px; }
 html:not(.native-ios) .pdf-preview-style--active { border-color: var(--primary); background: color-mix(in srgb, var(--primary) 5%, var(--surface)); }
 html:not(.native-ios) .pdf-preview-download { background: var(--primary); color: var(--on-primary, #fff); }
@@ -172,7 +172,7 @@ html:not(.native-ios) .pdf-preview-secondary { color: var(--primary); border-col
   html:not(.native-ios) .pdf-preview-styles { padding: 16px; }
 }
 
-html:not(.native-ios) :is(.ai-settings-modal, .practice-workspace) select.patient-form__input { padding-right: 2.25rem; }
+html:not(.native-ios) :is(.ai-settings-modal, .practice-workspace) select.patient-form__input { padding-inline-end: 2.25rem; }
 html:not(.native-ios) .practice-workspace__personal { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
 html:not(.native-ios) .practice-workspace__personal p { color: var(--text-muted); font-size: 13px; line-height: 1.5; }
 html:not(.native-ios) .pdf-preview-warning { display: flex; flex-wrap: wrap; gap: 8px; }

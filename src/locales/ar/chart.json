@@ -1,0 +1,386 @@
+{
+  "codeGroups": {
+    "occlusion": "الإطباق",
+    "toothNumberEruption": "عدد الأسنان وبزوغها",
+    "developmental": "الشذوذات النمائية",
+    "periodontal": "دواعم السن",
+    "toothPathology": "أمراض الأسنان",
+    "toothFracture": "كسور الأسنان",
+    "periapicalBone": "حول الذروة والعظم",
+    "trauma": "الرضوض",
+    "softTissue": "الأنسجة الرخوة والمخاطية",
+    "immuneMediated": "الأمراض المناعية",
+    "salivary": "الغدد اللعابية",
+    "headNosePharynx": "الرأس والأنف والبلعوم",
+    "masses": "الكتل والأورام",
+    "jawTmj": "الفك والمفصل الفكي الصدغي والعيوب الخلقية",
+    "imaging": "التصوير والتشخيص",
+    "periodontalTreatment": "علاج دواعم السن",
+    "endodontics": "علاج لب الأسنان",
+    "restorative": "الترميم والتعويضات السنية",
+    "extractions": "الخلع",
+    "oralSurgery": "جراحة الفم",
+    "oncologic": "علاج الأورام",
+    "jawRepair": "إصلاح كسور الفك والمفصل الفكي الصدغي",
+    "orthodontics": "تقويم الأسنان",
+    "equine": "نتائج فحص الخيل",
+    "equineProcedures": "إجراءات الخيل",
+    "equineExtractions": "خلع أسنان الخد"
+  },
+  "columns": {
+    "tooth": "السن",
+    "triadan": "Triadan",
+    "mobility": "تخلخل السن",
+    "recession": "انحسار اللثة",
+    "pocket": "الجيب",
+    "furcation": "تفرع الجذور",
+    "hyperplasia": "تضخم اللثة",
+    "calculus": "القلح السني",
+    "gingivitis": "التهاب اللثة",
+    "pdstate": "مرحلة مرض دواعم السن"
+  },
+  "customAnesthesia": {
+    "block": "حصار مخصص",
+    "field": "حقل مخصص",
+    "yes": "نعم"
+  },
+  "grid": {
+    "title": "إعداد المخطط",
+    "short": {
+      "mobility": "تخلخل",
+      "recession": "انحسار",
+      "pocket": "جيب",
+      "furcation": "تفرع",
+      "hyperplasia": "تضخم",
+      "calculus": "قلح",
+      "gingivitis": "التهاب",
+      "pdstate": "المرحلة"
+    },
+    "pdstateTitle": "مرحلة مرض دواعم السن",
+    "perRoot": "{{name}} (لكل جذر)",
+    "perSite": "{{name}} (لكل موضع)",
+    "missing": "مفقود",
+    "triadanTooth": "Triadan · السن",
+    "cellAria": "السن {{triadan}} {{column}}",
+    "rootAria": "جيب السن {{triadan}}، الجذر {{root}}",
+    "siteAria": "جيب السن {{triadan}}، الموضع {{site}}",
+    "setAll": {
+      "title": "تعيين {{name}} لجميع الأسنان",
+      "message": "ينطبق على كل سن غير محدد كمفقود. اتركوه فارغًا لمسح العمود.",
+      "messageRange": "ينطبق على كل سن غير محدد كمفقود. استخدموا رقمًا من {{min}} إلى {{max}}. اتركوه فارغًا لمسح العمود.",
+      "confirm": "تطبيق على الكل",
+      "invalid": "يجب أن تكون قيمة {{name}} رقمًا من {{min}} إلى {{max}}.",
+      "applied": "عُيّن {{name}} إلى {{value}} لجميع الأسنان.",
+      "cleared": "مُسح {{name}} من جميع الأسنان."
+    },
+    "undo": "تراجع",
+    "clear": {
+      "title": "مسح {{name}} من جميع الأسنان؟",
+      "message_one": "عدد القيم التي ستُزال من عمود {{name}}: {{count}}.",
+      "message_other": "عدد القيم التي ستُزال من عمود {{name}}: {{count}}.",
+      "confirm": "مسح العمود",
+      "message_zero": "عدد القيم التي ستُزال من عمود {{name}}: {{count}}.",
+      "message_two": "عدد القيم التي ستُزال من عمود {{name}}: {{count}}.",
+      "message_few": "عدد القيم التي ستُزال من عمود {{name}}: {{count}}.",
+      "message_many": "عدد القيم التي ستُزال من عمود {{name}}: {{count}}."
+    },
+    "bulk": {
+      "toast_one": "عُيّن {{name}} إلى {{value}} لعدد من الأسنان: {{count}}.",
+      "toast_other": "عُيّن {{name}} إلى {{value}} لعدد من الأسنان: {{count}}.",
+      "range": "استخدموا {{min}}–{{max}}",
+      "region": "تعيين قيمة للأسنان المحددة",
+      "selected_one": "عدد الأسنان المحددة: {{count}}",
+      "selected_other": "عدد الأسنان المحددة: {{count}}",
+      "set": "تعيين",
+      "column": "العمود المراد تعيينه",
+      "to": "إلى",
+      "value": "القيمة",
+      "apply": "تطبيق",
+      "clearSelection": "مسح التحديد",
+      "tip": "نصيحة: انقروا أرقام الأسنان لتحديد عدة أسنان (مع Shift لتحديد نطاق)، ثم عيّنوا قيمة واحدة لها جميعًا.",
+      "toast_zero": "عُيّن {{name}} إلى {{value}} لعدد من الأسنان: {{count}}.",
+      "toast_two": "عُيّن {{name}} إلى {{value}} لعدد من الأسنان: {{count}}.",
+      "toast_few": "عُيّن {{name}} إلى {{value}} لعدد من الأسنان: {{count}}.",
+      "toast_many": "عُيّن {{name}} إلى {{value}} لعدد من الأسنان: {{count}}.",
+      "selected_zero": "عدد الأسنان المحددة: {{count}}",
+      "selected_two": "عدد الأسنان المحددة: {{count}}",
+      "selected_few": "عدد الأسنان المحددة: {{count}}",
+      "selected_many": "عدد الأسنان المحددة: {{count}}"
+    },
+    "missingCheck": {
+      "label": "السن {{triadan}} مفقود",
+      "labelCarried": "السن {{triadan}} مفقود (منقول من الزيارة السابقة)",
+      "titleCarried": "كان السن {{triadan}} مفقودًا أو مخلوعًا في الزيارة السابقة — نُقل تلقائيًا",
+      "titleUnmark": "إلغاء تحديد السن {{triadan}} كمفقود",
+      "titleMark": "تحديد السن {{triadan}} كمفقود — يشطب هذا الصف ويظلّل السن في رسم التشخيص",
+      "prev": "سابق"
+    },
+    "tooth": {
+      "title": "انقروا لتحديد هذا السن (مع Shift لتحديد نطاق) وتعيين قيمة لعدة أسنان دفعة واحدة"
+    },
+    "slot": {
+      "root": "الجذر {{root}}",
+      "rootLast": "الجذر {{root}} — الزيارة السابقة {{value}}",
+      "site": "الموضع {{site}}",
+      "siteLast": "الموضع {{site}} — الزيارة السابقة {{value}}"
+    },
+    "unsplit": {
+      "title": "غير مقسّم حسب الجذر — انقروا للتعديل (امسحوه للحصول على خانة لكل جذر)",
+      "chip": "جميع الجذور"
+    },
+    "unsplitSites": {
+      "title": "غير مقسّم حسب الموضع — انقروا للتعديل (امسحوه للحصول على خانة لكل موضع)",
+      "chip": "دون تقسيم حسب الموضع"
+    },
+    "lastVisit": "الزيارة السابقة: {{value}}",
+    "lastVisitRef": "الزيارة السابقة: {{value}} — للمرجع فقط، لم تُنقل",
+    "setAllHint": "تعيين {{name}} لجميع الأسنان دفعة واحدة",
+    "options": {
+      "mirror": "إظهار النتائج على رسم التشخيص",
+      "mirrorTitle": "يضيف تعليقًا لكل سن مسجّل في رسم التشخيص ويحدّثه أثناء إعداد المخطط. لا تتغيّر تعليقاتكم الخاصة.",
+      "pdf": "تضمين الشبكة في PDF",
+      "pdfTitleOn": "ألغوا التحديد لإزالة شبكتي القوسين من PDF — يعرض رسم التشخيص هذه النتائج بالفعل ويحصل على المساحة الإضافية.",
+      "pdfTitleOff": "متاح عند عرض النتائج على رسم التشخيص."
+    }
+  },
+  "toothChart": {
+    "legend": {
+      "label": "مفتاح الرسم",
+      "charted": "مسجّل",
+      "planned": "خلع مخطط",
+      "extracted": "مخلوع",
+      "missing": "مفقود"
+    },
+    "clickTooth": "<strong>انقروا سنًا</strong> في الرسم لتسجيل بياناته.",
+    "hint": "كل ما تدخلونه هنا يملأ أيضًا شبكة المخطط ورسمي التشخيص والإجراءات.",
+    "start": "البدء بالسن {{triadan}} ←",
+    "prev": "السن السابق",
+    "prevAria": "السن السابق ({{triadan}})",
+    "next": "السن التالي",
+    "nextAria": "السن التالي ({{triadan}})",
+    "missingBefore": "مفقود (قبل هذه الزيارة)",
+    "findings": "النتائج",
+    "rootAria": "الجيب، الجذر {{root}}",
+    "siteAria": "الجيب، الموضع {{site}}",
+    "expected": "المتوقع {{range}}",
+    "diagnosisNote": "ملاحظة تشخيصية",
+    "diagnosisPlaceholder": "مثلًا: كسر التاج وانكشاف اللب",
+    "extraction": "الخلع",
+    "planExtract": "التخطيط للخلع",
+    "procedureNote": "ملاحظة الإجراء",
+    "procedurePlaceholder": "مثلًا: خلع جراحي، إغلاق السديلة بخيط 5-0",
+    "plan": "خطة الخلع",
+    "chipDone": "{{triadan}} — مخلوع",
+    "chipPending": "{{triadan}} — لم يُحدد كمخلوع بعد",
+    "allConfirmed": "تأكّدت جميع حالات الخلع المخططة.",
+    "confirmed": "حالات الخلع المؤكدة: {{done}} من {{total}}.",
+    "markExtracted_one": "تحديده كمخلوع",
+    "markExtracted_other": "تحديد جميع الأسنان كمخلوعة ({{count}})",
+    "toothMap": "خريطة الأسنان",
+    "quadrant": "الربع",
+    "quadrants": {
+      "1": "العلوي الأيمن",
+      "2": "العلوي الأيسر",
+      "3": "السفلي الأيسر",
+      "4": "السفلي الأيمن"
+    },
+    "selectTooth": "اختيار السن {{triadan}}: {{name}}",
+    "markExtracted_zero": "تحديد جميع الأسنان كمخلوعة ({{count}})",
+    "markExtracted_two": "تحديد جميع الأسنان كمخلوعة ({{count}})",
+    "markExtracted_few": "تحديد جميع الأسنان كمخلوعة ({{count}})",
+    "markExtracted_many": "تحديد جميع الأسنان كمخلوعة ({{count}})"
+  },
+  "toothName": {
+    "side": {
+      "right": "الأيمن",
+      "left": "الأيسر"
+    },
+    "jaw": {
+      "maxillary": "العلوي",
+      "mandibular": "السفلي"
+    },
+    "type": {
+      "incisor": "القاطع",
+      "canine": "الناب",
+      "premolar": "الضاحك",
+      "molar": "الضرس"
+    },
+    "ordinal": {
+      "1": "الأول",
+      "2": "الثاني",
+      "3": "الثالث",
+      "4": "الرابع"
+    },
+    "ordinalTooth": "{{type}} {{ordinal}}",
+    "permanent": "{{tooth}} {{jaw}} {{side}}",
+    "deciduous": "{{tooth}} {{jaw}} {{side}} اللبني"
+  },
+  "diagram": {
+    "label": {
+      "maxilla": "الفك العلوي",
+      "mandible": "الفك السفلي",
+      "right": "ي",
+      "left": "س"
+    },
+    "aria": {
+      "select": "رسم الأسنان — اختاروا سنًا لتسجيل بياناته",
+      "extracted": "رسم الأسنان — Enter أو المسافة على سن يبدّل حالة الخلع",
+      "missing": "رسم الأسنان — Enter أو المسافة على سن يبدّل حالة الفقد",
+      "default": "رسم الأسنان"
+    },
+    "tooth": {
+      "label": "السن {{triadan}}{{details}}",
+      "markedMissing": "، محدد كمفقود",
+      "markedExtracted": "، محدد كمخلوع",
+      "planned": "، خلع مخطط",
+      "locked": " (مفقود قبل هذه الزيارة — مقفل)"
+    },
+    "comment": {
+      "fromGrid": "من شبكة المخطط — عدّلوا الشبكة لتغييره",
+      "delete": "حذف التعليق",
+      "placeholder": "ملاحظات…",
+      "resize": "تغيير حجم التعليق"
+    }
+  },
+  "diagramView": {
+    "customize": "تخصيص",
+    "customizeTitle": "النتائج المعروضة بجانب الأسنان",
+    "toolGroup": "أداة الرسم التخطيطي",
+    "markMissingTitle": "اضغطوا على سن لتحديده كمفقود (اضغطوا مجددًا للإلغاء)",
+    "markExtractedTitle": "اضغطوا على سن لتحديده كمخلوع (اضغطوا مجددًا للإلغاء)",
+    "markTitle": "اضغطوا على سن لتحديده كمفقود أو مخلوع",
+    "markMissing": "تحديد كمفقود",
+    "markExtracted": "تحديد كمخلوع",
+    "mark": "تحديد",
+    "comment": "تعليق",
+    "draw": "رسم",
+    "historyGroup": "تراجع / إعادة",
+    "undo": "تراجع",
+    "redo": "إعادة",
+    "undoTitle": "تراجع ({{shortcut}})",
+    "redoTitle": "إعادة ({{shortcut}})",
+    "freeComment": "+ تعليق حر",
+    "numbers": "# الأرقام",
+    "numbersTitle": "عرض رقم Triadan لكل سن على الرسم (لا يُطبع في PDF)",
+    "zoomGroup": "التكبير",
+    "zoomOut": "تصغير",
+    "zoomIn": "تكبير",
+    "zoomReset": "إعادة التكبير للملاءمة",
+    "zoomLevel": "تكبير بنسبة {{percent}} بالمئة — إعادة للملاءمة",
+    "textSize": {
+      "group": "حجم نص التعليق",
+      "glyph": "أ",
+      "s": "ص",
+      "m": "م",
+      "l": "ك",
+      "xl": "ك ج",
+      "aria": "حجم نص التعليق {{size}}",
+      "title": "حجم نص التعليق: {{size}}"
+    },
+    "drawSettings": "إعدادات الرسم",
+    "strokeColor": "لون الخط",
+    "colors": {
+      "red": "أحمر",
+      "blue": "أزرق",
+      "green": "أخضر",
+      "amber": "كهرماني",
+      "charcoal": "فحمي"
+    },
+    "strokeColorAria": "لون الخط {{color}}",
+    "strokeWidth": "عرض الخط",
+    "strokeWidthValue": "{{width}} بكسل",
+    "clearStrokes": "مسح الخطوط",
+    "more": "أدوات رسم إضافية",
+    "moreTitle": "أدوات إضافية — التعليقات والأرقام والتكبير وحجم النص",
+    "moreLabel": "أدوات إضافية"
+  },
+  "codeRef": {
+    "all": "الرموز",
+    "diagnosisTitle": "رموز التشخيص",
+    "procedureTitle": "رموز الإجراءات",
+    "searchLabel": "البحث في الرموز أو التعريفات",
+    "searchPlaceholder": "البحث في الرموز أو التعريفات…",
+    "diagnoses": "التشخيصات",
+    "procedures": "الإجراءات",
+    "noMatches": "لا توجد نتائج مطابقة."
+  },
+  "scoreChips": {
+    "group": "درجة {{name}}",
+    "clear": "مسح {{name}}"
+  },
+  "menu": {
+    "practiceSettingsHintApp": "الاسم والشعار والفريق."
+  },
+  "imaging": {
+    "takePhoto": "التقاط صورة",
+    "cameraFailed": "تعذّر فتح الكاميرا.",
+    "cameraNoPhoto": "لم تُعد الكاميرا صورة.",
+    "cameraReadFailed": "تعذّرت قراءة الصورة ({{status}}).",
+    "limitReached_one": "بلغ هذا المخطط الحد الأقصى للصور: {{count}}.",
+    "limitReached_other": "بلغ هذا المخطط الحد الأقصى للصور: {{count}}.",
+    "uploadsUnavailable": "رفع الصور غير متاح لهذا الحساب.",
+    "formatsApp": "PNG أو JPEG أو WEBP.",
+    "dicomUnavailable": "رفع DICOM غير متاح لهذا الحساب. صدّروا الصورة الشعاعية بتنسيق JPEG أو PNG لإضافتها.",
+    "limitReached_zero": "بلغ هذا المخطط الحد الأقصى للصور: {{count}}.",
+    "limitReached_two": "بلغ هذا المخطط الحد الأقصى للصور: {{count}}.",
+    "limitReached_few": "بلغ هذا المخطط الحد الأقصى للصور: {{count}}.",
+    "limitReached_many": "بلغ هذا المخطط الحد الأقصى للصور: {{count}}."
+  },
+  "aiConsent": {
+    "title": "استخدام خدمات الذكاء الاصطناعي؟",
+    "intro": "للإملاء في مخطط وكتابة مسودات الذكاء الاصطناعي، يرسل ToothOps البيانات إلى خدمتين:",
+    "deepgram": "يتلقى <strong>Deepgram</strong> صوتكم أثناء الإملاء لتحويله إلى نص.",
+    "anthropic": "تتلقى <strong>Anthropic</strong> (Claude) نص الإملاء ومحتويات المخطط، مثل تفاصيل المريض والنتائج، لملء المخطط أو إعداد مسودة تقرير المالك.",
+    "nothingSent": "لا يُرسل شيء ما لم تستخدموا هذه الميزات.",
+    "allow": "السماح",
+    "notNow": "ليس الآن"
+  },
+  "ios": {
+    "newChart": "مخطط جديد",
+    "more": "المزيد",
+    "menu": {
+      "newChart": "مخطط جديد",
+      "newVisit": "زيارة جديدة",
+      "saveNow": "الحفظ الآن",
+      "retrySave": "إعادة محاولة الحفظ",
+      "customize": "تخصيص {{section}}"
+    },
+    "status": {
+      "saved": "حُفظ · {{time}}",
+      "notSaved": "لم يُحفظ",
+      "viewOnlyDate": "للعرض فقط · {{date}}",
+      "editingWith": "جارٍ التعديل · {{status}}",
+      "keptOnDevice": "يُحفظ عند بدء إعداد المخطط",
+      "unsaved": "تغييرات غير محفوظة",
+      "onDevice": "على هذا الجهاز فقط"
+    },
+    "notice": {
+      "otherTab": "هذا المخطط مفتوح في نافذة أخرى. تعدّل النافذتان النسخة العاملة نفسها — أغلقوا إحداهما لتجنّب الكتابة فوق تغييراتكم.",
+      "gotIt": "فهمت",
+      "notSaved": "هذا المخطط غير محفوظ."
+    },
+    "form": {
+      "patient": "المريض",
+      "owner": "المالك",
+      "visit": "الزيارة",
+      "complaint": "الشكوى الرئيسية",
+      "dictate": "الإملاء",
+      "nerveBlocks": "الحصار العصبي",
+      "addInterval": "إضافة فترة"
+    },
+    "diagram": {
+      "numbers": "الأرقام",
+      "freeComment": "تعليق حر"
+    },
+    "grid": {
+      "tip": "نصيحة: اضغطوا على أرقام الأسنان لتحديد عدة أسنان، ثم عيّنوا قيمة واحدة لها جميعًا.",
+      "pickTitle": "اضغطوا لتحديد هذا السن وتعيين قيمة لعدة أسنان دفعة واحدة"
+    }
+  },
+  "quickCodes": {
+    "group": "الرموز السريعة",
+    "chipAria": "{{code}}: {{definition}}",
+    "label": "اضغطوا رمزًا ثم سنًا:",
+    "stampHint": "اضغطوا على سن لإضافة {{code}} (اضغطوا مجددًا لإزالته)"
+  }
+}

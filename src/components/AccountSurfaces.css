@@ -9,13 +9,13 @@
 }
 .settings-password .patient-form__input {
   width: 100%;
-  padding-right: 4.25rem;
+  padding-inline-end: 4.25rem;
   box-sizing: border-box;
 }
 .settings-password__toggle {
   position: absolute;
   top: 50%;
-  right: 0.3rem;
+  inset-inline-end: 0.3rem;
   transform: translateY(-50%);
   min-height: 32px;
   padding: 0 0.6rem;
@@ -36,7 +36,7 @@
 .login-error.settings-msg,
 .login-notice.settings-msg {
   margin-top: 0.6rem;
-  text-align: left;
+  text-align: start;
 }
 .settings-msg--row {
   display: flex;
@@ -66,7 +66,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 0.75rem;
-  text-align: left;
+  text-align: start;
 }
 .admin-panel__banner-dismiss {
   flex: 0 0 auto;

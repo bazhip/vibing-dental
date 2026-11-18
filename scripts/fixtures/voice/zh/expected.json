@@ -1,0 +1,393 @@
+{
+  "lng": "zh",
+  "lines": [
+    {
+      "heard": "Speaker 0: 好的，从右上开始。",
+      "cleaned": "Speaker 0: 好的,从右上开始.",
+      "finding": false
+    },
+    {
+      "heard": "Speaker 0: 一零一 GI 二，calc 二。",
+      "cleaned": "Speaker 0: 101 GI 2,calc 2.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: 一零二，一样，",
+      "cleaned": "Speaker 0: 102,一样,",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: 松动度一。",
+      "cleaned": "Speaker 0: 松动度1.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 1: 好的。",
+      "cleaned": "Speaker 1: 好的.",
+      "finding": false
+    },
+    {
+      "heard": "Speaker 0: 一零四复杂牙冠骨折，牙髓暴露。",
+      "cleaned": "Speaker 0: 104复杂牙冠骨折,牙髓暴露.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: 一零八分期三，远中牙周袋五毫米，艾弗二。",
+      "cleaned": "Speaker 0: 108分期3,远中牙周袋5毫米,F2.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 1: 您说的是一零八还是一零九？",
+      "cleaned": "Speaker 1: 您说的是108还是109？",
+      "finding": false
+    },
+    {
+      "heard": "Speaker 0: 一零八。还有一零九看起来像 8T。",
+      "cleaned": "Speaker 0: 108.还有109看起来像 8 T.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: 更正，一零二松动度二，不是一。",
+      "cleaned": "Speaker 0: 更正,102松动度2,不是一.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: 五零四牙齿吸收。",
+      "cleaned": "Speaker 0: 504牙齿吸收.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: 舌和腭正常。",
+      "cleaned": "Speaker 0: 舌和腭正常.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: 转到左上，204 T 斜杠 FX 斜杠 UCF。",
+      "cleaned": "Speaker 0: 转到左上,204 T/FX/UCF.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: 二零五缺失。",
+      "cleaned": "Speaker 0: 205缺失.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: 请把探针递给我。",
+      "cleaned": "Speaker 0: 请把探针递给我.",
+      "finding": false
+    },
+    {
+      "heard": "Speaker 1: 好的，给您。",
+      "cleaned": "Speaker 1: 好的,给您.",
+      "finding": false
+    },
+    {
+      "heard": "Speaker 0: 六零四，乳犬齿滞留。",
+      "cleaned": "Speaker 0: 604,乳犬齿滞留.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: 309 GI 1，calc 1。",
+      "cleaned": "Speaker 0: 309 GI 1,calc 1.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: 三零五缺失。",
+      "cleaned": "Speaker 0: 305缺失.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: 四零九 GI 二，calc 三。",
+      "cleaned": "Speaker 0: 409 GI 2,calc 3.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: 四零九可能需要拔除，先看X线片。",
+      "cleaned": "Speaker 0: 409可能需要拔除,先看X线片.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: 口外检查无异常，淋巴结正常。",
+      "cleaned": "Speaker 0: 口外检查无异常,淋巴结正常.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: 口腔黏膜异常，左颊轻度溃疡。",
+      "cleaned": "Speaker 0: 口腔黏膜异常,左颊轻度溃疡.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 1: 心率九十，目前稳定。",
+      "cleaned": "Speaker 1: 心率九十,目前稳定.",
+      "finding": false
+    },
+    {
+      "heard": "Speaker 0: 使用百分之零点五布比卡因，右侧眶下神经阻滞 0.3 mL。",
+      "cleaned": "Speaker 0: 使用百分之零点五布比卡因,右侧眶下神经阻滞 0.3 mL.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: 左侧下牙槽神经阻滞 0.2 mL。",
+      "cleaned": "Speaker 0: 左侧下牙槽神经阻滞 0.2 mL.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: 全口洁治和抛光已完成。",
+      "cleaned": "Speaker 0: 全口洁治和抛光已完成.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: 一零八已拔除。",
+      "cleaned": "Speaker 0: 108已拔除.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: 六零四也已拔除。",
+      "cleaned": "Speaker 0: 604也已拔除.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 1: 好的。",
+      "cleaned": "Speaker 1: 好的.",
+      "finding": false
+    },
+    {
+      "heard": "Speaker 0: 病历记录完毕。",
+      "cleaned": "Speaker 0: 病历记录完毕.",
+      "finding": false
+    }
+  ],
+  "actions": [
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 101,
+        "field": "gingivitis",
+        "value": "2"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 101,
+        "field": "calculus",
+        "value": "2"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 102,
+        "field": "gingivitis",
+        "value": "2"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 102,
+        "field": "calculus",
+        "value": "2"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 102,
+        "field": "mobility",
+        "value": "2"
+      }
+    },
+    {
+      "name": "add_comment",
+      "input": {
+        "diagram": "pre",
+        "triadan": 104,
+        "text": "T/FX/CCF"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 108,
+        "field": "pdstate",
+        "value": "3"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 108,
+        "field": "pocket",
+        "value": "5"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 108,
+        "field": "furcation",
+        "value": "2"
+      }
+    },
+    {
+      "name": "add_comment",
+      "input": {
+        "diagram": "pre",
+        "triadan": 109,
+        "text": "AT"
+      }
+    },
+    {
+      "name": "add_comment",
+      "input": {
+        "diagram": "pre",
+        "triadan": 504,
+        "text": "TR"
+      }
+    },
+    {
+      "name": "set_exam_finding",
+      "input": {
+        "area": "tongue",
+        "status": "normal"
+      }
+    },
+    {
+      "name": "set_exam_finding",
+      "input": {
+        "area": "palate",
+        "status": "normal"
+      }
+    },
+    {
+      "name": "add_comment",
+      "input": {
+        "diagram": "pre",
+        "triadan": 204,
+        "text": "T/FX/UCF"
+      }
+    },
+    {
+      "name": "set_tooth_mark",
+      "input": {
+        "diagram": "pre",
+        "triadan": 205,
+        "mark": "missing"
+      }
+    },
+    {
+      "name": "add_comment",
+      "input": {
+        "diagram": "pre",
+        "triadan": 604,
+        "text": "DT/P"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 309,
+        "field": "gingivitis",
+        "value": "1"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 309,
+        "field": "calculus",
+        "value": "1"
+      }
+    },
+    {
+      "name": "set_tooth_mark",
+      "input": {
+        "diagram": "pre",
+        "triadan": 305,
+        "mark": "missing"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 409,
+        "field": "gingivitis",
+        "value": "2"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 409,
+        "field": "calculus",
+        "value": "3"
+      }
+    },
+    {
+      "name": "set_exam_finding",
+      "input": {
+        "area": "extraoral",
+        "status": "normal"
+      }
+    },
+    {
+      "name": "set_exam_finding",
+      "input": {
+        "area": "lymph",
+        "status": "normal"
+      }
+    },
+    {
+      "name": "set_exam_finding",
+      "input": {
+        "area": "buccal",
+        "status": "abnormal",
+        "comment": "左颊轻度溃疡"
+      }
+    },
+    {
+      "name": "set_anesthetic_drug",
+      "input": {
+        "drug": "Bupivacaine",
+        "concentration": "0.5"
+      }
+    },
+    {
+      "name": "set_nerve_block",
+      "input": {
+        "site": "infraorbitalRight",
+        "mL": "0.3"
+      }
+    },
+    {
+      "name": "set_nerve_block",
+      "input": {
+        "site": "inferiorAlveolarLeft",
+        "mL": "0.2"
+      }
+    },
+    {
+      "name": "append_treatment_report",
+      "input": {
+        "text": "全口洁治和抛光。"
+      }
+    },
+    {
+      "name": "set_tooth_mark",
+      "input": {
+        "diagram": "post",
+        "triadan": 108,
+        "mark": "extracted"
+      }
+    },
+    {
+      "name": "set_tooth_mark",
+      "input": {
+        "diagram": "post",
+        "triadan": 604,
+        "mark": "extracted"
+      }
+    }
+  ]
+}

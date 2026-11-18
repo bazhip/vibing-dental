@@ -1,3 +1,4 @@
+import { arabicTermsPattern, replaceScriptNumbers } from './scriptNumbers';
 import type { AppLanguage } from '../../i18n/config';
 import { GERMAN_COMPOUND_ENDS, nativeScoreTerms, SCORE_ABBREVIATIONS, SCORE_LINK_WORDS, UNIT_WORDS } from './terms';
 import {
@@ -153,7 +154,7 @@ const digitsOf = (small: Record<string, number>, keys: string) =>
 const remainderAlt = (small: Record<string, number>, exclude: string[] = []) =>
   alt(Object.keys(small).filter((w) => small[w] > 0 && !exclude.includes(w))).replace(/ /g, '[\\s-]+');
 
-const LANGS: Record<OtherLanguage, LanguageNumbers> = {
+const LANGS: Record<Exclude<OtherLanguage, 'zh' | 'ar'>, LanguageNumbers> = {
   hu: {
     digits: digitsOf(HU_SMALL, 'nulla egy ketto ket harom negy ot hat het nyolc kilenc'),
     small: HU_SMALL,
@@ -260,6 +261,11 @@ export function replaceFolded(
  *  `lng` at a word start: the native terms, the English abbreviations and,
  *  in German, words ending in a long clinical term. */
 export function scoreTermPattern(lng: OtherLanguage): string {
+  if (lng === 'zh' || lng === 'ar') {
+    const native = lng === 'ar' ? arabicTermsPattern(nativeScoreTerms(lng)) : nativeTermsAlt(lng);
+    const latin = alt(SCORE_ABBREVIATIONS.map((term) => fold(term)));
+    return lng === 'zh' ? `(?:${native}|${NOT_BEFORE}(?:${latin}))` : `${NOT_BEFORE}(?:و)?(?:ال)?(?:${native}|${latin})`;
+  }
   const L = LANGS[lng];
   const ends = L.compoundEnds ? `|\\p{L}*(?:${L.compoundEnds})` : '';
   return `(?:${NOT_BEFORE}(?:${L.scoreTerms}${ends}))`;
@@ -267,7 +273,7 @@ export function scoreTermPattern(lng: OtherLanguage): string {
 
 /** Regex source (folded) of the unit words for `lng`. */
 export function unitPattern(lng: OtherLanguage): string {
-  return LANGS[lng].units;
+  return lng === 'ar' ? arabicTermsPattern(UNIT_WORDS.ar) : lng === 'zh' ? unitsFor(lng) : LANGS[lng].units;
 }
 
 /** Folded source of a caller-supplied term regex (accents stripped). */
@@ -296,6 +302,10 @@ export function replaceSpokenNumbers(
   opts?: { scoreTerms?: RegExp; unitTerms?: RegExp },
 ): string {
   if (lng === 'en') return englishDigitRuns(englishUnitWords(englishScoreWords(text)));
+  if (lng === 'zh' || lng === 'ar') return replaceScriptNumbers(text, lng, {
+    isTooth: isTriadan, scores: opts?.scoreTerms?.source ?? scoreTermPattern(lng),
+    units: opts?.unitTerms?.source ?? unitPattern(lng),
+  });
 
   // Decomposed accents (NFD from some keyboards/STT) are composed first so
   // the folded copy keeps the same length as the text.

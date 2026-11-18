@@ -1,0 +1,155 @@
+{
+  "extension": {
+    "name": "ToothOps for ezyVet",
+    "description": "将您的 ToothOps 病历摘要写入已打开的 ezyVet 就诊记录。"
+  },
+  "dialog": {
+    "open": "发送至 ezyVet",
+    "title": "发送至 ezyVet",
+    "loading": "正在查找 ezyVet…",
+    "retry": "重试",
+    "sentOn": "已于 {{date}} 发送至 ezyVet。"
+  },
+  "install": {
+    "title": "ToothOps for ezyVet 扩展程序无响应",
+    "body": "请确认 Chrome 中已安装并启用 ToothOps for ezyVet 扩展程序，然后重试。如尚未安装，请联系 ToothOps 支持获取安装链接。"
+  },
+  "noTab": "请在 ezyVet 中打开就诊记录，然后重试。",
+  "severalTabs": "已打开多个 ezyVet 标签页。正在使用：{{title}}",
+  "target": "ezyVet：{{patient}} — {{title}}",
+  "targetNoPatient": "ezyVet：{{title}}",
+  "state": {
+    "notConsult": "ezyVet 标签页未显示就诊记录。请打开患者就诊记录，然后重试。",
+    "notMedicalTab": "请打开就诊记录的 Medical 标签页，然后重试。",
+    "locked": "此就诊记录已在 ezyVet 中锁定。请打开未锁定的就诊记录，然后重试。",
+    "combined": "ezyVet 当前使用 Combined 视图。请切换至 Standard 视图，然后重试。"
+  },
+  "rows": {
+    "heading": "发送位置",
+    "chart": "牙科图表图片",
+    "edited": "已编辑的摘要 →",
+    "dontSend": "不发送",
+    "notOnPage": "{{title}}（不在此页面上）",
+    "reset": "恢复默认设置"
+  },
+  "editedNotice": "摘要已编辑，无法重新拆分为各个章节，将作为一个整体发送。",
+  "picture": {
+    "pre": "术前图表",
+    "post": "术后图表"
+  },
+  "actions": {
+    "send": "发送",
+    "sending": "正在发送…",
+    "copyDiagnostic": "复制诊断报告",
+    "diagnosticCopied": "诊断报告已复制。请将其粘贴到发给 ToothOps 支持的消息中。",
+    "diagnosticPrompt": "复制诊断报告"
+  },
+  "mismatch": {
+    "title": "患者不同？",
+    "message": "ToothOps 图表：{{chart}} · ezyVet 就诊记录：{{ezyvet}}",
+    "messageNumbers": "此图表属于{{chart}}（编号{{chartNumber}}），但 ezyVet 显示为{{ezyvet}}（编号{{ezyvetNumber}}）。",
+    "unknown": "（未找到姓名）",
+    "noName": "（无患者姓名）",
+    "sendAnyway": "仍要发送"
+  },
+  "alreadySent": {
+    "title": "已于 {{date}} 发送。再次发送？",
+    "message": "再次发送会在 ezyVet 中添加第二份副本。",
+    "confirm": "再次发送"
+  },
+  "results": {
+    "title": "结果",
+    "sent": "已发送",
+    "stampFailed": "已发送，但 ToothOps 无法在此图表中记录发送日期。",
+    "saved": "已保存至 ezyVet",
+    "summary": "已保存字段：{{saved}} · 需要关注：{{attention}}"
+  },
+  "errors": {
+    "extension_error": "ToothOps 无法连接 ezyVet 扩展程序。请检查是否已安装并启用，然后重试。",
+    "timeout": "扩展程序未及时响应。请检查 ezyVet 标签页并重试。",
+    "no_tab": "ezyVet 标签页已关闭。请在 ezyVet 中打开就诊记录后重试。",
+    "not_writable": "此就诊记录无法继续写入，可能已锁定、关闭或已离开 Medical 标签页。请打开其 Medical 标签页后重试。",
+    "patient_changed": "ezyVet 现在打开的是其他患者或就诊记录，因此未继续发送。请打开正确的就诊记录后重试。",
+    "field_not_found": "就诊页面上没有此字段。请在“发送位置”中选择其他字段。",
+    "editor_not_found": "ToothOps 无法找到此字段的文本框。再次发送前，请在 ezyVet 中检查此字段。如问题持续，请复制诊断报告提供给 ToothOps 支持。",
+    "popup_not_found": "此字段的编辑窗口未打开。再次发送前，请在 ezyVet 中检查此字段。如问题持续，请复制诊断报告提供给 ToothOps 支持。",
+    "popup_not_closed": "此字段的编辑窗口在保存后未关闭。再次发送前，请在 ezyVet 中检查此字段。",
+    "save_button_not_found": "ToothOps 无法找到此字段的“保存”按钮。再次发送前，请在 ezyVet 中检查此字段。",
+    "save_not_confirmed": "ezyVet 未确认保存。再次发送前，请在 ezyVet 中检查此字段。",
+    "no_preferred_email": "此客户在 ezyVet 中没有首选邮箱地址。请添加邮箱，或选择其他字段。",
+    "image_not_accepted": "此字段不支持图片。请选择 Discharge Summary 或其他支持图片的字段。",
+    "invalid_image": "无法准备图表图片。再次发送前，请在 ezyVet 中检查此字段。",
+    "picture_failed": "ToothOps 无法绘制图表图片，因此未发送。",
+    "maybe_sent": "部分字段可能已经写入。再次发送前，请在 ezyVet 中检查就诊记录。",
+    "item_extension_error": "写入此字段时出错。再次发送前，请在 ezyVet 中检查此字段。",
+    "item_not_writable": "此就诊记录已停止接受更改，可能已锁定、关闭或已离开 Medical 标签页，因此未发送此字段。再次发送前，请在 ezyVet 中检查就诊记录。",
+    "item_patient_changed": "ezyVet 已打开其他患者或就诊记录，因此未发送此字段。再次发送前，请在 ezyVet 中检查就诊记录。"
+  },
+  "panel": {
+    "notConnected": "此版本尚未连接 ToothOps。",
+    "signIn": {
+      "title": "登录 ToothOps",
+      "lead": "将 ToothOps 牙科图表中的病历摘要发送至已打开的 ezyVet 就诊记录。",
+      "password": "密码",
+      "submit": "登录",
+      "busy": "正在登录…",
+      "or": "或",
+      "createAccount": "创建账户",
+      "forgotPassword": "忘记密码？"
+    },
+    "header": {
+      "signedInAs": "当前登录身份：{{email}}",
+      "signOut": "退出登录"
+    },
+    "list": {
+      "unnamed": "（无患者姓名）",
+      "matches": "匹配此就诊记录",
+      "matchCount": "有{{matches}}份图表与此患者匹配，显示最近一份。",
+      "searchLabel": "搜索牙科图表",
+      "searchPlaceholder": "按患者、宠物主人或编号搜索",
+      "empty": "未找到图表。",
+      "loading": "正在加载图表…",
+      "loadMore": "加载更多",
+      "possible": "可能匹配 ezyVet 患者{{patient}}"
+    },
+    "chart": {
+      "back": "← 返回图表",
+      "loading": "正在打开图表…",
+      "noteLabel": "病历摘要",
+      "flagLoading": "正在检查您的诊所是否已开启发送功能…",
+      "flagFailed": "无法检查您的诊所是否已开启发送至 ezyVet 的功能。",
+      "sendOff": "您的诊所尚未开启发送至 ezyVet 的功能。",
+      "destination": "目标位置"
+    },
+    "today": {
+      "title": "今日患者（ezyVet）",
+      "refresh": "刷新",
+      "load": "加载今日患者",
+      "loadHint": "这会将您的 ezyVet 标签页切换至日历。",
+      "noTab": "打开 ezyVet 以查看今日患者。",
+      "empty": "今日 ezyVet 日程中没有患者。",
+      "failed_one": "无法读取{{count}}个预约。",
+      "failed_other": "无法读取{{count}}个预约。",
+      "start": "开始记录图表",
+      "open": "打开图表",
+      "newVisit": "新建就诊",
+      "startAnyway": "新建牙科图表",
+      "loading": "正在加载今日患者…",
+      "errors": {
+        "no_dashboard": "无法找到 ezyVet 的 Dashboard。",
+        "no_date_input": "无法设置 ezyVet 日历中的日期。",
+        "no_calendar_refresh": "ezyVet 日历未响应。请刷新 ezyVet 后重试。",
+        "unknown": "无法读取今日 ezyVet 日程。"
+      },
+      "startFailed": "无法打开 ToothOps。请重试。"
+    }
+  },
+  "send": {
+    "targetChanged": "ezyVet 就诊记录已更改。请检查目标后再次点击“发送”。"
+  },
+  "handover": {
+    "filled": "已从 ezyVet 填入患者详情。",
+    "failed": "无法从 ezyVet 获取患者。请填写详情。",
+    "otherUser": "在扩展程序中选择此患者时使用了其他用户身份。请在两处使用同一账户登录。"
+  }
+}

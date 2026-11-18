@@ -1,0 +1,20 @@
+{
+  "reminder": {
+    "body": "{{owner}}，您好：\n\n温馨提醒，{{patient}}的牙科复查时间已到。请致电我们预约。\n\n谢谢！\n{{practice}}",
+    "fallback": {
+      "owner": "您好",
+      "pet": "您的宠物",
+      "practice": "您的兽医诊所"
+    },
+    "subject": "{{patient}}该做牙科复查了"
+  },
+  "sample": {
+    "buccalComment": "左侧颊部轻度发红",
+    "extraNotes": "拔牙部位愈合期间，接下来10天请喂食软食。",
+    "postComment": "牙尖小块缺损，表面光滑，无需治疗"
+  },
+  "ownerReportEmail": {
+    "subject": "{{pet}}的牙科报告",
+    "body": "{{owner}}，您好：\n\n附件是{{pet}}本次就诊的牙科报告。如有任何疑问，请联系我们。\n\n谢谢！\n{{practice}}"
+  }
+}

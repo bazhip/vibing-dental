@@ -51,7 +51,7 @@ describe('generated Supabase auth templates', () => {
       const out = render(read(f), lng);
       expect(placeholders(out)).toEqual(placeholders(en));
       expect(out).not.toMatch(/\{\{ (if|else|end)|\$lang/);
-      expect(out.replace(/>[^<]*</g, '><')).toBe(en.replace('<html lang="en">', `<html lang="${lng}">`).replace(/>[^<]*</g, '><'));
+      expect(out.replace(/>[^<]*</g, '><')).toBe(en.replace('<html lang="en">', `<html lang="${lng}"${lng === 'ar' ? ' dir="rtl"' : ''}>`).replace(lng === 'ar' ? '<a href="{{ .ConfirmationURL }}" style="color:' : '__no_match__', '<a dir="ltr" href="{{ .ConfirmationURL }}" style="color:').replace(/>[^<]*</g, '><'));
     }
   });
 

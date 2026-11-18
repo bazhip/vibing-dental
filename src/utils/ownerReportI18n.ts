@@ -20,7 +20,7 @@ import type { BuiltInSectionId } from './ownerReportConfig';
  * were completed or unrecorded findings were normal.
  */
 
-export const REPORT_LOCALES = ['en', 'es', 'fr', 'de', 'it', 'pt', 'hu', 'ro'] as const;
+export const REPORT_LOCALES = ['en', 'es', 'fr', 'de', 'it', 'pt', 'hu', 'ro', 'zh', 'ar'] as const;
 export type ReportLocale = (typeof REPORT_LOCALES)[number];
 
 export const LOCALE_LABELS: Record<ReportLocale, string> = {
@@ -32,6 +32,8 @@ export const LOCALE_LABELS: Record<ReportLocale, string> = {
   pt: 'Português (Portuguese)',
   hu: 'Magyar (Hungarian)',
   ro: 'Română (Romanian)',
+  zh: '简体中文 (Simplified Chinese)',
+  ar: 'العربية (Arabic)',
 };
 
 export function isReportLocale(v: unknown): v is ReportLocale {
@@ -111,6 +113,8 @@ const INTL_LOCALES: Record<ReportLocale, string> = {
   pt: 'pt',
   hu: 'hu-HU',
   ro: 'ro-RO',
+  zh: 'zh-CN',
+  ar: 'ar',
 };
 
 const SIDE_KEYS = { 1: 'upperRight', 2: 'upperLeft', 3: 'lowerLeft', 4: 'lowerRight' } as const;
@@ -157,6 +161,8 @@ const TOOTH_GRAMMAR: Record<ReportLocale, ToothGrammar> = {
   pt: romanceGrammar,
   hu: (w, deciduous) => `${w.side} ${w.isCanine ? '' : `${w.ordinal} `}${deciduous ? w.deciduous : ''}${w.kind}`.trim(),
   ro: romanceGrammar,
+  zh: (w, deciduous) => `${w.side}${w.isCanine ? '' : w.ordinal}${deciduous ? w.deciduous : ''}${w.kind}`,
+  ar: (w, deciduous) => `${w.kind}${w.isCanine ? '' : ` ${w.ordinal}`} ${w.side}${deciduous ? ` ${w.deciduous}` : ''}`.trim(),
 };
 
 /** Headings that name the pet have a `_named` and `_unnamed` key, so each

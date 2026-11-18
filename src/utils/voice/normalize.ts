@@ -73,7 +73,7 @@ function patterns(lng: OtherLanguage): Patterns {
       `(?<=(?:^|[\\s,.;:/])[\\p{L}\\p{N}]{1,5})\\s*${NOT_BEFORE}(?:${phraseAlt(SLASH_WORDS[lng])})${NOT_AFTER}\\s*(?=[\\p{L}\\p{N}]{1,5}(?![\\p{L}\\p{N}]))`,
       'giu',
     ),
-    spelled: new RegExp(`${NOT_BEFORE}(?:${phraseAlt([...spelledMap.keys()])})${NOT_AFTER}`, 'giu'),
+    spelled: new RegExp(lng === 'zh' ? `(?:${phraseAlt([...spelledMap.keys()])})` : `${NOT_BEFORE}(?:${phraseAlt([...spelledMap.keys()])})${NOT_AFTER}`, 'giu'),
     spelledMap,
     scoreRunIntoTooth: new RegExp(`(${score})\\s+(\\d)([1-8][0-1]\\d)\\b`, 'giu'),
     scorePause: new RegExp(`(${score})\\.\\s+(?=\\d)`, 'giu'),
@@ -99,9 +99,13 @@ function patterns(lng: OtherLanguage): Patterns {
 export function normalizeOther(raw: string, lng: OtherLanguage): string {
   const p = patterns(lng);
   let text = raw.normalize('NFC');
+  if (lng === 'zh' || lng === 'ar') text = text.replace(/[，、]/g, ',').replace(/。/g, '.').replace(/[；؛]/g, ';').replace(/،/g, ',');
+  if (lng === 'ar' || lng === 'zh') text = replaceSpokenNumbers(text, lng);
 
   // Split digits run into letters ("104GI2"); code+digit pairs rejoin below.
-  text = text.replace(/(\d)(?=\p{L})/gu, '$1 ').replace(/(\p{L})(?=\d)/gu, '$1 ');
+  text = lng === 'zh'
+    ? text.replace(/(\d)(?=[A-Za-z])/g, '$1 ').replace(/([A-Za-z])(?=\d)/g, '$1 ')
+    : text.replace(/(\d)(?=\p{L})/gu, '$1 ').replace(/(\p{L})(?=\d)/gu, '$1 ');
 
   // AVDC codes dictated as words: "T barre oblique FX" → "T/FX".
   text = replaceFolded(text, p.slash, () => '/');
@@ -133,10 +137,14 @@ export function normalizeOther(raw: string, lng: OtherLanguage): string {
 export function chunkWorthSendingOther(chunk: string, lng: OtherLanguage): boolean {
   const p = patterns(lng);
   const text = chunk.replace(/\bSpeaker \d+:\s*/gi, '').trim();
-  if (text.length < 2) return /\d/.test(text);
-  if (/\d/.test(text)) return true;
+  if (lng === 'zh') {
+    const rest = text.replace(/\[\?([^\]]*)\]/g, '$1').replace(new RegExp(phraseAlt([...FILLER_WORDS.zh, ...UNIVERSAL_FILLERS]), 'giu'), '').replace(/[\s\p{P}]/gu, '');
+    return rest.length > 0;
+  }
+  if (text.length < 2) return /[\d٠-٩۰-۹]/.test(text);
+  if (/[\d٠-٩۰-۹]/.test(text)) return true;
   const folded = fold(text.normalize('NFC').replace(/\[\?([^\]]*)\]/g, '$1')).replace(/’/g, "'");
-  const words = folded.replace(p.fillerPhrases, ' ').match(/[\p{L}/]+/gu) ?? [];
+  const words = (lng === 'ar' ? folded.replace(/[\u064b-\u065f\u0670\u0640]/g, '') : folded).replace(p.fillerPhrases, ' ').match(/[\p{L}/]+/gu) ?? [];
   return words.some((w) => !p.fillerWords.has(w));
 }
 
@@ -144,7 +152,7 @@ export function chunkWorthSendingOther(chunk: string, lng: OtherLanguage): boole
  *  the English ones vets also say. */
 export function isPerioOnlyOther(text: string, lng: OtherLanguage, english: (t: string) => string): boolean {
   const p = patterns(lng);
-  const folded = fold(text.normalize('NFC'));
+  const folded = fold((lng === 'ar' || lng === 'zh' ? text.replace(/[，、،]/g, ',').replace(/。/g, '.') : text).normalize('NFC'));
   const rest = english(folded.replace(p.perioScore, ' ').replace(p.perioMeasure, ' '))
     .replace(/[\s,.;/]+/g, '');
   return text.trim().length > 0 && rest.length === 0;

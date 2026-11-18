@@ -19,6 +19,8 @@ import { DentalField, Species, ToothData, ToothMarks } from '../types';
 import type { ScorePicker, ScoreTapMove } from '../utils/chartSettings';
 import { pocketLabels, rootBoxes, formatRootPockets, type PocketMode } from '../utils/pocket';
 
+const GRID_DIRECTION = 'ltr' as const;
+
 interface DentalGridProps {
   /** View-only (saved visit not unlocked): cells, Missing and set-all are
    *  locked, but the grid still scrolls and can be read/copied. */
@@ -992,7 +994,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       {narrow && createPortal(
         // Visual stand-in for the header while it's scrolled away (the
         // real one stays in the grid for screen readers).
-        <div ref={floatRef} className="dental-grid__float-head" aria-hidden="true" style={{ display: 'none' }}>
+        <div ref={floatRef} dir="ltr" className="dental-grid__float-head" aria-hidden="true" style={{ display: 'none' }}>
           <div className="dental-grid__float-pinned">
             <div className="dental-grid__float-cell dental-grid__head--missing" style={{ width: NARROW_LEAD[0] }}><MissingBadge /></div>
             <div className="dental-grid__float-cell dental-grid__head--tooth" style={{ width: NARROW_LEAD[1] }}>
@@ -1014,6 +1016,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
         document.body
       )}
       <div
+        dir="ltr"
         className="dental-grid"
         ref={wrapperRef}
         style={narrow ? ({
@@ -1023,6 +1026,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       >
         <EditorWiringContext.Provider value={wiring}>
           <DataGrid
+            direction={GRID_DIRECTION}
             ref={gridRef}
             // Pin the light theme: react-data-grid's stylesheet otherwise
             // switches its internal vars to a dark palette when the OS is

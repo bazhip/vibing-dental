@@ -82,7 +82,7 @@ html:not(.native-ios) .entry-grid__patient-name {
 }
 html:not(.native-ios) .entry-grid__patient-sep { display: none; }
 html:not(.native-ios) .entry-grid__patient-number { font-size: 12px; font-variant-numeric: tabular-nums; color: var(--text-muted); }
-html:not(.native-ios) .entry-grid__patient .save-status { margin-left: 0; }
+html:not(.native-ios) .entry-grid__patient .save-status { margin-inline-start: 0; }
 html:not(.native-ios) .entry-grid__patient .save-status__word { display: inline; }
 html:not(.native-ios) .entry-grid__visit-switch { display: inline-flex; max-width: 100%; }
 html:not(.native-ios) .entry-grid__visit-select { min-width: 0; max-width: 100%; }
@@ -97,7 +97,7 @@ html:not(.native-ios) .entry-grid__topbar .topbar-new-patient {
 html:not(.native-ios) .entry-grid__topbar :is(.chart-menu--help,.chart-menu--account) .chart-menu__trigger:hover,
 html:not(.native-ios) .entry-grid__topbar .topbar-new-patient:hover { background: var(--surface-alt); color: var(--primary); }
 html:not(.native-ios) .entry-grid__topbar .voice-input:not(:disabled) { border-color: var(--border-strong, #bdd6d2); }
-html:not(.native-ios) .entry-grid__topbar .topbar-new-patient { margin-left: 6px; }
+html:not(.native-ios) .entry-grid__topbar .topbar-new-patient { margin-inline-start: 6px; }
 /* One persistent workspace rail owns global and clinical navigation. */
 html:not(.native-ios) .workspace-layout { --workspace-rail-width: 208px; display: grid; grid-template-columns: var(--workspace-rail-width) minmax(0, 1fr); gap: 24px; align-items: start; }
 html:not(.native-ios) .workspace-main { grid-column: 2; min-width: 0; }
@@ -112,7 +112,7 @@ html:not(.native-ios) .workspace-sidebar {
 }
 html:not(.native-ios) .workspace-nav { display: flex; flex-direction: column; align-items: stretch; gap: 4px; padding: 0 0 12px; margin: 0 0 12px; border-bottom: 1px solid var(--border); }
 html:not(.native-ios) .workspace-nav button {
-  min-height: 44px; padding: 10px 12px; border: 0; border-radius: 6px; text-align: left;
+  min-height: 44px; padding: 10px 12px; border: 0; border-radius: 6px; text-align: start;
   color: var(--primary); background: transparent; box-shadow: none; font-size: 14px;
 }
 html:not(.native-ios) .workspace-nav button[aria-current="page"] { color: var(--primary); background: var(--action-tint); box-shadow: inset 3px 0 var(--primary); }
@@ -129,10 +129,10 @@ html:not(.native-ios) .workspace-sidebar__account .chart-menu__trigger {
   padding: 10px 12px; color: var(--primary); background: var(--surface); border-color: var(--action-border); font-size: 14px;
 }
 html:not(.native-ios) .workspace-sidebar__account .chart-menu__trigger-label {
-  position: static; width: auto; height: auto; margin: 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; clip: auto; white-space: nowrap; text-align: left;
+  position: static; width: auto; height: auto; margin: 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; clip: auto; white-space: nowrap; text-align: start;
 }
 html:not(.native-ios) .workspace-sidebar__account .chart-menu__panel {
-  top: auto; bottom: calc(100% + 8px); left: 0; right: auto; width: 300px;
+  top: auto; bottom: calc(100% + 8px); inset-inline-start: 0; inset-inline-end: auto; width: 300px;
   max-height: calc(100dvh - var(--topbar-height, 72px) - 90px); overflow-y: auto;
 }
 html:not(.native-ios) .sidebar-layout.sidebar-layout--external-nav { display: block; }
@@ -221,7 +221,7 @@ html:not(.native-ios) .entry-grid__topbar .topbar-desktop-visit { display: inlin
 
 .entry-grid__add-logo { flex: 0 0 60px; min-height: 44px; padding: 4px; border: 1px dashed var(--border-strong); border-radius: var(--radius-sm); background: transparent; color: var(--text-muted); font: inherit; font-size: 11px; line-height: 1.2; cursor: pointer; }
 .entry-grid__add-logo:hover { background: var(--action-tint); color: var(--primary); border-color: var(--primary); }
-.entry-grid__practice-link { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px; width: 100%; min-height: 44px; border: 0; background: transparent; padding: 0; color: inherit; font: inherit; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+.entry-grid__practice-link { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px; width: 100%; min-height: 44px; border: 0; background: transparent; padding: 0; color: inherit; font: inherit; text-align: start; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
 .entry-grid__practice-link:hover { color: var(--primary); }
 .entry-grid__practice-link:focus-visible, .entry-grid__add-logo:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: var(--radius-sm); }
 @media (max-width: 600px) { html:not(.native-ios) .entry-grid__practice-brand { flex-basis: 90px; } }

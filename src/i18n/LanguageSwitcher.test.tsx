@@ -46,7 +46,7 @@ test('lists every language by its own name and switches', async () => {
   render(<LanguageSwitcher />);
   const select = screen.getByRole('combobox');
   expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual([
-    'English', 'Français', 'Deutsch', 'Italiano', 'Español', 'Magyar', 'Română',
+    'English', 'Français', 'Deutsch', 'Italiano', 'Español', 'Magyar', 'Română', '简体中文', 'العربية',
   ]);
   await userEvent.selectOptions(select, 'de');
   expect(localStorage.getItem('app.language')).toBe('de');

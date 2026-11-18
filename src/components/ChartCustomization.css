@@ -21,7 +21,7 @@
   gap: 4px;
   padding: 20px 12px;
   background: var(--surface-alt);
-  border-right: 1px solid var(--border);
+  border-inline-end: 1px solid var(--border);
   overflow-y: auto;
 }
 .chart-customization__nav button {
@@ -34,7 +34,7 @@
   font: inherit;
   font-size: 14px;
   font-weight: 550;
-  text-align: left;
+  text-align: start;
   cursor: pointer;
 }
 .chart-customization__nav button:hover { background: var(--surface); color: var(--text); }

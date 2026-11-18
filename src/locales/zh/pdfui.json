@@ -1,0 +1,64 @@
+{
+  "style": {
+    "label": "PDF 样式",
+    "done": "完成",
+    "custom": "自定义颜色",
+    "customShort": "自定义",
+    "customDesc": "在{{layout}}版式中使用您喜欢的颜色。",
+    "currentLayout": "当前",
+    "chooseColor": "选择自定义颜色"
+  },
+  "presets": {
+    "clinic": {
+      "name": "诊所青绿",
+      "description": "与应用一致：青绿色标题、红色异常标记、圆角卡片。"
+    },
+    "classic-blue": {
+      "name": "经典蓝",
+      "description": "传统医疗记录蓝色，搭配实色章节标题。"
+    },
+    "slate": {
+      "name": "石板灰",
+      "description": "中性石墨色，黑白打印也清晰。"
+    },
+    "iris": {
+      "name": "鸢尾紫",
+      "description": "柔和靛蓝点缀，搭配紧凑的大写字母标题。"
+    },
+    "journal": {
+      "name": "期刊",
+      "description": "经典衬线印刷风格，暖色纸张搭配深红点缀。"
+    }
+  },
+  "preview": {
+    "retryImages": "重试加载影像",
+    "withoutImages": "不含影像下载",
+    "title": "临床牙科图表",
+    "subtitle": "用于病历存档和转诊。选择样式或自定义颜色，预览会实时更新。",
+    "closeAria": "关闭预览",
+    "download": "下载 PDF",
+    "loadingImages": "正在加载影像…",
+    "generating": "正在生成预览…",
+    "buildFailed": "无法生成预览。详情请查看控制台。",
+    "imagesFailed": "无法加载图表中的影像。请重试，或下载不含影像的 PDF。",
+    "imagesPartial": "部分影像无法加载。请重试，或下载不含影像的 PDF。",
+    "frameTitle": "临床牙科图表预览"
+  },
+  "link": {
+    "preparing": "正在准备下载链接…",
+    "open": "轻点以下载 PDF",
+    "copy": "复制链接",
+    "copied": "链接已复制，请粘贴到 Chrome 中下载。",
+    "copyPrompt": "请复制此链接并在 Chrome 中打开：",
+    "note": "此应用的浏览器无法直接保存 PDF，请使用此下载链接。链接有效期为{{minutes}}分钟；如未开始下载，请将其复制到 Chrome 中。"
+  },
+  "pages": {
+    "pageAria": "{{title}}，第{{n}}页，共{{total}}页",
+    "failed": "无法绘制预览，仍可下载。"
+  },
+  "hints": {
+    "firefoxAndroid": "Firefox 会在新标签页打开 PDF，请轻点顶部的“下载”保存文件。",
+    "inAppBrowser": "此应用内置的浏览器可能无法保存文件。请轻点“下载”获取下载链接，或在 Chrome 中打开 ToothOps（⋮ 菜单 →“在浏览器中打开”）。",
+    "inAppBrowserMessage": "此应用内置的浏览器无法保存文件。请在 Chrome 中打开 ToothOps（⋮ 菜单 →“在浏览器中打开”），以下载 PDF。"
+  }
+}

@@ -1,0 +1,159 @@
+{
+  "draftLabel": "草稿 — 尚未审核",
+  "draftNotice": "此报告尚未根据当前牙科图表进行审核，信息可能不完整。",
+  "abnormalityNoted": "发现异常",
+  "after": "治疗后",
+  "alreadyMissingLine": "本次就诊前已缺失：{{list}}。",
+  "before": "治疗前",
+  "defaultTitle": "牙科就诊报告",
+  "examAreas": {
+    "buccal": "颊黏膜",
+    "extraoral": "口外／面部",
+    "lymph": "淋巴结",
+    "palate": "腭",
+    "pharynx": "咽／扁桃体",
+    "tongue": "舌"
+  },
+  "extractionsLead": "以下牙齿记录为在本次就诊中拔除：",
+  "fieldPhrases": {
+    "calculus": "牙结石堆积（{{value}}级）",
+    "furcation": "牙根之间的骨质流失（{{value}}级）",
+    "gingivitis": "牙龈炎症（{{value}}级）",
+    "hyperplasia": "牙龈组织过度生长（{{value}}）",
+    "mobility": "牙齿松动（松动度{{value}}）",
+    "pdstate": "牙周病，第{{value}}期",
+    "pocket": "牙龈周围的牙周袋加深（{{value}} mm）",
+    "recession": "牙龈退缩（{{value}}）"
+  },
+  "fieldPlain": {
+    "calculus": "牙结石堆积",
+    "furcation": "牙根之间的骨质流失",
+    "gingivitis": "牙龈炎症",
+    "hyperplasia": "牙龈组织过度生长",
+    "mobility": "牙齿松动",
+    "pdstate": "牙周病",
+    "pocket": "牙龈周围的牙周袋加深",
+    "recession": "牙龈退缩"
+  },
+  "headings": {
+    "alreadyMissing": "本次就诊前已缺失",
+    "diagram_named": "{{pet}}的口腔",
+    "diagram_unnamed": "您宠物的口腔",
+    "examNotes": "其他检查记录",
+    "extractions": "本次就诊中拔除的牙齿",
+    "findings": "检查发现",
+    "homecare_named": "{{pet}}的居家牙齿护理",
+    "homecare_unnamed": "您宠物的居家牙齿护理",
+    "photos": "治疗前后对比",
+    "recheck": "建议复查",
+    "teamNote": "兽医团队寄语"
+  },
+  "homecareTips": {
+    "brushing": "每天使用宠物专用安全牙膏刷牙，是您能采取的最有效护理措施。",
+    "products": "带有 VOHC 认证标志的牙科处方粮、洁齿咀嚼物及饮水添加剂，有助于在两次刷牙之间维护口腔健康。",
+    "warningSigns": "请留意口臭、流口水、掉落食物或用爪子抓挠嘴部等情况，如有发现，请致电我们。"
+  },
+  "homecareTipsEquine": {
+    "checkups": "多数马匹每6至12个月需要检查一次牙齿；幼马和老年马可能需要更频繁的护理。",
+    "forage": "提供充足粗饲料，长茎干草和放牧有助于牙齿均匀磨耗。",
+    "warningSigns": "请留意掉落饲料、体重减轻、进食缓慢、甩头或抗拒衔铁、口臭或鼻分泌物等情况，如有发现，请致电我们。"
+  },
+  "intro": "此报告汇总了{{pet}}本次牙科就诊所记录的信息。如有疑问，请与您的兽医团队讨论。",
+  "legendFilled": "实心填充＝本次就诊前已缺失",
+  "legendNumbers": "编号对应下方检查结果",
+  "legendRemoved": "红色 ✕＝今日拔除",
+  "noProblems": "本次就诊尚未记录牙科检查结果。",
+  "ourPractice": "本诊所",
+  "ownerLabel": "宠物主人",
+  "patientLabel": "患者",
+  "preparedBy": {
+    "byTeam": "由您的兽医团队编制。",
+    "byTeamAtPractice": "由{{practice}}兽医团队编制。",
+    "doctor": "由{{doctor}}编制。",
+    "doctorAtPractice": "由{{practice}}的{{doctor}}编制。"
+  },
+  "removedToday": "今日拔除",
+  "species": {
+    "canine": "犬",
+    "canine-deciduous": "幼犬",
+    "feline": "猫",
+    "feline-deciduous": "幼猫",
+    "equine": "马"
+  },
+  "tooth": {
+    "deciduous": "乳",
+    "kinds": {
+      "canine": "犬齿",
+      "incisor": "门齿",
+      "molar": "臼齿",
+      "premolar": "前臼齿"
+    },
+    "ordinals": {
+      "first": "第一",
+      "fourth": "第四",
+      "second": "第二",
+      "third": "第三"
+    },
+    "sides": {
+      "lowerLeft": "左下",
+      "lowerRight": "右下",
+      "upperLeft": "左上",
+      "upperRight": "右上"
+    }
+  },
+  "yourPet": "您的宠物",
+  "yourTeam": "您的兽医团队",
+  "plainCodes": {
+    "T/FX": "牙齿折断",
+    "T/FX/EI": "牙釉质裂纹",
+    "T/FX/EF": "牙齿小块折断（仅限牙釉质）",
+    "T/FX/UCF": "牙齿折断（牙神经未暴露）",
+    "T/FX/CCF": "牙齿折断并暴露牙神经",
+    "T/FX/UCRF": "牙齿折断延伸至牙龈缘以下（牙神经未暴露）",
+    "T/FX/CCRF": "牙齿折断延伸至牙龈缘以下，并暴露牙神经",
+    "T/FX/RF": "牙根折断",
+    "T/PE": "牙神经暴露",
+    "T/NV": "牙齿失去活力",
+    "TR": "牙齿吸收（机体正在分解牙齿）",
+    "T/A": "牙齿脱落",
+    "T/U": "尚未萌出牙龈的牙齿",
+    "T/I": "嵌在牙龈下的牙齿",
+    "DT": "乳牙",
+    "AT": "牙齿相互摩擦造成的磨耗",
+    "AB": "咀嚼硬物造成的牙齿磨损",
+    "E/D": "牙釉质缺损",
+    "E/H": "牙釉质过薄或发育不良",
+    "CA": "龋洞（蛀牙）",
+    "GR": "牙龈退缩",
+    "GH": "牙龈组织过度生长",
+    "OM": "口腔内肿物",
+    "B": "活组织检查（取组织样本送检）",
+    "B/I": "活组织检查（取肿物样本送检）",
+    "B/E": "切除肿物并送检",
+    "X": "牙齿已拔除",
+    "XS": "分段拔牙",
+    "XSS": "外科拔牙",
+    "RCT": "根管治疗",
+    "VPT": "保留牙齿活力的治疗",
+    "PRO": "专业洁牙（洁治与抛光）"
+  },
+  "summary": {
+    "gingivitis": "{{extent}}存在牙龈炎症{{severity}}",
+    "calculus": "{{extent}}存在牙结石{{severity}}",
+    "recession": "{{extent}}存在牙龈退缩",
+    "hyperplasia": "{{extent}}存在牙龈组织过度生长"
+  },
+  "extent": {
+    "most": "大多数牙齿",
+    "many": "许多牙齿",
+    "some": "部分牙齿"
+  },
+  "severity": {
+    "mild": "轻度",
+    "moderate": "中度",
+    "severe": "重度",
+    "single": "（{{level}}）",
+    "range": "（{{from}}至{{to}}）"
+  },
+  "otherFindings": "其他检查结果"
+}

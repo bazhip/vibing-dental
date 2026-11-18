@@ -30,6 +30,8 @@ import {
 import { createPenFilter } from './toothDiagram/penFilter';
 
 // SF Symbol names (not text).
+const DIAGRAM_DIRECTION = 'ltr' as const;
+
 const XMARK_ICON = 'xmark';
 
 // One filter for the whole session: once Apple Pencil has drawn on any
@@ -1097,7 +1099,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
 
   return (
     <div className={`tooth-diagram-wrapper${readOnly ? ' tooth-diagram-wrapper--readonly' : ''}`} ref={wrapperRef}>
-    <svg
+    <svg direction={DIAGRAM_DIRECTION}
       ref={svgRef}
       viewBox={`${viewBoxX} ${viewBoxY} ${viewBoxWidth} ${viewBoxHeight}`}
       className="tooth-diagram"

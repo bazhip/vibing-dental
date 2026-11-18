@@ -156,7 +156,9 @@
     "it": "Italiano (italiană)",
     "pt": "Português (portugheză)",
     "hu": "Magyar (maghiară)",
-    "ro": "Română"
+    "ro": "Română",
+    "zh": "简体中文 (chineză simplificată)",
+    "ar": "العربية (arabă)"
   },
   "email": {
     "button": "Trimiteți proprietarului prin e-mail",

@@ -1,5 +1,6 @@
 import i18n, { loadLanguage } from './index';
 import type { AppLanguage } from './config';
+import { languageDirection } from './config';
 import { writeStoredLanguage } from './storedLanguage';
 
 export type ApplyResult = 'applied' | 'failed' | 'superseded';
@@ -23,5 +24,6 @@ export async function applyLanguage(lng: AppLanguage, { remember = false } = {})
   // A newer request may have been made (and applied) while this one settled.
   if (request !== latest) return 'superseded';
   document.documentElement.lang = lng;
+  document.documentElement.dir = languageDirection(lng);
   return 'applied';
 }

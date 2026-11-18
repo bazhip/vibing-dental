@@ -1,3 +1,4 @@
+import { ZH_EXAMPLES, AR_EXAMPLES } from './scriptFewShot';
 import type { AppLanguage } from '../../i18n/config';
 
 // Prompt text for dictation in fr/de/it/es: a short language block and
@@ -14,6 +15,8 @@ type DictationLanguage = Exclude<AppLanguage, 'en'>;
 /** How each language is named in the (English) prompt, and how a decimal
  *  dose is said in it. */
 const LANGUAGE: Record<DictationLanguage, { name: string; decimal: string; percent: string }> = {
+  zh: { name: 'Simplified Chinese (Mandarin)', decimal: '零点三', percent: '百分之零点五' },
+  ar: { name: 'Arabic', decimal: 'صفر فاصلة ثلاثة', percent: 'صفر فاصلة خمسة بالمئة' },
   hu: { name: 'Hungarian', decimal: 'nulla egész három tized', percent: 'nulla egész öt tized százalék' },
   ro: { name: 'Romanian', decimal: 'zero virgulă trei', percent: 'zero virgulă cinci la sută' },
   fr: { name: 'French', decimal: 'zéro virgule trois', percent: 'zéro virgule cinq pour cent' },
@@ -351,4 +354,4 @@ const RO = `ROMANIAN EXAMPLES — native clinical dictation.
 `;
 
 /** Native few-shot examples, appended after the English ones. */
-export const NATIVE_FEW_SHOT: Record<DictationLanguage, string> = { fr: FR, de: DE, it: IT, es: ES, hu: HU, ro: RO };
+export const NATIVE_FEW_SHOT: Record<DictationLanguage, string> = { fr: FR, de: DE, it: IT, es: ES, hu: HU, ro: RO, zh: ZH_EXAMPLES, ar: AR_EXAMPLES };

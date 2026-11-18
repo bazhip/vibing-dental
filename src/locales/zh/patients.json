@@ -1,0 +1,72 @@
+{
+  "title": "患者",
+  "search": {
+    "placeholder": "搜索",
+    "label": "按姓名、编号或宠物主人搜索患者",
+    "clear": "清除搜索"
+  },
+  "signIn": "登录以查看您保存的牙科图表。",
+  "unnamed": "未命名患者",
+  "empty": "尚无已保存的牙科图表。记录时会自动保存。",
+  "retry": "重试",
+  "loadMore": "加载更多",
+  "filter": {
+    "button": "筛选与排序",
+    "sortBy": "排序依据",
+    "sortPatient": "姓名",
+    "sortUpdated": "最近更新",
+    "sortRecall": "复查日期",
+    "order": "顺序",
+    "patientAsc": "A 到 Z",
+    "patientDesc": "Z 到 A",
+    "updatedDesc": "最新优先",
+    "updatedAsc": "最早优先",
+    "recallAsc": "最近到期优先",
+    "recallDesc": "最晚到期优先",
+    "species": "物种",
+    "allSpecies": "所有物种",
+    "doctor": "医生",
+    "allDoctors": "所有医生",
+    "due": "到期复查",
+    "dueCount": "到期复查（{{count}}）"
+  },
+  "add": {
+    "button": "添加",
+    "newPatient": "新患者"
+  },
+  "row": {
+    "number": "#{{number}}",
+    "visits_one": "{{count}}次就诊",
+    "visits_other": "{{count}}次就诊",
+    "updated": "更新于 {{date}}"
+  },
+  "recall": {
+    "overdue": "已逾期 · {{date}}",
+    "today": "今日到期",
+    "upcoming": "复查 {{date}}"
+  },
+  "actions": {
+    "open": "打开",
+    "delete": "删除",
+    "newVisit": "新建就诊"
+  },
+  "confirmDelete": {
+    "title": "删除{{name}}？",
+    "titleDated": "删除{{name}}（{{date}}）？",
+    "confirm": "删除就诊"
+  },
+  "visits": {
+    "undated": "未注明日期的就诊",
+    "byDoctor": "{{doctor}} · 更新于 {{date}}",
+    "updated": "更新于 {{date}}",
+    "empty": "暂无就诊。",
+    "historyLabel": "{{name}} · {{date}}"
+  },
+  "rechecks": {
+    "title": "复查",
+    "overdue": "已逾期",
+    "today": "今日到期",
+    "empty": "暂无到期复查",
+    "emptyHint": "患者将在复查到期当天显示在这里。"
+  }
+}

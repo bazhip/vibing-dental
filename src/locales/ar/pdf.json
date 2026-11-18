@@ -1,0 +1,90 @@
+{
+  "header": {
+    "title": {
+      "canine": "مخطط أسنان الكلاب",
+      "canineDeciduous": "مخطط الأسنان اللبنية للكلاب",
+      "feline": "مخطط أسنان القطط",
+      "felineDeciduous": "مخطط الأسنان اللبنية للقطط",
+      "equine": "مخطط أسنان الخيل"
+    },
+    "subtitle": "تقييم دواعم السن وخطة العلاج",
+    "tech": "الفني: {{name}}"
+  },
+  "patient": {
+    "title": "معلومات المريض",
+    "date": "التاريخ",
+    "patient": "المريض",
+    "pid": "معرّف المريض",
+    "complaint": "الشكوى الرئيسية"
+  },
+  "exam": {
+    "title": "نتائج فحص الفم",
+    "normal": "طبيعي",
+    "abnormal": "غير طبيعي",
+    "comment": "تعليق",
+    "items": {
+      "extraoral": "خارج الفم/الوجه",
+      "lymph": "العقد اللمفاوية",
+      "buccal": "مخاطية الخد",
+      "tongue": "اللسان",
+      "palate": "الحنك",
+      "pharynx": "البلعوم/اللوزتان"
+    },
+    "additional": "مناطق فحص إضافية",
+    "alsoNormal": "طبيعي: {{areas}}",
+    "moreAreas_one": "مناطق إضافية في التطبيق: {{count}}+",
+    "moreAreas_other": "مناطق إضافية في التطبيق: {{count}}+",
+    "moreAreas_zero": "مناطق إضافية في التطبيق: {{count}}+",
+    "moreAreas_two": "مناطق إضافية في التطبيق: {{count}}+",
+    "moreAreas_few": "مناطق إضافية في التطبيق: {{count}}+",
+    "moreAreas_many": "مناطق إضافية في التطبيق: {{count}}+"
+  },
+  "grid": {
+    "maxilla": "قوس الفك العلوي",
+    "mandible": "قوس الفك السفلي"
+  },
+  "codes": {
+    "title": "الرموز المستخدمة",
+    "more": "{{n}}+ إضافية"
+  },
+  "treatment": {
+    "title": "تقرير العلاج والجراحة",
+    "findingsHeading": "نتائج التصوير الشعاعي",
+    "treatmentHeading": "العلاج",
+    "continued": "… يتبع — التقرير الكامل مضمّن في هذا الملف (أعيدوا تحميله في التطبيق)."
+  },
+  "anesthesia": {
+    "title": "التخدير · الحصار العصبي",
+    "nerveBlock": "حصار عصبي",
+    "nerveBlockWith": "حصار عصبي باستخدام {{drug}}",
+    "anesthetic": "مخدّر",
+    "anesthetics": "مواد التخدير",
+    "right": "يمين",
+    "left": "يسار",
+    "dose": "{{value}} مل",
+    "other": "أخرى",
+    "blocks": {
+      "infraorbital": "تحت الحجاج",
+      "caudalMaxillary": "الفك العلوي الذيلي",
+      "inferiorAlveolar": "السنخي السفلي",
+      "mental": "الذقني"
+    }
+  },
+  "footer": {
+    "generated": "أُنشئ في {{at}}",
+    "pid": "معرّف المريض {{id}}",
+    "pageOf": "الصفحة {{n}} من {{total}}"
+  },
+  "images": {
+    "title": "الصور والصور الشعاعية",
+    "titleRange": "الصور والصور الشعاعية ({{range}} من {{total}})",
+    "failed": "تعذّر تحميل الصورة",
+    "photo": "صورة",
+    "radiograph": "صورة شعاعية",
+    "tooth": "السن {{triadan}}"
+  },
+  "continuation": {
+    "title": "ملاحظات سريرية",
+    "notice": "تستمر التفاصيل الكاملة في الصفحات التالية."
+  }
+}

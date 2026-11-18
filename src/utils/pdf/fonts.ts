@@ -5,7 +5,11 @@ import { safeFont } from './safeFont';
 /** Keep the established PDF fonts for existing languages. Hungarian and
  * Romanian need glyphs absent from WinAnsi, so lazily embed metric-compatible
  * Liberation fonts (SIL OFL, bundled locally for offline exports). */
-export async function embedPdfFonts(doc: PDFDocument, lng: string, family: FontFamilyKey = 'sans') {
+export async function embedPdfFonts(doc: PDFDocument, lng: string, family: FontFamilyKey = 'sans', content?: string) {
+  if (lng === 'zh' || lng === 'ar') {
+    const { embedComplexFonts } = await import('./complexFonts');
+    return embedComplexFonts(doc, lng, content);
+  }
   if (lng === 'hu' || lng === 'ro') {
     const { embedUnicodeFonts } = await import('./unicodeFonts');
     return embedUnicodeFonts(doc, family);
