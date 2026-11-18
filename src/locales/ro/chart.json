@@ -277,10 +277,7 @@
     "strokeColorAria": "Culoarea liniei {{color}}",
     "strokeWidth": "Grosimea liniei",
     "strokeWidthValue": "{{width}} pixeli",
-    "clearStrokes": "Ștergeți liniile",
-    "more": "Mai multe instrumente de diagramă",
-    "moreTitle": "Mai multe instrumente — comentarii, numere, mărire, dimensiunea textului",
-    "moreLabel": "Mai multe instrumente"
+    "clearStrokes": "Ștergeți liniile"
   },
   "codeRef": {
     "all": "Coduri",

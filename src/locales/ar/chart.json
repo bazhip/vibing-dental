@@ -289,10 +289,7 @@
     "strokeColorAria": "لون الخط {{color}}",
     "strokeWidth": "عرض الخط",
     "strokeWidthValue": "{{width}} بكسل",
-    "clearStrokes": "مسح الخطوط",
-    "more": "أدوات رسم إضافية",
-    "moreTitle": "أدوات إضافية — التعليقات والأرقام والتكبير وحجم النص",
-    "moreLabel": "أدوات إضافية"
+    "clearStrokes": "مسح الخطوط"
   },
   "codeRef": {
     "all": "الرموز",

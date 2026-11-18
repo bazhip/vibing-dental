@@ -192,15 +192,10 @@ describe('DiagramView toolbar', () => {
         onStrokesChange={vi.fn()}
       />
     );
-  it('offers Free comment without opening More tools', () => {
+  it('offers Free comment on the toolbar', () => {
     const onCommentsChange = vi.fn();
     render(<DiagramView title="Diagnosis" species="canine" toothMarks={{}} onToothMarksChange={vi.fn()} comments={[]} onCommentsChange={onCommentsChange} strokes={[]} onStrokesChange={vi.fn()} />);
-    const more = screen.getByRole('button', { name: 'More diagram tools' });
-    const freeComment = screen.getByRole('button', { name: '+ Free comment' });
-    const disclosure = document.getElementById(more.getAttribute('aria-controls')!);
-    expect(more).toHaveAttribute('aria-expanded', 'false');
-    expect(disclosure).not.toContainElement(freeComment);
-    fireEvent.click(freeComment);
+    fireEvent.click(screen.getByRole('button', { name: '+ Free comment' }));
     expect(onCommentsChange).toHaveBeenCalledWith([
       expect.objectContaining({ text: '', anchorTriadan: null, x: expect.any(Number), y: expect.any(Number) }),
     ]);
@@ -215,8 +210,6 @@ describe('DiagramView toolbar', () => {
   it('shows Draw settings only while drawing, and they fold away', () => {
     renderIt();
     const panel = screen.getByRole('group', { name: 'Draw settings' });
-    const more = screen.getByRole('button', { name: 'More diagram tools' });
-    expect(document.getElementById(more.getAttribute('aria-controls')!)).not.toContainElement(panel);
     const toggle = within(panel).getByRole('button', { name: 'Draw settings' });
     expect(toggle).toHaveAttribute('aria-expanded', 'true');
     expect(within(panel).getByRole('button', { name: 'Clear strokes' })).toBeInTheDocument();
@@ -226,13 +219,14 @@ describe('DiagramView toolbar', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Comment' }));
     expect(screen.queryByRole('group', { name: 'Draw settings' })).toBeNull();
   });
-  it('never exposes drawing mutations in a locked chart’s More tools panel', () => {
+  it('never exposes drawing mutations in a locked chart, but keeps the view controls', () => {
     renderIt(true);
-    fireEvent.click(screen.getByRole('button', { name: 'More diagram tools' }));
     expect(screen.queryByRole('button', { name: '+ Free comment' })).toBeNull();
     expect(screen.queryByRole('button', { name: 'Clear strokes' })).toBeNull();
     expect(screen.queryByRole('group', { name: 'Draw settings' })).toBeNull();
     expect(screen.getByRole('button', { name: 'Zoom in' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Numbers' })).toBeInTheDocument();
+    expect(screen.getByRole('group', { name: 'Comment text size' })).toBeInTheDocument();
   });
   it('app: Undo / Redo are icons', () => {
     flags.native = true;
@@ -242,22 +236,29 @@ describe('DiagramView toolbar', () => {
     expect(within(screen.getByRole('group', { name: 'Undo / Redo' })).getByRole('button', { name: 'Undo' }).textContent).toBe('');
     expect(screen.getByRole('button', { name: 'Numbers' })).toBeInTheDocument();
   });
-  it('returns keyboard focus to More tools when its panel closes with Escape', () => {
+  it('keeps numbers and zoom on the toolbar, with no More menu', () => {
     renderIt();
-    const more = screen.getByRole('button', { name: 'More diagram tools' });
-    fireEvent.click(more);
-    const zoom = screen.getByRole('button', { name: 'Zoom in' });
-    zoom.focus();
-    fireEvent.keyDown(zoom, { key: 'Escape' });
-    expect(more).toHaveAttribute('aria-expanded', 'false');
-    expect(more).toHaveFocus();
-    expect(document.getElementById(more.getAttribute('aria-controls')!)).not.toHaveClass('diagram-view__extras--open');
+    expect(screen.queryByRole('button', { name: 'More diagram tools' })).toBeNull();
+    expect(screen.getByRole('button', { name: 'Numbers' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Zoom in' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Zoom out' })).toBeInTheDocument();
+  });
+  it('shows comment text size while commenting, and it folds away', () => {
+    renderIt();
+    expect(screen.queryByRole('group', { name: 'Comment text size' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Comment' }));
+    const panel = screen.getByRole('group', { name: 'Comment text size' });
+    const toggle = within(panel).getByRole('button', { name: 'Comment text size' });
+    expect(within(panel).getAllByRole('button', { pressed: true })).toHaveLength(1);
+    fireEvent.click(toggle);
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    expect(within(panel).queryAllByRole('button', { pressed: true })).toHaveLength(0);
   });
   it('website: Undo / Redo use the same SVG icons', () => {
     renderIt();
     expect(within(screen.getByRole('group', { name: 'Undo / Redo' })).getByRole('button', { name: 'Undo' }).querySelector('[data-icon="arrow-uturn-backward"]')).not.toBeNull();
     expect(within(screen.getByRole('group', { name: 'Undo / Redo' })).getByRole('button', { name: 'Redo' }).querySelector('[data-icon="arrow-uturn-forward"]')).not.toBeNull();
-    expect(screen.getByRole('button', { name: '# Numbers' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Numbers' })).toBeInTheDocument();
   });
 });
 

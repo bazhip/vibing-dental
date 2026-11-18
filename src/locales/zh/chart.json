@@ -273,10 +273,7 @@
     "strokeColorAria": "笔画颜色{{color}}",
     "strokeWidth": "笔画宽度",
     "strokeWidthValue": "{{width}}像素",
-    "clearStrokes": "清除笔画",
-    "more": "更多牙列图工具",
-    "moreTitle": "更多工具：备注、编号、缩放、文字大小",
-    "moreLabel": "更多工具"
+    "clearStrokes": "清除笔画"
   },
   "codeRef": {
     "all": "代码",
