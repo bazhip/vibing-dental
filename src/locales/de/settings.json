@@ -262,6 +262,10 @@
       "moveDown": "{{name}} nach unten verschieben",
       "count": "{{used}} von {{max}} eingerichtet",
       "limit": "Limit erreicht. Entfernen Sie einen Eintrag, um einen weiteren hinzuzufügen."
+    },
+    "autosave": {
+      "label": "Automatisch speichern",
+      "hint": "Änderungen an der Akte automatisch speichern. Deaktivieren Sie diese Option, um manuell zu speichern."
     }
   },
   "feedback": {

@@ -1,4 +1,6 @@
 import React from 'react';
+import { reservePatientNumber } from '../utils/patientNumberAllocation';
+import { isGeneratedPatientNumber } from '../utils/patientIds';
 import { hasChartImages, hasPendingImageUpload, findImageDrafts, discardImageDraft } from '../utils/imageDrafts';
 import { localDateISO } from '../utils/localDate';
 import { ChartSnapshot } from '../types';
@@ -70,6 +72,7 @@ export interface UseCloudSyncReturn {
   dirty: boolean;
   /** Save the current chart to the cloud now. */
   saveNow: () => Promise<void>;
+  autosaveEnabled?: boolean;
   /** A chart that has never reached the cloud and holds only patient/owner
    *  details: autosave waits for clinical content, so the UI offers a
    *  manual Save. False once the chart has been saved (by either route). */
@@ -82,7 +85,7 @@ export interface UseCloudSyncReturn {
   listCharts: (query?: ChartListQuery) => Promise<ChartListPage>;
   /** All visits for one patient (matched by number when present, else
    *  by name) — powers the topbar visit switcher. */
-  listPatientVisits: (patientNumber: string, patientName: string) => Promise<CloudChartMeta[]>;
+  listPatientVisits: (patientNumber: string, patientName: string, patientId?: string) => Promise<CloudChartMeta[]>;
   /** Ask before replacing a chart that has unsaved changes; true = go ahead. */
   confirmDiscardIfDirty: (action: DiscardAction) => Promise<boolean>;
   /** `ifClean`: skip (no prompt) when the working chart has unsaved edits. */
@@ -110,7 +113,7 @@ export interface UseCloudSyncReturn {
 function hasContent(s: ChartSnapshot): boolean {
   const p = s?.patientInfo;
   if (!p || typeof p !== 'object' || !Array.isArray(s.toothData)) return false;
-  if ((p.patientName ?? '').trim() || (p.patientNumber ?? '').trim() || (p.ownerName ?? '').trim() || (p.ownerPhone ?? '').trim() || (p.ownerEmail ?? '').trim() || (p.complaint ?? '').trim() || (p.treatmentReport ?? '').trim()) return true;
+  if ((p.patientName ?? '').trim() || ((p.patientNumber ?? '').trim() && !isGeneratedPatientNumber(p)) || (p.ownerName ?? '').trim() || (p.ownerPhone ?? '').trim() || (p.ownerEmail ?? '').trim() || (p.complaint ?? '').trim() || (p.treatmentReport ?? '').trim()) return true;
   // Values are strings, except the drug list (and legacy `drug`); only a
   // named drug counts as content.
   if (Object.values(p.nerveBlocks ?? {}).some((v) =>
@@ -205,7 +208,8 @@ export function useCloudSync(
   editingUnlocked = false,
   /** The profile (and so practiceId) has loaded. Autosave waits for it, so
    *  a new chart's first save can't record "no practice" by racing it. */
-  practiceReady = true
+  practiceReady = true,
+  autosaveEnabled = true
 ): UseCloudSyncReturn {
   // Trial/standalone: no account to save to — the hook is inert.
   const on = cloudEnabled && active;
@@ -508,7 +512,7 @@ export function useCloudSync(
   // for another visit of the same patient on the same visit date (people
   // re-starting a patient instead of reopening this morning's chart left
   // many same-day duplicates). Asked once per chart.
-  const listPatientVisitsRef = React.useRef<(n: string, name: string) => Promise<CloudChartMeta[]>>(async () => []);
+  const listPatientVisitsRef = React.useRef<(n: string, name: string, patientId?: string) => Promise<CloudChartMeta[]>>(async () => []);
   const dupAnsweredRef = React.useRef('');
   // Tied to one chart: a bare "skip the next one" flag outlived a visit
   // that was never saved and let an unrelated chart skip the question.
@@ -527,7 +531,7 @@ export function useCloudSync(
     const p = snap.patientInfo;
     let visits: CloudChartMeta[] = [];
     try {
-      visits = await listPatientVisitsRef.current(p.patientNumber ?? '', p.patientName ?? '');
+      visits = await listPatientVisitsRef.current(p.patientNumber ?? '', p.patientName ?? '', p.patientId);
     } catch {
       return true; // can't check (offline etc.) — never block a save on it
     }
@@ -560,7 +564,43 @@ export function useCloudSync(
     return false;
   };
 
+  const allocationFailed = React.useRef(false);
+  const patientSetter = React.useRef(chart.setPatientInfo);
+  patientSetter.current = chart.setPatientInfo;
+  const assignPatientNumber = async () => {
+    const { chartId: id, serialized: json } = latest.current;
+    const info = (JSON.parse(json) as ChartSnapshot).patientInfo;
+    if (!on || !info.patientId || info.patientNumber.trim() || info.generatedPatientNumber) return;
+    if (!practiceReadyRef.current) throw new LocalizedError(i18n.t('sync.practiceUnknown', { ns: 'app' }));
+    const practice = practiceIdRef.current;
+    const number = await reservePatientNumber(info.patientId, practice);
+    if (latest.current.chartId !== id || practiceIdRef.current !== practice) return;
+    const current = JSON.parse(latest.current.serialized) as ChartSnapshot;
+    if (current.patientInfo.patientId !== info.patientId || current.patientInfo.patientNumber.trim() || current.patientInfo.generatedPatientNumber) return;
+    if (allocationFailed.current) { allocationFailed.current = false; setSaveError(''); setStatus('idle'); }
+    const assigned = { ...current.patientInfo, patientNumber: number, generatedPatientNumber: number };
+    // Explicit Save can be awaiting this promise while React batches the setter.
+    // Its snapshot and saved baseline must already contain the reserved number.
+    latest.current = { chartId: id, serialized: JSON.stringify({ ...current, patientInfo: assigned }) };
+    patientSetter.current(previous => previous.patientId === info.patientId && !previous.patientNumber.trim() && !previous.generatedPatientNumber
+      ? { ...previous, patientNumber: number, generatedPatientNumber: number } : previous);
+  };
+  const assignPatientNumberRef = React.useRef(assignPatientNumber);
+  assignPatientNumberRef.current = assignPatientNumber;
+  React.useEffect(() => {
+    if (!on || !practiceReady || !online || !snapshot.patientInfo.patientId || snapshot.patientInfo.patientNumber.trim() || snapshot.patientInfo.generatedPatientNumber) return;
+    let cancelled = false;
+    void assignPatientNumberRef.current().catch(error => {
+      if (!cancelled) { allocationFailed.current = true; setSaveError(describeSaveError(error)); setStatus('error'); }
+    });
+    return () => { cancelled = true; };
+  }, [on, practiceReady, practiceId, online, reconnects, chartId, snapshot.patientInfo.patientId, snapshot.patientInfo.patientNumber, snapshot.patientInfo.generatedPatientNumber]);
+
   const performSave = React.useCallback(async (automatic = false): Promise<void> => {
+    const targetId = latest.current.chartId;
+    try { await assignPatientNumberRef.current(); }
+    catch (error) { allocationFailed.current = true; setSaveError(describeSaveError(error)); setStatus('error'); throw error; }
+    if (latest.current.chartId !== targetId) return;
     const { serialized: json, chartId: id } = latest.current;
     const snap = JSON.parse(json) as ChartSnapshot;
     if (!hasContent(snap)) return;
@@ -590,7 +630,7 @@ export function useCloudSync(
     setWorkspaceResume(value => value + 1);
   };
   const saveNow = React.useCallback((automatic = false) => {
-    if (workspacePaused.current) return Promise.resolve();
+    if (automatic && workspacePaused.current) return Promise.resolve();
     const pending = performSave(automatic);
     pendingSaves.current.add(pending);
     void pending.finally(() => pendingSaves.current.delete(pending)).catch(() => {});
@@ -639,7 +679,7 @@ export function useCloudSync(
   // Offline, or a save failed: wait, and retry as soon as the connection
   // is back ('online' event).
   React.useEffect(() => {
-    if (!on || (chart.openedExisting && !editingUnlocked)) return;
+    if (!on || !autosaveEnabled || (chart.openedExisting && !editingUnlocked)) return;
     if (!dirty || !online) return;
     // A new chart's first save waits until the practice is known.
     if (!practiceReady && !everSaved) return;
@@ -650,7 +690,7 @@ export function useCloudSync(
     const t = window.setTimeout(() => { saveNowRef.current(true).catch(() => {}); }, 1200);
     return () => window.clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [workspaceResume, on, chart.openedExisting, editingUnlocked, dirty, serialized, online, reconnects, awaitingClinical, practiceReady, everSaved]);
+  }, [autosaveEnabled, workspaceResume, on, chart.openedExisting, editingUnlocked, dirty, serialized, online, reconnects, awaitingClinical, practiceReady, everSaved]);
 
   // Guard leaving a chart with unsaved changes.
   const confirmDiscardIfDirty = async (action: DiscardAction): Promise<boolean> => {
@@ -668,12 +708,13 @@ export function useCloudSync(
 
   const listPatientVisits = React.useCallback(async (
     patientNumber: string,
-    patientName: string
+    patientName: string,
+    patientId?: string
   ): Promise<CloudChartMeta[]> => {
     if (!supabase) return [];
     const num = patientNumber.trim();
     const name = patientName.trim();
-    if (!num && !name) return [];
+    if (!num && !name && !patientId) return [];
     let query = supabase
       .from('charts')
       .select(CHART_META_COLUMNS)
@@ -682,7 +723,8 @@ export function useCloudSync(
     // Same identity rule the library's grouping uses: the patient number
     // is the key when present; name-keyed only for number-less charts.
     // ilike without wildcards = case-insensitive equality.
-    if (num) query = query.ilike('patient_number', escapeLike(num));
+    if (patientId) query = query.eq('data->patientInfo->>patientId', patientId);
+    else if (num) query = query.ilike('patient_number', escapeLike(num));
     else query = query.ilike('patient_name', escapeLike(name)).eq('patient_number', '');
     const { data, error } = await query;
     if (error) throw new Error(error.message);
@@ -816,6 +858,7 @@ export function useCloudSync(
 
   return {
     enabled: on,
+    autosaveEnabled,
     captureWorkspace,
     restoreWorkspace,
     resumeWorkspace,

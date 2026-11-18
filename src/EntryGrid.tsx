@@ -1,4 +1,5 @@
 import { RadiologyReportSection } from './components/RadiologyReportSection';
+import { isGeneratedPatientNumber } from './utils/patientIds';
 import { ImageHistory } from './components/ImageHistory';
 import { imageToothLabel } from './utils/imageTeeth';
 import React from 'react';
@@ -221,8 +222,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // switcher and the current-visit rule below. Loaded further down.
   const [loadedVisits, setVisits] = React.useState<CloudChartMeta[]>([]);
   const visitCache = React.useRef(new Map<string, CloudChartMeta[]>());
-  const visitIdentity = JSON.stringify([chart.patientInfo.patientNumber.trim().toLowerCase(), chart.patientInfo.patientName.trim().toLowerCase(), chart.species, !chart.patientInfo.patientNumber.trim() && !chart.patientInfo.patientName.trim() ? chart.cloudChartId : '']);
-  const visits = React.useMemo(() => visitCache.current.get(visitIdentity) ?? visitsForPatient(loadedVisits, chart.patientInfo.patientNumber, chart.patientInfo.patientName), [loadedVisits, visitIdentity, chart.patientInfo.patientNumber, chart.patientInfo.patientName]);
+  const visitIdentity = chart.patientInfo.patientId ? JSON.stringify([chart.patientInfo.patientId, chart.species]) : JSON.stringify([chart.patientInfo.patientNumber.trim().toLowerCase(), chart.patientInfo.patientName.trim().toLowerCase(), chart.species, !chart.patientInfo.patientNumber.trim() && !chart.patientInfo.patientName.trim() ? chart.cloudChartId : '']);
+  const visits = React.useMemo(() => visitCache.current.get(visitIdentity) ?? visitsForPatient(loadedVisits, chart.patientInfo.patientNumber, chart.patientInfo.patientName, chart.patientInfo.patientId), [loadedVisits, chart.patientInfo.patientId, visitIdentity, chart.patientInfo.patientNumber, chart.patientInfo.patientName]);
   // Today's visit isn't a "saved visit": reloading or reopening it
   // mid-visit opens it editable with no banner (see isCurrentVisit).
   // Latched per chart so changing the date mid-edit doesn't lock it.
@@ -234,7 +235,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const currentVisit = currentVisitRule || currentVisitLatch === chart.cloudChartId;
   const editable = editUnlocked || currentVisit;
   const native = isNativeApp();
-  const rawCloud = useCloudSync(chart, !trial, profile.practiceId, editable, profile.loaded && profile.practiceKnown);
+  const rawCloud = useCloudSync(chart, !trial, profile.practiceId, editable, profile.loaded && profile.practiceKnown, chartSettings.loaded && prefs.autosave);
   const animalTabs = useAnimalTabs(chart, rawCloud, !native);
   const cloud = native ? rawCloud : { ...rawCloud, openChart: animalTabs.openChart, signOut: animalTabs.signOut, confirmDiscardIfDirty: animalTabs.confirmDiscardIfDirty };
   // Owner report is per-practice, admin-flagged, and off by default —
@@ -271,7 +272,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   };
   const returnToVisit = () => navigate(`#/chart/${chart.cloudChartId}`);
   const [navigationHost, setNavigationHost] = React.useState<HTMLDivElement | null>(null);
-  const workspacePage = !native && ((cloud.enabled && (route.view === 'library' || route.view === 'rechecks')));
+  const workspacePage = !native && cloud.enabled && route.view === 'rechecks';
   const [remindersOpen, setRemindersOpen] = React.useState(false);
   const [accountOpen, setAccountOpen] = React.useState(false);
   // Which chart section is showing (controlled so a blocked save can jump
@@ -465,7 +466,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     setWhatsNewOpen(false);
     if (prefs.whatsNewSeen !== WHATS_NEW.id) setPref({ whatsNewSeen: WHATS_NEW.id });
   };
-  // Patients is a full workspace destination; the working chart stays mounted.
+  // Legacy Patients URLs and startup arrivals use the same modal as the tab plus.
   const libraryOpen = cloud.enabled && (route.view === 'library' || route.view === 'rechecks') && !native;
   const [patientPickerOpen, setPatientPickerOpen] = React.useState(false);
   const openLibrary = () => {
@@ -614,20 +615,14 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     const num = chart.patientInfo.patientNumber.trim().toLowerCase();
     const name = chart.patientInfo.patientName.trim().toLowerCase();
     if (!num && !name) { setVisits([]); return; }
-    const key = num ? `n:${num}` : `p:${name}`;
     let cancelled = false;
     // Server-side patient lookup — correct however many charts the
     // practice has. The exact key filter re-applies the library's
     // grouping rule to the (already narrow) result set.
-    cloud.listPatientVisits(chart.patientInfo.patientNumber, chart.patientInfo.patientName)
+    cloud.listPatientVisits(chart.patientInfo.patientNumber, chart.patientInfo.patientName, chart.patientInfo.patientId)
       .then((all) => {
         if (cancelled) return;
-        const mine = all
-          .filter((c) => {
-            const n = c.patient_number.trim().toLowerCase();
-            const nm = c.patient_name.trim().toLowerCase();
-            return (n ? `n:${n}` : `p:${nm}`) === key;
-          })
+        const mine = visitsForPatient(all, chart.patientInfo.patientNumber, chart.patientInfo.patientName, chart.patientInfo.patientId)
           .sort((a, b) =>
             (b.chart_date || '').localeCompare(a.chart_date || '') ||
             b.updated_at.localeCompare(a.updated_at)
@@ -683,15 +678,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     const number = chart.patientInfo.patientNumber.trim().toLowerCase();
     const name = chart.patientInfo.patientName.trim().toLowerCase();
     if (!number && !name) return [];
-    const patientKey = number ? `n:${number}` : `p:${name}`;
-    // The visit lookup is asynchronous. Never pass the previous patient's
-    // visits to the automatically loaded image history while it refreshes.
-    return visits.filter((v) => {
-      const n = v.patient_number.trim().toLowerCase();
-      const key = n ? `n:${n}` : `p:${v.patient_name.trim().toLowerCase()}`;
-      return v.id !== chart.cloudChartId && key === patientKey;
-    }).map((v) => ({ id: v.id, date: v.chart_date }));
-  }, [visits, chart.cloudChartId, chart.patientInfo.patientNumber, chart.patientInfo.patientName]);
+    return visitsForPatient(visits, chart.patientInfo.patientNumber, chart.patientInfo.patientName, chart.patientInfo.patientId)
+      .filter(v => v.id !== chart.cloudChartId).map(v => ({ id: v.id, date: v.chart_date }));
+  }, [visits, chart.cloudChartId, chart.patientInfo.patientId, chart.patientInfo.patientNumber, chart.patientInfo.patientName]);
 
   const switchVisit = (id: string) => {
     if (id === chart.cloudChartId) return;
@@ -704,43 +693,43 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // already gone (missing ∪ extracted) from their most recent saved
   // visit. Shared by the library's "+ Visit" and the saved-chart
   // banner's "+ New visit".
-  const createVisitFromChart = async (latestChartId: string): Promise<boolean> => {
+  const createVisitFromChart = async (latestChartId: string, openVisit = rawCloud.openChart): Promise<boolean> => {
     // Starting a visit replaces the open chart — never silently.
     if (!(await cloud.confirmDiscardIfDirty('newVisit'))) return false;
     const snap = await cloud.fetchChart(latestChartId);
     // Already seen today? Offer that visit rather than a second one —
     // same-day restarts were the main source of duplicate records.
     let answeredToday = false;
+    let todays: CloudChartMeta | undefined;
     try {
       const sp = speciesBase(snap.species);
-      const visits = await cloud.listPatientVisits(snap.patientInfo.patientNumber ?? '', snap.patientInfo.patientName ?? '');
-      const todays = visits.find((v) => v.chart_date === localDateISO() && v.species === sp);
-      if (todays) {
-        const who = snap.patientInfo.patientName?.trim() || t('sync.duplicate.patient');
-        // Three answers, not yes/no: dismissing (Cancel, Escape, a click
-        // outside) must start nothing. As a confirm, a dismissal meant
-        // "Start a second visit" — which then autosaved an empty duplicate
-        // beside the morning's chart.
-        const choice = await chooseDialog({
-          title: t('sync.duplicate.titleToday', { name: who }),
-          message: t('todaysVisit.message'),
-          choices: [
-            { value: 'second', label: t('todaysVisit.cancel') },
-            { value: 'open', label: t('todaysVisit.confirm') },
-          ],
-        });
-        if (choice === null) return false;
-        if (choice === 'open') {
-          // Unsaved changes were already confirmed above.
-          await rawCloud.openChart(todays.id, { skipConfirm: true });
-          goToSection('patient');
-          return true;
-        }
-      }
-      // Answered here — don't ask again on the new visit's first save.
+      const visits = await cloud.listPatientVisits(snap.patientInfo.patientNumber ?? '', snap.patientInfo.patientName ?? '', snap.patientInfo.patientId);
+      todays = visits.find((v) => v.chart_date === localDateISO() && v.species === sp);
       answeredToday = true;
     } catch {
       /* couldn't check — the first-save check will ask instead */
+    }
+    if (todays) {
+      const who = snap.patientInfo.patientName?.trim() || t('sync.duplicate.patient');
+      // Three answers, not yes/no: dismissing (Cancel, Escape, a click
+      // outside) must start nothing. As a confirm, a dismissal meant
+      // "Start a second visit" — which then autosaved an empty duplicate
+      // beside the morning's chart.
+      const choice = await chooseDialog({
+        title: t('sync.duplicate.titleToday', { name: who }),
+        message: t('todaysVisit.message'),
+        choices: [
+          { value: 'second', label: t('todaysVisit.cancel') },
+          { value: 'open', label: t('todaysVisit.confirm') },
+        ],
+      });
+      if (choice === null) return false;
+      if (choice === 'open') {
+        // Unsaved changes were already confirmed above.
+        if (!(await openVisit(todays.id, { skipConfirm: true }))) return false;
+        goToSection('patient');
+        return true;
+      }
     }
     const gone = new Set<number>();
     for (const [k, v] of Object.entries(snap.preMarks ?? {})) if (v === 'missing') gone.add(Number(k));
@@ -749,6 +738,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       identity: {
         patientName: snap.patientInfo.patientName,
         patientNumber: snap.patientInfo.patientNumber,
+        patientId: snap.patientInfo.patientId,
+        generatedPatientNumber: snap.patientInfo.generatedPatientNumber,
         ownerName: snap.patientInfo.ownerName ?? '',
         ownerPhone: snap.patientInfo.ownerPhone ?? '',
         ownerEmail: snap.patientInfo.ownerEmail ?? '',
@@ -768,7 +759,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     return true;
   };
 
-  const startVisitFromChart = (id: string) => native ? createVisitFromChart(id) : animalTabs.transition(() => createVisitFromChart(id));
+  const startVisitFromChart = (id: string) => native ? createVisitFromChart(id) : animalTabs.transition(open => createVisitFromChart(id, open));
 
   // ⌘S / Ctrl+S saves the chart — matches the mental model everyone
   // brings from every other document editor. Swallows the browser's
@@ -1320,7 +1311,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     if (cloud.dirty && !chart.patientInfo.patientName.trim()) {
       return <span className="save-status save-status--manual" title={t('status.needsNameTitle')}>{t('status.needsName')}</span>;
     }
-    if (cloud.awaitingClinical) {
+    if (cloud.awaitingClinical || (cloud.dirty && !prefs.autosave)) {
       // Filled in ahead of time: autosave starts with charting;
       // Save puts it in the cloud now (e.g. to open elsewhere).
       return (
@@ -1350,7 +1341,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       );
     }
     return null;
-  }, [native, cloud.enabled, cloud.status, cloud.saveError, cloud.dirty, cloud.online, cloud.awaitingClinical, cloud.lastSavedAt, saveHint, readOnly, chart.patientInfo.patientName, workspacePage, animalTabs.empty, t]);
+  }, [prefs.autosave, native, cloud.enabled, cloud.status, cloud.saveError, cloud.dirty, cloud.online, cloud.awaitingClinical, cloud.lastSavedAt, saveHint, readOnly, chart.patientInfo.patientName, workspacePage, animalTabs.empty, t]);
   React.useEffect(() => {
     if (!saveFeedback) return;
     const kind = cloud.status === 'error' || saveHint ? 'error' : cloud.status === 'saved' ? 'success' : cloud.dirty || cloud.awaitingClinical ? 'warning' : 'info';
@@ -1411,8 +1402,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     fillPatient: ({ patientName, patientNumber, ownerName }) =>
       chart.setPatientInfo((prev: PatientInfo) => ({ ...prev, patientName, ownerName, patientNumber })),
     fillNumberIfBlank: (patientNumber) =>
-      chart.setPatientInfo((prev: PatientInfo) => (prev.patientNumber?.trim() ? prev : { ...prev, patientNumber })),
-    isChartBlank: () => !chart.patientInfo.patientName?.trim() && !chart.patientInfo.patientNumber?.trim(),
+      chart.setPatientInfo((prev: PatientInfo) => (prev.patientNumber?.trim() && !isGeneratedPatientNumber(prev) ? prev : { ...prev, patientNumber })),
+    isChartBlank: () => !chart.patientInfo.patientName?.trim() && (!chart.patientInfo.patientNumber?.trim() || isGeneratedPatientNumber(chart.patientInfo)),
   });
   const unlockForEditing = () => {
     try { window.sessionStorage.setItem(`chart.unlockSnapshot.${chart.cloudChartId}`, JSON.stringify(chart.getSnapshot())); } catch { /* too big / private mode */ }
@@ -1581,7 +1572,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
 
       {(libraryOpen || patientPickerOpen) && (() => {
         const library = <ChartLibrary
-          presentation={patientPickerOpen ? MODAL_PRESENTATION : PAGE_PRESENTATION}
+          presentation={patientPickerOpen || route.view === 'library' ? MODAL_PRESENTATION : PAGE_PRESENTATION}
           key={route.view}
           rechecksOnly={route.view === 'rechecks'}
           viewState={route.view === 'rechecks' ? rechecksViewState : libraryViewState}
@@ -1599,7 +1590,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           onLoadPdf={libraryCore.loadPdf}
           onClose={() => { if (patientPickerOpen) setPatientPickerOpen(false); else closeLibrary(); }}
         />;
-        return patientPickerOpen ? createPortal(library, document.body) : library;
+        return patientPickerOpen || route.view === 'library' ? createPortal(library, document.body) : library;
       })()}
     </>
   );
@@ -1902,6 +1893,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         online: cloud.online,
         hasName: !!chart.patientInfo.patientName.trim(),
         awaitingClinical: !!cloud.awaitingClinical,
+        autosaveEnabled: prefs.autosave,
         lastSavedAt: cloud.lastSavedAt || '',
         announceSaved,
         visitDate: chart.patientInfo.date,
@@ -2004,7 +1996,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             (fixed position). Mounted on every tab so a recording keeps
             going; shown on the Chart tab only. */}
         {profile.aiEnabled && !trial && (
-          <div className="ios-chart-dictate" hidden={appTab !== 'chart'} role="region" aria-label={t('ios.form.dictate', { ns: 'chart' })}>
+          <div className="ios-chart-dictate" hidden={appTab !== 'chart' || readOnly} role="region" aria-label={t('ios.form.dictate', { ns: 'chart' })}>
             <VoiceInputButton
               context={aiContext}
               handlers={aiHandlers}
@@ -2135,7 +2127,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               behind JWT-gated edge functions, so trial (no account) and
               Basic practices don't get it. */}
           {profile.aiEnabled && !trial && (
-            <span hidden={workspacePage || animalTabs.empty}><VoiceInputButton
+            <span hidden={workspacePage || animalTabs.empty || readOnly}><VoiceInputButton
               context={aiContext}
               handlers={aiHandlers}
               onActivity={handleAiActivity}

@@ -8,6 +8,7 @@ import { LocalizedError, describeError, detailOnly } from './apiErrors';
 /** Chart queries shared by the cloud-sync hook and the extension side panel. */
 
 export interface CloudChartMeta {
+  patient_id?: string;
   id: string;
   patient_name: string;
   patient_number: string;
@@ -49,7 +50,7 @@ export interface ChartListPage {
 }
 
 export const CHART_META_COLUMNS =
-  'id, patient_name, patient_number, owner_name, owner_phone, owner_email, species, dentition, chart_date, recall_date, updated_at, created_by';
+  'patient_id:data->patientInfo->>patientId, id, patient_name, patient_number, owner_name, owner_phone, owner_email, species, dentition, chart_date, recall_date, updated_at, created_by';
 
 const DEFAULT_PAGE_SIZE = 200;
 
@@ -60,10 +61,10 @@ export function escapeLike(s: string): string {
 
 /** The patient a chart belongs to: the same rule the library groups by
  *  (patient number when present, else name; case-insensitive). */
-export function patientKey(c: Pick<CloudChartMeta, 'id' | 'patient_number' | 'patient_name'>): string {
+export function patientKey(c: Pick<CloudChartMeta, 'id' | 'patient_number' | 'patient_name' | 'patient_id'>): string {
   const num = (c.patient_number ?? '').trim().toLowerCase();
   const name = (c.patient_name ?? '').trim().toLowerCase();
-  return num ? `n:${num}` : name ? `p:${name}` : `id:${c.id}`;
+  return c.patient_id ? `patient:${c.patient_id}` : num ? `n:${num}` : name ? `p:${name}` : `id:${c.id}`;
 }
 
 /** Blank recheck dates a later visit has superseded. A visit's recheck
@@ -72,9 +73,9 @@ export function patientKey(c: Pick<CloudChartMeta, 'id' | 'patient_number' | 'pa
  *  someone cleared the old date by hand. Rows are kept (blanked, not
  *  dropped) so paging offsets still line up. `visits` = any of the
  *  patients' visits. */
-export function blankSupersededRecalls<T extends Pick<CloudChartMeta, 'id' | 'patient_number' | 'patient_name' | 'chart_date' | 'recall_date'>>(
+export function blankSupersededRecalls<T extends Pick<CloudChartMeta, 'id' | 'patient_number' | 'patient_name' | 'patient_id' | 'chart_date' | 'recall_date'>>(
   due: T[],
-  visits: Array<Pick<CloudChartMeta, 'id' | 'patient_number' | 'patient_name' | 'chart_date'>>
+  visits: Array<Pick<CloudChartMeta, 'id' | 'patient_number' | 'patient_name' | 'patient_id' | 'chart_date'>>
 ): T[] {
   const latest = new Map<string, string>();
   for (const v of [...due, ...visits]) {
@@ -93,11 +94,13 @@ const IN_CHUNK = 80; // values per .in() — keeps the request URL short
 async function visitsOfPatients(due: CloudChartMeta[]): Promise<CloudChartMeta[]> {
   if (!supabase || due.length === 0) return [];
   const client = supabase;
-  const nums = [...new Set(due.map((c) => c.patient_number.trim()).filter(Boolean))];
-  const names = [...new Set(due.filter((c) => !c.patient_number.trim()).map((c) => c.patient_name.trim()).filter(Boolean))];
-  const cols = 'id, patient_number, patient_name, chart_date';
+  const ids = [...new Set(due.map(c => c.patient_id).filter((id): id is string => !!id))];
+  const nums = [...new Set(due.filter(c => !c.patient_id).map((c) => c.patient_number.trim()).filter(Boolean))];
+  const names = [...new Set(due.filter((c) => !c.patient_id && !c.patient_number.trim()).map((c) => c.patient_name.trim()).filter(Boolean))];
+  const cols = 'patient_id:data->patientInfo->>patientId, id, patient_number, patient_name, chart_date';
   const chunks = <T,>(xs: T[]) => Array.from({ length: Math.ceil(xs.length / IN_CHUNK) }, (_, i) => xs.slice(i * IN_CHUNK, (i + 1) * IN_CHUNK));
   const results = await Promise.all([
+    ...chunks(ids).map(part => client.from('charts').select(cols).in('data->patientInfo->>patientId', part).range(0, 999)),
     ...chunks(nums).map((part) => client.from('charts').select(cols).in('patient_number', part).range(0, 999)),
     ...chunks(names).map((part) => client.from('charts').select(cols).eq('patient_number', '').in('patient_name', part).range(0, 999)),
   ]);

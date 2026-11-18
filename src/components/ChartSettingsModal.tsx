@@ -134,6 +134,11 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
 
           <section className="chart-settings__group" hidden={!show.charting}>
             <h3 className="ai-settings-subhead">{t('chart.customization.layout')}</h3>
+            <label className="chart-settings__choice">
+              <input type="checkbox" checked={prefs.autosave} onChange={(e) => onChange({ autosave: e.target.checked })} />
+              {t('chart.autosave.label')}
+            </label>
+            <p className="chart-settings__hint">{t('chart.autosave.hint')}</p>
             <fieldset className="chart-settings__field">
               <legend>{t('chart.charting.view')}</legend>
               <label className="chart-settings__choice">

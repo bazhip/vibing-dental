@@ -172,3 +172,11 @@ it('procedure customization edits its own quick codes without changing diagnosis
   expect(onChange).toHaveBeenLastCalledWith({ procedureQuickCodes: [] });
   expect(screen.queryByRole('button', { name: 'Remove T/SN' })).toBeNull();
 });
+
+it('defaults autosave on and lets the user switch to manual saving', () => {
+  const { onChange } = setup();
+  const toggle = screen.getByRole('checkbox', { name: 'Autosave' });
+  expect(toggle).toBeChecked();
+  fireEvent.click(toggle);
+  expect(onChange).toHaveBeenCalledWith({ autosave: false });
+});

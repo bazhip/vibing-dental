@@ -272,7 +272,8 @@
       "blank": "Kein Name und keine Patientennummer",
       "paused": "Die Patientendaten wurden geändert. Das Speichern ist pausiert. Speichern Sie erneut, um eine Korrektur zu bestätigen, oder wählen Sie Neuer Patient für einen anderen Patienten.",
       "changed": "Der Patient wurde während der Speicherprüfung geändert. Prüfen Sie die Angaben und speichern Sie erneut."
-    }
+    },
+    "patientNumberFailed": "Eine Patientennummer konnte nicht zugewiesen werden. Versuchen Sie es erneut, wenn Sie online sind, oder geben Sie eine Patientennummer ein."
   },
   "storage": {
     "full": "Der Speicher dieses Browsers ist voll — die letzten Änderungen werden auf diesem Gerät möglicherweise nicht behalten. Speichern Sie die Akte oder laden Sie das PDF herunter."
@@ -325,7 +326,11 @@
     "closeConfirm": "Ohne Speichern schließen",
     "keepOpen": "Akte geöffnet lassen",
     "closeImageDraftMessage": "Diese Akte wurde noch nicht gespeichert. Beim Schließen wird ihr Inhalt verworfen und ihre hochgeladenen Bilder werden endgültig gelöscht.",
-    "draftAlreadySaved": "Diese Akte wurde an anderer Stelle gespeichert. Öffnen Sie sie erneut, bevor Sie den Entwurf verwerfen."
+    "draftAlreadySaved": "Diese Akte wurde an anderer Stelle gespeichert. Öffnen Sie sie erneut, bevor Sie den Entwurf verwerfen.",
+    "closeTitle": "Nicht gespeicherte Änderungen",
+    "saveAndClose": "Speichern und schließen",
+    "closeChoiceMessage": "Speichern Sie Ihre Änderungen vor dem Schließen oder schließen Sie ohne Speichern, um sie zu verwerfen. Bilder gespeicherter Akten bleiben erhalten.",
+    "closeImageChoiceMessage": "Speichern Sie diese Akte vor dem Schließen oder schließen Sie ohne Speichern, um den Inhalt zu verwerfen und die hochgeladenen Bilder dauerhaft zu löschen."
   },
   "radiologyReport": {
     "title": "Radiologischer Bericht",

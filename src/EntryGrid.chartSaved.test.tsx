@@ -36,6 +36,10 @@ const cloud = vi.hoisted(() => ({
   restoreRevision: vi.fn(async () => {}),
 }));
 vi.mock('./hooks/useCloudSync', () => ({ useCloudSync: () => cloud }));
+vi.mock('./hooks/useProfile', async original => {
+  const actual = await original<typeof import('./hooks/useProfile')>();
+  return { ...actual, useProfile: () => ({ ...actual.useProfile(), aiEnabled: true }) };
+});
 vi.mock('./components/ChartHistoryModal', () => ({
   ChartHistoryModal: () => <div role="dialog" aria-label="Chart history dialog" />,
 }));
@@ -228,4 +232,44 @@ it('opens the file picker from Add logo and practice settings from the practice 
   fireEvent.click(within(dialog).getByRole('button', { name: 'Close' }));
   fireEvent.click(container.querySelector('.entry-grid__practice-link')!);
   expect(await screen.findByRole('dialog', { name: 'Practice settings' })).toBeVisible();
+});
+
+it.each(['/', '/#/library'])('opens Patients as a modal over the saved chart on arrival at %s', async (url) => {
+  flags.native = false;
+  window.history.replaceState(null, '', url);
+  const { container } = render(<><EntryGrid /><DialogHost /></>);
+  const dialog = await screen.findByRole('dialog', { name: /Patients|My charts/ });
+  expect(dialog).toHaveAttribute('aria-modal', 'true');
+  expect(container.querySelector('#chart-form')).toBeVisible();
+  expect(container.querySelector('.workspace-sidebar__sections')).toBeVisible();
+  expect(screen.queryByRole('button', { name: 'Back to current visit' })).toBeNull();
+  fireEvent.click(within(dialog).getByRole('button', { name: 'Close' }));
+  expect(screen.queryByRole('dialog', { name: /Patients|My charts/ })).toBeNull();
+  expect(container.querySelector('#chart-form')).toBeVisible();
+});
+
+it.each([false, true])('hides dictation on a read-only chart (native=%s)', async native => {
+  flags.native = native;
+  const { container } = await renderApp();
+  const dictate = container.querySelector('.voice-input-wrap > button');
+  expect(dictate).not.toBeNull();
+  expect(dictate).not.toBeVisible();
+});
+
+it('reopens the last closed animal when choosing today’s visit from the library', async () => {
+  flags.native = false;
+  seedSavedVisit(localDateISO());
+  const visit = { id: 'c-old', patient_name: 'Rex', patient_number: '7', owner_name: '', species: 'canine', chart_date: localDateISO(), updated_at: new Date().toISOString(), recall_date: '' };
+  cloud.listCharts.mockResolvedValue({ rows: [visit], hasMore: false } as never);
+  cloud.listPatientVisits.mockResolvedValue([visit] as never);
+  await renderApp();
+  await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Close Rex tab' })));
+  await screen.findByRole('heading', { name: 'No animal open' });
+  await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Open an animal' })));
+  await act(async () => fireEvent.click(await screen.findByRole('button', { name: 'New visit' })));
+  const dialog = await screen.findByRole('alertdialog', { name: 'Rex already has a visit today' });
+  await act(async () => fireEvent.click(within(dialog).getByRole('button', { name: 'Open today’s visit' })));
+  expect(screen.queryByRole('heading', { name: 'No animal open' })).toBeNull();
+  expect(await screen.findByRole('tab', { name: /Rex/ })).toBeVisible();
+  expect(await screen.findByDisplayValue('Rex')).toBeVisible();
 });

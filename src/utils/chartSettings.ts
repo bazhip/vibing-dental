@@ -50,6 +50,7 @@ export const PATIENT_FIELD_OPTIONS = ['ownerName', 'ownerPhone', 'ownerEmail', '
 export type OptionalPatientField = (typeof PATIENT_FIELD_OPTIONS)[number];
 
 export interface ChartPrefs {
+  autosave: boolean;
   /** 'tooth' = one pocket box per tooth; 'root' = one per root;
    *  'site' = six per tooth (MB / B / DB / ML / L / DL). */
   pocketMode: PocketMode;
@@ -103,6 +104,7 @@ export interface ChartPrefs {
 }
 
 export const DEFAULT_CHART_PREFS: ChartPrefs = {
+  autosave: true,
   pocketMode: 'tooth',
   hiddenColumns: [],
   besideTeeth: PERIO_FIELDS.map((f) => f.key),
@@ -148,6 +150,7 @@ export function normalizeChartPrefs(raw: unknown, fallback: ChartPrefs = DEFAULT
     pocketMode: r.pocketMode === 'root' || r.pocketMode === 'tooth' || r.pocketMode === 'site' ? r.pocketMode : fallback.pocketMode,
     hiddenColumns: fieldList(r.hiddenColumns, fallback.hiddenColumns),
     besideTeeth: fieldList(r.besideTeeth, fallback.besideTeeth),
+    autosave: bool(r.autosave, fallback.autosave),
     mirrorToDiagnosis: bool(r.mirrorToDiagnosis, fallback.mirrorToDiagnosis),
     chartingView: r.chartingView === 'tooth' || r.chartingView === 'grid' ? r.chartingView : fallback.chartingView,
     pdfIncludeGrid: bool(r.pdfIncludeGrid, fallback.pdfIncludeGrid),

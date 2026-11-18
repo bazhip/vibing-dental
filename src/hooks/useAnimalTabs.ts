@@ -5,7 +5,7 @@ import { type UseCloudSyncReturn, type DiscardAction, type ChartWorkspace } from
 import { ensureChartSaved } from '../utils/ensureSaved';
 import { speciesBase } from '../utils/species';
 import i18n from '../i18n';
-import { toast, confirmDialog } from '../components/ui/dialogs';
+import { toast, confirmDialog, chooseDialog, promptDialog } from '../components/ui/dialogs';
 import { imageDraftWorkspace } from '../utils/imageDrafts';
 import { readJson, writeJson } from '../utils/storage';
 
@@ -24,7 +24,7 @@ function tabOf(chart: UseChartStateReturn): AnimalTab {
   const number = p.patientNumber.trim().toLowerCase();
   const name = p.patientName.trim();
   const owner = (p.ownerName ?? '').trim();
-  const identity = number ? ['number', number] : name ? ['name', name.toLowerCase(), owner.toLowerCase()] : ['draft', chart.cloudChartId];
+  const identity = p.patientId ? ['patient', p.patientId] : number ? ['number', number] : name ? ['name', name.toLowerCase(), owner.toLowerCase()] : ['draft', chart.cloudChartId];
   return { id: chart.cloudChartId, key: JSON.stringify([speciesBase(chart.species), ...identity]), name, owner, patientNumber: p.patientNumber.trim(), date: p.date || '', species: chart.species };
 }
 
@@ -112,10 +112,11 @@ export function useAnimalTabs(chart: UseChartStateReturn, cloud: UseCloudSyncRet
     return saved;
   };
 
-  const run = async (operation: () => Promise<boolean>) => {
+  const run = async (operation: (open: UseCloudSyncReturn['openChart']) => Promise<boolean>) => {
     if (locked.current) return false;
     locked.current = true; setBusy(true);
-    try { return await operation(); }
+    // Give an owned transition its activation path without acquiring the lock twice.
+    try { return await operation(activate); }
     finally { if (dismissed.current !== latest.current.chart.cloudChartId) latest.current.cloud.resumeWorkspace?.(); locked.current = false; setBusy(false); }
   };
 
@@ -124,8 +125,10 @@ export function useAnimalTabs(chart: UseChartStateReturn, cloud: UseCloudSyncRet
     let ok: boolean;
     if (current.cloud.enabled) {
       const draft = drafts.get(id);
-      if (draft && current.cloud.restoreWorkspace && !opts?.force) { current.cloud.restoreWorkspace(draft); ok = true; }
-      else ok = await current.cloud.openChart(id, { ...opts, skipConfirm: true });
+      // Only unsaved work owns a local copy; saved caches may be older than the server.
+      const unsaved = draft && (draft.dirty || (!draft.openedExisting && !draft.lastSaved.at));
+      if (unsaved && current.cloud.restoreWorkspace && !opts?.force) { current.cloud.restoreWorkspace(draft); ok = true; }
+      else ok = await current.cloud.openChart(id, { ...opts, skipConfirm: true, force: true });
     }
     else {
       const cached = local.current.get(id);
@@ -143,7 +146,7 @@ export function useAnimalTabs(chart: UseChartStateReturn, cloud: UseCloudSyncRet
     // Restore/duplicate-resolution callers explicitly own their replacement.
     if (opts?.force || opts?.skipConfirm) return run(() => activate(id, opts));
     return run(async () => {
-      if (id === latest.current.chart.cloudChartId && dismissed.current !== id) return true;
+      if (id === latest.current.chart.cloudChartId && dismissed.current !== id && latest.current.cloud.dirty) return true;
       if (opts?.ifClean && latest.current.cloud.dirty) return false;
       if (!(await prepareLeave())) return false;
       return activate(id, opts);
@@ -163,10 +166,10 @@ export function useAnimalTabs(chart: UseChartStateReturn, cloud: UseCloudSyncRet
     const saved = id === current.chart.cloudChartId ? current.cloud.lastSavedAt : draft?.lastSaved.chartId === id && draft.lastSaved.at;
     const imageDraft = current.cloud.enabled && (!saved || !tab.name.trim()) && await current.cloud.hasImages?.(id);
     let discard = false;
-    const active = id === current.chart.cloudChartId;
+    let active = id === current.chart.cloudChartId;
     let needsConfirmation = !active && (draft?.dirty || imageDraft);
     if (active && current.cloud.enabled && (current.cloud.dirty || imageDraft)) {
-      const savedNow = !!tab.name.trim() && await ensureChartSaved(() => ({ ...latest.current.cloud, chartId: latest.current.chart.cloudChartId }));
+      const savedNow = current.cloud.autosaveEnabled !== false && !!tab.name.trim() && await ensureChartSaved(() => ({ ...latest.current.cloud, chartId: latest.current.chart.cloudChartId }));
       needsConfirmation = !savedNow;
     }
     let discardedDraft = draft;
@@ -177,9 +180,29 @@ export function useAnimalTabs(chart: UseChartStateReturn, cloud: UseCloudSyncRet
       : !(draft?.openedExisting || saved);
     if (needsConfirmation) {
       const t = i18n.getFixedT(null, 'app');
-      discard = await confirmDialog({ title: t('animalTabs.closeConfirmTitle'), message: t(neverSaved && imageDraft ? 'animalTabs.closeImageDraftMessage' : 'animalTabs.closeConfirmMessage'),
-        confirmLabel: t('animalTabs.closeConfirm'), cancelLabel: t('animalTabs.keepOpen'), danger: true });
-      if (!discard) return false;
+      const choice = await chooseDialog({ title: t('animalTabs.closeTitle'),
+        message: t(neverSaved && imageDraft ? 'animalTabs.closeImageChoiceMessage' : 'animalTabs.closeChoiceMessage'),
+        choices: [{ value: 'discard', label: t('animalTabs.closeConfirm'), destructive: true },
+          { value: 'save', label: t('animalTabs.saveAndClose') }],
+        cancelLabel: t('animalTabs.keepOpen') });
+      if (!choice) return false;
+      if (choice === 'save') {
+        if (!active) {
+          if (!(await prepareLeave()) || !(await activate(id))) return false;
+          await new Promise(resolve => setTimeout(resolve, 0));
+          if (latest.current.chart.cloudChartId !== id) return false;
+          active = true;
+        }
+        if (!latest.current.chart.patientInfo.patientName.trim()) {
+          const name = await promptDialog({ title: i18n.t('patient.name', { ns: 'forms' }),
+            confirmLabel: t('animalTabs.saveAndClose'), cancelLabel: t('animalTabs.keepOpen'),
+            validate: value => value.trim() ? null : i18n.t('status.needsName', { ns: 'app' }) });
+          if (!name?.trim()) return false;
+          latest.current.chart.setPatientInfo(previous => ({ ...previous, patientName: name.trim() }));
+          await new Promise(resolve => setTimeout(resolve, 0));
+        }
+        if (!(await ensureChartSaved(() => ({ ...latest.current.cloud, chartId: latest.current.chart.cloudChartId })))) return false;
+      } else discard = true;
     }
     if (discard && neverSaved && imageDraft) await current.cloud.discardImageDraft?.(id);
     if (active) {

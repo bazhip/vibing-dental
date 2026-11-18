@@ -6,9 +6,11 @@ import type { UseCloudSyncReturn } from './useCloudSync';
 import { imageDraftWorkspace } from '../utils/imageDrafts';
 import type { ChartSnapshot } from '../types';
 
-const confirmation = vi.hoisted(() => vi.fn(async () => false));
-vi.mock('../components/ui/dialogs', async original => ({ ...await original<typeof import('../components/ui/dialogs')>(), confirmDialog: confirmation }));
-beforeEach(() => { confirmation.mockReset(); confirmation.mockResolvedValue(false); });
+const patientNamePrompt = vi.hoisted(() => vi.fn(async (): Promise<string | null> => null));
+const closeChoice = vi.hoisted(() => vi.fn<() => string | null | undefined>(() => undefined));
+const confirmation = vi.hoisted(() => vi.fn(async (_opts?: unknown) => false));
+vi.mock('../components/ui/dialogs', async original => ({ ...await original<typeof import('../components/ui/dialogs')>(), promptDialog: patientNamePrompt, confirmDialog: confirmation, chooseDialog: async (opts: unknown) => closeChoice() ?? ((await confirmation(opts)) ? 'discard' : null) }));
+beforeEach(() => { patientNamePrompt.mockReset(); patientNamePrompt.mockResolvedValue(null); closeChoice.mockReset(); closeChoice.mockReturnValue(undefined); confirmation.mockReset(); confirmation.mockResolvedValue(false); });
 
 function setup(enabled = false, overrides: Partial<UseCloudSyncReturn> = {}) {
   let snapshot = { patientInfo: { patientName: 'Luna', patientNumber: '1', ownerName: 'Sarah', complaint: 'Luna note' }, species: 'canine' } as ChartSnapshot;
@@ -92,7 +94,7 @@ it('opens a cloud chart only after the current edits are saved', async () => {
   h.rerender();
   await act(async () => { expect(await h.result.current.openChart('b')).toBe(true); });
   expect(h.cloud.saveNow).toHaveBeenCalledOnce();
-  expect(h.cloud.openChart).toHaveBeenCalledWith('b', { skipConfirm: true });
+  expect(h.cloud.openChart).toHaveBeenCalledWith('b', { skipConfirm: true, force: true });
 });
 
 it('keeps an unnamed image-only draft open even when chart text is not dirty', async () => {
@@ -131,7 +133,7 @@ it('confirms before closing an unnamed image draft and retains it when cancelled
   const h = setup(true, { hasImages: vi.fn(async () => true), lastSavedAt: '' });
   h.change('a', '', '');
   await act(async () => { expect(await h.result.current.close('a')).toBe(false); });
-  expect(confirmation).toHaveBeenCalledWith(expect.objectContaining({ confirmLabel: 'Close without saving', cancelLabel: 'Keep chart open' }));
+  expect(confirmation).toHaveBeenCalledWith(expect.objectContaining({ choices: expect.arrayContaining([{ value: 'save', label: 'Save and close' }, { value: 'discard', label: 'Close without saving', destructive: true }]), cancelLabel: 'Keep chart open' }));
   confirmation.mockResolvedValue(true);
   await act(async () => { expect(await h.result.current.close('a')).toBe(true); });
   expect(h.result.current.tabs).toHaveLength(0);
@@ -194,4 +196,109 @@ it('keeps a deliberately reopened discarded chart visible after remount', async 
   const reopened = renderHook(() => useAnimalTabs(h.chart, h.cloud, true));
   expect(reopened.result.current.empty).toBe(false);
   expect(reopened.result.current.tabs.some(tab => tab.id === 'a')).toBe(true);
+});
+it('asks before discarding a named manual-save tab instead of saving it on close', async () => {
+  const h = setup(true, { dirty: true, autosaveEnabled: false });
+  await act(async () => { expect(await h.result.current.close('a')).toBe(false); });
+  expect(h.cloud.saveNow).not.toHaveBeenCalled();
+  expect(confirmation).toHaveBeenCalled();
+  expect(h.result.current.tabs).toHaveLength(1);
+});
+
+it('saves and closes only after the user chooses Save and close', async () => {
+  const h = setup(true, { dirty: true, autosaveEnabled: false });
+  closeChoice.mockReturnValue('save');
+  h.cloud.saveNow = vi.fn(async () => { h.cloud.dirty = false; });
+  await act(async () => { expect(await h.result.current.close('a')).toBe(true); });
+  expect(h.cloud.saveNow).toHaveBeenCalledOnce();
+  expect(h.result.current.tabs).toHaveLength(0);
+});
+it('keeps the tab and its images when Save and close fails', async () => {
+  const remove = vi.fn(async () => {});
+  const h = setup(true, { dirty: true, autosaveEnabled: false, discardImageDraft: remove });
+  closeChoice.mockReturnValue('save');
+  h.cloud.saveNow = vi.fn(async () => { throw new Error('offline'); });
+  await act(async () => { expect(await h.result.current.close('a')).toBe(false); });
+  expect(h.result.current.tabs).toHaveLength(1);
+  expect(remove).not.toHaveBeenCalled();
+});
+
+it('asks for a missing name before saving and never deletes uploads on Save and close', async () => {
+  const remove = vi.fn(async () => {});
+  const h = setup(true, { dirty: true, lastSavedAt: '', autosaveEnabled: false, hasImages: async () => true, discardImageDraft: remove });
+  h.change('a', '', '');
+  h.chart.setPatientInfo = vi.fn(update => {
+    const next = typeof update === 'function' ? update(h.chart.patientInfo) : update;
+    Object.assign(h.chart.patientInfo, next);
+  });
+  closeChoice.mockReturnValue('save');
+  patientNamePrompt.mockResolvedValue('Luna');
+  h.cloud.saveNow = vi.fn(async () => { h.cloud.dirty = false; h.cloud.lastSavedAt = 'saved'; });
+  await act(async () => { expect(await h.result.current.close('a')).toBe(true); });
+  expect(h.chart.patientInfo.patientName).toBe('Luna');
+  expect(h.cloud.saveNow).toHaveBeenCalledOnce();
+  expect(remove).not.toHaveBeenCalled();
+});
+
+it('saves an inactive draft without overwriting the other open animal', async () => {
+  const h = setup(true, { dirty: true, autosaveEnabled: false });
+  h.cloud.captureWorkspace = vi.fn(async () => ({ ...imageDraftWorkspace(h.chart.cloudChartId, '2026-11-17'), snapshot: h.chart.getSnapshot(), dirty: h.cloud.dirty }));
+  h.cloud.restoreWorkspace = vi.fn(workspace => {
+    h.chart.applySnapshot(workspace.snapshot, workspace.id);
+    h.cloud.dirty = workspace.dirty;
+    h.rerender();
+  });
+  h.cloud.openChart = vi.fn(async id => { h.change(id, 'Oliver', '2'); h.cloud.dirty = false; return true; });
+  await act(async () => { expect(await h.result.current.select('b')).toBe(true); });
+  const saved: string[] = [];
+  h.cloud.saveNow = vi.fn(async () => { saved.push(h.chart.cloudChartId); h.cloud.dirty = false; h.cloud.lastSavedAt = 'saved'; });
+  closeChoice.mockReturnValue('save');
+  await act(async () => { expect(await h.result.current.close('a')).toBe(true); });
+  expect(saved).toEqual(['a']);
+  expect(h.chart.cloudChartId).toBe('b');
+  expect(h.chart.patientInfo.patientName).toBe('Oliver');
+  expect(h.result.current.tabs.map(tab => tab.id)).toEqual(['b']);
+});
+
+it('reopens a closed animal within a new-visit transition', async () => {
+  const h = setup(true);
+  await act(async () => { await h.result.current.close('a'); });
+  expect(h.result.current.empty).toBe(true);
+  await act(async () => {
+    expect(await h.result.current.transition(async open => open('a', { skipConfirm: true }))).toBe(true);
+  });
+  expect(h.result.current.empty).toBe(false);
+  expect(h.result.current.tabs.map(tab => tab.id)).toContain('a');
+});
+
+it.each([false, true])('reopening a cached visit refreshes saved notes while preserving dirty=%s edits', async dirty => {
+  const h = setup(true, { dirty });
+  h.cloud.captureWorkspace = async () => ({ ...imageDraftWorkspace(h.chart.cloudChartId, '2026-11-17'), snapshot: h.chart.getSnapshot(), dirty: h.cloud.dirty, openedExisting: true });
+  h.cloud.restoreWorkspace = workspace => { h.chart.applySnapshot(workspace.snapshot, workspace.id); h.rerender(); };
+  h.cloud.openChart = async id => {
+    h.change(id, id === 'a' ? 'Luna' : 'Oliver', id === 'a' ? '1' : '2');
+    h.chart.patientInfo.complaint = 'Latest saved notes';
+    h.cloud.dirty = false;
+    h.rerender();
+    return true;
+  };
+  await act(async () => { await h.result.current.openChart('b'); });
+  await act(async () => { await h.result.current.openChart('a'); });
+  expect(h.chart.patientInfo.complaint).toBe(dirty ? 'Luna note' : 'Latest saved notes');
+});
+
+it('keeps an unsaved image-only workspace even when chart text is clean', async () => {
+  const h = setup(true, { lastSavedAt: '' });
+  h.change('a', '', '');
+  h.cloud.captureWorkspace = async () => ({ ...imageDraftWorkspace(h.chart.cloudChartId, '2026-11-17'), snapshot: h.chart.getSnapshot(), dirty: false });
+  h.cloud.restoreWorkspace = workspace => { h.chart.applySnapshot(workspace.snapshot, workspace.id); h.rerender(); };
+  h.cloud.openChart = async id => {
+    if (id === 'a') throw new Error('Unsaved image draft has no chart row');
+    h.change(id, 'Oliver', '2');
+    return true;
+  };
+  await act(async () => { await h.result.current.openChart('b'); });
+  await act(async () => { expect(await h.result.current.openChart('a')).toBe(true); });
+  expect(h.chart.cloudChartId).toBe('a');
+  expect(h.chart.patientInfo.patientName).toBe('');
 });

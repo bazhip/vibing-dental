@@ -13,7 +13,7 @@
   border: 1px solid var(--ios-separator, #e2e8f0);
   border-radius: 16px;
   padding: 3rem;
-  box-shadow: 0 8px 30px var(--ios-shadow-soft, rgba(15, 23, 42, 0.08));
+  box-shadow: var(--shadow-md);
   max-width: 420px;
   width: 100%;
   animation: fadeIn 0.4s ease;

@@ -54,7 +54,7 @@
   border-color: var(--border);
   color: var(--primary);
   font-weight: 600;
-  box-shadow: 0 1px 2px var(--ios-shadow-soft, rgba(15, 23, 42, 0.05));
+  box-shadow: var(--shadow-xs);
 }
 
 .sidebar-layout__nav-num {
@@ -256,10 +256,10 @@
   left: 0; right: 0;
   z-index: 30;
   list-style: none; margin: 0; padding: 0.4rem;
-  background: var(--surface, white);
+  background: var(--surface-overlay, var(--surface, white));
   border: 1px solid var(--border, #e2e8f0);
   border-radius: 10px;
-  box-shadow: 0 12px 32px var(--ios-shadow, rgba(15, 23, 42, 0.14));
+  box-shadow: var(--shadow-md);
   max-height: 70vh;
   max-height: 70dvh;
   overflow-y: auto;
@@ -326,6 +326,7 @@
 }
 
 .chart-menu__trigger {
+  box-shadow: var(--shadow-xs);
   display: inline-flex; align-items: center; gap: 0.5rem;
   padding: 0.55rem 0.95rem;
   background: var(--surface, white);
@@ -352,11 +353,11 @@
   top: calc(100% + 8px);
   right: 0;
   width: 340px;
-  background: var(--surface, white);
+  background: var(--surface-overlay, var(--surface, white));
   color: var(--text, #1f2937);
   border: 1px solid var(--border, #e2e8f0);
   border-radius: 12px;
-  box-shadow: 0 16px 48px var(--ios-shadow, rgba(15, 23, 42, 0.18));
+  box-shadow: var(--shadow-md);
   z-index: 50;
   /* Scroll when the menu is taller than the viewport allows (e.g. the
      admin build has extra sections) so bottom items like Sign out are
@@ -476,7 +477,7 @@
 .pdf-preview-modal {
   background: var(--ios-bg-elevated, white); color: var(--text, #0f172a);
   border-radius: 16px;
-  box-shadow: 0 24px 80px var(--ios-shadow-strong, rgba(0, 0, 0, 0.35));
+  box-shadow: var(--shadow-lg);
   width: 100%; max-width: 1280px;
   display: flex; flex-direction: column;
   overflow: hidden;
@@ -717,6 +718,7 @@
 }
 
 .chart-library__search {
+  box-shadow: var(--shadow-xs);
   background: var(--surface);
   color: var(--text);
   width: 100%;
@@ -986,6 +988,7 @@
 }
 /* Doctor / species dropdowns beside the search box. */
 .chart-library__filter-select {
+  box-shadow: var(--shadow-xs);
   font: inherit;
   font-size: 0.85rem;
   font-weight: 600;
@@ -1003,6 +1006,7 @@
 }
 
 .chart-library__filter {
+  box-shadow: var(--shadow-xs);
   font: inherit;
   font-size: 0.85rem;
   font-weight: 600;

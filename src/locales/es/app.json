@@ -274,7 +274,8 @@
       "blank": "Sin nombre ni número de paciente",
       "paused": "Los datos del paciente han cambiado. El guardado está en pausa. Guarde de nuevo para confirmar una corrección, o elija Nuevo paciente para otro paciente.",
       "changed": "El paciente cambió durante la comprobación del guardado. Revise los datos y guarde de nuevo."
-    }
+    },
+    "patientNumberFailed": "No se pudo asignar un número de paciente. Vuelva a intentarlo cuando tenga conexión o introduzca un número de paciente."
   },
   "storage": {
     "full": "El almacenamiento de este navegador está lleno: puede que los últimos cambios no se conserven en este dispositivo. Guarde el historial o descargue su PDF."
@@ -327,7 +328,11 @@
     "closeConfirm": "Cerrar sin guardar",
     "keepOpen": "Mantener abierto el historial",
     "closeImageDraftMessage": "Este historial no se ha guardado. Al cerrarlo, se descartará su contenido y se eliminarán permanentemente las imágenes cargadas.",
-    "draftAlreadySaved": "Este historial se guardó en otro lugar. Vuelva a abrirlo antes de descartar el borrador."
+    "draftAlreadySaved": "Este historial se guardó en otro lugar. Vuelva a abrirlo antes de descartar el borrador.",
+    "closeTitle": "Cambios sin guardar",
+    "saveAndClose": "Guardar y cerrar",
+    "closeChoiceMessage": "Guarde los cambios antes de cerrar o cierre sin guardar para descartarlos. Se conservarán las imágenes de los historiales guardados.",
+    "closeImageChoiceMessage": "Guarde este historial antes de cerrar o cierre sin guardar para descartar su contenido y eliminar permanentemente las imágenes subidas."
   },
   "radiologyReport": {
     "title": "Informe radiológico",

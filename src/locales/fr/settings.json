@@ -262,6 +262,10 @@
       "moveDown": "Descendre {{name}}",
       "count": "{{used}} sur {{max}} configurés",
       "limit": "Limite atteinte. Supprimez un élément pour en ajouter un autre."
+    },
+    "autosave": {
+      "label": "Enregistrement automatique",
+      "hint": "Enregistrez automatiquement les modifications du dossier. Désactivez cette option pour enregistrer manuellement."
     }
   },
   "feedback": {

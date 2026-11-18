@@ -1,10 +1,13 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
+import { useModalFocus } from '../hooks/useModalFocus';
+import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
 import { useTranslation } from 'react-i18next';
 import type { Attachment } from '../hooks/useAttachments';
 import { errorText } from '../utils/apiErrors';
 
 /**
- * Full-screen viewer for a chart's photos and radiographs: zoom (wheel,
+ * Modal viewer for a chart's photos and radiographs: zoom (wheel,
  * buttons, keys), pan (drag), rotate, flip, invert and brightness /
  * contrast, with previous/next through the chart's images.
  *
@@ -67,7 +70,10 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({ items, index, onIndexC
   const [brightness, setBrightness] = React.useState(100);
   const [contrast, setContrast] = React.useState(100);
   const [dicom, setDicom] = React.useState<DicomState>({ status: 'off' });
-  const dialogRef = React.useRef<HTMLDivElement>(null);
+  const dialogRef = useModalFocus<HTMLDivElement>(!!item);
+  const backdrop = useBackdropDismiss(onClose);
+  const [moreOpen, setMoreOpen] = React.useState(false);
+  const moreId = React.useId();
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
   // The image on screen now: a slow DICOM load must not land on the next one.
   const currentId = React.useRef(item?.id);
@@ -90,13 +96,6 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({ items, index, onIndexC
     setDicom({ status: 'off' });
   }, [item?.id, reset]);
 
-  // Focus the dialog; give focus back to whatever opened it.
-  React.useEffect(() => {
-    const opener = document.activeElement as HTMLElement | null;
-    dialogRef.current?.focus();
-    return () => opener?.focus?.();
-  }, []);
-
   const go = React.useCallback(
     (delta: number) => {
       if (items.length < 2) return;
@@ -117,6 +116,9 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({ items, index, onIndexC
   const loadDicom = React.useCallback(async () => {
     if (!item?.originalUrl) return;
     const forId = item.id;
+    // The load button is disabled now and replaced by sliders on success.
+    // Keep focus in the modal so Escape still works throughout the request.
+    dialogRef.current?.focus();
     setDicom({ status: 'loading' });
     try {
       const res = await fetch(item.originalUrl);
@@ -163,6 +165,8 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({ items, index, onIndexC
   }, [dicom]);
 
   const onKeyDown = (e: React.KeyboardEvent) => {
+    // A viewer opened over another dialog owns its keyboard shortcuts.
+    e.stopPropagation();
     if ((e.target as HTMLElement).tagName === 'INPUT') {
       if (e.key === 'Escape') onClose();
       return;
@@ -223,145 +227,154 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({ items, index, onIndexC
   const kindLabel = item.kind === 'xray' ? t('imaging.radiograph') : t('imaging.photo');
   const range = windowed ? Math.max(1, dicom.pixels.max - dicom.pixels.min) : 1;
 
-  return (
-    <div
-      ref={dialogRef}
-      className="image-viewer"
-      role="dialog"
-      aria-modal="true"
-      aria-label={t('viewer.title')}
-      tabIndex={-1}
-      onKeyDown={onKeyDown}
-    >
-      <div className="image-viewer__bar">
-        <div className="image-viewer__info">
-          <span className="image-viewer__count">{t('viewer.count', { n: index + 1, total: items.length })}</span>
-          <span className="image-viewer__kind">{kindLabel}</span>
-          {dateLabel?.(item) && <span className="image-viewer__date">{dateLabel(item)}</span>}
-          {item.toothTriadan !== null && (
-            <span className="image-viewer__tooth">{toothLabel ? toothLabel(item.toothTriadan) : item.toothTriadan}</span>
-          )}
-          {item.caption && <span className="image-viewer__caption">{item.caption}</span>}
-        </div>
-        <div className="image-viewer__tools" role="toolbar" aria-label={t('viewer.tools')}>
-          <button type="button" onClick={() => zoomBy(1 / ZOOM_STEP)} title={t('viewer.zoomOut')} aria-label={t('viewer.zoomOut')}>−</button>
-          <span className="image-viewer__zoom">{t('viewer.zoomLevel', { pct: Math.round(zoom * 100) })}</span>
-          <button type="button" onClick={() => zoomBy(ZOOM_STEP)} title={t('viewer.zoomIn')} aria-label={t('viewer.zoomIn')}>+</button>
-          <button type="button" onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }}>{t('viewer.fit')}</button>
-          <button type="button" onClick={() => setRotation((r) => (r + 270) % 360)} title={t('viewer.rotateLeft')} aria-label={t('viewer.rotateLeft')}>⟲</button>
-          <button type="button" onClick={() => setRotation((r) => (r + 90) % 360)} title={t('viewer.rotateRight')} aria-label={t('viewer.rotateRight')}>⟳</button>
-          <button type="button" aria-pressed={flip} onClick={() => setFlip((v) => !v)}>{t('viewer.flip')}</button>
-          <button type="button" aria-pressed={invert} onClick={() => setInvert((v) => !v)}>{t('viewer.invert')}</button>
-          <button type="button" onClick={reset}>{t('viewer.reset')}</button>
-          <a className="image-viewer__download" href={item.originalUrl || item.url} target="_blank" rel="noreferrer" download>
-            {item.originalUrl ? t('viewer.downloadDicom') : t('viewer.download')}
-          </a>
+  return createPortal(
+    <div className="image-viewer-overlay" {...backdrop}>
+      <div
+        ref={dialogRef}
+        className="image-viewer"
+        role="dialog"
+        aria-modal="true"
+        aria-label={t('viewer.title')}
+        tabIndex={-1}
+        onKeyDown={onKeyDown}
+      >
+        <div className="image-viewer__bar">
+          <div className="image-viewer__info">
+            <span className="image-viewer__count">{t('viewer.count', { n: index + 1, total: items.length })}</span>
+            <span className="image-viewer__kind">{kindLabel}</span>
+            {dateLabel?.(item) && <span className="image-viewer__date">{dateLabel(item)}</span>}
+            {item.toothTriadan !== null && (
+              <span className="image-viewer__tooth">{toothLabel ? toothLabel(item.toothTriadan) : item.toothTriadan}</span>
+            )}
+            {item.caption && <span className="image-viewer__caption">{item.caption}</span>}
+          </div>
           <button type="button" className="image-viewer__close" onClick={onClose} aria-label={t('viewer.close')} title={t('viewer.close')}>✕</button>
         </div>
-      </div>
+        <div className="image-viewer__controls">
+          <div className="image-viewer__tools" role="toolbar" aria-label={t('viewer.tools')}>
+            <button type="button" onClick={() => zoomBy(1 / ZOOM_STEP)} title={t('viewer.zoomOut')} aria-label={t('viewer.zoomOut')}>−</button>
+            <span className="image-viewer__zoom">{t('viewer.zoomLevel', { pct: Math.round(zoom * 100) })}</span>
+            <button type="button" onClick={() => zoomBy(ZOOM_STEP)} title={t('viewer.zoomIn')} aria-label={t('viewer.zoomIn')}>+</button>
+            <button type="button" onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }}>{t('viewer.fit')}</button>
+            <button type="button" aria-expanded={moreOpen} aria-controls={moreId} onClick={() => setMoreOpen((v) => !v)}>{t('ios.moreActions', { ns: 'common' })}</button>
+          </div>
+          <div id={moreId} className="image-viewer__secondary" hidden={!moreOpen}>
+            <button type="button" onClick={() => setRotation((r) => (r + 270) % 360)} title={t('viewer.rotateLeft')} aria-label={t('viewer.rotateLeft')}>⟲</button>
+            <button type="button" onClick={() => setRotation((r) => (r + 90) % 360)} title={t('viewer.rotateRight')} aria-label={t('viewer.rotateRight')}>⟳</button>
+            <button type="button" aria-pressed={flip} onClick={() => setFlip((v) => !v)}>{t('viewer.flip')}</button>
+            <button type="button" aria-pressed={invert} onClick={() => setInvert((v) => !v)}>{t('viewer.invert')}</button>
+            <button type="button" onClick={reset}>{t('viewer.reset')}</button>
+            <a className="image-viewer__download" href={item.originalUrl || item.url} target="_blank" rel="noreferrer" download>
+              {item.originalUrl ? t('viewer.downloadDicom') : t('viewer.download')}
+            </a>
+          </div>
 
-      <div className="image-viewer__adjust">
-        {windowed ? (
-          <>
-            <label>
-              {t('viewer.level')}
-              <input
-                type="range"
-                min={dicom.pixels.min}
-                max={dicom.pixels.max}
-                step={range / 1000}
-                value={dicom.center}
-                onChange={(e) => {
-                  const center = Number(e.target.value);
-                  setDicom((cur) => (cur.status === 'ready' ? { ...cur, center } : cur));
-                }}
-              />
-            </label>
-            <label>
-              {t('viewer.window')}
-              <input
-                type="range"
-                min={1}
-                max={range * 2}
-                step={range / 1000}
-                value={dicom.width}
-                onChange={(e) => {
-                  const width = Number(e.target.value);
-                  setDicom((cur) => (cur.status === 'ready' ? { ...cur, width } : cur));
-                }}
-              />
-            </label>
+          <div className="image-viewer__adjust">
+            {windowed ? (
+              <>
+                <label>
+                  {t('viewer.level')}
+                  <input
+                    type="range"
+                    min={dicom.pixels.min}
+                    max={dicom.pixels.max}
+                    step={range / 1000}
+                    value={dicom.center}
+                    onChange={(e) => {
+                      const center = Number(e.target.value);
+                      setDicom((cur) => (cur.status === 'ready' ? { ...cur, center } : cur));
+                    }}
+                  />
+                </label>
+                <label>
+                  {t('viewer.window')}
+                  <input
+                    type="range"
+                    min={1}
+                    max={range * 2}
+                    step={range / 1000}
+                    value={dicom.width}
+                    onChange={(e) => {
+                      const width = Number(e.target.value);
+                      setDicom((cur) => (cur.status === 'ready' ? { ...cur, width } : cur));
+                    }}
+                  />
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setDicom((cur) => (cur.status === 'ready' ? { ...cur, ...defaultWindow(cur.pixels) } : cur))}
+                >
+                  {t('viewer.resetWindow')}
+                </button>
+                <span className="image-viewer__hint">{t('viewer.windowHint')}</span>
+              </>
+            ) : (
+              <>
+                <label>
+                  {t('viewer.brightness')}
+                  <input type="range" min={20} max={300} value={brightness} onChange={(e) => setBrightness(Number(e.target.value))} />
+                </label>
+                <label>
+                  {t('viewer.contrast')}
+                  <input type="range" min={20} max={300} value={contrast} onChange={(e) => setContrast(Number(e.target.value))} />
+                </label>
+                {item.originalUrl && (
+                  <button type="button" onClick={loadDicom} disabled={dicom.status === 'loading'} title={t('viewer.windowLevelTitle')}>
+                    {dicom.status === 'loading' ? t('viewer.dicomLoading') : t('viewer.windowLevel')}
+                  </button>
+                )}
+                {dicom.status === 'failed' && <span className="image-viewer__error" role="alert">{dicom.message}</span>}
+              </>
+            )}
+          </div>
+
+        </div>
+
+        <div
+          className="image-viewer__stage"
+          onWheel={onWheel}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onPointerCancel={onPointerUp}
+          onDoubleClick={() => (zoom === 1 ? zoomBy(2) : (setZoom(1), setPan({ x: 0, y: 0 })))}
+        >
+          {items.length > 1 && (
             <button
               type="button"
-              onClick={() => setDicom((cur) => (cur.status === 'ready' ? { ...cur, ...defaultWindow(cur.pixels) } : cur))}
+              className="image-viewer__nav image-viewer__nav--prev"
+              onClick={() => go(-1)}
+              onPointerDown={(e) => e.stopPropagation()}
+              aria-label={t('viewer.previous')}
+              title={t('viewer.previous')}
             >
-              {t('viewer.resetWindow')}
+              ‹
             </button>
-            <span className="image-viewer__hint">{t('viewer.windowHint')}</span>
-          </>
-        ) : (
-          <>
-            <label>
-              {t('viewer.brightness')}
-              <input type="range" min={20} max={300} value={brightness} onChange={(e) => setBrightness(Number(e.target.value))} />
-            </label>
-            <label>
-              {t('viewer.contrast')}
-              <input type="range" min={20} max={300} value={contrast} onChange={(e) => setContrast(Number(e.target.value))} />
-            </label>
-            {item.originalUrl && (
-              <button type="button" onClick={loadDicom} disabled={dicom.status === 'loading'} title={t('viewer.windowLevelTitle')}>
-                {dicom.status === 'loading' ? t('viewer.dicomLoading') : t('viewer.windowLevel')}
-              </button>
+          )}
+          <div className="image-viewer__frame" style={{ transform, filter }}>
+            {windowed ? (
+              <canvas ref={canvasRef} className="image-viewer__media" aria-label={item.caption || kindLabel} role="img" />
+            ) : item.url ? (
+              <img src={item.url} alt={item.caption || kindLabel} className="image-viewer__media" draggable={false} />
+            ) : (
+              <span className="image-viewer__missing">{t('viewer.missing')}</span>
             )}
-            {dicom.status === 'failed' && <span className="image-viewer__error" role="alert">{dicom.message}</span>}
-          </>
-        )}
-      </div>
-
-      <div
-        className="image-viewer__stage"
-        onWheel={onWheel}
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
-        onPointerCancel={onPointerUp}
-        onDoubleClick={() => (zoom === 1 ? zoomBy(2) : (setZoom(1), setPan({ x: 0, y: 0 })))}
-      >
-        {items.length > 1 && (
-          <button
-            type="button"
-            className="image-viewer__nav image-viewer__nav--prev"
-            onClick={() => go(-1)}
-            onPointerDown={(e) => e.stopPropagation()}
-            aria-label={t('viewer.previous')}
-            title={t('viewer.previous')}
-          >
-            ‹
-          </button>
-        )}
-        <div className="image-viewer__frame" style={{ transform, filter }}>
-          {windowed ? (
-            <canvas ref={canvasRef} className="image-viewer__media" aria-label={item.caption || kindLabel} role="img" />
-          ) : item.url ? (
-            <img src={item.url} alt={item.caption || kindLabel} className="image-viewer__media" draggable={false} />
-          ) : (
-            <span className="image-viewer__missing">{t('viewer.missing')}</span>
+          </div>
+          {items.length > 1 && (
+            <button
+              type="button"
+              className="image-viewer__nav image-viewer__nav--next"
+              onClick={() => go(1)}
+              onPointerDown={(e) => e.stopPropagation()}
+              aria-label={t('viewer.next')}
+              title={t('viewer.next')}
+            >
+              ›
+            </button>
           )}
         </div>
-        {items.length > 1 && (
-          <button
-            type="button"
-            className="image-viewer__nav image-viewer__nav--next"
-            onClick={() => go(1)}
-            onPointerDown={(e) => e.stopPropagation()}
-            aria-label={t('viewer.next')}
-            title={t('viewer.next')}
-          >
-            ›
-          </button>
-        )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
