@@ -1,3 +1,4 @@
+import { radiologyRecordedText } from './radiologyReportState';
 import type { TFunction } from 'i18next';
 import i18n from '../i18n';
 import type { AppLanguage } from '../i18n/config';
@@ -101,9 +102,9 @@ function examLine(label: string, v: ExamItemValue | undefined, t: RecordNoteT): 
 export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): RecordNote {
   const info = snapshot.patientInfo;
   const sections: RecordNoteSection[] = [];
-  const add = (key: RecordNoteKey, lines: (string | null | false | undefined)[]) => {
+  const add = (key: RecordNoteKey, lines: (string | null | false | undefined)[], heading = t(HEADING_KEYS[key])) => {
     const kept = lines.filter((l): l is string => !!l);
-    if (kept.length) sections.push({ key, heading: t(HEADING_KEYS[key]), lines: kept });
+    if (kept.length) sections.push({ key, heading, lines: kept });
   };
 
   // 1. Header
@@ -186,7 +187,7 @@ export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): Record
   ]);
 
   // 6–8. Free text and recheck
-  add('radiographs', textLines(info.radiographicFindings));
+  add('radiographs', textLines(radiologyRecordedText(info)), t(typeof info.radiologyReport === 'string' ? 'app:radiologyReport.title' : HEADING_KEYS.radiographs));
   add('treatment', textLines(info.treatmentReport));
   add('dischargeMedications', textLines(info.dischargeMedications));
   add('dischargeInstructions', textLines(info.dischargeInstructions));
@@ -237,7 +238,7 @@ export function recordNoteBasis(snapshot: ChartSnapshot): string {
     snapshot.species, snapshot.logo,
     i.patientName, i.patientNumber, i.date, i.doctor, i.tech, i.complaint,
     i.nerveBlocks, i.customAnesthesia ?? null, i.exam, i.customExam ?? null,
-    i.radiographicFindings ?? '', i.treatmentReport, i.recallDate,
+    radiologyRecordedText(i), i.treatmentReport, i.recallDate,
     i.consultationHistory ?? '',
     i.consultationAssessment ?? '',
     i.consultationPlan ?? '',

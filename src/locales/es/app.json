@@ -390,6 +390,14 @@
     "radiologyHistoryHelp": "Opcional: añada antecedentes específicos del estudio cuando sea necesario. De lo contrario, se utilizan los antecedentes de la consulta.",
     "radiologyTechniqueHelp": "Opcional: proyecciones, técnica y cobertura documentadas por el veterinario.",
     "radiologyQuestionHelp": "Opcional: la pregunta que debe responder este estudio.",
-    "previewHelp": "Revise y edite este borrador. Su informe guardado solo cambia cuando elige Usar borrador."
+    "previewHelp": "Revise y edite este borrador. Su informe guardado solo cambia cuando elige Usar borrador.",
+    "editorHelp": "Escriba o dicte su informe. Mejorar con IA mejora la redacción basándose únicamente en su texto; el dictado radiológico se mejora cuando usted lo detiene. Revise el informe antes de compartirlo. Las imágenes no se analizan.",
+    "editorPlaceholder": "Antecedentes clínicos / motivo del estudio\nTécnica y cobertura\nHallazgos radiográficos — números dentales, ubicación, medidas e incertidumbre\nImpresión clínica\nRecomendaciones / pregunta clínica\n\nIncluya solo lo que haya documentado; estas indicaciones son opcionales.",
+    "refine": "Mejorar con IA",
+    "refining": "Mejorando…",
+    "undoRefine": "Deshacer mejora",
+    "editorLanguage": "Idioma del informe",
+    "refineUnavailable": "Inicie sesión con acceso a la IA para mejorar el texto. Puede seguir escribiendo y editando su informe.",
+    "refineFailed": "No se pudo mejorar el informe. Su texto se ha conservado."
   }
 }

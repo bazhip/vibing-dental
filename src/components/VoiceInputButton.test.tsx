@@ -130,7 +130,8 @@ describe('VoiceInputButton — stopping', () => {
     vi.mocked(extractChartActions).mockImplementationOnce(
       () => new Promise((r) => { release = () => r({ actions: [], skipped: [], flags: [], ran: true }); }),
     );
-    render(<VoiceInputButton {...props} context={realContext} />);
+    const finished = vi.fn();
+    render(<VoiceInputButton {...props} context={realContext} onDictationComplete={finished} />);
     startDictation();
     act(() => FakeRecognition.last!.say('104 GI 2'));
     await act(async () => { await new Promise((r) => setTimeout(r, 1300)); }); // quiet flush → in flight
@@ -138,12 +139,14 @@ describe('VoiceInputButton — stopping', () => {
     act(() => FakeRecognition.last!.say('105 missing'));
     fireEvent.click(screen.getAllByRole('button', { name: 'Stop' })[0]);
     expect(reviewFullTranscript).not.toHaveBeenCalled(); // waits for the live request
+    expect(finished).not.toHaveBeenCalled();
     await act(async () => { release(); await new Promise((r) => setTimeout(r, 600)); });
 
     const deltas = vi.mocked(extractChartActions).mock.calls.map((c) => c[0].delta);
     expect(deltas).toEqual(['104 GI 2', '105 missing']);
     expect(reviewFullTranscript).toHaveBeenCalledTimes(1);
     expect(vi.mocked(reviewFullTranscript).mock.calls[0][0].transcript).toBe('104 GI 2\n105 missing');
+    expect(finished).toHaveBeenCalledExactlyOnceWith('en');
   });
 
   it('a result that returns after switching charts is dropped', async () => {
@@ -151,15 +154,18 @@ describe('VoiceInputButton — stopping', () => {
     vi.mocked(extractChartActions).mockImplementationOnce(
       () => new Promise((r) => { release = () => r({ actions: [gi], skipped: [], flags: [], ran: true }); }),
     );
+    const finished = vi.fn();
     const setToothField = vi.fn();
     const handlers = { setToothField } as never;
-    const { rerender } = render(<VoiceInputButton {...props} context={realContext} handlers={handlers} />);
+    const { rerender } = render(<VoiceInputButton {...props} context={realContext} handlers={handlers} onDictationComplete={finished} />);
     startDictation();
     act(() => FakeRecognition.last!.say('104 GI 2'));
     await act(async () => { await new Promise((r) => setTimeout(r, 1300)); });
-    rerender(<VoiceInputButton {...props} context={realContext} handlers={handlers} sessionKey="chart-2" />);
+    fireEvent.click(screen.getAllByRole('button', { name: 'Stop' })[0]);
+    rerender(<VoiceInputButton {...props} context={realContext} handlers={handlers} sessionKey="chart-2" onDictationComplete={finished} />);
     await act(async () => { release(); await new Promise((r) => setTimeout(r, 400)); });
     expect(setToothField).not.toHaveBeenCalled();
+    expect(finished).not.toHaveBeenCalled();
     expect(reviewFullTranscript).not.toHaveBeenCalled();
   });
 

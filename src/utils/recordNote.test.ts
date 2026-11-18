@@ -125,3 +125,13 @@ it('adds only explicit consultation/discharge source sections and invalidates th
   expect(buildRecordNote(updated, en()).sections.filter(s => s.key !== 'header').map(s => s.lines.join('\n'))).toEqual(Object.values(info));
   expect(recordNoteBasis(updated)).not.toBe(recordNoteBasis(original));
 });
+it('uses the visible radiology report in records/PIMS, tracks edits, and respects an explicit clear', () => {
+  const value = snap({}, { radiographicFindings: 'Old hidden 108 finding', radiologyReport: '409: corrected possible resorption' });
+  const basis = recordNoteBasis(value);
+  const note = buildRecordNote(value, en());
+  expect(note.sections.find(item => item.key === 'radiographs')).toMatchObject({ heading: 'Radiology report', lines: ['409: corrected possible resorption'] });
+  expect(recordNoteText(note)).not.toContain('Old hidden');
+  value.patientInfo.radiologyReport = '';
+  expect(recordNoteBasis(value)).not.toBe(basis);
+  expect(buildRecordNote(value, en()).sections.some(item => item.key === 'radiographs')).toBe(false);
+});

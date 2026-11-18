@@ -390,6 +390,14 @@
     "radiologyHistoryHelp": "Facoltativo: aggiunga un’anamnesi specifica per l’esame se necessario. Altrimenti viene utilizzata l’anamnesi della visita.",
     "radiologyTechniqueHelp": "Facoltativo: proiezioni, tecnica e copertura documentate dal veterinario.",
     "radiologyQuestionHelp": "Facoltativo: il quesito a cui questo esame deve rispondere.",
-    "previewHelp": "Verifichi e modifichi questa bozza. Il Suo referto salvato cambia solo quando sceglie Usa bozza."
+    "previewHelp": "Verifichi e modifichi questa bozza. Il Suo referto salvato cambia solo quando sceglie Usa bozza.",
+    "editorHelp": "Scriva o detti il Suo referto. Rielabora con IA migliora la formulazione basandosi solo sul Suo testo; la dettatura radiologica viene rielaborata quando Lei la interrompe. Verifichi il referto prima di condividerlo. Le immagini non vengono analizzate.",
+    "editorPlaceholder": "Anamnesi clinica / motivo dello studio\nTecnica e copertura\nReperti radiografici — numeri dei denti, sede, misurazioni e incertezza\nImpressione clinica\nRaccomandazioni / quesito clinico\n\nIncluda solo ciò che ha documentato; queste indicazioni sono facoltative.",
+    "refine": "Rielabora con IA",
+    "refining": "Rielaborazione…",
+    "undoRefine": "Annulla rielaborazione",
+    "editorLanguage": "Lingua del referto",
+    "refineUnavailable": "Acceda con accesso all’IA per rielaborare il testo. Può comunque scrivere e modificare il Suo referto.",
+    "refineFailed": "Impossibile rielaborare il referto. Il Suo testo è stato conservato."
   }
 }

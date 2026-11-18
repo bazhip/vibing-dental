@@ -1141,7 +1141,7 @@ export interface ChartHandlers {
   setPatientField: (field: keyof PatientInfo, value: string) => void;
   appendTreatmentReport: (text: string) => void;
   /** Optional so older callers (tests, harness) needn't provide it. */
-  appendRadiographicFindings?: (text: string) => void;
+  appendRadiographicFindings?: (text: string, lng?: AppLanguage) => void;
 }
 
 /**
@@ -1179,11 +1179,11 @@ export function describeAction(action: AiAction): string {
   }
 }
 
-export function applyAiActions(actions: AiAction[], h: ChartHandlers): AiAction[] {
+export function applyAiActions(actions: AiAction[], h: ChartHandlers, lng?: AppLanguage): AiAction[] {
   const applied: AiAction[] = [];
   for (const action of actions) {
     try {
-      if (applyOne(action, h)) applied.push(action);
+      if (applyOne(action, h, lng)) applied.push(action);
     } catch (err) {
       console.warn(`[aiAutofill] could not apply ${action.name}:`, err, action.input);
     }
@@ -1320,7 +1320,7 @@ const NERVE_SITES = new Set([
 ]);
 const PATIENT_FIELDS = new Set(['patientName', 'patientNumber', 'doctor', 'tech', 'complaint']);
 
-function applyOne(action: AiAction, h: ChartHandlers): boolean {
+function applyOne(action: AiAction, h: ChartHandlers, lng?: AppLanguage): boolean {
   const { name, input } = action;
   const s = (k: string): string => String(input[k] ?? '');
   const n = (k: string): number => Number(input[k]);
@@ -1390,7 +1390,8 @@ function applyOne(action: AiAction, h: ChartHandlers): boolean {
     }
     case 'append_radiographic_findings': {
       if (!h.appendRadiographicFindings) return false;
-      h.appendRadiographicFindings(s('text'));
+      if (lng) h.appendRadiographicFindings(s('text'), lng);
+      else h.appendRadiographicFindings(s('text'));
       return true;
     }
     default:

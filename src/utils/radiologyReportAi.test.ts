@@ -84,3 +84,11 @@ it.each(['consultationHistory','consultationAssessment','consultationPlan'] as c
  const chart=radiologySnapshot();chart.patientInfo[field]='x'.repeat(20001);
  await expect(draftRadiologyReport(chart,'en')).rejects.toThrow();expect(send).not.toHaveBeenCalled();
 });
+
+it('refines report-only text and does not restore hidden legacy source into the request',()=>{
+ const chart=radiologySnapshot();Object.assign(chart.patientInfo,{radiologyReport:'409: possible resorption, unchanged uncertainty.',radiologyHistory:'Hidden old history',radiologyTechnique:'Hidden old technique'});
+ const text=buildRadiologyReportRequest(chart,'en').messages[0].content[0].text;
+ expect(text).toContain('409: possible resorption');expect(text).not.toContain('Hidden old');expect(text).not.toContain('108: 4.5');
+ chart.patientInfo.radiographicFindings='';chart.patientInfo.radiologyHistory='h'.repeat(20001);expect(()=>buildRadiologyReportRequest(chart,'en')).not.toThrow();
+ chart.patientInfo.radiologyReport='';expect(()=>buildRadiologyReportRequest(chart,'en')).toThrow();
+});

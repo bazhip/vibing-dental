@@ -102,6 +102,8 @@ interface VoiceInputButtonProps {
   handlers: ChartHandlers;
   /** Called with each batch of applied actions so the app can focus the
    *  section + highlight the fields the AI just edited. */
+  /** After pending chunks and the final check have landed for this session. */
+  onDictationComplete?: (lng: AppLanguage) => void;
   onActivity?: (actions: AiAction[], lng: AppLanguage) => void;
   /** Chart section on screen — dictation fills this section. */
   activeSection?: string;
@@ -237,7 +239,7 @@ function useStickToBottom<T extends HTMLElement>(dep: unknown) {
 }
 
 export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
-  context, handlers, onActivity, activeSection, sessionKey, locked = false, onOpenFeedback}) => {
+  context, handlers, onActivity, onDictationComplete, activeSection, sessionKey, locked = false, onOpenFeedback}) => {
   const { t } = useTranslation('voice');
   const [activeChunkCount, setActiveChunkCount] = React.useState(0);
   const [activity, setActivity] = React.useState<ActivityEntry[]>([]);
@@ -298,6 +300,8 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   handlersRef.current = handlers;
   const onActivityRef = React.useRef(onActivity);
   onActivityRef.current = onActivity;
+  const onDictationCompleteRef = React.useRef(onDictationComplete);
+  onDictationCompleteRef.current = onDictationComplete;
   const sectionRef = React.useRef(activeSection);
   sectionRef.current = activeSection;
   const quietTimerRef = React.useRef<number | undefined>(undefined);
@@ -404,7 +408,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       // Undo info has to be captured from the chart BEFORE applying.
       const reverts = new Map<AiAction, (() => void) | undefined>();
       for (const f of result.flags) if (f.applied) reverts.set(f.applied, revertFor(f.applied, before));
-      const applied = applyAiActions(fresh, handlersRef.current);
+      const applied = applyAiActions(fresh, handlersRef.current, voiceRef.current?.lng ?? 'en');
       const appliedSet = new Set(applied);
 
       const newItems: ReviewItem[] = [];
@@ -562,7 +566,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       }
       return;
     }
-    const applied = applyAiActions([choice.action], handlersRef.current);
+    const applied = applyAiActions([choice.action], handlersRef.current, voiceRef.current?.lng ?? 'en');
     appendActivity(applied);
   };
 
@@ -572,7 +576,10 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   };
 
   const onStop = React.useCallback(async (_t: string) => {
+    const gen = sessionGenRef.current, key = currentSessionRef.current;
+    const lng = voiceRef.current?.lng ?? 'en';
     await runFinalCheck(); // drains every pending chunk first
+    if (gen === sessionGenRef.current && key === currentSessionRef.current && canEdit()) onDictationCompleteRef.current?.(lng);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [processChunk]);
   // Send each utterance as soon as the speaker pauses, rather than on a

@@ -119,3 +119,12 @@ describe('supported maximum custom chart settings', () => {
     }
   });
 });
+it('prints the visible radiology report, not superseded hidden findings, and respects a clear', async () => {
+  const p = { ...patient, radiologyReport: 'Visible corrected radiology text.', radiographicFindings: 'Hidden superseded finding.' };
+  const output = await capture(p);
+  expect(output.allTexts.map(item => item.text).join('\n')).toContain('Visible corrected radiology text.');
+  expect(output.allTexts.map(item => item.text).join('\n')).not.toContain('Hidden superseded');
+  vi.restoreAllMocks();
+  const empty = await capture({ ...p, radiologyReport: '' });
+  expect(empty.allTexts.map(item => item.text).join('\n')).not.toContain('Hidden superseded');
+});

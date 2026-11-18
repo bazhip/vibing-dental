@@ -71,3 +71,16 @@ it.each(['consultationHistory','consultationAssessment','consultationPlan'] as c
  chart.patientInfo[field]='Updated explicitly recorded clinical context';
  expect(isRadiologyReportReviewed(chart,'en')).toBe(false);
 });
+
+it('keeps legacy study fields visible once and preserves an explicitly cleared editor',async()=>{
+ const {radiologyEditorText,appendRadiologyDictation}=await import('./radiologyReportState');
+ const chart=radiologySnapshot();chart.patientInfo.radiologyTechnique='Two recorded intraoral views';
+ expect(radiologyEditorText(chart)).toContain('Two recorded intraoral views');
+ expect(radiologyEditorText(chart)).toContain(chart.patientInfo.radiographicFindings);
+ chart.patientInfo.radiologyReport='Revised report';
+ Object.assign(chart.patientInfo,appendRadiologyDictation(chart,'409: possible resorption','fr'));
+ expect(chart.patientInfo.radiologyReport).toBe('Revised report\n409: possible resorption');
+ expect(chart.patientInfo.radiologyReviewedBasis).toBe('');
+ expect(chart.patientInfo.radiologyReportLanguage).toBe('fr');
+ chart.patientInfo.radiologyReport='';expect(radiologyEditorText(chart)).toBe('');
+});

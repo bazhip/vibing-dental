@@ -1,3 +1,4 @@
+import { appendRadiologyDictation, radiologyRecordedText } from './utils/radiologyReportState';
 import { VisitDocumentationSection } from './components/VisitDocumentationSection';
 import { RadiologyReportSection } from './components/RadiologyReportSection';
 import { isGeneratedPatientNumber } from './utils/patientIds';
@@ -412,6 +413,17 @@ const EntryGrid: React.FC<EntryGridProps> = ({
 
   const activeSectionRef = React.useRef(activeSection);
   activeSectionRef.current = activeSection;
+  const radiologyDictatedSession = React.useRef<string | null>(null);
+  const radiologyRefineSerial = React.useRef(0);
+  const [radiologyRefineRequest, setRadiologyRefineRequest] = React.useState<{ id: number; language: AppLanguage; session: string }>();
+  const radiologySession = JSON.stringify([chart.cloudChartId, chart.chartSession]);
+  const handleDictationComplete = (lng: AppLanguage) => {
+    if (radiologyDictatedSession.current !== radiologySession) return;
+    radiologyDictatedSession.current = null;
+    if (!readOnly && profile.aiEnabled && !trial && cloud.enabled) {
+      setRadiologyRefineRequest({ id: ++radiologyRefineSerial.current, language: lng, session: radiologySession });
+    }
+  };
   const handleAiActivity = React.useCallback((actions: AiAction[], lng: AppLanguage) => {
     // Never navigate: the vet stays on the page they chose, and the voice
     // panel says where anything else went ("→ Exam: …"). Just flash the
@@ -829,7 +841,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // ----- AI autofill plumbing -------------------------------------------
   // Snapshot of state Claude sees alongside the transcript.
   const aiContext: ChartContext = {
-    patientInfo: chart.patientInfo,
+    patientInfo: typeof chart.patientInfo.radiologyReport === 'string'
+      ? { ...chart.patientInfo, radiographicFindings: radiologyRecordedText(chart.patientInfo) } : chart.patientInfo,
     species:     chart.species,
     logo:        chart.logo,
     toothData:   chart.toothData,
@@ -932,11 +945,11 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         return { ...prev, treatmentReport: existing ? `${existing}\n${text}` : text };
       });
     },
-    appendRadiographicFindings: (text) => {
-      chart.setPatientInfo((prev: PatientInfo) => {
-        const existing = prev.radiographicFindings ?? '';
-        return { ...prev, radiographicFindings: existing ? `${existing}\n${text}` : text };
-      });
+    appendRadiographicFindings: (text, lng = language) => {
+      if (readOnly) return;
+      radiologyDictatedSession.current = radiologySession;
+      chart.setPatientInfo((prev: PatientInfo) => ({ ...prev,
+        ...appendRadiologyDictation({ ...chart.getSnapshot(), patientInfo: prev }, text, lng) }));
     },
   };
 
@@ -1234,6 +1247,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         />
         <RadiologyReportSection key={`${chart.cloudChartId}:${chart.chartSession}`}
           chartId={chart.cloudChartId} chartSession={chart.chartSession} snapshot={chart.getSnapshot()}
+          refineRequest={radiologyRefineRequest?.session === radiologySession ? radiologyRefineRequest : undefined}
           readOnly={readOnly} aiEnabled={profile.aiEnabled && !trial && cloud.enabled}
           onChange={(changes) => chart.setPatientInfo((previous) => ({ ...previous, ...changes }))} />
         <ImageHistory visits={imageHistoryVisits} onOpenVisit={switchVisit} toothLabel={imageToothLabel} />
@@ -2010,6 +2024,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               context={aiContext}
               handlers={aiHandlers}
               onActivity={handleAiActivity}
+              onDictationComplete={handleDictationComplete}
               activeSection={activeSection}
               sessionKey={String(chart.chartSession)}
               locked={readOnly}
@@ -2140,6 +2155,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               context={aiContext}
               handlers={aiHandlers}
               onActivity={handleAiActivity}
+              onDictationComplete={handleDictationComplete}
               activeSection={activeSection}
               sessionKey={String(chart.chartSession)}
               locked={readOnly}

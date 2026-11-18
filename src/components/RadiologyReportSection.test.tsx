@@ -22,184 +22,171 @@ function Editor({ initial = snapshot(), readOnly = false, changed = vi.fn() }: {
 }
 beforeEach(() => { vi.clearAllMocks(); mocks.generate.mockResolvedValue('Recorded findings\n108: 4.5 mm bone loss.'); mocks.consent.mockResolvedValue(true); mocks.save.mockResolvedValue('downloaded'); });
 afterEach(cleanup);
-it('keeps recorded findings and existing report until a generated preview is explicitly used', async () => {
-  const initial = snapshot(); initial.patientInfo.radiologyReport = 'Existing report';
-  const changed = vi.fn(); render(<Editor initial={initial} changed={changed} />);
-  fireEvent.click(screen.getByRole('button', { name: 'Generate draft' }));
-  expect(await screen.findByLabelText('Generated draft')).toHaveValue('Recorded findings\n108: 4.5 mm bone loss.');
-  expect(screen.getByLabelText('Report text')).toHaveValue('Existing report');
-  expect(changed).not.toHaveBeenCalled();
-  fireEvent.click(screen.getByRole('button', { name: 'Use draft' }));
-  expect(screen.getByLabelText('Report text')).toHaveValue('Recorded findings\n108: 4.5 mm bone loss.');
-  expect(changed).toHaveBeenCalledWith(expect.objectContaining({ radiologyReviewedBasis: '', radiologyReportLanguage: 'en' }));
-  expect(changed.mock.calls.every(([change]) => !('radiographicFindings' in change))).toBe(true);
+it('shows one free-text editor with study prompts and refines in place with Undo', async () => {
+  const initial = snapshot(); initial.patientInfo.radiologyReport = '108: possible fracture, 4.5 mm lucency';
+  render(<Editor initial={initial} />);
+  expect(screen.getAllByRole('textbox')).toHaveLength(1);
+  const editor = screen.getByRole('textbox', { name: 'Report text' });
+  expect(editor).toHaveAttribute('placeholder', expect.stringMatching(/history[\s\S]*technique[\s\S]*findings/i));
+  expect(editor).toHaveAccessibleDescription(/Type or dictate/);
+  fireEvent.click(screen.getByRole('button', { name: 'Refine with AI' }));
+  await waitFor(() => expect(editor).toHaveValue('Recorded findings\n108: 4.5 mm bone loss.'));
+  expect(screen.getAllByRole('textbox')).toHaveLength(1);
   expect(screen.getByRole('button', { name: 'Copy report' })).toBeDisabled();
+  fireEvent.click(screen.getByRole('button', { name: 'Undo refinement' }));
+  expect(editor).toHaveValue('108: possible fracture, 4.5 mm lucency');
+});
+it('preserves legacy findings/context, but an explicitly cleared report stays empty', () => {
+  const value = snapshot(); value.patientInfo.radiologyTechnique = 'Two recorded intraoral views';
+  render(<Editor initial={value} />);
+  const editor = screen.getByLabelText('Report text');
+  expect((editor as HTMLTextAreaElement).value).toContain('Two recorded intraoral views');
+  fireEvent.change(editor, { target: { value: '' } });
+  expect(editor).toHaveValue('');
+  expect(screen.getByRole('button', { name: 'Refine with AI' })).toBeDisabled();
 });
 it('requires current explicit review before copy and invalidates it on edits', async () => {
   const initial = snapshot(); initial.patientInfo.radiologyReport = 'Reviewed text';
   render(<Editor initial={initial} />);
-  expect(screen.getByRole('button', { name: 'Copy report' })).toBeDisabled();
   fireEvent.click(screen.getByLabelText('I reviewed this report against the current chart.'));
   fireEvent.click(screen.getByRole('button', { name: 'Copy report' }));
   await waitFor(() => expect(mocks.copy).toHaveBeenCalledOnce());
   fireEvent.change(screen.getByLabelText('Report text'), { target: { value: 'Updated text' } });
   expect(screen.getByRole('button', { name: 'Copy report' })).toBeDisabled();
 });
-it('only generates once through pending consent and never calls AI after consent refusal', async () => {
+it('allows recorded legacy text to be reviewed without typing it again', async () => {
+  render(<Editor />);
+  fireEvent.click(screen.getByLabelText('I reviewed this report against the current chart.'));
+  expect(screen.getByRole('button', { name: 'Copy report' })).toBeEnabled();
+});
+it('only refines once through pending consent and never calls AI after consent refusal', async () => {
   mocks.consent.mockResolvedValue(false); render(<Editor />);
-  const button = screen.getByRole('button', { name: 'Generate draft' });
+  const button = screen.getByRole('button', { name: 'Refine with AI' });
   fireEvent.click(button); fireEvent.click(button);
   await waitFor(() => expect(mocks.consent).toHaveBeenCalledOnce());
   expect(mocks.generate).not.toHaveBeenCalled();
 });
-it.each(['chart', 'source', 'readOnly', 'auth'] as const)('discards a response after %s changes', async mode => {
+it.each(['chart', 'chartSession', 'source', 'body', 'readOnly', 'aiEnabled', 'auth'] as const)('drops refinement after %s changes', async mode => {
+  let resolve!: (value: string) => void;
+  mocks.generate.mockImplementationOnce(() => new Promise(done => { resolve = done; }));
+  const value = snapshot(), changed = vi.fn();
+  const view = render(<RadiologyReportSection snapshot={value} chartId="chart" chartSession={1} aiEnabled onChange={changed} />);
+  fireEvent.click(screen.getByRole('button', { name: 'Refine with AI' }));
+  await waitFor(() => expect(mocks.generate).toHaveBeenCalledOnce());
+  if (mode === 'auth') act(() => mocks.auth?.('SIGNED_OUT'));
+  else view.rerender(<RadiologyReportSection snapshot={mode === 'source' ? { ...value, patientInfo: { ...value.patientInfo, radiographicFindings: 'Changed findings' } } : mode === 'body' ? { ...value, patientInfo: { ...value.patientInfo, radiologyReport: 'New manual text' } } : value}
+    chartId={mode === 'chart' ? 'other' : 'chart'} chartSession={mode === 'chartSession' ? 2 : 1} readOnly={mode === 'readOnly'} aiEnabled={mode !== 'aiEnabled'} onChange={changed} />);
+  await act(async () => { resolve('Stale report'); });
+  expect(changed).not.toHaveBeenCalled();
+});
+it.each(['chartSession', 'body', 'readOnly', 'aiEnabled'] as const)('does not call AI after deferred consent if %s changes', async mode => {
+  let resolve!: (value: boolean) => void;
+  mocks.consent.mockImplementationOnce(() => new Promise(done => { resolve = done; }));
+  const value = snapshot(), changed = vi.fn();
+  const view = render(<RadiologyReportSection snapshot={value} chartId="chart" chartSession={1} aiEnabled onChange={changed} />);
+  fireEvent.click(screen.getByRole('button', { name: 'Refine with AI' }));
+  await waitFor(() => expect(mocks.consent).toHaveBeenCalledOnce());
+  view.rerender(<RadiologyReportSection snapshot={mode === 'body' ? { ...value, patientInfo: { ...value.patientInfo, radiologyReport: 'New manual report' } } : value}
+    chartId="chart" chartSession={mode === 'chartSession' ? 2 : 1} aiEnabled={mode !== 'aiEnabled'} readOnly={mode === 'readOnly'} onChange={changed} />);
+  await act(async () => resolve(true));
+  expect(mocks.generate).not.toHaveBeenCalled(); expect(changed).not.toHaveBeenCalled();
+});
+it.each(['source', 'readOnly'] as const)('does not revive a pending refinement after %s changes and is restored', async mode => {
   let resolve!: (value: string) => void;
   mocks.generate.mockImplementationOnce(() => new Promise(done => { resolve = done; }));
   const value = snapshot(), changed = vi.fn();
   const view = render(<RadiologyReportSection snapshot={value} chartId="chart" aiEnabled onChange={changed} />);
-  fireEvent.click(screen.getByRole('button', { name: 'Generate draft' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Refine with AI' }));
   await waitFor(() => expect(mocks.generate).toHaveBeenCalledOnce());
-  if (mode === 'auth') act(() => mocks.auth?.('SIGNED_OUT'));
-  else view.rerender(<RadiologyReportSection snapshot={mode === 'source' ? { ...value, patientInfo: { ...value.patientInfo, radiographicFindings: 'Changed findings' } } : value}
-    chartId={mode === 'chart' ? 'other' : 'chart'} readOnly={mode === 'readOnly'} aiEnabled onChange={changed} />);
-  await act(async () => { resolve('Stale report'); });
-  expect(screen.queryByLabelText('Generated draft')).not.toBeInTheDocument(); expect(changed).not.toHaveBeenCalled();
+  view.rerender(<RadiologyReportSection snapshot={mode === 'source' ? { ...value, patientInfo: { ...value.patientInfo, radiographicFindings: 'Different' } } : value} chartId="chart" aiEnabled readOnly={mode === 'readOnly'} onChange={changed} />);
+  view.rerender(<RadiologyReportSection snapshot={value} chartId="chart" aiEnabled onChange={changed} />);
+  await act(async () => resolve('Old request')); expect(changed).not.toHaveBeenCalled();
 });
-it('preserves a report when preview is discarded and leaves export unsupported outcomes unsuccessful', async () => {
-  const initial = snapshot(); initial.patientInfo.radiologyReport = 'Existing report';
-  render(<Editor initial={initial} />);
-  fireEvent.click(screen.getByRole('button', { name: 'Generate draft' }));
-  await screen.findByLabelText('Generated draft'); fireEvent.click(screen.getByRole('button', { name: 'Discard draft' }));
-  expect(screen.getByLabelText('Report text')).toHaveValue('Existing report');
-  fireEvent.click(screen.getByLabelText('I reviewed this report against the current chart.'));
+it('keeps the text after an error, and clears error details when the account changes', async () => {
+  mocks.generate.mockRejectedValueOnce(new TypeError()); render(<Editor />);
+  fireEvent.click(screen.getByRole('button', { name: 'Refine with AI' }));
+  await screen.findByRole('alert');
+  expect(screen.getByLabelText('Report text')).toHaveValue('108: 4.5 mm bone loss, distal root.');
+  act(() => mocks.auth?.('SIGNED_OUT')); expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+});
+it('keeps manual editing available without AI and locks the editor for saved read-only visits', () => {
+  const value = snapshot(); value.patientInfo.radiographicFindings = '';
+  const view = render(<RadiologyReportSection snapshot={value} onChange={vi.fn()} />);
+  expect(screen.getByLabelText('Report text')).toBeEnabled();
+  expect(screen.getByRole('button', { name: 'Refine with AI' })).toBeDisabled();
+  view.rerender(<RadiologyReportSection snapshot={value} readOnly onChange={vi.fn()} />);
+  expect(screen.getByLabelText('Report text')).toBeDisabled();
+});
+it('invalidates review when language or recorded chart context changes without deleting text', async () => {
+  const value = snapshot(); value.patientInfo.radiologyReport = 'Report'; value.patientInfo.radiologyReportLanguage = 'en';
+  const { radiologySourceBasis, radiologyReviewBasis } = await import('../utils/radiologyReportState');
+  value.patientInfo.radiologyReportBasis = radiologySourceBasis(value); value.patientInfo.radiologyReviewedBasis = radiologyReviewBasis(value, 'en');
+  render(<Editor initial={value} />);
+  expect(screen.getByRole('button', { name: 'Copy report' })).toBeEnabled();
+  fireEvent.change(screen.getByRole('combobox'), { target: { value: 'fr' } });
+  expect(screen.getByRole('button', { name: 'Copy report' })).toBeDisabled();
+  expect(screen.getByLabelText('Report text')).toHaveValue('Report');
+});
+it.each(['source', 'auth'] as const)('does not save a PDF after %s changes during rendering', async mode => {
+  let resolve!: (value: Uint8Array<ArrayBuffer>) => void;
+  mocks.pdf.mockImplementationOnce(() => new Promise(done => { resolve = done; }));
+  const value = snapshot(); value.patientInfo.radiologyReport = 'Report'; value.patientInfo.radiologyReportLanguage = 'en';
+  const { radiologySourceBasis, radiologyReviewBasis } = await import('../utils/radiologyReportState');
+  value.patientInfo.radiologyReportBasis = radiologySourceBasis(value); value.patientInfo.radiologyReviewedBasis = radiologyReviewBasis(value, 'en');
+  const view = render(<RadiologyReportSection snapshot={value} chartId="chart" onChange={vi.fn()} />);
+  fireEvent.click(screen.getByRole('button', { name: 'Download PDF' }));
+  await waitFor(() => expect(mocks.pdf).toHaveBeenCalledOnce());
+  if (mode === 'auth') act(() => mocks.auth?.('SIGNED_OUT'));
+  else view.rerender(<RadiologyReportSection snapshot={{ ...value, patientInfo: { ...value.patientInfo, radiographicFindings: 'New findings' } }} chartId="chart" onChange={vi.fn()} />);
+  await act(async () => resolve(new Uint8Array([1]))); expect(mocks.save).not.toHaveBeenCalled();
+});
+it('does not claim success for an unsupported PDF result', async () => {
+  render(<Editor />); fireEvent.click(screen.getByLabelText('I reviewed this report against the current chart.'));
   mocks.save.mockResolvedValueOnce('unsupported'); fireEvent.click(screen.getByRole('button', { name: 'Download PDF' }));
   await screen.findByRole('alert'); expect(screen.queryByText('Report PDF downloaded.')).not.toBeInTheDocument();
 });
-it('allows manual editing offline but requires source facts and AI access to generate', () => {
-  const value = snapshot(); value.patientInfo.radiographicFindings = ''; value.patientInfo.complaint = ''; value.toothData = []; value.preComments = []; value.postComments = [];
-  render(<RadiologyReportSection snapshot={value} onChange={vi.fn()} aiEnabled={false} />);
-  expect(screen.getByLabelText('Report text')).toBeEnabled(); expect(screen.getByRole('button', { name: 'Generate draft' })).toBeDisabled();
+it('refines once for a new dictation completion request in its captured language', async () => {
+  const changed = vi.fn(), value = snapshot(); value.patientInfo.radiologyReport = '108: possible fracture';
+  const view = render(<RadiologyReportSection snapshot={value} aiEnabled onChange={changed} />);
+  expect(mocks.generate).not.toHaveBeenCalled();
+  view.rerender(<RadiologyReportSection snapshot={value} aiEnabled onChange={changed} refineRequest={{ id: 1, language: 'fr' }} />);
+  await waitFor(() => expect(changed).toHaveBeenCalledWith(expect.objectContaining({ radiologyReportLanguage: 'fr', radiologyReviewedBasis: '' })));
+  expect(mocks.generate).toHaveBeenCalledWith(expect.objectContaining({ patientInfo: expect.objectContaining({ radiologyReport: '108: possible fracture' }) }), 'fr');
+  view.rerender(<RadiologyReportSection snapshot={value} aiEnabled onChange={changed} refineRequest={{ id: 1, language: 'fr' }} />);
+  expect(mocks.generate).toHaveBeenCalledOnce();
 });
-it('does not download a reviewed PDF rendered after the source changes', async () => {
-  let resolve!: (value: Uint8Array<ArrayBuffer>)=>void;
-  mocks.pdf.mockImplementationOnce(()=>new Promise(done=>{resolve=done;}));
-  const value=snapshot(); value.patientInfo.radiologyReport='Report';
-  const {radiologySourceBasis,radiologyReviewBasis}=await import('../utils/radiologyReportState');
-  value.patientInfo.radiologyReportLanguage='en';value.patientInfo.radiologyReportBasis=radiologySourceBasis(value);value.patientInfo.radiologyReviewedBasis=radiologyReviewBasis(value,'en');
-  const view=render(<RadiologyReportSection snapshot={value} chartId="chart" onChange={vi.fn()}/>);
-  fireEvent.click(screen.getByRole('button',{name:'Download PDF'}));await waitFor(()=>expect(mocks.pdf).toHaveBeenCalledOnce());
-  view.rerender(<RadiologyReportSection snapshot={{...value,patientInfo:{...value.patientInfo,radiographicFindings:'New findings'}}} chartId="chart" onChange={vi.fn()}/>);
-  await act(async()=>resolve(new Uint8Array([1])));expect(mocks.save).not.toHaveBeenCalled();
-});
-it('undo restores only replaced report fields and never overwrites new context',async()=>{
- const initial=snapshot();initial.patientInfo.radiologyReport='Existing report';
- render(<Editor initial={initial}/>);fireEvent.click(screen.getByRole('button',{name:'Generate draft'}));
- await screen.findByLabelText('Generated draft');fireEvent.click(screen.getByRole('button',{name:'Use draft'}));
- fireEvent.click(screen.getByRole('button',{name:'Undo replacement'}));expect(screen.getByLabelText('Report text')).toHaveValue('Existing report');
-});
-it('source changes invalidate the current reviewed marker without deleting report text',async()=>{
- const value=snapshot();value.patientInfo.radiologyReport='Report';value.patientInfo.radiologyReportLanguage='en';
- const {radiologySourceBasis,radiologyReviewBasis}=await import('../utils/radiologyReportState');
- value.patientInfo.radiologyReportBasis=radiologySourceBasis(value);value.patientInfo.radiologyReviewedBasis=radiologyReviewBasis(value,'en');
- const view=render(<RadiologyReportSection snapshot={value} chartId="chart" onChange={vi.fn()}/>);
- expect(screen.getByRole('button',{name:'Copy report'})).toBeEnabled();
- view.rerender(<RadiologyReportSection snapshot={{...value,patientInfo:{...value.patientInfo,radiologyQuestion:'Updated question'}}} chartId="chart" onChange={vi.fn()}/>);
- expect(screen.getByRole('button',{name:'Copy report'})).toBeDisabled();expect(screen.getByLabelText('Report text')).toHaveValue('Report');
-});
-it('invalidates a reviewed report when its language changes while preserving the text',async()=>{
- const value=snapshot();value.patientInfo.radiologyReport='English report';value.patientInfo.radiologyReportLanguage='en';
- const {radiologySourceBasis,radiologyReviewBasis}=await import('../utils/radiologyReportState');
- value.patientInfo.radiologyReportBasis=radiologySourceBasis(value);value.patientInfo.radiologyReviewedBasis=radiologyReviewBasis(value,'en');
- render(<Editor initial={value}/>);expect(screen.getByRole('button',{name:'Copy report'})).toBeEnabled();
- fireEvent.change(screen.getByRole('combobox'),{target:{value:'fr'}});
- expect(screen.getByRole('button',{name:'Copy report'})).toBeDisabled();expect(screen.getByRole('button',{name:'Download PDF'})).toBeDisabled();
- expect(screen.getByLabelText('Report text')).toHaveValue('English report');
-});
-it('clears previous-account error details on an authentication transition',async()=>{
- mocks.generate.mockRejectedValueOnce(new TypeError());render(<Editor/>);
- fireEvent.click(screen.getByRole('button',{name:'Generate draft'}));await screen.findByRole('alert');
- act(()=>mocks.auth?.('SIGNED_OUT'));expect(screen.queryByRole('alert')).not.toBeInTheDocument();
-});
-it.each(['chartSession','body','readOnly','aiEnabled'] as const)('does not call AI after deferred consent if %s changes',async mode=>{
- let resolve!:(value:boolean)=>void;mocks.consent.mockImplementationOnce(()=>new Promise(done=>{resolve=done;}));
- const value=snapshot(),changed=vi.fn();const view=render(<RadiologyReportSection snapshot={value} chartId="chart" chartSession={1} aiEnabled onChange={changed}/>);
- fireEvent.click(screen.getByRole('button',{name:'Generate draft'}));await waitFor(()=>expect(mocks.consent).toHaveBeenCalledOnce());
- view.rerender(<RadiologyReportSection snapshot={mode==='body'?{...value,patientInfo:{...value.patientInfo,radiologyReport:'New manual report'}}:value} chartId="chart" chartSession={mode==='chartSession'?2:1} aiEnabled={mode!=='aiEnabled'} readOnly={mode==='readOnly'} onChange={changed}/>);
- await act(async()=>resolve(true));expect(mocks.generate).not.toHaveBeenCalled();expect(changed).not.toHaveBeenCalled();
-});
-it('does not download a reviewed PDF after auth changes during rendering',async()=>{
- let resolve!:(value:Uint8Array<ArrayBuffer>)=>void;mocks.pdf.mockImplementationOnce(()=>new Promise(done=>{resolve=done;}));
- const value=snapshot();value.patientInfo.radiologyReport='Report';value.patientInfo.radiologyReportLanguage='en';
- const {radiologySourceBasis,radiologyReviewBasis}=await import('../utils/radiologyReportState');
- value.patientInfo.radiologyReportBasis=radiologySourceBasis(value);value.patientInfo.radiologyReviewedBasis=radiologyReviewBasis(value,'en');
- render(<RadiologyReportSection snapshot={value} chartId="chart" onChange={vi.fn()}/>);
- fireEvent.click(screen.getByRole('button',{name:'Download PDF'}));await waitFor(()=>expect(mocks.pdf).toHaveBeenCalledOnce());
- act(()=>mocks.auth?.('SIGNED_OUT'));await act(async()=>resolve(new Uint8Array([1])));expect(mocks.save).not.toHaveBeenCalled();
-});
-it.each(['source','readOnly'] as const)('does not revive a pending generation after %s changes and is restored',async mode=>{
- let resolve!:(value:string)=>void;mocks.generate.mockImplementationOnce(()=>new Promise(done=>{resolve=done;}));
- const value=snapshot(),changed=vi.fn();const view=render(<RadiologyReportSection snapshot={value} chartId="chart" aiEnabled onChange={changed}/>);
- fireEvent.click(screen.getByRole('button',{name:'Generate draft'}));await waitFor(()=>expect(mocks.generate).toHaveBeenCalledOnce());
- view.rerender(<RadiologyReportSection snapshot={mode==='source'?{...value,patientInfo:{...value.patientInfo,radiographicFindings:'Different'}}:value} chartId="chart" aiEnabled readOnly={mode==='readOnly'} onChange={changed}/>);
- view.rerender(<RadiologyReportSection snapshot={value} chartId="chart" aiEnabled onChange={changed}/>);
- await act(async()=>resolve('Old request'));expect(screen.queryByLabelText('Generated draft')).not.toBeInTheDocument();
+it('does not retry an automatic refinement failure on another render', async () => {
+  mocks.generate.mockRejectedValueOnce(new TypeError());
+  const value = snapshot(), changed = vi.fn(), request = { id: 1, language: 'en' as const };
+  const view = render(<RadiologyReportSection snapshot={value} aiEnabled onChange={changed} refineRequest={request} />);
+  await screen.findByRole('alert');
+  view.rerender(<RadiologyReportSection snapshot={value} aiEnabled onChange={changed} refineRequest={{ ...request }} />);
+  expect(mocks.generate).toHaveBeenCalledOnce(); expect(changed).not.toHaveBeenCalled();
 });
 
-it('edits the primary findings input and generates with all study context blank', async () => {
- const initial=snapshot();Object.assign(initial.patientInfo,{radiologyHistory:'',radiologyTechnique:'',radiologyQuestion:'',complaint:''});
- const changed=vi.fn();render(<Editor initial={initial} changed={changed}/>);
- const findings=screen.getByRole('textbox',{name:'Radiographic findings'});
- expect(findings.closest('.radiographic-findings')).not.toBeNull();
- expect(findings).toHaveClass('radiographic-findings__text');
- fireEvent.change(findings,{target:{value:'409: approximately 30% horizontal bone loss.'}});
- expect(changed).toHaveBeenCalledWith(expect.objectContaining({radiographicFindings:'409: approximately 30% horizontal bone loss.',radiologyReviewedBasis:''}));
- expect(screen.getByText('Optional study context').closest('details')).not.toHaveAttribute('open');
- expect(screen.getByLabelText('Report text').closest('details')).not.toHaveAttribute('open');
- fireEvent.click(screen.getByRole('button',{name:'Generate draft'}));
- await screen.findByLabelText('Generated draft');
- expect(mocks.generate).toHaveBeenCalledWith(expect.objectContaining({patientInfo:expect.objectContaining({radiographicFindings:'409: approximately 30% horizontal bone loss.',radiologyTechnique:'',radiologyQuestion:''})}),'en');
+it('restores the original language when undoing automatic refinement into a different language', async()=>{
+ const value=snapshot();value.patientInfo.radiologyReport='Original English findings.';
+ function AutoEditor(){const [s,setS]=React.useState(value);const [request,setRequest]=React.useState<{id:number;language:'fr'}>();return <><button onClick={()=>setRequest({id:1,language:'fr'})}>Stop test dictation</button><RadiologyReportSection snapshot={s} aiEnabled refineRequest={request} onChange={changes=>setS(previous=>({...previous,patientInfo:{...previous.patientInfo,...changes}}))}/></>;}
+ render(<AutoEditor/>);fireEvent.click(screen.getByRole('button',{name:'Stop test dictation'}));
+ await screen.findByRole('button',{name:'Undo refinement'});expect(screen.getByRole('combobox')).toHaveValue('fr');
+ fireEvent.click(screen.getByRole('button',{name:'Undo refinement'}));expect(screen.getByRole('combobox')).toHaveValue('en');
+ expect(screen.getByLabelText('Report text')).toHaveValue('Original English findings.');
 });
-it('lets a clinician open the manual editor without AI access and keeps findings read-only when locked', () => {
- const value=snapshot();const view=render(<RadiologyReportSection snapshot={value} aiEnabled={false} onChange={vi.fn()}/>);
- fireEvent.click(screen.getByText('Write report manually'));
- expect(screen.getByLabelText('Report text').closest('details')).toHaveAttribute('open');
- view.rerender(<RadiologyReportSection snapshot={value} readOnly onChange={vi.fn()}/>);
- expect(screen.getByRole('textbox',{name:'Radiographic findings'})).toBeDisabled();
-});
-it('cannot generate a radiograph report from history and a question alone', () => {
- const initial=snapshot();Object.assign(initial.patientInfo,{radiographicFindings:' ',radiologyHistory:'Pain chewing',radiologyQuestion:'Assess 409'});
- render(<Editor initial={initial}/>);
- expect(screen.getByRole('button',{name:'Generate draft'})).toBeDisabled();
+it('shows externally captured dictation language even if refinement fails', async()=>{
+ mocks.generate.mockRejectedValueOnce(new TypeError());const value=snapshot();value.patientInfo.radiologyReport='Original';
+ const view=render(<RadiologyReportSection snapshot={value} aiEnabled onChange={vi.fn()}/>);
+ view.rerender(<RadiologyReportSection snapshot={{...value,patientInfo:{...value.patientInfo,radiologyReportLanguage:'fr'}}} aiEnabled onChange={vi.fn()} refineRequest={{id:1,language:'fr'}}/>);
+ await screen.findByRole('alert');expect(screen.getByRole('combobox')).toHaveValue('fr');
+ expect(mocks.generate).toHaveBeenCalledExactlyOnceWith(expect.anything(),'fr');
 });
 
-it('keeps the manual editor open when its last character is cleared', () => {
- render(<Editor/>);
- fireEvent.click(screen.getByText('Write report manually'));
- const editor=screen.getByLabelText('Report text');
- fireEvent.change(editor,{target:{value:'A'}});
- fireEvent.change(editor,{target:{value:''}});
- expect(editor.closest('details')).toHaveAttribute('open');
-});
-
-it('associates visible source and optional context guidance with their controls', () => {
-  render(<Editor />);
-  expect(screen.getByRole('textbox', { name: 'Radiographic findings' })).toHaveAccessibleDescription(/Describe what you see/);
-  fireEvent.click(screen.getByText('Optional study context'));
-  for (const label of ['Relevant clinical history', 'Study technique and coverage', 'Clinical question or reason for referral']) {
-    expect(screen.getByLabelText(label)).toHaveAccessibleDescription(/Optional/);
-  }
-});
-it('keeps one primary action as generation advances to proposal and reviewed output', async () => {
-  const { container } = render(<Editor />);
-  const primary = () => container.querySelectorAll('.radiology-report__primary');
-  expect(primary()).toHaveLength(1);
-  expect(primary()[0]).toHaveTextContent('Generate draft');
-  fireEvent.click(screen.getByRole('button', { name: 'Generate draft' }));
-  await screen.findByLabelText('Generated draft');
-  expect(primary()).toHaveLength(1);
-  expect(primary()[0]).toHaveTextContent('Use draft');
-  fireEvent.click(screen.getByRole('button', { name: 'Use draft' }));
-  fireEvent.click(screen.getByLabelText('I reviewed this report against the current chart.'));
-  expect(primary()).toHaveLength(1);
-  expect(primary()[0]).toHaveTextContent('Copy report');
+it('releases a pending refinement when the app language changes on a legacy draft', async()=>{
+ const i18n=(await import('../i18n')).default;let resolve!:(body:string)=>void;
+ mocks.generate.mockImplementationOnce(()=>new Promise(done=>{resolve=done;}));const changed=vi.fn();
+ render(<RadiologyReportSection snapshot={snapshot()} aiEnabled onChange={changed}/>);
+ fireEvent.click(screen.getByRole('button',{name:'Refine with AI'}));await waitFor(()=>expect(mocks.generate).toHaveBeenCalledOnce());
+ try {await act(async()=>{await i18n.changeLanguage('fr');});
+ expect(screen.getByRole('button',{name:i18n.t('app:radiologyReport.refine')})).toBeEnabled();
+ await act(async()=>resolve('Obsolete response'));expect(changed).not.toHaveBeenCalled();
+ } finally {await act(async()=>{await i18n.changeLanguage('en');});}
 });

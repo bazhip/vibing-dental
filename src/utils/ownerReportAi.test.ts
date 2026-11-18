@@ -84,3 +84,10 @@ it('keeps explicit visit sources available to AI even with a manual report overr
   for (const text of Object.values(sources)) expect(facts).toContain(text);
   expect(facts).toContain('Manual note');
 });
+it('uses visible radiology report text instead of superseded legacy findings', () => {
+  const value = { ...snap, patientInfo: { ...snap.patientInfo, radiographicFindings: 'Old hidden 108 finding', radiologyReport: '409: corrected possible resorption' } };
+  expect(ownerReportFacts(value)).toContain('409: corrected possible resorption');
+  expect(ownerReportFacts(value)).not.toContain('Old hidden');
+  value.patientInfo.radiologyReport = '';
+  expect(ownerReportFacts(value)).not.toContain('Old hidden');
+});

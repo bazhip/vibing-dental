@@ -1,6 +1,6 @@
 import i18n from '../i18n';
 import { isAppLanguage, type AppLanguage } from '../i18n/config';
-import type { ChartSnapshot } from '../types';
+import type { ChartSnapshot, PatientInfo } from '../types';
 
 const text = (value: unknown): string => typeof value === 'string' ? value : '';
 function reportLanguage(snapshot: ChartSnapshot, lng?: AppLanguage): AppLanguage {
@@ -54,6 +54,31 @@ export function radiologyReportText(snapshot: ChartSnapshot, lng?: AppLanguage):
   }), text(info.radiologyReport)].join('\n\n');
 }
 
+/** Current visible radiology text, including an explicit clear, owns downstream output. */
+export function radiologyRecordedText(info: PatientInfo): string {
+  return typeof info.radiologyReport === 'string' ? info.radiologyReport : text(info.radiographicFindings);
+}
+
+/** A stored editor value, including an explicit empty string, owns the text.
+ * Older visits keep their recorded context when first opened in the single editor. */
+export function radiologyEditorText(snapshot: ChartSnapshot, lng: AppLanguage = 'en'): string {
+  const info = snapshot.patientInfo;
+  if (typeof info.radiologyReport === 'string') return info.radiologyReport;
+  const t = i18n.getFixedT(lng, 'app');
+  const context = ([['radiologyHistory', 'headingHistory'], ['radiologyTechnique', 'headingTechnique'], ['radiologyQuestion', 'headingQuestion']] as const)
+    .filter(([field]) => text(info[field]).trim())
+    .map(([field, heading]) => `${t(`radiologyReport.${heading}`)}\n${text(info[field])}`);
+  if (!context.length) return text(info.radiographicFindings);
+  return [...context, text(info.radiographicFindings).trim() ? `${t('radiologyReport.headingFindings')}\n${text(info.radiographicFindings)}` : ''].filter(Boolean).join('\n\n');
+}
+
+export function appendRadiologyDictation(snapshot: ChartSnapshot, value: string, lng: AppLanguage): Partial<ChartSnapshot['patientInfo']> {
+  const draft = radiologyEditorText(snapshot, lng), findings = text(snapshot.patientInfo.radiographicFindings);
+  return { radiologyReport: draft ? `${draft}\n${value}` : value,
+    radiographicFindings: findings ? `${findings}\n${value}` : value,
+    radiologyReportLanguage: lng, radiologyReviewedBasis: '' };
+}
+
 export function hasRadiologySource(snapshot: ChartSnapshot): boolean {
-  return !!text(snapshot.patientInfo.radiographicFindings).trim();
+  return !!radiologyRecordedText(snapshot.patientInfo).trim();
 }

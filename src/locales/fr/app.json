@@ -390,6 +390,14 @@
     "radiologyHistoryHelp": "Facultatif : ajoutez des antécédents propres à cet examen si nécessaire. Sinon, les antécédents de la consultation sont utilisés.",
     "radiologyTechniqueHelp": "Facultatif : incidences, technique et couverture documentées par le vétérinaire.",
     "radiologyQuestionHelp": "Facultatif : question à laquelle cet examen doit répondre.",
-    "previewHelp": "Vérifiez et modifiez ce brouillon. Votre rapport enregistré ne change que lorsque vous choisissez Utiliser le brouillon."
+    "previewHelp": "Vérifiez et modifiez ce brouillon. Votre rapport enregistré ne change que lorsque vous choisissez Utiliser le brouillon.",
+    "editorHelp": "Saisissez ou dictez votre compte rendu. Affiner avec l’IA améliore la formulation uniquement à partir de votre texte ; la dictée radiologique est affinée lorsque vous l’arrêtez. Vérifiez le compte rendu avant de le partager. Les images ne sont pas analysées.",
+    "editorPlaceholder": "Antécédents cliniques / motif de l’examen\nTechnique et couverture\nObservations radiographiques — numéros des dents, localisation, mesures et incertitude\nImpression clinique\nRecommandations / question clinique\n\nIncluez uniquement les éléments que vous avez consignés ; ces indications sont facultatives.",
+    "refine": "Affiner avec l’IA",
+    "refining": "Affinement…",
+    "undoRefine": "Annuler l’affinement",
+    "editorLanguage": "Langue du compte rendu",
+    "refineUnavailable": "Connectez-vous avec un accès à l’IA pour affiner le texte. Vous pouvez toujours saisir et modifier votre compte rendu.",
+    "refineFailed": "Impossible d’affiner le compte rendu. Votre texte a été conservé."
   }
 }

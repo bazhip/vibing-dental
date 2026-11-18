@@ -388,6 +388,14 @@
     "radiologyHistoryHelp": "Optional: add study-specific history when needed. Otherwise the consultation history is used.",
     "radiologyTechniqueHelp": "Optional: views, technique and coverage documented by the clinician.",
     "radiologyQuestionHelp": "Optional: the question this study should address.",
-    "previewHelp": "Review and edit this draft. Your saved report changes only when you choose Use draft."
+    "previewHelp": "Review and edit this draft. Your saved report changes only when you choose Use draft.",
+    "editorHelp": "Type or dictate your report. Refine with AI improves the wording using only your text; radiology dictation is refined when you stop. Review before sharing. Images are not analyzed.",
+    "editorPlaceholder": "Clinical history / reason for study\nTechnique and coverage\nRadiographic findings — tooth numbers, location, measurements and uncertainty\nClinical impression\nRecommendations / clinical question\n\nInclude only what you have recorded; these prompts are optional.",
+    "refine": "Refine with AI",
+    "refining": "Refining…",
+    "undoRefine": "Undo refinement",
+    "editorLanguage": "Report language",
+    "refineUnavailable": "Sign in with AI access to refine. You can still type and edit your report.",
+    "refineFailed": "Could not refine the report. Your text has been kept."
   }
 }

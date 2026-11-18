@@ -388,6 +388,14 @@
     "radiologyHistoryHelp": "Optional: Ergänzen Sie bei Bedarf eine untersuchungsspezifische Anamnese. Andernfalls wird die Anamnese der Konsultation verwendet.",
     "radiologyTechniqueHelp": "Optional: vom Tierarzt dokumentierte Aufnahmen, Technik und Abdeckung.",
     "radiologyQuestionHelp": "Optional: die Fragestellung dieser Untersuchung.",
-    "previewHelp": "Prüfen und bearbeiten Sie diesen Entwurf. Ihr gespeicherter Bericht ändert sich erst, wenn Sie Entwurf übernehmen wählen."
+    "previewHelp": "Prüfen und bearbeiten Sie diesen Entwurf. Ihr gespeicherter Bericht ändert sich erst, wenn Sie Entwurf übernehmen wählen.",
+    "editorHelp": "Geben Sie Ihren Bericht ein oder diktieren Sie ihn. Mit KI überarbeiten verbessert die Formulierung ausschließlich anhand Ihres Textes; radiologische Diktate werden beim Beenden überarbeitet. Prüfen Sie den Bericht vor dem Teilen. Bilder werden nicht analysiert.",
+    "editorPlaceholder": "Klinische Vorgeschichte / Untersuchungsgrund\nTechnik und Abdeckung\nRöntgenbefunde — Zahnnummern, Lokalisation, Messwerte und Unsicherheit\nKlinische Beurteilung\nEmpfehlungen / klinische Fragestellung\n\nNehmen Sie nur dokumentierte Angaben auf; diese Hinweise sind optional.",
+    "refine": "Mit KI überarbeiten",
+    "refining": "Wird überarbeitet…",
+    "undoRefine": "Überarbeitung rückgängig machen",
+    "editorLanguage": "Berichtssprache",
+    "refineUnavailable": "Melden Sie sich mit KI-Zugriff an, um den Text zu überarbeiten. Sie können Ihren Bericht weiterhin eingeben und bearbeiten.",
+    "refineFailed": "Der Bericht konnte nicht überarbeitet werden. Ihr Text wurde beibehalten."
   }
 }

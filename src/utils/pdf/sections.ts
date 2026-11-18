@@ -1,3 +1,4 @@
+import { radiologyRecordedText } from '../radiologyReportState';
 import { PDFDocument, PDFFont, PDFForm, PDFImage, PDFPage } from 'pdf-lib';
 import { parseRootPockets } from '../pocket';
 import { filledBlocks, fieldLines } from '../customAnesthesia';
@@ -116,7 +117,7 @@ export function collectUsedCodesByPage({
     .map((v) => v.comment);
   return {
     page1: codesInFor(species, [patientInfo.complaint, ...toothFields, ...preCommentTexts, ...examComments]),
-    page2: codesInFor(species, [patientInfo.treatmentReport, patientInfo.radiographicFindings ?? "", ...postCommentTexts]),
+    page2: codesInFor(species, [patientInfo.treatmentReport, radiologyRecordedText(patientInfo), ...postCommentTexts]),
   };
 }
 
@@ -1012,12 +1013,12 @@ export function drawToothGrid(
 /** The treatment card's text: radiographic findings (when present) as a
  *  labelled first block, then the report — the card keeps its size and
  *  place, so charts without findings print exactly as before. */
-export function treatmentCardText(treatmentReport: string, radiographicFindings?: string, lng = 'en'): string {
-  const rads = (radiographicFindings ?? '').trim();
+export function treatmentCardText(treatmentReport: string, radiographicFindings?: string, lng = 'en', radiologyReport?: string): string {
+  const rads = (radiologyReport ?? radiographicFindings ?? '').trim();
   if (!rads) return treatmentReport;
   const report = treatmentReport.trim();
   const t = pdfT(lng);
-  return `${t('treatment.findingsHeading')}\n${rads}${report ? `\n\n${t('treatment.treatmentHeading')}\n${report}` : ''}`;
+  return `${typeof radiologyReport === 'string' ? i18n.getFixedT(lng, 'app')('radiologyReport.title') : t('treatment.findingsHeading')}\n${rads}${report ? `\n\n${t('treatment.treatmentHeading')}\n${report}` : ''}`;
 }
 
 export function drawTreatmentReportField(

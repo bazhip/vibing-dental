@@ -796,6 +796,18 @@
       "hash": "e1ffb700b3ec",
       "status": "machine"
     },
+    "app:radiologyReport.editorHelp": {
+      "hash": "448d28f0a6dd",
+      "status": "machine"
+    },
+    "app:radiologyReport.editorLanguage": {
+      "hash": "dbbe995b3445",
+      "status": "machine"
+    },
+    "app:radiologyReport.editorPlaceholder": {
+      "hash": "09d7f3deb37b",
+      "status": "machine"
+    },
     "app:radiologyReport.exportFailed": {
       "hash": "c6a2b49d60ec",
       "status": "machine"
@@ -924,6 +936,22 @@
       "hash": "c11cdd9451fe",
       "status": "machine"
     },
+    "app:radiologyReport.refine": {
+      "hash": "68a079f3ef37",
+      "status": "machine"
+    },
+    "app:radiologyReport.refineFailed": {
+      "hash": "acec1789c1c3",
+      "status": "machine"
+    },
+    "app:radiologyReport.refineUnavailable": {
+      "hash": "2c9d63ff8265",
+      "status": "machine"
+    },
+    "app:radiologyReport.refining": {
+      "hash": "a5af99291017",
+      "status": "machine"
+    },
     "app:radiologyReport.reviewed": {
       "hash": "8857054975a6",
       "status": "machine"
@@ -950,6 +978,10 @@
     },
     "app:radiologyReport.undo": {
       "hash": "69ef9bf0c498",
+      "status": "machine"
+    },
+    "app:radiologyReport.undoRefine": {
+      "hash": "b53c2c56fc4d",
       "status": "machine"
     },
     "app:radiologyReport.unreviewed": {
@@ -14690,6 +14722,18 @@
       "hash": "e1ffb700b3ec",
       "status": "machine"
     },
+    "app:radiologyReport.editorHelp": {
+      "hash": "448d28f0a6dd",
+      "status": "machine"
+    },
+    "app:radiologyReport.editorLanguage": {
+      "hash": "dbbe995b3445",
+      "status": "machine"
+    },
+    "app:radiologyReport.editorPlaceholder": {
+      "hash": "09d7f3deb37b",
+      "status": "machine"
+    },
     "app:radiologyReport.exportFailed": {
       "hash": "c6a2b49d60ec",
       "status": "machine"
@@ -14818,6 +14862,22 @@
       "hash": "c11cdd9451fe",
       "status": "machine"
     },
+    "app:radiologyReport.refine": {
+      "hash": "68a079f3ef37",
+      "status": "machine"
+    },
+    "app:radiologyReport.refineFailed": {
+      "hash": "acec1789c1c3",
+      "status": "machine"
+    },
+    "app:radiologyReport.refineUnavailable": {
+      "hash": "2c9d63ff8265",
+      "status": "machine"
+    },
+    "app:radiologyReport.refining": {
+      "hash": "a5af99291017",
+      "status": "machine"
+    },
     "app:radiologyReport.reviewed": {
       "hash": "8857054975a6",
       "status": "machine"
@@ -14844,6 +14904,10 @@
     },
     "app:radiologyReport.undo": {
       "hash": "69ef9bf0c498",
+      "status": "machine"
+    },
+    "app:radiologyReport.undoRefine": {
+      "hash": "b53c2c56fc4d",
       "status": "machine"
     },
     "app:radiologyReport.unreviewed": {
@@ -28696,6 +28760,18 @@
       "hash": "e1ffb700b3ec",
       "status": "machine"
     },
+    "app:radiologyReport.editorHelp": {
+      "hash": "448d28f0a6dd",
+      "status": "machine"
+    },
+    "app:radiologyReport.editorLanguage": {
+      "hash": "dbbe995b3445",
+      "status": "machine"
+    },
+    "app:radiologyReport.editorPlaceholder": {
+      "hash": "09d7f3deb37b",
+      "status": "machine"
+    },
     "app:radiologyReport.exportFailed": {
       "hash": "c6a2b49d60ec",
       "status": "machine"
@@ -28824,6 +28900,22 @@
       "hash": "c11cdd9451fe",
       "status": "machine"
     },
+    "app:radiologyReport.refine": {
+      "hash": "68a079f3ef37",
+      "status": "machine"
+    },
+    "app:radiologyReport.refineFailed": {
+      "hash": "acec1789c1c3",
+      "status": "machine"
+    },
+    "app:radiologyReport.refineUnavailable": {
+      "hash": "2c9d63ff8265",
+      "status": "machine"
+    },
+    "app:radiologyReport.refining": {
+      "hash": "a5af99291017",
+      "status": "machine"
+    },
     "app:radiologyReport.reviewed": {
       "hash": "8857054975a6",
       "status": "machine"
@@ -28850,6 +28942,10 @@
     },
     "app:radiologyReport.undo": {
       "hash": "69ef9bf0c498",
+      "status": "machine"
+    },
+    "app:radiologyReport.undoRefine": {
+      "hash": "b53c2c56fc4d",
       "status": "machine"
     },
     "app:radiologyReport.unreviewed": {
@@ -42702,6 +42798,18 @@
       "hash": "e1ffb700b3ec",
       "status": "machine"
     },
+    "app:radiologyReport.editorHelp": {
+      "hash": "448d28f0a6dd",
+      "status": "machine"
+    },
+    "app:radiologyReport.editorLanguage": {
+      "hash": "dbbe995b3445",
+      "status": "machine"
+    },
+    "app:radiologyReport.editorPlaceholder": {
+      "hash": "09d7f3deb37b",
+      "status": "machine"
+    },
     "app:radiologyReport.exportFailed": {
       "hash": "c6a2b49d60ec",
       "status": "machine"
@@ -42830,6 +42938,22 @@
       "hash": "c11cdd9451fe",
       "status": "machine"
     },
+    "app:radiologyReport.refine": {
+      "hash": "68a079f3ef37",
+      "status": "machine"
+    },
+    "app:radiologyReport.refineFailed": {
+      "hash": "acec1789c1c3",
+      "status": "machine"
+    },
+    "app:radiologyReport.refineUnavailable": {
+      "hash": "2c9d63ff8265",
+      "status": "machine"
+    },
+    "app:radiologyReport.refining": {
+      "hash": "a5af99291017",
+      "status": "machine"
+    },
     "app:radiologyReport.reviewed": {
       "hash": "8857054975a6",
       "status": "machine"
@@ -42856,6 +42980,10 @@
     },
     "app:radiologyReport.undo": {
       "hash": "69ef9bf0c498",
+      "status": "machine"
+    },
+    "app:radiologyReport.undoRefine": {
+      "hash": "b53c2c56fc4d",
       "status": "machine"
     },
     "app:radiologyReport.unreviewed": {

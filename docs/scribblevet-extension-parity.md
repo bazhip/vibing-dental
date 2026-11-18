@@ -21,6 +21,10 @@ Consultation and Discharge tabs now share the existing visit snapshot, clinical 
 
 Validation: `npm test -- --maxWorkers=4` with the disposable PIMS database passed all 4,600 tests across 345 files; `npm run build` and the extension store package passed; scoped visual coverage includes desktop1440 and phones390/320 in light/dark, source states, saved visits, menus and mapped-paste partial outcomes. See [the implementation plan and coverage matrix](superpowers/plans/2026-11-18-clinical-day-workspace.md). Live provider sessions and native runtime remain unverified. No deployment, rollout or feature-branch merge into main was performed.
 
+## Radiology free-text refinement — November 18
+
+Radiology now has one always-visible report editor with the former field prompts as placeholder guidance. Refine with AI replaces the text in place with Undo; stopping a dictation that added radiology findings requests refinement in the captured dictation language. Explicit edits and clears are authoritative for clinical notes/PIMS, client-report AI facts, chart PDFs, admin viewing and autosave. Legacy source fields remain readable when no report value exists. English voice prompt/request snapshots are unchanged. Final validation: 4,611 tests across 346 files, production build, extension store package and translation checks pass; independent scoped review passed. See [the radiology refinement plan and visual matrix](superpowers/plans/2026-11-18-radiology-free-text.md) for 108 captures and runtime limits.
+
 ## Scope and evidence
 
 This is a bounded, static audit of ScribbleVet Chrome extension **1.31.3**, performed on November 16, 2026. It is not a claim of live interoperability, exhaustive product parity, or supported access to ScribbleVet's private services.

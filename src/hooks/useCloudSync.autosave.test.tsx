@@ -808,3 +808,9 @@ it('continues to exclude complaint-only charts from automatic saving', () => {
   snapshot.patientInfo.complaint = 'Reason for visit';
   expect(hasClinicalContent(snapshot)).toBe(false);
 });
+it('autosaves report-only radiology content and respects a cleared report over legacy findings', () => {
+  const value = snap({}); value.patientInfo.radiologyReport = '409: possible resorption';
+  expect(hasClinicalContent(value)).toBe(true);
+  value.patientInfo.radiologyReport = ''; value.patientInfo.radiographicFindings = 'Old hidden finding';
+  expect(hasClinicalContent(value)).toBe(false);
+});

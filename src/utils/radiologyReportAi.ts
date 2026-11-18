@@ -26,16 +26,17 @@ const SYSTEM = [
   'Missing or blank findings mean not recorded, not normal, healthy, examined, or disease-free. No image pixels are supplied or analyzed.',
   'Preserve every relevant tooth number, laterality, measurement, unit and uncertainty exactly. Do not turn possible, suspected or differential findings into confirmed diagnoses.',
   'Separate performed treatment and other oral examination context from radiographic findings. Do not turn a performed procedure into a recommendation to repeat it.',
-  'Organize natural-language observations into concise clinical prose without adding clinical meaning. Context fields are optional; findings alone are sufficient.',
+  'Refine the recorded report draft into concise clinical prose without adding clinical meaning. Preserve its documented details and uncertainty. Do not restore omitted facts from older drafts.',
   'clinical_history: summarize recorded reason/history. technique: only recorded study technique. findings: restate the clinician-recorded radiographic findings.',
   'impression: only an explicitly recorded clinical impression, never a new inference. recommendations: only explicitly recorded recommendations. clinical_question: only the recorded referral question.',
   'Leave undocumented sections as empty strings. Do not add headings, greeting, sign-off, markdown fences or generic dental-care advice inside sections.',
   'The result is an unreviewed draft. Never claim it was verified, reviewed, saved to a provider, or submitted.',
 ].join('\n');
 
-/** Minimal text facts: contact fields, stored/generated reports, URLs and image bytes are not serialized. */
+/** Minimal text facts: contact fields, URLs and image bytes are not serialized. The visible report is the refinement source. */
 export function radiologyReportFacts(snapshot: ChartSnapshot, lng: AppLanguage): string {
   const chart = normalizeSnapshot(snapshot), info = chart.patientInfo;
+  if (typeof info.radiologyReport === 'string') return JSON.stringify({ patient: { name: info.patientName, number: info.patientNumber, species: chart.species, date: info.date }, recorded_report_draft: info.radiologyReport });
   const clean = { ...chart, patientInfo: { ...info, ownerName: '', ownerPhone: '', ownerEmail: '' } };
   const context = buildRecordNote(clean, recordNoteT(lng)).sections
     .filter(section => ['exam', 'findings', 'procedures', 'treatment', 'recheck', 'consultationAssessment', 'consultationPlan'].includes(section.key))
@@ -49,9 +50,12 @@ export function radiologyReportFacts(snapshot: ChartSnapshot, lng: AppLanguage):
 export function buildRadiologyReportRequest(snapshot: ChartSnapshot, lng: AppLanguage): AutofillRequest {
   const t = i18n.getFixedT(isAppLanguage(lng) ? lng : 'en', 'app');
   if (!isAppLanguage(lng) || !isChartSnapshot(snapshot)) throw new LocalizedError(t('radiologyReport.sourceRequired'));
-  // Loading old snapshots may discard malformed/oversized optional fields. Do not silently
-  // discard documented study context while constructing an outbound clinical request.
-  for (const field of ['radiologyHistory', 'radiologyTechnique', 'radiologyQuestion', 'consultationHistory', 'consultationAssessment', 'consultationPlan'] as const) {
+  // Validate the visible draft before normalization. Legacy requests still validate
+  // every context field they transmit; hidden legacy fields are not refinement input.
+  const rawReport: unknown = snapshot.patientInfo.radiologyReport;
+  if (rawReport !== undefined && typeof rawReport !== 'string') throw new LocalizedError(t('radiologyReport.sourceRequired'));
+  if (typeof rawReport === 'string' && rawReport.length > MAX_REPORT) throw new LocalizedError(t('radiologyReport.sourceTooLarge'));
+  if (rawReport === undefined) for (const field of ['radiologyHistory', 'radiologyTechnique', 'radiologyQuestion', 'consultationHistory', 'consultationAssessment', 'consultationPlan'] as const) {
     const value: unknown = snapshot.patientInfo[field];
     if (value !== undefined && typeof value !== 'string') throw new LocalizedError(t('radiologyReport.sourceRequired'));
     if (typeof value === 'string' && value.length > 20000) throw new LocalizedError(t('radiologyReport.sourceTooLarge'));

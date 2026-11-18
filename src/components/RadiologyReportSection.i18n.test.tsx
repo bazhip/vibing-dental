@@ -14,13 +14,13 @@ function Editor(){
  return <RadiologyReportSection snapshot={snapshot} chartId="chart" aiEnabled onChange={(changes:Partial<PatientInfo>)=>setSnapshot(value=>({...value,patientInfo:{...value.patientInfo,...changes}}))}/>;
 }
 beforeEach(async()=>installPseudoLocale());afterEach(async()=>{cleanup();await restoreLocale();});
-it('translates study context, generated preview, review and export controls',async()=>{
- render(<Editor/>);fireEvent.click(screen.getByText(i18n.t('app:radiologyReport.context')));
- expect(findUntranslated(document.body,['108: bone loss','English','Français','Deutsch','Italiano','Español','108: documented findings'])).toEqual([]);
- fireEvent.click(screen.getByRole('button',{name:i18n.t('app:radiologyReport.generate')}));
- await screen.findByLabelText(i18n.t('app:radiologyReport.preview'));
- expect(findUntranslated(document.body,['108: bone loss','English','Français','Deutsch','Italiano','Español','108: documented findings'])).toEqual([]);
- fireEvent.click(screen.getByRole('button',{name:i18n.t('app:radiologyReport.use')}));
+it('translates the single editor, refinement, Undo, review and export controls',async()=>{
+ render(<Editor/>);
+ const allowed=['108: bone loss','English','Français','Deutsch','Italiano','Español','108: documented findings'];
+ expect(findUntranslated(document.body,allowed)).toEqual([]);
+ fireEvent.click(screen.getByRole('button',{name:i18n.t('app:radiologyReport.refine')}));
+ await screen.findByRole('button',{name:i18n.t('app:radiologyReport.undoRefine')});
+ expect(findUntranslated(document.body,allowed)).toEqual([]);
  fireEvent.click(screen.getByLabelText(i18n.t('app:radiologyReport.checked')));
- expect(findUntranslated(document.body,['108: bone loss','English','Français','Deutsch','Italiano','Español','108: documented findings'])).toEqual([]);
+ expect(findUntranslated(document.body,allowed)).toEqual([]);
 });
