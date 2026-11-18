@@ -60,5 +60,15 @@
     "firefoxAndroid": "Firefox ouvre le PDF dans un nouvel onglet — touchez Télécharger en haut de celui-ci pour enregistrer le fichier.",
     "inAppBrowser": "Le navigateur intégré de cette application ne peut pas toujours enregistrer les fichiers. Touchez Télécharger pour obtenir un lien de téléchargement — ou ouvrez ToothOps dans Chrome (menu ⋮ → « Ouvrir dans le navigateur »).",
     "inAppBrowserMessage": "Le navigateur intégré de cette application ne peut pas enregistrer les fichiers. Ouvrez ToothOps dans Chrome (menu ⋮ → « Ouvrir dans le navigateur ») pour télécharger le PDF."
+  },
+  "exportWarning": {
+    "title": "Avant le téléchargement",
+    "both": "Ce dossier comporte des modifications non enregistrées et n’a pas été finalisé.",
+    "unsaved": "Ce dossier comporte des modifications non enregistrées.",
+    "unfinalized": "Ce dossier n’a pas été finalisé.",
+    "finalize": "Finaliser et télécharger",
+    "anyway": "Télécharger quand même",
+    "finalizing": "Finalisation…",
+    "failed": "Impossible de finaliser ce dossier. Vous pouvez réessayer ou le télécharger quand même."
   }
 }

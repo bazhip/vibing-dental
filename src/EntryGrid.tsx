@@ -1443,9 +1443,10 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   };
   const finalizeRecord = async () => {
     const id = chart.cloudChartId;
-    if (!(await changeFinalization(true)) || activeLifecycleChart.current !== id) return;
+    if (!(await changeFinalization(true)) || activeLifecycleChart.current !== id) return false;
     try { window.sessionStorage.removeItem(`chart.unlockSnapshot.${id}`); } catch { /* ignore */ }
     setEditUnlocked(false);
+    return true;
   };
 
   // ----- Saved-chart actions ---------------------------------------------
@@ -1681,6 +1682,12 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             onClose={() => setPreviewOpen(false)}
             initialTab={docsTab}
             chartSnapshot={previewSnapshot}
+            chartLifecycle={{
+              unsaved: !cloud.enabled || cloud.dirty || !cloud.lastSavedAt || cloud.status === 'saving' || cloud.status === 'error',
+              unfinalized: !chart.finalizedAt,
+              canFinalize: cloud.enabled && !trial && cloud.online && !finalizationBusy && !!chart.patientInfo.patientName.trim(),
+              finalize: finalizeRecord,
+            }}
             ownerReport={ownerReportOn ? {
               snapshot: chart.getSnapshot(),
               branding: {

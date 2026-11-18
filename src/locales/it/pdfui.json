@@ -46,5 +46,15 @@
     "firefoxAndroid": "Firefox apre il PDF in una nuova scheda — tocchi Scarica in alto per salvare il file.",
     "inAppBrowser": "Il browser integrato di questa app non sempre riesce a salvare i file. Tocchi Scarica per ottenere un link di download — oppure apra ToothOps in Chrome (menu ⋮ → «Apri nel browser»).",
     "inAppBrowserMessage": "Il browser integrato di questa app non può salvare i file. Apra ToothOps in Chrome (menu ⋮ → «Apri nel browser») per scaricare il PDF."
+  },
+  "exportWarning": {
+    "title": "Prima del download",
+    "both": "Questa cartella contiene modifiche non salvate e non è stata finalizzata.",
+    "unsaved": "Questa cartella contiene modifiche non salvate.",
+    "unfinalized": "Questa cartella non è stata finalizzata.",
+    "finalize": "Finalizza e scarica",
+    "anyway": "Scarica comunque",
+    "finalizing": "Finalizzazione…",
+    "failed": "Impossibile finalizzare questa cartella. Lei può riprovare o scaricarla comunque."
   }
 }

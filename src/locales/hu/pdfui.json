@@ -60,5 +60,15 @@
     "firefoxAndroid": "A Firefox új lapon nyitja meg a PDF-et – a fájl mentéséhez koppintson felül a Letöltés gombra.",
     "inAppBrowser": "Az alkalmazás beépített böngészője nem mindig tud fájlokat menteni. Koppintson a Letöltés gombra a letöltési hivatkozásért, vagy nyissa meg a ToothOps alkalmazást a Chrome böngészőben (⋮ menü → „Megnyitás böngészőben”).",
     "inAppBrowserMessage": "Az alkalmazás beépített böngészője nem tud fájlokat menteni. A PDF letöltéséhez nyissa meg a ToothOps alkalmazást a Chrome böngészőben (⋮ menü → „Megnyitás böngészőben”)."
+  },
+  "exportWarning": {
+    "title": "Letöltés előtt",
+    "both": "A karton nem mentett módosításokat tartalmaz, és még nincs véglegesítve.",
+    "unsaved": "A karton nem mentett módosításokat tartalmaz.",
+    "unfinalized": "A karton még nincs véglegesítve.",
+    "finalize": "Véglegesítés és letöltés",
+    "anyway": "Letöltés mindenképpen",
+    "finalizing": "Véglegesítés…",
+    "failed": "A karton véglegesítése nem sikerült. Próbálja újra, vagy töltse le mindenképpen."
   }
 }

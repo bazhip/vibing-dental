@@ -162,3 +162,137 @@ test('retry prevents an already uploading incomplete PDF link from reappearing',
   await act(async () => { finishLink('https://example.test/stale'); });
   expect(screen.queryByRole('link')).toBeNull();
 });
+
+const lifecycle = (overrides = {}) => ({ unsaved: false, unfinalized: true, canFinalize: true, finalize: vi.fn(async () => true), ...overrides });
+async function warningPreview(state = lifecycle()) {
+  env.native = false;
+  const view = render(<PdfPreviewModal open snapshot={snapshot} onClose={() => {}} lifecycle={state} />);
+  const button = screen.getByRole('button', { name: 'Download PDF' });
+  await waitFor(() => expect(button).toBeEnabled());
+  fireEvent.click(button);
+  return view;
+}
+
+test('unfinalized PDF warns and download anyway exports without finalizing', async () => {
+  const state = lifecycle();
+  await warningPreview(state);
+  expect(savePdf).not.toHaveBeenCalled();
+  expect(screen.getByText('This chart has not been finalized.')).toBeVisible();
+  fireEvent.click(screen.getByRole('button', { name: 'Download anyway' }));
+  expect(savePdf).toHaveBeenCalledTimes(1);
+  expect(state.finalize).not.toHaveBeenCalled();
+});
+
+test('finalize and download waits for success and blocks duplicate clicks', async () => {
+  let finish!: (ok: boolean) => void;
+  const state = lifecycle({ unsaved: true, finalize: vi.fn(() => new Promise<boolean>(resolve => { finish = resolve; })) });
+  await warningPreview(state);
+  expect(screen.getByText('This chart has unsaved changes and has not been finalized.')).toBeVisible();
+  const button = screen.getByRole('button', { name: 'Finalize and download' });
+  fireEvent.click(button);
+  fireEvent.click(button);
+  expect(state.finalize).toHaveBeenCalledTimes(1);
+  expect(savePdf).not.toHaveBeenCalled();
+  await act(async () => finish(true));
+  expect(savePdf).toHaveBeenCalledTimes(1);
+});
+
+test.each([false, 'reject'])('failed or cancelled finalization (%s) keeps bypass available', async (outcome) => {
+  await warningPreview(lifecycle({ finalize: async () => { if (outcome === 'reject') throw new Error('offline'); return false; } }));
+  fireEvent.click(screen.getByRole('button', { name: 'Finalize and download' }));
+  expect(await screen.findByRole('alert')).toHaveTextContent('Could not finalize this chart. You can try again or download anyway.');
+  expect(savePdf).not.toHaveBeenCalled();
+  fireEvent.click(screen.getByRole('button', { name: 'Download anyway' }));
+  expect(savePdf).toHaveBeenCalledTimes(1);
+});
+
+test('Cancel and Escape dismiss only the export warning', async () => {
+  await warningPreview();
+  fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+  expect(savePdf).not.toHaveBeenCalled();
+  fireEvent.click(screen.getByRole('button', { name: 'Download PDF' }));
+  fireEvent.keyDown(document, { key: 'Escape' });
+  expect(screen.queryByText('Before downloading')).toBeNull();
+  expect(savePdf).not.toHaveBeenCalled();
+});
+
+test('finalized and saved chart downloads immediately', async () => {
+  await warningPreview(lifecycle({ unfinalized: false }));
+  expect(savePdf).toHaveBeenCalledTimes(1);
+});
+
+test('unsaved local chart warns without offering cloud finalization', async () => {
+  await warningPreview(lifecycle({ unsaved: true, canFinalize: false }));
+  expect(screen.queryByRole('button', { name: 'Finalize and download' })).toBeNull();
+  fireEvent.click(screen.getByRole('button', { name: 'Download anyway' }));
+  expect(savePdf).toHaveBeenCalledTimes(1);
+});
+
+test('closing preview during finalization prevents a late download', async () => {
+  let finish!: (ok: boolean) => void;
+  const state = lifecycle({ finalize: () => new Promise<boolean>(resolve => { finish = resolve; }) });
+  const view = await warningPreview(state);
+  fireEvent.click(screen.getByRole('button', { name: 'Finalize and download' }));
+  view.rerender(<PdfPreviewModal open={false} snapshot={snapshot} onClose={() => {}} lifecycle={state} />);
+  await act(async () => finish(true));
+  expect(savePdf).not.toHaveBeenCalled();
+});
+
+test('native sharing also requires explicit acknowledgement', async () => {
+  env.native = true;
+  render(<PdfPreviewModal open snapshot={snapshot} onClose={() => {}} lifecycle={lifecycle()} />);
+  await waitFor(() => expect(screen.getByRole('button', { name: 'Share PDF' })).toBeEnabled());
+  fireEvent.click(screen.getByRole('button', { name: 'Share PDF' }));
+  expect(saveChartPdf).not.toHaveBeenCalled();
+  fireEvent.click(screen.getByRole('button', { name: 'Download anyway' }));
+  expect(saveChartPdf).toHaveBeenCalledTimes(1);
+});
+
+test('download without images also warns before bypassing', async () => {
+  env.native = false;
+  listAttachments.mockResolvedValueOnce(null);
+  render(<PdfPreviewModal open snapshot={{ ...snapshot, imagesChartId: 'warning' }} onClose={() => {}} lifecycle={lifecycle()} />);
+  const button = await screen.findByRole('button', { name: 'Download without images' });
+  await waitFor(() => expect(button).toBeEnabled());
+  fireEvent.click(button);
+  expect(savePdf).not.toHaveBeenCalled();
+  fireEvent.click(screen.getByRole('button', { name: 'Download anyway' }));
+  expect(savePdf).toHaveBeenCalledTimes(1);
+});
+
+test('switching preview snapshots while finalizing prevents the old export', async () => {
+  let finish!: (ok: boolean) => void;
+  const state = lifecycle({ finalize: () => new Promise<boolean>(resolve => { finish = resolve; }) });
+  const view = await warningPreview(state);
+  fireEvent.click(screen.getByRole('button', { name: 'Finalize and download' }));
+  view.rerender(<PdfPreviewModal open snapshot={{ ...snapshot }} onClose={() => {}} lifecycle={state} />);
+  await act(async () => finish(true));
+  expect(savePdf).not.toHaveBeenCalled();
+});
+
+
+test('keeps the focused primary action visible when lifecycle becomes busy', async () => {
+  let finish!: (ok: boolean) => void;
+  const state = lifecycle({ finalize: () => new Promise<boolean>(resolve => { finish = resolve; }) });
+  const view = await warningPreview(state);
+  const primary = screen.getByRole('button', { name: 'Finalize and download' });
+  primary.focus();
+  fireEvent.click(primary);
+  view.rerender(<PdfPreviewModal open snapshot={snapshot} onClose={() => {}} lifecycle={{ ...state, canFinalize: false }} />);
+  expect(screen.getByRole('button', { name: 'Finalizing…' })).toBeDisabled();
+  const dialog = screen.getByRole('dialog', { name: 'Before downloading' });
+  expect(dialog).toHaveFocus();
+  fireEvent.keyDown(dialog, { key: 'Tab' });
+  expect(dialog).toHaveFocus();
+  await act(async () => finish(true));
+});
+
+test('warning keyboard events do not reach the underlying native sheet', async () => {
+  env.native = false;
+  const sheetKeyDown = vi.fn();
+  render(<div onKeyDown={sheetKeyDown}><PdfPreviewModal open snapshot={snapshot} onClose={() => {}} lifecycle={lifecycle()} /></div>);
+  await waitFor(() => expect(screen.getByRole('button', { name: 'Download PDF' })).toBeEnabled());
+  fireEvent.click(screen.getByRole('button', { name: 'Download PDF' }));
+  fireEvent.keyDown(screen.getByRole('button', { name: 'Finalize and download' }), { key: 'Tab' });
+  expect(sheetKeyDown).not.toHaveBeenCalled();
+});

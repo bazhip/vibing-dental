@@ -8988,6 +8988,38 @@
       "hash": "015955e43944",
       "status": "machine"
     },
+    "pdfui:exportWarning.anyway": {
+      "hash": "09db6ba86849",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.both": {
+      "hash": "dda30feaa311",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.failed": {
+      "hash": "ceaafee408ea",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.finalize": {
+      "hash": "3c5fd9cb9db3",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.finalizing": {
+      "hash": "fae6ce42a3ec",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.title": {
+      "hash": "b03c1c9f3fda",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.unfinalized": {
+      "hash": "2c668b78d41b",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.unsaved": {
+      "hash": "110310da24c3",
+      "status": "machine"
+    },
     "pdfui:hints.firefoxAndroid": {
       "hash": "03778c19ffe6",
       "status": "machine"
@@ -21506,6 +21538,38 @@
       "hash": "015955e43944",
       "status": "machine"
     },
+    "pdfui:exportWarning.anyway": {
+      "hash": "09db6ba86849",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.both": {
+      "hash": "dda30feaa311",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.failed": {
+      "hash": "ceaafee408ea",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.finalize": {
+      "hash": "3c5fd9cb9db3",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.finalizing": {
+      "hash": "fae6ce42a3ec",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.title": {
+      "hash": "b03c1c9f3fda",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.unfinalized": {
+      "hash": "2c668b78d41b",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.unsaved": {
+      "hash": "110310da24c3",
+      "status": "machine"
+    },
     "pdfui:hints.firefoxAndroid": {
       "hash": "03778c19ffe6",
       "status": "machine"
@@ -33982,6 +34046,38 @@
     },
     "pdf:treatment.title": {
       "hash": "015955e43944",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.anyway": {
+      "hash": "09db6ba86849",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.both": {
+      "hash": "dda30feaa311",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.failed": {
+      "hash": "ceaafee408ea",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.finalize": {
+      "hash": "3c5fd9cb9db3",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.finalizing": {
+      "hash": "fae6ce42a3ec",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.title": {
+      "hash": "b03c1c9f3fda",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.unfinalized": {
+      "hash": "2c668b78d41b",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.unsaved": {
+      "hash": "110310da24c3",
       "status": "machine"
     },
     "pdfui:hints.firefoxAndroid": {
@@ -46494,6 +46590,38 @@
       "hash": "015955e43944",
       "status": "machine"
     },
+    "pdfui:exportWarning.anyway": {
+      "hash": "09db6ba86849",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.both": {
+      "hash": "dda30feaa311",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.failed": {
+      "hash": "ceaafee408ea",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.finalize": {
+      "hash": "3c5fd9cb9db3",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.finalizing": {
+      "hash": "fae6ce42a3ec",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.title": {
+      "hash": "b03c1c9f3fda",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.unfinalized": {
+      "hash": "2c668b78d41b",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.unsaved": {
+      "hash": "110310da24c3",
+      "status": "machine"
+    },
     "pdfui:hints.firefoxAndroid": {
       "hash": "03778c19ffe6",
       "status": "machine"
@@ -58850,6 +58978,38 @@
     },
     "pdf:treatment.title": {
       "hash": "015955e43944",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.anyway": {
+      "hash": "09db6ba86849",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.both": {
+      "hash": "dda30feaa311",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.failed": {
+      "hash": "ceaafee408ea",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.finalize": {
+      "hash": "3c5fd9cb9db3",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.finalizing": {
+      "hash": "fae6ce42a3ec",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.title": {
+      "hash": "b03c1c9f3fda",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.unfinalized": {
+      "hash": "2c668b78d41b",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.unsaved": {
+      "hash": "110310da24c3",
       "status": "machine"
     },
     "pdfui:hints.firefoxAndroid": {
@@ -71324,6 +71484,38 @@
     },
     "pdf:treatment.title": {
       "hash": "015955e43944",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.anyway": {
+      "hash": "09db6ba86849",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.both": {
+      "hash": "dda30feaa311",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.failed": {
+      "hash": "ceaafee408ea",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.finalize": {
+      "hash": "3c5fd9cb9db3",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.finalizing": {
+      "hash": "fae6ce42a3ec",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.title": {
+      "hash": "b03c1c9f3fda",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.unfinalized": {
+      "hash": "2c668b78d41b",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.unsaved": {
+      "hash": "110310da24c3",
       "status": "machine"
     },
     "pdfui:hints.firefoxAndroid": {
@@ -84310,6 +84502,38 @@
       "hash": "015955e43944",
       "status": "machine"
     },
+    "pdfui:exportWarning.anyway": {
+      "hash": "09db6ba86849",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.both": {
+      "hash": "dda30feaa311",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.failed": {
+      "hash": "ceaafee408ea",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.finalize": {
+      "hash": "3c5fd9cb9db3",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.finalizing": {
+      "hash": "fae6ce42a3ec",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.title": {
+      "hash": "b03c1c9f3fda",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.unfinalized": {
+      "hash": "2c668b78d41b",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.unsaved": {
+      "hash": "110310da24c3",
+      "status": "machine"
+    },
     "pdfui:hints.firefoxAndroid": {
       "hash": "03778c19ffe6",
       "status": "machine"
@@ -96662,6 +96886,38 @@
     },
     "pdf:treatment.title": {
       "hash": "015955e43944",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.anyway": {
+      "hash": "09db6ba86849",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.both": {
+      "hash": "dda30feaa311",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.failed": {
+      "hash": "ceaafee408ea",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.finalize": {
+      "hash": "3c5fd9cb9db3",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.finalizing": {
+      "hash": "fae6ce42a3ec",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.title": {
+      "hash": "b03c1c9f3fda",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.unfinalized": {
+      "hash": "2c668b78d41b",
+      "status": "machine"
+    },
+    "pdfui:exportWarning.unsaved": {
+      "hash": "110310da24c3",
       "status": "machine"
     },
     "pdfui:hints.firefoxAndroid": {

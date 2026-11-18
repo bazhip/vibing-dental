@@ -4,7 +4,7 @@ import { vi } from 'vitest';
 const flags = vi.hoisted(() => ({ native: false }));
 vi.mock('../native/platform', () => ({ isNativeApp: () => flags.native, WEB_ORIGIN: 'https://toothops.app/' }));
 
-vi.mock('./PdfPreviewModal', () => ({ PdfPreviewModal: () => <div>chart-preview</div> }));
+vi.mock('./PdfPreviewModal', () => ({ PdfPreviewModal: ({ open }: { open: boolean }) => <div data-open={String(open)}>chart-preview</div> }));
 vi.mock('./OwnerReportModal', () => ({ OwnerReportModal: () => <div>owner-preview</div> }));
 vi.mock('./RecordNotePanel', () => ({ RecordNotePanel: () => <div>note-panel</div> }));
 
@@ -150,4 +150,13 @@ describe('DocumentsModal — web keyboard access', () => {
     fireEvent.keyDown(note, { key: 'Home' });
     expect(chart).toHaveFocus();
   });
+});
+
+
+it('tells the mounted native chart preview when Documents closes', () => {
+  flags.native = true;
+  const view = render(<DocumentsModal open onClose={vi.fn()} chartSnapshot={chartSnapshot} />);
+  expect(screen.getByText('chart-preview')).toHaveAttribute('data-open', 'true');
+  view.rerender(<DocumentsModal open={false} onClose={vi.fn()} chartSnapshot={chartSnapshot} />);
+  expect(screen.getByText('chart-preview')).toHaveAttribute('data-open', 'false');
 });
