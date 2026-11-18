@@ -2,7 +2,7 @@ import { codeDefinition, findCodesInText } from '../constants/dentalCodes';
 import { ReportLocale, reportStrings } from './ownerReportI18n';
 
 /** Report languages with an AVDC definitions catalog (locales/<lng>/codes.json). */
-const CODE_CATALOG_LOCALES: ReadonlySet<ReportLocale> = new Set(['en', 'fr', 'de', 'it', 'es', 'hu', 'ro']);
+const CODE_CATALOG_LOCALES: ReadonlySet<ReportLocale> = new Set(['en', 'fr', 'de', 'it', 'es', 'hu', 'ro', 'zh', 'ar']);
 
 const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 

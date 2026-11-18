@@ -1,0 +1,335 @@
+{
+  "brand": "ToothOps Charting",
+  "brandTrial": "ToothOps Charting · 试用",
+  "skipLink": "跳至主要内容",
+  "sections": {
+    "patient": "患者",
+    "exam": "检查",
+    "anesthesia": "麻醉",
+    "charting": "牙科记录",
+    "diagnosis": "诊断",
+    "procedure": "操作",
+    "images": "影像",
+    "treatment": "治疗报告",
+    "ownerReport": "宠物主人报告",
+    "menuFallback": "章节",
+    "nav": "牙科图表章节"
+  },
+  "species": {
+    "feline": "猫",
+    "canine": "犬",
+    "felineDeciduous": "猫 · 乳牙",
+    "canineDeciduous": "犬 · 乳牙",
+    "equine": "马"
+  },
+  "chartingView": {
+    "label": "牙科记录视图",
+    "grid": "表格",
+    "tooth": "按牙位",
+    "gridHint": "列出每颗牙测量值的电子表格",
+    "toothHint": "点击编号牙列图上的牙齿，记录检查结果、备注、计划拔牙和已确认拔牙"
+  },
+  "customize": {
+    "label": "自定义",
+    "hint": "各牙根的牙周袋、列、牙齿旁显示的内容、PDF 选项"
+  },
+  "radiographic": {
+    "title": "影像学检查结果",
+    "placeholder": "例如：108：远中根垂直骨吸收，根分叉暴露。307：2型牙齿吸收。",
+    "hint": "在 PDF 中打印于治疗报告上方。"
+  },
+  "lock": {
+    "title": "仅查看，选择“编辑图表”以进行更改",
+    "description": "此已保存就诊的编辑功能已关闭。"
+  },
+  "topbar": {
+    "patientEmpty": "尚无患者，请在“患者”章节添加",
+    "visitSwitchTitle": "就诊历史：{{n}}次就诊。选择一次以查看。",
+    "visitSwitchLabel": "就诊历史：切换此患者的{{n}}次就诊",
+    "undatedVisit": "未注明日期的就诊",
+    "visitLatest": "{{date}} · 最新",
+    "visitEarlier": "{{date}} · 较早",
+    "editingShort": "正在编辑",
+    "editingTitle": "正在编辑已保存的就诊，更改将自动保存",
+    "signIn": "登录",
+    "signInHint": "已有诊所账户？请登录",
+    "signUp": "创建免费账户",
+    "signUpHint": "创建诊所账户，将牙科图表保存至云端，并在 PDF 上显示诊所名称和标志",
+    "myCharts": "患者",
+    "myChartsShort": "患者",
+    "editChart": "编辑图表",
+    "editChartShort": "编辑",
+    "undo": "撤销更改",
+    "undoTitle": "将此图表恢复至您选择“编辑图表”时的状态",
+    "doneEditing": "完成编辑",
+    "viewOnlyChipTitle": "仅查看可防止意外更改已保存的就诊。选择“编辑图表”以进行更改",
+    "newPatient": "新患者",
+    "newPatientShort": "新建",
+    "newPatientTitle": "为新患者创建空白牙科图表",
+    "doneEditingShort": "完成",
+    "addLogo": "添加标志"
+  },
+  "status": {
+    "srSaving": "正在保存牙科图表",
+    "srSaved": "牙科图表已保存",
+    "srNotSaved": "牙科图表未保存",
+    "saving": "正在保存…",
+    "notSavedRetry": "未保存，重试",
+    "retryTitle": "重试保存此图表",
+    "notSaved": "未保存",
+    "viewOnly": "仅查看",
+    "viewOnlyTitle": "已保存的就诊以仅查看模式打开。选择“编辑图表”以进行更改",
+    "offline": "离线，已保存在此设备上",
+    "offlineTitle": "更改保留在此设备上，恢复联网后将保存",
+    "needsName": "请添加患者姓名以保存",
+    "needsNameTitle": "患者有姓名后，图表即可保存",
+    "saveTitle": "暂时保留在此设备上，开始记录后将自动保存。立即保存可在其他设备上打开。",
+    "unsaved": "未保存的更改",
+    "unsavedTitle": "正在自动保存…",
+    "savedTitle": "{{when}}已保存至云端",
+    "local": "仅在此设备上",
+    "localTitle": "试用图表保存在此浏览器中。创建免费账户即可保存至云端。",
+    "saveHint": "保存前请添加患者姓名，以便再次找到此图表。",
+    "savedRich": "<word>已保存 · </word>{{when}}"
+  },
+  "otherTab": {
+    "text": "此图表已在其他标签页或窗口中打开。两个标签页会编辑同一工作副本，请关闭其中一个以避免覆盖更改。"
+  },
+  "footer": {
+    "feedback": "发现问题或有建议？<a>发送反馈</a>"
+  },
+  "fab": {
+    "preview": "预览 PDF",
+    "download": "下载 PDF",
+    "previewAria": "预览并下载牙科图表 PDF",
+    "downloadAria": "预览并下载临床牙科图表和宠物主人报告",
+    "review": "审核并导出",
+    "reviewHint": "预览、下载或分享就诊文件。"
+  },
+  "errors": {
+    "setting": "无法保存该设置。{{error}}",
+    "openVisit": "无法打开该次就诊。{{error}}",
+    "loadCharts": "无法加载牙科图表。{{error}}",
+    "newVisit": "无法开始新的就诊。{{error}}",
+    "signOut": "无法退出登录。{{error}}",
+    "preview": "牙列图仍在加载，暂时无法生成预览。请稍后重试。",
+    "damagedChart": "此图表已损坏，无法打开。",
+    "pdfImport": "无法读取此 PDF。请使用从 ToothOps 下载的牙科图表 PDF。"
+  },
+  "toasts": {
+    "reverted": "更改已还原。",
+    "pdfImported": "已将 PDF 中的牙科图表导入为新图表。",
+    "pdfImportedNamed": "已将 PDF 中的{{name}}导入为新图表。",
+    "visitStarted": "已开始新的就诊。",
+    "visitStartedFor": "已为{{name}}开始新的就诊。",
+    "visitStartedCarried_one": "已开始新的就诊，沿用{{count}}颗缺失／已拔除牙齿的记录。",
+    "visitStartedCarried_other": "已开始新的就诊，沿用{{count}}颗缺失／已拔除牙齿的记录。",
+    "visitStartedForCarried_one": "已为{{name}}开始新的就诊，沿用{{count}}颗缺失／已拔除牙齿的记录。",
+    "visitStartedForCarried_other": "已为{{name}}开始新的就诊，沿用{{count}}颗缺失／已拔除牙齿的记录。"
+  },
+  "revert": {
+    "title": "还原您的更改？",
+    "message": "此图表将恢复至您选择“编辑图表”时的状态，并保存该版本。",
+    "confirm": "还原更改"
+  },
+  "todaysVisit": {
+    "message": "打开今天的就诊，而不另建一次就诊？",
+    "confirm": "打开今日就诊",
+    "cancel": "另建一次就诊"
+  },
+  "historyRestoreHint": "打开此就诊以恢复较早的版本。",
+  "feedbackMail": {
+    "doing": "当时进行的操作：",
+    "expected": "预期发生的情况：",
+    "actual": "实际发生的情况：",
+    "involved": "涉及的物种／牙位／章节（如有）：",
+    "browser": "浏览器与设备：",
+    "screenshot": "如截图有助于说明问题，请附上。"
+  },
+  "menu": {
+    "open": "打开设置菜单",
+    "trigger": "设置",
+    "signedInAs": "当前登录身份为 <strong>{{email}}</strong>",
+    "heads": {
+      "practice": "诊所",
+      "account": "账户",
+      "admin": "管理",
+      "app": "应用"
+    },
+    "practiceSettings": {
+      "label": "诊所设置",
+      "sub": "名称、标志、团队和账单。"
+    },
+    "reminders": {
+      "label": "复查提醒",
+      "sub": "宠物主人邮件模板和自动发送时间表。"
+    },
+    "account": {
+      "label": "账户设置",
+      "sub": "您的医生姓名、邮箱和密码。"
+    },
+    "admin": {
+      "label": "管理面板",
+      "sub": "管理用户、诊所和套餐。"
+    },
+    "chartSettings": {
+      "label": "牙科图表设置",
+      "sub": "各牙根的牙周袋、表格列以及牙齿旁显示的内容。"
+    },
+    "feedback": {
+      "label": "发送反馈",
+      "sub": "报告问题或提出改进建议。"
+    },
+    "whatsNew": {
+      "label": "新增功能",
+      "sub": "最新功能和改进。"
+    },
+    "gettingStarted": {
+      "label": "入门指南",
+      "sub": "重新观看应用各部分的操作演示。"
+    },
+    "homepage": {
+      "label": "ToothOps 网站",
+      "sub": "产品信息、价格和联系方式。"
+    },
+    "signOut": {
+      "label": "退出登录",
+      "sub": "结束您的会话。"
+    }
+  },
+  "trialSignIn": {
+    "title": "登录并清除试用图表？",
+    "message": "登录现有账户会清除此设备上的试用图表。如需保留，请先下载其 PDF，或选择创建免费账户以保留图表。",
+    "confirm": "清除并登录",
+    "cancel": "继续记录"
+  },
+  "speciesChange": {
+    "title": "更改物种或牙列？",
+    "messageGrid": "猫、犬和乳牙使用不同的牙位编号，因此将清空记录表格。患者详情和检查结果将保留。",
+    "messageDiagram": "猫、犬和乳牙使用不同的牙位编号，因此将清除牙列图上的标记、备注和绘图。患者详情和检查结果将保留。",
+    "messageBoth": "猫、犬和乳牙使用不同的牙位编号，因此将清空记录表格以及牙列图上的标记、备注和绘图。患者详情和检查结果将保留。",
+    "confirm": "更改并清除"
+  },
+  "sync": {
+    "cloudNotConfigured": "尚未配置云端服务。",
+    "historyNotSetUp": "服务器尚未设置图表历史记录。",
+    "sessionExpired": "您的会话已过期。请重新登录后保存，您的图表仍保留在此设备上。",
+    "notAllowed": "无法将此图表保存至您的账户。如果问题持续，请联系诊所所有者。",
+    "tooLarge": "此图表太大，无法保存，通常是影像过多或过大。请移除一个附件后重试。",
+    "offline": "无法连接服务器。请检查网络连接后重试，您的图表已安全保留在此设备上。",
+    "saveFailed": "保存失败：{{message}}。您的图表已安全保留在此设备上，请稍后重试。",
+    "unknownError": "未知错误",
+    "changedByOther": "此图表已被他人更改，请从“患者”中重新打开以查看其版本。",
+    "notSavedConflict": "未保存，此图表已被他人更改。请从“患者”中重新打开以查看其版本。",
+    "noPermission": "您没有保存此图表更改的权限。请联系诊所所有者，或开始新的就诊。",
+    "noDeletePermission": "您没有删除此图表的权限。请联系诊所所有者。",
+    "practiceUnknown": "您的诊所详情尚未加载，因此无法将此新图表保存至诊所。请检查网络连接并刷新，图表仍保留在此设备上。",
+    "conflict": {
+      "title": "此图表已在其他位置更改",
+      "message": "在您打开图表后，团队成员或其他设备于 {{when}} 保存了图表。现在保存将用您的更改替换这些更改。",
+      "confirm": "用我的版本替换",
+      "cancel": "保留对方的版本"
+    },
+    "duplicate": {
+      "titleToday": "{{name}}今天已有一次就诊",
+      "titleOn": "{{name}}在 {{date}} 已有一次就诊",
+      "patient": "此患者",
+      "message": "此新图表将成为同一天的第二次就诊。您要打开已有就诊，还是保留两次？打开已有就诊会放弃您在此新图表中输入的内容。",
+      "confirm": "打开已有就诊",
+      "cancel": "保留两次"
+    },
+    "discard": {
+      "title": "放弃未保存的更改？",
+      "openOther": {
+        "message": "此图表的部分更改尚未保存至云端。仍要打开另一个图表？如需保留更改，请取消并先点击“保存”。",
+        "confirm": "放弃并打开另一个图表"
+      },
+      "restore": {
+        "message": "此图表的部分更改尚未保存至云端。仍要恢复此版本？如需保留更改，请取消并先点击“保存”。",
+        "confirm": "放弃并恢复此版本"
+      },
+      "signOut": {
+        "message": "此图表的部分更改尚未保存至云端。仍要退出登录？如需保留更改，请取消并先点击“保存”。",
+        "confirm": "放弃并退出登录"
+      },
+      "newVisit": {
+        "message": "此图表的部分更改尚未保存至云端。仍要开始新的就诊？如需保留更改，请取消并先点击“保存”。",
+        "confirm": "放弃并开始新的就诊"
+      },
+      "newPatient": {
+        "message": "此图表的部分更改尚未保存至云端。仍要新建患者？如需保留更改，请取消并先点击“保存”。",
+        "confirm": "放弃并新建患者"
+      },
+      "importPdf": {
+        "message": "此图表的部分更改尚未保存至云端。仍要导入此 PDF？如需保留更改，请取消并先点击“保存”。",
+        "confirm": "放弃并导入此 PDF"
+      }
+    },
+    "identity": {
+      "title": "这些详情属于同一位患者吗？",
+      "message": "已保存：{{saved}}\n已更改：{{proposed}}\n\n保存将更改此图表中的患者详情，已有检查结果和影像将继续关联。\n\n如果是其他患者，请取消并选择“新患者”。",
+      "confirm": "确认更正",
+      "blank": "没有姓名或患者编号",
+      "paused": "患者详情已更改，保存已暂停。请再次保存以确认更正，或为其他患者选择“新患者”。",
+      "changed": "检查保存内容期间患者已更改。请检查详情后再次保存。"
+    },
+    "patientNumberFailed": "无法分配患者编号。请在联网时重试，或手动输入患者编号。"
+  },
+  "storage": {
+    "full": "此浏览器的存储空间已满，最近的更改可能无法保留在此设备上。请保存图表或下载其 PDF。"
+  },
+  "chartsMenu": {
+    "thisPatient": "此患者",
+    "newVisit": "新建就诊",
+    "newVisitHint": "创建注明日期的新就诊，并沿用患者详情及先前缺失或已拔除牙齿的记录。",
+    "history": "版本历史",
+    "historyHint": "此图表的所有已保存版本，包括保存者和保存时间。",
+    "allPatients": "所有患者",
+    "openLibrary": "查看患者",
+    "openLibraryHint": "搜索并打开任何患者的牙科图表。"
+  },
+  "workspace": {
+    "rechecks": "复查",
+    "help": "帮助",
+    "account": "您的账户",
+    "visitActions": "就诊操作",
+    "practice": "诊所设置",
+    "currentVisit": "当前就诊",
+    "navigation": "工作区导航",
+    "patientContext": "当前患者及就诊",
+    "more": "更多",
+    "patientNumber": "患者编号 {{number}}",
+    "visitDate": "就诊：{{date}}"
+  },
+  "animalTabs": {
+    "label": "已打开的动物",
+    "unnamed": "新动物",
+    "ownerUnknown": "未输入宠物主人",
+    "close": "关闭{{name}}标签页",
+    "closeHint": "关闭标签页而不删除患者",
+    "add": "打开另一只动物",
+    "emptyTitle": "未打开动物",
+    "emptyBody": "请打开患者以开始记录。",
+    "open": "打开动物",
+    "saveFirst": "切换动物前请保存当前图表。如尚无患者姓名，请先输入。",
+    "pid": "患者编号 {{number}}",
+    "noPid": "无患者编号",
+    "previous": "前面的动物",
+    "next": "后面的动物",
+    "closeUnsaved": "此标签页仍有未保存的更改。请打开并保存后再关闭。",
+    "summary": "{{name}} · {{details}}",
+    "imageCheckFailed": "无法检查此图表的影像。请保留标签页并重试。",
+    "uploadPending": "请等待影像上传完成后再关闭此标签页。",
+    "imagesRecovered": "已恢复未命名标签页中上传的影像。保存前请确认患者详情。",
+    "closeConfirmTitle": "不保存直接关闭？",
+    "closeConfirmMessage": "此标签页中未保存的更改将被放弃。已上传的影像不会删除。",
+    "closeConfirm": "不保存直接关闭",
+    "keepOpen": "保持图表打开",
+    "closeImageDraftMessage": "此图表尚未保存。关闭后将放弃其内容，并永久删除已上传的影像。",
+    "draftAlreadySaved": "此图表已在其他位置保存。请先重新打开，再放弃草稿。",
+    "closeTitle": "未保存的更改",
+    "saveAndClose": "保存并关闭",
+    "closeChoiceMessage": "请先保存更改再关闭，或选择不保存直接关闭以放弃更改。已保存图表中的上传影像将保留。",
+    "closeImageChoiceMessage": "请先保存此图表再关闭，或选择不保存直接关闭以放弃其内容，并永久删除已上传的影像。"
+  }
+}

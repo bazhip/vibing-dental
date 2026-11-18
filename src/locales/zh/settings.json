@@ -1,0 +1,358 @@
+{
+  "done": "完成",
+  "saving": "正在保存…",
+  "practice": {
+    "title": "诊所设置",
+    "profile": "资料",
+    "nameLabel": "诊所名称",
+    "namePlaceholder": "显示在应用中及每份牙科图表上",
+    "nameLockedLoading": "团队加载完成前，诊所名称已锁定，请在下方重试。",
+    "nameLockedShared": "诊所名称由全体团队共享，只有主要所有者可以更改。",
+    "nameSaved": "诊所名称已保存。",
+    "nameSaveFailed": "无法保存诊所名称。",
+    "discard": {
+      "title": "放弃诊所名称更改？",
+      "message": "新的诊所名称尚未保存。",
+      "confirm": "放弃",
+      "cancel": "继续编辑"
+    },
+    "logo": {
+      "label": "诊所标志",
+      "alt": "诊所标志",
+      "replace": "替换",
+      "remove": "移除",
+      "working": "正在处理…",
+      "empty": "未上传标志，图表使用模板内置标记。",
+      "upload": "上传标志",
+      "uploading": "正在上传…",
+      "choose": "选择标志图片",
+      "updated": "标志已更新。",
+      "uploadFailed": "无法上传标志。",
+      "removed": "标志已移除。",
+      "removeFailed": "无法移除标志。",
+      "removeTitle": "移除诊所标志？",
+      "removeMessage": "在您上传新标志前，新图表和 PDF 将使用模板内置标记。",
+      "removeConfirm": "移除标志"
+    },
+    "team": {
+      "title": "团队",
+      "loading": "正在加载团队…",
+      "settingUp": "您的诊所仍在设置中。",
+      "checkAgain": "再次检查",
+      "checking": "正在检查…",
+      "retry": "重试",
+      "retrying": "正在重试…",
+      "loadError": "无法加载您的团队。{{error}}",
+      "ownerBlurb": "您添加的同事将共享此诊所的牙科图表、模板和影像。",
+      "memberBlurb": "您是{{practice}}的成员，共享此诊所的牙科图表。",
+      "you": "（您）",
+      "pending": "待接受邀请",
+      "roles": {
+        "primaryOwner": "主要所有者",
+        "owner": "所有者",
+        "member": "成员"
+      },
+      "resend": "重新发送邀请",
+      "makeOwner": "设为所有者",
+      "makeMember": "设为成员",
+      "transfer": "转移所有权",
+      "remove": "移除",
+      "emailLabel": "同事邮箱",
+      "add": "添加",
+      "adding": "正在添加…",
+      "inviteHint": "尚无账户？我们会发送邀请邮件，供其设置密码并加入。",
+      "invalidEmail": "请输入有效的电子邮箱地址。",
+      "invited": "已向 {{email}} 发送邀请，设置密码后即可加入。",
+      "existingAccount": "{{email}} 已有 ToothOps 账户，我们已发送接受邀请的链接。加入后将显示在这里。",
+      "addFailed": "无法添加该人员。",
+      "failed": "操作未成功。请重试。",
+      "loadFailed": "无法加载您的团队。",
+      "transferTitle": "将 {{email}} 设为主要所有者？",
+      "transferMessage": "主要所有者负责账单和诊所名称。您仍将是诊所所有者。",
+      "transferConfirm": "转移所有权",
+      "transferred": "所有权已转移。",
+      "removeTitle": "将 {{email}} 从诊所移除？",
+      "removePendingMessage": "其邀请将被取消。",
+      "removeMessage": "该人员将失去对诊所共享图表的访问权限，但会保留自己的所有图表。",
+      "cancelInvite": "取消邀请",
+      "removeConfirm": "移除",
+      "keep": "保留",
+      "inviteCancelled": "邀请已取消。",
+      "memberRemoved": "成员已移除。",
+      "inviteResent": "已向 {{email}} 重新发送邀请。",
+      "nowOwner": "{{email}} 现为所有者。",
+      "nowMember": "{{email}} 现为成员。"
+    },
+    "ownerReport": {
+      "title": "宠物主人报告",
+      "blurb": "家庭在牙科就诊后带回家的报告，包括章节、标题、措辞、语言和全诊所默认版式。",
+      "customize": "自定义宠物主人报告"
+    },
+    "clientLanguage": {
+      "title": "面向宠物主人的语言",
+      "blurb": "用于家庭接收的文本，例如宠物主人报告的默认内容。手动输入的文本不会翻译。",
+      "saveFailed": "无法保存语言。"
+    },
+    "deletion": {
+      "title": "删除诊所",
+      "blurb": "永久删除诊所及与其共享的所有图表，包括团队的图表，并取消所有订阅。团队成员将保留各自的账户和私人图表。",
+      "button": "删除诊所…"
+    },
+    "treatmentReport": {
+      "title": "治疗报告",
+      "blurb": "已保存的常见操作文本，可直接插入治疗报告。",
+      "customize": "自定义治疗报告"
+    }
+  },
+  "logoErrors": {
+    "unreadable": "无法读取此影像。",
+    "canvas": "画布不可用",
+    "convert": "无法转换影像。",
+    "tooLarge": "此图片太大，标志文件必须小于10 MB。",
+    "reportTooLarge": "这些宠物主人报告设置太大，最大为50 KB。请缩短部分文本或移除一个模板。",
+    "reportNotLoaded": "已保存的宠物主人报告模板未能加载，现在保存可能会覆盖这些模板。请刷新页面后重试。"
+  },
+  "chart": {
+    "title": "牙科图表设置",
+    "sections": {
+      "patient": "患者页面设置",
+      "anesthesia": "麻醉设置",
+      "charting": "牙科记录设置",
+      "diagnosis": "诊断设置",
+      "images": "影像设置",
+      "exam": "检查设置",
+      "procedure": "操作设置"
+    },
+    "noteAccount": "个人偏好会随您的账户同步至所有设备。更改会自动保存。",
+    "noteBrowser": "个人偏好会自动保存在此浏览器中。",
+    "all": "所有牙科图表设置",
+    "charting": {
+      "title": "牙科记录",
+      "view": "图表版式",
+      "grid": "表格",
+      "byTooth": "按牙位",
+      "pocket": "牙周袋深度记录",
+      "pocketTooth": "每颗牙一个值",
+      "pocketRoot": "每个牙根一个值",
+      "pocketRootHint": "M／D，三根牙使用 MB／MP／D",
+      "pocketSite": "每颗牙六个位点",
+      "pocketSiteHint": "MB／B／DB／ML／L／DL",
+      "space": "表格中的空格键",
+      "spaceDown": "向下移至下一颗牙",
+      "spaceDownHint": "适合连续口述多个深度",
+      "spaceType": "输入空格",
+      "scoreTap": "在表格中轻点评分后",
+      "scoreFinding": "移至同一牙齿的下一项检查结果",
+      "scoreFindingHint": "松动度 → 牙龈退缩 → …，适合逐牙检查",
+      "scoreTooth": "向下移至下一颗牙",
+      "scoreToothHint": "适合全口评估同一检查项目",
+      "scoreStay": "保持选中当前单元格",
+      "columns": "可见测量项目",
+      "scorePicker": "表格中的评分按钮",
+      "scorePickerOptions": {
+        "touch": "仅触控界面",
+        "always": "始终显示",
+        "never": "从不显示"
+      }
+    },
+    "beside": {
+      "title": "牙列图检查结果",
+      "show": "在诊断牙列图中显示检查结果",
+      "showHint": "（也显示于 PDF）",
+      "include": "要显示的检查结果"
+    },
+    "anesthesia": {
+      "title": "麻醉",
+      "blocks": "显示的神经阻滞",
+      "blocksNote": "若已记录剂量，隐藏的阻滞仍会显示在该图表上。",
+      "blockNames": {
+        "infraorbital": "眶下神经",
+        "caudalMaxillary": "上颌后部",
+        "inferiorAlveolar": "下牙槽神经",
+        "mental": "颏神经",
+        "other": "其他"
+      },
+      "usual": "首选局部麻醉药",
+      "usualNote": "未记录麻醉药时，可作为快捷选项使用。由您决定何时应用。",
+      "drugPlaceholder": "例如：布比卡因",
+      "drugAria": "首选局部麻醉药",
+      "strengthAria": "局部麻醉药浓度（%）",
+      "adjunct": "附加药物",
+      "adjunctNote": "可选药物，与首选麻醉药一起保存。应用快捷选项时将同时记录两者。",
+      "adjunctPlaceholder": "例如：丁丙诺啡",
+      "adjunctAria": "附加药物",
+      "adjunctStrengthAria": "附加药物浓度"
+    },
+    "patient": {
+      "title": "患者页面",
+      "hideRecheck": "隐藏“复查到期”字段",
+      "visibilityNote": "选择空白就诊中显示的字段。已有信息的字段仍保持可见。"
+    },
+    "pdf": {
+      "title": "PDF",
+      "grid": "包含记录表格",
+      "gridHint": "关闭牙列图检查结果时必须包含，以确保已记录的测量值保留在 PDF 中。",
+      "images": "包含影像",
+      "imagesHint": "（每页4张，位于图表之后）"
+    },
+    "noteDevice": "个人偏好会自动保存在此设备上。",
+    "spaceMovesDownHint": "适合连续口述多个深度",
+    "scoreTapFindingHint": "松动度 → 牙龈退缩 → …，适合逐牙检查",
+    "scoreTapToothHint": "适合全口评估同一检查项目",
+    "columnsFooter": "记录表格中显示的列，至少保留一列。",
+    "mirrorHint": "也显示于 PDF",
+    "drugName": "药物",
+    "drugStrength": "浓度",
+    "pdfGridHint": "关闭牙列图检查结果时必须包含，以确保已记录的测量值保留在 PDF 中。",
+    "pdfImagesHint": "每页4张，位于图表之后",
+    "quickCodes": {
+      "title": "诊断快捷项",
+      "note": "添加用于牙齿备注和诊断牙列图的 AVDC 或自定义代码。此处顺序即快捷项顺序。",
+      "remove": "移除",
+      "removeAria": "移除{{code}}",
+      "placeholder": "代码，例如 T/SR",
+      "addAria": "要添加的代码",
+      "add": "添加",
+      "duplicate": "您的快捷项中已有此代码。"
+    },
+    "exam": {
+      "title": "检查",
+      "areas": "检查部位",
+      "areasNote": "选择检查页面显示的部位。已有检查结果的部位即使取消勾选也仍可见。自定义部位按下方顺序显示。",
+      "areaPlaceholder": "例如：唇",
+      "areaAria": "检查部位{{n}}名称",
+      "areaN": "部位{{n}}",
+      "remove": "移除",
+      "removeAria": "移除{{name}}",
+      "add": "添加部位",
+      "addPreset": "添加建议部位",
+      "presets": {
+        "lips": "唇／皮肤黏膜交界",
+        "gingiva": "牙龈／膜龈联合",
+        "salivary": "唾液腺导管开口",
+        "floor": "口底／系带"
+      },
+      "suggestions": "建议部位",
+      "showArea": "显示{{name}}",
+      "customCount": "已添加自定义部位：{{used}} · 上限：{{max}}"
+    },
+    "customization": {
+      "navigation": "牙科图表设置类别",
+      "categories": {
+        "patient": "患者详情",
+        "exam": "口腔检查",
+        "diagnosis": "诊断",
+        "images": "影像与 PDF",
+        "procedure": "操作"
+      },
+      "descriptions": {
+        "patient": "选择是否在患者页面显示复查日期。",
+        "exam": "选择口腔检查时要记录的其他部位。",
+        "anesthesia": "配置神经阻滞、自定义字段和常用药物。",
+        "charting": "设置图表版式、测量项目和数据输入方式。",
+        "diagnosis": "选择诊断牙列图中显示的检查结果和快捷代码。",
+        "images": "选择生成的 PDF 中包含的图表和影像。",
+        "procedure": "选择操作牙列图中可用的快捷代码。"
+      },
+      "showRecheck": "显示“复查到期”字段",
+      "layout": "版式与测量项目",
+      "input": "数据输入"
+    },
+    "procedureQuickCodes": {
+      "title": "操作快捷项",
+      "note": "添加经常记录的操作代码。这些快捷项仅显示在操作牙列图上，诊断快捷代码另行设置。",
+      "placeholder": "代码，例如 XSS"
+    },
+    "list": {
+      "moveUp": "上移{{name}}",
+      "moveDown": "下移{{name}}",
+      "count": "已配置{{used}}项，共可配置{{max}}项",
+      "limit": "已达上限。请移除一项后再添加。"
+    },
+    "autosave": {
+      "label": "自动保存",
+      "hint": "自动保存图表更改。关闭后需手动保存。"
+    }
+  },
+  "feedback": {
+    "title": "发送反馈",
+    "kinds": {
+      "bug": "出现问题",
+      "idea": "建议",
+      "other": "其他"
+    },
+    "kindsAria": "反馈类型",
+    "promptBug": "发生了什么？",
+    "promptIdea": "哪些功能会有帮助？",
+    "promptOther": "您的消息",
+    "bugPlaceholder": "您进行了什么操作、预期如何、实际发生了什么…",
+    "attach": "附上我的口述转录文本",
+    "note": "直接发送给 ToothOps 开发者，开发者会通过邮件回复您。",
+    "sent": "谢谢！您的反馈已发送。",
+    "sendFailed": "无法发送。请重试。",
+    "needsAccount": "发送反馈需要账户。",
+    "send": "发送",
+    "sending": "正在发送…"
+  },
+  "gettingStarted": {
+    "takeTour": "开始导览",
+    "tourFooter": "简要了解图表中各项内容的位置。",
+    "chartParts": "牙科图表各部分"
+  },
+  "tour": {
+    "steps": {
+      "sections": {
+        "body": "从上到下的牙科病历。轻点图表标题可在章节间跳转，所有内容都会自动保存。"
+      },
+      "grid": {
+        "body": "各牙位测量值。轻点单元格输入或轻点评分，无需抬头即可记录。"
+      },
+      "diagrams": {
+        "body": "轻点牙齿可添加标记、备注或绘图。可在诊断和操作旁搜索 AVDC 代码。牙列图工具栏中可撤销和重做。"
+      },
+      "codes": {
+        "body": "在牙列图旁直接搜索完整 AVDC 代码集。"
+      },
+      "treatment": {
+        "body": "编写报告或插入已保存的模板，也可保存新模板以便重复使用。"
+      },
+      "patients": {
+        "title": "患者",
+        "body": "每位患者的就诊记录。已保存的就诊以只读模式打开，轻点“编辑”后即可修改。“复查”会列出到期患者。"
+      },
+      "share": {
+        "title": "分享 PDF",
+        "body": "生成带有您标志、可交付客户的牙科图表 PDF，准备好后即可分享或保存。"
+      },
+      "byTooth": {
+        "body": "切换至“按牙位”并轻点牙列图上的牙齿。一起记录其测量值、诊断和操作后，再移至下一颗。表格与按牙位视图共享相同检查结果。"
+      },
+      "customize": {
+        "body": "打开图表的“更多”菜单，选择当前页面的“自定义”。设置列、按牙齿／牙根／位点记录牙周袋深度、快捷代码等。登录后，偏好会随账户同步。"
+      }
+    }
+  },
+  "whatsNew": {
+    "severalTeeth": "轻点表格中的牙位编号可选择多颗牙齿，再统一设置评分。",
+    "customize": "每页的“更多”菜单都有“自定义”，可隐藏列、选择牙齿旁显示的内容等。设置会随账户同步至所有设备。",
+    "leftOff": "重新打开 ToothOps 时会显示“患者”，除非今日就诊仍打开。今日就诊打开后可直接编辑。"
+  },
+  "reminders": {
+    "sendFrom": "从“患者”或“复查”中为单个患者发送提醒。",
+    "settingUp": "您的诊所正在设置中，请稍后再查看。"
+  },
+  "workspace": {
+    "personalScope": "个人牙科图表偏好，更改仅适用于您的账户。",
+    "accountScope": "这些设置属于您的账户。请分别保存各章节，邮箱和密码更改各有独立确认流程。",
+    "languageImmediate": "语言更改会立即生效。",
+    "general": "常规",
+    "team": "团队",
+    "templates": "模板",
+    "billing": "账单",
+    "reminders": "复查提醒",
+    "charting": "牙科记录偏好",
+    "back": "返回当前就诊",
+    "scope": "管理诊所共享的设置。",
+    "saveHint": "保存对诊所名称的更改。其他设置会立即生效。"
+  }
+}

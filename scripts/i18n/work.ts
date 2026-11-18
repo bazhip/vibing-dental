@@ -12,6 +12,8 @@ export type GlossaryTerm = {
   pt: string;
   hu?: string;
   ro?: string;
+  zh?: string;
+  ar?: string;
   note?: string;
 };
 

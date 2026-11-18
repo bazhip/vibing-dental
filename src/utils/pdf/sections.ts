@@ -1368,6 +1368,17 @@ export function drawFooter(
     });
   }
 
+  // Shape the complete RTL sentence together: separately positioned LTR
+  // fragments put the page number on the wrong side of the Arabic words.
+  if (lng === 'ar') {
+    const text = t('footer.pageOf', { n: pageNum, total: totalPages });
+    page.drawText(text, {
+      x: pageWidth - 0.30 * PT_PER_IN - font.widthOfTextAtSize(text, fontSize),
+      y: 0.22 * PT_PER_IN, size: fontSize, font, color: PALETTE.muted,
+    });
+    return;
+  }
+
   // "Page X of Y" — page number bold-emphasized in primary color. The
   // sentence is split around the number so word order follows the language.
   const MARK = '\u0000';

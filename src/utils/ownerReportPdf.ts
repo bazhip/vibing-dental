@@ -1,4 +1,5 @@
 import type { PDFFont, PDFPage } from 'pdf-lib';
+import { wrapToWidth } from './pdf/draw';
 import { embedPdfFonts } from './pdf/fonts';
 import { OwnerReportModel, OwnerReportRenderSection, teethWithFindings } from './ownerReport';
 
@@ -69,16 +70,15 @@ const TEAL = { r: 0.047, g: 0.42, b: 0.39 }; // matches the app's --primary
 const INK = { r: 0.106, g: 0.153, b: 0.2 };
 const MUTED = { r: 0.333, g: 0.404, b: 0.478 };
 
-/** Characters outside Latin-1 that WinAnsi (and so Helvetica) encodes. */
-const WIN_ANSI_EXTRA = new Set('€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ');
+/** Readable stand-ins shared with the established Latin reports. */
 const PDF_REPLACEMENTS: Record<string, string> = {
   '✕': 'X', '✖': 'X', '✓': 'v', '✔': 'v', '→': '->', '←': '<-',
   '≤': '<=', '≥': '>=', '−': '-', '‐': '-', '‑': '-', '\t': ' ',
 };
 
 /** Preserve supported Latin alphabets and readable symbol stand-ins.
- * The locale's embedded fonts cover Hungarian and Romanian diacritics;
- * safeFont handles any glyph the chosen font cannot encode. */
+ * Preserve CJK and Arabic for the locale's lazily embedded Unicode fonts.
+ * Standard-font reports still use safeFont for unsupported glyphs. */
 export function pdfSafe(text: string): string {
   let out = '';
   for (const ch of text) {
@@ -92,7 +92,7 @@ export function pdfSafe(text: string): string {
       continue;
     }
     const code = ch.codePointAt(0)!;
-    if ((code >= 0x20 && code <= 0x7e) || (code >= 0xa0 && code <= 0x24f) || WIN_ANSI_EXTRA.has(ch)) {
+    if (code >= 0x20 && !/\p{Extended_Pictographic}/u.test(ch)) {
       out += ch;
     }
   }
@@ -100,21 +100,10 @@ export function pdfSafe(text: string): string {
 }
 
 function wrap(text: string, font: PDFFont, size: number, maxWidth: number): string[] {
-  const lines: string[] = [];
-  for (const paragraph of text.split('\n')) {
-    let line = '';
-    for (const word of paragraph.split(/\s+/).filter(Boolean)) {
-      const candidate = line ? `${line} ${word}` : word;
-      if (font.widthOfTextAtSize(candidate, size) <= maxWidth || !line) {
-        line = candidate;
-      } else {
-        lines.push(line);
-        line = word;
-      }
-    }
-    lines.push(line);
-  }
-  return lines;
+  return text.split('\n').flatMap(paragraph => {
+    const lines = wrapToWidth(paragraph, font, size, maxWidth);
+    return lines.length ? lines : [''];
+  });
 }
 
 /** The mouth diagram for the owner: the procedure diagram (missing teeth
@@ -134,8 +123,9 @@ export async function buildOwnerReportPdfBytes(
 ): Promise<Uint8Array> {
   const { PDFDocument, rgb } = await import('pdf-lib');
   const t = reportStrings(model.locale);
+  const rtl = model.locale === 'ar';
   const doc = await PDFDocument.create();
-  const { regular, bold } = await embedPdfFonts(doc, model.locale);
+  const { regular, bold } = await embedPdfFonts(doc, model.locale, 'sans', JSON.stringify([model, branding, photos]));
 
   const teal = rgb(TEAL.r, TEAL.g, TEAL.b);
   const ink = rgb(INK.r, INK.g, INK.b);
@@ -161,7 +151,7 @@ export async function buildOwnerReportPdfBytes(
     const lineHeight = size * 1.45;
     for (const line of wrap(pdfSafe(text), font, size, CONTENT_W - indent)) {
       ensure(lineHeight);
-      page.drawText(line, { x: MARGIN + indent, y: y - size, size, font, color: opts.color ?? ink });
+      page.drawText(line, { x: rtl ? PAGE_W - MARGIN - indent - font.widthOfTextAtSize(line, size) : MARGIN + indent, y: y - size, size, font, color: opts.color ?? ink });
       y -= lineHeight;
     }
     y -= opts.gapAfter ?? 0;
@@ -176,7 +166,7 @@ export async function buildOwnerReportPdfBytes(
         ensure(16);
         y -= 16;
       }
-      page.drawText(line, { x: MARGIN, y: y - 12, size: 12, font: bold, color: teal });
+      page.drawText(line, { x: rtl ? PAGE_W - MARGIN - bold.widthOfTextAtSize(line, 12) : MARGIN, y: y - 12, size: 12, font: bold, color: teal });
     });
     y -= 20;
   };
@@ -202,7 +192,7 @@ export async function buildOwnerReportPdfBytes(
   const doctor = pdfSafe(branding.doctorName);
   const visitDate = pdfSafe(model.visitDate);
   const availableHeaderWidth = PAGE_W - MARGIN - headerX;
-  const stackedHeader = bold.widthOfTextAtSize(practice, 15) + (title ? bold.widthOfTextAtSize(title, 11) + 16 : 0) > availableHeaderWidth
+  const stackedHeader = rtl || bold.widthOfTextAtSize(practice, 15) + (title ? bold.widthOfTextAtSize(title, 11) + 16 : 0) > availableHeaderWidth
     || regular.widthOfTextAtSize(doctor, 9.5) + regular.widthOfTextAtSize(visitDate, 9.5) + 16 > availableHeaderWidth;
   if (stackedHeader) {
     // Translated titles and long practice names need separate lines. Measure
@@ -210,7 +200,7 @@ export async function buildOwnerReportPdfBytes(
     const headerText = (text: string, font: PDFFont, size: number, color: ReturnType<typeof rgb>) => {
       for (const line of wrap(text, font, size, availableHeaderWidth)) {
         y -= size * 1.4;
-        page.drawText(line, { x: headerX, y, size, font, color });
+        page.drawText(line, { x: rtl ? PAGE_W - MARGIN - font.widthOfTextAtSize(line, size) : headerX, y, size, font, color });
       }
     };
     headerText(practice, bold, 15, ink);

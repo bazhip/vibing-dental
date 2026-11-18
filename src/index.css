@@ -1,3 +1,5 @@
+@import './i18n/scriptFonts.css';
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -80,3 +82,14 @@ code {
 }
 @keyframes app-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .app-loading__spinner { animation-duration: 2.4s; } }
+
+
+/* Preserve identifier and numeric order in bidirectional forms. User text
+   fields use dir=auto at their owning components. */
+html[dir="rtl"] :is(input[type="email"], input[type="url"], input[type="tel"], input[type="number"], input[type="date"], input[inputmode="decimal"], input[inputmode="numeric"], code, kbd) {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+html[dir="rtl"] :is(.dental-grid__head, .dental-grid__bulk, .dental-grid__bulk-hint) {
+  text-align: start;
+}

@@ -1,0 +1,86 @@
+{
+  "header": {
+    "title": {
+      "canine": "犬牙科图表",
+      "canineDeciduous": "犬（乳牙）牙科图表",
+      "feline": "猫牙科图表",
+      "felineDeciduous": "猫（乳牙）牙科图表",
+      "equine": "马牙科图表"
+    },
+    "subtitle": "牙周评估与治疗计划",
+    "tech": "技师：{{name}}"
+  },
+  "patient": {
+    "title": "患者信息",
+    "date": "日期",
+    "patient": "患者",
+    "pid": "患者编号",
+    "complaint": "主诉"
+  },
+  "exam": {
+    "title": "口腔检查结果",
+    "normal": "正常",
+    "abnormal": "异常",
+    "comment": "备注",
+    "items": {
+      "extraoral": "口外／面部",
+      "lymph": "淋巴结",
+      "buccal": "颊黏膜",
+      "tongue": "舌",
+      "palate": "腭",
+      "pharynx": "咽／扁桃体"
+    },
+    "additional": "其他检查部位",
+    "alsoNormal": "正常：{{areas}}",
+    "moreAreas_one": "应用中另有{{count}}个部位",
+    "moreAreas_other": "应用中另有{{count}}个部位"
+  },
+  "grid": {
+    "maxilla": "上颌牙弓",
+    "mandible": "下颌牙弓"
+  },
+  "codes": {
+    "title": "使用的代码",
+    "more": "另有{{n}}项"
+  },
+  "treatment": {
+    "title": "治疗与手术报告",
+    "findingsHeading": "影像学检查结果",
+    "treatmentHeading": "治疗",
+    "continued": "…续。完整报告已嵌入此文件，可重新载入应用查看。"
+  },
+  "anesthesia": {
+    "title": "麻醉 · 神经阻滞",
+    "nerveBlock": "神经阻滞",
+    "nerveBlockWith": "神经阻滞 {{drug}}",
+    "anesthetic": "麻醉药",
+    "anesthetics": "麻醉药",
+    "right": "右",
+    "left": "左",
+    "dose": "{{value}} mL",
+    "other": "其他",
+    "blocks": {
+      "infraorbital": "眶下神经",
+      "caudalMaxillary": "上颌后部",
+      "inferiorAlveolar": "下牙槽神经",
+      "mental": "颏神经"
+    }
+  },
+  "footer": {
+    "generated": "生成于 {{at}}",
+    "pid": "患者编号 {{id}}",
+    "pageOf": "第{{n}}页，共{{total}}页"
+  },
+  "images": {
+    "title": "影像与X光片",
+    "titleRange": "影像与X光片（{{range}}，共{{total}}张）",
+    "failed": "无法加载影像",
+    "photo": "照片",
+    "radiograph": "X光片",
+    "tooth": "牙位 {{triadan}}"
+  },
+  "continuation": {
+    "title": "临床记录",
+    "notice": "完整详情见后续页面。"
+  }
+}

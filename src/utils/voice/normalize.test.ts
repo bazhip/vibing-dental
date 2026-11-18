@@ -16,7 +16,8 @@ import sampleTranscript from '../../../scripts/fixtures/sample-transcript.txt?ra
 import aiAutofillTestSource from '../aiAutofill.test.ts?raw';
 import type { AppLanguage } from '../../i18n/config';
 
-type Lng = Exclude<AppLanguage, 'en'>;
+// Space-delimited native-language fixtures; complex scripts have dedicated suites.
+type Lng = Exclude<AppLanguage, 'en' | 'zh' | 'ar'>;
 
 // ----- English: byte-identical ---------------------------------------------
 

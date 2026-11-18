@@ -8,7 +8,7 @@ import path from 'node:path';
 import { codeOnlyComment, normalizeFieldValue, type AiAction, type ChartContext } from '../../src/utils/aiAutofill';
 import type { AppLanguage } from '../../src/i18n/config';
 
-export const VOICE_LANGS: AppLanguage[] = ['en', 'fr', 'de', 'it', 'es', 'hu', 'ro'];
+export const VOICE_LANGS: AppLanguage[] = ['en', 'fr', 'de', 'it', 'es', 'hu', 'ro', 'zh', 'ar'];
 /** Relative to the repo root (npm scripts and vitest run from there). */
 export const FIXTURE_DIR = path.resolve('scripts/fixtures/voice');
 

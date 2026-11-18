@@ -9,7 +9,7 @@ const noop = () => {};
 /** Parked far off-screen, not display:none, so the SVGs lay out and measure. */
 const OFFSCREEN_STYLE: React.CSSProperties = {
   position: 'fixed',
-  left: '-10000px',
+  insetInlineStart: '-10000px',
   top: 0,
   width: 1200,
   pointerEvents: 'none',

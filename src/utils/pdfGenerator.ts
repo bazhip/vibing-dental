@@ -153,7 +153,8 @@ export async function buildDentalChartPDFBytes(
   const page2 = pdfDoc.addPage([PAGE_WIDTH_PT, PAGE_HEIGHT_PT]);
   const form  = pdfDoc.getForm();
 
-  const { regular, bold } = await embedPdfFonts(pdfDoc, lng, ACTIVE.fontFamilyKey);
+  const { regular, bold } = await embedPdfFonts(pdfDoc, lng, ACTIVE.fontFamilyKey,
+    JSON.stringify([patientInfo, toothData, branding, layoutOptions, preDiagram.state, postDiagram.state]));
 
   // Preflight the same card layouts without drawing: supported custom settings
   // can exceed the compact column or its text limits. Move complete sections

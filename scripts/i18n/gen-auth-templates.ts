@@ -73,7 +73,7 @@ export function generateAuthTemplates(catalogs: Catalogs): Record<string, string
     const run = (key: string) => chain((lng) => toHtml(str(lng, key)));
     const k = (name: string) => `${tpl.id}.${name}`;
     out[`${DIR}/${tpl.file}`] = `${LANG_PRELUDE}<!doctype html>
-<html lang="${chain((l) => l)}">
+<html lang="${chain((l) => l)}"${chain((l) => l === 'ar' ? ' dir="rtl"' : '')}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -96,7 +96,7 @@ export function generateAuthTemplates(catalogs: Catalogs): Record<string, string
       </td></tr>
       <tr><td style="padding:12px 32px 28px;font-size:13px;line-height:1.5;color:#64748b;">
         ${run('common.fallback')}<br>
-        <a href="{{ .ConfirmationURL }}" style="color:#0c6b63;word-break:break-all;">{{ .ConfirmationURL }}</a>
+        <a${chain((l) => l === 'ar' ? ' dir="ltr"' : '')} href="{{ .ConfirmationURL }}" style="color:#0c6b63;word-break:break-all;">{{ .ConfirmationURL }}</a>
         <p style="margin:16px 0 0;">${run(k('ignore'))}</p>
       </td></tr>
     </table>

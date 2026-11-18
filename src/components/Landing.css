@@ -222,7 +222,7 @@
   flex-direction: column;
   gap: 0.9rem;
   max-width: 460px;
-  margin-left: auto;
+  margin-inline-start: auto;
 }
 
 .demo-window__bar {
@@ -258,10 +258,10 @@
 
 .demo-grid__row > span {
   padding: 0.38rem 0.55rem;
-  border-right: 1px solid var(--border);
+  border-inline-end: 1px solid var(--border);
 }
 
-.demo-grid__row > span:last-child { border-right: none; }
+.demo-grid__row > span:last-child { border-inline-end: none; }
 
 .demo-grid__row + .demo-grid__row { border-top: 1px solid var(--border); }
 
@@ -282,7 +282,7 @@
 
 /* ---------- three-scene loop (18s): chart → diagram → export ---------------- */
 .demo-window__steps {
-  margin-left: auto;
+  margin-inline-start: auto;
   display: flex;
   gap: 0.35rem;
 }
@@ -588,7 +588,7 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  text-align: left;
+  text-align: start;
   font: inherit;
   color: inherit;
   cursor: pointer;
@@ -657,7 +657,7 @@
 
 .feature-modal__tag {
   display: inline-block;
-  margin-left: 0.55rem;
+  margin-inline-start: 0.55rem;
   padding: 0.1rem 0.5rem;
   border-radius: 999px;
   background: var(--primary, #0c6b63);
@@ -693,7 +693,7 @@
 
 .feature-modal__points {
   margin: 0 0 1rem;
-  padding-left: 1.15rem;
+  padding-inline-start: 1.15rem;
   color: var(--text-muted, #55677a);
   font-size: 0.92rem;
   line-height: 1.55;
@@ -753,7 +753,7 @@
 
 .feature-modal__mic {
   color: var(--danger);
-  margin-right: 0.45rem;
+  margin-inline-end: 0.45rem;
   animation: feature-mic 1.6s ease-in-out infinite;
 }
 
@@ -823,7 +823,7 @@
 .landing__feature--ai h3::before {
   content: 'AI';
   display: inline-block;
-  margin-right: 0.45rem;
+  margin-inline-end: 0.45rem;
   padding: 0.05rem 0.4rem;
   font-size: 0.66rem;
   font-weight: 800;
@@ -875,8 +875,8 @@
   gap: 1rem;
   max-width: 1120px;
   width: 100%;
-  margin-left: auto;
-  margin-right: auto;
+  margin-inline-start: auto;
+  margin-inline-end: auto;
   font-size: 0.82rem;
   color: var(--text-muted);
 }
@@ -885,7 +885,7 @@
 /* The English-governs note (non-English only) takes its own row; English
    keeps the single-row footer. */
 .landing__footer:has(.landing__footer-note) { flex-wrap: wrap; }
-.landing__footer .landing__footer-note { flex-basis: 100%; margin: 0; text-align: left; font-size: 0.75rem; }
+.landing__footer .landing__footer-note { flex-basis: 100%; margin: 0; text-align: start; font-size: 0.75rem; }
 
 /* ---------- auth overlay ------------------------------------------------------ */
 .landing__auth-overlay {
@@ -1007,7 +1007,7 @@
 
 .landing__paper-points li {
   position: relative;
-  padding-left: 1.4rem;
+  padding-inline-start: 1.4rem;
   font-size: 0.92rem;
   color: var(--text);
 }
@@ -1164,7 +1164,7 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1rem;
-  text-align: left;
+  text-align: start;
 }
 
 .pricing-card {
@@ -1247,7 +1247,7 @@
 
 .pricing-card li {
   position: relative;
-  padding-left: 1.2em;
+  padding-inline-start: 1.2em;
 }
 
 .pricing-card li::before {
@@ -1298,7 +1298,7 @@
 
 .landing__beta-pill {
   display: inline-block;
-  margin-left: 0.6rem;
+  margin-inline-start: 0.6rem;
   padding: 0.1rem 0.55rem;
   border-radius: 999px;
   background: var(--primary, #0c6b63);

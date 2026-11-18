@@ -18,6 +18,8 @@ export interface VoiceSttConfig {
 export const VOICE_STT: Record<AppLanguage, VoiceSttConfig> = {
   // Medical multi excludes Hungarian/Romanian; use supported native models.
   // https://developers.deepgram.com/docs/models-languages-overview
+  zh: { model: 'nova-3', language: 'zh-CN' },
+  ar: { model: 'nova-3', language: 'ar' },
   hu: { model: 'nova-3', language: 'hu' },
   ro: { model: 'nova-3', language: 'ro' },
   en: { model: 'nova-3-medical', language: 'en' },
@@ -30,6 +32,8 @@ export const VOICE_STT: Record<AppLanguage, VoiceSttConfig> = {
 /** BCP-47 tag for the browser SpeechRecognition fallback; en keeps the
  *  caller's navigator.language behaviour. */
 export const BROWSER_SPEECH_LANG: Record<Exclude<AppLanguage, 'en'>, string> = {
+  zh: 'zh-CN',
+  ar: 'ar-SA',
   hu: 'hu-HU',
   ro: 'ro-RO',
   fr: 'fr-FR',

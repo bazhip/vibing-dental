@@ -1,0 +1,152 @@
+{
+  "activity": {
+    "anesthetic": "麻醉药 + {{drug}}",
+    "anestheticConcentration": "麻醉药 + {{concentration}}% {{drug}}",
+    "block": "阻滞{{site}} = {{mL}} mL",
+    "clearedMark": "已清除{{diagram}}.{{triadan}}",
+    "destination": "→ {{section}}：{{text}}",
+    "finalNone": "最终检查：无遗漏",
+    "finalRaised_one": "最终检查：已添加{{count}}项待审核",
+    "finalRaised_other": "最终检查：已添加{{count}}项待审核",
+    "notApplied": "未应用：{{what}}",
+    "notAppliedHome": "未应用（应归于{{section}}）：{{what}}",
+    "noteDiagnosis": "诊断备注：“{{text}}”",
+    "noteDiagnosisTooth": "牙位{{triadan}}诊断备注：“{{text}}”",
+    "noteProcedure": "操作备注：“{{text}}”",
+    "noteProcedureTooth": "牙位{{triadan}}操作备注：“{{text}}”",
+    "radiographic": "影像学检查结果 += “{{text}}…”",
+    "removed": "已移除：{{what}}",
+    "report": "报告 += “{{text}}…”"
+  },
+  "button": {
+    "dictate": "口述",
+    "resume": "继续",
+    "start": "开始",
+    "stop": "停止",
+    "titleDictate": "口述，边说话边自动填写图表",
+    "titleStop": "停止聆听，保留转录文本"
+  },
+  "dialog": {
+    "confirm": "重新开始",
+    "message": "将清除转录文本、活动日志和审核列表。已填入图表的内容将保留。",
+    "title": "开始新的口述？"
+  },
+  "errors": {
+    "browserUnsupported": "此浏览器不支持语音识别。请尝试 Chrome 或 Safari。",
+    "captureStart": "无法开始音频采集。",
+    "deepgram": "Deepgram 错误",
+    "deepgramRejected": "Deepgram 拒绝连接，请检查 API 密钥。",
+    "deepgramSocket": "Deepgram WebSocket 错误。",
+    "failed": "语音自动填写失败",
+    "finalCheckFailed": "最终检查失败",
+    "finalCheckFailedDetail": "最终检查失败：{{message}}",
+    "micBlocked": "麦克风访问被阻止。请在浏览器设置中允许此网站使用麦克风，然后重试。",
+    "micStart": "无法启动麦克风：{{message}}",
+    "noCapture": "此浏览器无法采集麦克风音频。",
+    "noCloud": "尚未配置云端服务。",
+    "noMic": "未找到麦克风。",
+    "recognition": "识别错误：{{error}}",
+    "recognitionUnknown": "未知",
+    "sessionStart": "无法启动 Deepgram 会话。",
+    "unsupported": "语音输入需要 Chrome、Edge 或 Safari。"
+  },
+  "intro": {
+    "ariaLabel": "口述",
+    "cancel": "取消",
+    "close": "关闭",
+    "gotIt": "知道了",
+    "start": "开始口述",
+    "step1": "按您平常的方式说话：<em>“104，牙龈炎2级，牙结石1级。105缺失。舌正常。”</em>",
+    "step2": "您可以停留在任意页面，每项检查结果都会填入图表的正确位置。",
+    "step3": "完成后轻点<strong>停止</strong>。任何不确定的内容都会列在<strong>需要审核</strong>中。",
+    "title": "口述填写牙科图表"
+  },
+  "panel": {
+    "activity": "活动",
+    "activityEmpty": "AI 应用更改时，图表变更会显示在这里。",
+    "ariaLabel": "AI 自动填写",
+    "close": "关闭面板",
+    "closeTitle": "关闭，保留转录文本",
+    "collapse": "折叠面板",
+    "dismiss": "忽略",
+    "download": "下载",
+    "emptyConnecting": "正在准备麦克风，请稍候…",
+    "emptyIdle": "按“开始”以口述。",
+    "emptyListening": "🎙 请开始说话，您的话语会显示在这里。",
+    "expand": "展开面板",
+    "feedback": "反馈",
+    "feedbackTitle": "告诉我们哪里出了问题，可附上您的转录文本",
+    "guess": "已按推测记录，{{reason}}",
+    "guessMark": "推测内容，请检查审核列表",
+    "heard": "“{{heard}}”",
+    "help": "帮助",
+    "helpTitle": "工作原理",
+    "interrupted": "麦克风已中断，可能因为使用相机、来电或离开页面。之前听到的内容已保留，按<strong>继续</strong>即可接着口述。",
+    "keep": "保留",
+    "needsReview": "需要审核",
+    "needsReviewCount": "需要审核（{{count}}）",
+    "new": "新建",
+    "notCharted": "未记录，{{reason}}",
+    "promptsOff": "提示：关",
+    "promptsOn": "提示：开",
+    "promptsTitle": "暂停后，以简短语音提示值得检查的内容，例如“检查109”",
+    "providerBrowser": "浏览器语音识别",
+    "providerDeepgram": "⚡ Deepgram",
+    "remove": "移除",
+    "sending": "正在发送…",
+    "showInChart": "在图表中显示",
+    "speaker": "说话人{{n}}",
+    "transcript": "转录文本",
+    "reviewComplete": "审核完成"
+  },
+  "peek": {
+    "connecting": "正在准备麦克风，请稍候…",
+    "goAhead": "🎙 请开始说话，检查结果会随记录显示。",
+    "pressResume": "按“继续”以接着口述。",
+    "review_one": "⚠ {{count}}项待审核，轻点查看",
+    "review_other": "⚠ {{count}}项待审核，轻点查看",
+    "talking": "开始说话，检查结果会随记录显示。"
+  },
+  "sections": {
+    "anesthesia": "麻醉",
+    "charting": "牙科记录",
+    "diagnosis": "诊断牙列图",
+    "exam": "检查",
+    "patient": "患者",
+    "procedure": "操作牙列图",
+    "treatment": "治疗报告"
+  },
+  "spoken": {
+    "check": "检查{{list}}。",
+    "finalFound_one": "最终检查发现一项需要审核。",
+    "finalFound_other": "最终检查发现{{count}}项需要审核。",
+    "finding_one": "一项检查结果",
+    "finding_other": "{{count}}项检查结果",
+    "open_one": "有一项需要审核。",
+    "open_other": "有{{count}}项需要审核。"
+  },
+  "status": {
+    "connecting": "正在连接…",
+    "finishing": "正在完成…",
+    "interrupted": "已中断",
+    "listening": "正在聆听",
+    "ready": "准备就绪，请开始说话",
+    "stopped": "已停止"
+  },
+  "sub": {
+    "connecting": "正在准备麦克风…",
+    "finishing": "正在完成…",
+    "goAhead": "请开始说话",
+    "listening": "正在聆听",
+    "listeningSending": "正在聆听 · 正在发送…"
+  },
+  "toReview_one": "{{count}}项待审核",
+  "toReview_other": "{{count}}项待审核",
+  "toast": {
+    "viewOnly": "此就诊为仅查看模式，请选择{{button}}以口述填写。"
+  },
+  "transcript": {
+    "activity": "活动",
+    "header": "转录文本，录音开始于 {{date}}"
+  }
+}

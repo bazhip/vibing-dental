@@ -13,7 +13,7 @@ const same = (a: string[], b: string[]) => a.length === b.length && a.every((x, 
 
 /** Plural forms `lng` needs beyond English's, for every English base key with _one and _other. */
 function requiredPluralForms(lng: string, en: Record<string, string>): string[] {
-  const cats = new Intl.PluralRules(lng).resolvedOptions().pluralCategories.filter((c) => c !== 'zero');
+  const cats = new Intl.PluralRules(lng).resolvedOptions().pluralCategories;
   const out: string[] = [];
   for (const key of Object.keys(en)) {
     if (!key.endsWith('_other')) continue;

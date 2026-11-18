@@ -33,7 +33,7 @@ describe('useOffscreenChartPicture', () => {
   it('mounts both diagrams off-screen (not display:none) and reports hasDiagrams', () => {
     const api = mount(snapshot);
     const host = document.querySelector<HTMLElement>('[data-testid="offscreen-chart-picture"]')!;
-    expect(host.style.left).toBe('-10000px');
+    expect(host.style.insetInlineStart).toBe('-10000px');
     expect(host.style.display).not.toBe('none');
     expect(host.querySelectorAll('svg').length).toBeGreaterThanOrEqual(2);
     expect(api.current!.hasDiagrams).toBe(true);

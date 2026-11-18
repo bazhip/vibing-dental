@@ -1,0 +1,76 @@
+{
+  "title": "المرضى",
+  "search": {
+    "placeholder": "بحث",
+    "label": "البحث عن المرضى بالاسم أو الرقم أو اسم المالك",
+    "clear": "مسح البحث"
+  },
+  "signIn": "سجّلوا الدخول للاطلاع على مخططاتكم المحفوظة.",
+  "unnamed": "مريض بلا اسم",
+  "empty": "لا توجد مخططات محفوظة بعد. تُحفظ تلقائيًا أثناء إعداد المخطط.",
+  "retry": "إعادة المحاولة",
+  "loadMore": "تحميل المزيد",
+  "filter": {
+    "button": "تصفية وترتيب",
+    "sortBy": "الترتيب حسب",
+    "sortPatient": "الاسم",
+    "sortUpdated": "آخر تحديث",
+    "sortRecall": "موعد إعادة الفحص",
+    "order": "الترتيب",
+    "patientAsc": "من أ إلى ي",
+    "patientDesc": "من ي إلى أ",
+    "updatedDesc": "الأحدث أولًا",
+    "updatedAsc": "الأقدم أولًا",
+    "recallAsc": "الأقرب أولًا",
+    "recallDesc": "الأبعد أولًا",
+    "species": "النوع الحيواني",
+    "allSpecies": "جميع الأنواع",
+    "doctor": "الطبيب",
+    "allDoctors": "جميع الأطباء",
+    "due": "حان موعد إعادة الفحص",
+    "dueCount": "حان موعد إعادة الفحص ({{count}})"
+  },
+  "add": {
+    "button": "إضافة",
+    "newPatient": "مريض جديد"
+  },
+  "row": {
+    "number": "#{{number}}",
+    "visits_one": "عدد الزيارات: {{count}}",
+    "visits_other": "عدد الزيارات: {{count}}",
+    "updated": "حُدّث في {{date}}",
+    "visits_zero": "عدد الزيارات: {{count}}",
+    "visits_two": "عدد الزيارات: {{count}}",
+    "visits_few": "عدد الزيارات: {{count}}",
+    "visits_many": "عدد الزيارات: {{count}}"
+  },
+  "recall": {
+    "overdue": "متأخر · {{date}}",
+    "today": "الموعد اليوم",
+    "upcoming": "إعادة الفحص في {{date}}"
+  },
+  "actions": {
+    "open": "فتح",
+    "delete": "حذف",
+    "newVisit": "زيارة جديدة"
+  },
+  "confirmDelete": {
+    "title": "حذف {{name}}؟",
+    "titleDated": "حذف {{name}} ({{date}})؟",
+    "confirm": "حذف الزيارة"
+  },
+  "visits": {
+    "undated": "زيارة بلا تاريخ",
+    "byDoctor": "{{doctor}} · حُدّث في {{date}}",
+    "updated": "حُدّث في {{date}}",
+    "empty": "لا توجد زيارات.",
+    "historyLabel": "{{name}} · {{date}}"
+  },
+  "rechecks": {
+    "title": "إعادة الفحص",
+    "overdue": "متأخر",
+    "today": "الموعد اليوم",
+    "empty": "لا توجد مواعيد إعادة فحص مستحقة",
+    "emptyHint": "يظهر المرضى هنا في يوم موعد إعادة الفحص."
+  }
+}

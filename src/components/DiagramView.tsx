@@ -412,6 +412,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
         )}
 
         <div
+          dir="ltr"
           className="diagram-view__canvas"
           style={{ ['--diagram-zoom' as string]: zoom }}
         >

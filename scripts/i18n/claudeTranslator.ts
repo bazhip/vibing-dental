@@ -11,6 +11,8 @@ const LANGUAGE_NAMES: Record<string, string> = {
   pt: 'Portuguese (formal)',
   hu: 'Hungarian (formal: Ön)',
   ro: 'Romanian (formal: dumneavoastră)',
+  zh: 'Simplified Chinese (formal: 您)',
+  ar: 'Modern Standard Arabic (formal, professional)',
 };
 
 export function systemPrompt(lng: string, glossary: GlossaryTerm[]): string {

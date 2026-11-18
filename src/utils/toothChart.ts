@@ -25,12 +25,15 @@ export function toothDisplayName(triadan: number, label: string, lng: string = i
   const jaw = t(q === 1 || q === 2 ? 'toothName.jaw.maxillary' : 'toothName.jaw.mandibular');
   const m = /^([icpm])(\d)?$/i.exec(label.trim());
   let tooth = label;
+  let chineseDeciduousOrdinal = false;
   if (m) {
     const type = t(`toothName.type.${TYPE_KEYS[m[1].toLowerCase() as keyof typeof TYPE_KEYS]}`);
     const n = ORDINAL_KEYS.find((k) => k === m[2]);
-    tooth = n ? t('toothName.ordinalTooth', { ordinal: t(`toothName.ordinal.${n}`), type }) : type;
+    chineseDeciduousOrdinal = lng.split('-')[0] === 'zh' && deciduous && !!n;
+    const kind = chineseDeciduousOrdinal ? t('toothName.deciduous', { side: '', jaw: '', tooth: type }) : type;
+    tooth = n ? t('toothName.ordinalTooth', { ordinal: t(`toothName.ordinal.${n}`), type: kind }) : kind;
   }
-  const name = t(deciduous ? 'toothName.deciduous' : 'toothName.permanent', { side, jaw, tooth });
+  const name = t(deciduous && !chineseDeciduousOrdinal ? 'toothName.deciduous' : 'toothName.permanent', { side, jaw, tooth });
   // Some languages put the tooth first; the name still starts with a capital.
   return name.charAt(0).toUpperCase() + name.slice(1);
 }

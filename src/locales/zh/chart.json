@@ -1,0 +1,366 @@
+{
+  "codeGroups": {
+    "occlusion": "咬合",
+    "toothNumberEruption": "牙齿数量与萌出",
+    "developmental": "发育异常",
+    "periodontal": "牙周",
+    "toothPathology": "牙齿病变",
+    "toothFracture": "牙齿折断",
+    "periapicalBone": "根尖周与骨组织",
+    "trauma": "创伤",
+    "softTissue": "软组织与黏膜",
+    "immuneMediated": "免疫介导疾病",
+    "salivary": "唾液腺",
+    "headNosePharynx": "头部、鼻部与咽部",
+    "masses": "肿物与肿瘤",
+    "jawTmj": "颌骨、颞下颌关节与先天异常",
+    "imaging": "影像与诊断",
+    "periodontalTreatment": "牙周治疗",
+    "endodontics": "牙髓治疗",
+    "restorative": "修复与义齿",
+    "extractions": "拔牙",
+    "oralSurgery": "口腔外科",
+    "oncologic": "肿瘤治疗",
+    "jawRepair": "颌骨骨折与颞下颌关节修复",
+    "orthodontics": "正畸",
+    "equine": "马牙科检查结果",
+    "equineProcedures": "马牙科操作",
+    "equineExtractions": "颊齿拔除"
+  },
+  "columns": {
+    "tooth": "牙齿",
+    "triadan": "Triadan",
+    "mobility": "松动度",
+    "recession": "牙龈退缩",
+    "pocket": "牙周袋",
+    "furcation": "根分叉病变",
+    "hyperplasia": "牙龈肿大",
+    "calculus": "牙结石",
+    "gingivitis": "牙龈炎",
+    "pdstate": "牙周病分期"
+  },
+  "customAnesthesia": {
+    "block": "自定义阻滞",
+    "field": "自定义字段",
+    "yes": "是"
+  },
+  "grid": {
+    "title": "牙科记录",
+    "short": {
+      "mobility": "松动",
+      "recession": "退缩",
+      "pocket": "牙周袋",
+      "furcation": "根分叉",
+      "hyperplasia": "肿大",
+      "calculus": "牙结石",
+      "gingivitis": "牙龈炎",
+      "pdstate": "分期"
+    },
+    "pdstateTitle": "牙周病状态",
+    "perRoot": "{{name}}（各牙根）",
+    "perSite": "{{name}}（各位点）",
+    "missing": "缺失",
+    "triadanTooth": "Triadan · 牙齿",
+    "cellAria": "牙位{{triadan}} {{column}}",
+    "rootAria": "牙位{{triadan}}牙周袋，{{root}}根",
+    "siteAria": "牙位{{triadan}}牙周袋，{{site}}位点",
+    "setAll": {
+      "title": "设置所有牙齿的{{name}}",
+      "message": "应用于所有未标记为缺失的牙齿。留空可清除此列。",
+      "messageRange": "应用于所有未标记为缺失的牙齿。请输入{{min}}至{{max}}之间的数字。留空可清除此列。",
+      "confirm": "应用于全部",
+      "invalid": "{{name}}必须是{{min}}至{{max}}之间的数字。",
+      "applied": "已将所有牙齿的{{name}}设为{{value}}。",
+      "cleared": "已清除所有牙齿的{{name}}。"
+    },
+    "undo": "撤销",
+    "clear": {
+      "title": "清除所有牙齿的{{name}}？",
+      "message_one": "将从{{name}}列中移除{{count}}个值。",
+      "message_other": "将从{{name}}列中移除{{count}}个值。",
+      "confirm": "清除此列"
+    },
+    "bulk": {
+      "toast_one": "已将{{count}}颗牙齿的{{name}}设为{{value}}。",
+      "toast_other": "已将{{count}}颗牙齿的{{name}}设为{{value}}。",
+      "range": "请输入{{min}}–{{max}}",
+      "region": "设置所选牙齿的值",
+      "selected_one": "已选择{{count}}颗牙齿",
+      "selected_other": "已选择{{count}}颗牙齿",
+      "set": "设置",
+      "column": "要设置的列",
+      "to": "为",
+      "value": "数值",
+      "apply": "应用",
+      "clearSelection": "清除选择",
+      "tip": "提示：点击牙位编号可选择多颗牙齿，按住 Shift 点击可选择连续范围，然后统一设置数值。"
+    },
+    "missingCheck": {
+      "label": "牙位{{triadan}}缺失",
+      "labelCarried": "牙位{{triadan}}缺失（沿用上次就诊）",
+      "titleCarried": "牙位{{triadan}}在上次就诊时已缺失或拔除，记录自动沿用",
+      "titleUnmark": "取消牙位{{triadan}}的缺失标记",
+      "titleMark": "将牙位{{triadan}}标记为缺失，在此行加删除线，并在诊断牙列图上填充该牙齿",
+      "prev": "上次"
+    },
+    "tooth": {
+      "title": "点击选择此牙齿，按住 Shift 点击可选择连续范围，以同时为多颗牙齿设置数值"
+    },
+    "slot": {
+      "root": "{{root}}根",
+      "rootLast": "{{root}}根，上次就诊为{{value}}",
+      "site": "{{site}}位点",
+      "siteLast": "{{site}}位点，上次就诊为{{value}}"
+    },
+    "unsplit": {
+      "title": "未按牙根分开，点击编辑。清空后可显示各牙根的输入框",
+      "chip": "所有牙根"
+    },
+    "unsplitSites": {
+      "title": "未按位点分开，点击编辑。清空后可显示各位点的输入框",
+      "chip": "未按位点"
+    },
+    "lastVisit": "上次就诊：{{value}}",
+    "lastVisitRef": "上次就诊：{{value}}，仅供参考，不沿用",
+    "setAllHint": "一次设置所有牙齿的{{name}}",
+    "options": {
+      "mirror": "在诊断牙列图中显示检查结果",
+      "mirrorTitle": "在诊断牙列图中为每颗已记录的牙齿添加备注，并随记录更新。您自己的备注会保留。",
+      "pdf": "在 PDF 中包含表格",
+      "pdfTitleOn": "取消勾选后，PDF 将不含牙弓表格。诊断牙列图已显示这些结果，并可使用多出的空间。",
+      "pdfTitleOff": "在诊断牙列图显示检查结果时可用。"
+    }
+  },
+  "toothChart": {
+    "legend": {
+      "label": "牙列图图例",
+      "charted": "已记录",
+      "planned": "计划拔牙",
+      "extracted": "已拔除",
+      "missing": "缺失"
+    },
+    "clickTooth": "<strong>点击牙列图上的牙齿</strong>以进行记录。",
+    "hint": "此处输入的所有内容也会填入记录表格以及诊断／操作牙列图。",
+    "start": "从{{triadan}}开始 →",
+    "prev": "上一颗牙",
+    "prevAria": "上一颗牙（{{triadan}}）",
+    "next": "下一颗牙",
+    "nextAria": "下一颗牙（{{triadan}}）",
+    "missingBefore": "缺失（本次就诊前）",
+    "findings": "检查结果",
+    "rootAria": "牙周袋，{{root}}根",
+    "siteAria": "牙周袋，{{site}}位点",
+    "expected": "预期{{range}}",
+    "diagnosisNote": "诊断备注",
+    "diagnosisPlaceholder": "例如：牙冠折断，牙髓暴露",
+    "extraction": "拔牙",
+    "planExtract": "计划拔除",
+    "procedureNote": "操作备注",
+    "procedurePlaceholder": "例如：外科拔牙，使用5-0缝线关闭瓣膜",
+    "plan": "拔牙计划",
+    "chipDone": "{{triadan}}，已拔除",
+    "chipPending": "{{triadan}}，尚未标记为已拔除",
+    "allConfirmed": "所有计划拔牙均已确认。",
+    "confirmed": "已确认拔除{{done}}颗，共{{total}}颗。",
+    "markExtracted_one": "标记为已拔除",
+    "markExtracted_other": "将全部{{count}}颗标记为已拔除",
+    "toothMap": "牙位图",
+    "quadrant": "象限",
+    "quadrants": {
+      "1": "右上",
+      "2": "左上",
+      "3": "左下",
+      "4": "右下"
+    },
+    "selectTooth": "选择牙位{{triadan}}：{{name}}"
+  },
+  "toothName": {
+    "side": {
+      "right": "右",
+      "left": "左"
+    },
+    "jaw": {
+      "maxillary": "上",
+      "mandibular": "下"
+    },
+    "type": {
+      "incisor": "门齿",
+      "canine": "犬齿",
+      "premolar": "前臼齿",
+      "molar": "臼齿"
+    },
+    "ordinal": {
+      "1": "第一",
+      "2": "第二",
+      "3": "第三",
+      "4": "第四"
+    },
+    "ordinalTooth": "{{ordinal}}{{type}}",
+    "permanent": "{{side}}{{jaw}}{{tooth}}",
+    "deciduous": "{{side}}{{jaw}}乳{{tooth}}"
+  },
+  "diagram": {
+    "label": {
+      "maxilla": "上颌",
+      "mandible": "下颌",
+      "right": "右",
+      "left": "左"
+    },
+    "aria": {
+      "select": "牙列图，选择牙齿以进行记录",
+      "extracted": "牙列图，在牙齿上按回车或空格可切换已拔除状态",
+      "missing": "牙列图，在牙齿上按回车或空格可切换缺失状态",
+      "default": "牙列图"
+    },
+    "tooth": {
+      "label": "牙位{{triadan}}{{details}}",
+      "markedMissing": "，已标记为缺失",
+      "markedExtracted": "，已标记为已拔除",
+      "planned": "，计划拔牙",
+      "locked": "（本次就诊前已缺失，已锁定）"
+    },
+    "comment": {
+      "fromGrid": "来自记录表格，请编辑表格以更改此内容",
+      "delete": "删除备注",
+      "placeholder": "备注…",
+      "resize": "调整备注大小"
+    }
+  },
+  "diagramView": {
+    "customize": "自定义",
+    "customizeTitle": "牙齿旁显示的检查结果",
+    "toolGroup": "牙列图工具",
+    "markMissingTitle": "轻点牙齿标记为缺失，再次轻点可清除",
+    "markExtractedTitle": "轻点牙齿标记为已拔除，再次轻点可清除",
+    "markTitle": "轻点牙齿以标记为缺失或已拔除",
+    "markMissing": "标记缺失",
+    "markExtracted": "标记已拔除",
+    "mark": "标记",
+    "comment": "备注",
+    "draw": "绘图",
+    "historyGroup": "撤销／重做",
+    "undo": "撤销",
+    "redo": "重做",
+    "undoTitle": "撤销（{{shortcut}}）",
+    "redoTitle": "重做（{{shortcut}}）",
+    "freeComment": "+ 自由备注",
+    "numbers": "# 编号",
+    "numbersTitle": "在牙列图上显示每颗牙齿的 Triadan 编号，不会打印在 PDF 中",
+    "zoomGroup": "缩放",
+    "zoomOut": "缩小",
+    "zoomIn": "放大",
+    "zoomReset": "重置缩放以适应屏幕",
+    "zoomLevel": "缩放{{percent}}%，重置以适应屏幕",
+    "textSize": {
+      "group": "备注文字大小",
+      "glyph": "A",
+      "s": "小",
+      "m": "中",
+      "l": "大",
+      "xl": "特大",
+      "aria": "备注文字大小{{size}}",
+      "title": "备注文字大小：{{size}}"
+    },
+    "drawSettings": "绘图设置",
+    "strokeColor": "笔画颜色",
+    "colors": {
+      "red": "红色",
+      "blue": "蓝色",
+      "green": "绿色",
+      "amber": "琥珀色",
+      "charcoal": "炭灰色"
+    },
+    "strokeColorAria": "笔画颜色{{color}}",
+    "strokeWidth": "笔画宽度",
+    "strokeWidthValue": "{{width}}像素",
+    "clearStrokes": "清除笔画",
+    "more": "更多牙列图工具",
+    "moreTitle": "更多工具：备注、编号、缩放、文字大小",
+    "moreLabel": "更多工具"
+  },
+  "codeRef": {
+    "all": "代码",
+    "diagnosisTitle": "诊断代码",
+    "procedureTitle": "操作代码",
+    "searchLabel": "搜索代码或定义",
+    "searchPlaceholder": "搜索代码或定义…",
+    "diagnoses": "诊断",
+    "procedures": "操作",
+    "noMatches": "无匹配结果。"
+  },
+  "scoreChips": {
+    "group": "{{name}}评分",
+    "clear": "清除{{name}}"
+  },
+  "menu": {
+    "practiceSettingsHintApp": "名称、标志和团队。"
+  },
+  "imaging": {
+    "takePhoto": "拍照",
+    "cameraFailed": "无法打开相机。",
+    "cameraNoPhoto": "相机未返回照片。",
+    "cameraReadFailed": "无法读取照片（{{status}}）。",
+    "limitReached_one": "此图表已达到{{count}}张影像的上限。",
+    "limitReached_other": "此图表已达到{{count}}张影像的上限。",
+    "uploadsUnavailable": "此账户无法上传照片。",
+    "formatsApp": "PNG、JPEG 或 WEBP。",
+    "dicomUnavailable": "此账户无法上传 DICOM。请将X光片导出为 JPEG 或 PNG 后添加。"
+  },
+  "aiConsent": {
+    "title": "使用 AI 服务？",
+    "intro": "使用语音填写图表或生成 AI 草稿时，ToothOps 会向以下两项服务发送数据：",
+    "deepgram": "<strong>Deepgram</strong>在您口述时接收语音音频，并将其转换为文字。",
+    "anthropic": "<strong>Anthropic</strong>（Claude）接收口述转录文本以及图表内容，例如患者详情和检查结果，用于填写图表或起草宠物主人报告。",
+    "nothingSent": "只有使用这些功能时才会发送数据。",
+    "allow": "允许",
+    "notNow": "暂不"
+  },
+  "ios": {
+    "newChart": "新建图表",
+    "more": "更多",
+    "menu": {
+      "newChart": "新建图表",
+      "newVisit": "新建就诊",
+      "saveNow": "立即保存",
+      "retrySave": "重试保存",
+      "customize": "自定义{{section}}"
+    },
+    "status": {
+      "saved": "已保存 · {{time}}",
+      "notSaved": "未保存",
+      "viewOnlyDate": "仅查看 · {{date}}",
+      "editingWith": "正在编辑 · {{status}}",
+      "keptOnDevice": "开始记录后自动保存",
+      "unsaved": "未保存的更改",
+      "onDevice": "仅在此设备上"
+    },
+    "notice": {
+      "otherTab": "此图表已在另一个窗口打开。两个窗口会编辑同一工作副本，请关闭其中一个以避免覆盖更改。",
+      "gotIt": "知道了",
+      "notSaved": "此图表未保存。"
+    },
+    "form": {
+      "patient": "患者",
+      "owner": "宠物主人",
+      "visit": "就诊",
+      "complaint": "主诉",
+      "dictate": "语音输入",
+      "nerveBlocks": "神经阻滞",
+      "addInterval": "添加间隔"
+    },
+    "diagram": {
+      "numbers": "编号",
+      "freeComment": "自由备注"
+    },
+    "grid": {
+      "tip": "提示：轻点牙位编号可选择多颗牙齿，再统一设置数值。",
+      "pickTitle": "轻点选择此牙齿，以同时为多颗牙齿设置数值"
+    }
+  },
+  "quickCodes": {
+    "group": "快捷代码",
+    "chipAria": "{{code}}：{{definition}}",
+    "label": "先轻点代码，再轻点牙齿：",
+    "stampHint": "轻点牙齿以添加{{code}}，再次轻点可移除"
+  }
+}
