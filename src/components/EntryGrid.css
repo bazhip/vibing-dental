@@ -1788,7 +1788,7 @@
 .diagram-view { container: diagram / inline-size; }
 .diagram-view__toolbar {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   align-items: center;
   gap: 12px;
   padding: 8px;
@@ -1844,6 +1844,11 @@
 }
 .diagram-view__toolbar .diagram-view__history .diagram-view__action:disabled { color: var(--text-muted); opacity: 0.45; }
 .diagram-view__toolbar button:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.diagram-view__toolbar .diagram-view__free-comment {
+  min-height: 36px;
+  padding: 6px 8px;
+  line-height: 1.25;
+}
 .diagram-view__more-wrap { display: block; margin-left: auto; min-width: 0; }
 .diagram-view__toolbar .diagram-view__more {
   display: inline-flex;
@@ -1880,7 +1885,7 @@
   box-shadow: var(--shadow-md);
   z-index: 35;
 }
-.diagram-view__extras--open > :is(.diagram-view__free-comment, .diagram-view__numbers) { width: 100%; min-height: 44px; margin: 0; padding: 8px; white-space: normal; }
+.diagram-view__extras--open > .diagram-view__numbers { width: 100%; min-height: 44px; margin: 0; padding: 8px; white-space: normal; }
 .diagram-view__toolbar .diagram-view__extras--open :is(.diagram-view__zoom, .diagram-view__textsize, .diagram-view__draw-controls) {
   grid-column: 1 / -1;
   display: flex;
@@ -1929,7 +1934,7 @@
     box-shadow: none;
   }
   .diagram-view:lang(en) .diagram-view__toolbar:not(:has(.diagram-view__draw-controls)) .diagram-view__extras > * { flex: none; }
-  .diagram-view:lang(en) .diagram-view__toolbar:not(:has(.diagram-view__draw-controls)) .diagram-view__extras > :is(.diagram-view__free-comment, .diagram-view__numbers) {
+  .diagram-view:lang(en) .diagram-view__toolbar:not(:has(.diagram-view__draw-controls)) .diagram-view__extras > .diagram-view__numbers {
     width: auto;
     margin: 0;
     padding: 6px 8px;
@@ -1974,7 +1979,7 @@
     box-shadow: none;
   }
   .diagram-view__toolbar .diagram-view__extras > * { flex: none; }
-  .diagram-view__toolbar .diagram-view__extras > :is(.diagram-view__free-comment, .diagram-view__numbers) {
+  .diagram-view__toolbar .diagram-view__extras > .diagram-view__numbers {
     width: auto;
     margin: 0;
     padding: 6px 8px;
@@ -2006,7 +2011,10 @@
   .diagram-view__toolbar .diagram-view__short { display: inline; }
   .diagram-view__toolbar .diagram-view__tool-group .diagram-view__tool { padding-inline: 8px; min-height: 44px; }
   .diagram-view__toolbar .diagram-view__history .diagram-view__action { width: 44px; min-width: 44px; height: 44px; min-height: 44px; }
-  .diagram-view__toolbar .diagram-view__more { min-height: 44px; }
+  .diagram-view__toolbar .diagram-view__more { width: 44px; min-width: 44px; min-height: 44px; padding: 0; }
+  .diagram-view__toolbar .diagram-view__more > span { display: none; }
+  .diagram-view__toolbar .diagram-view__more-wrap { flex: none; }
+  .diagram-view__toolbar .diagram-view__free-comment { min-height: 44px; min-width: 0; flex: 1; padding-inline: 4px; font-size: 13px; white-space: normal; }
 }
 @container diagram (max-width: 600px) {
   .diagram-view__toolbar { flex-wrap: wrap; gap: 6px; }
