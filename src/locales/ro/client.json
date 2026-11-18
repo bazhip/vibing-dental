@@ -1,0 +1,20 @@
+{
+  "reminder": {
+    "body": "Bună ziua, {{owner}},\n\nVă reamintim că {{patient}} trebuie să revină la un recontrol stomatologic. Vă rugăm să ne sunați pentru a stabili o programare.\n\nVă mulțumim,\n{{practice}}",
+    "fallback": {
+      "owner": "stimate proprietar",
+      "pet": "animalul dumneavoastră de companie",
+      "practice": "cabinetul dumneavoastră veterinar"
+    },
+    "subject": "Este timpul pentru recontrolul stomatologic al pacientului {{patient}}"
+  },
+  "sample": {
+    "buccalComment": "Roșeață ușoară de-a lungul obrazului stâng",
+    "extraNotes": "Hrană moale în următoarele 10 zile, pe durata vindecării locului extracției.",
+    "postComment": "Mică ciobitură la vârf — netedă, nu necesită tratament"
+  },
+  "ownerReportEmail": {
+    "subject": "Raport stomatologic pentru {{pet}}",
+    "body": "Bună ziua, {{owner}},\n\nAtașat găsiți raportul stomatologic al pacientului {{pet}} de la vizita de astăzi. Vă rugăm să ne contactați pentru orice întrebări.\n\nVă mulțumim,\n{{practice}}"
+  }
+}

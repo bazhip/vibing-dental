@@ -1,0 +1,203 @@
+{
+  "wordmark": "ToothOps Charting",
+  "nav": {
+    "pricing": "Árak",
+    "backToApp": "Vissza az alkalmazásba",
+    "signIn": "Bejelentkezés",
+    "getStarted": "Kezdés"
+  },
+  "hero": {
+    "eyebrow": "Mesterséges intelligenciára épülő állatorvosi fogászati dokumentáció",
+    "betaPill": "Ingyenes béta",
+    "headlineLine1": "Csak diktáljon.",
+    "headlineLine2": "A karton kitölti magát.",
+    "sub": "Diktáljon munka közben, és a mesterséges intelligencia a leleteket közvetlenül a teljes fogazat Triadan-státuszába írja — AVDC-nómenklatúrával, fogankénti mérésekkel és ábrákkal. Fényképek és röntgenfelvételek, páciensenkénti vizitelőzmények, kontrollemlékeztetők és a rendelő logójával ellátott, gazdiknak átadható PDF, amint végzett.",
+    "ctaTrial": "Kezdje el a {{days}} napos ingyenes próbát",
+    "ctaFree": "Hozza létre ingyenes fiókját",
+    "tryFree": "Próbálja ki ingyen — fiók nélkül",
+    "openApp": "A dokumentációs alkalmazás megnyitása",
+    "notePricing": "Csomagok {{price}}/hó ártól · {{days}} napos ingyenes próba · bármikor lemondható",
+    "noteTrial": "{{days}} napos ingyenes próba · bármikor lemondható",
+    "noteBeta": "A bétaverzió ideje alatt ingyenes · AI-diktálással · bankkártya nélkül",
+    "noteNoAccount": "a fiók nélküli próbában nincs AI-diktálás, és a PDF-ek TRIAL jelölést kapnak"
+  },
+  "demo": {
+    "meta": "Macska · {{date}}",
+    "stepChart": "Státusz",
+    "stepDiagram": "Ábra",
+    "stepExport": "Exportálás",
+    "colTooth": "Fog",
+    "colMobility": "Mob",
+    "colPocket": "Tas",
+    "colGingivitis": "Íny",
+    "captionChart": "Tab · Enter — adatbevitel táblázatként",
+    "captionDiagram": "Egyetlen jelölés — a táblázat, az ábra és a PDF szinkronban marad",
+    "captionExport": "Az Ön logója és az állatorvos neve — minden oldalon",
+    "comment": "T/FX/CC — megnyílt fogbél",
+    "voice": "„száznégy komplikált koronatörés, megnyílt fogbél…”",
+    "pause": "❚❚ Animáció szüneteltetése",
+    "play": "▶ Animáció lejátszása"
+  },
+  "features": {
+    "seeIt": "Megtekintés →",
+    "previous": "← Előző",
+    "next": "Következő →",
+    "voiceResult1": "104 · megjegyzés: „CCF, fogbél-megnyílás”",
+    "voiceResult2": "104 · Parodontális stádium → PD3",
+    "voiceResult3": "Kezelési ábra · a 104-es fog eltávolításra jelölve",
+    "grid": {
+      "title": "Adatbevitel táblázatként",
+      "blurb": "Teljes Triadan-táblázatok macskák, kutyák és tejfogazatok számára. Rögzítse a méréseket kattintással, és lépjen tovább a Tab, Enter vagy Szóköz billentyűvel.",
+      "lead": "A státusztáblázat a csapat megszokott munkamódját követi: kattintson egy cellára, és kezdje a bevitelt. Rögzítse a szondázási mélységet, miközben a páciensre figyel.",
+      "imageAlt": "A státusztáblázat rögzített ínygyulladás-, fogkő-, tasak-, furkáció- és mobilitásértékekkel, a 106-os fog hiányzóként áthúzva",
+      "points": {
+        "p1": "Kattintson bármely cellára a mérések rögzítéséhez.",
+        "p2": "A mérések rögzítése közben a Tab, Enter és Szóköz billentyűvel léphet a cellák között.",
+        "p3": "Teljes fogazati értékek egyetlen művelettel: az oszlopfejlécből minden fogra beállíthatja a fogkő vagy az ínygyulladás fokát.",
+        "p4": "A Hiányzó jelölőnégyzet áthúzza a sort, és beszínezi a fogat az ábrán — mindenhol ugyanaz az adat jelenik meg.",
+        "p5": "Ismételt vizitkor az előző értékek halvány segítségként jelennek meg az üres cellákban: összehasonlíthatja őket a régi karton megnyitása nélkül.",
+        "p6": "Macska-, kutya-, kölyökkutya- és kölyökmacska-fogazatok, mind Triadan-számozással."
+      }
+    },
+    "voice": {
+      "title": "Beépített AI-alapú hangos kitöltés",
+      "tag": "AI · Ingyenes béta",
+      "blurb": "Mondja ki: „104 komplikált koronatörés”, és a lelet a foghoz kerül — átírva és rögzítve, miközben keze a páciensen marad.",
+      "lead": "Diktáljon munka közben: egy egészségügyi beszédfelismerő modell átírja a szöveget, az AI pedig minden leletet a megfelelő foghoz, ábrához és mezőhöz rendel.",
+      "points": {
+        "p1": "Állatorvosi fogászati kifejezésekkel hangolt, orvosi szókincset használó beszédfelismerés.",
+        "p2": "A leletek strukturált bejegyzésként kerülnek a kartonba — táblázatértékekként, fogjelölésekként és foghoz kötött megjegyzésekként.",
+        "p3": "Az élő átirat oldalsávja minden műveletet azonnal megjelenít, és kiemeli az érintett fogat.",
+        "p4": "Az AI minden bejegyzése ugyanazzal a visszavonási rendszerrel vonható vissza, mint az Ön módosításai.",
+        "p5": "Bizonytalan a felismerésben? A rendszer megjelöli a leletet, majd egy szünetben a fülébe mondja: „Ellenőrizze a 109-est” — nem beszél Önre.",
+        "p6": "Nincs szükség API-kulcsra vagy beállításra — a bétaverzió alatt ingyenes."
+      }
+    },
+    "diagrams": {
+      "title": "Szinkronban maradó ábrák",
+      "blurb": "A diagnosztikai és kezelési fogábrák követik a táblázatot — egyetlen áthúzással a teljes dokumentáció frissül, a kartontól a PDF-ig.",
+      "lead": "Anatómiai ábrák a diagnózishoz és a kezelésekhez, a táblázat és a nyomtatott karton között szinkronizált leletekkel.",
+      "imageAlt": "A diagnosztikai ábra beszínezett hiányzó fogakkal és az egyes fogakhoz rögzített AVDC-kódokkal — T/FX, T/FX/CCF, TR, AB, AT",
+      "points": {
+        "p1": "Jelölje a hiányzó vagy eltávolított fogakat kattintással (vagy billentyűzettel — minden fog fókuszálható).",
+        "p2": "A megjegyzések a foghoz rögzülnek, és mindig arra mutatnak; szabad megjegyzést bárhová helyezhet.",
+        "p3": "Szabadkézi rajzolás öt színnel mindahhoz, amit egy kód nem fejez ki.",
+        "p4": "Nagyítás és eltolás a zsúfolt macskafogazatokhoz.",
+        "p5": "A diagnosztikai ábrán hiányzóként jelölt fogak zároltak a kezelési ábrán — hiányzó fog nem távolítható el újra.",
+        "p6": "Minden ábrának saját visszavonási előzménye van (a ⌘Z az utoljára használt ábrán működik)."
+      }
+    },
+    "avdc": {
+      "title": "AVDC-nómenklatúrát használ",
+      "blurb": "A teljes AVDC-rövidítéskészlet az alkalmazásban, kereshető referenciával az ábrák mellett és minden kartonon kinyomtatott jelmagyarázattal.",
+      "lead": "A dokumentáció mindenki számára érthető: végig szabványos nómenklatúra, a referencia pedig mindig kéznél van.",
+      "imageAlt": "A kereshető AVDC-kódreferencia panelje",
+      "points": {
+        "p1": "Teljes AVDC-rövidítéskészlet a kóros elváltozásokhoz és a kezelésekhez.",
+        "p2": "Minden ábra mellett kereshető kódreferencia található — külön lap nélkül, zárolt kartonokon is böngészhetően.",
+        "p3": "A kartonon használt minden kód jelentése megjelenik a PDF jelmagyarázatában.",
+        "p4": "Fogászati kódok automatikus kiegészítése gépelés közben a megjegyzésmezőkben."
+      }
+    },
+    "pdf": {
+      "title": "Gazdiknak átadható PDF-ek",
+      "blurb": "A rendelő arculatával ellátott kétoldalas karton, amint végzett — a PDF később visszaimportálható a teljes karton helyreállításához.",
+      "lead": "Egyetlen érintéssel igényes dokumentumot készíthet a kartonból, a rendelő nevével, az állatorvos adataival és logójával.",
+      "imageAlt": "Az elkészített kutyafogászati PDF ábrákkal, vizsgálati leletekkel és fogívtáblázatokkal",
+      "points": {
+        "p1": "Két oldal: ábrák, szájüregi vizsgálat, teljes fogívtáblázatok, kezelési jelentés és kódjelmagyarázat.",
+        "p2": "Több dokumentumstílus — letöltésenként választható, élőben frissülő előnézettel.",
+        "p3": "A karton teljes állapota a PDF-be van ágyazva: később visszaimportálhatja, és akár másik gépen is folytathatja a munkát.",
+        "p4": "Gazditájékoztató (béta): külön, közérthető, hazavihető változat előtte-utána fényképekkel — automatikusan készül, nyomtatás előtt szerkeszthető."
+      }
+    },
+    "photos": {
+      "title": "Fényképek és röntgenfelvételek",
+      "blurb": "Csatoljon szájüregi fényképeket és fogászati röntgenfelvételeket bármely kartonhoz, adjon képaláírást, és rögzítse őket foghoz — a karton mellett, bizalmasan tárolva.",
+      "lead": "A képek ott vannak, ahol keresi őket: a kartonon, az ábrázolt foghoz rögzítve.",
+      "points": {
+        "p1": "Szájüregi fényképek és röntgenfelvételek képaláírással, foghoz rögzítve.",
+        "p2": "Bizalmas tárolás rövid élettartamú, aláírt hivatkozásokkal — a képek soha nem nyilvánosak.",
+        "p3": "A telefonos fényképek mérete automatikusan csökken, így a kartonok gyorsak maradnak.",
+        "p4": "Jelölje a képeket Előtte/Utána címkével, hogy bekerüljenek a gazditájékoztatóba (béta)."
+      }
+    },
+    "history": {
+      "title": "Minden vizit egy pácienshez tartozik",
+      "blurb": "A kartonok páciensenként csoportosulnak, így a visszatérő állat teljes előzménye egy kattintásra elérhető — az új vizit pedig az előző eredményeire épül.",
+      "lead": "Tartsa együtt a páciens vizitjeit, és vigye át a fontos leleteket a következő alkalomra.",
+      "points": {
+        "p1": "A kartonok páciensenként csoportosulnak; a felső sáv vizitválasztójával válthat a dátumok között.",
+        "p2": "Az új vizit automatikusan átveszi az eltávolított és hiányzó fogakat — „korábbi” jelöléssel, hogy egyértelműen előzményként jelenjenek meg.",
+        "p3": "Az előző vizit mérései segítségként láthatók szondázás közben, így a változások azonnal feltűnnek.",
+        "p4": "Minden mentésnél naplózódik, ki és mikor módosította a kartont.",
+        "p5": "A korábbi vizitek csak olvashatóan nyílnak meg, amíg szándékosan fel nem oldja őket, így véletlenül nem változnak az adatok — az aktuális vizit rögtön szerkeszthető."
+      }
+    },
+    "recall": {
+      "title": "Beépített kontrollkövetés",
+      "blurb": "Adjon meg kontrolldátumot a dokumentálás során, és lássa a pácienslistán az esedékes vagy lejárt kontrollokat.",
+      "lead": "Tervezze az utánkövetést kontrolldátumokkal és emlékeztetőkkel a páciensmunkatérben.",
+      "points": {
+        "p1": "A kartonon megadott kontrolldátum a pácienst az Esedékes listára helyezi, esedékes vagy lejárt jelöléssel.",
+        "p2": "Küldjön emlékeztető e-mailt a gazdinak közvetlenül a pácienslistáról.",
+        "p3": "Új karton nélkül történt meg a kontroll? Egyetlen kattintással törölheti az esedékességet, és a páciens lekerül a listáról.",
+        "p4": "Szűrje a kartontárat az esedékes páciensekre a heti visszahívások megtervezéséhez."
+      }
+    },
+    "team": {
+      "title": "Egy közös dokumentáció a teljes csapatnak",
+      "blurb": "Adjon kollégákat a rendelőhöz, és mindenki ugyanazokat a kartonokat, sablonokat és képeket használhatja — egyéni fiókkal, közös jelszó helyett.",
+      "lead": "A rendelő közös egység: közös kartonállomány, egyéni bejelentkezés és minden vizitnél rögzített állatorvos.",
+      "points": {
+        "p1": "Legfeljebb öt felhasználói hely rendelőnként (a béta alatt ingyen); minden tagnak saját bejelentkezése van.",
+        "p2": "A kartonok, jelentéssablonok, képek és a rendelő logója automatikusan közösek.",
+        "p3": "Minden vizit rögzíti a szerzőt — szűrje a kartontárat állatorvos szerint.",
+        "p4": "A rendelő átnevezése és a csapat kezelése csak a tulajdonos számára érhető el."
+      }
+    },
+    "offline": {
+      "title": "Felhőben és a vizsgálóasztal mellett",
+      "blurb": "A kartonok automatikusan a felhőbe mentődnek; a kapcsolat megszakadásakor helyi másolat áll rendelkezésre.",
+      "lead": "Folytassa a dokumentálást kapcsolatkimaradás közben is, és a vizit bezárása előtt ellenőrizze a mentés állapotát.",
+      "points": {
+        "p1": "Munka közben a módosítások megmaradnak ezen az eszközön.",
+        "p2": "Az új kartonok automatikusan a felhőbe mentődnek; a sikertelen mentéseket a rendszer a kapcsolat visszatérésekor újrapróbálja.",
+        "p3": "Ha kezelés közben lejár a munkamenet, a karton nyitva marad — közvetlenül fölötte jelentkezhet be újra.",
+        "p4": "Újrafelhasználható jelentéssablonokkal kevesebbet kell gépelnie minden COHAT során."
+      }
+    }
+  },
+  "pricing": {
+    "title": "Egyszerű havi díjazás",
+    "sub": "Minden csomag {{days}} napos ingyenes próbával indul. Bármikor lemondhatja — az ingyenes csomagra vált, és minden kartonja megmarad.",
+    "mostPopular": "Legnépszerűbb",
+    "perMonth": "/hó",
+    "startTrial": "Ingyenes próba indítása",
+    "contact": "Nagyobb csapat? Több telephely? Egyetemi program? Ötnél több felhasználói hely esetén <a>kérjen ajánlatot</a>."
+  },
+  "paper": {
+    "title": "A karton, amelyet a gazdi hazavihet",
+    "body": "Egy kattintással áttekinthető, kétoldalas PDF készül a teljes kezelésről — felül a rendelő logója és az állatorvos adatai, teljes fogazati táblázatok, mindkét ábra, vizsgálati leletek és az összes használt AVDC-kód jelmagyarázata.",
+    "point1": "Öt professzionális dokumentumstílus",
+    "point2": "Páciensazonosítás minden oldalon",
+    "point3": "Bármely PDF újranyitható az alkalmazásban — a karton vele utazik",
+    "page1Label": "A mintakarton első oldalának megtekintése teljes méretben",
+    "page1Zoom": "A mintakarton első oldala teljes méretben",
+    "page1Alt": "Az elkészített fogászati PDF első oldala: rendelőlogó és állatorvosi adatok, diagnosztikai ábra foghoz rögzített megjegyzésekkel, szájüregi vizsgálati leletek megjegyzésekkel, részleges Triadan-szondázási táblázatok és a használt AVDC-kódok jelmagyarázata",
+    "page2Label": "A mintakarton második oldalának megtekintése teljes méretben",
+    "page2Zoom": "A mintakarton második oldala teljes méretben",
+    "page2Alt": "Ugyanazon karton második oldala: idegblokád-dózisok, kezelési ábra jelölt fogeltávolításokkal, kezelési és műtéti jelentés, valamint a használt kezelési kódok"
+  },
+  "closer": {
+    "title": "Készen áll letenni a papírt és a tollat?"
+  },
+  "lightboxClose": "Teljes méretű nézet bezárása",
+  "footer": {
+    "tagline": "ToothOps Charting — állatorvosi fogászok közreműködésével.",
+    "privacy": "Adatvédelem",
+    "terms": "Feltételek",
+    "dpa": "Adatfeldolgozási megállapodás",
+    "contact": "Kapcsolat"
+  }
+}

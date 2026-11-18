@@ -1,0 +1,152 @@
+{
+  "activity": {
+    "anesthetic": "érzéstelenítőszer + {{drug}}",
+    "anestheticConcentration": "érzéstelenítőszer + {{concentration}}% {{drug}}",
+    "block": "blokád {{site}} = {{mL}} mL",
+    "clearedMark": "törölve: {{diagram}}.{{triadan}}",
+    "destination": "→ {{section}}: {{text}}",
+    "finalNone": "Végső ellenőrzés: nincs kihagyás",
+    "finalRaised_one": "Végső ellenőrzés: {{count}} elem hozzáadva az ellenőrzéshez",
+    "finalRaised_other": "Végső ellenőrzés: {{count}} elem hozzáadva az ellenőrzéshez",
+    "notApplied": "Nem alkalmazva: {{what}}",
+    "notAppliedHome": "Nem alkalmazva (ide tartozik: {{section}}): {{what}}",
+    "noteDiagnosis": "Diagnosztikai megjegyzés: „{{text}}”",
+    "noteDiagnosisTooth": "Diagnosztikai megjegyzés @{{triadan}}: „{{text}}”",
+    "noteProcedure": "Beavatkozási megjegyzés: „{{text}}”",
+    "noteProcedureTooth": "Beavatkozási megjegyzés @{{triadan}}: „{{text}}”",
+    "radiographic": "röntgenleletek += „{{text}}…”",
+    "removed": "Eltávolítva: {{what}}",
+    "report": "lelet += „{{text}}…”"
+  },
+  "button": {
+    "dictate": "Diktálás",
+    "resume": "Folytatás",
+    "start": "Indítás",
+    "stop": "Leállítás",
+    "titleDictate": "Diktálás – beszéljen, a fogászati lap magától kitöltődik",
+    "titleStop": "Figyelés leállítása (az átirat megmarad)"
+  },
+  "dialog": {
+    "confirm": "Újrakezdés",
+    "message": "Az átirat, a tevékenységnapló és az ellenőrzési lista törlődik. A fogászati lapra már bevitt adatok megmaradnak.",
+    "title": "Új diktálást indít?"
+  },
+  "errors": {
+    "browserUnsupported": "Ez a böngésző nem támogatja a beszédfelismerést. Próbálja a Chrome vagy Safari böngészőt.",
+    "captureStart": "Nem sikerült elindítani a hangrögzítést.",
+    "deepgram": "Deepgram-hiba",
+    "deepgramRejected": "A Deepgram elutasította a kapcsolatot – ellenőrizze az API-kulcsot.",
+    "deepgramSocket": "Deepgram WebSocket-hiba.",
+    "failed": "Sikertelen hangvezérelt kitöltés",
+    "finalCheckFailed": "Sikertelen végső ellenőrzés",
+    "finalCheckFailedDetail": "Sikertelen végső ellenőrzés: {{message}}",
+    "micBlocked": "A mikrofonhoz való hozzáférés tiltva van. Engedélyezze ezt a webhelyet a böngésző beállításaiban, majd próbálja újra.",
+    "micStart": "Nem sikerült elindítani a mikrofont: {{message}}",
+    "noCapture": "Ez a böngésző nem tud mikrofonhangot rögzíteni.",
+    "noCloud": "A felhő nincs beállítva.",
+    "noMic": "Nem található mikrofon.",
+    "recognition": "Felismerési hiba: {{error}}",
+    "recognitionUnknown": "ismeretlen",
+    "sessionStart": "Nem sikerült elindítani a Deepgram-munkamenetet.",
+    "unsupported": "A hangbevitelhez Chrome, Edge vagy Safari szükséges."
+  },
+  "intro": {
+    "ariaLabel": "Diktálás",
+    "cancel": "Mégse",
+    "close": "Bezárás",
+    "gotIt": "Értem",
+    "start": "Diktálás indítása",
+    "step1": "Beszéljen természetesen: <em>„104 GI 2, fogkő 1. 105 hiányzik. Nyelv ép.”</em>",
+    "step2": "Bármely oldalon maradhat. Minden lelet a megfelelő helyre kerül a fogászati lapon.",
+    "step3": "Ha végzett, koppintson a <strong>Leállítás</strong> gombra. A bizonytalan elemek az <strong>Ellenőrzést igényel</strong> részbe kerülnek.",
+    "title": "Diktálja a fogászati lapot"
+  },
+  "panel": {
+    "activity": "Tevékenység",
+    "activityEmpty": "Itt jelennek meg a fogászati lap módosításai, ahogy az MI alkalmazza őket.",
+    "ariaLabel": "MI-alapú kitöltés",
+    "close": "Panel bezárása",
+    "closeTitle": "Bezárás (az átirat megmarad)",
+    "collapse": "Panel összecsukása",
+    "dismiss": "Elvetés",
+    "download": "Letöltés",
+    "emptyConnecting": "Mikrofon előkészítése – egy pillanat…",
+    "emptyIdle": "A diktáláshoz nyomja meg az Indítás gombot.",
+    "emptyListening": "🎙 Kezdjen beszélni. Szavai itt jelennek meg.",
+    "expand": "Panel kibontása",
+    "feedback": "Visszajelzés",
+    "feedbackTitle": "Mondja el, mi nem működött – az átirat is csatolható",
+    "guess": "Becslésként rögzítve – {{reason}}",
+    "guessMark": "Becslés – nézze meg az ellenőrzési listát",
+    "heard": "„{{heard}}”",
+    "help": "Súgó",
+    "helpTitle": "Működés",
+    "interrupted": "A mikrofon megszakadt (kamera, telefonhívás vagy az oldal elhagyása miatt). Az addig hallottak megmaradtak – a folytatáshoz nyomja meg a <strong>Folytatás</strong> gombot.",
+    "keep": "Megtartás",
+    "needsReview": "Ellenőrzést igényel",
+    "needsReviewCount": "Ellenőrzést igényel ({{count}})",
+    "new": "Új",
+    "notCharted": "Nincs rögzítve – {{reason}}",
+    "promptsOff": "Hangjelzések: ki",
+    "promptsOn": "Hangjelzések: be",
+    "promptsTitle": "Rövid hangos jelzések (pl. „Ellenőrizze a 109-et”) szünet után, az ellenőrizendő dolgokhoz",
+    "providerBrowser": "Böngésző beszédfelismerése",
+    "providerDeepgram": "⚡ Deepgram",
+    "remove": "Eltávolítás",
+    "sending": "küldés…",
+    "showInChart": "Megjelenítés a fogászati lapon",
+    "speaker": "{{n}}. beszélő",
+    "transcript": "Átirat",
+    "reviewComplete": "Ellenőrzés kész"
+  },
+  "peek": {
+    "connecting": "Mikrofon előkészítése – egy pillanat…",
+    "goAhead": "🎙 Kezdjen beszélni. A leletek rögzítéskor megjelennek.",
+    "pressResume": "A diktálás folytatásához nyomja meg a Folytatás gombot.",
+    "review_one": "⚠ {{count}} ellenőrizendő – koppintson az ellenőrzéshez",
+    "review_other": "⚠ {{count}} ellenőrizendő – koppintson az ellenőrzéshez",
+    "talking": "Kezdjen beszélni – a leletek rögzítéskor megjelennek."
+  },
+  "sections": {
+    "anesthesia": "Érzéstelenítés",
+    "charting": "Fogászati lap kitöltése",
+    "diagnosis": "Diagnosztikai diagram",
+    "exam": "Vizsgálat",
+    "patient": "Páciens",
+    "procedure": "Beavatkozási diagram",
+    "treatment": "Kezelési leírás"
+  },
+  "spoken": {
+    "check": "Ellenőrizze: {{list}}.",
+    "finalFound_one": "A végső ellenőrzés egy ellenőrizendő elemet talált.",
+    "finalFound_other": "A végső ellenőrzés {{count}} ellenőrizendő elemet talált.",
+    "finding_one": "egy lelet",
+    "finding_other": "{{count}} lelet",
+    "open_one": "Egy ellenőrizendő elem.",
+    "open_other": "{{count}} ellenőrizendő elem."
+  },
+  "status": {
+    "connecting": "Kapcsolódás…",
+    "finishing": "Befejezés…",
+    "interrupted": "Megszakítva",
+    "listening": "Figyelés",
+    "ready": "Kész – kezdjen beszélni",
+    "stopped": "Leállítva"
+  },
+  "sub": {
+    "connecting": "mikrofon előkészítése…",
+    "finishing": "befejezés…",
+    "goAhead": "kezdjen beszélni",
+    "listening": "figyelés",
+    "listeningSending": "figyelés · küldés…"
+  },
+  "toReview_one": "{{count}} ellenőrizendő",
+  "toReview_other": "{{count}} ellenőrizendő",
+  "toast": {
+    "viewOnly": "Ez a vizit csak megtekinthető – a diktáláshoz válassza ezt: {{button}}."
+  },
+  "transcript": {
+    "activity": "Tevékenység",
+    "header": "Átirat – rögzítés kezdete: {{date}}"
+  }
+}

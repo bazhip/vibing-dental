@@ -1,0 +1,118 @@
+{
+  "title": "Setările contului",
+  "doctor": {
+    "heading": "Numele medicului",
+    "blurb": "Tipărit sub siglă pe fiecare fișă creată.",
+    "placeholder": "de ex. Dr. Ana Popescu, DVM, DAVDC",
+    "save": "Salvați numele medicului",
+    "saving": "Se salvează…",
+    "saved": "Numele medicului a fost salvat.",
+    "saveFailed": "Numele medicului nu a putut fi salvat."
+  },
+  "language": {
+    "heading": "Limbă"
+  },
+  "email": {
+    "heading": "E-mail",
+    "label": "E-mail de autentificare",
+    "change": "Schimbați e-mailul",
+    "sending": "Se trimite…",
+    "invalid": "Introduceți o adresă de e-mail validă.",
+    "sent": "E-mailurile de confirmare au fost trimise.",
+    "changeFailed": "E-mailul nu a putut fi schimbat.",
+    "pending": "Verificați mesajele primite — confirmați schimbarea atât din {{current}}, cât și din {{requested}}. Până atunci, continuați să vă autentificați cu {{current}}."
+  },
+  "password": {
+    "heading": "Parolă",
+    "newLabel": "Parolă nouă",
+    "confirmLabel": "Confirmați parola nouă",
+    "placeholder": "Cel puțin {{min}} caractere",
+    "hideAll": "Ascundeți parolele",
+    "showAll": "Afișați parolele",
+    "hide": "Ascundeți",
+    "show": "Afișați",
+    "hintShort": "Cel puțin {{min}} caractere · {{current}}/{{min}}",
+    "hintMismatch": "Cele două parole nu coincid încă.",
+    "update": "Actualizați parola",
+    "updating": "Se actualizează…",
+    "tooShort": "Folosiți cel puțin {{min}} caractere.",
+    "mismatch": "Cele două parole nu coincid.",
+    "updated": "Parola a fost actualizată.",
+    "updateFailed": "Parola nu a putut fi actualizată."
+  },
+  "delete": {
+    "heading": "Ștergeți contul",
+    "blurb": "Șterge definitiv contul, fișele private și imaginile acestora. Fișele partajate cu un cabinet rămân la cabinet.",
+    "button": "Ștergeți contul…"
+  },
+  "done": "Gata",
+  "unsaved": {
+    "title": "Renunțați la modificările nesalvate?",
+    "message_one": "Modificarea pentru {{list}} nu a fost salvată.",
+    "message_other": "Modificările pentru {{list}} nu au fost salvate.",
+    "confirm": "Renunțați",
+    "cancel": "Continuați editarea",
+    "field": {
+      "doctor": "numele medicului",
+      "email": "e-mail",
+      "password": "parolă"
+    },
+    "message_few": "Modificările pentru {{list}} nu au fost salvate."
+  },
+  "deletion": {
+    "account": {
+      "confirmTitle": "Ștergeți contul dumneavoastră?",
+      "confirmMessage": "Această acțiune șterge definitiv contul, fișele private, fotografiile și radiografiile acestora. Fișele partajate cu un cabinet rămân la acel cabinet. Dacă sunteți singura persoană din cabinet, cabinetul și toate fișele sale vor fi șterse, iar abonamentul va fi anulat. Acțiunea este ireversibilă.",
+      "continue": "Continuați",
+      "promptTitle": "Confirmați ștergerea contului",
+      "promptMessage": "Introduceți adresa dumneavoastră de e-mail ({{email}}) pentru a șterge definitiv contul.",
+      "emailLabel": "E-mail",
+      "confirmButton": "Ștergeți contul meu",
+      "mismatch": "Introduceți adresa de e-mail exact.",
+      "failed": "Contul dumneavoastră nu a putut fi șters.",
+      "done": "Contul dumneavoastră a fost șters."
+    },
+    "practice": {
+      "confirmTitle": "Ștergeți „{{name}}”?",
+      "confirmTitleUnnamed": "Ștergeți acest cabinet?",
+      "confirmMessage": "Această acțiune șterge definitiv cabinetul și toate fișele partajate cu acesta — inclusiv fișele create de membrii echipei — împreună cu fotografiile și radiografiile acestora. Orice abonament este anulat imediat. Membrii echipei își păstrează conturile și fișele private. Acțiunea este ireversibilă.",
+      "continue": "Continuați",
+      "promptTitle": "Confirmați ștergerea cabinetului",
+      "promptMessage": "Introduceți numele cabinetului ({{name}}) pentru a-l șterge definitiv.",
+      "promptMessageUnnamed": "Introduceți DELETE pentru a șterge definitiv acest cabinet.",
+      "nameLabel": "Numele cabinetului",
+      "confirmationLabel": "Confirmare",
+      "confirmButton": "Ștergeți cabinetul",
+      "mismatch": "Introduceți numele cabinetului exact.",
+      "mismatchUnnamed": "Introduceți DELETE.",
+      "failed": "Cabinetul nu a putut fi șters.",
+      "done": "Cabinetul a fost șters."
+    }
+  },
+  "auth": {
+    "apple": {
+      "continue": "Continuați cu Apple",
+      "signUp": "Înregistrați-vă cu Apple",
+      "busy": "Autentificare cu Apple…",
+      "failed": "Autentificarea cu Apple nu a reușit.",
+      "hint": "Aveți deja un cont sau ați primit o invitație? Autentificați-vă cu e-mailul."
+    },
+    "signUpOnWeb": "Sunteți nou pe ToothOps? Înregistrați-vă la toothops.app",
+    "incomplete": "Autentificarea nu s-a finalizat. Încercați din nou."
+  },
+  "plan": {
+    "inactive": {
+      "title": "Planul dumneavoastră nu este activ",
+      "manage": "Gestionați-l la toothops.app."
+    }
+  },
+  "lock": {
+    "title": "ToothOps este blocat",
+    "prompt": "Deblocați pentru a proteja fișele pacienților.",
+    "unavailable": "Face ID și codul de acces nu sunt disponibile pe acest dispozitiv. Pentru a debloca ToothOps, setați un cod în aplicația Configurări și atingeți Încercați din nou sau deconectați-vă.",
+    "reason": "Deblocați ToothOps"
+  },
+  "team": {
+    "seatLimit": "Acest cabinet a atins limita de membri ai echipei."
+  }
+}

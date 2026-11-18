@@ -154,7 +154,9 @@
     "fr": "Français (francés)",
     "de": "Deutsch (alemán)",
     "it": "Italiano",
-    "pt": "Português (portugués)"
+    "pt": "Português (portugués)",
+    "hu": "Magyar (húngaro)",
+    "ro": "Română (rumano)"
   },
   "email": {
     "button": "Enviar al propietario",

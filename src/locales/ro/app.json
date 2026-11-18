@@ -1,0 +1,337 @@
+{
+  "brand": "ToothOps Charting",
+  "brandTrial": "ToothOps Charting · Probă",
+  "skipLink": "Treceți la conținutul principal",
+  "sections": {
+    "patient": "Pacient",
+    "exam": "Examen",
+    "anesthesia": "Anestezie",
+    "charting": "Fișă dentară",
+    "diagnosis": "Diagnostic",
+    "procedure": "Procedură",
+    "images": "Imagistică",
+    "treatment": "Raport de tratament",
+    "ownerReport": "Raport pentru proprietar",
+    "menuFallback": "Secțiuni",
+    "nav": "Secțiunile fișei"
+  },
+  "species": {
+    "feline": "Felină",
+    "canine": "Canină",
+    "felineDeciduous": "Felină · Dentiție deciduală",
+    "canineDeciduous": "Canină · Dentiție deciduală",
+    "equine": "Ecvină"
+  },
+  "chartingView": {
+    "label": "Vizualizarea fișei dentare",
+    "grid": "Grilă",
+    "tooth": "Pe dinte",
+    "gridHint": "Tabel cu măsurătorile fiecărui dinte",
+    "toothHint": "Faceți clic pe un dinte din diagrama numerotată și completați fișa acestuia — constatări, note, extracții planificate și confirmate"
+  },
+  "customize": {
+    "label": "Personalizați",
+    "hint": "Pungi pe rădăcină, coloane, informații afișate lângă dinți, opțiuni PDF"
+  },
+  "radiographic": {
+    "title": "Constatări radiografice",
+    "placeholder": "de ex. 108: pierdere osoasă verticală la rădăcina distală, expunerea furcației. 307: resorbție dentară de tip 2.",
+    "hint": "Se tipărește în PDF deasupra raportului de tratament."
+  },
+  "lock": {
+    "title": "Doar vizualizare — alegeți Editați fișa pentru a face modificări",
+    "description": "Editarea este dezactivată pentru această vizită salvată."
+  },
+  "topbar": {
+    "patientEmpty": "Încă nu există un pacient — adăugați unul în secțiunea Pacient",
+    "visitSwitchTitle": "Istoricul vizitelor — {{n}} vizite. Alegeți una pentru a o vedea.",
+    "visitSwitchLabel": "Istoricul vizitelor — comutați între cele {{n}} vizite ale acestui pacient",
+    "undatedVisit": "Vizită fără dată",
+    "visitLatest": "{{date}} · cea mai recentă",
+    "visitEarlier": "{{date}} · anterioară",
+    "editingShort": "Editare",
+    "editingTitle": "Editați o vizită salvată — modificările se salvează automat",
+    "signIn": "Autentificați-vă",
+    "signInHint": "Aveți deja un cont de cabinet? Autentificați-vă",
+    "signUp": "Creați un cont gratuit",
+    "signUpHint": "Creați un cont de cabinet — fișele se salvează în cloud, iar PDF-urile afișează numele și sigla cabinetului",
+    "myCharts": "Pacienți",
+    "myChartsShort": "Pacienți",
+    "editChart": "Editați fișa",
+    "editChartShort": "Editați",
+    "undo": "Anulați modificările",
+    "undoTitle": "Restabiliți fișa la starea din momentul în care ați ales Editați fișa",
+    "doneEditing": "Finalizați editarea",
+    "viewOnlyChipTitle": "Doar vizualizare, pentru a evita modificarea accidentală a unei vizite salvate — alegeți Editați fișa pentru a face modificări",
+    "newPatient": "Pacient nou",
+    "newPatientShort": "Nou",
+    "newPatientTitle": "Începeți o fișă goală pentru un pacient nou",
+    "doneEditingShort": "Gata",
+    "addLogo": "Adăugați sigla"
+  },
+  "status": {
+    "srSaving": "Se salvează fișa",
+    "srSaved": "Fișă salvată",
+    "srNotSaved": "Fișa nu a fost salvată",
+    "saving": "Se salvează…",
+    "notSavedRetry": "Nesalvată — reîncercați",
+    "retryTitle": "Reîncercați salvarea acestei fișe",
+    "notSaved": "Nesalvată",
+    "viewOnly": "Doar vizualizare",
+    "viewOnlyTitle": "Vizitele salvate se deschid doar pentru vizualizare — alegeți Editați fișa pentru a face modificări",
+    "offline": "Offline — salvată pe acest dispozitiv",
+    "offlineTitle": "Modificările sunt păstrate pe acest dispozitiv și se salvează când reveniți online",
+    "needsName": "Adăugați un nume de pacient pentru salvare",
+    "needsNameTitle": "Fișele se salvează după ce pacientul primește un nume",
+    "saveTitle": "Păstrată momentan pe acest dispozitiv — se salvează automat când începeți completarea. Salvați acum pentru a o deschide pe alt dispozitiv.",
+    "unsaved": "Modificări nesalvate",
+    "unsavedTitle": "Se salvează automat…",
+    "savedTitle": "Salvată în cloud {{when}}",
+    "local": "Doar pe acest dispozitiv",
+    "localTitle": "Fișele de probă rămân în acest browser. Creați un cont gratuit pentru a le salva în cloud.",
+    "saveHint": "Adăugați un nume de pacient înainte de salvare — astfel veți regăsi fișa.",
+    "savedRich": "<word>Salvată · </word>{{when}}"
+  },
+  "otherTab": {
+    "text": "Această fișă este deschisă în altă filă sau fereastră. Ambele file editează aceeași copie de lucru — închideți una pentru a evita suprascrierea modificărilor."
+  },
+  "footer": {
+    "feedback": "Ați găsit o eroare sau aveți o idee? <a>Trimiteți sugestii</a>"
+  },
+  "fab": {
+    "preview": "Previzualizați PDF-ul",
+    "download": "Descărcați PDF-urile",
+    "previewAria": "Previzualizați și descărcați PDF-ul fișei",
+    "downloadAria": "Previzualizați și descărcați fișa clinică și raportul pentru proprietar",
+    "review": "Verificați și exportați",
+    "reviewHint": "Previzualizați, descărcați sau partajați documentele vizitei."
+  },
+  "errors": {
+    "setting": "Setarea nu a putut fi salvată. {{error}}",
+    "openVisit": "Vizita nu a putut fi deschisă. {{error}}",
+    "loadCharts": "Fișele nu au putut fi încărcate. {{error}}",
+    "newVisit": "Nu s-a putut începe o vizită nouă. {{error}}",
+    "signOut": "Deconectarea nu a reușit. {{error}}",
+    "preview": "Previzualizarea nu poate fi creată încă — diagramele se încarcă. Încercați din nou peste puțin timp.",
+    "damagedChart": "Fișa este deteriorată și nu a putut fi deschisă.",
+    "pdfImport": "PDF-ul nu a putut fi citit. Folosiți un PDF de fișă descărcat din ToothOps."
+  },
+  "toasts": {
+    "reverted": "Modificările au fost anulate.",
+    "pdfImported": "Fișa a fost importată din PDF ca fișă nouă.",
+    "pdfImportedNamed": "{{name}} a fost importat din PDF ca fișă nouă.",
+    "visitStarted": "A început o vizită nouă.",
+    "visitStartedFor": "A început o vizită nouă pentru {{name}}.",
+    "visitStartedCarried_one": "A început o vizită nouă — {{count}} dinte absent/extras preluat.",
+    "visitStartedCarried_other": "A început o vizită nouă — {{count}} de dinți absenți/extrași preluați.",
+    "visitStartedForCarried_one": "A început o vizită nouă pentru {{name}} — {{count}} dinte absent/extras preluat.",
+    "visitStartedForCarried_other": "A început o vizită nouă pentru {{name}} — {{count}} de dinți absenți/extrași preluați.",
+    "visitStartedCarried_few": "A început o vizită nouă — {{count}} dinți absenți/extrași preluați.",
+    "visitStartedForCarried_few": "A început o vizită nouă pentru {{name}} — {{count}} dinți absenți/extrași preluați."
+  },
+  "revert": {
+    "title": "Anulați modificările?",
+    "message": "Această fișă revine la starea din momentul în care ați ales Editați fișa, iar acea versiune este salvată.",
+    "confirm": "Anulați modificările"
+  },
+  "todaysVisit": {
+    "message": "Deschideți vizita de astăzi în loc să începeți una a doua?",
+    "confirm": "Deschideți vizita de astăzi",
+    "cancel": "Începeți o a doua vizită"
+  },
+  "historyRestoreHint": "Deschideți această vizită pentru a restabili o versiune anterioară.",
+  "feedbackMail": {
+    "doing": "Ce făceam:",
+    "expected": "Ce mă așteptam să se întâmple:",
+    "actual": "Ce s-a întâmplat de fapt:",
+    "involved": "Specia / dintele / secțiunea implicată (dacă este cazul):",
+    "browser": "Browser și dispozitiv:",
+    "screenshot": "Atașați o captură de ecran dacă ajută la explicarea problemei."
+  },
+  "menu": {
+    "open": "Deschideți meniul de setări",
+    "trigger": "Setări",
+    "signedInAs": "Autentificat ca <strong>{{email}}</strong>",
+    "heads": {
+      "practice": "Cabinet",
+      "account": "Cont",
+      "admin": "Administrare",
+      "app": "Aplicație"
+    },
+    "practiceSettings": {
+      "label": "Setările cabinetului",
+      "sub": "Nume, siglă, echipă și facturare."
+    },
+    "reminders": {
+      "label": "Mementouri pentru recontrol",
+      "sub": "Șablon de e-mail pentru proprietar și program de trimitere automată."
+    },
+    "account": {
+      "label": "Setările contului",
+      "sub": "Numele medicului, e-mailul și parola dumneavoastră."
+    },
+    "admin": {
+      "label": "Panou de administrare",
+      "sub": "Gestionați utilizatori, cabinete și planuri."
+    },
+    "chartSettings": {
+      "label": "Setările fișei",
+      "sub": "Pungi pe rădăcină, coloane în grilă, informații afișate lângă dinți."
+    },
+    "feedback": {
+      "label": "Trimiteți sugestii",
+      "sub": "Raportați o problemă sau propuneți o îmbunătățire."
+    },
+    "whatsNew": {
+      "label": "Noutăți",
+      "sub": "Cele mai recente funcții și îmbunătățiri."
+    },
+    "gettingStarted": {
+      "label": "Primii pași",
+      "sub": "Reluați turul tuturor secțiunilor aplicației."
+    },
+    "homepage": {
+      "label": "Site-ul ToothOps",
+      "sub": "Informații despre produs, prețuri și date de contact."
+    },
+    "signOut": {
+      "label": "Deconectați-vă",
+      "sub": "Încheiați sesiunea."
+    }
+  },
+  "trialSignIn": {
+    "title": "Vă autentificați și ștergeți fișa de probă?",
+    "message": "Autentificarea într-un cont existent șterge fișa de probă de pe acest dispozitiv. Pentru a o păstra, descărcați mai întâi PDF-ul sau creați un cont gratuit, care o păstrează.",
+    "confirm": "Ștergeți și autentificați-vă",
+    "cancel": "Continuați completarea"
+  },
+  "speciesChange": {
+    "title": "Schimbați specia sau dentiția?",
+    "messageGrid": "Pisicile, câinii și dinții deciduali folosesc numerotări diferite, așa că grila fișei va fi golită. Datele pacientului și constatările examenului se păstrează.",
+    "messageDiagram": "Pisicile, câinii și dinții deciduali folosesc numerotări diferite, așa că marcajele, notele și desenele din diagramă vor fi șterse. Datele pacientului și constatările examenului se păstrează.",
+    "messageBoth": "Pisicile, câinii și dinții deciduali folosesc numerotări diferite, așa că grila fișei și marcajele, notele și desenele din diagramă vor fi șterse. Datele pacientului și constatările examenului se păstrează.",
+    "confirm": "Schimbați și ștergeți"
+  },
+  "sync": {
+    "cloudNotConfigured": "Cloudul nu este configurat.",
+    "historyNotSetUp": "Istoricul fișelor nu este încă configurat pe server.",
+    "sessionExpired": "Sesiunea a expirat. Autentificați-vă din nou, apoi salvați — fișa se află încă pe acest dispozitiv.",
+    "notAllowed": "Fișa nu a putut fi salvată în contul dumneavoastră. Contactați proprietarul cabinetului dacă problema persistă.",
+    "tooLarge": "Fișa este prea mare pentru salvare (de obicei, prea multe imagini sau imagini prea mari). Eliminați un atașament și reîncercați.",
+    "offline": "Serverul nu a putut fi contactat. Verificați conexiunea și reîncercați — fișa este în siguranță pe acest dispozitiv.",
+    "saveFailed": "Salvarea a eșuat: {{message}}. Fișa este în siguranță pe acest dispozitiv — reîncercați peste puțin timp.",
+    "unknownError": "eroare necunoscută",
+    "changedByOther": "Fișa a fost modificată de altcineva — redeschideți-o din Pacienți pentru a vedea versiunea sa.",
+    "notSavedConflict": "Nesalvată — fișa a fost modificată de altcineva. Redeschideți-o din Pacienți pentru a vedea versiunea sa.",
+    "noPermission": "Nu aveți permisiunea de a salva modificările acestei fișe. Cereți proprietarului cabinetului sau începeți o vizită nouă.",
+    "noDeletePermission": "Nu aveți permisiunea de a șterge această fișă. Cereți proprietarului cabinetului.",
+    "practiceUnknown": "Datele cabinetului nu s-au încărcat încă, așa că această fișă nouă nu poate fi salvată în cabinet. Verificați conexiunea și reîncărcați — fișa se află încă pe acest dispozitiv.",
+    "conflict": {
+      "title": "Această fișă a fost modificată în altă parte",
+      "message": "A fost salvată la {{when}} — de un coleg sau pe alt dispozitiv — după ce ați deschis-o aici. Salvarea acum înlocuiește acele modificări cu ale dumneavoastră.",
+      "confirm": "Înlocuiți cu versiunea mea",
+      "cancel": "Păstrați versiunea lor"
+    },
+    "duplicate": {
+      "titleToday": "{{name}} are deja o vizită astăzi",
+      "titleOn": "{{name}} are deja o vizită la {{date}}",
+      "patient": "Acest pacient",
+      "message": "Această fișă nouă ar fi o a doua vizită în aceeași zi. Deschideți vizita existentă sau le păstrați pe ambele? Deschiderea ei elimină ce ați introdus în fișa nouă.",
+      "confirm": "Deschideți vizita existentă",
+      "cancel": "Păstrați ambele"
+    },
+    "discard": {
+      "title": "Renunțați la modificările nesalvate?",
+      "openOther": {
+        "message": "Această fișă are modificări nesalvate încă în cloud. Deschideți oricum cealaltă fișă? Pentru a le păstra, anulați și apăsați mai întâi Salvați.",
+        "confirm": "Renunțați și deschideți cealaltă fișă"
+      },
+      "restore": {
+        "message": "Această fișă are modificări nesalvate încă în cloud. Restabiliți oricum această versiune? Pentru a le păstra, anulați și apăsați mai întâi Salvați.",
+        "confirm": "Renunțați și restabiliți această versiune"
+      },
+      "signOut": {
+        "message": "Această fișă are modificări nesalvate încă în cloud. Vă deconectați oricum? Pentru a le păstra, anulați și apăsați mai întâi Salvați.",
+        "confirm": "Renunțați și deconectați-vă"
+      },
+      "newVisit": {
+        "message": "Această fișă are modificări nesalvate încă în cloud. Începeți oricum o vizită nouă? Pentru a le păstra, anulați și apăsați mai întâi Salvați.",
+        "confirm": "Renunțați și începeți o vizită nouă"
+      },
+      "newPatient": {
+        "message": "Această fișă are modificări nesalvate încă în cloud. Începeți oricum un pacient nou? Pentru a le păstra, anulați și apăsați mai întâi Salvați.",
+        "confirm": "Renunțați și începeți un pacient nou"
+      },
+      "importPdf": {
+        "message": "Această fișă are modificări nesalvate încă în cloud. Importați oricum acest PDF? Pentru a le păstra, anulați și apăsați mai întâi Salvați.",
+        "confirm": "Renunțați și importați acest PDF"
+      }
+    },
+    "identity": {
+      "title": "Aceste date aparțin aceluiași pacient?",
+      "message": "Salvat: {{saved}}\nModificat: {{proposed}}\n\nSalvarea va modifica datele pacientului în această fișă. Constatările și imaginile existente rămân atașate.\n\nPentru alt pacient, anulați și alegeți Pacient nou.",
+      "confirm": "Confirmați corectarea",
+      "blank": "Fără nume sau număr de pacient",
+      "paused": "Datele pacientului s-au schimbat. Salvarea este suspendată. Salvați din nou pentru a confirma o corectare sau alegeți Pacient nou pentru alt pacient.",
+      "changed": "Pacientul s-a schimbat în timpul verificării salvării. Verificați datele și salvați din nou."
+    },
+    "patientNumberFailed": "Nu s-a putut atribui un număr de pacient. Încercați din nou când sunteți online sau introduceți un număr de pacient."
+  },
+  "storage": {
+    "full": "Spațiul de stocare al browserului este plin — modificările recente s-ar putea să nu fie păstrate pe acest dispozitiv. Salvați fișa sau descărcați PDF-ul."
+  },
+  "chartsMenu": {
+    "thisPatient": "Acest pacient",
+    "newVisit": "Vizită nouă",
+    "newVisitHint": "O vizită nouă datată, cu datele pacientului și dinții anterior absenți sau extrași preluați.",
+    "history": "Istoricul versiunilor",
+    "historyHint": "Fiecare versiune salvată a acestei fișe — cine a salvat-o și când.",
+    "allPatients": "Toți pacienții",
+    "openLibrary": "Vizualizați pacienții",
+    "openLibraryHint": "Căutați și deschideți fișele oricărui pacient."
+  },
+  "workspace": {
+    "rechecks": "Recontroale",
+    "help": "Ajutor",
+    "account": "Contul dumneavoastră",
+    "visitActions": "Acțiuni vizită",
+    "practice": "Setările cabinetului",
+    "currentVisit": "Vizita curentă",
+    "navigation": "Navigarea în spațiul de lucru",
+    "patientContext": "Pacientul și vizita curentă",
+    "more": "Mai multe",
+    "patientNumber": "Numărul pacientului {{number}}",
+    "visitDate": "Vizită: {{date}}"
+  },
+  "animalTabs": {
+    "label": "Animale deschise",
+    "unnamed": "Animal nou",
+    "ownerUnknown": "Proprietar neintrodus",
+    "close": "Închideți fila {{name}}",
+    "closeHint": "Închideți fila fără a șterge pacientul",
+    "add": "Deschideți alt animal",
+    "emptyTitle": "Niciun animal deschis",
+    "emptyBody": "Deschideți un pacient pentru a începe completarea fișei.",
+    "open": "Deschideți un animal",
+    "saveFirst": "Salvați fișa curentă înainte de a schimba animalul. Introduceți numele pacientului dacă lipsește.",
+    "pid": "ID pacient {{number}}",
+    "noPid": "Fără ID pacient",
+    "previous": "Animalele anterioare",
+    "next": "Animalele următoare",
+    "closeUnsaved": "Această filă are încă modificări nesalvate. Deschideți-o și salvați înainte de închidere.",
+    "summary": "{{name}} · {{details}}",
+    "imageCheckFailed": "Imaginile fișei nu au putut fi verificate. Păstrați fila deschisă și încercați din nou.",
+    "uploadPending": "Așteptați finalizarea încărcării imaginii înainte de a închide această filă.",
+    "imagesRecovered": "Imaginile încărcate în filele fără nume au fost recuperate. Confirmați datele pacientului înainte de salvare.",
+    "closeConfirmTitle": "Închideți fără salvare?",
+    "closeConfirmMessage": "Modificările nesalvate din această filă vor fi pierdute. Imaginile încărcate nu vor fi șterse.",
+    "closeConfirm": "Închideți fără salvare",
+    "keepOpen": "Păstrați fișa deschisă",
+    "closeImageDraftMessage": "Această fișă nu a fost salvată. Închiderea ei elimină conținutul și șterge definitiv imaginile încărcate.",
+    "draftAlreadySaved": "Această fișă a fost salvată în altă parte. Redeschideți-o înainte de a elimina ciorna.",
+    "closeTitle": "Modificări nesalvate",
+    "saveAndClose": "Salvați și închideți",
+    "closeChoiceMessage": "Salvați modificările înainte de închidere sau închideți fără salvare pentru a renunța la ele. Imaginile încărcate în fișele salvate vor fi păstrate.",
+    "closeImageChoiceMessage": "Salvați această fișă înainte de închidere sau închideți fără salvare pentru a elimina conținutul și a șterge definitiv imaginile încărcate."
+  }
+}

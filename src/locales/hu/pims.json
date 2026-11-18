@@ -1,0 +1,155 @@
+{
+  "extension": {
+    "name": "ToothOps for ezyVet",
+    "description": "A ToothOps kórlapi feljegyzéseit a megnyitott ezyVet-konzultációba írja."
+  },
+  "dialog": {
+    "open": "Küldés az ezyVet rendszerbe",
+    "title": "Küldés az ezyVet rendszerbe",
+    "loading": "ezyVet keresése…",
+    "retry": "Újrapróbálkozás",
+    "sentOn": "Elküldve az ezyVet rendszerbe: {{date}}."
+  },
+  "install": {
+    "title": "A ToothOps for ezyVet bővítmény nem válaszol",
+    "body": "Ellenőrizze, hogy a ToothOps for ezyVet bővítmény telepítve és engedélyezve van-e a Chrome böngészőben, majd próbálja újra. Ha még nincs telepítve, kérjen telepítési hivatkozást a ToothOps ügyfélszolgálatától."
+  },
+  "noTab": "Nyissa meg a konzultációt az ezyVet rendszerben, majd próbálja újra.",
+  "severalTabs": "Több ezyVet-lap van megnyitva. Használt lap: {{title}}",
+  "target": "ezyVet: {{patient}} – {{title}}",
+  "targetNoPatient": "ezyVet: {{title}}",
+  "state": {
+    "notConsult": "Az ezyVet lapján nem konzultáció látható. Nyissa meg a páciens konzultációját, majd próbálja újra.",
+    "notMedicalTab": "Nyissa meg a konzultáció Medical lapját, majd próbálja újra.",
+    "locked": "Ez a konzultáció zárolva van az ezyVet rendszerben. Nyisson meg egy nem zárolt konzultációt, majd próbálja újra.",
+    "combined": "Az ezyVet Combined nézetben van. Váltson Standard nézetre, majd próbálja újra."
+  },
+  "rows": {
+    "heading": "Hová kerül",
+    "chart": "Fogászati lap képe",
+    "edited": "Szerkesztett feljegyzés →",
+    "dontSend": "Ne küldje",
+    "notOnPage": "{{title}} (nincs ezen az oldalon)",
+    "reset": "Alapértékek visszaállítása"
+  },
+  "editedNotice": "A feljegyzést szerkesztették, ezért nem bontható vissza szakaszokra. Egyetlen tömbként küldjük el.",
+  "picture": {
+    "pre": "Műtét előtti fogászati lap",
+    "post": "Műtét utáni fogászati lap"
+  },
+  "actions": {
+    "send": "Küldés",
+    "sending": "Küldés…",
+    "copyDiagnostic": "Diagnosztikai jelentés másolása",
+    "diagnosticCopied": "Diagnosztikai jelentés másolva. Illessze be a ToothOps ügyfélszolgálatának küldött üzenetbe.",
+    "diagnosticPrompt": "Diagnosztikai jelentés másolása"
+  },
+  "mismatch": {
+    "title": "Másik páciens?",
+    "message": "ToothOps fogászati lap: {{chart}} · ezyVet konzultáció: {{ezyvet}}",
+    "messageNumbers": "A fogászati lap páciense {{chart}} (azonosító: {{chartNumber}}), az ezyVet rendszerben viszont {{ezyvet}} látható (azonosító: {{ezyvetNumber}}).",
+    "unknown": "(név nem található)",
+    "noName": "(nincs páciensnév)",
+    "sendAnyway": "Küldés mindenképpen"
+  },
+  "alreadySent": {
+    "title": "Már elküldve: {{date}}. Újra elküldi?",
+    "message": "Az újraküldés egy második példányt ad az ezyVet rendszerhez.",
+    "confirm": "Újraküldés"
+  },
+  "results": {
+    "title": "Eredmények",
+    "sent": "Elküldve",
+    "stampFailed": "Elküldve, de a ToothOps nem tudta rögzíteni a küldés dátumát ezen a fogászati lapon.",
+    "saved": "Mentve az ezyVet rendszerben",
+    "summary": "Mentett mezők: {{saved}} · Figyelmet igényel: {{attention}}"
+  },
+  "errors": {
+    "extension_error": "A ToothOps nem érte el az ezyVet-bővítményt. Ellenőrizze, hogy telepítve és engedélyezve van-e, majd próbálja újra.",
+    "timeout": "A bővítmény nem válaszolt időben. Ellenőrizze az ezyVet lapját, és próbálja újra.",
+    "no_tab": "Az ezyVet lapját bezárták. Nyissa meg a konzultációt az ezyVet rendszerben, és próbálja újra.",
+    "not_writable": "A konzultáció már nem írható (zárolt, bezárták, vagy már nem a Medical lap látható). Nyissa meg a konzultáció Medical lapját, és próbálja újra.",
+    "patient_changed": "Az ezyVet rendszerben most másik páciens vagy konzultáció van nyitva, ezért nem küldtünk további adatot. Nyissa meg a megfelelő konzultációt, és próbálja újra.",
+    "field_not_found": "Ez a mező nincs a konzultáció oldalán. Válasszon másik mezőt a Hová kerül résznél.",
+    "editor_not_found": "A ToothOps nem találta e mező szövegmezőjét. Újraküldés előtt ellenőrizze a mezőt az ezyVet rendszerben. Ha a hiba fennáll, másolja ki a diagnosztikai jelentést a ToothOps ügyfélszolgálatának.",
+    "popup_not_found": "A mező szerkesztőablaka nem nyílt meg. Újraküldés előtt ellenőrizze a mezőt az ezyVet rendszerben. Ha a hiba fennáll, másolja ki a diagnosztikai jelentést a ToothOps ügyfélszolgálatának.",
+    "popup_not_closed": "A mező szerkesztőablaka mentés után nem zárult be. Újraküldés előtt ellenőrizze a mezőt az ezyVet rendszerben.",
+    "save_button_not_found": "A ToothOps nem találta a mező Mentés gombját. Újraküldés előtt ellenőrizze a mezőt az ezyVet rendszerben.",
+    "save_not_confirmed": "Az ezyVet nem erősítette meg a mentést. Újraküldés előtt ellenőrizze a mezőt az ezyVet rendszerben.",
+    "no_preferred_email": "Az ügyfélnek nincs elsődleges e-mail-címe az ezyVet rendszerben. Adjon meg egyet, vagy válasszon másik mezőt.",
+    "image_not_accepted": "Ez a mező nem fogad képeket. Válassza a Discharge Summary vagy más, képet fogadó mezőt.",
+    "invalid_image": "Nem sikerült előkészíteni a fogászati lap képét. Újraküldés előtt ellenőrizze a mezőt az ezyVet rendszerben.",
+    "picture_failed": "A ToothOps nem tudta megrajzolni a fogászati lap képét, ezért nem küldte el.",
+    "maybe_sent": "Néhány mezőbe már kerülhetett adat. Újraküldés előtt ellenőrizze a konzultációt az ezyVet rendszerben.",
+    "item_extension_error": "Hiba történt a mező írásakor. Újraküldés előtt ellenőrizze a mezőt az ezyVet rendszerben.",
+    "item_not_writable": "A konzultáció már nem fogad módosításokat (zárolt, bezárták, vagy már nem a Medical lap látható), ezért ezt a mezőt nem küldtük el. Újraküldés előtt ellenőrizze a konzultációt az ezyVet rendszerben.",
+    "item_patient_changed": "Másik páciens vagy konzultáció nyílt meg az ezyVet rendszerben, ezért ezt a mezőt nem küldtük el. Újraküldés előtt ellenőrizze a konzultációt az ezyVet rendszerben."
+  },
+  "panel": {
+    "notConnected": "Ez a verzió nincs a ToothOps rendszerhez kapcsolva.",
+    "signIn": {
+      "title": "Jelentkezzen be a ToothOps alkalmazásba",
+      "lead": "Küldje a ToothOps fogászati lapok kórlapi feljegyzéseit a megnyitott ezyVet-konzultációba.",
+      "password": "Jelszó",
+      "submit": "Bejelentkezés",
+      "busy": "Bejelentkezés…",
+      "or": "vagy",
+      "createAccount": "Fiók létrehozása",
+      "forgotPassword": "Elfelejtette a jelszavát?"
+    },
+    "header": {
+      "signedInAs": "Bejelentkezve: {{email}}",
+      "signOut": "Kijelentkezés"
+    },
+    "list": {
+      "unnamed": "(nincs páciensnév)",
+      "matches": "Egyezik ezzel a konzultációval",
+      "matchCount": "{{matches}} fogászati lap tartozik ehhez a pácienshez. A legutóbbi látható.",
+      "searchLabel": "Fogászati lapok keresése",
+      "searchPlaceholder": "Keresés páciens, gazdi vagy azonosító alapján",
+      "empty": "Nem található fogászati lap.",
+      "loading": "Fogászati lapok betöltése…",
+      "loadMore": "Továbbiak betöltése",
+      "possible": "Lehetséges egyezés az ezyVet páciensével: {{patient}}"
+    },
+    "chart": {
+      "back": "← Vissza a fogászati lapokhoz",
+      "loading": "Fogászati lap megnyitása…",
+      "noteLabel": "Kórlapi feljegyzés",
+      "flagLoading": "Az ezyVet-küldés engedélyezésének ellenőrzése a rendelőnél…",
+      "flagFailed": "Nem sikerült ellenőrizni, hogy az ezyVet-küldés engedélyezve van-e a rendelőnél.",
+      "sendOff": "Az ezyVet-küldés nincs engedélyezve a rendelőnél.",
+      "destination": "Cél"
+    },
+    "today": {
+      "title": "Mai páciensek (ezyVet)",
+      "refresh": "Frissítés",
+      "load": "Mai páciensek betöltése",
+      "loadHint": "Ez átváltja az ezyVet lapját a naptárra.",
+      "noTab": "A mai páciensekhez nyissa meg az ezyVet rendszert.",
+      "empty": "Nincsenek páciensek a mai ezyVet-időbeosztásban.",
+      "failed_one": "{{count}} időpontot nem sikerült beolvasni.",
+      "failed_other": "{{count}} időpontot nem sikerült beolvasni.",
+      "start": "Fogászati lap indítása",
+      "open": "Fogászati lap megnyitása",
+      "newVisit": "Új vizit",
+      "startAnyway": "Új fogászati lap indítása",
+      "loading": "Mai páciensek betöltése…",
+      "errors": {
+        "no_dashboard": "Nem található az ezyVet Dashboard oldala.",
+        "no_date_input": "Nem sikerült beállítani a dátumot az ezyVet naptárában.",
+        "no_calendar_refresh": "Az ezyVet naptára nem válaszolt. Töltse újra az ezyVet rendszert, és próbálja újra.",
+        "unknown": "Nem sikerült beolvasni a mai ezyVet-időbeosztást."
+      },
+      "startFailed": "Nem sikerült megnyitni a ToothOps alkalmazást. Próbálja újra."
+    }
+  },
+  "send": {
+    "targetChanged": "Az ezyVet-konzultáció megváltozott. Ellenőrizze a célt, és nyomja meg újra a Küldés gombot."
+  },
+  "handover": {
+    "filled": "Páciensadatok kitöltve az ezyVet rendszerből.",
+    "failed": "Nem sikerült lekérni a pácienst az ezyVet rendszerből. Töltse ki az adatokat.",
+    "otherUser": "Ezt a pácienst másik felhasználóként választották ki a bővítményben. Mindkét helyen ugyanazzal a fiókkal jelentkezzen be."
+  }
+}

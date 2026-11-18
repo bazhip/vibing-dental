@@ -28,6 +28,8 @@ Confirm your ToothOps account
 | de | Bestätigen Sie Ihr ToothOps-Konto |
 | it | Confermi il Suo account ToothOps |
 | es | Confirme su cuenta de ToothOps |
+| hu | Erősítse meg ToothOps-fiókját |
+| ro | Confirmați contul dumneavoastră ToothOps |
 
 ## Reset password (`reset-password.html`)
 
@@ -44,6 +46,8 @@ Reset your ToothOps password
 | de | Setzen Sie Ihr ToothOps-Passwort zurück |
 | it | Reimposti la Sua password di ToothOps |
 | es | Restablezca su contraseña de ToothOps |
+| hu | ToothOps-jelszó visszaállítása |
+| ro | Resetați parola ToothOps |
 
 ## Change email address (`change-email.html`)
 
@@ -60,3 +64,5 @@ Confirm your new email for ToothOps
 | de | Bestätigen Sie Ihre neue E-Mail-Adresse für ToothOps |
 | it | Confermi il Suo nuovo indirizzo e-mail per ToothOps |
 | es | Confirme su nuevo correo electrónico para ToothOps |
+| hu | Erősítse meg új ToothOps e-mail-címét |
+| ro | Confirmați noua adresă de e-mail pentru ToothOps |

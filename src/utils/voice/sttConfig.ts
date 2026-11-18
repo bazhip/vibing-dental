@@ -11,11 +11,15 @@ export interface VoiceSttConfig {
 /**
  * Deepgram model + language per app language. English uses nova-3-medical
  * monolingual. Deepgram lists `language=multi` (code-switching across
- * es/fr/de/it/en) for nova-3-medical, so the other app languages use that;
+ * es/fr/de/it/en) for nova-3-medical, so those app languages use that;
  * if Deepgram refuses that combination the session retries once on general
  * nova-3 with language=multi. English never retries.
  */
 export const VOICE_STT: Record<AppLanguage, VoiceSttConfig> = {
+  // Medical multi excludes Hungarian/Romanian; use supported native models.
+  // https://developers.deepgram.com/docs/models-languages-overview
+  hu: { model: 'nova-3', language: 'hu' },
+  ro: { model: 'nova-3', language: 'ro' },
   en: { model: 'nova-3-medical', language: 'en' },
   fr: { model: 'nova-3-medical', language: 'multi', fallbackModel: 'nova-3' },
   de: { model: 'nova-3-medical', language: 'multi', fallbackModel: 'nova-3' },
@@ -26,6 +30,8 @@ export const VOICE_STT: Record<AppLanguage, VoiceSttConfig> = {
 /** BCP-47 tag for the browser SpeechRecognition fallback; en keeps the
  *  caller's navigator.language behaviour. */
 export const BROWSER_SPEECH_LANG: Record<Exclude<AppLanguage, 'en'>, string> = {
+  hu: 'hu-HU',
+  ro: 'ro-RO',
   fr: 'fr-FR',
   de: 'de-DE',
   it: 'it-IT',

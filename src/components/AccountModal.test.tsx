@@ -114,14 +114,14 @@ describe('AccountModal', () => {
     expect(screen.queryByRole('combobox', { name: /language/i })).not.toBeInTheDocument();
   });
 
-  it('offers the five languages by their own names and reports a choice', async () => {
+  it('offers the app languages by their own names and reports a choice', async () => {
     langFlag.on = true;
     const user = userEvent.setup();
     const onLanguageChange = vi.fn();
     renderModal(vi.fn(), { language: 'en', onLanguageChange });
     const select = screen.getByRole('combobox', { name: /language/i });
     expect(within(select).getAllByRole('option').map((o) => o.textContent)).toEqual([
-      'English', 'Français', 'Deutsch', 'Italiano', 'Español',
+      'English', 'Français', 'Deutsch', 'Italiano', 'Español', 'Magyar', 'Română',
     ]);
     await user.selectOptions(select, 'Français');
     expect(onLanguageChange).toHaveBeenCalledWith('fr');

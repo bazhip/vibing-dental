@@ -1,0 +1,366 @@
+{
+  "codeGroups": {
+    "occlusion": "Okklúzió",
+    "toothNumberEruption": "Fogszám és előtörés",
+    "developmental": "Fejlődési rendellenességek",
+    "periodontal": "Parodontológia",
+    "toothPathology": "Fogbetegségek",
+    "toothFracture": "Fogtörés",
+    "periapicalBone": "Periapikális terület és csont",
+    "trauma": "Trauma",
+    "softTissue": "Lágyrész és nyálkahártya",
+    "immuneMediated": "Immunmediált",
+    "salivary": "Nyálmirigy",
+    "headNosePharynx": "Fej, orr és garat",
+    "masses": "Térfoglaló képletek és onkológia",
+    "jawTmj": "Állcsont, állkapocsízület és veleszületett eltérések",
+    "imaging": "Képalkotás és diagnosztika",
+    "periodontalTreatment": "Parodontális kezelés",
+    "endodontics": "Endodontia",
+    "restorative": "Restauráció és fogpótlástan",
+    "extractions": "Foghúzások",
+    "oralSurgery": "Szájsebészet",
+    "oncologic": "Onkológiai kezelés",
+    "jawRepair": "Állcsonttörés és állkapocsízület helyreállítása",
+    "orthodontics": "Fogszabályozás",
+    "equine": "Lovak leletei",
+    "equineProcedures": "Lovak beavatkozásai",
+    "equineExtractions": "Zápfog eltávolítása"
+  },
+  "columns": {
+    "tooth": "Fog",
+    "triadan": "Triadan",
+    "mobility": "Mozgathatóság",
+    "recession": "Ínyvisszahúzódás",
+    "pocket": "Tasak",
+    "furcation": "Furkáció",
+    "hyperplasia": "Ínymegnagyobbodás",
+    "calculus": "Fogkő",
+    "gingivitis": "Ínygyulladás",
+    "pdstate": "PD-stádium"
+  },
+  "customAnesthesia": {
+    "block": "Egyéni blokád",
+    "field": "Egyéni mező",
+    "yes": "Igen"
+  },
+  "grid": {
+    "title": "Fogászati lap kitöltése",
+    "short": {
+      "mobility": "Mozg.",
+      "recession": "Vissz.",
+      "pocket": "Tasak",
+      "furcation": "Furk.",
+      "hyperplasia": "Megn.",
+      "calculus": "Fogkő",
+      "gingivitis": "Ínygy.",
+      "pdstate": "Stádium"
+    },
+    "pdstateTitle": "PD-állapot",
+    "perRoot": "{{name}} (gyökerenként)",
+    "perSite": "{{name}} (pontonként)",
+    "missing": "Hiányzó",
+    "triadanTooth": "Triadan · Fog",
+    "cellAria": "{{triadan}}. fog: {{column}}",
+    "rootAria": "{{triadan}}. fog tasakja, {{root}} gyökér",
+    "siteAria": "{{triadan}}. fog tasakja, {{site}} pont",
+    "setAll": {
+      "title": "{{name}} beállítása minden fogra",
+      "message": "Minden nem hiányzónak jelölt fogra érvényes. Az oszlop törléséhez hagyja üresen.",
+      "messageRange": "Minden nem hiányzónak jelölt fogra érvényes. Adjon meg {{min}} és {{max}} közötti számot. Az oszlop törléséhez hagyja üresen.",
+      "confirm": "Alkalmazás mindegyikre",
+      "invalid": "A(z) {{name}} értékének {{min}} és {{max}} közötti számnak kell lennie.",
+      "applied": "{{name}} beállítva erre minden fogon: {{value}}.",
+      "cleared": "{{name}} törölve minden fogról."
+    },
+    "undo": "Visszavonás",
+    "clear": {
+      "title": "Törli a(z) {{name}} értéket minden fogról?",
+      "message_one": "{{count}} értéket eltávolít a(z) {{name}} oszlopból.",
+      "message_other": "{{count}} értéket eltávolít a(z) {{name}} oszlopból.",
+      "confirm": "Oszlop törlése"
+    },
+    "bulk": {
+      "toast_one": "{{name}} beállítva erre {{count}} fogon: {{value}}.",
+      "toast_other": "{{name}} beállítva erre {{count}} fogon: {{value}}.",
+      "range": "Használjon {{min}}–{{max}} közötti értéket",
+      "region": "Érték beállítása a kiválasztott fogakon",
+      "selected_one": "{{count}} fog kiválasztva",
+      "selected_other": "{{count}} fog kiválasztva",
+      "set": "Beállítás",
+      "column": "Beállítandó oszlop",
+      "to": "értéke",
+      "value": "Érték",
+      "apply": "Alkalmazás",
+      "clearSelection": "Kijelölés törlése",
+      "tip": "Tipp: kattintson a fogszámokra több fog kiválasztásához (tartományhoz Shift+kattintás), majd állítson be mindegyikre azonos értéket."
+    },
+    "missingCheck": {
+      "label": "{{triadan}}. fog hiányzik",
+      "labelCarried": "{{triadan}}. fog hiányzik (az előző vizitből átvéve)",
+      "titleCarried": "A(z) {{triadan}}. fog már az előző vizitkor hiányzott vagy eltávolították – automatikusan átvéve",
+      "titleUnmark": "{{triadan}}. fog hiányzó jelölésének törlése",
+      "titleMark": "{{triadan}}. fog hiányzónak jelölése – áthúzza ezt a sort, és kitölti a fogat a Diagnózis diagramon",
+      "prev": "előző"
+    },
+    "tooth": {
+      "title": "Kattintson a fog kiválasztásához (tartományhoz Shift+kattintás), és állítson be értéket több fogon egyszerre"
+    },
+    "slot": {
+      "root": "{{root}} gyökér",
+      "rootLast": "{{root}} gyökér – legutóbbi vizit: {{value}}",
+      "site": "{{site}} pont",
+      "siteLast": "{{site}} pont – legutóbbi vizit: {{value}}"
+    },
+    "unsplit": {
+      "title": "Nincs gyökerenként bontva – kattintson a szerkesztéshez (törölje a gyökerenkénti mezőkhöz)",
+      "chip": "minden gyökér"
+    },
+    "unsplitSites": {
+      "title": "Nincs pontonként bontva – kattintson a szerkesztéshez (törölje a pontonkénti mezőkhöz)",
+      "chip": "nem pontonként"
+    },
+    "lastVisit": "Legutóbbi vizit: {{value}}",
+    "lastVisitRef": "Legutóbbi vizit: {{value}} – csak tájékoztatás, nem kerül átvételre",
+    "setAllHint": "{{name}} beállítása minden fogra egyszerre",
+    "options": {
+      "mirror": "Leletek megjelenítése a Diagnózis diagramon",
+      "mirrorTitle": "Minden rögzített foghoz megjegyzést ad a Diagnózis diagramon, és kitöltés közben frissíti azt. Az Ön saját megjegyzéseit érintetlenül hagyja.",
+      "pdf": "Táblázat szerepeltetése a PDF-ben",
+      "pdfTitleOn": "Törölje a jelölést a fogívtáblázatok kihagyásához a PDF-ből – a Diagnózis diagram már megjeleníti ezeket a leleteket, és így több helyet kap.",
+      "pdfTitleOff": "Akkor érhető el, ha a leletek megjelennek a Diagnózis diagramon."
+    }
+  },
+  "toothChart": {
+    "legend": {
+      "label": "Diagram jelmagyarázata",
+      "charted": "Rögzített",
+      "planned": "Tervezett foghúzás",
+      "extracted": "Eltávolított",
+      "missing": "Hiányzó"
+    },
+    "clickTooth": "A kitöltéshez <strong>kattintson egy fogra</strong> a diagramon.",
+    "hint": "Az itt bevitt adatok a kitöltési táblázatban és a Diagnózis / Beavatkozás diagramokon is megjelennek.",
+    "start": "Kezdés: {{triadan}} →",
+    "prev": "Előző fog",
+    "prevAria": "Előző fog ({{triadan}})",
+    "next": "Következő fog",
+    "nextAria": "Következő fog ({{triadan}})",
+    "missingBefore": "Hiányzó (e vizit előtt)",
+    "findings": "Leletek",
+    "rootAria": "Tasak, {{root}} gyökér",
+    "siteAria": "Tasak, {{site}} pont",
+    "expected": "Várt tartomány: {{range}}",
+    "diagnosisNote": "Diagnosztikai megjegyzés",
+    "diagnosisPlaceholder": "pl. Koronatörés, fogbél-megnyílás",
+    "extraction": "Foghúzás",
+    "planExtract": "Foghúzás tervezése",
+    "procedureNote": "Beavatkozási megjegyzés",
+    "procedurePlaceholder": "pl. Műtéti fogeltávolítás, lebenyzárás 5-0 fonallal",
+    "plan": "Foghúzási terv",
+    "chipDone": "{{triadan}} – eltávolítva",
+    "chipPending": "{{triadan}} – még nincs eltávolítottnak jelölve",
+    "allConfirmed": "Minden tervezett foghúzás megerősítve.",
+    "confirmed": "{{done}} / {{total}} eltávolítása megerősítve.",
+    "markExtracted_one": "Megjelölés eltávolítottnak",
+    "markExtracted_other": "Mind a(z) {{count}} megjelölése eltávolítottnak",
+    "toothMap": "Fogtérkép",
+    "quadrant": "Kvadráns",
+    "quadrants": {
+      "1": "Jobb felső",
+      "2": "Bal felső",
+      "3": "Bal alsó",
+      "4": "Jobb alsó"
+    },
+    "selectTooth": "{{triadan}}. fog kiválasztása: {{name}}"
+  },
+  "toothName": {
+    "side": {
+      "right": "Jobb",
+      "left": "Bal"
+    },
+    "jaw": {
+      "maxillary": "felső",
+      "mandibular": "alsó"
+    },
+    "type": {
+      "incisor": "metszőfog",
+      "canine": "szemfog",
+      "premolar": "kisőrlőfog",
+      "molar": "nagyőrlőfog"
+    },
+    "ordinal": {
+      "1": "1.",
+      "2": "2.",
+      "3": "3.",
+      "4": "4."
+    },
+    "ordinalTooth": "{{ordinal}} {{type}}",
+    "permanent": "{{side}} {{jaw}} {{tooth}}",
+    "deciduous": "{{side}} {{jaw}} tejfog: {{tooth}}"
+  },
+  "diagram": {
+    "label": {
+      "maxilla": "Felső állcsont",
+      "mandible": "Állkapocs",
+      "right": "J",
+      "left": "B"
+    },
+    "aria": {
+      "select": "Fogdiagram – válasszon fogat a kitöltéshez",
+      "extracted": "Fogdiagram – az Enter vagy szóköz váltja az eltávolított jelölést",
+      "missing": "Fogdiagram – az Enter vagy szóköz váltja a hiányzó jelölést",
+      "default": "Fogdiagram"
+    },
+    "tooth": {
+      "label": "{{triadan}}. fog{{details}}",
+      "markedMissing": ", hiányzónak jelölve",
+      "markedExtracted": ", eltávolítottnak jelölve",
+      "planned": ", tervezett foghúzás",
+      "locked": " (e vizit előtt hiányzott – zárolva)"
+    },
+    "comment": {
+      "fromGrid": "A kitöltési táblázatból – a módosításhoz szerkessze a táblázatot",
+      "delete": "Megjegyzés törlése",
+      "placeholder": "Megjegyzések…",
+      "resize": "Megjegyzés átméretezése"
+    }
+  },
+  "diagramView": {
+    "customize": "Testreszabás",
+    "customizeTitle": "Fogak mellett megjelenő leletek",
+    "toolGroup": "Diagrameszköz",
+    "markMissingTitle": "Koppintson egy fogra a hiányzó jelöléshez (újabb koppintás törli)",
+    "markExtractedTitle": "Koppintson egy fogra az eltávolított jelöléshez (újabb koppintás törli)",
+    "markTitle": "Koppintson egy fogra a hiányzó vagy eltávolított jelöléshez",
+    "markMissing": "Hiányzónak jelölés",
+    "markExtracted": "Eltávolítottnak jelölés",
+    "mark": "Jelölés",
+    "comment": "Megjegyzés",
+    "draw": "Rajzolás",
+    "historyGroup": "Visszavonás / Ismétlés",
+    "undo": "Visszavonás",
+    "redo": "Ismétlés",
+    "undoTitle": "Visszavonás ({{shortcut}})",
+    "redoTitle": "Ismétlés ({{shortcut}})",
+    "freeComment": "+ Szabad megjegyzés",
+    "numbers": "# Számok",
+    "numbersTitle": "Minden fog Triadan-számának megjelenítése a diagramon (a PDF-re nem kerül rá)",
+    "zoomGroup": "Nagyítás",
+    "zoomOut": "Kicsinyítés",
+    "zoomIn": "Nagyítás",
+    "zoomReset": "Nagyítás visszaállítása illeszkedő méretre",
+    "zoomLevel": "Nagyítás: {{percent}} százalék – visszaállítás illeszkedő méretre",
+    "textSize": {
+      "group": "Megjegyzés betűmérete",
+      "glyph": "A",
+      "s": "S",
+      "m": "M",
+      "l": "L",
+      "xl": "XL",
+      "aria": "Megjegyzés betűmérete: {{size}}",
+      "title": "Megjegyzés betűmérete: {{size}}"
+    },
+    "drawSettings": "Rajzbeállítások",
+    "strokeColor": "Vonal színe",
+    "colors": {
+      "red": "piros",
+      "blue": "kék",
+      "green": "zöld",
+      "amber": "borostyánsárga",
+      "charcoal": "szénszürke"
+    },
+    "strokeColorAria": "Vonal színe: {{color}}",
+    "strokeWidth": "Vonalvastagság",
+    "strokeWidthValue": "{{width}} képpont",
+    "clearStrokes": "Vonalak törlése",
+    "more": "További diagrameszközök",
+    "moreTitle": "További eszközök – megjegyzések, számok, nagyítás, betűméret",
+    "moreLabel": "További eszközök"
+  },
+  "codeRef": {
+    "all": "Kódok",
+    "diagnosisTitle": "Diagnóziskódok",
+    "procedureTitle": "Beavatkozáskódok",
+    "searchLabel": "Keresés kódok vagy meghatározások között",
+    "searchPlaceholder": "Kódok vagy meghatározások keresése…",
+    "diagnoses": "Diagnózisok",
+    "procedures": "Beavatkozások",
+    "noMatches": "Nincs találat."
+  },
+  "scoreChips": {
+    "group": "{{name}} pontszám",
+    "clear": "{{name}} törlése"
+  },
+  "menu": {
+    "practiceSettingsHintApp": "Név, logó és csapat."
+  },
+  "imaging": {
+    "takePhoto": "Fénykép készítése",
+    "cameraFailed": "Nem sikerült megnyitni a kamerát.",
+    "cameraNoPhoto": "A kamera nem adott vissza fényképet.",
+    "cameraReadFailed": "Nem sikerült beolvasni a fényképet ({{status}}).",
+    "limitReached_one": "Ez a fogászati lap elérte a(z) {{count}} képes korlátot.",
+    "limitReached_other": "Ez a fogászati lap elérte a(z) {{count}} képes korlátot.",
+    "uploadsUnavailable": "Fényképfeltöltés nem érhető el ehhez a fiókhoz.",
+    "formatsApp": "PNG, JPEG vagy WEBP.",
+    "dicomUnavailable": "DICOM-feltöltés nem érhető el ehhez a fiókhoz. A hozzáadáshoz exportálja a röntgenfelvételt JPEG vagy PNG formátumban."
+  },
+  "aiConsent": {
+    "title": "Használ MI-szolgáltatásokat?",
+    "intro": "A diktáláshoz és MI-piszkozatok készítéséhez a ToothOps két szolgáltatásnak küld adatokat:",
+    "deepgram": "A <strong>Deepgram</strong> diktálás közben fogadja az Ön hangját, hogy szöveggé alakítsa.",
+    "anthropic": "Az <strong>Anthropic</strong> (Claude) megkapja a diktálás átiratát és a fogászati lap tartalmát, például a páciensadatokat és leleteket, a lap kitöltéséhez vagy a gazdinak szóló lelet piszkozatához.",
+    "nothingSent": "Csak e funkciók használatakor küldünk adatokat.",
+    "allow": "Engedélyezés",
+    "notNow": "Most nem"
+  },
+  "ios": {
+    "newChart": "Új fogászati lap",
+    "more": "Továbbiak",
+    "menu": {
+      "newChart": "Új fogászati lap",
+      "newVisit": "Új vizit",
+      "saveNow": "Mentés most",
+      "retrySave": "Mentés újrapróbálása",
+      "customize": "{{section}} testreszabása"
+    },
+    "status": {
+      "saved": "Mentve · {{time}}",
+      "notSaved": "Nincs mentve",
+      "viewOnlyDate": "Csak megtekintés · {{date}}",
+      "editingWith": "Szerkesztés · {{status}}",
+      "keptOnDevice": "A kitöltés megkezdésekor mentjük",
+      "unsaved": "Nem mentett módosítások",
+      "onDevice": "Csak ezen az eszközön"
+    },
+    "notice": {
+      "otherTab": "Ez a fogászati lap másik ablakban is nyitva van. Mindkettő ugyanazt a munkapéldányt szerkeszti – zárja be az egyiket a módosítások felülírásának elkerüléséhez.",
+      "gotIt": "Értem",
+      "notSaved": "Ez a fogászati lap nincs mentve."
+    },
+    "form": {
+      "patient": "Páciens",
+      "owner": "Gazdi",
+      "visit": "Vizit",
+      "complaint": "Fő panasz",
+      "dictate": "Diktálás",
+      "nerveBlocks": "Idegblokádok",
+      "addInterval": "Időköz hozzáadása"
+    },
+    "diagram": {
+      "numbers": "Számok",
+      "freeComment": "Szabad megjegyzés"
+    },
+    "grid": {
+      "tip": "Tipp: koppintson a fogszámokra több fog kiválasztásához, majd állítson be mindegyikre azonos értéket.",
+      "pickTitle": "Koppintson a fog kiválasztásához és több fog értékének egyidejű beállításához"
+    }
+  },
+  "quickCodes": {
+    "group": "Gyorskódok",
+    "chipAria": "{{code}}: {{definition}}",
+    "label": "Koppintson egy kódra, majd egy fogra:",
+    "stampHint": "Koppintson egy fogra a(z) {{code}} hozzáadásához (újabb koppintás eltávolítja)"
+  }
+}

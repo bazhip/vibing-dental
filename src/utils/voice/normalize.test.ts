@@ -75,6 +75,40 @@ describe('English stays byte-identical', () => {
 // ----- Per-language dictation ----------------------------------------------
 
 const NORMALIZE: Record<Lng, [string, string][]> = {
+  hu: [
+    ['száznégy GI kettő, fogkő egy, tasak öt milliméter', '104 GI 2, fogkő 1, tasak 5 milliméter'],
+    ['száznégy, százöt, százhat törött', '104, 105, 106 törött'],
+    ["mobilitás három egy nulla négy", "mobilitás 3 104"],
+    ["GI 2104", "GI 2 104"],
+    ["Mobilitás. Kettő", "Mobilitás 2"],
+    ["tasak tizenkét milliméter", "tasak 12 milliméter"],
+    ["recesszió két milliméter", "recesszió 2 milliméter"],
+    ["gé i kettő", "GI 2"],
+    ["ef három", "F3"],
+    ["pé dé kettő", "PD2"],
+    ["104 T per FX per CCF", "104 T/FX/CCF"],
+    ["104GI2", "104 GI 2"],
+    ["P D 2, M 1", "PD2, M1"],
+    ["egyszáznégy hiányzik", "104 hiányzik"],
+    ["hat nulla négy eltávolítva", "604 eltávolítva"]
+  ],
+  ro: [
+    ['o sută patru GI doi, tartru unu, pungă cinci milimetri', '104 GI 2, tartru 1, pungă 5 milimetri'],
+    ['o sută patru, o sută cinci, o sută șase fracturați', '104, 105, 106 fracturați'],
+    ["mobilitate trei unu zero patru", "mobilitate 3 104"],
+    ["GI 2104", "GI 2 104"],
+    ["Mobilitate. Doi", "Mobilitate 2"],
+    ["pungă de doisprezece milimetri", "pungă de 12 milimetri"],
+    ["recesiune două milimetri", "recesiune 2 milimetri"],
+    ["ge i doi", "GI 2"],
+    ["ef trei", "F3"],
+    ["pe de doi", "PD2"],
+    ["104 T bară FX bară CCF", "104 T/FX/CCF"],
+    ["104GI2", "104 GI 2"],
+    ["P D 2, M 1", "PD2, M1"],
+    ["două sute nouă extras", "209 extras"],
+    ["șase zero patru extras", "604 extras"]
+  ],
   fr: [
     // scores, units
     ['cent quatre GI deux, tartre un, poche cinq millimètres', '104 GI 2, tartre 1, poche 5 millimètres'],
@@ -228,12 +262,16 @@ describe('German compound endings (carry-forward)', () => {
 // ----- chunkWorthSending ---------------------------------------------------
 
 const FILLER_ONLY: Record<Lng, string[]> = {
+  hu: ['igen, köszönöm', 'öhm, rendben és jó', 'Speaker 1: nem, tehát'],
+  ro: ['da, mulțumesc', 'ăă, bine și deci', 'Speaker 1: nu, bine'],
   fr: ['euh, bon, d\'accord, merci', 'oui alors voilà', 'Speaker 1: ok merci', 'Bon. Donc. Et euh…', 'D’accord, oui, non', 'Hein ? Bon, d’accord'],
   de: ['äh, also, ja, danke', 'okay gut', 'Speaker 1: ja so', 'Ähm, nein, und also…', 'Ähmm… öhm, ja'],
   it: ['ehm, allora, va bene, grazie', 'sì sì ok', 'Speaker 1: no, quindi', 'Va bene, grazie e allora', 'Eh, allora, va bene'],
   es: ['eh, bueno, vale, gracias', 'sí, entonces', 'Speaker 1: ok, no', 'Este… bueno, y vale', 'Mmm, ajá, vale'],
 };
 const REAL: Record<Lng, string[]> = {
+  hu: ['504 törött', 'fogtörés', 'igen, mindenütt fogkő'],
+  ro: ['504 fracturat', 'fractură dentară', 'da, tartru peste tot'],
   fr: ['504 fracturée', 'dent fracturée', 'et la suivante aussi', 'oui, tartre partout', 'barre oblique'],
   de: ['504 frakturiert', 'Zahn frakturiert', 'und der nächste auch', 'ja, Zahnstein überall'],
   it: ['504 fratturato', 'dente fratturato', 'e anche il successivo', 'sì, tartaro ovunque'],
@@ -257,6 +295,8 @@ describe.each(Object.keys(FILLER_ONLY) as Lng[])('chunkWorthSending — %s', (ln
 // ----- isPerioOnlyText -----------------------------------------------------
 
 const PERIO: Record<Lng, { yes: string[]; no: string[] }> = {
+  hu: { yes: ['GI 2, fogkő 1, tasak 5 mm', 'mobilitás 2', 'recesszió 2 mm, furkáció 1', 'stádium 3'], no: ['T/FX', '104 T/FX', 'fogtörés'] },
+  ro: { yes: ['GI 2, tartru 1, pungă 5 mm', 'mobilitate 2', 'pungă de 6 milimetri', 'stadiu 3'], no: ['T/FX', '104 T/FX', 'fractură dentară'] },
   fr: {
     yes: ['GI 2, tartre 1, poche 5 mm', 'mobilité 2', 'poche de 6 millimètres', 'Récession 2 mm; furcation 1', 'GI 2, calc 1, M3', 'stade 3'],
     no: ['T/FX', '104 T/FX', 'dent fracturée', 'GI 2, fracture'],

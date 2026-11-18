@@ -1,0 +1,371 @@
+{
+  "codeGroups": {
+    "occlusion": "Ocluzie",
+    "toothNumberEruption": "Numărul dinților și erupție",
+    "developmental": "Anomalii de dezvoltare",
+    "periodontal": "Parodontal",
+    "toothPathology": "Patologie dentară",
+    "toothFracture": "Fractură dentară",
+    "periapicalBone": "Periapical și osos",
+    "trauma": "Traumatisme",
+    "softTissue": "Țesuturi moi și mucoasă",
+    "immuneMediated": "Mediat imun",
+    "salivary": "Glande salivare",
+    "headNosePharynx": "Cap, nas și faringe",
+    "masses": "Formațiuni și oncologie",
+    "jawTmj": "Maxilare, ATM și anomalii congenitale",
+    "imaging": "Imagistică și diagnostic",
+    "periodontalTreatment": "Tratament parodontal",
+    "endodontics": "Endodonție",
+    "restorative": "Restaurare și protetică",
+    "extractions": "Extracții",
+    "oralSurgery": "Chirurgie orală",
+    "oncologic": "Terapie oncologică",
+    "jawRepair": "Fracturi maxilare și repararea ATM",
+    "orthodontics": "Ortodonție",
+    "equine": "Constatări la ecvine",
+    "equineProcedures": "Proceduri la ecvine",
+    "equineExtractions": "Extracția dinților jugali"
+  },
+  "columns": {
+    "tooth": "Dinte",
+    "triadan": "Triadan",
+    "mobility": "Mobilitate",
+    "recession": "Recesiune",
+    "pocket": "Pungă",
+    "furcation": "Furcație",
+    "hyperplasia": "Mărire",
+    "calculus": "Tartru",
+    "gingivitis": "Gingivită",
+    "pdstate": "Stadiu BP"
+  },
+  "customAnesthesia": {
+    "block": "Bloc personalizat",
+    "field": "Câmp personalizat",
+    "yes": "Da"
+  },
+  "grid": {
+    "title": "Fișă dentară",
+    "short": {
+      "mobility": "Mob",
+      "recession": "Rec",
+      "pocket": "Pungă",
+      "furcation": "Furc",
+      "hyperplasia": "Măr",
+      "calculus": "Tar",
+      "gingivitis": "Ging",
+      "pdstate": "Stadiu"
+    },
+    "pdstateTitle": "Stadiul bolii parodontale",
+    "perRoot": "{{name}} (pe rădăcină)",
+    "perSite": "{{name}} (pe situs)",
+    "missing": "Absent",
+    "triadanTooth": "Triadan · Dinte",
+    "cellAria": "Dinte {{triadan}} {{column}}",
+    "rootAria": "Dinte {{triadan}} pungă, rădăcina {{root}}",
+    "siteAria": "Dinte {{triadan}} pungă, situsul {{site}}",
+    "setAll": {
+      "title": "Setați {{name}} pentru fiecare dinte",
+      "message": "Se aplică fiecărui dinte care nu este marcat absent. Lăsați necompletat pentru a goli coloana.",
+      "messageRange": "Se aplică fiecărui dinte care nu este marcat absent. Folosiți un număr între {{min}} și {{max}}. Lăsați necompletat pentru a goli coloana.",
+      "confirm": "Aplicați tuturor",
+      "invalid": "{{name}} trebuie să fie un număr între {{min}} și {{max}}.",
+      "applied": "{{name}} setat la {{value}} pentru fiecare dinte.",
+      "cleared": "{{name}} șters pentru fiecare dinte."
+    },
+    "undo": "Anulați",
+    "clear": {
+      "title": "Ștergeți {{name}} pentru fiecare dinte?",
+      "message_one": "Elimină {{count}} valoare din coloana {{name}}.",
+      "message_other": "Elimină {{count}} de valori din coloana {{name}}.",
+      "confirm": "Goliți coloana",
+      "message_few": "Elimină {{count}} valori din coloana {{name}}."
+    },
+    "bulk": {
+      "toast_one": "{{name}} setat la {{value}} pentru {{count}} dinte.",
+      "toast_other": "{{name}} setat la {{value}} pentru {{count}} de dinți.",
+      "range": "Folosiți {{min}}–{{max}}",
+      "region": "Setați o valoare pentru dinții selectați",
+      "selected_one": "{{count}} dinte selectat",
+      "selected_other": "{{count}} de dinți selectați",
+      "set": "Setați",
+      "column": "Coloana de setat",
+      "to": "la",
+      "value": "Valoare",
+      "apply": "Aplicați",
+      "clearSelection": "Goliți selecția",
+      "tip": "Sfat: faceți clic pe numerele dinților pentru a selecta mai mulți dinți (Shift-clic pentru un interval), apoi setați aceeași valoare tuturor.",
+      "toast_few": "{{name}} setat la {{value}} pentru {{count}} dinți.",
+      "selected_few": "{{count}} dinți selectați"
+    },
+    "missingCheck": {
+      "label": "Dintele {{triadan}} absent",
+      "labelCarried": "Dintele {{triadan}} absent (preluat din vizita anterioară)",
+      "titleCarried": "Dintele {{triadan}} era deja absent sau extras la vizita anterioară — preluat automat",
+      "titleUnmark": "Eliminați marcajul de absent pentru dintele {{triadan}}",
+      "titleMark": "Marcați dintele {{triadan}} ca absent — barează acest rând și colorează dintele în diagrama de diagnostic",
+      "prev": "ant"
+    },
+    "tooth": {
+      "title": "Faceți clic pentru a selecta acest dinte (Shift-clic pentru un interval) și a seta o valoare pentru mai mulți simultan"
+    },
+    "slot": {
+      "root": "rădăcina {{root}}",
+      "rootLast": "rădăcina {{root}} — vizita anterioară {{value}}",
+      "site": "situsul {{site}}",
+      "siteLast": "situsul {{site}} — vizita anterioară {{value}}"
+    },
+    "unsplit": {
+      "title": "Neseparat pe rădăcini — faceți clic pentru editare (ștergeți pentru a obține o casetă pe rădăcină)",
+      "chip": "toate rădăcinile"
+    },
+    "unsplitSites": {
+      "title": "Neseparat pe situsuri — faceți clic pentru editare (ștergeți pentru a obține o casetă pe situs)",
+      "chip": "nu pe situs"
+    },
+    "lastVisit": "Vizita anterioară: {{value}}",
+    "lastVisitRef": "Vizita anterioară: {{value}} — afișat ca referință, nu este preluat",
+    "setAllHint": "Setați {{name}} pentru fiecare dinte simultan",
+    "options": {
+      "mirror": "Afișați constatările pe diagrama de diagnostic",
+      "mirrorTitle": "Adaugă un comentariu pentru fiecare dinte completat în diagrama de diagnostic și îl actualizează pe măsură ce completați. Comentariile proprii nu sunt modificate.",
+      "pdf": "Includeți grila în PDF",
+      "pdfTitleOn": "Debifați pentru a exclude grilele arcadelor din PDF — diagrama de diagnostic afișează deja aceste constatări și primește spațiul suplimentar.",
+      "pdfTitleOff": "Disponibil când constatările sunt afișate pe diagrama de diagnostic."
+    }
+  },
+  "toothChart": {
+    "legend": {
+      "label": "Legenda diagramei",
+      "charted": "Consemnat",
+      "planned": "Extracție planificată",
+      "extracted": "Extras",
+      "missing": "Absent"
+    },
+    "clickTooth": "<strong>Faceți clic pe un dinte</strong> din diagramă pentru a completa fișa acestuia.",
+    "hint": "Tot ce introduceți aici completează și grila fișei dentare și diagramele de diagnostic / procedură.",
+    "start": "Începeți la {{triadan}} →",
+    "prev": "Dintele anterior",
+    "prevAria": "Dintele anterior ({{triadan}})",
+    "next": "Dintele următor",
+    "nextAria": "Dintele următor ({{triadan}})",
+    "missingBefore": "Absent (înainte de această vizită)",
+    "findings": "Constatări",
+    "rootAria": "Pungă, rădăcina {{root}}",
+    "siteAria": "Pungă, situsul {{site}}",
+    "expected": "Valori așteptate {{range}}",
+    "diagnosisNote": "Notă de diagnostic",
+    "diagnosisPlaceholder": "de ex. Coroană fracturată, expunere pulpară",
+    "extraction": "Extracție",
+    "planExtract": "Planificați extracția",
+    "procedureNote": "Notă de procedură",
+    "procedurePlaceholder": "de ex. Extracție chirurgicală, lambou suturat cu 5-0",
+    "plan": "Plan de extracție",
+    "chipDone": "{{triadan}} — extras",
+    "chipPending": "{{triadan}} — încă nemarcat ca extras",
+    "allConfirmed": "Toate extracțiile planificate sunt confirmate.",
+    "confirmed": "{{done}} din {{total}} confirmați ca extrași.",
+    "markExtracted_one": "Marcați-l ca extras",
+    "markExtracted_other": "Marcați toți cei {{count}} ca extrași",
+    "toothMap": "Hartă dentară",
+    "quadrant": "Cadran",
+    "quadrants": {
+      "1": "Superior drept",
+      "2": "Superior stâng",
+      "3": "Inferior stâng",
+      "4": "Inferior drept"
+    },
+    "selectTooth": "Selectați dintele {{triadan}}: {{name}}",
+    "markExtracted_few": "Marcați toți cei {{count}} ca extrași"
+  },
+  "toothName": {
+    "side": {
+      "right": "drept",
+      "left": "stâng"
+    },
+    "jaw": {
+      "maxillary": "maxilar",
+      "mandibular": "mandibular"
+    },
+    "type": {
+      "incisor": "incisiv",
+      "canine": "canin",
+      "premolar": "premolar",
+      "molar": "molar"
+    },
+    "ordinal": {
+      "1": "primul",
+      "2": "al doilea",
+      "3": "al treilea",
+      "4": "al patrulea"
+    },
+    "ordinalTooth": "{{ordinal}} {{type}}",
+    "permanent": "{{tooth}} {{jaw}} {{side}}",
+    "deciduous": "{{tooth}} de lapte {{jaw}} {{side}}"
+  },
+  "diagram": {
+    "label": {
+      "maxilla": "Maxilar",
+      "mandible": "Mandibulă",
+      "right": "D",
+      "left": "S"
+    },
+    "aria": {
+      "select": "Diagramă dentară — alegeți un dinte pentru a completa fișa acestuia",
+      "extracted": "Diagramă dentară — Enter sau Spațiu pe un dinte comută starea extras",
+      "missing": "Diagramă dentară — Enter sau Spațiu pe un dinte comută starea absent",
+      "default": "Diagramă dentară"
+    },
+    "tooth": {
+      "label": "Dinte {{triadan}}{{details}}",
+      "markedMissing": ", marcat absent",
+      "markedExtracted": ", marcat extras",
+      "planned": ", extracție planificată",
+      "locked": " (absent înainte de această vizită — blocat)"
+    },
+    "comment": {
+      "fromGrid": "Din grila fișei dentare — editați grila pentru a modifica",
+      "delete": "Ștergeți comentariul",
+      "placeholder": "Note…",
+      "resize": "Redimensionați comentariul"
+    }
+  },
+  "diagramView": {
+    "customize": "Personalizați",
+    "customizeTitle": "Constatări afișate lângă dinți",
+    "toolGroup": "Instrument diagramă",
+    "markMissingTitle": "Atingeți un dinte pentru a-l marca absent (atingeți din nou pentru a șterge)",
+    "markExtractedTitle": "Atingeți un dinte pentru a-l marca extras (atingeți din nou pentru a șterge)",
+    "markTitle": "Atingeți un dinte pentru a-l marca absent sau extras",
+    "markMissing": "Marcați absent",
+    "markExtracted": "Marcați extras",
+    "mark": "Marcați",
+    "comment": "Comentariu",
+    "draw": "Desenați",
+    "historyGroup": "Anulare / Refacere",
+    "undo": "Anulați",
+    "redo": "Refaceți",
+    "undoTitle": "Anulați ({{shortcut}})",
+    "redoTitle": "Refaceți ({{shortcut}})",
+    "freeComment": "+ Comentariu liber",
+    "numbers": "# Numere",
+    "numbersTitle": "Afișați numărul Triadan al fiecărui dinte pe diagramă (nu se tipărește în PDF)",
+    "zoomGroup": "Mărire",
+    "zoomOut": "Micșorați",
+    "zoomIn": "Măriți",
+    "zoomReset": "Resetați mărirea pentru încadrare",
+    "zoomLevel": "Mărire {{percent}} la sută — resetați pentru încadrare",
+    "textSize": {
+      "group": "Dimensiunea textului comentariilor",
+      "glyph": "A",
+      "s": "S",
+      "m": "M",
+      "l": "L",
+      "xl": "XL",
+      "aria": "Dimensiunea textului comentariilor {{size}}",
+      "title": "Dimensiunea textului comentariilor: {{size}}"
+    },
+    "drawSettings": "Setări desen",
+    "strokeColor": "Culoarea liniei",
+    "colors": {
+      "red": "roșu",
+      "blue": "albastru",
+      "green": "verde",
+      "amber": "chihlimbar",
+      "charcoal": "gri cărbune"
+    },
+    "strokeColorAria": "Culoarea liniei {{color}}",
+    "strokeWidth": "Grosimea liniei",
+    "strokeWidthValue": "{{width}} pixeli",
+    "clearStrokes": "Ștergeți liniile",
+    "more": "Mai multe instrumente de diagramă",
+    "moreTitle": "Mai multe instrumente — comentarii, numere, mărire, dimensiunea textului",
+    "moreLabel": "Mai multe instrumente"
+  },
+  "codeRef": {
+    "all": "Coduri",
+    "diagnosisTitle": "Coduri de diagnostic",
+    "procedureTitle": "Coduri de procedură",
+    "searchLabel": "Căutați coduri sau definiții",
+    "searchPlaceholder": "Căutați coduri sau definiții…",
+    "diagnoses": "Diagnostice",
+    "procedures": "Proceduri",
+    "noMatches": "Nicio potrivire."
+  },
+  "scoreChips": {
+    "group": "Scor {{name}}",
+    "clear": "Ștergeți {{name}}"
+  },
+  "menu": {
+    "practiceSettingsHintApp": "Nume, siglă și echipă."
+  },
+  "imaging": {
+    "takePhoto": "Faceți o fotografie",
+    "cameraFailed": "Camera nu a putut fi deschisă.",
+    "cameraNoPhoto": "Camera nu a returnat o fotografie.",
+    "cameraReadFailed": "Fotografia nu a putut fi citită ({{status}}).",
+    "limitReached_one": "Această fișă a atins limita de {{count}} imagine.",
+    "limitReached_other": "Această fișă a atins limita de {{count}} de imagini.",
+    "uploadsUnavailable": "Încărcările de fotografii nu sunt disponibile pentru acest cont.",
+    "formatsApp": "PNG, JPEG sau WEBP.",
+    "dicomUnavailable": "Încărcările DICOM nu sunt disponibile pentru acest cont. Exportați radiografia ca JPEG sau PNG pentru a o adăuga.",
+    "limitReached_few": "Această fișă a atins limita de {{count}} imagini."
+  },
+  "aiConsent": {
+    "title": "Folosiți serviciile IA?",
+    "intro": "Pentru dictare în fișă și redactarea ciornelor cu IA, ToothOps trimite date către două servicii:",
+    "deepgram": "<strong>Deepgram</strong> primește sunetul vocii dumneavoastră în timpul dictării, pentru a-l transforma în text.",
+    "anthropic": "<strong>Anthropic</strong> (Claude) primește transcrierea dictării și conținutul fișei, precum datele pacientului și constatările, pentru a completa fișa sau a redacta raportul pentru proprietar.",
+    "nothingSent": "Nu se trimite nimic decât dacă utilizați aceste funcții.",
+    "allow": "Permiteți",
+    "notNow": "Nu acum"
+  },
+  "ios": {
+    "newChart": "Fișă nouă",
+    "more": "Mai multe",
+    "menu": {
+      "newChart": "Fișă nouă",
+      "newVisit": "Vizită nouă",
+      "saveNow": "Salvați acum",
+      "retrySave": "Reîncercați salvarea",
+      "customize": "Personalizați {{section}}"
+    },
+    "status": {
+      "saved": "Salvată · {{time}}",
+      "notSaved": "Nesalvată",
+      "viewOnlyDate": "Doar vizualizare · {{date}}",
+      "editingWith": "Editare · {{status}}",
+      "keptOnDevice": "Se salvează când începeți completarea",
+      "unsaved": "Modificări nesalvate",
+      "onDevice": "Doar pe acest dispozitiv"
+    },
+    "notice": {
+      "otherTab": "Această fișă este deschisă în altă fereastră. Ambele editează aceeași copie de lucru — închideți una pentru a evita suprascrierea modificărilor.",
+      "gotIt": "Am înțeles",
+      "notSaved": "Această fișă nu este salvată."
+    },
+    "form": {
+      "patient": "Pacient",
+      "owner": "Proprietar",
+      "visit": "Vizită",
+      "complaint": "Motivul principal al prezentării",
+      "dictate": "Dictare",
+      "nerveBlocks": "Blocuri nervoase",
+      "addInterval": "Adăugați interval"
+    },
+    "diagram": {
+      "numbers": "Numere",
+      "freeComment": "Comentariu liber"
+    },
+    "grid": {
+      "tip": "Sfat: atingeți numerele dinților pentru a selecta mai mulți, apoi setați aceeași valoare tuturor.",
+      "pickTitle": "Atingeți pentru a selecta acest dinte și a seta o valoare pentru mai mulți simultan"
+    }
+  },
+  "quickCodes": {
+    "group": "Coduri rapide",
+    "chipAria": "{{code}}: {{definition}}",
+    "label": "Atingeți un cod, apoi un dinte:",
+    "stampHint": "Atingeți un dinte pentru a adăuga {{code}} (atingeți din nou pentru a-l elimina)"
+  }
+}

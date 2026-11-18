@@ -153,7 +153,9 @@
     "fr": "Français (Französisch)",
     "de": "Deutsch",
     "it": "Italiano (Italienisch)",
-    "pt": "Português (Portugiesisch)"
+    "pt": "Português (Portugiesisch)",
+    "hu": "Magyar (Ungarisch)",
+    "ro": "Română (Rumänisch)"
   },
   "email": {
     "button": "An Besitzer senden",

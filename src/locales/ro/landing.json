@@ -1,0 +1,203 @@
+{
+  "wordmark": "ToothOps Charting",
+  "nav": {
+    "pricing": "Tarife",
+    "backToApp": "Înapoi la aplicație",
+    "signIn": "Autentificare",
+    "getStarted": "Începeți"
+  },
+  "hero": {
+    "eyebrow": "Odontograme veterinare cu inteligență artificială integrată",
+    "betaPill": "Versiune beta gratuită",
+    "headlineLine1": "Doar dictați.",
+    "headlineLine2": "Odontograma se completează singură.",
+    "sub": "Dictați în timp ce lucrați, iar inteligența artificială înscrie constatările direct într-o odontogramă Triadan completă — nomenclatură AVDC, măsurători pentru fiecare dinte și diagrame. Aveți și fotografii și radiografii, istoricul vizitelor fiecărui pacient, notificări pentru controale și un PDF cu sigla dumneavoastră, pregătit pentru client imediat ce terminați.",
+    "ctaTrial": "Începeți perioada de probă gratuită de {{days}} zile",
+    "ctaFree": "Creați-vă contul gratuit",
+    "tryFree": "Încercați gratuit — fără cont",
+    "openApp": "Deschideți aplicația de odontograme",
+    "notePricing": "Abonamente de la {{price}}/lună · Probă gratuită de {{days}} zile · Anulare oricând",
+    "noteTrial": "Probă gratuită de {{days}} zile · Anulare oricând",
+    "noteBeta": "Gratuit în versiunea beta · Dictare cu IA inclusă · Fără card bancar",
+    "noteNoAccount": "proba fără cont nu include dictarea cu IA și aplică marcajul TRIAL pe PDF-uri"
+  },
+  "demo": {
+    "meta": "Felină · {{date}}",
+    "stepChart": "Odontogramă",
+    "stepDiagram": "Diagramă",
+    "stepExport": "Export",
+    "colTooth": "Dinte",
+    "colMobility": "Mob",
+    "colPocket": "Png",
+    "colGingivitis": "Gin",
+    "captionChart": "Tab · Enter — completare ca într-o foaie de calcul",
+    "captionDiagram": "Marcați o singură dată — tabelul, diagrama și PDF-ul rămân sincronizate",
+    "captionExport": "Sigla și numele medicului dumneavoastră — pe fiecare pagină",
+    "comment": "T/FX/CC — pulpă expusă",
+    "voice": "„o sută patru fractură coronară complicată, pulpă expusă…”",
+    "pause": "❚❚ Opriți animația",
+    "play": "▶ Porniți animația"
+  },
+  "features": {
+    "seeIt": "Vedeți →",
+    "previous": "← Anterior",
+    "next": "Următor →",
+    "voiceResult1": "104 · comentariu „CCF, expunere pulpară”",
+    "voiceResult2": "104 · Stadiu parodontal → PD3",
+    "voiceResult3": "Diagrama intervențiilor · 104 marcat pentru extracție",
+    "grid": {
+      "title": "Completare ca într-o foaie de calcul",
+      "blurb": "Tabele Triadan pentru întreaga dentiție felină, canină și deciduală. Introduceți măsurătorile printr-un clic și navigați cu Tab, Enter sau Spațiu.",
+      "lead": "Tabelul odontogramei funcționează așa cum echipa dumneavoastră scrie deja: faceți clic pe orice celulă și începeți. Înregistrați adâncimile de sondare fără să vă luați privirea de la pacient.",
+      "imageAlt": "Tabelul odontogramei cu valori pentru gingivită, tartru, pungă parodontală, furcație și mobilitate, iar dintele 106 barat ca absent",
+      "points": {
+        "p1": "Faceți clic pe orice celulă pentru a începe introducerea măsurătorilor.",
+        "p2": "Folosiți Tab, Enter și Spațiu pentru a trece între celule în timp ce înregistrați măsurători.",
+        "p3": "Scoruri pentru întreaga cavitate orală printr-o singură acțiune: setați tartrul sau gingivita pentru toți dinții din antetul coloanei.",
+        "p4": "Bifa Absent barează rândul și umple dintele pe diagramă — aceleași informații peste tot.",
+        "p5": "La o vizită ulterioară, valorile anterioare apar discret în celulele goale: comparați fără să deschideți fișa veche.",
+        "p6": "Dentiții pentru pisici, câini, căței și pisoi, toate cu numerotare Triadan."
+      }
+    },
+    "voice": {
+      "title": "Completare vocală automată cu IA, integrată",
+      "tag": "IA · Versiune beta gratuită",
+      "blurb": "Spuneți „104 fractură coronară complicată”, iar constatarea este înscrisă la dintele respectiv — transcrisă și înregistrată în timp ce mâinile dumneavoastră rămân pe pacient.",
+      "lead": "Dictați în timp ce lucrați: un model de recunoaștere vocală medicală transcrie, iar IA trimite fiecare constatare la dintele, diagrama și câmpul potrivit.",
+      "points": {
+        "p1": "Recunoaștere vocală cu vocabular medical, adaptată cu termeni de stomatologie veterinară.",
+        "p2": "Constatările devin înregistrări structurate — valori în tabel, marcaje dentare, comentarii ancorate — în locul unui bloc lung de text.",
+        "p3": "Un panou lateral cu transcriere în timp real afișează fiecare acțiune pe măsură ce se produce și evidențiază dintele vizat.",
+        "p4": "Tot ce scrie IA poate fi anulat prin același sistem folosit pentru modificările dumneavoastră.",
+        "p5": "Nu este sigură că v-a auzit corect? Semnalează constatarea și, după o pauză, vă spune în cască „Verificați 109” — fără să vă întrerupă.",
+        "p6": "Fără chei API și fără configurare — gratuit în versiunea beta."
+      }
+    },
+    "diagrams": {
+      "title": "Diagrame mereu sincronizate",
+      "blurb": "Diagramele dentare de diagnostic și intervenții urmează tabelul — barați un dinte o dată, iar întreaga fișă se actualizează, de la odontogramă la PDF.",
+      "lead": "Diagrame anatomice pentru diagnostic și intervenții, cu constatările sincronizate între tabel și odontograma tipărită.",
+      "imageAlt": "Diagrama de diagnostic cu dinții absenți umpluți și codurile AVDC — T/FX, T/FX/CCF, TR, AB, AT — ancorate la fiecare dinte",
+      "points": {
+        "p1": "Marcați dinții absenți sau extrași printr-un clic sau de la tastatură — fiecare dinte poate fi selectat.",
+        "p2": "Comentariile se ancorează la un dinte și rămân îndreptate spre el; comentariile libere pot fi plasate oriunde.",
+        "p3": "Desenați liber în cinci culori orice nu poate fi exprimat printr-un cod.",
+        "p4": "Măriți și deplasați imaginea pentru cavitățile orale feline aglomerate.",
+        "p5": "Dinții marcați absenți în Diagnostic sunt blocați în diagrama de intervenții — un dinte deja absent nu poate fi extras din nou.",
+        "p6": "Fiecare diagramă are propriul istoric de anulare (⌘Z se aplică ultimei diagrame utilizate)."
+      }
+    },
+    "avdc": {
+      "title": "Folosește nomenclatura AVDC",
+      "blurb": "Întregul set de abrevieri AVDC este disponibil în aplicație, cu un ghid de căutare lângă diagrame și o legendă tipărită pe fiecare odontogramă.",
+      "lead": "Fișa este clară pentru oricine o citește: nomenclatură standard de la început la sfârșit, cu ghidul mereu la îndemână.",
+      "imageAlt": "Panoul de referință pentru căutarea codurilor AVDC",
+      "points": {
+        "p1": "Setul complet de abrevieri AVDC pentru patologie și intervenții.",
+        "p2": "Un ghid cu căutare a codurilor se află lângă fiecare diagramă — fără altă filă, disponibil și în fișele blocate.",
+        "p3": "Fiecare cod folosit în odontogramă este tipărit împreună cu semnificația sa în legenda PDF-ului.",
+        "p4": "Completare automată a codurilor dentare în câmpurile de comentarii în timp ce scrieți."
+      }
+    },
+    "pdf": {
+      "title": "PDF-uri pregătite pentru clienți",
+      "blurb": "O fișă de două pagini cu identitatea cabinetului, imediat ce terminați — iar PDF-ul poate fi reimportat ulterior pentru a restaura întreaga fișă.",
+      "lead": "O singură atingere transformă fișa într-un document îngrijit, cu numele cabinetului, numele medicului și sigla dumneavoastră.",
+      "imageAlt": "PDF-ul generat al odontogramei canine, cu diagrame, constatările examinării și tabelele arcadelor",
+      "points": {
+        "p1": "Două pagini: diagrame, examinare orală, tabele complete ale arcadelor, raport de tratament și legenda codurilor.",
+        "p2": "Mai multe stiluri de document — alegeți la fiecare descărcare, iar previzualizarea se actualizează în timp real.",
+        "p3": "Toate datele fișei sunt încorporate în PDF: reimportați-l ulterior și continuați lucrul, chiar și pe alt calculator.",
+        "p4": "Raport pentru proprietar (beta): o versiune separată, pe înțelesul tuturor, pentru acasă, cu fotografii înainte și după — generată automat și editabilă înainte de tipărire."
+      }
+    },
+    "photos": {
+      "title": "Fotografii și radiografii",
+      "blurb": "Atașați fotografii intraorale și radiografii dentare la orice fișă, adăugați descrieri și asociați fiecare imagine unui dinte — stocate privat împreună cu fișa medicală.",
+      "lead": "Imaginile se află acolo unde le căutați: în fișă, asociate dintelui pe care îl prezintă.",
+      "points": {
+        "p1": "Fotografii intraorale și radiografii cu descrieri, asociate fiecărui dinte.",
+        "p2": "Stocare privată, cu linkuri semnate cu valabilitate scurtă — imaginile nu sunt niciodată publice.",
+        "p3": "Fotografiile de pe telefon sunt redimensionate automat pentru ca fișele să rămână rapide.",
+        "p4": "Etichetați fotografiile Înainte/După pentru a le include în raportul pentru proprietar (beta)."
+      }
+    },
+    "history": {
+      "title": "Toate vizitele, un singur pacient",
+      "blurb": "Fișele sunt grupate pe pacient, astfel încât întregul istoric al unui animal care revine este la un clic distanță — iar vizita actuală începe de unde s-a încheiat cea anterioară.",
+      "lead": "Păstrați vizitele fiecărui pacient împreună, cu constatările relevante preluate la vizita următoare.",
+      "points": {
+        "p1": "Fișele sunt grupate pe pacient; selectorul de vizite din bara de sus vă permite să treceți între date.",
+        "p2": "Vizitele noi preiau automat dinții extrași și absenți — marcați ca anteriori, pentru a fi citiți ca istoric, nu ca o constatare de astăzi.",
+        "p3": "Măsurătorile de la ultima vizită apar ca indicii în timpul sondării, pentru ca evoluția să fie ușor de observat lângă pacient.",
+        "p4": "Fiecare salvare este înregistrată — cine și când — în istoricul fiecărei fișe.",
+        "p5": "Vizitele anterioare se deschid doar pentru citire până când sunt deblocate explicit, pentru a evita modificările accidentale — vizita de astăzi rămâne pregătită pentru editare."
+      }
+    },
+    "recall": {
+      "title": "Programarea controalelor, integrată",
+      "blurb": "Stabiliți data controlului în timp ce completați fișa și vedeți în lista de pacienți cine urmează să revină sau a depășit termenul.",
+      "lead": "Planificați îngrijirea ulterioară cu date de control și notificări în spațiul de lucru al pacienților.",
+      "points": {
+        "p1": "O dată de control în fișă adaugă pacientul pe lista controalelor programate, marcat ca scadent sau întârziat.",
+        "p2": "Trimiteți proprietarului un e-mail de reamintire direct din lista de pacienți.",
+        "p3": "Controlul a avut loc fără o fișă nouă? Ștergeți termenul printr-un clic, iar pacientul dispare din listă.",
+        "p4": "Filtrați biblioteca după pacienții cu controale scadente pentru a planifica apelurile săptămânii."
+      }
+    },
+    "team": {
+      "title": "Întreaga echipă, o singură fișă",
+      "blurb": "Adăugați colegi în cabinet și toți vor avea acces la aceleași fișe, șabloane și imagini — cu conturi individuale, fără parolă comună.",
+      "lead": "Cabinetul este unitatea de lucru: un set comun de fișe, autentificări individuale și medicul înregistrat la fiecare vizită.",
+      "points": {
+        "p1": "Până la cinci utilizatori pentru fiecare cabinet (gratuit în versiunea beta); fiecare membru are propria autentificare.",
+        "p2": "Fișele, șabloanele de raport, imaginile și sigla cabinetului sunt partajate automat.",
+        "p3": "Fiecare vizită păstrează autorul — filtrați biblioteca după medic.",
+        "p4": "Doar proprietarii cabinetului pot modifica denumirea și administra echipa."
+      }
+    },
+    "offline": {
+      "title": "În cloud și lângă pacient",
+      "blurb": "Fișele se salvează automat în cloud, cu o copie locală disponibilă dacă se întrerupe conexiunea.",
+      "lead": "Continuați completarea fișei când conexiunea se întrerupe și verificați starea salvării înainte de a încheia vizita.",
+      "points": {
+        "p1": "Modificările sunt păstrate pe acest dispozitiv în timp ce lucrați.",
+        "p2": "Fișele noi se salvează automat în cloud; salvările nereușite se reîncearcă automat la revenirea conexiunii.",
+        "p3": "Dacă sesiunea expiră în timpul intervenției, fișa rămâne deschisă — vă puteți autentifica din nou chiar deasupra ei.",
+        "p4": "Șabloanele de raport reutilizabile reduc tastarea la fiecare COHAT."
+      }
+    }
+  },
+  "pricing": {
+    "title": "Tarife lunare simple",
+    "sub": "Fiecare abonament începe cu o probă gratuită de {{days}} zile. Anulați oricând — treceți la planul gratuit și păstrați toate fișele.",
+    "mostPopular": "Cel mai popular",
+    "perMonth": "/lună",
+    "startTrial": "Începeți proba gratuită",
+    "contact": "Echipă mai mare? Grup cu mai multe sedii? Program universitar? <a>Contactați-ne</a> pentru tarife pentru mai mult de 5 utilizatori."
+  },
+  "paper": {
+    "title": "Fișa pe care clienții o iau acasă",
+    "body": "Un clic transformă întreaga intervenție într-un PDF clar de două pagini — sigla și numele medicului sus, tabele pentru întreaga dentiție, ambele diagrame, constatările examinării și o legendă pentru fiecare cod AVDC folosit.",
+    "point1": "Cinci stiluri profesionale de document",
+    "point2": "Identitatea pacientului pe fiecare pagină",
+    "point3": "Redeschideți orice PDF în aplicație — fișa este încorporată în el",
+    "page1Label": "Vedeți prima pagină a fișei demonstrative la dimensiune completă",
+    "page1Zoom": "Prima pagină a fișei demonstrative, la dimensiune completă",
+    "page1Alt": "Prima pagină a unui PDF generat al odontogramei: sigla cabinetului și numele medicului, diagrama de diagnostic cu comentarii ancorate, constatările examinării orale cu comentarii, tabele parțiale de sondare Triadan și legenda codurilor AVDC folosite",
+    "page2Label": "Vedeți a doua pagină a fișei demonstrative la dimensiune completă",
+    "page2Zoom": "A doua pagină a fișei demonstrative, la dimensiune completă",
+    "page2Alt": "A doua pagină a aceleiași fișe: dozele blocurilor nervoase, diagrama intervențiilor cu extracțiile marcate, raportul de tratament și chirurgie și codurile intervențiilor folosite"
+  },
+  "closer": {
+    "title": "Sunteți gata să lăsați deoparte fișele pe hârtie?"
+  },
+  "lightboxClose": "Închideți vizualizarea la dimensiune completă",
+  "footer": {
+    "tagline": "ToothOps Charting — creat împreună cu medici veterinari stomatologi.",
+    "privacy": "Confidențialitate",
+    "terms": "Condiții",
+    "dpa": "Acord de prelucrare a datelor",
+    "contact": "Contact"
+  }
+}

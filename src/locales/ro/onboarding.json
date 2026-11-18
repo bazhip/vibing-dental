@@ -1,0 +1,121 @@
+{
+  "walkthrough": {
+    "aria": "Primii pași",
+    "progress": "{{current}} din {{total}}",
+    "skip": "Omiteți",
+    "back": "Înapoi",
+    "next": "Înainte",
+    "finish": "Începeți completarea",
+    "steps": {
+      "firstPatient": {
+        "title": "Identificați pacientul",
+        "body": "Introduceți numele pacientului, apoi alegeți specia și dentiția. Adăugați detaliile proprietarului și ale vizitei după necesitate."
+      },
+      "firstFinding": {
+        "title": "Consemnați o constatare",
+        "body": "Alegeți un dinte și introduceți o măsurătoare sau constatare. Lucrul se salvează automat; puteți continua să adăugați detalii după acest tur."
+      },
+      "firstOutput": {
+        "title": "Verificați rezultatul",
+        "body": "Deschideți previzualizarea PDF pentru a verifica vizita înainte de partajare. Pentru turul complet al spațiului de lucru, deschideți Ajutor → Primii pași."
+      },
+      "welcome": {
+        "title": "Bun venit la ToothOps",
+        "body": "Un scurt tur al spațiului de lucru. Îl puteți relua oricând din Ajutor → Primii pași."
+      },
+      "sections": {
+        "title": "Vizita dumneavoastră, într-un singur loc",
+        "body": "De la primul examen până la raportul de tratament, parcurgeți secțiunile în ordine sau treceți direct la cea dorită. Fișa se salvează pe măsură ce lucrați."
+      },
+      "patient": {
+        "title": "Pacient și proprietar",
+        "body": "Începeți cu numele pacientului, apoi adăugați detaliile proprietarului când doriți. Alegeți aici specia și dentiția — dinții se adaptează automat."
+      },
+      "species": {
+        "title": "Specie și dentiție",
+        "body": "Alegeți Felină, Canină sau Ecvină, apoi dentiția — diagrama dentară se adaptează."
+      },
+      "grid": {
+        "title": "Completați în stilul dumneavoastră",
+        "body": "Preferați o vedere a întregii cavități orale? Folosiți Grilă pentru a introduce măsurători și scoruri. Tab mută lateral, iar Enter mută în jos. Selectați mai multe numere dentare pentru a le atribui același scor."
+      },
+      "diagrams": {
+        "title": "Diagrame",
+        "body": "Faceți clic pe un dinte pentru a-l marca, a adăuga comentarii sau a desena o notă. Diagnosticul și Procedura au alături coduri AVDC cu căutare. Anulați cu ⌘Z."
+      },
+      "codes": {
+        "title": "Referință coduri",
+        "body": "Căutați aici în setul complet de coduri AVDC; rămâne fixat lângă diagramă când derulați."
+      },
+      "treatment": {
+        "title": "Raport de tratament și șabloane",
+        "body": "Scrieți raportul sau introduceți un șablon salvat din lista derulantă — și salvați altele noi pentru reutilizare."
+      },
+      "library": {
+        "title": "Pacienți",
+        "body": "Căutați pacienți și deschideți vizitele acestora. Folosiți Pacient nou pentru o fișă goală. Pentru pacientul curent, folosiți Acțiuni vizită pentru a începe o vizită nouă sau a consulta istoricul versiunilor."
+      },
+      "dictate": {
+        "title": "Dictați",
+        "body": "Atingeți Dictați și descrieți constatările — de pe orice pagină. Fiecare ajunge la locul potrivit, iar un panou în timp real afișează fiecare modificare, pentru a putea anula orice."
+      },
+      "settings": {
+        "title": "Setările cabinetului",
+        "body": "Gestionați aici cabinetul, echipa, șabloanele și mementourile. Preferințele personale sunt la Contul dumneavoastră; îndrumările și sugestiile sunt la Ajutor."
+      },
+      "pdf": {
+        "title": "Previzualizați și descărcați PDF-ul",
+        "body": "Generați PDF-ul fișei cu sigla dumneavoastră, pregătit pentru client, oricând doriți."
+      },
+      "byTooth": {
+        "title": "Câte un dinte pe rând",
+        "body": "Treceți la Pe dinte și faceți clic pe un dinte din diagramă. Consemnați împreună măsurătorile, diagnosticul și procedura, apoi treceți la următorul dinte. Grilă și Pe dinte folosesc aceleași constatări."
+      },
+      "customize": {
+        "title": "Adaptați aplicația nevoilor dumneavoastră",
+        "body": "Căutați Personalizați la Pacient, Examen, Anestezie, Fișă dentară, Diagnostic și Imagini. Alegeți coloane, adâncimi ale pungilor pe dinte, rădăcină sau situs, coduri rapide și altele. După autentificare, preferințele vă urmează contul."
+      },
+      "images": {
+        "title": "Fotografii și radiografii",
+        "body": "Păstrați imaginile împreună cu vizita și adăugați aici constatările radiografice. Alegeți imaginile incluse în PDF-ul fișei."
+      },
+      "ownerReport": {
+        "title": "Un raport pentru acasă",
+        "body": "Raportul pentru proprietar oferă familiei un rezumat clar și recomandări de îngrijire la domiciliu. Verificați-l înainte de partajare și folosiți Personalizați pentru a adapta aspectul, formulările și limba clientului la cabinetul dumneavoastră."
+      }
+    }
+  },
+  "finishSetup": {
+    "title": "Finalizați configurarea",
+    "both": "Numele cabinetului și al medicului apar pe fiecare fișă tipărită.",
+    "practiceOnly": "Numele cabinetului apare pe fiecare fișă tipărită.",
+    "doctorOnly": "Numele medicului apare pe fiecare fișă tipărită.",
+    "practiceName": "Numele cabinetului",
+    "doctorName": "Numele medicului",
+    "doctorPlaceholder": "de ex. Dr. Ana Popescu",
+    "logoOptional": "Sigla cabinetului (opțional)",
+    "logoNamed": "Siglă: {{name}}",
+    "logoHint": "Tipărită în partea de sus a fișelor. PNG, JPG sau WebP.",
+    "later": "Mai târziu",
+    "save": "Salvați",
+    "saving": "Se salvează…",
+    "namesNeeded": "Ambele nume sunt necesare — apar pe fișele dumneavoastră.",
+    "logoFailed": "Numele au fost salvate, dar sigla nu a putut fi încărcată — adăugați-o ulterior în setările cabinetului.",
+    "allSet": "Totul este pregătit.",
+    "saveFailed": "Salvarea nu a reușit."
+  },
+  "join": {
+    "title": "Vă alăturați cabinetului {{practice}}?",
+    "invitation": "Invitație de la cabinet",
+    "checking": "Se verifică invitația…",
+    "thisPractice": "acest cabinet",
+    "alreadyMember": "Sunteți deja membru al cabinetului {{practice}}.",
+    "leaves": "Alăturarea vă scoate din cabinetul {{practice}}: nu veți mai vedea fișele acestuia.",
+    "invited": "Ați fost invitat să vă alăturați cabinetului <strong>{{practice}}</strong> pe ToothOps. Membrii partajează fișele, șabloanele de raport și lista de recontroale, iar fișele noi salvate sunt partajate cu echipa.",
+    "shareExisting": "Partajați și fișele pe care le-am creat deja",
+    "close": "Închideți",
+    "notNow": "Nu acum",
+    "joining": "Alăturare…",
+    "joinButton": "Alăturați-vă cabinetului {{practice}}"
+  }
+}

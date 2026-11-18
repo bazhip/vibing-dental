@@ -22,6 +22,10 @@ describe('resolveLanguage', () => {
     expect(resolveLanguage(null, ['pt-BR', 'ja'], true)).toBe('en');
     expect(resolveLanguage(null, [], true)).toBe('en');
   });
+  test.each(['hu', 'ro'] as const)('recognizes and persists %s', (lng) => {
+    expect(resolveLanguage(null, [`${lng}-${lng.toUpperCase()}`], true)).toBe(lng);
+    expect(normalizeChartPrefs({ language: lng }).language).toBe(lng);
+  });
 });
 
 describe('chart prefs language', () => {

@@ -1,0 +1,358 @@
+{
+  "done": "Gata",
+  "saving": "Se salvează…",
+  "practice": {
+    "title": "Setările cabinetului",
+    "profile": "Profil",
+    "nameLabel": "Denumirea cabinetului",
+    "namePlaceholder": "Afișată în aplicație și pe fiecare fișă",
+    "nameLockedLoading": "Denumirea cabinetului este blocată până la încărcarea echipei — reîncercați mai jos.",
+    "nameLockedShared": "Denumirea cabinetului este comună întregii echipe — doar proprietarul principal o poate modifica.",
+    "nameSaved": "Denumirea cabinetului a fost salvată.",
+    "nameSaveFailed": "Denumirea cabinetului nu a putut fi salvată.",
+    "discard": {
+      "title": "Renunțați la modificarea denumirii cabinetului?",
+      "message": "Noua denumire a cabinetului nu a fost salvată.",
+      "confirm": "Renunțați",
+      "cancel": "Continuați editarea"
+    },
+    "logo": {
+      "label": "Sigla cabinetului",
+      "alt": "Sigla cabinetului",
+      "replace": "Înlocuiți",
+      "remove": "Eliminați",
+      "working": "Se procesează…",
+      "empty": "Nu a fost încărcată nicio siglă — fișele folosesc sigla încorporată în șablon.",
+      "upload": "Încărcați sigla",
+      "uploading": "Se încarcă…",
+      "choose": "Alegeți imaginea siglei",
+      "updated": "Sigla a fost actualizată.",
+      "uploadFailed": "Sigla nu a putut fi încărcată.",
+      "removed": "Sigla a fost eliminată.",
+      "removeFailed": "Sigla nu a putut fi eliminată.",
+      "removeTitle": "Eliminați sigla cabinetului?",
+      "removeMessage": "Fișele și PDF-urile noi vor folosi sigla încorporată în șablon până când încărcați alta.",
+      "removeConfirm": "Eliminați sigla"
+    },
+    "team": {
+      "title": "Echipă",
+      "loading": "Se încarcă echipa…",
+      "settingUp": "Cabinetul dumneavoastră este încă în curs de configurare.",
+      "checkAgain": "Verificați din nou",
+      "checking": "Se verifică…",
+      "retry": "Reîncercați",
+      "retrying": "Se reîncearcă…",
+      "loadError": "Echipa dumneavoastră nu a putut fi încărcată. {{error}}",
+      "ownerBlurb": "Colegii pe care îi adăugați au acces la fișele, șabloanele și imaginile acestui cabinet.",
+      "memberBlurb": "Sunteți membru al cabinetului {{practice}}. Aveți acces la fișele comune ale cabinetului.",
+      "you": "(dumneavoastră)",
+      "pending": "Invitație în așteptare",
+      "roles": {
+        "primaryOwner": "Proprietar principal",
+        "owner": "Proprietar",
+        "member": "Membru"
+      },
+      "resend": "Retrimiteți invitația",
+      "makeOwner": "Desemnați proprietar",
+      "makeMember": "Desemnați membru",
+      "transfer": "Transferați proprietatea",
+      "remove": "Eliminați",
+      "emailLabel": "E-mailul colegului",
+      "add": "Adăugați",
+      "adding": "Se adaugă…",
+      "inviteHint": "Nu are încă un cont? Îi vom trimite o invitație prin e-mail pentru a-și stabili parola și a se alătura echipei.",
+      "invalidEmail": "Introduceți o adresă de e-mail validă.",
+      "invited": "Invitația a fost trimisă la {{email}} — după stabilirea parolei, accesul este activ.",
+      "existingAccount": "{{email}} are deja un cont ToothOps — am trimis prin e-mail un link pentru acceptare. Va apărea aici după ce se alătură echipei.",
+      "addFailed": "Persoana nu a putut fi adăugată.",
+      "failed": "Operațiunea nu a reușit. Vă rugăm să reîncercați.",
+      "loadFailed": "Echipa dumneavoastră nu a putut fi încărcată.",
+      "transferTitle": "Desemnați {{email}} ca proprietar principal?",
+      "transferMessage": "Proprietarul principal gestionează facturarea și denumirea cabinetului. Dumneavoastră rămâneți proprietar al cabinetului.",
+      "transferConfirm": "Transferați proprietatea",
+      "transferred": "Proprietatea a fost transferată.",
+      "removeTitle": "Eliminați {{email}} din cabinet?",
+      "removePendingMessage": "Invitația persoanei va fi anulată.",
+      "removeMessage": "Persoana pierde accesul la fișele comune ale cabinetului, dar își păstrează fișele proprii.",
+      "cancelInvite": "Anulați invitația",
+      "removeConfirm": "Eliminați",
+      "keep": "Păstrați",
+      "inviteCancelled": "Invitația a fost anulată.",
+      "memberRemoved": "Membrul a fost eliminat.",
+      "inviteResent": "Invitația a fost retrimisă la {{email}}.",
+      "nowOwner": "{{email}} este acum proprietar.",
+      "nowMember": "{{email}} este acum membru."
+    },
+    "ownerReport": {
+      "title": "Raport pentru proprietar",
+      "blurb": "Raportul pe care familiile îl iau acasă după o vizită stomatologică — secțiuni, titluri, formulări, limbă și aspectul implicit pentru întregul cabinet.",
+      "customize": "Personalizați raportul pentru proprietar"
+    },
+    "clientLanguage": {
+      "title": "Limba pentru proprietarii animalelor",
+      "blurb": "Limba folosită pentru textele primite de familii, precum textele implicite ale raportului pentru proprietar. Textul introdus manual nu este tradus niciodată.",
+      "saveFailed": "Limba nu a putut fi salvată."
+    },
+    "deletion": {
+      "title": "Ștergerea cabinetului",
+      "blurb": "Șterge definitiv cabinetul și toate fișele partajate în acesta, inclusiv cele ale echipei, și anulează orice abonament. Membrii echipei își păstrează conturile și fișele private.",
+      "button": "Ștergeți cabinetul…"
+    },
+    "treatmentReport": {
+      "title": "Raport de tratament",
+      "blurb": "Texte salvate pentru intervenții frecvente, pregătite pentru inserare într-un raport de tratament.",
+      "customize": "Personalizați raportul de tratament"
+    }
+  },
+  "logoErrors": {
+    "unreadable": "Imaginea nu a putut fi citită.",
+    "canvas": "Suprafața de desenare nu este disponibilă",
+    "convert": "Imaginea nu a putut fi convertită.",
+    "tooLarge": "Imaginea este prea mare — fișierele pentru siglă trebuie să aibă sub 10 MB.",
+    "reportTooLarge": "Setările raportului pentru proprietar sunt prea mari (maximum 50 KB) — scurtați unele texte sau eliminați un șablon.",
+    "reportNotLoaded": "Șabloanele salvate ale raportului pentru proprietar nu s-au încărcat, astfel că salvarea acum le-ar putea suprascrie. Reîncărcați pagina și încercați din nou."
+  },
+  "chart": {
+    "title": "Setările fișei",
+    "sections": {
+      "patient": "Setările paginii Pacient",
+      "anesthesia": "Setările anesteziei",
+      "charting": "Setările odontogramei",
+      "diagnosis": "Setările diagnosticului",
+      "images": "Setările imaginilor",
+      "exam": "Setările examinării",
+      "procedure": "Setările intervențiilor"
+    },
+    "noteAccount": "Preferințele personale vă urmează contul pe fiecare dispozitiv. Modificările se salvează automat.",
+    "noteBrowser": "Preferințele personale se salvează automat în acest browser.",
+    "all": "Toate setările fișei",
+    "charting": {
+      "title": "Odontogramă",
+      "view": "Aspectul odontogramei",
+      "grid": "Tabel",
+      "byTooth": "Pe dinte",
+      "pocket": "Înregistrarea adâncimii pungilor",
+      "pocketTooth": "O valoare pe dinte",
+      "pocketRoot": "O valoare pe rădăcină",
+      "pocketRootHint": "M / D sau MB / MP / D la dinții cu trei rădăcini",
+      "pocketSite": "Șase puncte pe dinte",
+      "pocketSiteHint": "MB / B / DB / ML / L / DL",
+      "space": "Tasta Spațiu în tabel",
+      "spaceDown": "Trece în jos la dintele următor",
+      "spaceDownHint": "rapid pentru dictarea unei serii de adâncimi",
+      "spaceType": "Introduce un spațiu",
+      "scoreTap": "După atingerea unui scor în tabel",
+      "scoreFinding": "Trece la constatarea următoare pe același dinte",
+      "scoreFindingHint": "mobilitate → recesiune → … pentru examinări dinte cu dinte",
+      "scoreTooth": "Trece în jos la dintele următor",
+      "scoreToothHint": "pentru evaluarea unei constatări în întreaga cavitate orală",
+      "scoreStay": "Păstrează celula curentă selectată",
+      "columns": "Măsurători vizibile",
+      "scorePicker": "Butoane de scor în tabel",
+      "scorePickerOptions": {
+        "touch": "Doar pe interfețe tactile",
+        "always": "Afișare permanentă",
+        "never": "Fără afișare"
+      }
+    },
+    "beside": {
+      "title": "Constatări pe diagramă",
+      "show": "Afișați constatările pe diagrama de diagnostic",
+      "showHint": "(și în PDF)",
+      "include": "Constatări de afișat"
+    },
+    "anesthesia": {
+      "title": "Anestezie",
+      "blocks": "Blocuri nervoase afișate",
+      "blocksNote": "Un bloc ascuns apare totuși în fișele în care are o doză înregistrată.",
+      "blockNames": {
+        "infraorbital": "Infraorbital",
+        "caudalMaxillary": "Maxilar caudal",
+        "inferiorAlveolar": "Alveolar inferior",
+        "mental": "Mentonier",
+        "other": "Altul"
+      },
+      "usual": "Anestezicul local preferat",
+      "usualNote": "Disponibil ca opțiune rapidă când nu este înregistrat niciun anestezic. Dumneavoastră decideți când îl aplicați.",
+      "drugPlaceholder": "de ex. Bupivacaină",
+      "drugAria": "Anestezicul local preferat",
+      "strengthAria": "Concentrația anestezicului local (%)",
+      "adjunct": "Medicație suplimentară",
+      "adjunctNote": "Medicație opțională salvată împreună cu anestezicul preferat. Aplicarea opțiunii rapide le înregistrează pe ambele.",
+      "adjunctPlaceholder": "de ex. Buprenorfină",
+      "adjunctAria": "Medicație suplimentară",
+      "adjunctStrengthAria": "Concentrația medicației suplimentare"
+    },
+    "patient": {
+      "title": "Pagina Pacient",
+      "hideRecheck": "Ascundeți câmpul Data controlului",
+      "visibilityNote": "Alegeți câmpurile afișate la vizitele necompletate. Câmpurile cu informații înregistrate rămân vizibile."
+    },
+    "pdf": {
+      "title": "PDF",
+      "grid": "Includeți tabelul odontogramei",
+      "gridHint": "Obligatoriu când constatările de pe diagramă sunt dezactivate, pentru ca măsurătorile înregistrate să rămână în PDF.",
+      "images": "Includeți imaginile",
+      "imagesHint": "(4 pe pagină, după fișă)"
+    },
+    "noteDevice": "Preferințele personale se salvează automat pe acest dispozitiv.",
+    "spaceMovesDownHint": "Rapid pentru dictarea unei serii de adâncimi",
+    "scoreTapFindingHint": "Mobilitate → recesiune → … pentru examinări dinte cu dinte",
+    "scoreTapToothHint": "Pentru evaluarea unei constatări în întreaga cavitate orală",
+    "columnsFooter": "Coloanele afișate în tabelul odontogramei. Cel puțin una rămâne activă.",
+    "mirrorHint": "Și în PDF",
+    "drugName": "Medicament",
+    "drugStrength": "Concentrație",
+    "pdfGridHint": "Obligatoriu când constatările de pe diagramă sunt dezactivate, pentru ca măsurătorile înregistrate să rămână în PDF.",
+    "pdfImagesHint": "4 pe pagină, după fișă",
+    "quickCodes": {
+      "title": "Comenzi rapide de diagnostic",
+      "note": "Adăugați coduri AVDC sau personalizate pentru notele dentare și diagrama de diagnostic. Ordinea de aici stabilește ordinea comenzilor rapide.",
+      "remove": "Eliminați",
+      "removeAria": "Eliminați {{code}}",
+      "placeholder": "Cod, de ex. T/SR",
+      "addAria": "Cod de adăugat",
+      "add": "Adăugați",
+      "duplicate": "Acest cod se află deja în comenzile dumneavoastră rapide."
+    },
+    "exam": {
+      "title": "Examinare",
+      "areas": "Zone de examinare",
+      "areasNote": "Alegeți zonele afișate pe pagina Examinare. Zonele cu constatări salvate rămân vizibile chiar dacă sunt debifate. Zonele personalizate apar în ordinea de mai jos.",
+      "areaPlaceholder": "de ex. Buze",
+      "areaAria": "Denumirea zonei de examinare {{n}}",
+      "areaN": "zona {{n}}",
+      "remove": "Eliminați",
+      "removeAria": "Eliminați {{name}}",
+      "add": "Adăugați o zonă",
+      "addPreset": "Adăugați zone sugerate",
+      "presets": {
+        "lips": "Buze / joncțiune mucocutanată",
+        "gingiva": "Gingie / linie mucogingivală",
+        "salivary": "Orificiile canalelor salivare",
+        "floor": "Planșeu bucal / fren"
+      },
+      "suggestions": "Zone sugerate",
+      "showArea": "Afișați {{name}}",
+      "customCount": "Zone personalizate adăugate: {{used}} · Limită: {{max}}"
+    },
+    "customization": {
+      "navigation": "Categoriile setărilor fișei",
+      "categories": {
+        "patient": "Datele pacientului",
+        "exam": "Examinare orală",
+        "diagnosis": "Diagnostic",
+        "images": "Imagini și PDF",
+        "procedure": "Intervenție"
+      },
+      "descriptions": {
+        "patient": "Alegeți dacă data controlului este afișată pe pagina Pacient.",
+        "exam": "Alegeți zonele suplimentare pe care le înregistrați în timpul unei examinări orale.",
+        "anesthesia": "Configurați blocurile nervoase, câmpurile personalizate și medicația obișnuită.",
+        "charting": "Setați aspectul odontogramei, măsurătorile și modul de introducere a datelor.",
+        "diagnosis": "Alegeți constatările afișate pe diagrama de diagnostic și codurile dumneavoastră rapide.",
+        "images": "Alegeți odontograma și imaginile incluse în PDF-urile generate.",
+        "procedure": "Alegeți codurile rapide disponibile pe diagrama intervențiilor."
+      },
+      "showRecheck": "Afișați câmpul Data controlului",
+      "layout": "Aspect și măsurători",
+      "input": "Introducerea datelor"
+    },
+    "procedureQuickCodes": {
+      "title": "Comenzi rapide pentru intervenții",
+      "note": "Adăugați coduri pentru intervențiile pe care le înregistrați frecvent. Aceste comenzi rapide apar doar pe diagrama intervențiilor; codurile rapide de diagnostic rămân separate.",
+      "placeholder": "Cod, de ex. XSS"
+    },
+    "list": {
+      "moveUp": "Mutați {{name}} în sus",
+      "moveDown": "Mutați {{name}} în jos",
+      "count": "{{used}} din {{max}} configurate",
+      "limit": "Limita a fost atinsă. Eliminați un element pentru a adăuga altul."
+    },
+    "autosave": {
+      "label": "Salvare automată",
+      "hint": "Salvați automat modificările fișei. Dezactivați pentru a salva manual."
+    }
+  },
+  "feedback": {
+    "title": "Trimiteți feedback",
+    "kinds": {
+      "bug": "Ceva nu funcționează",
+      "idea": "Idee",
+      "other": "Altele"
+    },
+    "kindsAria": "Tipul de feedback",
+    "promptBug": "Ce s-a întâmplat?",
+    "promptIdea": "Ce v-ar ajuta?",
+    "promptOther": "Mesajul dumneavoastră",
+    "bugPlaceholder": "Ce ați făcut, la ce vă așteptați și ce s-a întâmplat în schimb…",
+    "attach": "Includeți transcrierea dictării mele",
+    "note": "Ajunge direct la dezvoltatorul ToothOps, care vă va răspunde prin e-mail.",
+    "sent": "Vă mulțumim! Feedbackul dumneavoastră a fost trimis.",
+    "sendFailed": "Trimiterea nu a reușit. Vă rugăm să reîncercați.",
+    "needsAccount": "Pentru a trimite feedback aveți nevoie de un cont.",
+    "send": "Trimiteți",
+    "sending": "Se trimite…"
+  },
+  "gettingStarted": {
+    "takeTour": "Parcurgeți turul",
+    "tourFooter": "Un scurt tur al elementelor fișei și al locului în care le găsiți.",
+    "chartParts": "Părțile fișei"
+  },
+  "tour": {
+    "steps": {
+      "sections": {
+        "body": "O fișă medicală dentară, de sus până jos. Atingeți titlul fișei pentru a trece între secțiuni — totul se salvează automat."
+      },
+      "grid": {
+        "body": "Măsurători pentru fiecare dinte. Atingeți o celulă și scrieți sau atingeți un scor — completați fără să ridicați privirea."
+      },
+      "diagrams": {
+        "body": "Atingeți un dinte pentru a-l marca, a adăuga comentarii sau a desena o notă. Căutați coduri AVDC lângă Diagnostic și Intervenție. Anulați și Refaceți se află în bara de instrumente a diagramei."
+      },
+      "codes": {
+        "body": "Căutați aici întregul set de coduri AVDC, chiar lângă diagramă."
+      },
+      "treatment": {
+        "body": "Scrieți raportul sau inserați un șablon salvat — și salvați șabloane noi pentru reutilizare."
+      },
+      "patients": {
+        "title": "Pacienți",
+        "body": "Vizitele fiecărui pacient. Vizitele salvate se deschid doar pentru citire până când atingeți Editați. Controale afișează pacienții care trebuie să revină la control."
+      },
+      "share": {
+        "title": "Partajați PDF-ul",
+        "body": "Generați PDF-ul fișei cu sigla dumneavoastră, pregătit pentru client, apoi partajați-l sau salvați-l când sunteți gata."
+      },
+      "byTooth": {
+        "body": "Treceți la Pe dinte și atingeți un dinte pe diagramă. Înregistrați împreună măsurătorile, diagnosticul și intervenția, apoi treceți la dintele următor. Tabel și Pe dinte folosesc aceleași constatări."
+      },
+      "customize": {
+        "body": "Deschideți meniul Mai multe al fișei și alegeți Personalizați pentru pagina curentă. Configurați coloanele, adâncimile pungilor pe dinte, rădăcină sau punct, codurile rapide și altele. Când sunteți autentificat, preferințele vă urmează contul."
+      }
+    }
+  },
+  "whatsNew": {
+    "severalTeeth": "Atingeți numerele dinților din tabel pentru a selecta mai mulți, apoi setați același scor pentru toți.",
+    "customize": "Fiecare pagină are Personalizați în meniul Mai multe: ascundeți coloane, alegeți ce apare lângă dinți și altele. Setările vă urmează contul pe fiecare dispozitiv.",
+    "leftOff": "La o pornire nouă, ToothOps afișează Pacienți — cu excepția cazului în care vizita de astăzi este încă deschisă — iar vizita de astăzi se deschide pregătită pentru editare."
+  },
+  "reminders": {
+    "sendFrom": "Trimiteți o reamintire pentru un pacient din Pacienți sau Controale.",
+    "settingUp": "Cabinetul dumneavoastră este în curs de configurare — reveniți peste câteva momente."
+  },
+  "workspace": {
+    "personalScope": "Preferințe personale ale fișei — modificările se aplică doar contului dumneavoastră.",
+    "accountScope": "Aceste setări aparțin contului dumneavoastră. Salvați fiecare secțiune separat; modificările e-mailului și parolei au confirmări proprii.",
+    "languageImmediate": "Schimbările de limbă se aplică imediat.",
+    "general": "General",
+    "team": "Echipă",
+    "templates": "Șabloane",
+    "billing": "Facturare",
+    "reminders": "Reamintiri pentru controale",
+    "charting": "Preferințele odontogramei",
+    "back": "Înapoi la vizita curentă",
+    "scope": "Gestionați setările comune cabinetului dumneavoastră.",
+    "saveHint": "Salvați modificările denumirii cabinetului. Celelalte setări se aplică imediat."
+  }
+}

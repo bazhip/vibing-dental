@@ -1,5 +1,5 @@
 import type { PDFFont, PDFPage } from 'pdf-lib';
-import { safeFont } from './pdf/safeFont';
+import { embedPdfFonts } from './pdf/fonts';
 import { OwnerReportModel, OwnerReportRenderSection, teethWithFindings } from './ownerReport';
 
 /** What the Findings section prints, in order: mouth-wide summary lines,
@@ -76,9 +76,9 @@ const PDF_REPLACEMENTS: Record<string, string> = {
   '≤': '<=', '≥': '>=', '−': '-', '‐': '-', '‑': '-', '\t': ' ',
 };
 
-/** Make text drawable with the standard Helvetica font: common symbols
- *  get ASCII stand-ins; anything else WinAnsi can't encode (emoji, CJK…)
- *  is dropped rather than crashing the whole PDF. Newlines are kept. */
+/** Preserve supported Latin alphabets and readable symbol stand-ins.
+ * The locale's embedded fonts cover Hungarian and Romanian diacritics;
+ * safeFont handles any glyph the chosen font cannot encode. */
 export function pdfSafe(text: string): string {
   let out = '';
   for (const ch of text) {
@@ -92,7 +92,7 @@ export function pdfSafe(text: string): string {
       continue;
     }
     const code = ch.codePointAt(0)!;
-    if ((code >= 0x20 && code <= 0x7e) || (code >= 0xa0 && code <= 0xff) || WIN_ANSI_EXTRA.has(ch)) {
+    if ((code >= 0x20 && code <= 0x7e) || (code >= 0xa0 && code <= 0x24f) || WIN_ANSI_EXTRA.has(ch)) {
       out += ch;
     }
   }
@@ -132,13 +132,10 @@ export async function buildOwnerReportPdfBytes(
   photos: OwnerReportPhoto[],
   diagram?: OwnerReportDiagram
 ): Promise<Uint8Array> {
-  const { PDFDocument, StandardFonts, rgb } = await import('pdf-lib');
+  const { PDFDocument, rgb } = await import('pdf-lib');
   const t = reportStrings(model.locale);
   const doc = await PDFDocument.create();
-  // Belt and braces with pdfSafe: any text that slips past it still
-  // can't throw on an unencodable character.
-  const regular = safeFont(await doc.embedFont(StandardFonts.Helvetica));
-  const bold = safeFont(await doc.embedFont(StandardFonts.HelveticaBold));
+  const { regular, bold } = await embedPdfFonts(doc, model.locale);
 
   const teal = rgb(TEAL.r, TEAL.g, TEAL.b);
   const ink = rgb(INK.r, INK.g, INK.b);
@@ -201,26 +198,51 @@ export async function buildOwnerReportPdfBytes(
     }
   }
   const title = pdfSafe(model.title);
-  page.drawText(pdfSafe(branding.practiceName) || title || t.defaultTitle, {
-    x: headerX, y: y - 14, size: 15, font: bold, color: ink,
-  });
-  if (branding.doctorName) {
-    page.drawText(pdfSafe(branding.doctorName), { x: headerX, y: y - 28, size: 9.5, font: regular, color: muted });
-  }
-  if (title) {
-    page.drawText(title, {
-      x: PAGE_W - MARGIN - bold.widthOfTextAtSize(title, 11),
-      y: y - 14, size: 11, font: bold, color: teal,
+  const practice = pdfSafe(branding.practiceName) || title || t.defaultTitle;
+  const doctor = pdfSafe(branding.doctorName);
+  const visitDate = pdfSafe(model.visitDate);
+  const availableHeaderWidth = PAGE_W - MARGIN - headerX;
+  const stackedHeader = bold.widthOfTextAtSize(practice, 15) + (title ? bold.widthOfTextAtSize(title, 11) + 16 : 0) > availableHeaderWidth
+    || regular.widthOfTextAtSize(doctor, 9.5) + regular.widthOfTextAtSize(visitDate, 9.5) + 16 > availableHeaderWidth;
+  if (stackedHeader) {
+    // Translated titles and long practice names need separate lines. Measure
+    // before drawing so they cannot collide or escape the page margins.
+    const headerText = (text: string, font: PDFFont, size: number, color: ReturnType<typeof rgb>) => {
+      for (const line of wrap(text, font, size, availableHeaderWidth)) {
+        y -= size * 1.4;
+        page.drawText(line, { x: headerX, y, size, font, color });
+      }
+    };
+    headerText(practice, bold, 15, ink);
+    if (doctor) headerText(doctor, regular, 9.5, muted);
+    if (title && title !== practice) {
+      y -= 6;
+      headerText(title, bold, 11, teal);
+    }
+    if (visitDate) headerText(visitDate, regular, 9.5, muted);
+    y -= 14;
+  } else {
+    page.drawText(practice, {
+      x: headerX, y: y - 14, size: 15, font: bold, color: ink,
     });
+    if (branding.doctorName) {
+      page.drawText(pdfSafe(branding.doctorName), { x: headerX, y: y - 28, size: 9.5, font: regular, color: muted });
+    }
+    if (title) {
+      page.drawText(title, {
+        x: PAGE_W - MARGIN - bold.widthOfTextAtSize(title, 11),
+        y: y - 14, size: 11, font: bold, color: teal,
+      });
+    }
+    if (model.visitDate) {
+      const visitDate = pdfSafe(model.visitDate);
+      page.drawText(visitDate, {
+        x: PAGE_W - MARGIN - regular.widthOfTextAtSize(visitDate, 9.5),
+        y: y - 28, size: 9.5, font: regular, color: muted,
+      });
+    }
+    y -= 44;
   }
-  if (model.visitDate) {
-    const visitDate = pdfSafe(model.visitDate);
-    page.drawText(visitDate, {
-      x: PAGE_W - MARGIN - regular.widthOfTextAtSize(visitDate, 9.5),
-      y: y - 28, size: 9.5, font: regular, color: muted,
-    });
-  }
-  y -= 44;
   page.drawLine({
     start: { x: MARGIN, y }, end: { x: PAGE_W - MARGIN, y },
     thickness: 1, color: teal,

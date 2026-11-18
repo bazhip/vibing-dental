@@ -1,0 +1,47 @@
+{
+  "settings": {
+    "aria": "Kontrollvizsgálati emlékeztetők",
+    "title": "Kontrollvizsgálati emlékeztetők",
+    "blurb": "E-mail küldése a gazdinak, amikor kontrollvizsgálat esedékes. Helyőrzők:",
+    "blurbTail": "Egy páciensnek a <strong>Páciensek</strong> oldalon küldhet emlékeztetőt.",
+    "loading": "Betöltés…",
+    "notSetUp": "A rendelő beállítása folyamatban van – töltse újra az oldalt rövidesen.",
+    "ownerOnly": "Az emlékeztetősablont csak a rendelő tulajdonosa módosíthatja.",
+    "auto": "Automatikus e-mail a gazdiknak",
+    "send": "Küldés",
+    "lead": {
+      "onDate": "A kontrollvizsgálat napján",
+      "days3": "3 nappal korábban",
+      "week1": "1 héttel korábban",
+      "weeks2": "2 héttel korábban",
+      "month1": "1 hónappal korábban"
+    },
+    "subject": "Tárgy",
+    "message": "Üzenet",
+    "done": "Kész",
+    "saving": "Mentés…",
+    "saved": "Emlékeztető-beállítások mentve.",
+    "saveFailed": "Nem sikerült menteni az emlékeztető beállításait.",
+    "noPractice": "Nincs rendelő, ahová menteni lehetne.",
+    "discard": {
+      "title": "Elveti az emlékeztető módosításait?",
+      "message": "Az emlékeztető beállításainak módosításai nincsenek mentve.",
+      "confirm": "Elvetés",
+      "cancel": "Szerkesztés folytatása"
+    }
+  },
+  "composer": {
+    "aria": "Kontrollvizsgálati emlékeztető küldése",
+    "title": "Kontrollvizsgálati emlékeztető küldése",
+    "loading": "Betöltés…",
+    "to": "Címzett",
+    "toTitle": "Az emlékeztető a fogászati lapon mentett gazdi e-mail-címére érkezik. A módosításhoz szerkessze azt a fogászati lapon.",
+    "toHint": "A fogászati lapon szereplő gazdi e-mail-címére küldjük. A módosításhoz szerkessze a gazdi e-mail-címét a fogászati lapon.",
+    "subject": "Tárgy",
+    "message": "Üzenet",
+    "sent": "Emlékeztető elküldve.",
+    "sendFailed": "Nem sikerült elküldeni az emlékeztetőt.",
+    "send": "Emlékeztető küldése",
+    "sending": "Küldés…"
+  }
+}

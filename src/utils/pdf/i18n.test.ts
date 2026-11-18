@@ -9,6 +9,7 @@ import { columnLabel } from '../../constants/columnDefinitions';
 import { loadLanguage } from '../../i18n';
 import { codeDefinition } from '../../constants/dentalCodes';
 import { APP_LANGUAGES } from '../../i18n/config';
+import { embedPdfFonts } from './fonts';
 
 /**
  * Text the generated clinical chart PDF draws, captured from every
@@ -341,13 +342,13 @@ describe('PDF catalog strings', () => {
   // (safeFont swaps or drops them). Keep empty unless there's a reason.
   const ALLOWED_UNSAFE = new Set<string>([]);
 
-  it('are all WinAnsi-encodable (standard PDF fonts)', async () => {
+  it('are all encodable with the locale’s PDF fonts', async () => {
     const doc = await PDFDocument.create();
-    const font = await doc.embedFont(StandardFonts.Helvetica);
     const strings = (v: unknown): string[] =>
       typeof v === 'string' ? [v] : v && typeof v === 'object' ? Object.values(v).flatMap(strings) : [];
     const bad: string[] = [];
     for (const lng of APP_LANGUAGES) {
+      const { regular: font } = await embedPdfFonts(doc, lng);
       const catalog = (await import(`../../locales/${lng}/pdf.json`)).default;
       for (const s of strings(catalog)) {
         if (pdfSafe(s, font) !== s && !ALLOWED_UNSAFE.has(s)) bad.push(`${lng}: ${s}`);
@@ -362,10 +363,13 @@ describe('tooth grid row labels', () => {
 
   it('fit the label column in every language (Helvetica and Times)', async () => {
     const doc = await PDFDocument.create();
-    const fonts = [await doc.embedFont(StandardFonts.HelveticaBold), await doc.embedFont(StandardFonts.TimesRomanBold)];
     const bad: string[] = [];
     for (const lng of APP_LANGUAGES) {
       await loadLanguage(lng);
+      const fonts = [
+        (await embedPdfFonts(doc, lng, 'sans')).bold,
+        (await embedPdfFonts(doc, lng, 'serif')).bold,
+      ];
       for (const font of fonts) {
         for (const key of ['tooth', 'triadan', ...TOOTH_DATA_ROWS.map((r) => r.key)] as const) {
           const fit = fitGridRowLabel(key, lng, font, labelW);

@@ -1,0 +1,158 @@
+{
+  "actions": {
+    "cancel": "Mégse",
+    "close": "Bezárás",
+    "copy": "Másolás",
+    "delete": "Törlés",
+    "dismiss": "Elvetés",
+    "duplicate": "Másolat készítése",
+    "edit": "Szerkesztés",
+    "ok": "OK",
+    "save": "Mentés",
+    "done": "Kész",
+    "signOut": "Kijelentkezés",
+    "tryAgain": "Újrapróbálkozás"
+  },
+  "errors": {
+    "network": "A ToothOps nem érhető el – ellenőrizze a kapcsolatot, és próbálja újra.",
+    "notFound": "A fogászati lap nem található – lehet, hogy törölték.",
+    "permission": "Ehhez nincs hozzáférése.",
+    "rateLimit": "Túl sok próbálkozás. Várjon egy percet, és próbálja újra.",
+    "generic": "Hiba történt. Próbálja újra.",
+    "withDetail": "Hiba történt (részletek: {{detail}})",
+    "detailOnly": "Részletek: {{detail}}",
+    "api": {
+      "unauthorized": "nincs jogosultság",
+      "already_member": "Ő már a rendelő tagja.",
+      "invite_failed": "Nem sikerült elküldeni a meghívást: {{detail}}",
+      "practice_name_required": "Adjon nevet a rendelőnek.",
+      "already_owner": "Ön már egy rendelő tulajdonosa.",
+      "owner_of_other_practice": "Ön másik rendelő tulajdonosa, ezért nem csatlakozhat egy másikhoz. Először zárja be rendelőjét, vagy forduljon hozzánk.",
+      "invite_invalid": "Ez a meghívóhivatkozás érvénytelen. Kérjen újat a rendelőtől.",
+      "invite_wrong_account": "Ezt a meghívást másik fióknak küldték. A meghívott e-mail-címmel jelentkezzen be.",
+      "invite_expired": "Ez a meghívás lejárt. Kérjen újat a rendelőtől.",
+      "practice_gone": "Ez a rendelő már nem létezik.",
+      "email_required": "Adjon meg e-mail-címet.",
+      "not_owner": "Csak a rendelő tulajdonosa adhat hozzá tagokat.",
+      "not_owner_resend": "Csak a rendelő tulajdonosa küldhet újra meghívásokat.",
+      "not_owner_remove": "Csak a rendelő tulajdonosa távolíthat el tagokat.",
+      "not_owner_roles": "Csak a rendelő tulajdonosa módosíthat szerepköröket.",
+      "not_owner_transfer": "Csak a rendelő tulajdonosa adhatja át a tulajdonjogot.",
+      "not_owner_report_templates": "Csak a rendelő tulajdonosa módosíthatja a gazdinak szóló lelet sablonjait.",
+      "seat_limit_individual": "Az Egyéni csomag egyfelhasználós – csapata hozzáadásához váltson Rendelő csomagra (legfeljebb 5 fő).",
+      "seat_limit": "A Rendelő csomag legfeljebb 5 csapattagot tartalmaz – nagyobb csomagért forduljon hozzánk.",
+      "not_on_team": "Ez a személy nem tagja a csapatnak.",
+      "account_not_found": "A fiók nem található.",
+      "account_already_active": "Ez a fiók már aktív – nincs újraküldhető meghívás.",
+      "remove_primary_owner": "Az elsődleges tulajdonos eltávolítása előtt adja át a tulajdonjogot.",
+      "demote_primary_owner": "A tulajdonos visszaminősítése előtt adja át az elsődleges tulajdonjogot.",
+      "report_config_not_object": "A gazdinak szóló lelet beállításainak objektumnak kell lenniük.",
+      "report_config_no_templates": "A gazdinak szóló lelet beállításaihoz sablonlista szükséges.",
+      "report_config_too_large": "A gazdinak szóló lelet beállításai túl nagyok (legfeljebb 50 KB) – rövidítsen szöveget vagy távolítson el egy sablont.",
+      "report_config_stale": "Ezeket a sablonokat megnyitásuk óta másik eszközön vagy lapon módosították. Zárja be ezt az ablakot, töltse újra az oldalt, majd végezze el újra a módosításokat.",
+      "not_in_practice": "Ön nem tagja rendelőnek.",
+      "not_primary_owner": "Csak az elsődleges tulajdonos törölheti a rendelőt.",
+      "confirm_delete_word": "A megerősítéshez pontosan írja be: DELETE.",
+      "confirm_practice_name": "A megerősítéshez pontosan írja be a rendelő nevét.",
+      "confirm_email": "A megerősítéshez pontosan írja be az e-mail-címét.",
+      "admin_not_deletable": "Rendszergazdai fiókok innen nem törölhetők.",
+      "owner_has_members_one": "Ön a(z) „{{name}}” rendelő elsődleges tulajdonosa, amelynek {{count}} további tagja van. Először adja át a tulajdonjogot, vagy törölje a rendelőt.",
+      "owner_has_members_other": "Ön a(z) „{{name}}” rendelő elsődleges tulajdonosa, amelynek {{count}} további tagja van. Először adja át a tulajdonjogot, vagy törölje a rendelőt.",
+      "owner_has_members_unnamed_one": "Ön rendelője elsődleges tulajdonosa, és a rendelőnek {{count}} további tagja van. Először adja át a tulajdonjogot, vagy törölje a rendelőt.",
+      "owner_has_members_unnamed_other": "Ön rendelője elsődleges tulajdonosa, és a rendelőnek {{count}} további tagja van. Először adja át a tulajdonjogot, vagy törölje a rendelőt.",
+      "billing_not_configured": "A számlázás még nincs beállítva (hiányzik a STRIPE_API_KEY).",
+      "plan_required": "Először válasszon csomagot.",
+      "not_owner_subscription": "Csak a rendelő tulajdonosa kezelheti az előfizetést.",
+      "comped": "A rendelő díjmentes hozzáféréssel rendelkezik – nincs szükség előfizetésre.",
+      "already_subscribed": "A rendelőnek már van előfizetése – használja inkább a Számlázás kezelése lehetőséget.",
+      "no_practice": "Még nincs kezelhető rendelő.",
+      "not_owner_billing": "Csak a rendelő tulajdonosa kezelheti a számlázást.",
+      "no_stripe_customer": "A rendelőnek nincs Stripe-előfizetése.",
+      "not_owner_plan": "Csak a rendelő tulajdonosa válthat csomagot.",
+      "no_subscription": "Nincs módosítható előfizetés – először fizessen elő.",
+      "team_too_large_one": "Csapatának {{members}} tagja van – először távolítson el tagokat, vagy tartsa meg a Rendelő csomagot ({{count}} férőhely a(z) {{plan}} csomagban).",
+      "team_too_large_other": "Csapatának {{members}} tagja van – először távolítson el tagokat, vagy tartsa meg a Rendelő csomagot ({{count}} férőhely a(z) {{plan}} csomagban).",
+      "subscription_no_items": "Az előfizetés nem tartalmaz tételt – forduljon az ügyfélszolgálathoz.",
+      "chart_required": "Emlékeztető küldéséhez mentett fogászati lap szükséges.",
+      "subject_and_message_required": "A tárgy és az üzenet megadása kötelező.",
+      "chart_gone": "Ez a fogászati lap már nem létezik.",
+      "chart_forbidden": "Nincs hozzáférése ehhez a fogászati laphoz.",
+      "no_owner_email": "A pácienshez nincs megadva a gazdi e-mail-címe. Adja hozzá a fogászati lapon, majd küldje el.",
+      "message_too_long": "Az üzenet túl hosszú.",
+      "daily_reminder_limit": "Elérte a napi emlékeztetőkorlátot (100). Próbálja újra holnap.",
+      "email_not_configured": "Az e-mail nincs beállítva.",
+      "email_failed": "Sikertelen e-mail-küldés: {{detail}}",
+      "ai_not_configured": "Az MI még nincs beállítva.",
+      "request_too_large": "A kérés túl nagy.",
+      "unsupported_request": "Nem támogatott kérés.",
+      "ai_rate_limit": "Várjon egy pillanatot – túl sok MI-kérés érkezett az elmúlt percben.",
+      "ai_daily_limit": "Elérte a napi MI-korlátot. Ez 24 órán belül visszaáll.",
+      "ai_failed": "Sikertelen MI-kérés: {{detail}}",
+      "ai_unreadable": "Az MI olvashatatlan választ adott.",
+      "dictation_rate_limit": "Túl sok diktálási munkamenet indult ebben az órában – próbálja újra rövidesen.",
+      "voice_not_configured": "A hangátírás még nincs beállítva.",
+      "voice_token_failed": "Nem sikerült átírási tokent létrehozni: {{detail}}",
+      "voice_unreadable": "A Deepgram olvashatatlan választ adott.",
+      "voice_no_token": "A Deepgram nem adott vissza tokent.",
+      "report_chart_required": "A lelet e-mailes küldése előtt mentse a fogászati lapot.",
+      "attachment_invalid": "A leletfájl nem olvasható. Próbálja újra.",
+      "attachment_too_large": "A lelet túl nagy az e-mailes küldéshez (legfeljebb 10 MB). Távolítson el néhány fényképet, és próbálja újra.",
+      "daily_owner_report_limit": "Elérte a napi leletküldési korlátot (100). Próbálja újra holnap.",
+      "owner_report_recipient_changed": "A gazdi e-mail-címe megváltozott. Nyissa meg újra a leletet, és erősítse meg ismét a címzettet."
+    },
+    "saveFile": "Nem sikerült menteni a fájlt."
+  },
+  "language": {
+    "label": "Nyelv"
+  },
+  "ios": {
+    "back": "Vissza",
+    "moreActions": "További műveletek",
+    "copy": "Másolás",
+    "moreActionsFor": "További műveletek: {{title}}",
+    "tabs": {
+      "chart": "Fogászati lap",
+      "patients": "Páciensek",
+      "rechecks": "Kontrollvizsgálatok",
+      "settings": "Beállítások"
+    },
+    "shell": {
+      "appName": "ToothOps",
+      "hideSidebar": "Oldalsáv elrejtése",
+      "showSidebar": "Oldalsáv megjelenítése"
+    },
+    "settings": {
+      "account": "Fiók",
+      "help": "Súgó",
+      "gettingStarted": "Első lépések",
+      "whatsNew": "Újdonságok",
+      "signIn": "Bejelentkezés",
+      "signOutTitle": "Kijelentkezik a ToothOps alkalmazásból?"
+    },
+    "sheets": {
+      "documents": {
+        "title": "Dokumentumok",
+        "share": "PDF megosztása"
+      },
+      "reminder": {
+        "send": "Küldés"
+      },
+      "discard": {
+        "title": "Elveti a módosításokat?",
+        "discard": "Módosítások elvetése",
+        "keep": "Szerkesztés folytatása"
+      },
+      "join": {
+        "join": "Csatlakozás"
+      },
+      "customColor": "Egyéni szín…",
+      "sendingBusy": "Küldés…"
+    }
+  },
+  "appearance": {
+    "label": "Megjelenés",
+    "system": "Rendszer",
+    "light": "Világos",
+    "dark": "Sötét"
+  }
+}

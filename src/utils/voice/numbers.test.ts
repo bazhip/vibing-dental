@@ -232,7 +232,7 @@ describe('replaceSpokenNumbers — scores and units', () => {
     expect(replaceSpokenNumbers('trente-deux millimètres', 'fr')).toBe('trente-deux millimètres');
   });
 
-  const TWO = { fr: 'deux', de: 'zwei', it: 'due', es: 'dos' } as const;
+  const TWO = { fr: 'deux', de: 'zwei', it: 'due', es: 'dos', hu: 'kettő', ro: 'doi' } as const;
   it.each(Object.entries(TWO))('%s: every glossary score term and synonym converts a following number', (lng, two) => {
     const terms = nativeScoreTerms(lng as 'fr');
     for (const s of SPOKEN_SYNONYMS[lng as 'fr']) expect(terms).toContain(s);

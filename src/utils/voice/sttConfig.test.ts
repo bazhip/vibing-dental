@@ -4,7 +4,7 @@ import { VOICE_STT, browserSpeechLang } from './sttConfig';
 import { SPOKEN_SYNONYMS } from './terms';
 
 describe('VOICE_STT', () => {
-  it('uses monolingual English and multi for the rest', () => {
+  it('preserves the existing English and medical multilingual configurations', () => {
     expect(VOICE_STT.en).toEqual({ model: 'nova-3-medical', language: 'en' });
     for (const l of ['fr', 'de', 'it', 'es'] as const) {
       expect(VOICE_STT[l]).toEqual({ model: 'nova-3-medical', language: 'multi', fallbackModel: 'nova-3' });
@@ -39,13 +39,15 @@ describe('voiceKeyterms', () => {
 });
 
 describe('voiceKeyterms priority', () => {
-  const NERVE_BLOCKS: Record<'fr' | 'de' | 'it' | 'es', string[]> = {
+  const NERVE_BLOCKS: Record<'fr' | 'de' | 'it' | 'es' | 'hu' | 'ro', string[]> = {
+    hu: ['idegblokád', 'infraorbitális idegblokád', 'kaudális maxilláris idegblokád', 'mentális idegblokád', 'alsó alveoláris idegblokád'],
+    ro: ['bloc nervos', 'bloc al nervului infraorbital', 'bloc maxilar caudal', 'bloc al nervului mentonier', 'bloc al nervului alveolar inferior'],
     fr: ['bloc nerveux', 'bloc du nerf infra-orbitaire', 'bloc maxillaire caudal', 'bloc du nerf mentonnier', 'bloc du nerf alvéolaire inférieur'],
     de: ['Nervenblockade', 'Infraorbitalblockade', 'kaudale Maxillarisblockade', 'Mentalisblockade', 'Blockade des N. alveolaris inferior'],
     it: ['blocco nervoso', 'blocco del nervo infraorbitario', 'blocco mascellare caudale', 'blocco del nervo mentale', 'blocco del nervo alveolare inferiore'],
     es: ['bloqueo nervioso', 'bloqueo del nervio infraorbitario', 'bloqueo maxilar caudal', 'bloqueo del nervio mentoniano', 'bloqueo del nervio alveolar inferior'],
   };
-  it.each(['fr', 'de', 'it', 'es'] as const)('%s keeps spoken synonyms and nerve-block sites within the cap', (lng) => {
+  it.each(['fr', 'de', 'it', 'es', 'hu', 'ro'] as const)('%s keeps spoken synonyms and nerve-block sites within the cap', (lng) => {
     const terms = voiceKeyterms(lng);
     const lower = terms.map((t) => t.toLowerCase());
     for (const s of SPOKEN_SYNONYMS[lng]) expect(lower).toContain(s.toLowerCase());

@@ -1,0 +1,335 @@
+{
+  "brand": "ToothOps fogászati lap",
+  "brandTrial": "ToothOps fogászati lap · Próba",
+  "skipLink": "Ugrás a fő tartalomra",
+  "sections": {
+    "patient": "Páciens",
+    "exam": "Vizsgálat",
+    "anesthesia": "Érzéstelenítés",
+    "charting": "Fogászati lap kitöltése",
+    "diagnosis": "Diagnózis",
+    "procedure": "Beavatkozás",
+    "images": "Képalkotás",
+    "treatment": "Kezelési leírás",
+    "ownerReport": "Gazdinak szóló lelet",
+    "menuFallback": "Szakaszok",
+    "nav": "Fogászati lap szakaszai"
+  },
+  "species": {
+    "feline": "Macska",
+    "canine": "Kutya",
+    "felineDeciduous": "Macska · Tejfogazat",
+    "canineDeciduous": "Kutya · Tejfogazat",
+    "equine": "Ló"
+  },
+  "chartingView": {
+    "label": "Kitöltési nézet",
+    "grid": "Táblázat",
+    "tooth": "Foganként",
+    "gridHint": "Minden fog mérési adatainak táblázata",
+    "toothHint": "Kattintson egy fogra a számozott diagramon, és rögzítse a leleteket, megjegyzéseket, tervezett és elvégzett foghúzásokat"
+  },
+  "customize": {
+    "label": "Testreszabás",
+    "hint": "Gyökerenkénti tasakok, oszlopok, fogak melletti adatok, PDF-beállítások"
+  },
+  "radiographic": {
+    "title": "Röntgenleletek",
+    "placeholder": "pl. 108: vertikális csontveszteség a disztális gyökérnél, furkációérintettség. 307: 2-es típusú fogfelszívódás.",
+    "hint": "A PDF-en a kezelési leírás fölött jelenik meg."
+  },
+  "lock": {
+    "title": "Csak megtekintés – módosításhoz válassza a Fogászati lap szerkesztése lehetőséget",
+    "description": "Ennek a mentett vizitnek a szerkesztése ki van kapcsolva."
+  },
+  "topbar": {
+    "patientEmpty": "Még nincs páciens – adjon hozzá egyet a Páciens részben",
+    "visitSwitchTitle": "Vizitelőzmények – {{n}} vizit. Válasszon egyet a megtekintéshez.",
+    "visitSwitchLabel": "Vizitelőzmények – váltás a páciens {{n}} vizitje között",
+    "undatedVisit": "Dátum nélküli vizit",
+    "visitLatest": "{{date}} · legutóbbi",
+    "visitEarlier": "{{date}} · korábbi",
+    "editingShort": "Szerkesztés",
+    "editingTitle": "Mentett vizit szerkesztése – a módosításokat automatikusan mentjük",
+    "signIn": "Bejelentkezés",
+    "signInHint": "Már van rendelői fiókja? Jelentkezzen be",
+    "signUp": "Ingyenes fiók létrehozása",
+    "signUpHint": "Hozzon létre rendelői fiókot – fogászati lapjai a felhőbe kerülnek, a PDF-eken pedig rendelője neve és logója szerepel",
+    "myCharts": "Páciensek",
+    "myChartsShort": "Páciensek",
+    "editChart": "Fogászati lap szerkesztése",
+    "editChartShort": "Szerkesztés",
+    "undo": "Módosítások visszavonása",
+    "undoTitle": "A fogászati lap visszaállítása a szerkesztés megkezdése előtti állapotra",
+    "doneEditing": "Szerkesztés kész",
+    "viewOnlyChipTitle": "Csak megtekintés, a mentett vizit véletlen módosításának elkerülésére – módosításhoz válassza a Fogászati lap szerkesztése lehetőséget",
+    "newPatient": "Új páciens",
+    "newPatientShort": "Új",
+    "newPatientTitle": "Üres fogászati lap indítása új páciensnek",
+    "doneEditingShort": "Kész",
+    "addLogo": "Logó hozzáadása"
+  },
+  "status": {
+    "srSaving": "Fogászati lap mentése",
+    "srSaved": "Fogászati lap mentve",
+    "srNotSaved": "Fogászati lap nincs mentve",
+    "saving": "Mentés…",
+    "notSavedRetry": "Nincs mentve – újrapróbálkozás",
+    "retryTitle": "Fogászati lap mentésének újrapróbálása",
+    "notSaved": "Nincs mentve",
+    "viewOnly": "Csak megtekintés",
+    "viewOnlyTitle": "A mentett vizitek csak megtekintésre nyílnak meg – módosításhoz válassza a Fogászati lap szerkesztése lehetőséget",
+    "offline": "Offline – ezen az eszközön mentve",
+    "offlineTitle": "A módosításokat ezen az eszközön megőrizzük, és online kapcsolódáskor mentjük",
+    "needsName": "A mentéshez adjon meg páciensnevet",
+    "needsNameTitle": "A fogászati lapot a páciens nevének megadása után mentjük",
+    "saveTitle": "Egyelőre ezen az eszközön őrizzük – a kitöltés megkezdésekor automatikusan mentjük. Más eszközön való megnyitáshoz mentse most.",
+    "unsaved": "Nem mentett módosítások",
+    "unsavedTitle": "Automatikus mentés…",
+    "savedTitle": "Felhőbe mentve: {{when}}",
+    "local": "Csak ezen az eszközön",
+    "localTitle": "A próbalapok ebben a böngészőben maradnak. Hozzon létre ingyenes fiókot a felhőbe mentéshez.",
+    "saveHint": "Mentés előtt adjon meg páciensnevet – így találja majd meg újra ezt a fogászati lapot.",
+    "savedRich": "<word>Mentve · </word>{{when}}"
+  },
+  "otherTab": {
+    "text": "Ez a fogászati lap másik lapon vagy ablakban is nyitva van. Mindkét lap ugyanazt a munkapéldányt szerkeszti – zárja be az egyiket a módosítások felülírásának elkerüléséhez."
+  },
+  "footer": {
+    "feedback": "Hibát talált, vagy ötlete van? <a>Küldjön visszajelzést</a>"
+  },
+  "fab": {
+    "preview": "PDF előnézete",
+    "download": "PDF-ek letöltése",
+    "previewAria": "Fogászati PDF előnézete és letöltése",
+    "downloadAria": "Klinikai fogászati lap és gazdinak szóló lelet előnézete és letöltése",
+    "review": "Áttekintés és exportálás",
+    "reviewHint": "Vizitdokumentumok előnézete, letöltése vagy megosztása."
+  },
+  "errors": {
+    "setting": "Nem sikerült menteni a beállítást. {{error}}",
+    "openVisit": "Nem sikerült megnyitni a vizitet. {{error}}",
+    "loadCharts": "Nem sikerült betölteni a fogászati lapokat. {{error}}",
+    "newVisit": "Nem sikerült új vizitet indítani. {{error}}",
+    "signOut": "Nem sikerült kijelentkezni. {{error}}",
+    "preview": "Az előnézet még nem készíthető el – a diagramok betöltése folyamatban van. Próbálja újra rövidesen.",
+    "damagedChart": "Ez a fogászati lap sérült, nem nyitható meg.",
+    "pdfImport": "Nem sikerült beolvasni a PDF-et. Használjon a ToothOps alkalmazásból letöltött fogászati PDF-et."
+  },
+  "toasts": {
+    "reverted": "Módosítások visszavonva.",
+    "pdfImported": "A PDF-ből új fogászati lapot importáltunk.",
+    "pdfImportedNamed": "{{name}} adatait a PDF-ből új fogászati lapként importáltuk.",
+    "visitStarted": "Új vizit elindítva.",
+    "visitStartedFor": "{{name}} új vizitje elindítva.",
+    "visitStartedCarried_one": "Új vizit elindítva – {{count}} hiányzó/eltávolított fog átvéve.",
+    "visitStartedCarried_other": "Új vizit elindítva – {{count}} hiányzó/eltávolított fog átvéve.",
+    "visitStartedForCarried_one": "{{name}} új vizitje elindítva – {{count}} hiányzó/eltávolított fog átvéve.",
+    "visitStartedForCarried_other": "{{name}} új vizitje elindítva – {{count}} hiányzó/eltávolított fog átvéve."
+  },
+  "revert": {
+    "title": "Visszavonja a módosításokat?",
+    "message": "A fogászati lap visszaáll a szerkesztés megkezdése előtti állapotra, és ezt a verziót mentjük.",
+    "confirm": "Módosítások visszavonása"
+  },
+  "todaysVisit": {
+    "message": "Második vizit indítása helyett megnyitja a mai vizitet?",
+    "confirm": "Mai vizit megnyitása",
+    "cancel": "Második vizit indítása"
+  },
+  "historyRestoreHint": "Korábbi verzió visszaállításához nyissa meg ezt a vizitet.",
+  "feedbackMail": {
+    "doing": "Amit éppen csináltam:",
+    "expected": "Amit vártam:",
+    "actual": "Ami valójában történt:",
+    "involved": "Érintett állatfaj / fog / szakasz (ha van):",
+    "browser": "Böngésző és eszköz:",
+    "screenshot": "Csatoljon képernyőképet, ha segít a probléma megértésében."
+  },
+  "menu": {
+    "open": "Beállítások menü megnyitása",
+    "trigger": "Beállítások",
+    "signedInAs": "Bejelentkezve: <strong>{{email}}</strong>",
+    "heads": {
+      "practice": "Rendelő",
+      "account": "Fiók",
+      "admin": "Adminisztráció",
+      "app": "Alkalmazás"
+    },
+    "practiceSettings": {
+      "label": "Rendelő beállításai",
+      "sub": "Név, logó, csapat és számlázás."
+    },
+    "reminders": {
+      "label": "Kontrollvizsgálati emlékeztetők",
+      "sub": "Gazdinak küldött e-mail sablonja és automatikus küldési ütemezés."
+    },
+    "account": {
+      "label": "Fiókbeállítások",
+      "sub": "Az Ön orvosi neve, e-mail-címe és jelszava."
+    },
+    "admin": {
+      "label": "Adminisztrációs felület",
+      "sub": "Felhasználók, rendelők és csomagok kezelése."
+    },
+    "chartSettings": {
+      "label": "Fogászati lap beállításai",
+      "sub": "Gyökerenkénti tasakok, táblázatoszlopok, fogak melletti adatok."
+    },
+    "feedback": {
+      "label": "Visszajelzés küldése",
+      "sub": "Probléma jelentése vagy fejlesztési javaslat."
+    },
+    "whatsNew": {
+      "label": "Újdonságok",
+      "sub": "Legújabb funkciók és fejlesztések."
+    },
+    "gettingStarted": {
+      "label": "Első lépések",
+      "sub": "Az alkalmazás minden részét bemutató útmutató újrajátszása."
+    },
+    "homepage": {
+      "label": "ToothOps weboldala",
+      "sub": "Termékinformáció, árak és elérhetőségek."
+    },
+    "signOut": {
+      "label": "Kijelentkezés",
+      "sub": "Munkamenet befejezése."
+    }
+  },
+  "trialSignIn": {
+    "title": "Bejelentkezik és törli a próbalapot?",
+    "message": "Meglévő fiókba bejelentkezve a próbalap törlődik erről az eszközről. Megtartásához előbb töltse le PDF-ként – vagy hozzon létre ingyenes fiókot, amely megőrzi.",
+    "confirm": "Törlés és bejelentkezés",
+    "cancel": "Kitöltés folytatása"
+  },
+  "speciesChange": {
+    "title": "Módosítja az állatfajt vagy a fogazatot?",
+    "messageGrid": "A macskák, kutyák és tejfogak számozása eltér, ezért ez törli a kitöltési táblázatot. A páciensadatok és vizsgálati leletek megmaradnak.",
+    "messageDiagram": "A macskák, kutyák és tejfogak számozása eltér, ezért ez törli a diagram jelöléseit, megjegyzéseit és rajzait. A páciensadatok és vizsgálati leletek megmaradnak.",
+    "messageBoth": "A macskák, kutyák és tejfogak számozása eltér, ezért ez törli a kitöltési táblázatot, a diagram jelöléseit, megjegyzéseit és rajzait. A páciensadatok és vizsgálati leletek megmaradnak.",
+    "confirm": "Módosítás és törlés"
+  },
+  "sync": {
+    "cloudNotConfigured": "A felhő nincs beállítva.",
+    "historyNotSetUp": "A fogászati lap előzményei még nincsenek beállítva a szerveren.",
+    "sessionExpired": "A munkamenete lejárt. Jelentkezzen be újra, majd mentsen – a fogászati lap továbbra is ezen az eszközön van.",
+    "notAllowed": "Nem sikerült a fogászati lapot a fiókjába menteni. Ha a hiba fennáll, forduljon a rendelő tulajdonosához.",
+    "tooLarge": "Ez a fogászati lap túl nagy a mentéshez (általában túl sok vagy túl nagy kép miatt). Távolítson el egy mellékletet, és próbálja újra.",
+    "offline": "Nem sikerült elérni a szervert. Ellenőrizze a kapcsolatot, és próbálja újra – a fogászati lap biztonságban van ezen az eszközön.",
+    "saveFailed": "Sikertelen mentés: {{message}}. A fogászati lap biztonságban van ezen az eszközön – próbálja újra rövidesen.",
+    "unknownError": "ismeretlen hiba",
+    "changedByOther": "Ezt a fogászati lapot más módosította – a Páciensek oldalról nyissa meg újra az ő verziójának megtekintéséhez.",
+    "notSavedConflict": "Nincs mentve – ezt a fogászati lapot más módosította. A Páciensek oldalról nyissa meg újra az ő verziójának megtekintéséhez.",
+    "noPermission": "Nincs jogosultsága e fogászati lap módosításainak mentéséhez. Kérje a rendelő tulajdonosát, vagy indítson új vizitet.",
+    "noDeletePermission": "Nincs jogosultsága e fogászati lap törléséhez. Kérje a rendelő tulajdonosát.",
+    "practiceUnknown": "A rendelő adatai még nem töltődtek be, ezért ez az új fogászati lap nem menthető a rendelőhöz. Ellenőrizze a kapcsolatot, és töltse újra az oldalt – a fogászati lap ezen az eszközön megmarad.",
+    "conflict": {
+      "title": "Ezt a fogászati lapot máshol módosították",
+      "message": "A megnyitás után {{when}} időpontban mentették – egy csapattag vagy egy másik eszközön. Ha most ment, saját módosításaival felülírja azokat.",
+      "confirm": "Felülírás az enyémmel",
+      "cancel": "Másik verzió megtartása"
+    },
+    "duplicate": {
+      "titleToday": "{{name}} páciensnek ma már van vizitje",
+      "titleOn": "{{name}} páciensnek már van vizitje ekkor: {{date}}",
+      "patient": "Ez a páciens",
+      "message": "Ez az új fogászati lap a nap második vizitje lenne. Inkább megnyitja a meglévő vizitet, vagy mindkettőt megtartja? Megnyitáskor az új lapra bevitt adatok elvesznek.",
+      "confirm": "Meglévő vizit megnyitása",
+      "cancel": "Mindkettő megtartása"
+    },
+    "discard": {
+      "title": "Elveti a nem mentett módosításokat?",
+      "openOther": {
+        "message": "Ezen a fogászati lapon még nem felhőbe mentett módosítások vannak. Mégis megnyitja a másik lapot? Megtartásukhoz lépjen vissza, és először nyomja meg a Mentés gombot.",
+        "confirm": "Elvetés és a másik lap megnyitása"
+      },
+      "restore": {
+        "message": "Ezen a fogászati lapon még nem felhőbe mentett módosítások vannak. Mégis visszaállítja ezt a verziót? Megtartásukhoz lépjen vissza, és először nyomja meg a Mentés gombot.",
+        "confirm": "Elvetés és a verzió visszaállítása"
+      },
+      "signOut": {
+        "message": "Ezen a fogászati lapon még nem felhőbe mentett módosítások vannak. Mégis kijelentkezik? Megtartásukhoz lépjen vissza, és először nyomja meg a Mentés gombot.",
+        "confirm": "Elvetés és kijelentkezés"
+      },
+      "newVisit": {
+        "message": "Ezen a fogászati lapon még nem felhőbe mentett módosítások vannak. Mégis új vizitet indít? Megtartásukhoz lépjen vissza, és először nyomja meg a Mentés gombot.",
+        "confirm": "Elvetés és új vizit indítása"
+      },
+      "newPatient": {
+        "message": "Ezen a fogászati lapon még nem felhőbe mentett módosítások vannak. Mégis új pácienst indít? Megtartásukhoz lépjen vissza, és először nyomja meg a Mentés gombot.",
+        "confirm": "Elvetés és új páciens indítása"
+      },
+      "importPdf": {
+        "message": "Ezen a fogászati lapon még nem felhőbe mentett módosítások vannak. Mégis importálja ezt a PDF-et? Megtartásukhoz lépjen vissza, és először nyomja meg a Mentés gombot.",
+        "confirm": "Elvetés és a PDF importálása"
+      }
+    },
+    "identity": {
+      "title": "Ugyanahhoz a pácienshez tartoznak ezek az adatok?",
+      "message": "Mentett: {{saved}}\nMódosított: {{proposed}}\n\nA mentés módosítja a páciens adatait ezen a fogászati lapon. A meglévő leletek és képek továbbra is hozzá tartoznak.\n\nMásik pácienshez lépjen vissza, és válassza az Új páciens lehetőséget.",
+      "confirm": "Javítás megerősítése",
+      "blank": "Nincs név vagy páciensazonosító",
+      "paused": "A páciens adatai megváltoztak. A mentés szünetel. A javítás megerősítéséhez mentsen újra, vagy másik pácienshez válassza az Új páciens lehetőséget.",
+      "changed": "A páciens a mentés ellenőrzése közben megváltozott. Tekintse át az adatokat, és mentsen újra."
+    },
+    "patientNumberFailed": "Nem sikerült páciensazonosítót kiosztani. Próbálja újra online, vagy adjon meg páciensazonosítót."
+  },
+  "storage": {
+    "full": "A böngésző tárhelye megtelt – lehet, hogy a legutóbbi módosítások nem maradnak meg ezen az eszközön. Mentse a fogászati lapot, vagy töltse le PDF-ként."
+  },
+  "chartsMenu": {
+    "thisPatient": "Ez a páciens",
+    "newVisit": "Új vizit",
+    "newVisitHint": "Új dátumozott vizit a páciensadatokkal és a korábban hiányzó vagy eltávolított fogak átvételével.",
+    "history": "Verzióelőzmények",
+    "historyHint": "A fogászati lap minden mentett verziója – ki és mikor mentette.",
+    "allPatients": "Minden páciens",
+    "openLibrary": "Páciensek megtekintése",
+    "openLibraryHint": "Bármely páciens fogászati lapjainak keresése és megnyitása."
+  },
+  "workspace": {
+    "rechecks": "Kontrollvizsgálatok",
+    "help": "Súgó",
+    "account": "Saját fiók",
+    "visitActions": "Vizitműveletek",
+    "practice": "Rendelő beállításai",
+    "currentVisit": "Aktuális vizit",
+    "navigation": "Munkafelület navigációja",
+    "patientContext": "Aktuális páciens és vizit",
+    "more": "Továbbiak",
+    "patientNumber": "Páciensazonosító: {{number}}",
+    "visitDate": "Vizit: {{date}}"
+  },
+  "animalTabs": {
+    "label": "Megnyitott állatok",
+    "unnamed": "Új állat",
+    "ownerUnknown": "Gazdi nincs megadva",
+    "close": "{{name}} lap bezárása",
+    "closeHint": "Lap bezárása a páciens törlése nélkül",
+    "add": "Másik állat megnyitása",
+    "emptyTitle": "Nincs megnyitott állat",
+    "emptyBody": "Nyisson meg egy pácienst a kitöltéshez.",
+    "open": "Állat megnyitása",
+    "saveFirst": "Állatváltás előtt mentse az aktuális fogászati lapot. Ha hiányzik, adja meg a páciens nevét.",
+    "pid": "PID {{number}}",
+    "noPid": "Nincs PID",
+    "previous": "Előző állatok",
+    "next": "Következő állatok",
+    "closeUnsaved": "Ezen a lapon még nem mentett módosítások vannak. Bezárás előtt nyissa meg és mentse.",
+    "summary": "{{name}} · {{details}}",
+    "imageCheckFailed": "Nem sikerült ellenőrizni a fogászati lap képeit. Tartsa nyitva a lapot, és próbálja újra.",
+    "uploadPending": "A lap bezárása előtt várja meg a képfeltöltés befejezését.",
+    "imagesRecovered": "A névtelen lapokon feltöltött képeket helyreállítottuk. Mentés előtt erősítse meg a páciens adatait.",
+    "closeConfirmTitle": "Bezárja mentés nélkül?",
+    "closeConfirmMessage": "A lap nem mentett módosításai elvesznek. A feltöltött képek nem törlődnek.",
+    "closeConfirm": "Bezárás mentés nélkül",
+    "keepOpen": "Fogászati lap nyitva tartása",
+    "closeImageDraftMessage": "Ez a fogászati lap nincs mentve. Bezárása elveti a tartalmát, és véglegesen törli a feltöltött képeit.",
+    "draftAlreadySaved": "Ezt a fogászati lapot máshol mentették. A piszkozat elvetése előtt nyissa meg újra.",
+    "closeTitle": "Nem mentett módosítások",
+    "saveAndClose": "Mentés és bezárás",
+    "closeChoiceMessage": "Bezárás előtt mentse a módosításokat, vagy zárja be mentés nélkül az elvetésükhöz. A mentett fogászati lapok feltöltött képei megmaradnak.",
+    "closeImageChoiceMessage": "Bezárás előtt mentse ezt a fogászati lapot, vagy zárja be mentés nélkül a tartalom elvetéséhez és a feltöltött képek végleges törléséhez."
+  }
+}

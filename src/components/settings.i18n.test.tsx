@@ -163,7 +163,7 @@ describe('PracticeSettingsModal', () => {
     langMock.save.mockClear();
     const { container, unmount } = render(<PracticeSettingsModal open onClose={() => {}} profile={profile()} />);
     const select = (await screen.findByLabelText('⟦Language for pet owners⟧')) as HTMLSelectElement;
-    expect(Array.from(select.options).map((o) => o.value)).toEqual(['en', 'es', 'fr', 'de', 'it', 'pt']);
+    expect(Array.from(select.options).map((o) => o.value)).toEqual(['en', 'es', 'fr', 'de', 'it', 'pt', 'hu', 'ro']);
     fireEvent.change(select, { target: { value: 'fr' } });
     await waitFor(() => expect(langMock.save).toHaveBeenCalledWith('fr'));
     expect(findUntranslated(container, ALLOW)).toEqual([]);
