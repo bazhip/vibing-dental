@@ -46,7 +46,8 @@
   },
   "treatment": {
     "title": "Compte rendu de traitement et de chirurgie",
-    "findingsHeading": "OBSERVATIONS RADIOGRAPHIQUES",
+    "findingsHeading": "COMPTE RENDU RADIOGRAPHIQUE",
+    "ctHeading": "COMPTE RENDU DE SCANNER",
     "treatmentHeading": "TRAITEMENT",
     "continued": "… suite — le compte rendu complet est intégré à ce fichier (rechargez-le dans l’application)."
   },

@@ -193,7 +193,9 @@
       "grid": "Befundraster einbeziehen",
       "gridHint": "Erforderlich bei ausgeblendeten Diagrammbefunden, damit Messwerte im PDF erhalten bleiben.",
       "images": "Bilder einbeziehen",
-      "imagesHint": "(4 pro Seite, nach der Akte)"
+      "imagesHint": "(4 pro Seite, nach der Akte)",
+      "radiographicReport": "Röntgenbericht einbeziehen",
+      "ctReport": "CT-Bericht einbeziehen"
     },
     "noteDevice": "Persönliche Einstellungen werden automatisch auf diesem Gerät gespeichert.",
     "spaceMovesDownHint": "Schnell, um eine Reihe von Tiefen anzusagen",

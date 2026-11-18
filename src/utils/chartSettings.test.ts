@@ -17,6 +17,12 @@ describe('chart settings (per person)', () => {
     expect(normalizeChartPrefs({ pocketMode: 'weird', hideRecheck: 'yes' })).toMatchObject({ pocketMode: 'tooth', hideRecheck: false });
   });
 
+  it('PDF prints the radiographic and CT reports by default; each can be turned off', () => {
+    expect(DEFAULT_CHART_PREFS).toMatchObject({ pdfIncludeRadiographicReport: true, pdfIncludeCtReport: true });
+    expect(normalizeChartPrefs({ pdfIncludeRadiographicReport: false, pdfIncludeCtReport: 'no' }))
+      .toMatchObject({ pdfIncludeRadiographicReport: false, pdfIncludeCtReport: true });
+  });
+
   it('score taps go to the next finding by default; junk falls back', () => {
     expect(DEFAULT_CHART_PREFS.scoreTapMoves).toBe('finding');
     expect(normalizeChartPrefs({ scoreTapMoves: 'tooth' }).scoreTapMoves).toBe('tooth');

@@ -2,12 +2,18 @@ import { treatmentCardText } from './pdf/sections';
 import { applyAiActions, invalidReason } from './aiAutofill';
 
 describe('radiographic findings', () => {
-  it('PDF: unchanged without findings; labelled first block with them', () => {
+  it('PDF: unchanged without reports; labelled blocks with them', () => {
     expect(treatmentCardText('Scaled and polished.')).toBe('Scaled and polished.');
-    expect(treatmentCardText('Scaled and polished.', '  ')).toBe('Scaled and polished.');
-    expect(treatmentCardText('Scaled and polished.', '307: type 2 TR'))
-      .toBe('RADIOGRAPHIC FINDINGS\n307: type 2 TR\n\nTREATMENT\nScaled and polished.');
-    expect(treatmentCardText('', '307: type 2 TR')).toBe('RADIOGRAPHIC FINDINGS\n307: type 2 TR');
+    expect(treatmentCardText('Scaled and polished.', { radiographic: '  ', ct: ' ' })).toBe('Scaled and polished.');
+    expect(treatmentCardText('Scaled and polished.', { radiographic: '307: type 2 TR' }))
+      .toBe('RADIOGRAPHIC REPORT\n307: type 2 TR\n\nTREATMENT\nScaled and polished.');
+    expect(treatmentCardText('', { radiographic: '307: type 2 TR' })).toBe('RADIOGRAPHIC REPORT\n307: type 2 TR');
+  });
+
+  it('PDF: CT report prints below the radiographic report', () => {
+    expect(treatmentCardText('Scaled and polished.', { radiographic: '307: type 2 TR', ct: 'TMJs normal' }))
+      .toBe('RADIOGRAPHIC REPORT\n307: type 2 TR\n\nCT REPORT\nTMJs normal\n\nTREATMENT\nScaled and polished.');
+    expect(treatmentCardText('', { ct: 'TMJs normal' })).toBe('CT REPORT\nTMJs normal');
   });
 
   it('dictation can append findings and record a caudal maxillary block', () => {

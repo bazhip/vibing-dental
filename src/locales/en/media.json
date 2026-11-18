@@ -105,7 +105,8 @@
       "exam": "Oral exam",
       "findings": "Findings by tooth",
       "procedures": "Procedures",
-      "radiographs": "Radiographic findings",
+      "radiographs": "Radiographic report",
+      "ct": "CT report",
       "recheck": "Recheck"
     },
     "alreadyMissing": "Already missing: {{teeth}}",

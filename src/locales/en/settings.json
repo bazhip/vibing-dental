@@ -193,7 +193,9 @@
       "grid": "Include the charting grid",
       "gridHint": "Required when diagram findings are off, so recorded measurements remain in the PDF.",
       "images": "Include images",
-      "imagesHint": "(4 per page, after the chart)"
+      "imagesHint": "(4 per page, after the chart)",
+      "radiographicReport": "Include the radiographic report",
+      "ctReport": "Include the CT report"
     },
     "noteDevice": "Personal preferences saved automatically on this device.",
     "spaceMovesDownHint": "Fast for calling out a run of depths",

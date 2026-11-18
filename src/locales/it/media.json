@@ -105,7 +105,8 @@
       "exam": "Esame del cavo orale",
       "findings": "Reperti per dente",
       "procedures": "Procedure",
-      "radiographs": "Reperti radiografici",
+      "radiographs": "Referto radiografico",
+      "ct": "Referto TC",
       "recheck": "Controllo"
     },
     "alreadyMissing": "Già mancanti: {{teeth}}",

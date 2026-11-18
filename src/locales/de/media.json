@@ -105,7 +105,8 @@
       "exam": "Untersuchung der Maulhöhle",
       "findings": "Befunde pro Zahn",
       "procedures": "Eingriffe",
-      "radiographs": "Röntgenbefunde",
+      "radiographs": "Röntgenbericht",
+      "ct": "CT-Bericht",
       "recheck": "Nachkontrolle"
     },
     "alreadyMissing": "Bereits fehlend: {{teeth}}",

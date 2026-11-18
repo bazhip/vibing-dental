@@ -46,6 +46,7 @@
   "treatment": {
     "title": "Kezelési és műtéti leírás",
     "findingsHeading": "RÖNTGENLELET",
+    "ctHeading": "CT-LELET",
     "treatmentHeading": "KEZELÉS",
     "continued": "… folytatás – a teljes lelet be van ágyazva ebbe a fájlba (töltse vissza az alkalmazásba)."
   },

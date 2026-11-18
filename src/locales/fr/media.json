@@ -105,7 +105,8 @@
       "exam": "Examen bucco-dentaire",
       "findings": "Observations par dent",
       "procedures": "Interventions",
-      "radiographs": "Observations radiographiques",
+      "radiographs": "Compte rendu radiographique",
+      "ct": "Compte rendu de scanner",
       "recheck": "Contrôle"
     },
     "alreadyMissing": "Déjà absentes : {{teeth}}",

@@ -45,7 +45,8 @@
   },
   "treatment": {
     "title": "Treatment & Surgery Report",
-    "findingsHeading": "RADIOGRAPHIC FINDINGS",
+    "findingsHeading": "RADIOGRAPHIC REPORT",
+    "ctHeading": "CT REPORT",
     "treatmentHeading": "TREATMENT",
     "continued": "… continued — full report is embedded in this file (load it back into the app)."
   },

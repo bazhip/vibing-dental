@@ -105,7 +105,8 @@
       "exam": "口腔检查",
       "findings": "各牙位检查结果",
       "procedures": "操作",
-      "radiographs": "影像学检查结果",
+      "radiographs": "X 线报告",
+      "ct": "CT 报告",
       "recheck": "复查"
     },
     "alreadyMissing": "原已缺失：{{teeth}}",

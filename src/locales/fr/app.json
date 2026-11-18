@@ -34,9 +34,14 @@
     "hint": "Poches par racine, colonnes, éléments affichés à côté des dents, options PDF"
   },
   "radiographic": {
-    "title": "Observations radiographiques",
+    "title": "Compte rendu radiographique",
     "placeholder": "p. ex. 108 : perte osseuse verticale racine distale, exposition de la furcation. 307 : résorption dentaire de type 2.",
     "hint": "Figure dans le PDF au-dessus du compte rendu de traitement."
+  },
+  "ct": {
+    "title": "Compte rendu de scanner",
+    "placeholder": "p. ex. Maxillaire caudal droit : pas d’ostéolyse. 108 : radiotransparence périapicale, racine mésiale. ATM dans les limites de la normale.",
+    "hint": "Figure dans le PDF sous le compte rendu radiographique."
   },
   "lock": {
     "title": "Lecture seule — choisissez Modifier le dossier pour apporter des changements",

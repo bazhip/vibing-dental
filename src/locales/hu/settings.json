@@ -193,7 +193,9 @@
       "grid": "Kitöltési táblázat szerepeltetése",
       "gridHint": "Kötelező, ha a diagramleletek ki vannak kapcsolva, hogy a rögzített mérések a PDF-ben maradjanak.",
       "images": "Képek szerepeltetése",
-      "imagesHint": "(oldalanként 4, a fogászati lap után)"
+      "imagesHint": "(oldalanként 4, a fogászati lap után)",
+      "radiographicReport": "Röntgenlelet szerepeltetése",
+      "ctReport": "CT-lelet szerepeltetése"
     },
     "noteDevice": "Személyes beállítások automatikusan mentve ezen az eszközön.",
     "spaceMovesDownHint": "Gyors megoldás mélységsorozatok bemondásához",

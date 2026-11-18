@@ -45,7 +45,8 @@
   },
   "treatment": {
     "title": "治疗与手术报告",
-    "findingsHeading": "影像学检查结果",
+    "findingsHeading": "X 线报告",
+    "ctHeading": "CT 报告",
     "treatmentHeading": "治疗",
     "continued": "…续。完整报告已嵌入此文件，可重新载入应用查看。"
   },

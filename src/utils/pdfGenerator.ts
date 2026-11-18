@@ -113,6 +113,11 @@ export interface PdfBranding {
  *  still round-trips through the hidden stash either way. */
 export interface PdfLayoutOptions {
   includeGrid?: boolean;
+  /** False leaves the radiographic report off the treatment card (it
+   *  still round-trips through the hidden stash). Default true. */
+  includeRadiographicReport?: boolean;
+  /** Same for the CT report. Default true. */
+  includeCtReport?: boolean;
   /** Chart images to append after page 2, IMAGES_PER_PAGE to a page.
    *  Empty / absent → no image pages. Not round-tripped through the
    *  stash: the images live in cloud storage with the chart. */
@@ -138,6 +143,8 @@ export async function buildDentalChartPDFBytes(
 ): Promise<Uint8Array> {
   const includeGrid = layoutOptions.includeGrid ?? true;
   const lng: AppLanguage = layoutOptions.lng ?? 'en';
+  const printedRadiographic = layoutOptions.includeRadiographicReport ?? true ? patientInfo.radiographicFindings ?? '' : '';
+  const printedCt = layoutOptions.includeCtReport ?? true ? patientInfo.ctReport ?? '' : '';
   // English is bundled; other catalogs load on first use. If that fails
   // (offline), labels fall back to English rather than failing the PDF.
   if (lng !== 'en') await loadLanguage(lng);
@@ -196,7 +203,7 @@ export async function buildDentalChartPDFBytes(
   // Codes are needed before the diagrams draw: each page's diagram
   // centers vertically in the space left over by its codes legend.
   const usedByPage = collectUsedCodesByPage({
-    patientInfo,
+    patientInfo: { ...patientInfo, radiographicFindings: printedRadiographic, ctReport: printedCt },
     toothData,
     preCommentTexts:  preDiagram.state.comments.map((c)  => c.text),
     postCommentTexts: postDiagram.state.comments.map((c) => c.text),
@@ -331,7 +338,7 @@ export async function buildDentalChartPDFBytes(
     pdfDoc, postSlot, postDiagram.png,
     diagramBottomIn(1, usedByPage.page2)
   );
-  drawTreatmentReportField(page2, treatmentCardText(patientInfo.treatmentReport, patientInfo.radiographicFindings, lng), regular, bold, lng);
+  drawTreatmentReportField(page2, treatmentCardText(patientInfo.treatmentReport, { radiographic: printedRadiographic, ct: printedCt }, lng), regular, bold, lng);
   drawFooter(page2, regular, bold, 2, totalPages, generatedAt, identityLine, lng);
 
   // ---- Page-2 codes-used legend (page 1 drew its own above) ------------

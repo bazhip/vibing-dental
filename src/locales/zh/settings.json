@@ -193,7 +193,9 @@
       "grid": "包含记录表格",
       "gridHint": "关闭牙列图检查结果时必须包含，以确保已记录的测量值保留在 PDF 中。",
       "images": "包含影像",
-      "imagesHint": "（每页4张，位于图表之后）"
+      "imagesHint": "（每页4张，位于图表之后）",
+      "radiographicReport": "包含 X 线报告",
+      "ctReport": "包含 CT 报告"
     },
     "noteDevice": "个人偏好会自动保存在此设备上。",
     "spaceMovesDownHint": "适合连续口述多个深度",

@@ -72,11 +72,12 @@ describe('record note builder', () => {
       exam: { ...EMPTY_EXAM_FINDINGS, buccal: { status: 'abnormal', comment: 'ulcer' }, tongue: { status: 'normal', comment: '' } },
       nerveBlocks: { ...EMPTY_NERVE_BLOCKS, infraorbitalRight: '0.2', drugs: [{ name: 'Bupivacaine', concentration: '0.5' }] },
       radiographicFindings: 'Root remnant 308',
+      ctReport: 'TMJs normal',
       treatmentReport: 'Closed extraction',
       recallDate: '2027-01-01',
     });
     const headings = buildRecordNote(s, en()).sections.map((x) => x.heading);
-    expect(headings).toEqual(['Dental procedure', 'Anesthesia', 'Oral exam', 'Radiographic findings', 'Treatment report', 'Recheck']);
+    expect(headings).toEqual(['Dental procedure', 'Anesthesia', 'Oral exam', 'Radiographic report', 'CT report', 'Treatment report', 'Recheck']);
     expect(section(s, 'Oral exam')!.lines.join('\n')).toContain('Buccal mucosa: Abnormal — ulcer');
     expect(section(s, 'Anesthesia')!.lines.join('\n')).toContain('Infraorbital');
     expect(section(s, 'Anesthesia')!.lines.join('\n')).toContain('0.5% Bupivacaine');

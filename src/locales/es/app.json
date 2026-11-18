@@ -34,9 +34,14 @@
     "hint": "Bolsas por raíz, columnas, qué se muestra junto a los dientes, opciones de PDF"
   },
   "radiographic": {
-    "title": "Hallazgos radiográficos",
+    "title": "Informe radiográfico",
     "placeholder": "p. ej. 108: pérdida ósea vertical en la raíz distal, exposición de la furca. 307: reabsorción dental de tipo 2.",
     "hint": "Se imprime en el PDF encima del informe del tratamiento."
+  },
+  "ct": {
+    "title": "Informe de TC",
+    "placeholder": "p. ej. Maxilar caudal derecho: sin osteólisis. 108: radiolucidez periapical, raíz mesial. ATM dentro de los límites normales.",
+    "hint": "Se imprime en el PDF debajo del informe radiográfico."
   },
   "lock": {
     "title": "Solo lectura: elija Editar historial para hacer cambios",

@@ -48,7 +48,7 @@ vi.mock('./OffscreenChartPicture', () => ({
   useOffscreenChartPicture: () => ({ element: null, render: async () => null, hasDiagrams: false }),
 }));
 vi.mock('../../hooks/usePimsFieldMap', () => ({
-  usePimsFieldMap: () => ({ map: { header: null, anesthesia: 'Plan', exam: 'Plan', findings: 'Plan', procedures: 'Plan', radiographs: 'Plan', treatment: 'Plan', recheck: 'Plan', chart: null }, save: async () => {}, reset: async () => {} }),
+  usePimsFieldMap: () => ({ map: { header: null, anesthesia: 'Plan', exam: 'Plan', findings: 'Plan', procedures: 'Plan', radiographs: 'Plan', ct: 'Plan', treatment: 'Plan', recheck: 'Plan', chart: null }, save: async () => {}, reset: async () => {} }),
 }));
 vi.mock('../../utils/edgeFunctions', () => ({ markPimsSent: async () => ({ sentAt: '2026-11-15T10:00:00Z' }) }));
 vi.mock('../../utils/chartQueries', async () => {

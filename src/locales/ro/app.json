@@ -34,9 +34,14 @@
     "hint": "Pungi pe rădăcină, coloane, informații afișate lângă dinți, opțiuni PDF"
   },
   "radiographic": {
-    "title": "Constatări radiografice",
+    "title": "Raport radiografic",
     "placeholder": "de ex. 108: pierdere osoasă verticală la rădăcina distală, expunerea furcației. 307: resorbție dentară de tip 2.",
     "hint": "Se tipărește în PDF deasupra raportului de tratament."
+  },
+  "ct": {
+    "title": "Raport CT",
+    "placeholder": "de ex. Maxilar caudal drept: fără osteoliză. 108: radiotransparență periapicală, rădăcina mezială. ATM în limite normale.",
+    "hint": "Se tipărește în PDF sub raportul radiografic."
   },
   "lock": {
     "title": "Doar vizualizare — alegeți Editați fișa pentru a face modificări",

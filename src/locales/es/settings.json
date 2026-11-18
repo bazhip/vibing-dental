@@ -193,7 +193,9 @@
       "grid": "Incluir la cuadrícula de mediciones",
       "gridHint": "Obligatorio cuando los hallazgos del diagrama están desactivados, para conservar las mediciones en el PDF.",
       "images": "Incluir las imágenes",
-      "imagesHint": "(4 por página, después del historial)"
+      "imagesHint": "(4 por página, después del historial)",
+      "radiographicReport": "Incluir el informe radiográfico",
+      "ctReport": "Incluir el informe de TC"
     },
     "noteDevice": "Preferencias personales guardadas automáticamente en este dispositivo.",
     "spaceMovesDownHint": "Rápido para dictar una serie de profundidades",

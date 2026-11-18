@@ -46,7 +46,8 @@
   },
   "treatment": {
     "title": "Raport de tratament și chirurgie",
-    "findingsHeading": "CONSTATĂRI RADIOGRAFICE",
+    "findingsHeading": "RAPORT RADIOGRAFIC",
+    "ctHeading": "RAPORT CT",
     "treatmentHeading": "TRATAMENT",
     "continued": "… continuare — raportul complet este încorporat în acest fișier (încărcați-l din nou în aplicație)."
   },

@@ -46,7 +46,8 @@
   },
   "treatment": {
     "title": "Informe de tratamiento y cirugía",
-    "findingsHeading": "HALLAZGOS RADIOGRÁFICOS",
+    "findingsHeading": "INFORME RADIOGRÁFICO",
+    "ctHeading": "INFORME DE TC",
     "treatmentHeading": "TRATAMIENTO",
     "continued": "… continúa — el informe completo va incluido en este archivo (vuelva a cargarlo en la aplicación)."
   },

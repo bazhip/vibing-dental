@@ -116,7 +116,7 @@ export function collectUsedCodesByPage({
     .map((v) => v.comment);
   return {
     page1: codesInFor(species, [patientInfo.complaint, ...toothFields, ...preCommentTexts, ...examComments]),
-    page2: codesInFor(species, [patientInfo.treatmentReport, patientInfo.radiographicFindings ?? "", ...postCommentTexts]),
+    page2: codesInFor(species, [patientInfo.treatmentReport, patientInfo.radiographicFindings ?? "", patientInfo.ctReport ?? "", ...postCommentTexts]),
   };
 }
 
@@ -1009,15 +1009,25 @@ export function drawToothGrid(
 
 // ------------------------------------------------------- Treatment Report --
 
-/** The treatment card's text: radiographic findings (when present) as a
- *  labelled first block, then the report — the card keeps its size and
- *  place, so charts without findings print exactly as before. */
-export function treatmentCardText(treatmentReport: string, radiographicFindings?: string, lng = 'en'): string {
-  const rads = (radiographicFindings ?? '').trim();
-  if (!rads) return treatmentReport;
-  const report = treatmentReport.trim();
+/** The treatment card's text: the radiographic report and CT report
+ *  (each when present) as labelled blocks, then the treatment report —
+ *  the card keeps its size and place, so charts without either print
+ *  exactly as before. */
+export function treatmentCardText(
+  treatmentReport: string,
+  reports: { radiographic?: string; ct?: string } = {},
+  lng = 'en',
+): string {
+  const rads = (reports.radiographic ?? '').trim();
+  const ct = (reports.ct ?? '').trim();
+  if (!rads && !ct) return treatmentReport;
   const t = pdfT(lng);
-  return `${t('treatment.findingsHeading')}\n${rads}${report ? `\n\n${t('treatment.treatmentHeading')}\n${report}` : ''}`;
+  const report = treatmentReport.trim();
+  return [
+    rads && `${t('treatment.findingsHeading')}\n${rads}`,
+    ct && `${t('treatment.ctHeading')}\n${ct}`,
+    report && `${t('treatment.treatmentHeading')}\n${report}`,
+  ].filter(Boolean).join('\n\n');
 }
 
 export function drawTreatmentReportField(
