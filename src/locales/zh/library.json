@@ -7,7 +7,7 @@
   "title": "患者",
   "unnamedPatient": "未命名患者",
   "search": {
-    "placeholder": "按患者姓名或编号搜索…",
+    "placeholder": "搜索患宠或主人…",
     "aria": "搜索牙科图表"
   },
   "filters": {

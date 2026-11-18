@@ -7,7 +7,7 @@
   "title": "المرضى",
   "unnamedPatient": "مريض بلا اسم",
   "search": {
-    "placeholder": "البحث باسم المريض أو رقمه…",
+    "placeholder": "ابحثوا عن المرضى أو المالكين…",
     "aria": "البحث في المخططات"
   },
   "filters": {

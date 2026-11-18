@@ -25,12 +25,12 @@ import { LocalizedError } from './apiErrors';
 beforeEach(() => { db.calls.length = 0; db.rows = []; db.singleQueue = []; db.rangeQueue = []; });
 
 describe('listChartsPage', () => {
-  it('searches the four columns (LIKE-escaped), orders and pages', async () => {
+  it('searches patient identity and owner name, phone and email (LIKE-escaped), orders and pages', async () => {
     db.rows = Array.from({ length: 3 }, (_, i) => ({ id: `c${i}` }));
     const page = await listChartsPage({ search: '50%_(a,b)', limit: 2, offset: 4, sortKey: 'patient' });
     expect(db.calls).toContainEqual([
       'or',
-      ['patient_name', 'patient_number', 'owner_name', 'owner_phone'].map((c) => `${c}.ilike.%50\\%\\_ a b%`).join(','),
+      ['patient_name', 'patient_number', 'owner_name', 'owner_phone', 'owner_email'].map((c) => `${c}.ilike.%50\\%\\_ a b%`).join(','),
     ]);
     expect(db.calls).toContainEqual(['order', 'patient_name', { ascending: true }]);
     expect(db.calls).toContainEqual(['order', 'updated_at', { ascending: false }]);

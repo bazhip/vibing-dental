@@ -326,36 +326,13 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
             )}
             <button
               type="button"
-              className="chart-library__filter"
-              onClick={() => pdfInputRef.current?.click()}
-              title={t('importPdfTitle')}
-            >
-              {t('importPdf')}
-            </button>
-            <button
-              type="button"
               className="chart-library__filter chart-library__filter--primary"
               onClick={onNewPatient}
               title={t('newPatientTitle')}
             >
               {t('newPatient')}
             </button>
-            <input
-              ref={pdfInputRef}
-              type="file"
-              accept="application/pdf"
-              style={{ display: 'none' }}
-              onChange={async (e) => {
-                const file = e.target.files?.[0];
-                e.target.value = '';
-                if (!file) return;
-                try {
-                  if ((await onLoadPdf(file)) !== false) onClose();
-                } catch (cause) {
-                  setLibraryError({ kind: 'open', cause });
-                }
-              }}
-            />
+
           </div>
 
           {error && <div className="login-error" role="alert">{error}</div>}
@@ -563,6 +540,32 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
             </div>
           )}
         </div>
+        <footer className="chart-library-modal__footer">
+            <button
+              type="button"
+              className="chart-library__filter"
+              onClick={() => pdfInputRef.current?.click()}
+              title={t('importPdfTitle')}
+            >
+              {t('importPdf')}
+            </button>
+            <input
+              ref={pdfInputRef}
+              type="file"
+              accept="application/pdf"
+              style={{ display: 'none' }}
+              onChange={async (e) => {
+                const file = e.target.files?.[0];
+                e.target.value = '';
+                if (!file) return;
+                try {
+                  if ((await onLoadPdf(file)) !== false) onClose();
+                } catch (cause) {
+                  setLibraryError({ kind: 'open', cause });
+                }
+              }}
+            />
+        </footer>
       </div>
     </div>
   );

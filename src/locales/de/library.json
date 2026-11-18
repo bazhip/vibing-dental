@@ -7,7 +7,7 @@
   "title": "Patienten",
   "unnamedPatient": "Patient ohne Namen",
   "search": {
-    "placeholder": "Nach Patientenname oder -nummer suchen …",
+    "placeholder": "Patienten oder Tierhalter suchen…",
     "aria": "Akten durchsuchen"
   },
   "filters": {

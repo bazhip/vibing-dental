@@ -7,7 +7,7 @@
   "title": "Patients",
   "unnamedPatient": "Patient sans nom",
   "search": {
-    "placeholder": "Rechercher par nom ou numéro de patient…",
+    "placeholder": "Rechercher des patients ou des propriétaires…",
     "aria": "Rechercher dans les dossiers"
   },
   "filters": {

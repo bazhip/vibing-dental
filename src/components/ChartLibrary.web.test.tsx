@@ -290,3 +290,18 @@ it('shows finalized status for single visits and a count with per-visit statuses
   expect(within(visits[0] as HTMLElement).getByText('Yes')).toBeVisible();
   expect(within(visits[1] as HTMLElement).getByText('No')).toBeVisible();
 });
+
+
+it('keeps New patient with search and moves the rare PDF import to the footer', async () => {
+  const { container, onNewPatient } = setup();
+  await screen.findByText('Bella');
+  const controls = container.querySelector('.chart-library__controls')!;
+  expect(within(controls as HTMLElement).queryByRole('button', { name: 'Import chart PDF' })).toBeNull();
+  const create = within(controls as HTMLElement).getByRole('button', { name: 'New patient' });
+  fireEvent.click(create);
+  expect(onNewPatient).toHaveBeenCalledOnce();
+  const footer = container.querySelector('footer')!;
+  expect(footer).not.toBeNull();
+  expect(within(footer).getByRole('button', { name: 'Import chart PDF' })).toBeVisible();
+  expect(screen.getByRole('searchbox')).toHaveAttribute('placeholder', 'Search patients or owners…');
+});

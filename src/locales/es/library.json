@@ -7,7 +7,7 @@
   "title": "Pacientes",
   "unnamedPatient": "Paciente sin nombre",
   "search": {
-    "placeholder": "Buscar por nombre o número de paciente…",
+    "placeholder": "Buscar pacientes o propietarios…",
     "aria": "Buscar historiales"
   },
   "filters": {

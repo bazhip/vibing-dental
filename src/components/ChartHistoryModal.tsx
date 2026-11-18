@@ -188,7 +188,7 @@ export const ChartHistoryModal: React.FC<ChartHistoryModalProps> = ({ chartId, o
   }
 
   return ReactDOM.createPortal(
-    <div className="ai-settings-overlay" {...backdrop} role="dialog" aria-modal="true" aria-label={t('history.aria')}>
+    <div className="ai-settings-overlay chart-history-overlay" {...backdrop} role="dialog" aria-modal="true" aria-label={t('history.aria')}>
       <div className="ai-settings-modal chart-history" ref={modalRef} tabIndex={-1}>
         <header className="ai-settings-header">
           <h2>{label ? t('history.titleWith', { label }) : t('history.title')}</h2>
