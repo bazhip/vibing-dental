@@ -1252,7 +1252,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           refineRequest={radiologyRefineRequest?.session === radiologySession ? radiologyRefineRequest : undefined}
           readOnly={readOnly} aiEnabled={profile.aiEnabled && !trial && cloud.enabled}
           onChange={(changes) => chart.setPatientInfo((previous) => ({ ...previous, ...changes }))} />
-        <RadiologyReportSection key={`ct:${chart.cloudChartId}:${chart.chartSession}`} reportKind={CT_REPORT_KIND}
+        <RadiologyReportSection key={`ct:${chart.cloudChartId}:${chart.chartSession}`} reportKind={CT_REPORT_KIND} showAiNotice={false}
           chartId={chart.cloudChartId} chartSession={chart.chartSession} snapshot={chart.getSnapshot()}
           readOnly={readOnly} aiEnabled={profile.aiEnabled && !trial && cloud.enabled}
           onChange={changes => { if (!readOnly) chart.setPatientInfo(previous => ({ ...previous, ...changes })); }} />

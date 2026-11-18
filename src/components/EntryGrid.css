@@ -4616,4 +4616,4 @@ a, button, input, select, textarea, label, summary, [role='button'] {
 }
 
 /* Independent imaging reports share a layout with consistent section spacing. */
-.imaging-reports { display: grid; gap: 24px; min-width: 0; }
+.imaging-reports { display: grid; gap: 24px; min-width: 0; margin-top: 24px; }

@@ -21,6 +21,7 @@ interface Props {
   chartSession?: number;
   readOnly?: boolean;
   aiEnabled?: boolean;
+  showAiNotice?: boolean;
   refineRequest?: { id: number; language: AppLanguage };
   onChange: (changes: Partial<PatientInfo>) => void;
 }
@@ -28,7 +29,7 @@ type Guard = { epoch: number; source: string; report: string; reviewed: string; 
 const reportFields = ['radiologyReport', 'radiologyReportLanguage', 'radiologyReportBasis', 'radiologyReviewedBasis', 'radiologyReportGeneratedAt'] as const;
 const escapeHtml = (value: string) => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-export function RadiologyReportSection({ snapshot: originalSnapshot, reportKind = 'radiology', chartId = null, chartSession = 0, readOnly = false, aiEnabled = false, refineRequest, onChange: onPatientChange }: Props): React.ReactElement {
+export function RadiologyReportSection({ snapshot: originalSnapshot, reportKind = 'radiology', chartId = null, chartSession = 0, readOnly = false, aiEnabled = false, showAiNotice = true, refineRequest, onChange: onPatientChange }: Props): React.ReactElement {
   const { t, i18n } = useTranslation('app');
   const snapshot = reportKind === 'ct' ? ctReportSnapshot(originalSnapshot) : originalSnapshot;
   const onChange = (changes: Partial<PatientInfo>) => onPatientChange(reportKind === 'ct' ? ctReportChanges(changes) : changes);
@@ -140,20 +141,18 @@ export function RadiologyReportSection({ snapshot: originalSnapshot, reportKind 
     }
   };
   return <section className="radiology-report patient-form" aria-label={t(reportKey('title'))} aria-busy={busy}>
-    <SectionHeader title={t(reportKey('title'))} />
-    <p className="patient-form__hint" id={`${fieldId}-help`}>{t(reportKey('editorHelp'))}</p>
+    <SectionHeader title={t(reportKey('title'))}>
+      <p className="patient-form__hint" id={`${fieldId}-help`}>{t(reportKey('editorHelp'))}</p>
+    </SectionHeader>
+    <div className="radiology-report__body">
     <div className="radiographic-findings radiology-report__field">
-      <label className="patient-form__label radiographic-findings__title" htmlFor={`${fieldId}-report`}>{t('radiologyReport.body')}</label>
-      <textarea id={`${fieldId}-report`} className="patient-form__textarea radiographic-findings__text radiology-report__editor"
-        aria-describedby={`${fieldId}-help`} placeholder={t(reportKey('editorPlaceholder'))} rows={12} maxLength={60000}
+      <label className="visually-hidden radiographic-findings__title" htmlFor={`${fieldId}-report`}>{t('radiologyReport.body')}</label>
+      <textarea id={`${fieldId}-report`} className="patient-form__textarea surgery-report__textarea radiographic-findings__text radiology-report__editor"
+        aria-describedby={`${fieldId}-help`} placeholder={t(reportKey('editorPlaceholder'))} rows={8} maxLength={60000}
         value={draft} disabled={readOnly || busy} onChange={event => update({ radiologyReport: event.target.value,
           radiologyReportBasis: source, radiologyReportLanguage: storedLanguage })} />
     </div>
     <div className="radiology-report__actions">
-      <button type="button" className={`diagram-view__action${!reviewed ? ' radiology-report__primary' : ''}`}
-        disabled={readOnly || busy || !aiEnabled || !hasRadiologySource(snapshot)} onClick={() => void generate()}>
-        {t(busy && !reviewed ? 'radiologyReport.refining' : 'radiologyReport.refine')}
-      </button>
       <label className="patient-form__label">{t('radiologyReport.editorLanguage')}<select className="patient-form__input" disabled={readOnly || busy} value={language} onChange={event => {
         if (readOnly || busy) return;
         const next = event.target.value as AppLanguage; invalidate();
@@ -161,22 +160,29 @@ export function RadiologyReportSection({ snapshot: originalSnapshot, reportKind 
       }}>
         {APP_LANGUAGES.map(value => <option key={value} value={value}>{LANGUAGE_NAMES[value]}</option>)}
       </select></label>
+      <button type="button" className={!reviewed ? 'entry-grid__button entry-grid__button--topbar radiology-report__primary' : 'diagram-view__action'}
+        disabled={readOnly || busy || !aiEnabled || !hasRadiologySource(snapshot)} onClick={() => void generate()}>
+        {t(busy && !reviewed ? 'radiologyReport.refining' : 'radiologyReport.refine')}
+      </button>
       {undo && undo.source === source && undo.applied === report && <button type="button" className="diagram-view__action" disabled={readOnly || busy} onClick={() => { onChange(undo.previous); setUndo(null); setFeedback(null); }}>{t('radiologyReport.undoRefine')}</button>}
     </div>
-    {!aiEnabled && <p className="patient-form__hint">{t('radiologyReport.refineUnavailable')}</p>}
+    {!aiEnabled && showAiNotice && <p className="patient-form__hint">{t('radiologyReport.refineUnavailable')}</p>}
     {!!draft.trim() && <>
-    <p role="status" className="patient-form__hint">{t(reviewed ? 'radiologyReport.reviewed' : stale ? 'radiologyReport.stale' : 'radiologyReport.unreviewed')}</p>
+    {stale && <p role="status" className="patient-form__hint">{t('radiologyReport.stale')}</p>}
+    <div className="radiology-report__review">
     <label className="radiology-report__check"><input type="checkbox" disabled={readOnly || busy || !draft.trim()} checked={reviewed} onChange={event => {
       if (readOnly || busy) return;
       invalidate(); onChange({ radiologyReport: draft, radiologyReportBasis: source, radiologyReportLanguage: storedLanguage,
         radiologyReviewedBasis: event.target.checked ? radiologyReviewBasis({ ...snapshot, patientInfo: { ...info, radiologyReport: draft } }, storedLanguage) : '' });
     }} />{t('radiologyReport.checked')}</label>
     <div className="radiology-report__actions">
-      <button type="button" className={`diagram-view__action${reviewed ? ' radiology-report__primary' : ''}`} disabled={!reviewed || busy} onClick={() => void transfer('copy')}>{t('radiologyReport.copy')}</button>
+      <button type="button" className={reviewed ? 'entry-grid__button entry-grid__button--topbar radiology-report__primary' : 'diagram-view__action'} disabled={!reviewed || busy} onClick={() => void transfer('copy')}>{t('radiologyReport.copy')}</button>
       <button type="button" className="diagram-view__action" disabled={!reviewed || busy} onClick={() => void transfer('pdf')}>{t('radiologyReport.pdf')}</button>
+    </div>
     </div>
     </>}
     {error && <p role="alert" className="radiology-report__error">{error}</p>}
     {feedback && <p role="status">{t(`radiologyReport.${feedback}`)}</p>}
+    </div>
   </section>;
 }
