@@ -35,6 +35,9 @@
   margin-bottom: 2rem;
 }
 
+/* The signed-out language picker sits above the title with room to breathe. */
+.login-header > .language-switcher { margin-bottom: 16px; }
+
 .login-header h1 {
   font-size: 1.5rem;
   font-weight: 700;

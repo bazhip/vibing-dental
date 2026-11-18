@@ -366,8 +366,6 @@
 
   /* iOS draws native selects at a fixed small height unless restyled. */
   .report-templates select {
-    -webkit-appearance: none;
-    appearance: none;
     min-height: 44px;
     padding: 0 2.25rem 0 0.75rem;
     font-size: 16px;

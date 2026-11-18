@@ -226,7 +226,7 @@
   .chart-library__remove-recheck { flex-basis: 44px; width: 44px; height: 44px; }
 }
 
-.patients-workspace .chart-library__filter-select { height: 44px; appearance: none; padding-right: 28px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='m3 4.5 3 3 3-3' fill='none' stroke='%23556677' stroke-width='1.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; }
+.patients-workspace .chart-library__filter-select { height: 44px; --select-pad-end: 28px; --select-chevron-inset: 10px; }
 @container patient-directory (max-width: 980px) {
   .patients-workspace .chart-library__row { grid-template-columns: minmax(0, 1fr) auto; }
   .patients-workspace .chart-library__row-main { display: flex; flex-wrap: wrap; align-items: baseline; align-content: center; gap: 6px 12px; padding: 12px; }
@@ -248,7 +248,7 @@
   .patients-workspace .chart-library__controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 12px; }
   .patients-workspace .chart-library__search { grid-column: 1 / -1; min-width: 0; width: 100%; }
   .patients-workspace .chart-library__controls > :is(button, select) { min-width: 0; width: 100%; margin: 0; white-space: normal; font-size: 12px; }
-  .patients-workspace .chart-library__controls > select { padding-left: 8px; padding-right: 24px; }
+  .patients-workspace .chart-library__controls > select { padding-left: 8px; --select-pad-end: 24px; --select-chevron-inset: 8px; }
   .patients-workspace .chart-library__act, .patients-workspace .chart-library__actions-menu summary, .chart-library__due-toggle { min-height: 44px; }
   .patients-workspace .chart-library__group-main .chart-library__cell--recall:not(.chart-library__cell--empty) { flex-basis: 100%; }
 }

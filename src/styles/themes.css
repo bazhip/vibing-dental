@@ -63,6 +63,8 @@
 
   --text:           #17232e;
   --text-muted:     #55677a;
+  /* Dropdown chevron (styles/controls.css), drawn in --text-muted. */
+  --select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='m3 4.5 3 3 3-3' fill='none' stroke='%2355677a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   --border:         #e2e7eb;
   --border-strong:  #9cabb7;
 
@@ -129,6 +131,7 @@
     --danger-tint: var(--ios-danger-fill);
     --text: var(--ios-label);
     --text-muted: var(--ios-label-muted);
+    --select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='m3 4.5 3 3 3-3' fill='none' stroke='%23afbecb' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
     --border: var(--ios-separator);
     --border-strong: var(--ios-separator-opaque);
     /* Dark drop shadows barely read, so every tier also carries a faint

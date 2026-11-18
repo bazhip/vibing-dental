@@ -159,8 +159,9 @@
   border-radius: 999px;
   padding: 0.12rem 1.35rem 0.12rem 0.3rem;
   cursor: pointer;
-  /* Native caret keeps the "this opens" affordance. */
-  appearance: auto;
+  /* Compact pill: chevron tucked close (styles/controls.css). */
+  --select-pad-end: 1.5rem;
+  --select-chevron-inset: 6px;
 }
 .entry-grid__visit-select:focus-visible {
   outline: 2px solid var(--primary, #0c6b63);
@@ -3018,6 +3019,8 @@
 
 /* Owner-report tag on an image card. */
 .imaging__role {
+  --select-pad-end: 26px;
+  --select-chevron-inset: 8px;
   flex: none;
   padding: 0.25rem 0.4rem;
   border: 1px solid var(--border);
@@ -3329,6 +3332,8 @@ button.save-status--error {
   padding: 0.6rem;
 }
 .imaging__kind-select {
+  --select-pad-end: 26px;
+  --select-chevron-inset: 8px;
   align-self: flex-start;
   padding: 0.25rem 0.4rem;
   border: 1px solid var(--border);
@@ -3406,6 +3411,8 @@ a.imaging__dicom:hover { background: var(--surface-2, rgba(0, 0, 0, 0.05)); }
   background: rgba(15, 23, 42, 0.8); color: #fff; font-size: 0.72rem; font-weight: 700;
 }
 .imaging__tooth-select {
+  --select-pad-end: 26px;
+  --select-chevron-inset: 8px;
   align-self: stretch;
   padding: 0.25rem 0.4rem;
   border: 1px solid var(--border);
