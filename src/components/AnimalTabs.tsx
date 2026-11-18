@@ -92,7 +92,7 @@ export function AnimalTabs({ tabs, activeId, busy, onSelect, onClose, onAdd, sho
               <span className="animal-tabs__heading"><strong>{name}</strong>{editing && tab.id === activeId && <span className="animal-tabs__editing" title={t('topbar.editingTitle')}>{t('topbar.editingShort')}</span>}</span><span className="animal-tabs__details">{pid && <span>{pid}</span>}<span>{date}</span></span>
             </button>
             {tab.id === activeId && visits.length > 1 && onVisit && <span className="animal-tabs__visit">
-              <select value={activeId} onChange={event => onVisit(event.target.value)} disabled={busy}
+              <select className="select--bare" value={activeId} onChange={event => onVisit(event.target.value)} disabled={busy}
                 aria-label={t('topbar.visitSwitchLabel', { n: visits.length })}>
                 {!visits.some(visit => visit.id === activeId) && <option value={activeId}>{date}</option>}
                 {visits.map(visit => <option key={visit.id} value={visit.id}>{visit.date ? formatDate(visit.date) : t('topbar.undatedVisit')}</option>)}

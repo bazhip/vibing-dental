@@ -1,0 +1,18 @@
+/* One dropdown look for every website <select>: no native arrow (it hugs
+   the right edge and differs by browser), a quiet chevron with room to
+   breathe instead. Components tune spacing with the variables below
+   rather than restyling the chevron. The iOS app keeps its own pickers;
+   list boxes ([multiple], [size]) and .select--bare overlays (a select
+   laid invisibly over its own icon) have no chevron. */
+html:not(.native-ios) select:not([multiple], [size], .select--bare) {
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: var(--select-chevron);
+  background-repeat: no-repeat;
+  background-position: right var(--select-chevron-inset, 12px) center;
+  background-size: 12px 12px;
+  padding-inline-end: var(--select-pad-end, 36px);
+}
+html:not(.native-ios)[dir='rtl'] select:not([multiple], [size], .select--bare) {
+  background-position: left var(--select-chevron-inset, 12px) center;
+}

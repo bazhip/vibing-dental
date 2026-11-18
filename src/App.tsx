@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import './styles/themes.css';
+import './styles/controls.css';
 import './styles/boards.css';
 import './App.css';
 import { readString, writeString, removeKey } from './utils/storage';
