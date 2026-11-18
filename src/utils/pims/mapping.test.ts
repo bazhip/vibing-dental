@@ -104,3 +104,25 @@ it('effectiveMap keeps the saved edited-note destination', () => {
   expect(effectiveMap({ editedNote: 'Assessment' })).toMatchObject({ editedNote: 'Assessment', treatment: 'Plan' });
   expect(effectiveMap(null).editedNote).toBeUndefined();
 });
+
+it.each(['edited', 'removed', 'multiline'])('keeps a legacy stored complaint %s without sending demographics or restoring current chart wording', mode => {
+  const generated = buildRecordNote({ ...snapshot, patientInfo: { ...snapshot.patientInfo, patientName: 'Private patient', complaint: 'Current chart complaint' } }, recordNoteT('en'));
+  const complaint = generated.sections.find(section => section.key === 'complaint')!;
+  const legacy = { sections: generated.sections.filter(section => section.key !== 'complaint').map(section => ({ ...section, lines: [...section.lines] })) };
+  const header = legacy.sections.find(section => section.key === 'header')!;
+  if (mode !== 'removed') header.lines.push(`${complaint.heading}: Edited legacy wording`, ...(mode === 'multiline' ? ['Second recorded line'] : []));
+  const split = splitStoredNote(recordNoteText(legacy), generated);
+  expect(split).not.toBeNull();
+  const { items } = buildSendItems({ note: split!, map: effectiveMap(null), fields, pngDataUrl: null });
+  const text = items.map(item => item.text ?? '').join('\n');
+  expect(text).not.toContain('Private patient');
+  expect(text).not.toContain('Current chart complaint');
+  if (mode === 'removed') expect(split!.sections.some(section => section.key === 'complaint')).toBe(false);
+  else expect(text).toContain(mode === 'multiline' ? 'Edited legacy wording\nSecond recorded line' : 'Edited legacy wording');
+});
+it('keeps the whole stored note when only its complaint heading was removed', () => {
+  const generated = buildRecordNote({ ...snapshot, patientInfo: { ...snapshot.patientInfo, complaint: 'Recorded complaint that must not disappear' } }, recordNoteT('en'));
+  const complaint = generated.sections.find(section => section.key === 'complaint')!;
+  const edited = recordNoteText(generated).replace(complaint.heading.toLocaleUpperCase() + '\n', '');
+  expect(splitStoredNote(edited, generated)).toBeNull();
+});

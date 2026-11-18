@@ -58,7 +58,7 @@ const EnabledSendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
   const [examBusy, setExamBusy] = React.useState(false);
   const [noteBusy, setNoteBusy] = React.useState(false);
   const {
-    phase, rows, split, sending, changedTarget, sentAtSettled, lastSentAt, nothingToSend,
+    phase, rows, split, sending, changedTarget, sentAtSettled, lastSentAt, nothingToSend, mappingStatus,
     load, choose, resetToDefaults, doSend, copyDiagnostic, formatDate,
   } = usePimsSend({
     transport,
@@ -166,12 +166,14 @@ const EnabledSendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
           {!split && <p className="record-note__stale" role="status">{t('pims:editedNotice')}</p>}
           <h3 className="pims-dialog__subtitle">{t('pims:rows.heading')}</h3>
           <MappingRows rows={rows} disabled={busy} onChoose={choose} />
+          {mappingStatus !== 'ready' && <p className="patient-form__hint" role={mappingStatus === 'error' ? 'alert' : 'status'}>{t(`pims:noteAutofill.mappingStatus.${mappingStatus}`)}</p>}
+          {mappingStatus === 'error' && <button type="button" className="diagram-view__action" onClick={() => void load()}>{t('pims:noteAutofill.reloadMapping')}</button>}
           {changedTarget && <p className="record-note__stale" role="status">{t('pims:send.targetChanged')}</p>}
         </>
       );
       footer = (
         <>
-          <button type="button" className="diagram-view__action" onClick={() => void resetToDefaults()} disabled={busy}>
+          <button type="button" className="diagram-view__action" onClick={() => void resetToDefaults()} disabled={busy || mappingStatus !== 'ready'}>
             {t('pims:rows.reset')}
           </button>
           <button type="button" className="diagram-view__action" onClick={onClose} disabled={busy}>

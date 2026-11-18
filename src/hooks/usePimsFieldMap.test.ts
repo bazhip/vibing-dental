@@ -114,3 +114,21 @@ describe('usePimsFieldMap', () => {
     expect(result.current.map.chart).toBe('Discharge Summary');
   });
 });
+
+it('updates detected clinical defaults on a field change while retaining saved skips and custom targets', async () => {
+  stored.value = { gpVitals: null, ctReport: 'Specialist CT', providers: { rhapsody: { dischargeInstructions: null } } };
+  const available = (titles: string[]) => titles.map(title => ({ title, kind: 'note' as const, acceptsImage: false }));
+  const { result, rerender } = renderHook(({ provider, titles }) => usePimsFieldMap(provider, available(titles)), {
+    initialProps: { provider: 'ezyvet' as import('../extension/pims/types').PimsId, titles: ['Physical Exam', 'History', 'Plan'] },
+  });
+  await waitFor(() => expect(result.current.map.ctReport).toBe('Specialist CT'));
+  expect(result.current.map.gpVitals).toBeNull();
+  expect(result.current.map.gpPhysicalExam).toBe('Physical Exam');
+  rerender({ provider: 'rhapsody', titles: ['Medical notes', 'Discharge notes'] });
+  expect(result.current.map.gpVitals).toBe('Medical notes');
+  expect(result.current.map.dischargeInstructions).toBeNull();
+  expect(result.current.map.dischargeMedications).toBe('Discharge notes');
+  rerender({ provider: 'rhapsody', titles: ['Unrelated'] });
+  expect(result.current.map.gpVitals).toBeNull();
+  expect(result.current.map.ctReport).toBeNull();
+});

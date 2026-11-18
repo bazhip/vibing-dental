@@ -150,7 +150,7 @@ const ChartSendReady: React.FC<ReadyProps> = ({
   };
 
   const {
-    phase, rows, split, sending, changedTarget, sentAtSettled, lastSentAt, nothingToSend,
+    phase, rows, split, sending, changedTarget, sentAtSettled, lastSentAt, nothingToSend, mappingStatus,
     load, refreshTarget, choose, resetToDefaults, doSend, copyDiagnostic, formatDate,
   } = usePimsSend({
     transport: internalTransport,
@@ -261,6 +261,8 @@ const ChartSendReady: React.FC<ReadyProps> = ({
         {!split && <p className="sp-hint" role="status">{t('pims:editedNotice')}</p>}
         <h3 className="sp-subtitle">{t('pims:rows.heading')}</h3>
         <MappingRows rows={rows} disabled={actionsBusy} onChoose={choose} />
+          {mappingStatus !== 'ready' && <p className="patient-form__hint" role={mappingStatus === 'error' ? 'alert' : 'status'}>{t(`pims:noteAutofill.mappingStatus.${mappingStatus}`)}</p>}
+          {mappingStatus === 'error' && <button type="button" className="diagram-view__action" onClick={() => void load()}>{t('pims:noteAutofill.reloadMapping')}</button>}
         {changedTarget && <p className="sp-hint" role="status">{t('pims:send.targetChanged')}</p>}
         {notePreview}
         <div className="sp-actions">

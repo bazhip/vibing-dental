@@ -9,7 +9,7 @@ import { effectiveMap } from '../utils/pims/mapping';
 import { DONT_SEND } from '../utils/pims/rowChoice';
 
 vi.mock('./usePimsFieldMap', () => ({
-  usePimsFieldMap: (provider?: import('../extension/pims/types').PimsId) => ({ map: effectiveMap(null, provider), save: async () => {}, reset: async () => {} }),
+  usePimsFieldMap: (provider?: import('../extension/pims/types').PimsId, fields?: import('../utils/pims/mapping').FieldInfo[]) => ({ map: effectiveMap(null, provider, fields), save: async () => {}, reset: async () => {} }),
 }));
 vi.mock('../utils/supabaseClient', () => ({ supabase: null, cloudEnabled: false }));
 vi.mock('../utils/edgeFunctions', () => ({ markPimsSent: vi.fn(async () => ({ sentAt: '2026-11-15T10:00:00Z' })) }));

@@ -51,6 +51,7 @@ const BLOCK_SITES = [
 // Headings reuse the app's own labels where it has one, so the note says
 // "Anesthesia" / "Treatment report" exactly as the chart sections do.
 export const HEADING_KEYS = {
+  complaint: 'forms:patient.complaint',
   header: 'media:recordNote.h.header',
   consultationHistory: 'media:recordNote.h.consultationHistory',
   consultationAssessment: 'media:recordNote.h.consultationAssessment',
@@ -119,9 +120,9 @@ export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): Record
     clean(info.date),
     clean(info.doctor) && `${t('media:recordNote.doctor')}: ${clean(info.doctor)}`,
     clean(info.tech) && `${t('forms:patient.tech')}: ${clean(info.tech)}`,
-    clean(info.complaint) && `${t('forms:patient.complaint')}: ${clean(info.complaint)}`,
   ]);
 
+  add('complaint', textLines(info.complaint));
   add('consultationHistory', textLines(info.consultationHistory));
   add('consultationAssessment', textLines(info.consultationAssessment));
   add('consultationPlan', textLines(info.consultationPlan));

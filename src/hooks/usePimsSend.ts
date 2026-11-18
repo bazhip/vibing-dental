@@ -44,6 +44,7 @@ function targetChanged(a: InspectResult, b: InspectResult): boolean {
   const sa = a.status;
   const sb = b.status;
   return (
+    JSON.stringify(a.fields.map(field => [field.title, field.kind, field.acceptsImage]).sort()) !== JSON.stringify(b.fields.map(field => [field.title, field.kind, field.acceptsImage]).sort()) ||
     a.tab?.id !== b.tab?.id ||
     (sa?.provider ?? 'ezyvet') !== (sb?.provider ?? 'ezyvet') ||
     (sa?.state === 'writable') !== (sb?.state === 'writable') ||
@@ -106,13 +107,16 @@ export function usePimsSend({
   }, []);
   const [phase, setPhase] = React.useState<PimsPhase>({ kind: 'loading' });
   const provider = (phase.kind === 'ready' || phase.kind === 'results' ? phase.info.status?.provider : undefined) ?? 'ezyvet';
-  const { map, save, reset } = usePimsFieldMap(provider);
+  const { map, save, reset, status: mappingStatus = 'ready', reload: reloadMapping } = usePimsFieldMap(provider, phase.kind === 'ready' || phase.kind === 'results' ? phase.info.fields : undefined);
   const [edits, setEdits] = React.useState<PimsFieldMap>({});
   const [editedField, setEditedField] = React.useState<string | null | undefined>(undefined);
   React.useEffect(() => {
     setEdits({});
     setEditedField(undefined);
   }, [provider]);
+  const mappingSignature = JSON.stringify(Object.entries({ ...map, ...edits, ...(editedField !== undefined ? { editedNote: editedField } : {}) }).sort(([a], [b]) => a.localeCompare(b)));
+  const mappingLive = React.useRef({ signature: mappingSignature, status: mappingStatus });
+  mappingLive.current = { signature: mappingSignature, status: mappingStatus };
   const [sending, setSending] = React.useState(false);
   // Set when Send found a different consult than the one on screen (and sent nothing).
   const [changedTarget, setChangedTarget] = React.useState(false);
@@ -128,6 +132,7 @@ export function usePimsSend({
   const lastSentAt = justSentAt ?? sentAt ?? fetchedSentAt;
 
   const load = React.useCallback(async () => {
+    if (mappingStatus === 'error') reloadMapping?.();
     refreshId.current++;
     loadedInfo.current = null;
     setPhase({ kind: 'loading' });
@@ -141,7 +146,7 @@ export function usePimsSend({
     } catch (err) {
       setPhase({ kind: 'error', message: errorText(err, t('pims:errors.extension_error')) });
     }
-  }, [t, transport]);
+  }, [t, transport, mappingStatus, reloadMapping]);
 
   /** A quiet look at the ezyVet tab (no loading screen, no ping): keeps the mapping choices, updates the
    *  target in place, and flags a change. For the panel gaining focus or the active tab changing. */
@@ -217,7 +222,7 @@ export function usePimsSend({
 
   const wantedFor = (key: SourceKey): string | null => (key in edits ? edits[key]! : map[key]) ?? null;
   const editedWanted =
-    editedField !== undefined ? editedField : map.editedNote !== undefined ? map.editedNote : map.treatment;
+    editedField !== undefined ? editedField : map.editedNote !== undefined ? map.editedNote : !split && note.sections.some(section => section.key === 'complaint') ? null : map.treatment;
 
   // Only meaningful once the tab is writable; the mapping rows are shown from then on.
   const info = phase.kind === 'ready' || phase.kind === 'results' ? phase.info : null;
@@ -241,20 +246,21 @@ export function usePimsSend({
   };
 
   const resetToDefaults = async () => {
+    if (mappingStatus !== 'ready') return;
     setEdits({});
     setEditedField(undefined);
     try { await reset(); } catch (err) { toast(errorText(err, t('common:errors.generic')), { kind: 'error' }); }
   };
 
-  const nothingToSend = rows.every((r) => r.wanted == null);
+  const nothingToSend = mappingStatus !== 'ready' || rows.every((r) => r.wanted == null);
 
   const doSend = async () => {
-    if (phase.kind !== 'ready' || !info?.tab || sendingRef.current) return;
+    if (phase.kind !== 'ready' || !info?.tab || sendingRef.current || mappingStatus !== 'ready') return;
     sendingRef.current = true;
     refreshId.current++;
     setSending(true);
     const auth = authVersion.current;
-    const active = () => mounted.current && auth === authVersion.current && live.current.open && live.current.chartId === chartId
+    const active = () => mappingLive.current.status === 'ready' && mappingLive.current.signature === mappingSignature && mounted.current && auth === authVersion.current && live.current.open && live.current.chartId === chartId
       && live.current.savedImage === savedImage && live.current.patientName === patientName && live.current.patientNumber === patientNumber;
     try {
       // Look again first: the vet may have switched consults in ezyVet since this screen loaded.
@@ -434,7 +440,7 @@ export function usePimsSend({
   };
 
   return {
-    phase, rows, split, sending, changedTarget, sentAtSettled, lastSentAt, nothingToSend,
+    phase, rows, split, sending, changedTarget, sentAtSettled, lastSentAt, nothingToSend, mappingStatus,
     load, refreshTarget, choose, resetToDefaults, doSend, copyDiagnostic, formatDate,
   };
 }

@@ -2,6 +2,7 @@ import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { StoredRecordNote } from '../../types';
 import { recordNoteSectionText, recordNoteText, type RecordNote } from '../../utils/recordNote';
+import { clinicalMappingDefaults } from '../../utils/pims/clinicalMappings';
 import { splitStoredNote } from '../../utils/pims/mapping';
 import { createNoteMappingBackend, groupNoteSources, type NoteGroup, type NoteMapping, type NoteMappingBackend } from '../../utils/pims/noteMappings';
 import type { PimsTransport } from '../../utils/pims/extensionBridge';
@@ -59,7 +60,12 @@ export function PimsNoteAutofill({ note, stored, chartKey, patientName, transpor
   const mapEdits = useRef(0);
   const mapSaving = useRef(false);
   const [mapForm, setMapForm] = useState<MapForm>({ context: mapContext, mapping: {}, version: 0, status: 'ready' });
-  const mapping = mapForm.context === mapContext ? mapForm.mapping : {};
+  const defaults: NoteMapping = target ? Object.fromEntries(
+    Object.entries(clinicalMappingDefaults(target.provider, (current.fields ?? []).map(title => ({ title, kind: 'note', acceptsImage: false }))))
+      .filter(([key, destination]) => destination !== null && split?.sections.some(section => section.key === key)),
+  ) : {};
+  const choices = mapForm.context === mapContext ? mapForm.mapping : {};
+  const mapping: NoteMapping = { ...defaults, ...choices };
   const [reload, setReload] = useState(0);
   useEffect(() => {
     mounted.current = true;
@@ -84,7 +90,7 @@ export function PimsNoteAutofill({ note, stored, chartKey, patientName, transpor
     setMapForm({ context: mapContext, mapping: {}, version: 0, status: backend && target && auth.user ? 'loading' : 'ready' });
     if (backend && target && auth.user) void backend.load({ provider: target.provider, origin: target.origin, template_id: templateId }).then(saved => {
       if (cancelled || mapLatest.current !== mapContext) return;
-      setMapForm(previous => ({ context: mapContext, mapping: mapEdits.current === revision ? saved.mapping : previous.mapping, version: saved.version, status: 'ready' }));
+      setMapForm(previous => ({ context: mapContext, mapping: mapEdits.current === revision ? saved.mapping : { ...saved.mapping, ...previous.mapping }, version: saved.version, status: 'ready' }));
     }, () => {
       if (!cancelled && mapLatest.current === mapContext) setMapForm(previous => ({ ...previous, status: 'error' }));
     });
@@ -106,7 +112,7 @@ export function PimsNoteAutofill({ note, stored, chartKey, patientName, transpor
   const groups = current.mapped ? groupNoteSources(sources, mapping) : current.field ? [{ field: current.field, text, sources: [] }] : [];
   const missing = current.mapped ? sources.filter(value => mapping[value.id] && !current.fields?.includes(mapping[value.id]!)) : [];
   const mapStatus = mapForm.context === mapContext ? mapForm.status : 'loading';
-  const canPrepare = groups.length > 0 && groups.every(group => group.text.trim() && group.text.length <= 60000) && !missing.length;
+  const canPrepare = (!current.mapped || mapStatus === 'ready' || mapStatus === 'saved') && groups.length > 0 && groups.every(group => group.text.trim() && group.text.length <= 60000) && !missing.length;
   function update(changes: Partial<Form>) {
     if (pending.current || disabled) return;
     epoch.current++;
@@ -114,7 +120,7 @@ export function PimsNoteAutofill({ note, stored, chartKey, patientName, transpor
   }
   function changeMapping(sourceId: string, field: string) {
     mapEdits.current++;
-    setMapForm(previous => ({ ...previous, context: mapContext, mapping: { ...mapping, [sourceId]: field || null }, status: previous.status === 'loading' ? 'loading' : 'ready' }));
+    setMapForm(previous => ({ ...previous, context: mapContext, mapping: { ...choices, [sourceId]: field || null }, status: ['loading', 'error', 'conflict'].includes(previous.status) ? previous.status : 'ready' }));
     update({});
   }
   async function saveMapping() {
@@ -253,7 +259,7 @@ export function PimsNoteAutofill({ note, stored, chartKey, patientName, transpor
             <button type="button" disabled={disabled || working || !backend || ['loading','saving','conflict','error'].includes(mapStatus)} onClick={() => void saveMapping()}>{t('noteAutofill.saveMapping')}</button>
             <details className="pims-note-autofill__options"><summary>{t('noteAutofill.mappingOptions')}</summary><div className="pims-review__actions">
             <button type="button" disabled={disabled || working || mapStatus === 'saving'} onClick={() => { mapEdits.current++; update({}); setReload(value => value + 1); }}>{t('noteAutofill.reloadMapping')}</button>
-            <button type="button" disabled={disabled || working || mapStatus === 'saving'} onClick={() => { mapEdits.current++; update({}); setMapForm(previous => ({ ...previous, mapping: {}, status: ['loading','conflict','error'].includes(previous.status) ? previous.status : 'ready' })); }}>{t('noteAutofill.resetMapping')}</button>
+            <button type="button" disabled={disabled || working || mapStatus === 'saving'} onClick={() => { mapEdits.current++; update({}); setMapForm(previous => ({ ...previous, mapping: Object.fromEntries([...new Set([...Object.keys(mapping), ...Object.keys(clinicalMappingDefaults(target!.provider, [])), ...sources.map(source => source.id)])].map(key => [key, null])), status: ['loading','conflict','error'].includes(previous.status) ? previous.status : 'ready' })); }}>{t('noteAutofill.resetMapping')}</button>
             </div></details>
           </div>
           <p className="pims-review__hint">{t('noteAutofill.mappingPrivacy')}</p>

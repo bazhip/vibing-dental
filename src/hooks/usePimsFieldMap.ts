@@ -1,6 +1,6 @@
 import React from 'react';
 import { supabase } from '../utils/supabaseClient';
-import { DEFAULT_EZYVET_MAP, effectiveMap, type EffectiveFieldMap, type PimsFieldMap } from '../utils/pims/mapping';
+import { DEFAULT_EZYVET_MAP, effectiveMap, type EffectiveFieldMap, type PimsFieldMap, type FieldInfo } from '../utils/pims/mapping';
 import type { PimsId } from '../extension/pims/types';
 
 /**
@@ -11,6 +11,8 @@ import type { PimsId } from '../extension/pims/types';
 export interface UsePimsFieldMapReturn {
   /** Saved choices over the defaults. */
   map: EffectiveFieldMap;
+  status: 'loading' | 'ready' | 'error';
+  reload: () => void;
   /** Replace the saved map with the merge of the saved map and `next`. */
   save: (next: PimsFieldMap) => Promise<void>;
   /** Forget all saved choices (back to the defaults). */
@@ -47,7 +49,10 @@ function asMaps(value: unknown): SavedMaps | null {
   return Object.keys(maps).length ? { ...saved, providers: maps } : saved;
 }
 
-export function usePimsFieldMap(provider: PimsId = 'ezyvet'): UsePimsFieldMapReturn {
+export function usePimsFieldMap(provider: PimsId = 'ezyvet', fields?: readonly FieldInfo[]): UsePimsFieldMapReturn {
+  const [status, setStatus] = React.useState<'loading' | 'ready' | 'error'>(supabase ? 'loading' : 'ready');
+  const [retry, setRetry] = React.useState(0);
+  const reload = React.useCallback(() => setRetry(value => value + 1), []);
   const [saved, setSaved] = React.useState<SavedMaps | null>(null);
   const savedRef = React.useRef(saved);
   savedRef.current = saved;
@@ -59,21 +64,28 @@ export function usePimsFieldMap(provider: PimsId = 'ezyvet'): UsePimsFieldMapRet
   React.useEffect(() => {
     if (!supabase) return;
     let cancelled = false;
+    setStatus('loading');
+    const timer = setTimeout(() => { if (!cancelled) { cancelled = true; setStatus('error'); } }, LOAD_WAIT_MS);
     loadedRef.current = (async () => {
       try {
-        const { data: s } = await supabase!.auth.getSession();
+        const { data: s, error: authError } = await supabase!.auth.getSession();
+        if (cancelled) return;
+        if (authError) { setStatus('error'); return; }
         const uid = s.session?.user.id ?? null;
-        if (cancelled || !uid) return;
+        if (cancelled) return;
+        if (!uid) { setStatus('ready'); return; }
         userIdRef.current = uid;
         const { data, error } = await supabase!.from('profiles').select('pims_field_map').eq('id', uid).maybeSingle();
-        if (cancelled || error) return; // column missing (migration not run): defaults
+        if (cancelled) return;
+        if (error) { setStatus('error'); return; }
         const loaded = asMaps((data as { pims_field_map?: unknown } | null)?.pims_field_map);
         savedRef.current = loaded;
         setSaved(loaded);
-      } catch { /* unreadable: defaults */ }
+        setStatus('ready');
+      } catch { if (!cancelled) setStatus('error'); } finally { clearTimeout(timer); }
     })();
-    return () => { cancelled = true; };
-  }, []);
+    return () => { cancelled = true; clearTimeout(timer); };
+  }, [retry]);
 
   const write = React.useCallback(async (next: SavedMaps | null) => {
     savedRef.current = next;
@@ -108,7 +120,7 @@ export function usePimsFieldMap(provider: PimsId = 'ezyvet'): UsePimsFieldMapRet
     const next = { ...(provider === 'ezyvet' ? {} : legacy), ...(Object.keys(remaining).length ? { providers: remaining } : {}) };
     await write(Object.keys(next).length ? next : null);
   }, [write, loadedOrTimeout, provider]);
-  const map = React.useMemo(() => effectiveMap(provider === 'ezyvet' ? asSaved(saved) : saved?.providers?.[provider] ?? null, provider), [saved, provider]);
+  const map = React.useMemo(() => effectiveMap(provider === 'ezyvet' ? asSaved(saved) : saved?.providers?.[provider] ?? null, provider, fields), [saved, provider, fields]);
 
-  return { map, save, reset };
+  return { map, save, reset, status, reload };
 }
