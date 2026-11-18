@@ -114,7 +114,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
   // a momentary "let me get closer" gesture, and every chart should open
   // at fit-to-width.
   const [zoom, setZoom] = React.useState(1);
-  // Secondary controls share one disclosure across screen sizes.
+  // Secondary controls move inline when the diagram has enough room.
   const [moreOpen, setMoreOpen] = React.useState(false);
   const moreRef = React.useRef<HTMLDivElement>(null);
   const moreButtonRef = React.useRef<HTMLButtonElement>(null);
@@ -267,7 +267,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
             </button>
           </div>
 
-          {/* Secondary controls stay in the same place at every screen size. */}
+          {/* One set of secondary controls: inline when wide, disclosed when narrow. */}
           <div className="diagram-view__more-wrap" ref={moreRef}>
           <button
             type="button"
