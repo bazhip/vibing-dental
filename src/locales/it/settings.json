@@ -193,7 +193,9 @@
       "grid": "Includi la griglia delle misure",
       "gridHint": "Obbligatorio quando i reperti sul diagramma sono disattivati, per mantenere le misurazioni nel PDF.",
       "images": "Includi le immagini",
-      "imagesHint": "(4 per pagina, dopo la cartella)"
+      "imagesHint": "(4 per pagina, dopo la cartella)",
+      "radiographicReport": "Includi il referto radiografico",
+      "ctReport": "Includi il referto TC"
     },
     "noteDevice": "Preferenze personali salvate automaticamente su questo dispositivo.",
     "spaceMovesDownHint": "Veloce per dettare una serie di profondità",

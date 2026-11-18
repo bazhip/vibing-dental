@@ -982,6 +982,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           strokes:  chart.postDiagramStrokes,
         },
         includeGrid: !mirrorToDiagnosis || pdfIncludeGrid,
+        includeRadiographicReport: prefs.pdfIncludeRadiographicReport,
+        includeCtReport: prefs.pdfIncludeCtReport,
         imagesChartId:
           pdfIncludeImages && cloud.enabled && !trial ? chart.cloudChartId : undefined,
         pdfExcludedImages: chart.pdfExcludedImages,
@@ -1236,6 +1238,21 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 onChange={(value) => chart.handlePatientInfoChange('radiographicFindings', value)}
               />
               <span className="patient-form__hint">{t('radiographic.hint')}</span>
+            </label>
+          </div>
+        )}
+        {lock(
+          <div className="patient-form radiographic-findings ct-report">
+            <label className="patient-form__label">
+              <span className="patient-form__section-title radiographic-findings__title">{t('ct.title')}</span>
+              <CodeField
+                multiline
+                className="patient-form__textarea radiographic-findings__text"
+                placeholder={t('ct.placeholder')}
+                value={chart.patientInfo.ctReport ?? ''}
+                onChange={(value) => chart.handlePatientInfoChange('ctReport', value)}
+              />
+              <span className="patient-form__hint">{t('ct.hint')}</span>
             </label>
           </div>
         )}

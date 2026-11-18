@@ -34,9 +34,14 @@
     "hint": "Taschen pro Wurzel, Spalten, Anzeige neben den Zähnen, PDF-Optionen"
   },
   "radiographic": {
-    "title": "Röntgenbefunde",
+    "title": "Röntgenbericht",
     "placeholder": "z. B. 108: vertikaler Knochenabbau an der distalen Wurzel, Furkationsexposition. 307: Zahnresorption Typ 2.",
-    "hint": "Wird im PDF über dem Behandlungsbericht gedruckt."
+    "hint": "Wird im PDF unter dem Behandlungsbericht gedruckt."
+  },
+  "ct": {
+    "title": "CT-Bericht",
+    "placeholder": "z. B. Rechter kaudaler Oberkiefer: keine Osteolyse. 108: periapikale Aufhellung, mesiale Wurzel. Kiefergelenke ohne besonderen Befund.",
+    "hint": "Wird im PDF unter dem Röntgenbericht gedruckt."
   },
   "lock": {
     "title": "Nur Ansicht — wählen Sie Akte bearbeiten, um Änderungen vorzunehmen",

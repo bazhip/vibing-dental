@@ -199,6 +199,7 @@ export function normalizeSnapshot(s: ChartSnapshot): ChartSnapshot {
       complaint: s.patientInfo.complaint ?? '',
       treatmentReport: s.patientInfo.treatmentReport ?? '',
       radiographicFindings: s.patientInfo.radiographicFindings ?? '',
+      ctReport: s.patientInfo.ctReport ?? '',
       ...(s.patientInfo.customAnesthesia ? { customAnesthesia: normalizeCustomAnesthesia(s.patientInfo.customAnesthesia) } : {}),
       ...(s.patientInfo.customExam ? { customExam: normalizeCustomExam(s.patientInfo.customExam) } : {}),
       recallDate: s.patientInfo.recallDate ?? '',

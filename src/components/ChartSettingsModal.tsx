@@ -398,6 +398,18 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
               {t('chart.pdf.images')} <span className="chart-settings__hint">{t('chart.pdf.imagesHint')}</span>
             </label>
             )}
+            {show.pdfImages && (
+            <label className="chart-settings__choice">
+              <input type="checkbox" checked={prefs.pdfIncludeRadiographicReport} onChange={(e) => onChange({ pdfIncludeRadiographicReport: e.target.checked })} />
+              {t('chart.pdf.radiographicReport')}
+            </label>
+            )}
+            {show.pdfImages && (
+            <label className="chart-settings__choice">
+              <input type="checkbox" checked={prefs.pdfIncludeCtReport} onChange={(e) => onChange({ pdfIncludeCtReport: e.target.checked })} />
+              {t('chart.pdf.ctReport')}
+            </label>
+            )}
           </section>
           </div>
         </div>

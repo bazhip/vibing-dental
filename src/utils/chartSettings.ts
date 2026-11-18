@@ -69,6 +69,10 @@ export interface ChartPrefs {
   pdfIncludeGrid: boolean;
   /** PDF includes image pages. */
   pdfIncludeImages: boolean;
+  /** PDF prints the radiographic report on the treatment card. */
+  pdfIncludeRadiographicReport: boolean;
+  /** PDF prints the CT report on the treatment card. */
+  pdfIncludeCtReport: boolean;
   /** Leave out the Recheck due field on the Patient page. */
   hideRecheck: boolean;
   hiddenPatientFields: OptionalPatientField[];
@@ -117,6 +121,8 @@ export const DEFAULT_CHART_PREFS: ChartPrefs = {
   chartingView: 'grid',
   pdfIncludeGrid: true,
   pdfIncludeImages: true,
+  pdfIncludeRadiographicReport: true,
+  pdfIncludeCtReport: true,
   hideRecheck: false,
   hiddenPatientFields: [],
   spaceMovesDown: true,
@@ -161,6 +167,8 @@ export function normalizeChartPrefs(raw: unknown, fallback: ChartPrefs = DEFAULT
     chartingView: r.chartingView === 'tooth' || r.chartingView === 'grid' ? r.chartingView : fallback.chartingView,
     pdfIncludeGrid: bool(r.pdfIncludeGrid, fallback.pdfIncludeGrid),
     pdfIncludeImages: bool(r.pdfIncludeImages, fallback.pdfIncludeImages),
+    pdfIncludeRadiographicReport: bool(r.pdfIncludeRadiographicReport, fallback.pdfIncludeRadiographicReport),
+    pdfIncludeCtReport: bool(r.pdfIncludeCtReport, fallback.pdfIncludeCtReport),
     hideRecheck: bool(r.hideRecheck, fallback.hideRecheck),
     hiddenPatientFields: Array.isArray(r.hiddenPatientFields) ? [...new Set(r.hiddenPatientFields.filter((key): key is OptionalPatientField => PATIENT_FIELD_OPTIONS.includes(key as OptionalPatientField)))] : fallback.hiddenPatientFields,
     spaceMovesDown: bool(r.spaceMovesDown, fallback.spaceMovesDown),

@@ -34,9 +34,14 @@
     "hint": "Gyökerenkénti tasakok, oszlopok, fogak melletti adatok, PDF-beállítások"
   },
   "radiographic": {
-    "title": "Röntgenleletek",
+    "title": "Röntgenlelet",
     "placeholder": "pl. 108: vertikális csontveszteség a disztális gyökérnél, furkációérintettség. 307: 2-es típusú fogfelszívódás.",
-    "hint": "A PDF-en a kezelési leírás fölött jelenik meg."
+    "hint": "A PDF-en a kezelési leírás alatt jelenik meg."
+  },
+  "ct": {
+    "title": "CT-lelet",
+    "placeholder": "pl. Jobb oldali kaudális felső állcsont: osteolysis nem látható. 108: periapikális felritkulás a meziális gyökérnél. Az állkapocsízületek eltérés nélkül.",
+    "hint": "A PDF-en a röntgenlelet alatt jelenik meg."
   },
   "lock": {
     "title": "Csak megtekintés – módosításhoz válassza a Fogászati lap szerkesztése lehetőséget",

@@ -53,6 +53,9 @@ export interface ChartSnapshot {
   branding?: PdfBranding;
   /** False drops the arch grids from page 1 (diagram-first layout). */
   includeGrid?: boolean;
+  /** False leaves the radiographic / CT report off the treatment card. */
+  includeRadiographicReport?: boolean;
+  includeCtReport?: boolean;
   /** Cloud chart id whose images get appended as extra pages (4 per
    *  page). Absent/empty → no image pages. */
   imagesChartId?: string;
@@ -199,7 +202,13 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
           { state: snapshot.postState, png: postPng },
           styleId,
           snapshot.branding ?? {},
-          { includeGrid: snapshot.includeGrid, images, lng }
+          {
+            includeGrid: snapshot.includeGrid,
+            includeRadiographicReport: snapshot.includeRadiographicReport,
+            includeCtReport: snapshot.includeCtReport,
+            images,
+            lng,
+          }
         );
         if (cancelled) return;
         const blob = new Blob([bytes as BlobPart], { type: 'application/pdf' });

@@ -255,8 +255,15 @@ function ChartBody({ snap }: { snap: ChartSnapshot }) {
 
       {p.radiographicFindings?.trim() && (
         <section>
-          <h3 className="ai-settings-subhead">Radiographic findings</h3>
+          <h3 className="ai-settings-subhead">Radiographic report</h3>
           <p className="admin-chart-viewer__report">{p.radiographicFindings}</p>
+        </section>
+      )}
+
+      {p.ctReport?.trim() && (
+        <section>
+          <h3 className="ai-settings-subhead">CT report</h3>
+          <p className="admin-chart-viewer__report">{p.ctReport}</p>
         </section>
       )}
 

@@ -105,7 +105,8 @@
       "exam": "Examen oral",
       "findings": "Constatări pe dinte",
       "procedures": "Proceduri",
-      "radiographs": "Constatări radiografice",
+      "radiographs": "Raport radiografic",
+      "ct": "Raport CT",
       "recheck": "Recontrol"
     },
     "alreadyMissing": "Deja absenți: {{teeth}}",

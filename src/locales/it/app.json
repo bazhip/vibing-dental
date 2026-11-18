@@ -34,9 +34,14 @@
     "hint": "Tasche per radice, colonne, cosa mostrare accanto ai denti, opzioni PDF"
   },
   "radiographic": {
-    "title": "Reperti radiografici",
+    "title": "Referto radiografico",
     "placeholder": "es. 108: perdita ossea verticale radice distale, esposizione della forcazione. 307: riassorbimento dentale di tipo 2.",
-    "hint": "Viene stampato nel PDF sopra il referto del trattamento."
+    "hint": "Viene stampato nel PDF sotto il referto del trattamento."
+  },
+  "ct": {
+    "title": "Referto TC",
+    "placeholder": "es. Mascellare caudale destro: nessuna osteolisi. 108: radiotrasparenza periapicale, radice mesiale. ATM nei limiti della norma.",
+    "hint": "Viene stampato nel PDF sotto il referto radiografico."
   },
   "lock": {
     "title": "Sola lettura — scelga Modifica cartella per apportare modifiche",

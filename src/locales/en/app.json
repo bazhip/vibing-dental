@@ -34,9 +34,14 @@
     "hint": "Pockets per root, columns, what shows beside the teeth, PDF options"
   },
   "radiographic": {
-    "title": "Radiographic findings",
+    "title": "Radiographic report",
     "placeholder": "e.g. 108: vertical bone loss distal root, furcation exposure. 307: type 2 tooth resorption.",
-    "hint": "Prints in the PDF above the treatment report."
+    "hint": "Prints in the PDF below the treatment report."
+  },
+  "ct": {
+    "title": "CT report",
+    "placeholder": "e.g. Right caudal maxilla: no osteolysis. 108: periapical lucency, mesial root. TMJs within normal limits.",
+    "hint": "Prints in the PDF below the radiographic report."
   },
   "lock": {
     "title": "View only — choose Edit chart to make changes",

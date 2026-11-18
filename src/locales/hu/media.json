@@ -105,7 +105,8 @@
       "exam": "Szájüregi vizsgálat",
       "findings": "Leletek foganként",
       "procedures": "Beavatkozások",
-      "radiographs": "Röntgenleletek",
+      "radiographs": "Röntgenlelet",
+      "ct": "CT-lelet",
       "recheck": "Kontrollvizsgálat"
     },
     "alreadyMissing": "Már korábban hiányzott: {{teeth}}",

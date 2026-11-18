@@ -46,8 +46,8 @@
   },
   "treatment": {
     "title": "Referto di trattamento e chirurgia",
-    "findingsHeading": "REPERTI RADIOGRAFICI",
-    "treatmentHeading": "TRATTAMENTO",
+    "radiographicTitle": "Referto radiografico",
+    "ctTitle": "Referto TC",
     "continued": "… continua — il referto completo è incorporato in questo file (lo ricarichi nell’app)."
   },
   "anesthesia": {

@@ -524,6 +524,18 @@
       "hash": "bf5e4bdfc769",
       "status": "machine"
     },
+    "app:ct.hint": {
+      "hash": "cf802cb91549",
+      "status": "machine"
+    },
+    "app:ct.placeholder": {
+      "hash": "427fef997cb9",
+      "status": "machine"
+    },
+    "app:ct.title": {
+      "hash": "89cb8fb91c09",
+      "status": "machine"
+    },
     "app:customize.hint": {
       "hash": "fb6c656e4a3b",
       "status": "machine"
@@ -741,7 +753,7 @@
       "status": "machine"
     },
     "app:radiographic.hint": {
-      "hash": "4e72dfb59792",
+      "hash": "9fee72e260a9",
       "status": "machine"
     },
     "app:radiographic.placeholder": {
@@ -749,7 +761,7 @@
       "status": "machine"
     },
     "app:radiographic.title": {
-      "hash": "765d13d0fbd7",
+      "hash": "d1fbd09d7f24",
       "status": "machine"
     },
     "app:revert.confirm": {
@@ -7976,6 +7988,10 @@
       "hash": "52e601abc907",
       "status": "machine"
     },
+    "media:recordNote.h.ct": {
+      "hash": "89cb8fb91c09",
+      "status": "machine"
+    },
     "media:recordNote.h.exam": {
       "hash": "47df1ebe796d",
       "status": "machine"
@@ -7993,7 +8009,7 @@
       "status": "machine"
     },
     "media:recordNote.h.radiographs": {
-      "hash": "765d13d0fbd7",
+      "hash": "d1fbd09d7f24",
       "status": "machine"
     },
     "media:recordNote.h.recheck": {
@@ -8936,16 +8952,16 @@
       "hash": "aad5fb09fb67",
       "status": "machine"
     },
-    "pdf:treatment.findingsHeading": {
-      "hash": "1f886aec1b6f",
+    "pdf:treatment.ctTitle": {
+      "hash": "b65dbe9328b2",
+      "status": "machine"
+    },
+    "pdf:treatment.radiographicTitle": {
+      "hash": "fe210261ac50",
       "status": "machine"
     },
     "pdf:treatment.title": {
       "hash": "015955e43944",
-      "status": "machine"
-    },
-    "pdf:treatment.treatmentHeading": {
-      "hash": "a41297525ca5",
       "status": "machine"
     },
     "pdfui:hints.firefoxAndroid": {
@@ -11324,6 +11340,10 @@
       "hash": "a99e22cec8f6",
       "status": "machine"
     },
+    "settings:chart.pdf.ctReport": {
+      "hash": "64403606d39c",
+      "status": "machine"
+    },
     "settings:chart.pdf.grid": {
       "hash": "d89c86cc19fa",
       "status": "machine"
@@ -11338,6 +11358,10 @@
     },
     "settings:chart.pdf.imagesHint": {
       "hash": "7dc25aaff278",
+      "status": "machine"
+    },
+    "settings:chart.pdf.radiographicReport": {
+      "hash": "df38d0217969",
       "status": "machine"
     },
     "settings:chart.pdf.title": {
@@ -13246,6 +13270,18 @@
       "hash": "bf5e4bdfc769",
       "status": "machine"
     },
+    "app:ct.hint": {
+      "hash": "cf802cb91549",
+      "status": "machine"
+    },
+    "app:ct.placeholder": {
+      "hash": "427fef997cb9",
+      "status": "machine"
+    },
+    "app:ct.title": {
+      "hash": "89cb8fb91c09",
+      "status": "machine"
+    },
     "app:customize.hint": {
       "hash": "fb6c656e4a3b",
       "status": "machine"
@@ -13463,7 +13499,7 @@
       "status": "machine"
     },
     "app:radiographic.hint": {
-      "hash": "4e72dfb59792",
+      "hash": "9fee72e260a9",
       "status": "machine"
     },
     "app:radiographic.placeholder": {
@@ -13471,7 +13507,7 @@
       "status": "machine"
     },
     "app:radiographic.title": {
-      "hash": "765d13d0fbd7",
+      "hash": "d1fbd09d7f24",
       "status": "machine"
     },
     "app:revert.confirm": {
@@ -20442,6 +20478,10 @@
       "hash": "1a4ca81992c0",
       "status": "machine"
     },
+    "media:recordNote.h.ct": {
+      "hash": "89cb8fb91c09",
+      "status": "machine"
+    },
     "media:recordNote.h.exam": {
       "hash": "47df1ebe796d",
       "status": "machine"
@@ -20459,7 +20499,7 @@
       "status": "machine"
     },
     "media:recordNote.h.radiographs": {
-      "hash": "765d13d0fbd7",
+      "hash": "d1fbd09d7f24",
       "status": "machine"
     },
     "media:recordNote.h.recheck": {
@@ -21406,16 +21446,16 @@
       "hash": "aad5fb09fb67",
       "status": "machine"
     },
-    "pdf:treatment.findingsHeading": {
-      "hash": "1f886aec1b6f",
+    "pdf:treatment.ctTitle": {
+      "hash": "b65dbe9328b2",
+      "status": "machine"
+    },
+    "pdf:treatment.radiographicTitle": {
+      "hash": "fe210261ac50",
       "status": "machine"
     },
     "pdf:treatment.title": {
       "hash": "015955e43944",
-      "status": "machine"
-    },
-    "pdf:treatment.treatmentHeading": {
-      "hash": "a41297525ca5",
       "status": "machine"
     },
     "pdfui:hints.firefoxAndroid": {
@@ -23766,6 +23806,10 @@
       "hash": "1d393b0081b6",
       "status": "machine"
     },
+    "settings:chart.pdf.ctReport": {
+      "hash": "64403606d39c",
+      "status": "machine"
+    },
     "settings:chart.pdf.grid": {
       "hash": "d89c86cc19fa",
       "status": "machine"
@@ -23780,6 +23824,10 @@
     },
     "settings:chart.pdf.imagesHint": {
       "hash": "7dc25aaff278",
+      "status": "machine"
+    },
+    "settings:chart.pdf.radiographicReport": {
+      "hash": "df38d0217969",
       "status": "machine"
     },
     "settings:chart.pdf.title": {
@@ -25596,6 +25644,18 @@
       "hash": "bf5e4bdfc769",
       "status": "machine"
     },
+    "app:ct.hint": {
+      "hash": "cf802cb91549",
+      "status": "machine"
+    },
+    "app:ct.placeholder": {
+      "hash": "427fef997cb9",
+      "status": "machine"
+    },
+    "app:ct.title": {
+      "hash": "89cb8fb91c09",
+      "status": "machine"
+    },
     "app:customize.hint": {
       "hash": "fb6c656e4a3b",
       "status": "machine"
@@ -25813,7 +25873,7 @@
       "status": "machine"
     },
     "app:radiographic.hint": {
-      "hash": "4e72dfb59792",
+      "hash": "9fee72e260a9",
       "status": "machine"
     },
     "app:radiographic.placeholder": {
@@ -25821,7 +25881,7 @@
       "status": "machine"
     },
     "app:radiographic.title": {
-      "hash": "765d13d0fbd7",
+      "hash": "d1fbd09d7f24",
       "status": "machine"
     },
     "app:revert.confirm": {
@@ -32864,6 +32924,10 @@
       "hash": "1a4ca81992c0",
       "status": "machine"
     },
+    "media:recordNote.h.ct": {
+      "hash": "89cb8fb91c09",
+      "status": "machine"
+    },
     "media:recordNote.h.exam": {
       "hash": "47df1ebe796d",
       "status": "machine"
@@ -32881,7 +32945,7 @@
       "status": "machine"
     },
     "media:recordNote.h.radiographs": {
-      "hash": "765d13d0fbd7",
+      "hash": "d1fbd09d7f24",
       "status": "machine"
     },
     "media:recordNote.h.recheck": {
@@ -33836,16 +33900,16 @@
       "hash": "aad5fb09fb67",
       "status": "machine"
     },
-    "pdf:treatment.findingsHeading": {
-      "hash": "1f886aec1b6f",
+    "pdf:treatment.ctTitle": {
+      "hash": "b65dbe9328b2",
+      "status": "machine"
+    },
+    "pdf:treatment.radiographicTitle": {
+      "hash": "fe210261ac50",
       "status": "machine"
     },
     "pdf:treatment.title": {
       "hash": "015955e43944",
-      "status": "machine"
-    },
-    "pdf:treatment.treatmentHeading": {
-      "hash": "a41297525ca5",
       "status": "machine"
     },
     "pdfui:hints.firefoxAndroid": {
@@ -36204,6 +36268,10 @@
       "hash": "1d393b0081b6",
       "status": "machine"
     },
+    "settings:chart.pdf.ctReport": {
+      "hash": "64403606d39c",
+      "status": "machine"
+    },
     "settings:chart.pdf.grid": {
       "hash": "d89c86cc19fa",
       "status": "machine"
@@ -36218,6 +36286,10 @@
     },
     "settings:chart.pdf.imagesHint": {
       "hash": "7dc25aaff278",
+      "status": "machine"
+    },
+    "settings:chart.pdf.radiographicReport": {
+      "hash": "df38d0217969",
       "status": "machine"
     },
     "settings:chart.pdf.title": {
@@ -38058,6 +38130,18 @@
       "hash": "bf5e4bdfc769",
       "status": "machine"
     },
+    "app:ct.hint": {
+      "hash": "cf802cb91549",
+      "status": "machine"
+    },
+    "app:ct.placeholder": {
+      "hash": "427fef997cb9",
+      "status": "machine"
+    },
+    "app:ct.title": {
+      "hash": "89cb8fb91c09",
+      "status": "machine"
+    },
     "app:customize.hint": {
       "hash": "fb6c656e4a3b",
       "status": "machine"
@@ -38275,7 +38359,7 @@
       "status": "machine"
     },
     "app:radiographic.hint": {
-      "hash": "4e72dfb59792",
+      "hash": "9fee72e260a9",
       "status": "machine"
     },
     "app:radiographic.placeholder": {
@@ -38283,7 +38367,7 @@
       "status": "machine"
     },
     "app:radiographic.title": {
-      "hash": "765d13d0fbd7",
+      "hash": "d1fbd09d7f24",
       "status": "machine"
     },
     "app:revert.confirm": {
@@ -45326,6 +45410,10 @@
       "hash": "1a4ca81992c0",
       "status": "machine"
     },
+    "media:recordNote.h.ct": {
+      "hash": "89cb8fb91c09",
+      "status": "machine"
+    },
     "media:recordNote.h.exam": {
       "hash": "47df1ebe796d",
       "status": "machine"
@@ -45343,7 +45431,7 @@
       "status": "machine"
     },
     "media:recordNote.h.radiographs": {
-      "hash": "765d13d0fbd7",
+      "hash": "d1fbd09d7f24",
       "status": "machine"
     },
     "media:recordNote.h.recheck": {
@@ -46298,16 +46386,16 @@
       "hash": "aad5fb09fb67",
       "status": "machine"
     },
-    "pdf:treatment.findingsHeading": {
-      "hash": "1f886aec1b6f",
+    "pdf:treatment.ctTitle": {
+      "hash": "b65dbe9328b2",
+      "status": "machine"
+    },
+    "pdf:treatment.radiographicTitle": {
+      "hash": "fe210261ac50",
       "status": "machine"
     },
     "pdf:treatment.title": {
       "hash": "015955e43944",
-      "status": "machine"
-    },
-    "pdf:treatment.treatmentHeading": {
-      "hash": "a41297525ca5",
       "status": "machine"
     },
     "pdfui:hints.firefoxAndroid": {
@@ -48666,6 +48754,10 @@
       "hash": "1d393b0081b6",
       "status": "machine"
     },
+    "settings:chart.pdf.ctReport": {
+      "hash": "64403606d39c",
+      "status": "machine"
+    },
     "settings:chart.pdf.grid": {
       "hash": "d89c86cc19fa",
       "status": "machine"
@@ -48680,6 +48772,10 @@
     },
     "settings:chart.pdf.imagesHint": {
       "hash": "7dc25aaff278",
+      "status": "machine"
+    },
+    "settings:chart.pdf.radiographicReport": {
+      "hash": "df38d0217969",
       "status": "machine"
     },
     "settings:chart.pdf.title": {
@@ -50516,6 +50612,18 @@
       "hash": "bf5e4bdfc769",
       "status": "machine"
     },
+    "app:ct.hint": {
+      "hash": "cf802cb91549",
+      "status": "machine"
+    },
+    "app:ct.placeholder": {
+      "hash": "427fef997cb9",
+      "status": "machine"
+    },
+    "app:ct.title": {
+      "hash": "89cb8fb91c09",
+      "status": "machine"
+    },
     "app:customize.hint": {
       "hash": "fb6c656e4a3b",
       "status": "machine"
@@ -50733,7 +50841,7 @@
       "status": "machine"
     },
     "app:radiographic.hint": {
-      "hash": "4e72dfb59792",
+      "hash": "9fee72e260a9",
       "status": "machine"
     },
     "app:radiographic.placeholder": {
@@ -50741,7 +50849,7 @@
       "status": "machine"
     },
     "app:radiographic.title": {
-      "hash": "765d13d0fbd7",
+      "hash": "d1fbd09d7f24",
       "status": "machine"
     },
     "app:revert.confirm": {
@@ -57680,6 +57788,10 @@
       "hash": "52e601abc907",
       "status": "machine"
     },
+    "media:recordNote.h.ct": {
+      "hash": "89cb8fb91c09",
+      "status": "machine"
+    },
     "media:recordNote.h.exam": {
       "hash": "47df1ebe796d",
       "status": "machine"
@@ -57697,7 +57809,7 @@
       "status": "machine"
     },
     "media:recordNote.h.radiographs": {
-      "hash": "765d13d0fbd7",
+      "hash": "d1fbd09d7f24",
       "status": "machine"
     },
     "media:recordNote.h.recheck": {
@@ -58608,16 +58720,16 @@
       "hash": "aad5fb09fb67",
       "status": "machine"
     },
-    "pdf:treatment.findingsHeading": {
-      "hash": "1f886aec1b6f",
+    "pdf:treatment.ctTitle": {
+      "hash": "b65dbe9328b2",
+      "status": "machine"
+    },
+    "pdf:treatment.radiographicTitle": {
+      "hash": "fe210261ac50",
       "status": "machine"
     },
     "pdf:treatment.title": {
       "hash": "015955e43944",
-      "status": "machine"
-    },
-    "pdf:treatment.treatmentHeading": {
-      "hash": "a41297525ca5",
       "status": "machine"
     },
     "pdfui:hints.firefoxAndroid": {
@@ -60964,6 +61076,10 @@
       "hash": "a99e22cec8f6",
       "status": "machine"
     },
+    "settings:chart.pdf.ctReport": {
+      "hash": "64403606d39c",
+      "status": "machine"
+    },
     "settings:chart.pdf.grid": {
       "hash": "d89c86cc19fa",
       "status": "machine"
@@ -60978,6 +61094,10 @@
     },
     "settings:chart.pdf.imagesHint": {
       "hash": "7dc25aaff278",
+      "status": "machine"
+    },
+    "settings:chart.pdf.radiographicReport": {
+      "hash": "df38d0217969",
       "status": "machine"
     },
     "settings:chart.pdf.title": {
@@ -62794,6 +62914,18 @@
       "hash": "bf5e4bdfc769",
       "status": "machine"
     },
+    "app:ct.hint": {
+      "hash": "cf802cb91549",
+      "status": "machine"
+    },
+    "app:ct.placeholder": {
+      "hash": "427fef997cb9",
+      "status": "machine"
+    },
+    "app:ct.title": {
+      "hash": "89cb8fb91c09",
+      "status": "machine"
+    },
     "app:customize.hint": {
       "hash": "fb6c656e4a3b",
       "status": "machine"
@@ -63011,7 +63143,7 @@
       "status": "machine"
     },
     "app:radiographic.hint": {
-      "hash": "4e72dfb59792",
+      "hash": "9fee72e260a9",
       "status": "machine"
     },
     "app:radiographic.placeholder": {
@@ -63019,7 +63151,7 @@
       "status": "machine"
     },
     "app:radiographic.title": {
-      "hash": "765d13d0fbd7",
+      "hash": "d1fbd09d7f24",
       "status": "machine"
     },
     "app:revert.confirm": {
@@ -70062,6 +70194,10 @@
       "hash": "1a4ca81992c0",
       "status": "machine"
     },
+    "media:recordNote.h.ct": {
+      "hash": "89cb8fb91c09",
+      "status": "machine"
+    },
     "media:recordNote.h.exam": {
       "hash": "47df1ebe796d",
       "status": "machine"
@@ -70079,7 +70215,7 @@
       "status": "machine"
     },
     "media:recordNote.h.radiographs": {
-      "hash": "765d13d0fbd7",
+      "hash": "d1fbd09d7f24",
       "status": "machine"
     },
     "media:recordNote.h.recheck": {
@@ -71034,16 +71170,16 @@
       "hash": "aad5fb09fb67",
       "status": "machine"
     },
-    "pdf:treatment.findingsHeading": {
-      "hash": "1f886aec1b6f",
+    "pdf:treatment.ctTitle": {
+      "hash": "b65dbe9328b2",
+      "status": "machine"
+    },
+    "pdf:treatment.radiographicTitle": {
+      "hash": "fe210261ac50",
       "status": "machine"
     },
     "pdf:treatment.title": {
       "hash": "015955e43944",
-      "status": "machine"
-    },
-    "pdf:treatment.treatmentHeading": {
-      "hash": "a41297525ca5",
       "status": "machine"
     },
     "pdfui:hints.firefoxAndroid": {
@@ -73402,6 +73538,10 @@
       "hash": "1d393b0081b6",
       "status": "machine"
     },
+    "settings:chart.pdf.ctReport": {
+      "hash": "64403606d39c",
+      "status": "machine"
+    },
     "settings:chart.pdf.grid": {
       "hash": "d89c86cc19fa",
       "status": "machine"
@@ -73416,6 +73556,10 @@
     },
     "settings:chart.pdf.imagesHint": {
       "hash": "7dc25aaff278",
+      "status": "machine"
+    },
+    "settings:chart.pdf.radiographicReport": {
+      "hash": "df38d0217969",
       "status": "machine"
     },
     "settings:chart.pdf.title": {
@@ -75798,6 +75942,18 @@
       "hash": "bf5e4bdfc769",
       "status": "machine"
     },
+    "app:ct.hint": {
+      "hash": "cf802cb91549",
+      "status": "machine"
+    },
+    "app:ct.placeholder": {
+      "hash": "427fef997cb9",
+      "status": "machine"
+    },
+    "app:ct.title": {
+      "hash": "89cb8fb91c09",
+      "status": "machine"
+    },
     "app:customize.hint": {
       "hash": "fb6c656e4a3b",
       "status": "machine"
@@ -76015,7 +76171,7 @@
       "status": "machine"
     },
     "app:radiographic.hint": {
-      "hash": "4e72dfb59792",
+      "hash": "9fee72e260a9",
       "status": "machine"
     },
     "app:radiographic.placeholder": {
@@ -76023,7 +76179,7 @@
       "status": "machine"
     },
     "app:radiographic.title": {
-      "hash": "765d13d0fbd7",
+      "hash": "d1fbd09d7f24",
       "status": "machine"
     },
     "app:revert.confirm": {
@@ -83034,6 +83190,10 @@
       "hash": "52e601abc907",
       "status": "machine"
     },
+    "media:recordNote.h.ct": {
+      "hash": "89cb8fb91c09",
+      "status": "machine"
+    },
     "media:recordNote.h.exam": {
       "hash": "47df1ebe796d",
       "status": "machine"
@@ -83051,7 +83211,7 @@
       "status": "machine"
     },
     "media:recordNote.h.radiographs": {
-      "hash": "765d13d0fbd7",
+      "hash": "d1fbd09d7f24",
       "status": "machine"
     },
     "media:recordNote.h.recheck": {
@@ -83970,16 +84130,16 @@
       "hash": "aad5fb09fb67",
       "status": "machine"
     },
-    "pdf:treatment.findingsHeading": {
-      "hash": "1f886aec1b6f",
+    "pdf:treatment.ctTitle": {
+      "hash": "b65dbe9328b2",
+      "status": "machine"
+    },
+    "pdf:treatment.radiographicTitle": {
+      "hash": "fe210261ac50",
       "status": "machine"
     },
     "pdf:treatment.title": {
       "hash": "015955e43944",
-      "status": "machine"
-    },
-    "pdf:treatment.treatmentHeading": {
-      "hash": "a41297525ca5",
       "status": "machine"
     },
     "pdfui:hints.firefoxAndroid": {
@@ -86334,6 +86494,10 @@
       "hash": "a99e22cec8f6",
       "status": "machine"
     },
+    "settings:chart.pdf.ctReport": {
+      "hash": "64403606d39c",
+      "status": "machine"
+    },
     "settings:chart.pdf.grid": {
       "hash": "d89c86cc19fa",
       "status": "machine"
@@ -86348,6 +86512,10 @@
     },
     "settings:chart.pdf.imagesHint": {
       "hash": "7dc25aaff278",
+      "status": "machine"
+    },
+    "settings:chart.pdf.radiographicReport": {
+      "hash": "df38d0217969",
       "status": "machine"
     },
     "settings:chart.pdf.title": {
@@ -88184,6 +88352,18 @@
       "hash": "bf5e4bdfc769",
       "status": "machine"
     },
+    "app:ct.hint": {
+      "hash": "cf802cb91549",
+      "status": "machine"
+    },
+    "app:ct.placeholder": {
+      "hash": "427fef997cb9",
+      "status": "machine"
+    },
+    "app:ct.title": {
+      "hash": "89cb8fb91c09",
+      "status": "machine"
+    },
     "app:customize.hint": {
       "hash": "fb6c656e4a3b",
       "status": "machine"
@@ -88401,7 +88581,7 @@
       "status": "machine"
     },
     "app:radiographic.hint": {
-      "hash": "4e72dfb59792",
+      "hash": "9fee72e260a9",
       "status": "machine"
     },
     "app:radiographic.placeholder": {
@@ -88409,7 +88589,7 @@
       "status": "machine"
     },
     "app:radiographic.title": {
-      "hash": "765d13d0fbd7",
+      "hash": "d1fbd09d7f24",
       "status": "machine"
     },
     "app:revert.confirm": {
@@ -95348,6 +95528,10 @@
       "hash": "52e601abc907",
       "status": "machine"
     },
+    "media:recordNote.h.ct": {
+      "hash": "89cb8fb91c09",
+      "status": "machine"
+    },
     "media:recordNote.h.exam": {
       "hash": "47df1ebe796d",
       "status": "machine"
@@ -95365,7 +95549,7 @@
       "status": "machine"
     },
     "media:recordNote.h.radiographs": {
-      "hash": "765d13d0fbd7",
+      "hash": "d1fbd09d7f24",
       "status": "machine"
     },
     "media:recordNote.h.recheck": {
@@ -96276,16 +96460,16 @@
       "hash": "aad5fb09fb67",
       "status": "machine"
     },
-    "pdf:treatment.findingsHeading": {
-      "hash": "1f886aec1b6f",
+    "pdf:treatment.ctTitle": {
+      "hash": "b65dbe9328b2",
+      "status": "machine"
+    },
+    "pdf:treatment.radiographicTitle": {
+      "hash": "fe210261ac50",
       "status": "machine"
     },
     "pdf:treatment.title": {
       "hash": "015955e43944",
-      "status": "machine"
-    },
-    "pdf:treatment.treatmentHeading": {
-      "hash": "a41297525ca5",
       "status": "machine"
     },
     "pdfui:hints.firefoxAndroid": {
@@ -98632,6 +98816,10 @@
       "hash": "a99e22cec8f6",
       "status": "machine"
     },
+    "settings:chart.pdf.ctReport": {
+      "hash": "64403606d39c",
+      "status": "machine"
+    },
     "settings:chart.pdf.grid": {
       "hash": "d89c86cc19fa",
       "status": "machine"
@@ -98646,6 +98834,10 @@
     },
     "settings:chart.pdf.imagesHint": {
       "hash": "7dc25aaff278",
+      "status": "machine"
+    },
+    "settings:chart.pdf.radiographicReport": {
+      "hash": "df38d0217969",
       "status": "machine"
     },
     "settings:chart.pdf.title": {

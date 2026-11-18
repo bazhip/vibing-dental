@@ -311,6 +311,20 @@ export function ChartSettingsList({ prefs, followsAccount, onChange, only, onSho
               onChange={(on) => onChange({ pdfIncludeImages: on })}
             />
           )}
+          {show.pdfImages && (
+            <SwitchRow
+              title={t('chart.pdf.radiographicReport')}
+              checked={prefs.pdfIncludeRadiographicReport}
+              onChange={(on) => onChange({ pdfIncludeRadiographicReport: on })}
+            />
+          )}
+          {show.pdfImages && (
+            <SwitchRow
+              title={t('chart.pdf.ctReport')}
+              checked={prefs.pdfIncludeCtReport}
+              onChange={(on) => onChange({ pdfIncludeCtReport: on })}
+            />
+          )}
         </ListSection>
       )}
     </List>

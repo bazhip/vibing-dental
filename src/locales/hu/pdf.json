@@ -45,8 +45,8 @@
   },
   "treatment": {
     "title": "Kezelési és műtéti leírás",
-    "findingsHeading": "RÖNTGENLELET",
-    "treatmentHeading": "KEZELÉS",
+    "radiographicTitle": "Röntgenlelet",
+    "ctTitle": "CT-lelet",
     "continued": "… folytatás – a teljes lelet be van ágyazva ebbe a fájlba (töltse vissza az alkalmazásba)."
   },
   "anesthesia": {

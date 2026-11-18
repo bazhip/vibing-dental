@@ -55,6 +55,7 @@ export const HEADING_KEYS = {
   findings: 'media:recordNote.h.findings',
   procedures: 'media:recordNote.h.procedures',
   radiographs: 'media:recordNote.h.radiographs',
+  ct: 'media:recordNote.h.ct',
   treatment: 'forms:report.title',
   recheck: 'media:recordNote.h.recheck',
 } as const;
@@ -177,6 +178,7 @@ export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): Record
 
   // 6–8. Free text and recheck
   add('radiographs', textLines(info.radiographicFindings));
+  add('ct', textLines(info.ctReport));
   add('treatment', textLines(info.treatmentReport));
   add('recheck', [clean(info.recallDate)]);
 
@@ -224,7 +226,7 @@ export function recordNoteBasis(snapshot: ChartSnapshot): string {
     snapshot.species, snapshot.logo,
     i.patientName, i.patientNumber, i.date, i.doctor, i.tech, i.complaint,
     i.nerveBlocks, i.customAnesthesia ?? null, i.exam, i.customExam ?? null,
-    i.radiographicFindings ?? '', i.treatmentReport, i.recallDate,
+    i.radiographicFindings ?? '', i.ctReport ?? '', i.treatmentReport, i.recallDate,
     snapshot.toothData.map((td) => GRID_FIELDS.map((f) => td[f] ?? '')),
     snapshot.preMarks, snapshot.postMarks,
     (snapshot.preComments ?? []).map((c) => [c.id, c.text, c.anchorTriadan]),

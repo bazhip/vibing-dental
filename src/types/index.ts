@@ -277,6 +277,9 @@ export interface PatientInfo {
   /** Radiographic findings (free text). Optional: absent on charts saved
    *  before the field existed. */
   radiographicFindings?: string;
+  /** CT report (free text). Optional: absent on charts saved before the
+   *  field existed. */
+  ctReport?: string;
   /** Custom anesthesia entries (see utils/customAnesthesia). Each value
    *  carries its own label/type so the chart reads correctly for anyone,
    *  whatever fields they've defined. Optional: absent on older charts. */
