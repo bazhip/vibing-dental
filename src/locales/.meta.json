@@ -624,6 +624,22 @@
       "hash": "37c6a4315e58",
       "status": "machine"
     },
+    "app:finalization.description": {
+      "hash": "9afb159ac035",
+      "status": "machine"
+    },
+    "app:finalization.failed": {
+      "hash": "410d9bc3d2d9",
+      "status": "machine"
+    },
+    "app:finalization.finalize": {
+      "hash": "bcc55d805d23",
+      "status": "machine"
+    },
+    "app:finalization.finalized": {
+      "hash": "def7cd4b26b5",
+      "status": "machine"
+    },
     "app:footer.feedback": {
       "hash": "bfba45718c83",
       "status": "machine"
@@ -906,6 +922,10 @@
     },
     "app:status.saveTitle": {
       "hash": "4f210273a1ac",
+      "status": "machine"
+    },
+    "app:status.saved": {
+      "hash": "b5c120b316c2",
       "status": "machine"
     },
     "app:status.savedRich": {
@@ -7208,6 +7228,18 @@
       "hash": "2478e573910e",
       "status": "machine"
     },
+    "library:finalized.count": {
+      "hash": "8510491e2987",
+      "status": "machine"
+    },
+    "library:finalized.no": {
+      "hash": "1ea442a134b2",
+      "status": "machine"
+    },
+    "library:finalized.yes": {
+      "hash": "85a39ab345d6",
+      "status": "machine"
+    },
     "library:history.aria": {
       "hash": "84480475f027",
       "status": "machine"
@@ -7362,6 +7394,10 @@
     },
     "library:table.aria": {
       "hash": "bdfd3f2381fc",
+      "status": "machine"
+    },
+    "library:table.finalized": {
+      "hash": "def7cd4b26b5",
       "status": "machine"
     },
     "library:table.number": {
@@ -13358,6 +13394,22 @@
       "hash": "37c6a4315e58",
       "status": "machine"
     },
+    "app:finalization.description": {
+      "hash": "9afb159ac035",
+      "status": "machine"
+    },
+    "app:finalization.failed": {
+      "hash": "410d9bc3d2d9",
+      "status": "machine"
+    },
+    "app:finalization.finalize": {
+      "hash": "bcc55d805d23",
+      "status": "machine"
+    },
+    "app:finalization.finalized": {
+      "hash": "def7cd4b26b5",
+      "status": "machine"
+    },
     "app:footer.feedback": {
       "hash": "bfba45718c83",
       "status": "machine"
@@ -13640,6 +13692,10 @@
     },
     "app:status.saveTitle": {
       "hash": "4f210273a1ac",
+      "status": "machine"
+    },
+    "app:status.saved": {
+      "hash": "b5c120b316c2",
       "status": "machine"
     },
     "app:status.savedRich": {
@@ -19726,6 +19782,18 @@
       "hash": "2478e573910e",
       "status": "machine"
     },
+    "library:finalized.count": {
+      "hash": "8510491e2987",
+      "status": "machine"
+    },
+    "library:finalized.no": {
+      "hash": "1ea442a134b2",
+      "status": "machine"
+    },
+    "library:finalized.yes": {
+      "hash": "85a39ab345d6",
+      "status": "machine"
+    },
     "library:history.aria": {
       "hash": "84480475f027",
       "status": "machine"
@@ -19880,6 +19948,10 @@
     },
     "library:table.aria": {
       "hash": "bdfd3f2381fc",
+      "status": "machine"
+    },
+    "library:table.finalized": {
+      "hash": "def7cd4b26b5",
       "status": "machine"
     },
     "library:table.number": {
@@ -25720,6 +25792,22 @@
       "hash": "37c6a4315e58",
       "status": "machine"
     },
+    "app:finalization.description": {
+      "hash": "9afb159ac035",
+      "status": "machine"
+    },
+    "app:finalization.failed": {
+      "hash": "410d9bc3d2d9",
+      "status": "machine"
+    },
+    "app:finalization.finalize": {
+      "hash": "bcc55d805d23",
+      "status": "machine"
+    },
+    "app:finalization.finalized": {
+      "hash": "def7cd4b26b5",
+      "status": "machine"
+    },
     "app:footer.feedback": {
       "hash": "bfba45718c83",
       "status": "machine"
@@ -26002,6 +26090,10 @@
     },
     "app:status.saveTitle": {
       "hash": "4f210273a1ac",
+      "status": "machine"
+    },
+    "app:status.saved": {
+      "hash": "b5c120b316c2",
       "status": "machine"
     },
     "app:status.savedRich": {
@@ -32144,6 +32236,18 @@
       "hash": "2478e573910e",
       "status": "machine"
     },
+    "library:finalized.count": {
+      "hash": "8510491e2987",
+      "status": "machine"
+    },
+    "library:finalized.no": {
+      "hash": "1ea442a134b2",
+      "status": "machine"
+    },
+    "library:finalized.yes": {
+      "hash": "85a39ab345d6",
+      "status": "machine"
+    },
     "library:history.aria": {
       "hash": "84480475f027",
       "status": "machine"
@@ -32298,6 +32402,10 @@
     },
     "library:table.aria": {
       "hash": "bdfd3f2381fc",
+      "status": "machine"
+    },
+    "library:table.finalized": {
+      "hash": "def7cd4b26b5",
       "status": "machine"
     },
     "library:table.number": {
@@ -38194,6 +38302,22 @@
       "hash": "37c6a4315e58",
       "status": "machine"
     },
+    "app:finalization.description": {
+      "hash": "9afb159ac035",
+      "status": "machine"
+    },
+    "app:finalization.failed": {
+      "hash": "410d9bc3d2d9",
+      "status": "machine"
+    },
+    "app:finalization.finalize": {
+      "hash": "bcc55d805d23",
+      "status": "machine"
+    },
+    "app:finalization.finalized": {
+      "hash": "def7cd4b26b5",
+      "status": "machine"
+    },
     "app:footer.feedback": {
       "hash": "bfba45718c83",
       "status": "machine"
@@ -38476,6 +38600,10 @@
     },
     "app:status.saveTitle": {
       "hash": "4f210273a1ac",
+      "status": "machine"
+    },
+    "app:status.saved": {
+      "hash": "b5c120b316c2",
       "status": "machine"
     },
     "app:status.savedRich": {
@@ -44618,6 +44746,18 @@
       "hash": "2478e573910e",
       "status": "machine"
     },
+    "library:finalized.count": {
+      "hash": "8510491e2987",
+      "status": "machine"
+    },
+    "library:finalized.no": {
+      "hash": "1ea442a134b2",
+      "status": "machine"
+    },
+    "library:finalized.yes": {
+      "hash": "85a39ab345d6",
+      "status": "machine"
+    },
     "library:history.aria": {
       "hash": "84480475f027",
       "status": "machine"
@@ -44772,6 +44912,10 @@
     },
     "library:table.aria": {
       "hash": "bdfd3f2381fc",
+      "status": "machine"
+    },
+    "library:table.finalized": {
+      "hash": "def7cd4b26b5",
       "status": "machine"
     },
     "library:table.number": {
@@ -50664,6 +50808,22 @@
       "hash": "37c6a4315e58",
       "status": "machine"
     },
+    "app:finalization.description": {
+      "hash": "9afb159ac035",
+      "status": "machine"
+    },
+    "app:finalization.failed": {
+      "hash": "410d9bc3d2d9",
+      "status": "machine"
+    },
+    "app:finalization.finalize": {
+      "hash": "bcc55d805d23",
+      "status": "machine"
+    },
+    "app:finalization.finalized": {
+      "hash": "def7cd4b26b5",
+      "status": "machine"
+    },
     "app:footer.feedback": {
       "hash": "bfba45718c83",
       "status": "machine"
@@ -50946,6 +51106,10 @@
     },
     "app:status.saveTitle": {
       "hash": "4f210273a1ac",
+      "status": "machine"
+    },
+    "app:status.saved": {
+      "hash": "b5c120b316c2",
       "status": "machine"
     },
     "app:status.savedRich": {
@@ -57024,6 +57188,18 @@
       "hash": "2478e573910e",
       "status": "machine"
     },
+    "library:finalized.count": {
+      "hash": "8510491e2987",
+      "status": "machine"
+    },
+    "library:finalized.no": {
+      "hash": "1ea442a134b2",
+      "status": "machine"
+    },
+    "library:finalized.yes": {
+      "hash": "85a39ab345d6",
+      "status": "machine"
+    },
     "library:history.aria": {
       "hash": "84480475f027",
       "status": "machine"
@@ -57178,6 +57354,10 @@
     },
     "library:table.aria": {
       "hash": "bdfd3f2381fc",
+      "status": "machine"
+    },
+    "library:table.finalized": {
+      "hash": "def7cd4b26b5",
       "status": "machine"
     },
     "library:table.number": {
@@ -62954,6 +63134,22 @@
       "hash": "37c6a4315e58",
       "status": "machine"
     },
+    "app:finalization.description": {
+      "hash": "9afb159ac035",
+      "status": "machine"
+    },
+    "app:finalization.failed": {
+      "hash": "410d9bc3d2d9",
+      "status": "machine"
+    },
+    "app:finalization.finalize": {
+      "hash": "bcc55d805d23",
+      "status": "machine"
+    },
+    "app:finalization.finalized": {
+      "hash": "def7cd4b26b5",
+      "status": "machine"
+    },
     "app:footer.feedback": {
       "hash": "bfba45718c83",
       "status": "machine"
@@ -63236,6 +63432,10 @@
     },
     "app:status.saveTitle": {
       "hash": "4f210273a1ac",
+      "status": "machine"
+    },
+    "app:status.saved": {
+      "hash": "b5c120b316c2",
       "status": "machine"
     },
     "app:status.savedRich": {
@@ -69378,6 +69578,18 @@
       "hash": "2478e573910e",
       "status": "machine"
     },
+    "library:finalized.count": {
+      "hash": "8510491e2987",
+      "status": "machine"
+    },
+    "library:finalized.no": {
+      "hash": "1ea442a134b2",
+      "status": "machine"
+    },
+    "library:finalized.yes": {
+      "hash": "85a39ab345d6",
+      "status": "machine"
+    },
     "library:history.aria": {
       "hash": "84480475f027",
       "status": "machine"
@@ -69532,6 +69744,10 @@
     },
     "library:table.aria": {
       "hash": "bdfd3f2381fc",
+      "status": "machine"
+    },
+    "library:table.finalized": {
+      "hash": "def7cd4b26b5",
       "status": "machine"
     },
     "library:table.number": {
@@ -75970,6 +76186,22 @@
       "hash": "37c6a4315e58",
       "status": "machine"
     },
+    "app:finalization.description": {
+      "hash": "9afb159ac035",
+      "status": "machine"
+    },
+    "app:finalization.failed": {
+      "hash": "410d9bc3d2d9",
+      "status": "machine"
+    },
+    "app:finalization.finalize": {
+      "hash": "bcc55d805d23",
+      "status": "machine"
+    },
+    "app:finalization.finalized": {
+      "hash": "def7cd4b26b5",
+      "status": "machine"
+    },
     "app:footer.feedback": {
       "hash": "bfba45718c83",
       "status": "machine"
@@ -76252,6 +76484,10 @@
     },
     "app:status.saveTitle": {
       "hash": "4f210273a1ac",
+      "status": "machine"
+    },
+    "app:status.saved": {
+      "hash": "b5c120b316c2",
       "status": "machine"
     },
     "app:status.savedRich": {
@@ -82386,6 +82622,18 @@
       "hash": "2478e573910e",
       "status": "machine"
     },
+    "library:finalized.count": {
+      "hash": "8510491e2987",
+      "status": "machine"
+    },
+    "library:finalized.no": {
+      "hash": "1ea442a134b2",
+      "status": "machine"
+    },
+    "library:finalized.yes": {
+      "hash": "85a39ab345d6",
+      "status": "machine"
+    },
     "library:history.aria": {
       "hash": "84480475f027",
       "status": "machine"
@@ -82540,6 +82788,10 @@
     },
     "library:table.aria": {
       "hash": "bdfd3f2381fc",
+      "status": "machine"
+    },
+    "library:table.finalized": {
+      "hash": "def7cd4b26b5",
       "status": "machine"
     },
     "library:table.number": {
@@ -88368,6 +88620,22 @@
       "hash": "37c6a4315e58",
       "status": "machine"
     },
+    "app:finalization.description": {
+      "hash": "9afb159ac035",
+      "status": "machine"
+    },
+    "app:finalization.failed": {
+      "hash": "410d9bc3d2d9",
+      "status": "machine"
+    },
+    "app:finalization.finalize": {
+      "hash": "bcc55d805d23",
+      "status": "machine"
+    },
+    "app:finalization.finalized": {
+      "hash": "def7cd4b26b5",
+      "status": "machine"
+    },
     "app:footer.feedback": {
       "hash": "bfba45718c83",
       "status": "machine"
@@ -88650,6 +88918,10 @@
     },
     "app:status.saveTitle": {
       "hash": "4f210273a1ac",
+      "status": "machine"
+    },
+    "app:status.saved": {
+      "hash": "b5c120b316c2",
       "status": "machine"
     },
     "app:status.savedRich": {
@@ -94728,6 +95000,18 @@
       "hash": "2478e573910e",
       "status": "machine"
     },
+    "library:finalized.count": {
+      "hash": "8510491e2987",
+      "status": "machine"
+    },
+    "library:finalized.no": {
+      "hash": "1ea442a134b2",
+      "status": "machine"
+    },
+    "library:finalized.yes": {
+      "hash": "85a39ab345d6",
+      "status": "machine"
+    },
     "library:history.aria": {
       "hash": "84480475f027",
       "status": "machine"
@@ -94882,6 +95166,10 @@
     },
     "library:table.aria": {
       "hash": "bdfd3f2381fc",
+      "status": "machine"
+    },
+    "library:table.finalized": {
+      "hash": "def7cd4b26b5",
       "status": "machine"
     },
     "library:table.number": {

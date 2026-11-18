@@ -34,7 +34,8 @@
     "species": "Tierart",
     "visits": "Besuche",
     "updated": "Geändert",
-    "recheck": "Nachkontrolle"
+    "recheck": "Nachkontrolle",
+    "finalized": "Abgeschlossen"
   },
   "due": "Fällige Nachkontrollen",
   "dueCount": "Fällige Nachkontrollen ({{n}})",
@@ -139,5 +140,10 @@
   "workspace": {
     "description": "Suchen Sie Patientenakten, prüfen Sie Besuche und verwalten Sie Nachkontrollen.",
     "backToVisit": "Zurück zum aktuellen Besuch"
+  },
+  "finalized": {
+    "yes": "Ja",
+    "no": "Nein",
+    "count": "{{n}} von {{total}}"
   }
 }

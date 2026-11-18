@@ -396,6 +396,8 @@ export interface OwnerReportOverrides {
 }
 
 export interface ChartSnapshot {
+  /** Explicitly closed for editing; absent on unfinalized records. */
+  finalizedAt?: string;
   /** Snapshot schema version — absent on charts saved before the field
    *  existed (treat as 1). Bump when the shape changes incompatibly so
    *  loaders have something to key migrations on. */

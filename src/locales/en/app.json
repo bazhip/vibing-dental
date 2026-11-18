@@ -95,7 +95,8 @@
     "local": "On this device only",
     "localTitle": "Trial charts stay in this browser. Create a free account to save to the cloud.",
     "saveHint": "Add a patient name before saving — it’s how you’ll find this chart again.",
-    "savedRich": "<word>Saved · </word>{{when}}"
+    "savedRich": "<word>Saved · </word>{{when}}",
+    "saved": "Saved"
   },
   "otherTab": {
     "text": "This chart is open in another tab or window. Both tabs edit the same working copy — close one to avoid overwriting your changes."
@@ -336,5 +337,11 @@
     "saveAndClose": "Save and close",
     "closeChoiceMessage": "Save your changes before closing, or close without saving to discard them. Uploaded images on saved charts will be kept.",
     "closeImageChoiceMessage": "Save this chart before closing, or close without saving to discard its contents and permanently delete its uploaded images."
+  },
+  "finalization": {
+    "finalize": "Finalize",
+    "finalized": "Finalized",
+    "description": "This record is finalized. Choose Edit chart to make changes.",
+    "failed": "Couldn’t change the record’s finalized status. {{error}}"
   }
 }

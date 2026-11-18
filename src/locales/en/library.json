@@ -34,7 +34,8 @@
     "species": "Species",
     "visits": "Visits",
     "updated": "Updated",
-    "recheck": "Recheck"
+    "recheck": "Recheck",
+    "finalized": "Finalized"
   },
   "due": "Rechecks due",
   "dueCount": "Rechecks due ({{n}})",
@@ -139,5 +140,10 @@
   "workspace": {
     "description": "Search patient records, review visits, and manage rechecks.",
     "backToVisit": "Back to current visit"
+  },
+  "finalized": {
+    "yes": "Yes",
+    "no": "No",
+    "count": "{{n}} of {{total}}"
   }
 }

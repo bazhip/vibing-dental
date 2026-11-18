@@ -694,11 +694,11 @@
   max-width: 62rem;
   height: min(80vh, 46rem);
   height: min(80dvh, 46rem);
-  /* Six columns matching the grouped table: Patient · Patient # ·
-     Species · Visits · Updated · Recall. Header row and each row's
+  /* Columns matching the grouped table: Patient · Patient # ·
+     Species · Visits · Finalized · Updated · Recall. Header row and each row's
      open-button share this via --lib-cols so they stay aligned. */
   --lib-cols: minmax(8rem, 1.7fr) minmax(4.5rem, 0.8fr) minmax(5.5rem, 1fr)
-    minmax(4rem, 0.7fr) minmax(6.5rem, 1fr) minmax(5.5rem, 0.9fr);
+    minmax(4rem, 0.7fr) minmax(5.5rem, 0.8fr) minmax(6.5rem, 1fr) minmax(5.5rem, 0.9fr);
   --lib-actions: 12rem;
 }
 
@@ -922,7 +922,7 @@
   .chart-library__cell--species,
   .chart-library__cell--recall,
   .chart-library-modal:not(.admin-panel) .chart-library__head-row [role='columnheader']:nth-child(3),
-  .chart-library-modal:not(.admin-panel) .chart-library__head-row [role='columnheader']:nth-child(6) {
+  .chart-library-modal:not(.admin-panel) .chart-library__head-row [role='columnheader']:nth-child(7) {
     display: none;
   }
 }
@@ -1052,10 +1052,11 @@
 }
 .chart-library__visit-main {
   display: grid;
-  grid-template-columns: minmax(9rem, 1fr) minmax(10rem, 1.4fr);
+  grid-template-columns: var(--lib-cols);
   gap: 1rem;
   align-items: center;
-  padding: 0.5rem 0 0.5rem 2.25rem;
+  padding-block: 0.5rem;
+  padding-inline: 0.75rem 0;
   background: transparent;
   border: none;
   font: inherit;
@@ -1064,7 +1065,11 @@
   min-width: 0;
 }
 .chart-library__visit-main:hover { background: color-mix(in srgb, var(--primary) 6%, transparent); }
+.chart-library__visit-main > .chart-library__cell--finalized { grid-column: 5; }
+.chart-library__visit-main > :last-child { grid-column: 6 / -1; white-space: normal; }
 .chart-library__visit-date {
+  grid-column: 1 / 5;
+  padding-inline-start: 1.5rem;
   font-weight: 600;
   color: var(--text);
   font-variant-numeric: tabular-nums;
@@ -1460,7 +1465,8 @@
     display: none;
   }
   .chart-library-modal:not(.admin-panel) .chart-library__cell--number::before { content: '#'; }
-  .chart-library-modal:not(.admin-panel) .chart-library__cell--date::before { content: 'Updated '; }
+  .chart-library-modal:not(.admin-panel) .chart-library__cell--date::before,
+  .chart-library-modal:not(.admin-panel) .chart-library__cell--finalized::before { content: attr(data-label) ' '; }
   .chart-library-modal:not(.admin-panel) .chart-library__cell--recall::before { content: 'Recheck '; }
   .chart-library-modal:not(.admin-panel) .chart-library__row-actions {
     justify-content: flex-start;
@@ -1483,10 +1489,11 @@
   }
   .chart-library-modal:not(.admin-panel) .chart-library__head-row [role='columnheader']:nth-child(2),
   .chart-library-modal:not(.admin-panel) .chart-library__head-row [role='columnheader']:nth-child(3),
-  .chart-library-modal:not(.admin-panel) .chart-library__head-row [role='columnheader']:nth-child(4) {
+  .chart-library-modal:not(.admin-panel) .chart-library__head-row [role='columnheader']:nth-child(4),
+  .chart-library-modal:not(.admin-panel) .chart-library__head-row [role='columnheader']:nth-child(5) {
     display: none;
   }
-  .chart-library-modal:not(.admin-panel) .chart-library__head-row [role='columnheader']:nth-child(6) {
+  .chart-library-modal:not(.admin-panel) .chart-library__head-row [role='columnheader']:nth-child(7) {
     display: inline;
   }
   .chart-library-modal:not(.admin-panel) .chart-library__head-row .chart-library__row-actions {
@@ -1497,6 +1504,7 @@
     padding-inline-start: 1.5rem;
   }
   .chart-library-modal:not(.admin-panel) .chart-library__visit-date {
+    padding-inline-start: 0;
     flex: 1 0 100%;
   }
 }

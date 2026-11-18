@@ -95,7 +95,8 @@
     "local": "仅在此设备上",
     "localTitle": "试用图表保存在此浏览器中。创建免费账户即可保存至云端。",
     "saveHint": "保存前请添加患者姓名，以便再次找到此图表。",
-    "savedRich": "<word>已保存 · </word>{{when}}"
+    "savedRich": "<word>已保存 · </word>{{when}}",
+    "saved": "已保存"
   },
   "otherTab": {
     "text": "此图表已在其他标签页或窗口中打开。两个标签页会编辑同一工作副本，请关闭其中一个以避免覆盖更改。"
@@ -336,5 +337,11 @@
     "saveAndClose": "保存并关闭",
     "closeChoiceMessage": "请先保存更改再关闭，或选择不保存直接关闭以放弃更改。已保存图表中的上传影像将保留。",
     "closeImageChoiceMessage": "请先保存此图表再关闭，或选择不保存直接关闭以放弃其内容，并永久删除已上传的影像。"
+  },
+  "finalization": {
+    "finalize": "完成记录",
+    "finalized": "已完成",
+    "description": "此病历已完成。如需修改，请选择“编辑病历”。",
+    "failed": "无法更改病历的完成状态。{{error}}"
   }
 }

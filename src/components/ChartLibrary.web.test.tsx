@@ -101,7 +101,7 @@ describe('ChartLibrary (website)', () => {
     expect(screen.getByRole('dialog', { name: 'Patients' })).toBeInTheDocument();
     expect(container.querySelector('.ai-settings-modal.chart-library-modal')).not.toBeNull();
     expect(screen.getAllByRole('columnheader').map((h) => h.textContent)).toEqual([
-      'Patient', 'Patient #', 'Species', 'Visits', 'Updated▼', 'Recheck',
+      'Patient', 'Patient #', 'Species', 'Visits', 'Finalized', 'Updated▼', 'Recheck',
     ]);
     await waitFor(() => expect(screen.getByRole('button', { name: 'Rechecks due (2)' })).toHaveAttribute('aria-pressed', 'false'));
     const rows = container.querySelectorAll('.chart-library__scroll > .chart-library__row');
@@ -269,4 +269,24 @@ it('opens a patient from the row background without double-opening its name butt
   await waitFor(() => expect(row.querySelector('.chart-library__open-patient')!).not.toBeDisabled());
   fireEvent.click(row.querySelector('.chart-library__open-patient')!);
   await waitFor(() => expect(onOpen).toHaveBeenCalledTimes(2));
+});
+
+
+it('shows finalized status for single visits and a count with per-visit statuses for multiple visits', async () => {
+  setup(async () => ({ rows: [
+    meta({ id: 'a', finalized_at: '2026-11-18T12:00:00Z' }),
+    meta({ id: 'b', patient_name: 'Max', patient_number: '22', finalized_at: '2026-11-18T12:00:00Z' }),
+    meta({ id: 'c', patient_name: 'Max', patient_number: '22', chart_date: '2026-01-01' }),
+  ], hasMore: false }));
+  await screen.findByText('Bella');
+  expect(screen.getByRole('columnheader', { name: 'Finalized' })).toBeVisible();
+  const bella = screen.getByText('Bella').closest('[role="row"]')!;
+  expect(within(bella as HTMLElement).getByText('Yes')).toBeVisible();
+  const max = screen.getByText('Max').closest('[role="row"]')!;
+  expect(within(max as HTMLElement).getByText('1 of 2')).toBeVisible();
+  fireEvent.click(within(max as HTMLElement).getByRole('button', { name: /2 visits/ }));
+  const visits = document.querySelectorAll('.chart-library__visit');
+  expect(visits).toHaveLength(2);
+  expect(within(visits[0] as HTMLElement).getByText('Yes')).toBeVisible();
+  expect(within(visits[1] as HTMLElement).getByText('No')).toBeVisible();
 });

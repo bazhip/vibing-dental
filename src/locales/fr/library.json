@@ -34,7 +34,8 @@
     "species": "Espèce",
     "visits": "Visites",
     "updated": "Modifié",
-    "recheck": "Contrôle"
+    "recheck": "Contrôle",
+    "finalized": "Finalisé"
   },
   "due": "Contrôles à prévoir",
   "dueCount": "Contrôles à prévoir ({{n}})",
@@ -141,5 +142,10 @@
   "workspace": {
     "description": "Recherchez les dossiers patients, consultez les visites et gérez les contrôles.",
     "backToVisit": "Retour à la visite en cours"
+  },
+  "finalized": {
+    "yes": "Oui",
+    "no": "Non",
+    "count": "{{n}} sur {{total}}"
   }
 }

@@ -127,7 +127,7 @@ describe('ChartLibrary', () => {
     expect(screen.getByText('⟦Unnamed patient⟧')).toBeInTheDocument();
     // sort headers, with aria-sort
     const heads = () => Array.from(container.querySelectorAll('[role=columnheader]'));
-    expect(heads().map((h) => h.getAttribute('aria-sort'))).toEqual(['none', null, null, null, 'descending', 'none']);
+    expect(heads().map((h) => h.getAttribute('aria-sort'))).toEqual(['none', null, null, null, null, 'descending', 'none']);
     fireEvent.click(within(heads()[0] as HTMLElement).getByRole('button'));
     await waitFor(() => expect(heads()[0]?.getAttribute('aria-sort')).toBe('ascending'));
     expect(findUntranslated(container, ALLOW)).toEqual([]);

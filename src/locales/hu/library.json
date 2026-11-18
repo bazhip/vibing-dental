@@ -34,7 +34,8 @@
     "species": "Állatfaj",
     "visits": "Vizitek",
     "updated": "Módosítva",
-    "recheck": "Kontrollvizsgálat"
+    "recheck": "Kontrollvizsgálat",
+    "finalized": "Lezárva"
   },
   "due": "Esedékes kontrollvizsgálatok",
   "dueCount": "Esedékes kontrollvizsgálatok ({{n}})",
@@ -139,5 +140,10 @@
   "workspace": {
     "description": "Keressen a páciensadatok között, tekintse át a viziteket és kezelje a kontrollvizsgálatokat.",
     "backToVisit": "Vissza az aktuális vizithez"
+  },
+  "finalized": {
+    "yes": "Igen",
+    "no": "Nem",
+    "count": "{{n}} / {{total}}"
   }
 }

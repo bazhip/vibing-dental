@@ -10,6 +10,8 @@ interface Props {
   busy: boolean;
   showEmpty?: boolean;
   editing?: boolean;
+  saveStatus?: 'saving' | 'saved';
+  savedTitle?: string;
   visits?: { id: string; date: string }[];
   onVisit?: (id: string) => void;
   onSelect: (id: string) => void;
@@ -17,7 +19,7 @@ interface Props {
   onAdd: () => void;
 }
 
-export function AnimalTabs({ tabs, activeId, busy, onSelect, onClose, onAdd, showEmpty = true, editing = false, visits = [], onVisit }: Props) {
+export function AnimalTabs({ tabs, activeId, busy, onSelect, onClose, onAdd, showEmpty = true, editing = false, saveStatus, savedTitle, visits = [], onVisit }: Props) {
   const { t } = useTranslation('app');
   const strip = useRef<HTMLDivElement>(null);
   const add = useRef<HTMLButtonElement>(null);
@@ -55,7 +57,7 @@ export function AnimalTabs({ tabs, activeId, busy, onSelect, onClose, onAdd, sho
   };
   // Overflow controls change the available width after the first measurement.
   const hasOverflow = overflow.before || overflow.after;
-  useLayoutEffect(() => { revealSelected(); }, [activeId, tabs, hasOverflow, editing, visits.length]); // eslint-disable-line react-hooks/exhaustive-deps
+  useLayoutEffect(() => { revealSelected(); }, [activeId, tabs, hasOverflow, editing, saveStatus, visits.length]); // eslint-disable-line react-hooks/exhaustive-deps
   const revealRef = useRef(revealSelected);
   revealRef.current = revealSelected;
   useEffect(() => {
@@ -89,7 +91,10 @@ export function AnimalTabs({ tabs, activeId, busy, onSelect, onClose, onAdd, sho
               tabIndex={tab.id === activeId || !tabs.some(item => item.id === activeId) && index === 0 ? 0 : -1}
               disabled={busy} title={t('animalTabs.summary', { name, details: [pid, date].filter(Boolean).join(' · ') })}
               onClick={() => { restoreFocus.current = true; onSelect(tab.id); requestAnimationFrame(() => revealRef.current()); }} onKeyDown={event => move(event, index)}>
-              <span className="animal-tabs__heading"><strong>{name}</strong>{editing && tab.id === activeId && <span className="animal-tabs__editing" title={t('topbar.editingTitle')}>{t('topbar.editingShort')}</span>}</span><span className="animal-tabs__details">{pid && <span>{pid}</span>}<span>{date}</span></span>
+              <span className="animal-tabs__heading"><strong>{name}</strong>{tab.id === activeId && <span className="animal-tabs__indicators">
+                {editing && <span className="animal-tabs__editing" title={t('topbar.editingTitle')}>{t('topbar.editingShort')}</span>}
+                {saveStatus && <span className={`animal-tabs__save animal-tabs__save--${saveStatus}`} role="status" title={saveStatus === 'saved' ? savedTitle : undefined}>{t(saveStatus === 'saving' ? 'status.saving' : 'status.saved')}</span>}
+              </span>}</span><span className="animal-tabs__details">{pid && <span>{pid}</span>}<span>{date}</span></span>
             </button>
             {tab.id === activeId && visits.length > 1 && onVisit && <span className="animal-tabs__visit">
               <select className="select--bare" value={activeId} onChange={event => onVisit(event.target.value)} disabled={busy}

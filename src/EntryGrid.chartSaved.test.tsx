@@ -32,10 +32,18 @@ const cloud = vi.hoisted(() => ({
   listPatientVisits: vi.fn(async () => []),
   skipDuplicateCheckFor: vi.fn(),
   saveNow: vi.fn(async () => {}),
+  setFinalized: vi.fn(async (_value: boolean) => true),
   signOut: vi.fn(async () => {}),
   restoreRevision: vi.fn(async () => {}),
 }));
-vi.mock('./hooks/useCloudSync', () => ({ useCloudSync: () => cloud }));
+vi.mock('./hooks/useCloudSync', () => ({ useCloudSync: (chart: { setFinalizedAt(at: string | null): void }) => ({
+  ...cloud,
+  setFinalized: async (value: boolean) => {
+    const ok = await cloud.setFinalized(value);
+    if (ok) chart.setFinalizedAt(value ? '2026-11-18T12:00:00Z' : null);
+    return ok;
+  },
+}) }));
 vi.mock('./hooks/useProfile', async original => {
   const actual = await original<typeof import('./hooks/useProfile')>();
   return { ...actual, useProfile: () => ({ ...actual.useProfile(), aiEnabled: true }) };
@@ -75,11 +83,12 @@ beforeAll(() => {
 });
 
 /** A saved visit from an earlier day, reopened (opens view-only). */
-function seedSavedVisit(date = '2026-03-04') {
+function seedSavedVisit(date = '2026-03-04', finalized = true) {
   localStorage.clear();
   sessionStorage.clear();
   const put = (key: string, value: unknown) => localStorage.setItem(`vibing-dental.${key}.v1`, JSON.stringify(value));
   put('chart.openedExisting', true);
+  if (finalized) put('chart.finalizedAt', '2026-03-04T12:00:00Z');
   put('chart.cloudId', 'c-old');
   put('chart.patientInfo', {
     patientName: 'Rex', patientNumber: '7', ownerName: '', ownerPhone: '', ownerEmail: '',
@@ -90,7 +99,10 @@ function seedSavedVisit(date = '2026-03-04') {
 beforeEach(() => {
   flags.native = true;
   cloud.status = 'idle';
+  cloud.lastSavedAt = '';
+  cloud.dirty = false;
   cloud.saveError = '';
+  cloud.setFinalized.mockResolvedValue(true);
   seedSavedVisit();
   vi.clearAllMocks();
 });
@@ -105,10 +117,10 @@ const chartPanel = () => document.querySelector<HTMLElement>('[data-app-tab="cha
 const openMore = () => fireEvent.click(within(chartPanel()).getByRole('button', { name: 'More' }));
 
 describe('saved visit in the iOS Chart tab', () => {
-  it('view-only: subtitle "View only · <date>", an Edit button, and no banner', async () => {
+  it('finalized: a Finalized subtitle, an Edit button, and no banner', async () => {
     const { container } = await renderApp();
     expect(screen.getByRole('heading', { level: 1, name: /Rex/ })).toBeInTheDocument();
-    expect(within(chartPanel()).getAllByText(/^View only · /).length).toBeGreaterThan(0);
+    expect(within(chartPanel()).getAllByText('Finalized').length).toBeGreaterThan(0);
     expect(within(chartPanel()).getByRole('button', { name: 'Edit' })).toBeInTheDocument();
     expect(container.querySelector('.chart-lock-banner')).toBeNull();
     expect(container.querySelector('.topbar-state-chip')).toBeNull();
@@ -127,9 +139,9 @@ describe('saved visit in the iOS Chart tab', () => {
     expect(cloud.fetchChart).toHaveBeenCalledWith('c-old');
   });
 
-  it('Edit unlocks: subtitle "Editing", Done saves and locks again', async () => {
+  it('Edit reopens: subtitle "Editing", Finalize saves and closes again', async () => {
     await renderApp();
-    act(() => fireEvent.click(within(chartPanel()).getByRole('button', { name: 'Edit' })));
+    await act(async () => fireEvent.click(within(chartPanel()).getByRole('button', { name: 'Edit' })));
     expect(within(chartPanel()).getAllByText(/^Editing/).length).toBeGreaterThan(0);
     expect(within(chartPanel()).queryByRole('button', { name: 'Edit' })).toBeNull();
     // Mid-edit, Done comes first (no New chart), as on the website.
@@ -137,21 +149,21 @@ describe('saved visit in the iOS Chart tab', () => {
     expect(screen.queryByRole('menuitem', { name: 'New chart' })).toBeNull();
     fireEvent.keyDown(document, { key: 'Escape' });
 
-    await act(async () => fireEvent.click(within(chartPanel()).getByRole('button', { name: 'Done' })));
+    await act(async () => fireEvent.click(within(chartPanel()).getByRole('button', { name: 'Finalize' })));
     expect(within(chartPanel()).getByRole('button', { name: 'Edit' })).toBeInTheDocument();
   });
 
   it('Edit chart in the More menu does the same as the Edit button', async () => {
     await renderApp();
     openMore();
-    act(() => fireEvent.click(screen.getByRole('menuitem', { name: 'Edit chart' })));
-    expect(within(chartPanel()).getByRole('button', { name: 'Done' })).toBeInTheDocument();
+    await act(async () => fireEvent.click(screen.getByRole('menuitem', { name: 'Edit chart' })));
+    expect(within(chartPanel()).getByRole('button', { name: 'Finalize' })).toBeInTheDocument();
   });
 
   it('a failed save shows an inline notice under the bar with Retry', async () => {
     cloud.status = 'error';
     cloud.saveError = 'Network down';
-    seedSavedVisit(localDateISO()); // today's visit: editable
+    seedSavedVisit(localDateISO(), false); // explicitly unfinalized
     await renderApp();
     const notice = within(chartPanel()).getByRole('alert');
     expect(notice).toHaveClass('ios-chart-notice');
@@ -164,23 +176,23 @@ describe('saved visit in the iOS Chart tab', () => {
 });
 
 describe('saved visit on the website (unchanged)', () => {
-  it('explains locked sections beside the content and lets the user enable editing', async () => {
+  it('explains finalized sections beside the content and reopens from the header', async () => {
     flags.native = false;
     const { container } = await renderApp();
     const notice = screen.getByRole('note', { name: 'View only' });
-    expect(notice).toHaveTextContent('Editing is off for this saved visit.');
+    expect(notice).toHaveTextContent('This record is finalized.');
     expect(container.querySelector('.sidebar-layout__fieldset')).toBeDisabled();
-    fireEvent.click(within(notice).getByRole('button', { name: 'Edit chart' }));
+    await act(async () => fireEvent.click(within(container.querySelector('.entry-grid__topbar') as HTMLElement).getByRole('button', { name: 'Edit chart' })));
     expect(screen.queryByRole('note', { name: 'View only' })).toBeNull();
     expect(container.querySelector('.sidebar-layout__fieldset')).not.toBeDisabled();
   });
-  it('keeps view-only context beside the chart rather than in the header', async () => {
+  it('offers Edit chart in the header with context beside the finalized content', async () => {
     flags.native = false;
     const { container } = await renderApp();
     expect(container.querySelector('.ios-navbar')).toBeNull();
     expect(container.querySelector('.topbar-state-chip--viewing')).toBeNull();
     expect(screen.getByRole('note', { name: 'View only' })).toBeVisible();
-    expect(within(container.querySelector('.entry-grid__topbar') as HTMLElement).queryByRole('button', { name: /Edit chart/ })).toBeNull();
+    expect(within(container.querySelector('.entry-grid__topbar') as HTMLElement).getByRole('button', { name: /Edit chart/ })).toBeVisible();
     expect(screen.getAllByRole('button', { name: /Edit chart/ }).length).toBeGreaterThan(0);
   });
 });
@@ -207,7 +219,7 @@ it('keeps the read-only notice visible in every chart section', async () => {
   for (const button of within(navigation as HTMLElement).getAllByRole('button')) {
     fireEvent.click(button);
     expect(screen.getByRole('note', { name: 'View only' })).toBeVisible();
-    expect(screen.getByRole('note', { name: 'View only' })).toHaveTextContent('Editing is off');
+    expect(screen.getByRole('note', { name: 'View only' })).toHaveTextContent('This record is finalized.');
   }
   expect(within(container.querySelector('header')!).queryByText('View only')).toBeNull();
   expect(within(container.querySelector('header')!).queryByRole('button', { name: 'New patient' })).toBeNull();
@@ -272,4 +284,43 @@ it('reopens the last closed animal when choosing today’s visit from the librar
   expect(screen.queryByRole('heading', { name: 'No animal open' })).toBeNull();
   expect(await screen.findByRole('tab', { name: /Rex/ })).toBeVisible();
   expect(await screen.findByDisplayValue('Rex')).toBeVisible();
+});
+
+
+it('keeps past visits editable until explicitly finalized and permits reopening', async () => {
+  flags.native = false;
+  seedSavedVisit('2020-01-01', false);
+  const { container } = await renderApp();
+  expect(container.querySelector('.sidebar-layout__fieldset')).not.toBeDisabled();
+  expect(screen.queryByRole('note', { name: 'View only' })).toBeNull();
+  await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Finalize' })));
+  expect(cloud.setFinalized).toHaveBeenLastCalledWith(true);
+  expect(container.querySelector('.sidebar-layout__fieldset')).toBeDisabled();
+  const header = within(container.querySelector('.entry-grid__topbar') as HTMLElement);
+  expect(header.getByText('Finalized')).toBeVisible();
+  await act(async () => fireEvent.click(header.getByRole('button', { name: 'Edit chart' })));
+  expect(cloud.setFinalized).toHaveBeenLastCalledWith(false);
+  expect(container.querySelector('.sidebar-layout__fieldset')).not.toBeDisabled();
+  expect(screen.getByRole('button', { name: 'Finalize' })).toBeVisible();
+});
+
+it('keeps the record editable when finalization fails', async () => {
+  flags.native = false;
+  seedSavedVisit('2020-01-01', false);
+  cloud.setFinalized.mockRejectedValueOnce(new Error('Network down'));
+  const { container } = await renderApp();
+  await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Finalize' })));
+  expect(container.querySelector('.sidebar-layout__fieldset')).not.toBeDisabled();
+  expect(screen.getByRole('button', { name: 'Finalize' })).toBeEnabled();
+});
+
+it.each(['saving', 'saved'] as const)('shows %s inside the active patient tab without a save toast', async status => {
+  flags.native = false;
+  seedSavedVisit('2020-01-01', false);
+  cloud.status = status;
+  cloud.lastSavedAt = status === 'saved' ? '2026-11-18T12:00:00Z' : '';
+  const { container } = await renderApp();
+  const tab = screen.getByRole('tab', { name: /Rex/ });
+  expect(within(tab).getByText(status === 'saving' ? 'Saving…' : 'Saved')).toBeVisible();
+  expect(container.querySelector('.ui-toast')).toBeNull();
 });

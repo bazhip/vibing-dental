@@ -117,3 +117,25 @@ it('creates an editable generated patient ID and carries permanent identity to l
   act(() => { result.current.startNewVisit({ identity: { patientName: '', patientNumber: '', ownerName: '', ownerPhone: '', ownerEmail: '', species: 'canine' } }); });
   expect(result.current.patientInfo.patientId).not.toBe(original.patientId);
 });
+
+describe('explicit finalization', () => {
+  it('preserves finalization across reloads and clears it for a new visit', () => {
+    const first = renderHook(() => useChartState());
+    const at = '2026-11-18T12:00:00Z';
+    act(() => first.result.current.setFinalizedAt(at));
+    expect(first.result.current.getSnapshot().finalizedAt).toBe(at);
+    first.unmount();
+    const next = renderHook(() => useChartState());
+    expect(next.result.current.finalizedAt).toBe(at);
+    act(() => next.result.current.startNewVisit());
+    expect(next.result.current.getSnapshot().finalizedAt).toBeUndefined();
+    expect(next.result.current.finalizedAt).toBeNull();
+  });
+  it('opening an older record never inherits the previous record finalization', () => {
+    const { result } = renderHook(() => useChartState());
+    const old = result.current.getSnapshot();
+    act(() => result.current.setFinalizedAt('2026-11-18T12:00:00Z'));
+    act(() => result.current.applySnapshot(old, 'old-unfinalized'));
+    expect(result.current.finalizedAt).toBeNull();
+  });
+});

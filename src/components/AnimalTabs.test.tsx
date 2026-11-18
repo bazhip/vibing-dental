@@ -17,3 +17,13 @@ it('reveals the full selected tab after the tab strip is resized', () => {
   expect(list.style.getPropertyValue('--animal-tab-available')).toBe('200px');
   vi.unstubAllGlobals();
 });
+
+it('keeps saving feedback on the active patient tab when multiple animals are open', () => {
+  const props = { tabs: tabs.map((tab, i) => ({ ...tab, name: i ? 'Oliver' : 'Luna' })), activeId: 'a', busy: false, onSelect: vi.fn(), onClose: vi.fn(), onAdd: vi.fn() };
+  const { rerender } = render(<AnimalTabs {...props} saveStatus="saving" />);
+  expect(screen.getByRole('tab', { name: /Luna/ })).toHaveTextContent('Saving…');
+  expect(screen.getByRole('tab', { name: /Oliver/ })).not.toHaveTextContent('Saving…');
+  rerender(<AnimalTabs {...props} saveStatus="saved" />);
+  expect(screen.getByRole('tab', { name: /Luna/ })).toHaveTextContent('Saved');
+  expect(screen.queryByText('Saving…')).toBeNull();
+});

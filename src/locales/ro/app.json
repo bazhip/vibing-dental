@@ -95,7 +95,8 @@
     "local": "Doar pe acest dispozitiv",
     "localTitle": "Fișele de probă rămân în acest browser. Creați un cont gratuit pentru a le salva în cloud.",
     "saveHint": "Adăugați un nume de pacient înainte de salvare — astfel veți regăsi fișa.",
-    "savedRich": "<word>Salvată · </word>{{when}}"
+    "savedRich": "<word>Salvată · </word>{{when}}",
+    "saved": "Salvat"
   },
   "otherTab": {
     "text": "Această fișă este deschisă în altă filă sau fereastră. Ambele file editează aceeași copie de lucru — închideți una pentru a evita suprascrierea modificărilor."
@@ -338,5 +339,11 @@
     "saveAndClose": "Salvați și închideți",
     "closeChoiceMessage": "Salvați modificările înainte de închidere sau închideți fără salvare pentru a renunța la ele. Imaginile încărcate în fișele salvate vor fi păstrate.",
     "closeImageChoiceMessage": "Salvați această fișă înainte de închidere sau închideți fără salvare pentru a elimina conținutul și a șterge definitiv imaginile încărcate."
+  },
+  "finalization": {
+    "finalize": "Finalizați",
+    "finalized": "Finalizat",
+    "description": "Această fișă este finalizată. Selectați Editați fișa pentru a face modificări.",
+    "failed": "Nu s-a putut modifica starea de finalizare a fișei. {{error}}"
   }
 }

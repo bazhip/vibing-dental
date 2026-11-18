@@ -89,11 +89,11 @@ describe('ChartNavBar', () => {
     expect(screen.queryByRole('button', { name: 'Done' })).toBeNull();
   });
 
-  it('editing a saved visit gets a Done button instead', () => {
-    const onDone = vi.fn();
-    setup({ subtitle: 'Editing', onDone });
-    fireEvent.click(screen.getByRole('button', { name: 'Done' }));
-    expect(onDone).toHaveBeenCalledTimes(1);
+  it('an editable record gets a Finalize button instead', () => {
+    const onFinalize = vi.fn();
+    setup({ subtitle: 'Editing', onFinalize });
+    fireEvent.click(screen.getByRole('button', { name: 'Finalize' }));
+    expect(onFinalize).toHaveBeenCalledTimes(1);
     expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull();
   });
 });

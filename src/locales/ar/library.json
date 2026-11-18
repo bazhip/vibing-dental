@@ -34,7 +34,8 @@
     "species": "النوع الحيواني",
     "visits": "الزيارات",
     "updated": "آخر تحديث",
-    "recheck": "إعادة الفحص"
+    "recheck": "إعادة الفحص",
+    "finalized": "تم الإنهاء"
   },
   "due": "مواعيد إعادة الفحص المستحقة",
   "dueCount": "مواعيد إعادة الفحص المستحقة ({{n}})",
@@ -147,5 +148,10 @@
   "visitsExpand_zero": "عدد الزيارات: {{count}} — توسيع",
   "visitsExpand_two": "عدد الزيارات: {{count}} — توسيع",
   "visitsExpand_few": "عدد الزيارات: {{count}} — توسيع",
-  "visitsExpand_many": "عدد الزيارات: {{count}} — توسيع"
+  "visitsExpand_many": "عدد الزيارات: {{count}} — توسيع",
+  "finalized": {
+    "yes": "نعم",
+    "no": "لا",
+    "count": "{{n}} من {{total}}"
+  }
 }

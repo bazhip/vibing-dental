@@ -34,7 +34,8 @@
     "species": "Especie",
     "visits": "Visitas",
     "updated": "Actualizado",
-    "recheck": "Revisión"
+    "recheck": "Revisión",
+    "finalized": "Finalizado"
   },
   "due": "Revisiones pendientes",
   "dueCount": "Revisiones pendientes ({{n}})",
@@ -141,5 +142,10 @@
   "workspace": {
     "description": "Busque historias de pacientes, consulte visitas y gestione revisiones.",
     "backToVisit": "Volver a la visita actual"
+  },
+  "finalized": {
+    "yes": "Sí",
+    "no": "No",
+    "count": "{{n}} de {{total}}"
   }
 }

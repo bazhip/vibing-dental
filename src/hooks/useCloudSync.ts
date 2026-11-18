@@ -72,6 +72,8 @@ export interface UseCloudSyncReturn {
   dirty: boolean;
   /** Save the current chart to the cloud now. */
   saveNow: () => Promise<void>;
+  /** Save the explicit lifecycle change; false when saving was cancelled. */
+  setFinalized: (finalized: boolean) => Promise<boolean>;
   autosaveEnabled?: boolean;
   /** A chart that has never reached the cloud and holds only patient/owner
    *  details: autosave waits for clinical content, so the UI offers a
@@ -320,9 +322,9 @@ export function useCloudSync(
     id: string,
     /** Restoring an earlier version: stamped so history starts a new
      *  revision instead of merging the restore into the latest one. */
-    opts: { restore?: boolean; automatic?: boolean } = {}
-  ): Promise<void> => {
-    if (!supabase) return;
+    opts: { restore?: boolean; automatic?: boolean; finalized?: boolean } = {}
+  ): Promise<boolean> => {
+    if (!supabase) return false;
     const client = supabase;
     const fail = (err: unknown): never => {
       setSaveError(describeSaveError(err));
@@ -406,7 +408,7 @@ export function useCloudSync(
       // from localStorage: openedExisting/lastSaved are not proof it is new.
       // Explicit history restores already have their own deliberate flow.
       if (!opts.restore) {
-        if (identityCheckingRef.current) return;
+        if (identityCheckingRef.current) return false;
         identityCheckingRef.current = true;
         try {
           const proposed = snapshotIdentity(snap);
@@ -448,6 +450,11 @@ export function useCloudSync(
       }
       setStatus('saving');
       setSaveError('');
+      if (opts.finalized !== undefined) {
+        if (opts.finalized) snap.finalizedAt = new Date().toISOString();
+        else delete snap.finalizedAt;
+        json = JSON.stringify(snap);
+      }
       const restoreStamp = opts.restore ? { restored_at: new Date().toISOString() } : {};
       let { data: savedRow, error } = await client.from('charts').upsert({ ...row(id), ...restoreStamp }).select('updated_at').maybeSingle();
       if (error && opts.restore && /restored_at/.test(error.message)) {
@@ -458,7 +465,10 @@ export function useCloudSync(
         // Server time, so later conflict checks compare like with like.
         recordSaved(json, id, (savedRow as { updated_at?: string } | null)?.updated_at ?? new Date().toISOString());
         setStatus('saved');
-        return;
+        if (opts.finalized !== undefined && latest.current.chartId === id) {
+          finalizedSetter.current(snap.finalizedAt ?? null);
+        }
+        return true;
       }
       // A refused save usually means the row id belongs to another account
       // (stale localStorage after switching users) — RLS blocks the update.
@@ -492,9 +502,12 @@ export function useCloudSync(
         if (retryError) fail(retryError);
         recordSaved(json, freshId, new Date().toISOString());
         setStatus('saved');
-        return;
+        if (opts.finalized !== undefined && (latest.current.chartId === id || latest.current.chartId === freshId)) {
+          finalizedSetter.current(snap.finalizedAt ?? null);
+        }
+        return true;
       }
-      fail(error);
+      return fail(error);
     } catch (err) {
       // Network/parse rejections land here (supabase-js throws these
       // rather than returning {error}); categorize the same way. fail()
@@ -596,17 +609,19 @@ export function useCloudSync(
     return () => { cancelled = true; };
   }, [on, practiceReady, practiceId, online, reconnects, chartId, snapshot.patientInfo.patientId, snapshot.patientInfo.patientNumber, snapshot.patientInfo.generatedPatientNumber]);
 
-  const performSave = React.useCallback(async (automatic = false): Promise<void> => {
+  const finalizedSetter = React.useRef(chart.setFinalizedAt);
+  finalizedSetter.current = chart.setFinalizedAt;
+  const performSave = React.useCallback(async (automatic = false, finalized?: boolean): Promise<boolean> => {
     const targetId = latest.current.chartId;
     try { await assignPatientNumberRef.current(); }
     catch (error) { allocationFailed.current = true; setSaveError(describeSaveError(error)); setStatus('error'); throw error; }
-    if (latest.current.chartId !== targetId) return;
+    if (latest.current.chartId !== targetId) return false;
     const { serialized: json, chartId: id } = latest.current;
     const snap = JSON.parse(json) as ChartSnapshot;
-    if (!hasContent(snap)) return;
+    if (!hasContent(snap) || (finalized !== undefined && !snap.patientInfo.patientName.trim())) return false;
     // One question at a time: an autosave tick while the dialog is open
     // must not stack a second one (or save before it's answered).
-    if (dupCheckingRef.current || identityCheckingRef.current) return;
+    if (dupCheckingRef.current || identityCheckingRef.current) return false;
     dupCheckingRef.current = true;
     let proceed: boolean;
     try {
@@ -614,14 +629,15 @@ export function useCloudSync(
     } finally {
       dupCheckingRef.current = false;
     }
-    if (!proceed || latest.current.chartId !== id) return;
+    if (!proceed || latest.current.chartId !== id) return false;
     // The chart may have changed while the question was open — save the
     // latest content.
-    await upsertChart(latest.current.serialized, id, { automatic });
+    return upsertChart(latest.current.serialized, id, { automatic, finalized });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [upsertChart]);
 
   const pendingSaves = React.useRef(new Set<Promise<void>>());
+  const lifecyclePending = React.useRef(false);
   const workspacePaused = React.useRef(false);
   const [workspaceResume, setWorkspaceResume] = React.useState(0);
   React.useEffect(() => { workspacePaused.current = false; }, [chartId]);
@@ -630,12 +646,31 @@ export function useCloudSync(
     setWorkspaceResume(value => value + 1);
   };
   const saveNow = React.useCallback((automatic = false) => {
-    if (automatic && workspacePaused.current) return Promise.resolve();
-    const pending = performSave(automatic);
+    if (lifecyclePending.current || (automatic && workspacePaused.current)) return Promise.resolve();
+    const pending = performSave(automatic).then(() => {});
     pendingSaves.current.add(pending);
     void pending.finally(() => pendingSaves.current.delete(pending)).catch(() => {});
     return pending;
   }, [performSave]);
+  const setFinalized = (finalized: boolean): Promise<boolean> => {
+    if (!on || !online || lifecyclePending.current) return Promise.resolve(false);
+    lifecyclePending.current = true;
+    const id = latest.current.chartId;
+    const previousSaves = [...pendingSaves.current];
+    const pending = (async () => {
+      try {
+        await Promise.all(previousSaves);
+        if (latest.current.chartId !== id) return false;
+        return await performSave(false, finalized);
+      } finally {
+        lifecyclePending.current = false;
+      }
+    })();
+    const tracked = pending.then(() => {});
+    pendingSaves.current.add(tracked);
+    void tracked.finally(() => pendingSaves.current.delete(tracked)).catch(() => {});
+    return pending;
+  };
   const workspaceState = React.useRef({ saveError, dirty });
   workspaceState.current = { saveError, dirty };
   const captureWorkspace = async (): Promise<ChartWorkspace> => {
@@ -674,12 +709,12 @@ export function useCloudSync(
   // patient name is required first (that's how charts are found again).
   const saveNowRef = React.useRef(saveNow);
   saveNowRef.current = saveNow;
-  // Saved charts autosave once the user has unlocked them (unlocking is
-  // the deliberate step); while locked nothing can change anyway.
+  // Finalized records never autosave, including records created here
+  // that have not been reopened from the library yet.
   // Offline, or a save failed: wait, and retry as soon as the connection
   // is back ('online' event).
   React.useEffect(() => {
-    if (!on || !autosaveEnabled || (chart.openedExisting && !editingUnlocked)) return;
+    if (!on || !autosaveEnabled || snapshot.finalizedAt || (chart.openedExisting && !editingUnlocked)) return;
     if (!dirty || !online) return;
     // A new chart's first save waits until the practice is known.
     if (!practiceReady && !everSaved) return;
@@ -874,6 +909,7 @@ export function useCloudSync(
     lastSavedAt,
     online,
     saveNow,
+    setFinalized,
     awaitingClinical,
     skipDuplicateCheckFor,
     listCharts,
