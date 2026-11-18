@@ -1,4 +1,5 @@
 import React from 'react';
+import { lockGuard, notifyLocked } from '../utils/lockGuard';
 import './ToothChartView.css';
 import { Trans, useTranslation } from 'react-i18next';
 import { pocketLabels, rootBoxes, formatRootPockets, pocketDepths, type PocketMode } from '../utils/pocket';
@@ -351,7 +352,7 @@ export function ToothChartView({
             <>
 
 
-              <fieldset className="tooth-chart__fields" disabled={readOnly}>
+              <div className={`tooth-chart__fields${readOnly ? ' lock-wrap--locked' : ''}`} ref={lockGuard(readOnly)}>
                 <label className="tooth-chart__check">
                   <input
                     type="checkbox"
@@ -424,7 +425,7 @@ export function ToothChartView({
                           name={col.name}
                           choices={choices}
                           value={value}
-                          disabled={isMissing || readOnly}
+                          disabled={isMissing}
                           onPick={(score) => setField(col.key, value.trim() === score ? '' : score)}
                         />
                       </div>
@@ -448,7 +449,6 @@ export function ToothChartView({
                 <QuickCodeChips
                   className="tooth-chart__quick-codes"
                   codes={quickCodes}
-                  disabled={readOnly}
                   isPressed={(code) => hasCode(findToothNote(preComments, tooth.triadan)?.text ?? '', code)}
                   onPick={(code) =>
                     setPreComments((prev) =>
@@ -491,7 +491,7 @@ export function ToothChartView({
                     }}
                   />
                 </label>
-              </fieldset>
+              </div>
             </>
           )}
 
@@ -522,8 +522,13 @@ export function ToothChartView({
                       done: plannedExtractions.filter((p) => effectivePostMarks[p] === 'extracted').length,
                       total: plannedExtractions.length,
                     })}
-                {pendingPlanned.length > 0 && !readOnly && (
-                  <button type="button" className="diagram-view__action" onClick={confirmAllPlanned}>
+                {pendingPlanned.length > 0 && (
+                  <button
+                    type="button"
+                    className={`diagram-view__action${readOnly ? ' is-locked' : ''}`}
+                    onClick={readOnly ? notifyLocked : confirmAllPlanned}
+                    aria-disabled={readOnly || undefined}
+                  >
                     {t('toothChart.markExtracted', { count: pendingPlanned.length })}
                   </button>
                 )}

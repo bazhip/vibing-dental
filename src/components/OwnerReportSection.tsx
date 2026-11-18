@@ -1,3 +1,4 @@
+import { lockGuard, notifyLocked } from '../utils/lockGuard';
 import { SectionHeader } from './SectionHeader';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -201,11 +202,12 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
   return (
     <div className="patient-form">
       <SectionHeader title={t('section.title')} onCustomize={onCustomize} customizeTitle={t('section.customizeTitle')} actions={<>
-          {aiEnabled && !readOnly && (
+          {aiEnabled && (
             <button
               type="button"
-              className="diagram-view__action owner-report__ai"
-              onClick={writeWithAi}
+              className={`diagram-view__action owner-report__ai${readOnly ? ' is-locked' : ''}`}
+              onClick={readOnly ? notifyLocked : writeWithAi}
+              aria-disabled={readOnly || undefined}
               disabled={drafting}
               title={t('section.writeTitle')}
             >
@@ -221,7 +223,7 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
         {t('section.intro')}
       </p>
 
-      <fieldset className="sidebar-layout__fieldset" disabled={readOnly}>
+      <div className={readOnly ? 'lock-wrap lock-wrap--locked' : 'lock-wrap'} ref={lockGuard(readOnly)}>
       {templates.length > 1 && (
         <label className="patient-form__label owner-report__block">
           {t('section.templateLabel')}
@@ -295,7 +297,7 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
           </p>
         )}
       </div>
-      </fieldset>
+      </div>
     </div>
   );
 };

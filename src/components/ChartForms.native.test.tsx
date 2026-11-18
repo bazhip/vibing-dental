@@ -219,11 +219,16 @@ describe('DiagramView toolbar', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Comment' }));
     expect(screen.queryByRole('group', { name: 'Draw settings' })).toBeNull();
   });
-  it('never exposes drawing mutations in a locked chart, but keeps the view controls', () => {
+  it('keeps every tool on a locked chart, locked, and the view controls working', () => {
     renderIt(true);
-    expect(screen.queryByRole('button', { name: '+ Free comment' })).toBeNull();
-    expect(screen.queryByRole('button', { name: 'Clear strokes' })).toBeNull();
+    for (const name of ['Draw', 'Comment', '+ Free comment']) {
+      expect(screen.getByRole('button', { name })).toHaveAttribute('aria-disabled', 'true');
+    }
+    expect(within(screen.getByRole('group', { name: 'Undo / Redo' })).getByRole('button', { name: 'Undo' })).toHaveAttribute('aria-disabled', 'true');
+    // Picking a tool doesn't switch to it, so no drawing settings appear.
+    fireEvent.click(screen.getByRole('button', { name: 'Draw' }));
     expect(screen.queryByRole('group', { name: 'Draw settings' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Clear strokes' })).toBeNull();
     expect(screen.getByRole('button', { name: 'Zoom in' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Numbers' })).toBeInTheDocument();
     expect(screen.getByRole('group', { name: 'Comment text size' })).toBeInTheDocument();

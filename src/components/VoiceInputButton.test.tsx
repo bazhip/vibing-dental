@@ -319,7 +319,7 @@ it('retains locked review choices, then focuses the next review and completion',
   act(() => FakeRecognition.last!.say('104 GI 2 and 105 GI 2'));
   await act(async () => { await new Promise((r) => setTimeout(r, 1300)); });
   rerender(<VoiceInputButton {...configured} locked />);
-  expect(screen.getByRole('button', { name: 'Use 104' })).toBeDisabled();
+  expect(screen.getByRole('button', { name: 'Use 104' }).closest('.lock-wrap--locked')).not.toBeNull();
   fireEvent.click(screen.getByRole('button', { name: 'Use 104' }));
   expect(setToothField).not.toHaveBeenCalled();
   rerender(<VoiceInputButton {...configured} locked={false} />);

@@ -1,4 +1,5 @@
 import React from 'react';
+import { notifyLocked } from '../utils/lockGuard';
 import ReactDOM from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import i18n from '../i18n';
@@ -27,6 +28,9 @@ export interface ChartHistoryModalProps {
   /** Restore (save) a version; resolves false when cancelled. Absent =
    *  view-only (the chart can't be edited right now). */
   onRestore?: (snapshot: ChartSnapshot) => Promise<boolean>;
+  /** The open chart is locked: Restore stays visible but explains that
+   *  editing must be turned on. */
+  restoreLocked?: boolean;
   /** Which chart, e.g. "Bella · Nov 12, 2026". */
   label?: string;
   /** Shown instead of Restore when restoring isn't possible here. */
@@ -48,7 +52,7 @@ export function revisionWhen(r: Pick<ChartRevision, 'startedAt' | 'savedAt'>): s
   return range(a.toDateString() === b.toDateString() ? fmtTime(r.savedAt) : fmt(r.savedAt));
 }
 
-export const ChartHistoryModal: React.FC<ChartHistoryModalProps> = ({ chartId, onClose, onRestore, label, restoreHint, onOpenChart }) => {
+export const ChartHistoryModal: React.FC<ChartHistoryModalProps> = ({ chartId, onClose, onRestore, restoreLocked = false, label, restoreHint, onOpenChart }) => {
   const { t } = useTranslation('library');
   // iOS app: a kit sheet, which handles focus, Escape and dismissal itself.
   const native = isNativeApp();
@@ -162,7 +166,13 @@ export const ChartHistoryModal: React.FC<ChartHistoryModalProps> = ({ chartId, o
                 <span>{chosen ? revisionWhen(chosen) : ''}</span>
                 {selected !== current && (
                   onRestore ? (
-                    <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={restore} disabled={restoring}>
+                    <button
+                      type="button"
+                      className={`entry-grid__button entry-grid__button--topbar${restoreLocked ? ' is-locked' : ''}`}
+                      onClick={restoreLocked ? notifyLocked : restore}
+                      aria-disabled={restoreLocked || undefined}
+                      disabled={restoring}
+                    >
                       {restoring ? t('history.restoring') : t('history.restore')}
                     </button>
                   ) : (

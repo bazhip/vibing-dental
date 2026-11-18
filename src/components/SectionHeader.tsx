@@ -14,7 +14,7 @@ export function SectionHeader({ title, onCustomize, customizeTitle, actions, chi
     <div className="patient-form__header section-header">
       <h2 className="patient-form__section-title">{title}</h2>
       {onCustomize && (
-        <button type="button" className="diagram-view__action section-header__customize" onClick={onCustomize} title={customizeTitle}>
+        <button type="button" className="diagram-view__action section-header__customize" onClick={onCustomize} title={customizeTitle} data-lock-exempt>
           {t('patient.customize')}
         </button>
       )}

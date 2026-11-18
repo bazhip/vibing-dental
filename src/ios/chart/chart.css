@@ -115,7 +115,6 @@ html.native-ios .ios-chart-screen :is(.patient-form, .dental-grid-section) {
   background: transparent;
   box-shadow: none;
 }
-html.native-ios .ios-chart-screen .sidebar-layout__fieldset:disabled { opacity: 1; }
 html.native-ios .ios-chart-screen .lock-wrap--locked :is(input, textarea, select, .ios-segmented, .ios-switch) { opacity: 0.6; }
 
 /* Section heading row (title + Customize / Mark all normal): title-2 text

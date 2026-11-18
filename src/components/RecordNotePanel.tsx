@@ -1,4 +1,5 @@
 import React from 'react';
+import { notifyLocked } from '../utils/lockGuard';
 import { useTranslation } from 'react-i18next';
 import type { AppLanguage } from '../i18n/config';
 import type { ChartSnapshot, StoredRecordNote } from '../types';
@@ -91,7 +92,12 @@ export const RecordNotePanel: React.FC<RecordNotePanelProps> = ({
           <p className="record-note__stale" role="status">{t('recordNote.stale')}</p>
         )}
         {stored && (
-          <button type="button" className="pdf-preview-secondary" onClick={() => onChange(null)} disabled={readOnly}>
+          <button
+            type="button"
+            className={`pdf-preview-secondary${readOnly ? ' is-locked' : ''}`}
+            onClick={readOnly ? notifyLocked : () => onChange(null)}
+            aria-disabled={readOnly || undefined}
+          >
             {t('recordNote.rebuild')}
           </button>
         )}
