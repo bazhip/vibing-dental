@@ -39,8 +39,7 @@ import {
   drawCustomExamCard,
   drawToothGrid,
   drawNerveBlockTable,
-  treatmentCardText,
-  drawTreatmentReportField,
+  drawTreatmentArea,
   drawDiagramAt,
   drawFooter,
   drawCodesLegend,
@@ -71,7 +70,7 @@ import {
  *     → drawLogoAndHeader, drawPatientInfoBox, drawExamSection,
  *       drawToothGrid × 2, drawDiagramAt, drawFooter   # page 1
  *     → drawNerveBlockTable, drawDiagramAt,
- *       drawTreatmentReportField, drawFooter           # page 2
+ *       drawTreatmentArea, drawFooter           # page 2
  *     → drawCodesLegend × 2
  *     → drawImagePage × ceil(images / 4)                 # optional
  *     → stash full chart state in a hidden form field for round-trip
@@ -338,7 +337,7 @@ export async function buildDentalChartPDFBytes(
     pdfDoc, postSlot, postDiagram.png,
     diagramBottomIn(1, usedByPage.page2)
   );
-  drawTreatmentReportField(page2, treatmentCardText(patientInfo.treatmentReport, { radiographic: printedRadiographic, ct: printedCt }, lng), regular, bold, lng);
+  drawTreatmentArea(page2, { treatment: patientInfo.treatmentReport, radiographic: printedRadiographic, ct: printedCt }, regular, bold, lng);
   drawFooter(page2, regular, bold, 2, totalPages, generatedAt, identityLine, lng);
 
   // ---- Page-2 codes-used legend (page 1 drew its own above) ------------

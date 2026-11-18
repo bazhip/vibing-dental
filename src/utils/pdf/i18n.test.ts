@@ -222,7 +222,7 @@ describe('clinical chart PDF in another language', () => {
       'Schéma dentaire canin', 'Informations sur le patient', 'Motif de consultation', 'Examen bucco-dentaire',
       'Nœuds lymphatiques', 'Arcade maxillaire', 'Arcade mandibulaire', 'Mobilité', 'Dent', 'Codes utilisés',
       'Anesthésie · Blocs nerveux', 'Bloc nerveux', 'DROITE', 'GAUCHE', 'Infra-orbitaire', 'Autre',
-      'Compte rendu de traitement et de chirurgie', 'COMPTE RENDU RADIOGRAPHIQUE', 'Généré le 2026-11-13 09:30',
+      'Compte rendu de traitement et de chirurgie', 'Compte rendu radiographique', 'Généré le 2026-11-13 09:30',
       'Auxiliaire : Sam Patel', 'Bloc personnalisé', '0.3 mL',
     ]) expect(fr, s).toContain(s);
     expect(fr).toContain(codeDefinition('TR', 'fr'));

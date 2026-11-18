@@ -1009,30 +1009,107 @@ export function drawToothGrid(
 
 // ------------------------------------------------------- Treatment Report --
 
-/** The treatment card's text: the radiographic report and CT report
- *  (each when present) as labelled blocks, then the treatment report —
- *  the card keeps its size and place, so charts without either print
- *  exactly as before. */
-export function treatmentCardText(
-  treatmentReport: string,
-  reports: { radiographic?: string; ct?: string } = {},
-  lng = 'en',
-): string {
-  const rads = (reports.radiographic ?? '').trim();
-  const ct = (reports.ct ?? '').trim();
-  if (!rads && !ct) return treatmentReport;
-  const t = pdfT(lng);
-  const report = treatmentReport.trim();
-  return [
-    rads && `${t('treatment.findingsHeading')}\n${rads}`,
-    ct && `${t('treatment.ctHeading')}\n${ct}`,
-    report && `${t('treatment.treatmentHeading')}\n${report}`,
-  ].filter(Boolean).join('\n\n');
+/** The texts that share page 2's right column. */
+export interface TreatmentAreaText {
+  treatment: string;
+  radiographic?: string;
+  ct?: string;
 }
 
-export function drawTreatmentReportField(
+export interface TreatmentAreaCard {
+  kind: 'treatment' | 'radiographic' | 'ct';
+  value: string;
+  /** Card height, title band included. */
+  heightPt: number;
+}
+
+export interface TreatmentAreaLayout {
+  cards: TreatmentAreaCard[];
+  fontSize: number;
+  lineHeight: number;
+}
+
+const AREA_GAP_PT = 0.12 * PT_PER_IN;
+const BODY_PAD_TOP_PT = 6;
+const BODY_PAD_BOTTOM_PT = 10;
+const BODY_INSET_PT = 8;
+/** Tried largest first; the text shrinks before anything is cut. */
+const AREA_FONT_SIZES = [9.5, 9, 8.5, 8, 7.5];
+/** The treatment card never shrinks below this many lines of writing room. */
+const MIN_TREATMENT_LINES = 4;
+
+function wrappedLineCount(value: string, font: PDFFont, size: number, width: number): number {
+  return value.split('\n').reduce((n, para) => n + Math.max(1, wrapToWidth(para, font, size, width).length), 0);
+}
+
+/**
+ * Splits the right column into cards: the treatment report on top, then
+ * the radiographic report and CT report (each only when it has text).
+ * The report cards take the height their text needs and the treatment
+ * card fills the rest, so the column keeps its size and a chart without
+ * either report prints one card as before. When the text doesn't fit at
+ * 9.5pt it steps down to 7.5pt; only past that are cards shared out by
+ * need and capped (with a "continued" note — the full text round-trips
+ * in the embedded data).
+ */
+export function layoutTreatmentArea(
+  text: TreatmentAreaText,
+  font: PDFFont,
+  totalHeightPt: number,
+  widthPt: number,
+): TreatmentAreaLayout {
+  const innerW = widthPt - 2 * BODY_INSET_PT;
+  const parts: { kind: TreatmentAreaCard['kind']; value: string }[] = [
+    { kind: 'treatment', value: text.treatment },
+    { kind: 'radiographic', value: (text.radiographic ?? '').trim() },
+    { kind: 'ct', value: (text.ct ?? '').trim() },
+  ].filter((c) => c.kind === 'treatment' || c.value) as { kind: TreatmentAreaCard['kind']; value: string }[];
+  const gaps = AREA_GAP_PT * (parts.length - 1);
+  const chrome = CARD_BAND_PT + BODY_PAD_TOP_PT + BODY_PAD_BOTTOM_PT;
+
+  let needs: number[] = [];
+  let size = AREA_FONT_SIZES[0];
+  for (size of AREA_FONT_SIZES) {
+    const lh = size * 1.45;
+    needs = parts.map((c) => {
+      const lines = c.value ? wrappedLineCount(c.value, font, size, innerW) : 0;
+      return chrome + Math.max(lines, c.kind === 'treatment' ? MIN_TREATMENT_LINES : 1) * lh;
+    });
+    const reports = needs.slice(1).reduce((a, b) => a + b, 0);
+    if (reports + needs[0] + gaps <= totalHeightPt) {
+      return {
+        fontSize: size,
+        lineHeight: lh,
+        cards: parts.map((c, i) => ({ ...c, heightPt: i === 0 ? totalHeightPt - gaps - reports : needs[i] })),
+      };
+    }
+  }
+  // Still too long at the smallest size: cards that fit their share keep
+  // their full height, the rest split what's left evenly (and cap).
+  const lh = size * 1.45;
+  const heights: number[] = new Array(parts.length).fill(0);
+  let remaining = totalHeightPt - gaps;
+  let pending = parts.map((_, i) => i);
+  while (pending.length) {
+    const share = remaining / pending.length;
+    const fits = pending.filter((i) => needs[i] <= share);
+    if (!fits.length) {
+      for (const i of pending) heights[i] = share;
+      break;
+    }
+    for (const i of fits) { heights[i] = needs[i]; remaining -= needs[i]; }
+    pending = pending.filter((i) => !fits.includes(i));
+  }
+  return {
+    fontSize: size,
+    lineHeight: lh,
+    cards: parts.map((c, i) => ({ ...c, heightPt: heights[i] })),
+  };
+}
+
+export function drawTreatmentArea(
   page: PDFPage,
-  value: string,
+  text: TreatmentAreaText,
   font: PDFFont,
   fontBold: PDFFont,
   lng = 'en'
@@ -1040,45 +1117,42 @@ export function drawTreatmentReportField(
   const t = pdfT(lng);
   const { height: pageHeight } = page.getSize();
   const xPt = TREATMENT_REPORT.xIn * PT_PER_IN;
-  const titleYTopPt = pageHeight - TREATMENT_REPORT.headerYTopIn * PT_PER_IN;
-  const fieldW = TREATMENT_REPORT.fieldWidthIn * PT_PER_IN;
+  const widthPt = TREATMENT_REPORT.fieldWidthIn * PT_PER_IN;
+  const topPt = pageHeight - TREATMENT_REPORT.headerYTopIn * PT_PER_IN;
+  // The column's bottom edge stays at the old field bottom.
+  const bottomPt = pageHeight - (TREATMENT_REPORT.fieldYTopIn + TREATMENT_REPORT.fieldHeightIn) * PT_PER_IN;
+  const layout = layoutTreatmentArea(text, font, topPt - bottomPt, widthPt);
+  const titles = {
+    treatment: t('treatment.title'),
+    radiographic: t('treatment.radiographicTitle'),
+    ct: t('treatment.ctTitle'),
+  };
 
-  // One card: title band + writing area in a single rounded frame. The
-  // card's bottom edge stays at the old field bottom.
-  const fieldY = pageHeight - (TREATMENT_REPORT.fieldYTopIn + TREATMENT_REPORT.fieldHeightIn) * PT_PER_IN;
-  const cardH = titleYTopPt - fieldY;
-  const bodyTop = drawSectionCard(
-    page, xPt, titleYTopPt, fieldW, cardH,
-    t('treatment.title'), fontBold
-  );
-
-  if (value) {
-    const innerX = xPt + 8;
-    const innerYTop = bodyTop - 6;
-    const innerWidth = fieldW - 16;
-    const fontSize = 9.5;
-    const lineHeight = fontSize * 1.45;
-    // Cap at the box height — an unbounded report used to keep drawing
-    // straight through the field border and over the footer. When capped,
-    // say so: the full text still round-trips via the embedded state.
-    const maxLines = Math.floor((innerYTop - (fieldY + 10)) / lineHeight);
-    const totalLines = value
-      .split('\n')
-      .reduce((n, para) => n + Math.max(1, wrapToWidth(para, font, fontSize, innerWidth).length), 0);
-    if (totalLines > maxLines) {
-      drawWrappedText(page, value, innerX, innerYTop, innerWidth,
-        fontSize, lineHeight, font, PALETTE.ink, maxLines - 1);
-      const noteY = fieldY + 8;
-      page.drawText(t('treatment.continued'), {
-        x: innerX, y: noteY, size: 7.5, font, color: PALETTE.muted,
-      });
-    } else {
-      drawWrappedText(page, value, innerX, innerYTop, innerWidth,
-        fontSize, lineHeight, font, PALETTE.ink);
+  let cardTop = topPt;
+  for (const card of layout.cards) {
+    const cardBottom = cardTop - card.heightPt;
+    const bodyTop = drawSectionCard(page, xPt, cardTop, widthPt, card.heightPt, titles[card.kind], fontBold);
+    if (card.value) {
+      const innerX = xPt + BODY_INSET_PT;
+      const innerYTop = bodyTop - BODY_PAD_TOP_PT;
+      const innerWidth = widthPt - 2 * BODY_INSET_PT;
+      const { fontSize, lineHeight } = layout;
+      // Tolerance: a card sized for exactly N lines must not floor to N − 1.
+      const maxLines = Math.floor((innerYTop - (cardBottom + BODY_PAD_BOTTOM_PT)) / lineHeight + 1e-6);
+      if (wrappedLineCount(card.value, font, fontSize, innerWidth) > maxLines) {
+        drawWrappedText(page, card.value, innerX, innerYTop, innerWidth,
+          fontSize, lineHeight, font, PALETTE.ink, Math.max(1, maxLines - 1));
+        page.drawText(t('treatment.continued'), {
+          x: innerX, y: cardBottom + 8, size: 7.5, font, color: PALETTE.muted,
+        });
+      } else {
+        drawWrappedText(page, card.value, innerX, innerYTop, innerWidth,
+          fontSize, lineHeight, font, PALETTE.ink);
+      }
     }
+    finishSectionCard(page, xPt, cardTop, widthPt, card.heightPt);
+    cardTop = cardBottom - AREA_GAP_PT;
   }
-
-  finishSectionCard(page, xPt, titleYTopPt, fieldW, cardH);
 }
 
 // ----------------------------------------------------------- Nerve block --

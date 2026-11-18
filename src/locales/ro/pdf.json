@@ -46,9 +46,8 @@
   },
   "treatment": {
     "title": "Raport de tratament și chirurgie",
-    "findingsHeading": "RAPORT RADIOGRAFIC",
-    "ctHeading": "RAPORT CT",
-    "treatmentHeading": "TRATAMENT",
+    "radiographicTitle": "Raport radiografic",
+    "ctTitle": "Raport CT",
     "continued": "… continuare — raportul complet este încorporat în acest fișier (încărcați-l din nou în aplicație)."
   },
   "anesthesia": {

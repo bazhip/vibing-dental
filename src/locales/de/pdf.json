@@ -45,9 +45,8 @@
   },
   "treatment": {
     "title": "Behandlungs- & OP-Bericht",
-    "findingsHeading": "RÖNTGENBERICHT",
-    "ctHeading": "CT-BERICHT",
-    "treatmentHeading": "BEHANDLUNG",
+    "radiographicTitle": "Röntgenbericht",
+    "ctTitle": "CT-Bericht",
     "continued": "… Fortsetzung — der vollständige Bericht ist in dieser Datei eingebettet (laden Sie sie wieder in die App)."
   },
   "anesthesia": {

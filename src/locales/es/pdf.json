@@ -46,9 +46,8 @@
   },
   "treatment": {
     "title": "Informe de tratamiento y cirugía",
-    "findingsHeading": "INFORME RADIOGRÁFICO",
-    "ctHeading": "INFORME DE TC",
-    "treatmentHeading": "TRATAMIENTO",
+    "radiographicTitle": "Informe radiográfico",
+    "ctTitle": "Informe de TC",
     "continued": "… continúa — el informe completo va incluido en este archivo (vuelva a cargarlo en la aplicación)."
   },
   "anesthesia": {

@@ -36,7 +36,7 @@
   "radiographic": {
     "title": "Radiographic report",
     "placeholder": "e.g. 108: vertical bone loss distal root, furcation exposure. 307: type 2 tooth resorption.",
-    "hint": "Prints in the PDF above the treatment report."
+    "hint": "Prints in the PDF below the treatment report."
   },
   "ct": {
     "title": "CT report",

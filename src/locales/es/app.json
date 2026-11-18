@@ -36,7 +36,7 @@
   "radiographic": {
     "title": "Informe radiográfico",
     "placeholder": "p. ej. 108: pérdida ósea vertical en la raíz distal, exposición de la furca. 307: reabsorción dental de tipo 2.",
-    "hint": "Se imprime en el PDF encima del informe del tratamiento."
+    "hint": "Se imprime en el PDF debajo del informe del tratamiento."
   },
   "ct": {
     "title": "Informe de TC",

@@ -36,7 +36,7 @@
   "radiographic": {
     "title": "X 线报告",
     "placeholder": "例如：108：远中根垂直骨吸收，根分叉暴露。307：2型牙齿吸收。",
-    "hint": "在 PDF 中打印于治疗报告上方。"
+    "hint": "在 PDF 中打印于治疗报告下方。"
   },
   "ct": {
     "title": "CT 报告",

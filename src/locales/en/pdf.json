@@ -45,9 +45,8 @@
   },
   "treatment": {
     "title": "Treatment & Surgery Report",
-    "findingsHeading": "RADIOGRAPHIC REPORT",
-    "ctHeading": "CT REPORT",
-    "treatmentHeading": "TREATMENT",
+    "radiographicTitle": "Radiographic Report",
+    "ctTitle": "CT Report",
     "continued": "… continued — full report is embedded in this file (load it back into the app)."
   },
   "anesthesia": {

@@ -36,7 +36,7 @@
   "radiographic": {
     "title": "Raport radiografic",
     "placeholder": "de ex. 108: pierdere osoasă verticală la rădăcina distală, expunerea furcației. 307: resorbție dentară de tip 2.",
-    "hint": "Se tipărește în PDF deasupra raportului de tratament."
+    "hint": "Se tipărește în PDF sub raportul de tratament."
   },
   "ct": {
     "title": "Raport CT",

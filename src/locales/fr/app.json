@@ -36,7 +36,7 @@
   "radiographic": {
     "title": "Compte rendu radiographique",
     "placeholder": "p. ex. 108 : perte osseuse verticale racine distale, exposition de la furcation. 307 : résorption dentaire de type 2.",
-    "hint": "Figure dans le PDF au-dessus du compte rendu de traitement."
+    "hint": "Figure dans le PDF sous le compte rendu de traitement."
   },
   "ct": {
     "title": "Compte rendu de scanner",

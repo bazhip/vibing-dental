@@ -36,7 +36,7 @@
   "radiographic": {
     "title": "Röntgenbericht",
     "placeholder": "z. B. 108: vertikaler Knochenabbau an der distalen Wurzel, Furkationsexposition. 307: Zahnresorption Typ 2.",
-    "hint": "Wird im PDF über dem Behandlungsbericht gedruckt."
+    "hint": "Wird im PDF unter dem Behandlungsbericht gedruckt."
   },
   "ct": {
     "title": "CT-Bericht",

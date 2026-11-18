@@ -36,7 +36,7 @@
   "radiographic": {
     "title": "Referto radiografico",
     "placeholder": "es. 108: perdita ossea verticale radice distale, esposizione della forcazione. 307: riassorbimento dentale di tipo 2.",
-    "hint": "Viene stampato nel PDF sopra il referto del trattamento."
+    "hint": "Viene stampato nel PDF sotto il referto del trattamento."
   },
   "ct": {
     "title": "Referto TC",
