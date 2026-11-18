@@ -49,11 +49,16 @@
 
 /* Web shell: an instrument panel, with patient actions always in reach. */
 html:not(.native-ios) .entry-grid-container {
-  --bg-page: var(--ios-bg-grouped, #f3f6f7);
-  --surface-alt: var(--ios-cell-alt, #f7f9fa);
-  --border: var(--ios-separator, #dfe6e9);
   --radius: 8px;
   --radius-sm: 6px;
+}
+/* Preserve the existing printed workspace independently of screen aliases. */
+@media print {
+  html:not(.native-ios) .entry-grid-container {
+    --bg-page: var(--ios-bg-grouped, #f3f6f7);
+    --surface-alt: var(--ios-cell-alt, #f7f9fa);
+    --border: var(--ios-separator, #dfe6e9);
+  }
 }
 html:not(.native-ios) .entry-grid__topbar {
   background: var(--surface);
