@@ -1,0 +1,158 @@
+{
+  "actions": {
+    "cancel": "取消",
+    "close": "关闭",
+    "copy": "复制",
+    "delete": "删除",
+    "dismiss": "忽略",
+    "duplicate": "创建副本",
+    "edit": "编辑",
+    "ok": "确定",
+    "save": "保存",
+    "done": "完成",
+    "signOut": "退出登录",
+    "tryAgain": "重试"
+  },
+  "errors": {
+    "network": "无法连接 ToothOps，请检查网络连接后重试。",
+    "notFound": "找不到此图表，可能已被删除。",
+    "permission": "您没有访问权限。",
+    "rateLimit": "尝试次数过多。请稍等一分钟后重试。",
+    "generic": "出现问题。请重试。",
+    "withDetail": "出现问题（详情：{{detail}}）",
+    "detailOnly": "详情：{{detail}}",
+    "api": {
+      "unauthorized": "未授权",
+      "already_member": "该人员已是此诊所的成员。",
+      "invite_failed": "无法发送邀请：{{detail}}",
+      "practice_name_required": "请为诊所命名。",
+      "already_owner": "您已拥有一家诊所。",
+      "owner_of_other_practice": "您已拥有其他诊所，因此无法加入另一家。请先关闭您的诊所，或联系我们。",
+      "invite_invalid": "此邀请链接无效。请让诊所重新发送。",
+      "invite_wrong_account": "此邀请已发送至其他账户。请使用受邀邮箱登录。",
+      "invite_expired": "此邀请已过期。请让诊所重新发送。",
+      "practice_gone": "此诊所已不存在。",
+      "email_required": "请输入邮箱。",
+      "not_owner": "只有诊所所有者可以添加成员。",
+      "not_owner_resend": "只有诊所所有者可以重新发送邀请。",
+      "not_owner_remove": "只有诊所所有者可以移除成员。",
+      "not_owner_roles": "只有诊所所有者可以更改角色。",
+      "not_owner_transfer": "只有诊所所有者可以转移所有权。",
+      "not_owner_report_templates": "只有诊所所有者可以更改宠物主人报告模板。",
+      "seat_limit_individual": "您的个人套餐仅供单人使用。请切换至诊所套餐（最多5人）以添加团队。",
+      "seat_limit": "诊所套餐最多包含5名团队成员，如需更大套餐，请联系我们。",
+      "not_on_team": "该人员不在团队中。",
+      "account_not_found": "找不到此账户。",
+      "account_already_active": "此账户已激活，没有可重新发送的邀请。",
+      "remove_primary_owner": "移除主要所有者前，请先转移所有权。",
+      "demote_primary_owner": "降低此所有者权限前，请先转移主要所有权。",
+      "report_config_not_object": "宠物主人报告设置必须为对象。",
+      "report_config_no_templates": "宠物主人报告设置需要模板列表。",
+      "report_config_too_large": "这些宠物主人报告设置太大，最大为50 KB。请缩短部分文本或移除一个模板。",
+      "report_config_stale": "您打开这些模板后，其他设备或标签页已进行更改。请关闭此窗口、刷新页面，然后重新编辑。",
+      "not_in_practice": "您尚未加入诊所。",
+      "not_primary_owner": "只有主要所有者可以删除诊所。",
+      "confirm_delete_word": "请准确输入 DELETE 以确认。",
+      "confirm_practice_name": "请准确输入诊所名称以确认。",
+      "confirm_email": "请准确输入您的邮箱以确认。",
+      "admin_not_deletable": "无法在此删除管理员账户。",
+      "owner_has_members_one": "您是“{{name}}”的主要所有者，该诊所另有{{count}}名成员。请先转移所有权或删除诊所。",
+      "owner_has_members_other": "您是“{{name}}”的主要所有者，该诊所另有{{count}}名成员。请先转移所有权或删除诊所。",
+      "owner_has_members_unnamed_one": "您是诊所的主要所有者，该诊所另有{{count}}名成员。请先转移所有权或删除诊所。",
+      "owner_has_members_unnamed_other": "您是诊所的主要所有者，该诊所另有{{count}}名成员。请先转移所有权或删除诊所。",
+      "billing_not_configured": "尚未配置账单（缺少 STRIPE_API_KEY）。",
+      "plan_required": "请先选择套餐。",
+      "not_owner_subscription": "只有诊所所有者可以管理订阅。",
+      "comped": "此诊所享有免费使用权限，无需订阅。",
+      "already_subscribed": "此诊所已有订阅，请使用“管理账单”。",
+      "no_practice": "尚无可管理的诊所。",
+      "not_owner_billing": "只有诊所所有者可以管理账单。",
+      "no_stripe_customer": "此诊所没有 Stripe 订阅。",
+      "not_owner_plan": "只有诊所所有者可以更改套餐。",
+      "no_subscription": "没有可更改的订阅，请先订阅。",
+      "team_too_large_one": "您的团队有{{members}}名成员。请先移除成员，或保留诊所套餐（{{plan}}有{{count}}个席位）。",
+      "team_too_large_other": "您的团队有{{members}}名成员。请先移除成员，或保留诊所套餐（{{plan}}有{{count}}个席位）。",
+      "subscription_no_items": "订阅中没有项目，请联系支持。",
+      "chart_required": "发送提醒需要已保存的图表。",
+      "subject_and_message_required": "主题和消息为必填项。",
+      "chart_gone": "此图表已不存在。",
+      "chart_forbidden": "您没有访问此图表的权限。",
+      "no_owner_email": "此患者没有宠物主人邮箱。请先在图表中添加，再发送。",
+      "message_too_long": "此消息太长。",
+      "daily_reminder_limit": "已达到每日提醒上限（100条）。请明天再试。",
+      "email_not_configured": "尚未配置邮件服务。",
+      "email_failed": "邮件发送失败：{{detail}}",
+      "ai_not_configured": "尚未配置 AI。",
+      "request_too_large": "请求太大。",
+      "unsupported_request": "不支持的请求。",
+      "ai_rate_limit": "请稍等，过去一分钟的 AI 请求过多。",
+      "ai_daily_limit": "已达到每日 AI 使用上限，将在24小时内重置。",
+      "ai_failed": "AI 请求失败：{{detail}}",
+      "ai_unreadable": "AI 返回了无法读取的响应。",
+      "dictation_rate_limit": "本小时启动的口述会话过多，请稍后重试。",
+      "voice_not_configured": "尚未配置语音转录。",
+      "voice_token_failed": "无法生成转录令牌：{{detail}}",
+      "voice_unreadable": "Deepgram 返回了无法读取的响应。",
+      "voice_no_token": "Deepgram 未返回令牌。",
+      "report_chart_required": "通过邮件发送报告前，请先保存图表。",
+      "attachment_invalid": "无法读取报告文件。请重试。",
+      "attachment_too_large": "报告太大，无法通过邮件发送，最大为10 MB。请移除部分照片后重试。",
+      "daily_owner_report_limit": "已达到每日报告邮件上限（100封）。请明天再试。",
+      "owner_report_recipient_changed": "宠物主人的邮箱地址已更改。请重新打开报告并再次确认收件人。"
+    },
+    "saveFile": "无法保存文件。"
+  },
+  "language": {
+    "label": "语言"
+  },
+  "ios": {
+    "back": "返回",
+    "moreActions": "更多操作",
+    "copy": "复制",
+    "moreActionsFor": "{{title}}的更多操作",
+    "tabs": {
+      "chart": "牙科图表",
+      "patients": "患者",
+      "rechecks": "复查",
+      "settings": "设置"
+    },
+    "shell": {
+      "appName": "ToothOps",
+      "hideSidebar": "隐藏侧栏",
+      "showSidebar": "显示侧栏"
+    },
+    "settings": {
+      "account": "账户",
+      "help": "帮助",
+      "gettingStarted": "入门指南",
+      "whatsNew": "新增功能",
+      "signIn": "登录",
+      "signOutTitle": "退出 ToothOps？"
+    },
+    "sheets": {
+      "documents": {
+        "title": "文件",
+        "share": "分享 PDF"
+      },
+      "reminder": {
+        "send": "发送"
+      },
+      "discard": {
+        "title": "放弃您的更改？",
+        "discard": "放弃更改",
+        "keep": "继续编辑"
+      },
+      "join": {
+        "join": "加入"
+      },
+      "customColor": "自定义颜色…",
+      "sendingBusy": "正在发送…"
+    }
+  },
+  "appearance": {
+    "label": "外观",
+    "system": "跟随系统",
+    "light": "浅色",
+    "dark": "深色"
+  }
+}

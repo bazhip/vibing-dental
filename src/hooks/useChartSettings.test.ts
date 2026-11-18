@@ -60,3 +60,13 @@ it('starts new phone users in By tooth but preserves a stored grid choice', () =
   second.unmount();
   window.matchMedia = original;
 });
+
+it('defaults older preferences to touch-only score buttons and retains an explicit choice after reopening', async () => {
+  writeJson('chart.prefs', 1, { hideRecheck: true });
+  const first = renderHook(() => useChartSettings(true));
+  expect(first.result.current.prefs.scorePicker).toBe('touch');
+  await act(async () => { await first.result.current.update({ scorePicker: 'always' }); });
+  first.unmount();
+  const second = renderHook(() => useChartSettings(true));
+  expect(second.result.current.prefs.scorePicker).toBe('always');
+});

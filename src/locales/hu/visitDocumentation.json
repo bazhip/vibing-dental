@@ -1,0 +1,62 @@
+{
+  "consultation": {
+    "title": "Konzultáció",
+    "purpose": "Rögzítse a vizit okát, a kórelőzményt, az állapotértékelést és a tervet a közös vizsgálat és fogászati lap mellett.",
+    "review": "Klinikai dokumentáció áttekintése"
+  },
+  "discharge": {
+    "title": "Hazabocsátás",
+    "purpose": "Rögzítse a vizit során megbeszélt gyógyszereket, ápolási utasításokat és utánkövetést.",
+    "review": "Gazdinak szóló jelentés áttekintése"
+  },
+  "sourceNotice": "A rögzített megfogalmazás a beírt formában marad. Megosztás előtt ellenőrizze az ügyfél nyelvét.",
+  "treatmentRecap": "Kezelési jelentés",
+  "noTreatment": "Nincs rögzített kezelési jelentés.",
+  "fields": {
+    "complaint": {
+      "label": "Vizit oka",
+      "helper": "A vizit páciensadataival közösen tárolva."
+    },
+    "consultationHistory": {
+      "label": "Kórelőzmény",
+      "helper": "Rögzítse a megadott kórelőzményt és a lényeges körülményeket."
+    },
+    "consultationAssessment": {
+      "label": "Állapotértékelés",
+      "helper": "Rögzítse az állapotértékelését, beleértve az esetleges bizonytalanságot."
+    },
+    "consultationPlan": {
+      "label": "Terv",
+      "helper": "Rögzítse a megbeszélt tervet; ne tüntesse fel elvégzettként a tervezett ellátást."
+    },
+    "dischargeMedications": {
+      "label": "Gyógyszerek",
+      "helper": "Csak a rögzített gyógyszereket és adagokat írja be, az esetleges bizonytalanság megtartásával."
+    },
+    "dischargeInstructions": {
+      "label": "Utasítások",
+      "helper": "Rögzítse a vizit során megbeszélt ápolási utasításokat."
+    },
+    "dischargeFollowUp": {
+      "label": "Utánkövetés",
+      "helper": "Rögzítse a megbeszélt utánkövetést; ütemezett kontrollhoz használja a meglévő visszahívási dátumot."
+    },
+    "gpVitals": {
+      "label": "Életjelek",
+      "helper": "Rögzítse a mért értékeket a mértékegységekkel és az esetleges bizonytalansággal együtt."
+    },
+    "gpPhysicalExam": {
+      "label": "Fizikális vizsgálat",
+      "helper": "Csak a megfigyelt vagy közölt vizsgálati leleteket rögzítse."
+    },
+    "gpDiagnostics": {
+      "label": "Diagnosztika",
+      "helper": "Rögzítse a diagnosztikai leleteket és a függőben lévő vizsgálatokat, a bizonytalanság megtartásával."
+    }
+  },
+  "gp-exam": {
+    "title": "Általános állatorvosi vizsgálat",
+    "purpose": "Rögzítse a vizit életjeleit, fizikális vizsgálatát és diagnosztikai leleteit.",
+    "review": "Klinikai dokumentáció áttekintése"
+  }
+}

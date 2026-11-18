@@ -120,18 +120,18 @@ describe('supported maximum custom chart settings', () => {
   });
 });
 it('prints the visible radiology report, not superseded hidden findings, and respects a clear', async () => {
-  const p = { ...patient, radiologyReport: 'Visible corrected radiology text.', radiographicFindings: 'Hidden superseded finding.' };
+  const p = { ...patient, radiographicFindings: 'Visible corrected radiology text.', radiologyReport: 'Hidden superseded finding.' };
   const output = await capture(p);
   expect(output.allTexts.map(item => item.text).join('\n')).toContain('Visible corrected radiology text.');
   expect(output.allTexts.map(item => item.text).join('\n')).not.toContain('Hidden superseded');
   vi.restoreAllMocks();
-  const empty = await capture({ ...p, radiologyReport: '' });
+  const empty = await capture({ ...p, radiographicFindings: '' });
   expect(empty.allTexts.map(item => item.text).join('\n')).not.toContain('Hidden superseded');
 });
 it('prints an independent CT report alongside the x-ray report and preserves CT in the PDF stash', async () => {
   const p = { ...patient, ctReport: 'CT recorded finding at 409.', radiologyReport: 'X-ray recorded finding at 108.' };
   const output = await capture(p), text = output.allTexts.map(item => item.text).join('\n');
-  expect(text).toContain('CT report'); expect(text).toContain(p.ctReport); expect(text).toContain(p.radiologyReport);
+  expect(text.toLowerCase()).toContain('ct report'); expect(text).toContain(p.ctReport); expect(text).toContain(p.radiologyReport);
   const { parseDentalChartPDF } = await import('../pdfGenerator');
   expect((await parseDentalChartPDF({ arrayBuffer: async () => output.bytes.slice().buffer } as File)).patientInfo.ctReport).toBe(p.ctReport);
 });

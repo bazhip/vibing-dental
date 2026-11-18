@@ -1,4 +1,4 @@
-import { clinicalMappingDefaults, EZYVET_CLINICAL_DEFAULTS } from './clinicalMappings';
+import { clinicalMappingDefaults, compatibleClinicalMapping, EZYVET_CLINICAL_DEFAULTS } from './clinicalMappings';
 import { matchField } from '../../extension/ezyvet/matchField';
 import type { PimsId } from '../../extension/pims/types';
 import {
@@ -27,6 +27,7 @@ export const DEFAULT_EZYVET_MAP: Record<SourceKey, string | null> = {
   findings: 'Physical Exam',
   procedures: 'Plan',
   radiographs: 'Physical Exam',
+  ct: 'Physical Exam',
   treatment: 'Plan',
   recheck: 'Plan',
   chart: 'Discharge Summary',
@@ -37,7 +38,7 @@ export function effectiveMap(saved: PimsFieldMap | null, provider: PimsId = 'ezy
   const defaults = provider === 'ezyvet' ? DEFAULT_EZYVET_MAP : Object.fromEntries(
     Object.keys(DEFAULT_EZYVET_MAP).map((key) => [key, null]),
   ) as Record<SourceKey, null>;
-  return { ...defaults, ...clinicalMappingDefaults(provider, fields), ...(saved ?? {}) };
+  return { ...defaults, ...clinicalMappingDefaults(provider, fields), ...compatibleClinicalMapping(saved ?? {}) };
 }
 
 export type FieldInfo = {

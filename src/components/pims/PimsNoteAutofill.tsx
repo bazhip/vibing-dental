@@ -2,7 +2,7 @@ import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { StoredRecordNote } from '../../types';
 import { recordNoteSectionText, recordNoteText, type RecordNote } from '../../utils/recordNote';
-import { clinicalMappingDefaults } from '../../utils/pims/clinicalMappings';
+import { clinicalMappingDefaults, compatibleClinicalMapping } from '../../utils/pims/clinicalMappings';
 import { splitStoredNote } from '../../utils/pims/mapping';
 import { createNoteMappingBackend, groupNoteSources, type NoteGroup, type NoteMapping, type NoteMappingBackend } from '../../utils/pims/noteMappings';
 import type { PimsTransport } from '../../utils/pims/extensionBridge';
@@ -64,7 +64,7 @@ export function PimsNoteAutofill({ note, stored, chartKey, patientName, transpor
     Object.entries(clinicalMappingDefaults(target.provider, (current.fields ?? []).map(title => ({ title, kind: 'note', acceptsImage: false }))))
       .filter(([key, destination]) => destination !== null && split?.sections.some(section => section.key === key)),
   ) : {};
-  const choices = mapForm.context === mapContext ? mapForm.mapping : {};
+  const choices = compatibleClinicalMapping(mapForm.context === mapContext ? mapForm.mapping : {});
   const mapping: NoteMapping = { ...defaults, ...choices };
   const [reload, setReload] = useState(0);
   useEffect(() => {

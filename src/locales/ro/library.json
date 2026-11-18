@@ -1,0 +1,151 @@
+{
+  "rechecks": {
+    "title": "Recontroale",
+    "description": "Pacienți cu recontrol scadent astăzi sau întârziat. Deschideți o vizită, trimiteți un memento sau ștergeți un recontrol finalizat."
+  },
+  "openLatest": "Deschideți cea mai recentă vizită pentru {{name}}",
+  "title": "Pacienți",
+  "unnamedPatient": "Pacient fără nume",
+  "search": {
+    "placeholder": "Căutați după numele sau numărul pacientului…",
+    "aria": "Căutați fișe"
+  },
+  "filters": {
+    "speciesAria": "Filtrați după specie",
+    "allSpecies": "Toate speciile",
+    "doctorAria": "Filtrați după medic",
+    "allDoctors": "Toți medicii"
+  },
+  "importPdf": "Importați PDF-ul fișei",
+  "importPdfTitle": "Deschideți un PDF de fișă creat cu această aplicație pentru a continua editarea",
+  "newPatient": "Pacient nou",
+  "newPatientTitle": "Goliți fișa de lucru și începeți un pacient complet nou",
+  "loading": "Se încarcă…",
+  "empty": "Nu există încă fișe salvate — se salvează automat pe măsură ce le completați.",
+  "noMatch": {
+    "search": "Niciun pacient nu corespunde căutării.",
+    "due": "Niciun pacient nu are recontrol scadent.",
+    "filters": "Nicio fișă nu corespunde filtrelor."
+  },
+  "table": {
+    "aria": "Pacienți",
+    "patient": "Pacient",
+    "number": "Nr. pacient",
+    "species": "Specie",
+    "visits": "Vizite",
+    "updated": "Actualizat",
+    "recheck": "Recontrol",
+    "finalized": "Finalizat"
+  },
+  "due": "Recontroale scadente",
+  "dueCount": "Recontroale scadente ({{n}})",
+  "dueTitle": "Afișați doar pacienții cu recontrol scadent sau întârziat",
+  "recall": {
+    "overdue": "{{date}} · întârziat",
+    "today": "{{date}} · astăzi"
+  },
+  "deciduousSuffix": "{{species}} · Dentiție deciduală",
+  "visits_one": "{{count}} vizită",
+  "visits_other": "{{count}} de vizite",
+  "visitsExpand_one": "{{count}} vizită — extindeți",
+  "visitsExpand_other": "{{count}} de vizite — extindeți",
+  "openPatient": "Deschideți {{name}}",
+  "visit": {
+    "undated": "Vizită fără dată",
+    "openDated": "Deschideți vizita din {{date}}",
+    "openUndated": "Deschideți vizita fără dată",
+    "deleteDated": "Ștergeți vizita din {{date}} pentru {{name}}",
+    "deleteUndated": "Ștergeți vizita fără dată pentru {{name}}",
+    "updated": "Actualizat {{when}}"
+  },
+  "actions": {
+    "menu": "Acțiuni",
+    "reminder": "Memento",
+    "reminderTitle": "Trimiteți un memento de recontrol către {{who}}",
+    "clearRecall": "Ștergeți mementoul de recontrol pentru {{name}}",
+    "clearRecallTitle": "Ștergeți mementoul de recontrol pentru {{name}} — de ex. după un recontrol care nu a generat o fișă nouă",
+    "newVisit": "Vizită nouă",
+    "newVisitTitle": "Începeți o vizită nouă pentru {{name}}",
+    "history": "Istoricul versiunilor",
+    "historyChartTitle": "Cine a salvat fișa pacientului {{name}} și când",
+    "historyVisitTitle": "Cine a salvat această vizită și când",
+    "deleteChart": "Ștergeți fișa pentru {{name}}",
+    "loadMore": "Încărcați mai multe fișe",
+    "clearRecallShort": "Ștergeți recontrolul"
+  },
+  "errors": {
+    "load": "Fișele dumneavoastră nu au putut fi încărcate. {{error}}",
+    "loadMore": "Nu au putut fi încărcate mai multe fișe. {{error}}",
+    "open": "Fișa nu a putut fi deschisă. {{error}}",
+    "delete": "Vizita nu a putut fi ștearsă. {{error}}",
+    "clearRecall": "Recontrolul nu a putut fi șters. {{error}}"
+  },
+  "deleteDialog": {
+    "title": "Ștergeți {{name}}{{when}}?",
+    "titleUnnamed": "Ștergeți această fișă{{when}}?",
+    "message": "Această vizită este eliminată din cloud pentru toți membrii cabinetului. Acțiunea este ireversibilă.",
+    "confirm": "Ștergeți vizita"
+  },
+  "clearDialog": {
+    "title": "Ștergeți recontrolul pentru {{name}}?",
+    "message": "Folosiți această opțiune când recontrolul a avut loc fără o fișă nouă sau nu mai este necesar. Pacientul dispare din lista Scadente.",
+    "confirm": "Ștergeți recontrolul"
+  },
+  "history": {
+    "aria": "Istoricul fișei",
+    "title": "Istoricul fișei",
+    "titleWith": "Istoric — {{label}}",
+    "openVisit": "Deschideți această vizită",
+    "loading": "Se încarcă…",
+    "empty": "Nu există încă versiuni salvate — istoricul începe de la prima salvare.",
+    "pick": "Alegeți o versiune pentru a o vedea.",
+    "loadingVersion": "Se încarcă această versiune…",
+    "current": "Actuală",
+    "outside": "Cineva din afara cabinetului dumneavoastră",
+    "automatic": "ToothOps (automat)",
+    "baseline": "Înainte de începerea istoricului · ultima salvare {{when}}",
+    "range": "{{start}} – {{end}}",
+    "restore": "Restabiliți această versiune",
+    "restoring": "Se restabilește…",
+    "restoreHint": "Alegeți Editați fișa pentru a restabili o versiune anterioară.",
+    "loadFailed": "Versiunea nu a putut fi încărcată. {{error}}",
+    "restoreFailed": "Restabilirea nu a reușit. {{error}}",
+    "restored": "Versiunea a fost restabilită.",
+    "confirmTitle": "Restabiliți această versiune?",
+    "confirmMessage": "Fișa revine la starea salvată {{when}}. Versiunea de astăzi rămâne în istoric, pentru a putea reveni la ea.",
+    "confirmButton": "Restabiliți"
+  },
+  "templates": {
+    "aria": "Șabloane de raport",
+    "title": "Șabloane de raport",
+    "saved": "Șabloane salvate",
+    "new": "Șablon nou",
+    "empty": "Nu există încă șabloane — scrieți unul mai jos și salvați-l sau folosiți „Salvați ca șablon” în secțiunea Raport de tratament.",
+    "untitled": "Fără titlu",
+    "nameLabel": "Numele șablonului",
+    "namePlaceholder": "de ex. Detartraj de rutină (felină)",
+    "bodyLabel": "Textul raportului",
+    "bodyPlaceholder": "Textul raportului introdus în Raportul de tratament și chirurgie…",
+    "nameRequired": "Dați un nume șablonului — acesta îl identifică în meniul de inserare.",
+    "saveFailed": "Șablonul nu a putut fi salvat.",
+    "deleteFailed": "Șablonul nu a putut fi șters.",
+    "cloudOff": "Cloudul nu este configurat.",
+    "deleteTitle": "Ștergeți „{{name}}”?",
+    "deleteMessage": "Acest șablon este eliminat pentru toți membrii cabinetului. Acțiunea este ireversibilă.",
+    "deleteConfirm": "Ștergeți șablonul",
+    "saving": "Se salvează…",
+    "saveChanges": "Salvați modificările",
+    "saveTemplate": "Salvați șablonul"
+  },
+  "workspace": {
+    "description": "Căutați fișele pacienților, consultați vizitele și gestionați recontroalele.",
+    "backToVisit": "Înapoi la vizita curentă"
+  },
+  "visits_few": "{{count}} vizite",
+  "visitsExpand_few": "{{count}} vizite — extindeți",
+  "finalized": {
+    "yes": "Da",
+    "no": "Nu",
+    "count": "{{n}} din {{total}}"
+  }
+}

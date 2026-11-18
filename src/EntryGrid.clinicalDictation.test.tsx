@@ -118,6 +118,7 @@ it('rejects patch fields outside the source kind before changing fields or sourc
 });
 it('blocks root application when an existing visit is read only', async () => {
   localStorage.setItem('vibing-dental.chart.openedExisting.v1','true');
+  localStorage.setItem('vibing-dental.chart.finalizedAt.v1', JSON.stringify('2026-11-18T12:00:00Z'));
   const info=persisted();info.date='2020-01-01';localStorage.setItem('vibing-dental.chart.patientInfo.v1',JSON.stringify(info));
   mount();await waitFor(()=>expect(live()?.readOnly).toBe(true));const previous=live().snapshot.patientInfo;
   expect(()=>act(()=>live().onApply({gpVitals:'999 kg'},source()))).toThrow(LocalizedError);

@@ -1,0 +1,47 @@
+{
+  "settings": {
+    "aria": "复查提醒",
+    "title": "复查提醒",
+    "blurb": "复查到期时向宠物主人发送邮件。占位符：",
+    "blurbTail": "可从<strong>患者</strong>页面为单个患者发送提醒。",
+    "loading": "正在加载…",
+    "notSetUp": "正在设置您的诊所，请稍后刷新。",
+    "ownerOnly": "只有诊所所有者可以更改提醒模板。",
+    "auto": "自动向宠物主人发送邮件",
+    "send": "发送时间",
+    "lead": {
+      "onDate": "复查当天",
+      "days3": "提前3天",
+      "week1": "提前1周",
+      "weeks2": "提前2周",
+      "month1": "提前1个月"
+    },
+    "subject": "主题",
+    "message": "消息",
+    "done": "完成",
+    "saving": "正在保存…",
+    "saved": "提醒设置已保存。",
+    "saveFailed": "无法保存提醒设置。",
+    "noPractice": "没有可保存至的诊所。",
+    "discard": {
+      "title": "放弃提醒更改？",
+      "message": "您对提醒设置的编辑尚未保存。",
+      "confirm": "放弃",
+      "cancel": "继续编辑"
+    }
+  },
+  "composer": {
+    "aria": "发送复查提醒",
+    "title": "发送复查提醒",
+    "loading": "正在加载…",
+    "to": "收件人",
+    "toTitle": "提醒会发送至此图表中保存的宠物主人邮箱。请在图表中编辑以更改邮箱。",
+    "toHint": "发送至此图表中的宠物主人邮箱。如需更改，请编辑图表中的宠物主人邮箱。",
+    "subject": "主题",
+    "message": "消息",
+    "sent": "提醒已发送。",
+    "sendFailed": "无法发送提醒。",
+    "send": "发送提醒",
+    "sending": "正在发送…"
+  }
+}

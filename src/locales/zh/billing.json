@@ -1,0 +1,106 @@
+{
+  "features": {
+    "fullCharting": "完整牙科记录、牙列图与品牌 PDF",
+    "photos_one": "照片与X光片，每份图表可存{{count}}张影像",
+    "photos_other": "照片与X光片，每份图表可存{{count}}张影像",
+    "visitHistory": "就诊历史与复查提醒",
+    "users_one": "{{count}}位用户",
+    "users_other": "{{count}}位用户",
+    "everythingIn": "{{plan}}的全部功能",
+    "aiAutofill": "AI 语音自动填写，边口述边自动填入图表",
+    "imagesPerChart_one": "每份图表可存{{count}}张影像",
+    "imagesPerChart_other": "每份图表可存{{count}}张影像",
+    "teamMembers_one": "最多{{count}}名团队成员",
+    "teamMembers_other": "最多{{count}}名团队成员",
+    "sharedCharts": "共享牙科图表、模板和诊所标志",
+    "teamRoles": "团队角色与所有权转移",
+    "aiAutofillTeam": "全体团队使用 AI 语音自动填写"
+  },
+  "plans": {
+    "individual_basic": {
+      "name": "个人",
+      "tagline": "适合独立执业者"
+    },
+    "individual_pro": {
+      "name": "个人 Pro",
+      "tagline": "独立执业，AI 协助口述"
+    },
+    "practice_basic": {
+      "name": "诊所",
+      "tagline": "全体团队共享病历"
+    },
+    "practice_pro": {
+      "name": "诊所 Pro",
+      "tagline": "全诊所免手动记录"
+    }
+  },
+  "perMonth": "/月",
+  "gate": {
+    "settingUpTitle": "正在设置您的订阅…",
+    "settingUpSub": "付款已确认，正在解锁账户。",
+    "loading": "正在加载",
+    "checkFailedTitle": "无法检查您的订阅",
+    "checkFailed": "无法检查您的订阅。",
+    "tryAgain": "重试",
+    "memberTitle": "{{practice}}需要订阅",
+    "yourPractice": "您的诊所",
+    "memberNone": "诊所尚未设置订阅。请<strong>{{owner}}</strong>处理账单，完成后您即可立即恢复使用。",
+    "yourOwner": "您的诊所所有者",
+    "opening": "正在打开…",
+    "chooseTitle": "选择您的套餐",
+    "trialSub": "每个套餐均以{{days}}天免费试用开始，可随时取消。",
+    "openingCheckout": "正在打开结账页面…",
+    "startTrial": "开始{{days}}天免费试用，之后每月{{price}}",
+    "pickPlan": "请在上方选择套餐",
+    "checkoutFailed": "无法开始结账。",
+    "larger": "团队超过5人，或为多地点集团？请<a>联系我们</a>获取定制报价。",
+    "slowConfirm": "付款成功，但确认耗时比平时更长。请一分钟后刷新，如问题持续，请联系我们。"
+  },
+  "settings": {
+    "title": "账单",
+    "loading": "正在加载账单…",
+    "loadFailed": "无法加载账单。",
+    "retry": "重试",
+    "comped": "此诊所享有免费使用权限，无需订阅。",
+    "lapsed": "您的订阅已结束，诊所已转为免费套餐。所有图表均保留。",
+    "resubscribe": "重新订阅",
+    "freeBeta": "<strong>免费公测</strong> · {{seats}}个席位 · 每份图表{{images}}张影像 · 包含 AI 口述",
+    "noCard": "公测期间无需银行卡。",
+    "seatsInUse": "已使用{{used}}个席位，共{{seats}}个。",
+    "needMoreBeta": "需要超过{{seats}}个席位？请<a>联系我们</a>。",
+    "history": "账单历史",
+    "noPlan": "无套餐",
+    "seatsUsed": "{{used}}／{{seats}}个席位",
+    "changePlan": "更改套餐",
+    "planOption": "{{name}} — 每月{{price}}",
+    "manage": "管理账单",
+    "hintStripe": "“管理账单”会打开 Stripe，可管理银行卡、发票和取消订阅。",
+    "hintNoStripe": "需要付费使用权限时，系统会提示您选择套餐。",
+    "needMore": "需要超过5个席位？请<a>联系我们</a>。",
+    "managedBy": "账单由{{owner}}管理。",
+    "theOwner": "诊所所有者",
+    "planUpdated": "套餐已更新。",
+    "switchTitle": "切换至{{plan}}？",
+    "switchMessage": "每月{{price}}，差额会按比例计入下期账单。",
+    "switchConfirm": "切换套餐",
+    "changeFailed": "无法更改套餐。",
+    "portalFailed": "无法打开账单门户。",
+    "status": {
+      "trialing": "免费试用",
+      "trialingDate": "免费试用，首次付款日期 {{date}}",
+      "active": "使用中",
+      "activeDate": "使用中，续订日期 {{date}}",
+      "past_due": "付款失败，请更新银行卡",
+      "none": "尚未订阅",
+      "canceled": "已取消",
+      "incomplete": "未完成",
+      "incomplete_expired": "未完成且已过期",
+      "unpaid": "未付款",
+      "paused": "已暂停"
+    }
+  },
+  "errors": {
+    "checkoutLink": "Stripe 未返回结账链接。",
+    "portalLink": "Stripe 未返回门户链接。"
+  }
+}

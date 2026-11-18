@@ -9,10 +9,14 @@ interface Term {
   it: string;
   es: string;
   pt: string;
+  hu: string;
+  ro: string;
+  zh: string;
+  ar: string;
   note?: string;
 }
 
-const LANGS = ['en', 'fr', 'de', 'it', 'es', 'pt'] as const;
+const LANGS = ['en', 'fr', 'de', 'it', 'es', 'pt', 'hu', 'ro', 'zh', 'ar'] as const;
 
 const REQUIRED_IDS = [
   'mobility', 'recession', 'pocket', 'furcation', 'hyperplasia', 'calculus',

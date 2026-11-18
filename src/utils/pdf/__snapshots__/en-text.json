@@ -1195,27 +1195,21 @@
    "s": 8
   },
   {
-   "t": "RADIOGRAPHIC FINDINGS",
+   "t": "Scaling and polishing. X on 108 (surgical). GTR performed on 409. ",
    "x": 404,
    "y": 550.63,
    "s": 9.5
   },
   {
+   "t": "RADIOGRAPHIC REPORT",
+   "x": 403,
+   "y": 296.38,
+   "s": 8
+  },
+  {
    "t": "TR on 307 and 407; RTR 208.",
    "x": 404,
-   "y": 536.85,
-   "s": 9.5
-  },
-  {
-   "t": "TREATMENT",
-   "x": 404,
-   "y": 509.3,
-   "s": 9.5
-  },
-  {
-   "t": "Scaling and polishing. X on 108 (surgical). GTR performed on 409.",
-   "x": 404,
-   "y": 495.53,
+   "y": 269.11,
    "s": 9.5
   },
   {
@@ -1817,218 +1811,278 @@
   {
    "t": "Line 1: extraction of 101 with closure.",
    "x": 404,
-   "y": 550.63,
-   "s": 9.5
+   "y": 553.53,
+   "s": 7.5
   },
   {
    "t": "Line 2: extraction of 102 with closure.",
    "x": 404,
-   "y": 536.85,
-   "s": 9.5
+   "y": 542.65,
+   "s": 7.5
   },
   {
    "t": "Line 3: extraction of 103 with closure.",
    "x": 404,
-   "y": 523.08,
-   "s": 9.5
+   "y": 531.78,
+   "s": 7.5
   },
   {
    "t": "Line 4: extraction of 104 with closure.",
    "x": 404,
-   "y": 509.3,
-   "s": 9.5
+   "y": 520.9,
+   "s": 7.5
   },
   {
    "t": "Line 5: extraction of 105 with closure.",
    "x": 404,
-   "y": 495.53,
-   "s": 9.5
+   "y": 510.03,
+   "s": 7.5
   },
   {
    "t": "Line 6: extraction of 106 with closure.",
    "x": 404,
-   "y": 481.75,
-   "s": 9.5
+   "y": 499.15,
+   "s": 7.5
   },
   {
    "t": "Line 7: extraction of 107 with closure.",
    "x": 404,
-   "y": 467.98,
-   "s": 9.5
+   "y": 488.28,
+   "s": 7.5
   },
   {
    "t": "Line 8: extraction of 108 with closure.",
    "x": 404,
-   "y": 454.2,
-   "s": 9.5
+   "y": 477.4,
+   "s": 7.5
   },
   {
    "t": "Line 9: extraction of 109 with closure.",
    "x": 404,
-   "y": 440.43,
-   "s": 9.5
+   "y": 466.53,
+   "s": 7.5
   },
   {
    "t": "Line 10: extraction of 101 with closure.",
    "x": 404,
-   "y": 426.65,
-   "s": 9.5
+   "y": 455.65,
+   "s": 7.5
   },
   {
    "t": "Line 11: extraction of 102 with closure.",
    "x": 404,
-   "y": 412.88,
-   "s": 9.5
+   "y": 444.78,
+   "s": 7.5
   },
   {
    "t": "Line 12: extraction of 103 with closure.",
    "x": 404,
-   "y": 399.1,
-   "s": 9.5
+   "y": 433.9,
+   "s": 7.5
   },
   {
    "t": "Line 13: extraction of 104 with closure.",
    "x": 404,
-   "y": 385.33,
-   "s": 9.5
+   "y": 423.03,
+   "s": 7.5
   },
   {
    "t": "Line 14: extraction of 105 with closure.",
    "x": 404,
-   "y": 371.55,
-   "s": 9.5
+   "y": 412.15,
+   "s": 7.5
   },
   {
    "t": "Line 15: extraction of 106 with closure.",
    "x": 404,
-   "y": 357.78,
-   "s": 9.5
+   "y": 401.28,
+   "s": 7.5
   },
   {
    "t": "Line 16: extraction of 107 with closure.",
    "x": 404,
-   "y": 344,
-   "s": 9.5
+   "y": 390.4,
+   "s": 7.5
   },
   {
    "t": "Line 17: extraction of 108 with closure.",
    "x": 404,
-   "y": 330.23,
-   "s": 9.5
+   "y": 379.53,
+   "s": 7.5
   },
   {
    "t": "Line 18: extraction of 109 with closure.",
    "x": 404,
-   "y": 316.45,
-   "s": 9.5
+   "y": 368.65,
+   "s": 7.5
   },
   {
    "t": "Line 19: extraction of 101 with closure.",
    "x": 404,
-   "y": 302.68,
-   "s": 9.5
+   "y": 357.78,
+   "s": 7.5
   },
   {
    "t": "Line 20: extraction of 102 with closure.",
    "x": 404,
-   "y": 288.9,
-   "s": 9.5
+   "y": 346.9,
+   "s": 7.5
   },
   {
    "t": "Line 21: extraction of 103 with closure.",
    "x": 404,
-   "y": 275.13,
-   "s": 9.5
+   "y": 336.03,
+   "s": 7.5
   },
   {
    "t": "Line 22: extraction of 104 with closure.",
    "x": 404,
-   "y": 261.35,
-   "s": 9.5
+   "y": 325.15,
+   "s": 7.5
   },
   {
    "t": "Line 23: extraction of 105 with closure.",
    "x": 404,
-   "y": 247.58,
-   "s": 9.5
+   "y": 314.27,
+   "s": 7.5
   },
   {
    "t": "Line 24: extraction of 106 with closure.",
    "x": 404,
-   "y": 233.8,
-   "s": 9.5
+   "y": 303.4,
+   "s": 7.5
   },
   {
    "t": "Line 25: extraction of 107 with closure.",
    "x": 404,
-   "y": 220.03,
-   "s": 9.5
+   "y": 292.52,
+   "s": 7.5
   },
   {
    "t": "Line 26: extraction of 108 with closure.",
    "x": 404,
-   "y": 206.25,
-   "s": 9.5
+   "y": 281.65,
+   "s": 7.5
   },
   {
    "t": "Line 27: extraction of 109 with closure.",
    "x": 404,
-   "y": 192.48,
-   "s": 9.5
+   "y": 270.77,
+   "s": 7.5
   },
   {
    "t": "Line 28: extraction of 101 with closure.",
    "x": 404,
-   "y": 178.7,
-   "s": 9.5
+   "y": 259.9,
+   "s": 7.5
   },
   {
    "t": "Line 29: extraction of 102 with closure.",
    "x": 404,
-   "y": 164.93,
-   "s": 9.5
+   "y": 249.02,
+   "s": 7.5
   },
   {
    "t": "Line 30: extraction of 103 with closure.",
    "x": 404,
-   "y": 151.15,
-   "s": 9.5
+   "y": 238.15,
+   "s": 7.5
   },
   {
    "t": "Line 31: extraction of 104 with closure.",
    "x": 404,
-   "y": 137.38,
-   "s": 9.5
+   "y": 227.27,
+   "s": 7.5
   },
   {
    "t": "Line 32: extraction of 105 with closure.",
    "x": 404,
-   "y": 123.6,
-   "s": 9.5
+   "y": 216.4,
+   "s": 7.5
   },
   {
    "t": "Line 33: extraction of 106 with closure.",
    "x": 404,
-   "y": 109.83,
-   "s": 9.5
+   "y": 205.52,
+   "s": 7.5
   },
   {
    "t": "Line 34: extraction of 107 with closure.",
    "x": 404,
-   "y": 96.05,
-   "s": 9.5
+   "y": 194.65,
+   "s": 7.5
   },
   {
    "t": "Line 35: extraction of 108 with closure.",
    "x": 404,
-   "y": 82.28,
-   "s": 9.5
+   "y": 183.77,
+   "s": 7.5
   },
   {
    "t": "Line 36: extraction of 109 with closure.",
    "x": 404,
-   "y": 68.5,
-   "s": 9.5
+   "y": 172.9,
+   "s": 7.5
+  },
+  {
+   "t": "Line 37: extraction of 101 with closure.",
+   "x": 404,
+   "y": 162.02,
+   "s": 7.5
+  },
+  {
+   "t": "Line 38: extraction of 102 with closure.",
+   "x": 404,
+   "y": 151.15,
+   "s": 7.5
+  },
+  {
+   "t": "Line 39: extraction of 103 with closure.",
+   "x": 404,
+   "y": 140.27,
+   "s": 7.5
+  },
+  {
+   "t": "Line 40: extraction of 104 with closure.",
+   "x": 404,
+   "y": 129.4,
+   "s": 7.5
+  },
+  {
+   "t": "Line 41: extraction of 105 with closure.",
+   "x": 404,
+   "y": 118.52,
+   "s": 7.5
+  },
+  {
+   "t": "Line 42: extraction of 106 with closure.",
+   "x": 404,
+   "y": 107.65,
+   "s": 7.5
+  },
+  {
+   "t": "Line 43: extraction of 107 with closure.",
+   "x": 404,
+   "y": 96.77,
+   "s": 7.5
+  },
+  {
+   "t": "Line 44: extraction of 108 with closure.",
+   "x": 404,
+   "y": 85.9,
+   "s": 7.5
+  },
+  {
+   "t": "Line 45: extraction of 109 with closure.",
+   "x": 404,
+   "y": 75.02,
+   "s": 7.5
+  },
+  {
+   "t": "Line 46: extraction of 101 with closure.",
+   "x": 404,
+   "y": 64.15,
+   "s": 7.5
   },
   {
    "t": "… continued — full report is embedded in this file (load it back into the app).",
@@ -2791,218 +2845,278 @@
   {
    "t": "Line 1: extraction of 101 with closure.",
    "x": 404,
-   "y": 550.63,
-   "s": 9.5
+   "y": 553.53,
+   "s": 7.5
   },
   {
    "t": "Line 2: extraction of 102 with closure.",
    "x": 404,
-   "y": 536.85,
-   "s": 9.5
+   "y": 542.65,
+   "s": 7.5
   },
   {
    "t": "Line 3: extraction of 103 with closure.",
    "x": 404,
-   "y": 523.08,
-   "s": 9.5
+   "y": 531.78,
+   "s": 7.5
   },
   {
    "t": "Line 4: extraction of 104 with closure.",
    "x": 404,
-   "y": 509.3,
-   "s": 9.5
+   "y": 520.9,
+   "s": 7.5
   },
   {
    "t": "Line 5: extraction of 105 with closure.",
    "x": 404,
-   "y": 495.53,
-   "s": 9.5
+   "y": 510.03,
+   "s": 7.5
   },
   {
    "t": "Line 6: extraction of 106 with closure.",
    "x": 404,
-   "y": 481.75,
-   "s": 9.5
+   "y": 499.15,
+   "s": 7.5
   },
   {
    "t": "Line 7: extraction of 107 with closure.",
    "x": 404,
-   "y": 467.98,
-   "s": 9.5
+   "y": 488.28,
+   "s": 7.5
   },
   {
    "t": "Line 8: extraction of 108 with closure.",
    "x": 404,
-   "y": 454.2,
-   "s": 9.5
+   "y": 477.4,
+   "s": 7.5
   },
   {
    "t": "Line 9: extraction of 109 with closure.",
    "x": 404,
-   "y": 440.43,
-   "s": 9.5
+   "y": 466.53,
+   "s": 7.5
   },
   {
    "t": "Line 10: extraction of 101 with closure.",
    "x": 404,
-   "y": 426.65,
-   "s": 9.5
+   "y": 455.65,
+   "s": 7.5
   },
   {
    "t": "Line 11: extraction of 102 with closure.",
    "x": 404,
-   "y": 412.88,
-   "s": 9.5
+   "y": 444.78,
+   "s": 7.5
   },
   {
    "t": "Line 12: extraction of 103 with closure.",
    "x": 404,
-   "y": 399.1,
-   "s": 9.5
+   "y": 433.9,
+   "s": 7.5
   },
   {
    "t": "Line 13: extraction of 104 with closure.",
    "x": 404,
-   "y": 385.33,
-   "s": 9.5
+   "y": 423.03,
+   "s": 7.5
   },
   {
    "t": "Line 14: extraction of 105 with closure.",
    "x": 404,
-   "y": 371.55,
-   "s": 9.5
+   "y": 412.15,
+   "s": 7.5
   },
   {
    "t": "Line 15: extraction of 106 with closure.",
    "x": 404,
-   "y": 357.78,
-   "s": 9.5
+   "y": 401.28,
+   "s": 7.5
   },
   {
    "t": "Line 16: extraction of 107 with closure.",
    "x": 404,
-   "y": 344,
-   "s": 9.5
+   "y": 390.4,
+   "s": 7.5
   },
   {
    "t": "Line 17: extraction of 108 with closure.",
    "x": 404,
-   "y": 330.23,
-   "s": 9.5
+   "y": 379.53,
+   "s": 7.5
   },
   {
    "t": "Line 18: extraction of 109 with closure.",
    "x": 404,
-   "y": 316.45,
-   "s": 9.5
+   "y": 368.65,
+   "s": 7.5
   },
   {
    "t": "Line 19: extraction of 101 with closure.",
    "x": 404,
-   "y": 302.68,
-   "s": 9.5
+   "y": 357.78,
+   "s": 7.5
   },
   {
    "t": "Line 20: extraction of 102 with closure.",
    "x": 404,
-   "y": 288.9,
-   "s": 9.5
+   "y": 346.9,
+   "s": 7.5
   },
   {
    "t": "Line 21: extraction of 103 with closure.",
    "x": 404,
-   "y": 275.13,
-   "s": 9.5
+   "y": 336.03,
+   "s": 7.5
   },
   {
    "t": "Line 22: extraction of 104 with closure.",
    "x": 404,
-   "y": 261.35,
-   "s": 9.5
+   "y": 325.15,
+   "s": 7.5
   },
   {
    "t": "Line 23: extraction of 105 with closure.",
    "x": 404,
-   "y": 247.58,
-   "s": 9.5
+   "y": 314.27,
+   "s": 7.5
   },
   {
    "t": "Line 24: extraction of 106 with closure.",
    "x": 404,
-   "y": 233.8,
-   "s": 9.5
+   "y": 303.4,
+   "s": 7.5
   },
   {
    "t": "Line 25: extraction of 107 with closure.",
    "x": 404,
-   "y": 220.03,
-   "s": 9.5
+   "y": 292.52,
+   "s": 7.5
   },
   {
    "t": "Line 26: extraction of 108 with closure.",
    "x": 404,
-   "y": 206.25,
-   "s": 9.5
+   "y": 281.65,
+   "s": 7.5
   },
   {
    "t": "Line 27: extraction of 109 with closure.",
    "x": 404,
-   "y": 192.48,
-   "s": 9.5
+   "y": 270.77,
+   "s": 7.5
   },
   {
    "t": "Line 28: extraction of 101 with closure.",
    "x": 404,
-   "y": 178.7,
-   "s": 9.5
+   "y": 259.9,
+   "s": 7.5
   },
   {
    "t": "Line 29: extraction of 102 with closure.",
    "x": 404,
-   "y": 164.93,
-   "s": 9.5
+   "y": 249.02,
+   "s": 7.5
   },
   {
    "t": "Line 30: extraction of 103 with closure.",
    "x": 404,
-   "y": 151.15,
-   "s": 9.5
+   "y": 238.15,
+   "s": 7.5
   },
   {
    "t": "Line 31: extraction of 104 with closure.",
    "x": 404,
-   "y": 137.38,
-   "s": 9.5
+   "y": 227.27,
+   "s": 7.5
   },
   {
    "t": "Line 32: extraction of 105 with closure.",
    "x": 404,
-   "y": 123.6,
-   "s": 9.5
+   "y": 216.4,
+   "s": 7.5
   },
   {
    "t": "Line 33: extraction of 106 with closure.",
    "x": 404,
-   "y": 109.83,
-   "s": 9.5
+   "y": 205.52,
+   "s": 7.5
   },
   {
    "t": "Line 34: extraction of 107 with closure.",
    "x": 404,
-   "y": 96.05,
-   "s": 9.5
+   "y": 194.65,
+   "s": 7.5
   },
   {
    "t": "Line 35: extraction of 108 with closure.",
    "x": 404,
-   "y": 82.28,
-   "s": 9.5
+   "y": 183.77,
+   "s": 7.5
   },
   {
    "t": "Line 36: extraction of 109 with closure.",
    "x": 404,
-   "y": 68.5,
-   "s": 9.5
+   "y": 172.9,
+   "s": 7.5
+  },
+  {
+   "t": "Line 37: extraction of 101 with closure.",
+   "x": 404,
+   "y": 162.02,
+   "s": 7.5
+  },
+  {
+   "t": "Line 38: extraction of 102 with closure.",
+   "x": 404,
+   "y": 151.15,
+   "s": 7.5
+  },
+  {
+   "t": "Line 39: extraction of 103 with closure.",
+   "x": 404,
+   "y": 140.27,
+   "s": 7.5
+  },
+  {
+   "t": "Line 40: extraction of 104 with closure.",
+   "x": 404,
+   "y": 129.4,
+   "s": 7.5
+  },
+  {
+   "t": "Line 41: extraction of 105 with closure.",
+   "x": 404,
+   "y": 118.52,
+   "s": 7.5
+  },
+  {
+   "t": "Line 42: extraction of 106 with closure.",
+   "x": 404,
+   "y": 107.65,
+   "s": 7.5
+  },
+  {
+   "t": "Line 43: extraction of 107 with closure.",
+   "x": 404,
+   "y": 96.77,
+   "s": 7.5
+  },
+  {
+   "t": "Line 44: extraction of 108 with closure.",
+   "x": 404,
+   "y": 85.9,
+   "s": 7.5
+  },
+  {
+   "t": "Line 45: extraction of 109 with closure.",
+   "x": 404,
+   "y": 75.02,
+   "s": 7.5
+  },
+  {
+   "t": "Line 46: extraction of 101 with closure.",
+   "x": 404,
+   "y": 64.15,
+   "s": 7.5
   },
   {
    "t": "… continued — full report is embedded in this file (load it back into the app).",

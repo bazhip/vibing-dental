@@ -147,7 +147,13 @@
       "scoreTooth": "Descendre à la dent suivante",
       "scoreToothHint": "pour noter une même observation sur toute la bouche",
       "scoreStay": "Garder la cellule actuelle sélectionnée",
-      "columns": "Mesures visibles"
+      "columns": "Mesures visibles",
+      "scorePicker": "Boutons de score dans la grille",
+      "scorePickerOptions": {
+        "touch": "Interfaces tactiles uniquement",
+        "always": "Toujours afficher",
+        "never": "Ne jamais afficher"
+      }
     },
     "beside": {
       "title": "Constatations sur le schéma",
@@ -187,7 +193,9 @@
       "grid": "Inclure la grille de mesures",
       "gridHint": "Obligatoire lorsque les constatations sur le schéma sont désactivées, afin de conserver les mesures dans le PDF.",
       "images": "Inclure les images",
-      "imagesHint": "(4 par page, après le dossier)"
+      "imagesHint": "(4 par page, après le dossier)",
+      "radiographicReport": "Inclure le compte rendu radiographique",
+      "ctReport": "Inclure le compte rendu de scanner"
     },
     "noteDevice": "Préférences personnelles enregistrées automatiquement sur cet appareil.",
     "spaceMovesDownHint": "Rapide pour dicter une série de profondeurs",

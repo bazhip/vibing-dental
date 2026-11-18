@@ -1,0 +1,47 @@
+{
+  "settings": {
+    "aria": "Mementouri pentru recontrol",
+    "title": "Mementouri pentru recontrol",
+    "blurb": "Trimiteți proprietarului un e-mail când este scadent recontrolul. Substituenți:",
+    "blurbTail": "Trimiteți un memento pentru un pacient din <strong>Pacienți</strong>.",
+    "loading": "Se încarcă…",
+    "notSetUp": "Cabinetul dumneavoastră este în curs de configurare — reîncărcați peste puțin timp.",
+    "ownerOnly": "Doar proprietarul cabinetului poate modifica șablonul de memento.",
+    "auto": "Trimiteți automat e-mailuri proprietarilor",
+    "send": "Trimiteți",
+    "lead": {
+      "onDate": "La data recontrolului",
+      "days3": "Cu 3 zile înainte",
+      "week1": "Cu 1 săptămână înainte",
+      "weeks2": "Cu 2 săptămâni înainte",
+      "month1": "Cu 1 lună înainte"
+    },
+    "subject": "Subiect",
+    "message": "Mesaj",
+    "done": "Gata",
+    "saving": "Se salvează…",
+    "saved": "Setările mementourilor au fost salvate.",
+    "saveFailed": "Setările mementourilor nu au putut fi salvate.",
+    "noPractice": "Nu există un cabinet în care să se salveze.",
+    "discard": {
+      "title": "Renunțați la modificările mementourilor?",
+      "message": "Modificările setărilor mementourilor nu au fost salvate.",
+      "confirm": "Renunțați",
+      "cancel": "Continuați editarea"
+    }
+  },
+  "composer": {
+    "aria": "Trimiteți un memento pentru recontrol",
+    "title": "Trimiteți un memento pentru recontrol",
+    "loading": "Se încarcă…",
+    "to": "Către",
+    "toTitle": "Mementourile ajung la e-mailul proprietarului salvat în această fișă. Modificați-l în fișă pentru a-l schimba.",
+    "toHint": "Se trimite la e-mailul proprietarului din această fișă. Pentru a-l schimba, modificați e-mailul proprietarului în fișă.",
+    "subject": "Subiect",
+    "message": "Mesaj",
+    "sent": "Memento trimis.",
+    "sendFailed": "Mementoul nu a putut fi trimis.",
+    "send": "Trimiteți mementoul",
+    "sending": "Se trimite…"
+  }
+}

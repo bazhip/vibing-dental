@@ -51,7 +51,7 @@ export function joinRequestEmail(lng: string, practiceName: string, url: string)
   };
 }
 
-const DATE_LOCALES: Record<EmailLanguage, string> = { en: 'en-US', fr: 'fr-FR', de: 'de-DE', it: 'it-IT', es: 'es-ES' };
+const DATE_LOCALES: Record<EmailLanguage, string> = { en: 'en-US', fr: 'fr-FR', de: 'de-DE', it: 'it-IT', es: 'es-ES', hu: 'hu-HU', ro: 'ro-RO', zh: 'zh-CN', ar: 'ar' };
 
 /** Daily reminder to a never-activated invitee; the final one names the expiry date. */
 export function inviteReminderEmail(

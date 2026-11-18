@@ -260,19 +260,18 @@ function ChartBody({ snap }: { snap: ChartSnapshot }) {
 
       {radiologyRecordedText(p).trim() && (
         <section>
-          <h3 className="ai-settings-subhead">{t(typeof p.radiologyReport === 'string' ? 'radiologyReport.title' : 'radiographic.title')}</h3>
-          <p className="admin-chart-viewer__report">{radiologyRecordedText(p)}</p>
+          <h3 className="ai-settings-subhead">Radiographic report</h3>
+          <p className="admin-chart-viewer__report">{p.radiographicFindings}</p>
         </section>
       )}
 
-      {(['gpVitals', 'gpPhysicalExam', 'gpDiagnostics'] as const).map(field => p[field]?.trim() && <section key={field}>
-        <h3 className="ai-settings-subhead">{visitT(`fields.${field}.label`)}</h3>
-        <p className="admin-chart-viewer__report">{p[field]}</p>
-      </section>)}
-      {ctRecordedText(p).trim() && <section>
-        <h3 className="ai-settings-subhead">{t('ctReport.title')}</h3>
-        <p className="admin-chart-viewer__report">{ctRecordedText(p)}</p>
-      </section>}
+      {p.ctReport?.trim() && (
+        <section>
+          <h3 className="ai-settings-subhead">CT report</h3>
+          <p className="admin-chart-viewer__report">{p.ctReport}</p>
+        </section>
+      )}
+
       <section>
         <h3 className="ai-settings-subhead">Treatment report</h3>
         {p.treatmentReport.trim()

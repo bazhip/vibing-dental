@@ -265,3 +265,9 @@ it('keeps real CT capture language and clears review when automatic refinement f
     expect(screen.getByLabelText(i18n.t('app:radiologyReport.checked'))).not.toBeChecked();
   } finally { await act(async () => { await i18n.changeLanguage('en'); }); }
 });
+it('does not label a manually entered main report as an outdated AI draft', () => {
+  const value = snapshot(); value.patientInfo.radiologyReport = value.patientInfo.radiographicFindings;
+  render(<RadiologyReportSection controlsOnly snapshot={value} aiEnabled onChange={() => {}} />);
+  expect(screen.queryByText(/The chart changed since this report was drafted/)).not.toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Refine with AI' })).toBeEnabled();
+});

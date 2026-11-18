@@ -1,3 +1,4 @@
+import { LANGUAGE_NAMES } from '../i18n/config';
 import React from 'react';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { vi } from 'vitest';
@@ -16,7 +17,7 @@ function Editor(){
 beforeEach(async()=>installPseudoLocale());afterEach(async()=>{cleanup();await restoreLocale();});
 it('translates the single editor, refinement, Undo, review and export controls',async()=>{
  render(<Editor/>);
- const allowed=['108: bone loss','English','Français','Deutsch','Italiano','Español','108: documented findings'];
+ const allowed=['108: bone loss',...Object.values(LANGUAGE_NAMES),'108: documented findings'];
  expect(findUntranslated(document.body,allowed)).toEqual([]);
  fireEvent.click(screen.getByRole('button',{name:i18n.t('app:radiologyReport.refine')}));
  await screen.findByRole('button',{name:i18n.t('app:radiologyReport.undoRefine')});
@@ -27,5 +28,5 @@ it('translates the single editor, refinement, Undo, review and export controls',
 it('translates CT-specific guidance and export labels in the shared editor', () => {
  const snapshot=sampleOwnerReportSnapshot();snapshot.patientInfo.ctReport='CT recorded text';
  render(<RadiologyReportSection reportKind="ct" snapshot={snapshot} onChange={vi.fn()}/>);
- expect(findUntranslated(document.body,['CT recorded text','English','Français','Deutsch','Italiano','Español'])).toEqual([]);
+ expect(findUntranslated(document.body,['CT recorded text',...Object.values(LANGUAGE_NAMES)])).toEqual([]);
 });

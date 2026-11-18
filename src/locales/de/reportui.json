@@ -153,7 +153,11 @@
     "fr": "Français (Französisch)",
     "de": "Deutsch",
     "it": "Italiano (Italienisch)",
-    "pt": "Português (Portugiesisch)"
+    "pt": "Português (Portugiesisch)",
+    "hu": "Magyar (Ungarisch)",
+    "ro": "Română (Rumänisch)",
+    "zh": "简体中文 (Chinesisch, vereinfacht)",
+    "ar": "العربية (Arabisch)"
   },
   "email": {
     "button": "An Besitzer senden",

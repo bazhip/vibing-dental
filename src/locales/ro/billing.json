@@ -1,0 +1,110 @@
+{
+  "features": {
+    "fullCharting": "Fișe complete, diagrame și PDF-uri cu identitatea cabinetului",
+    "photos_one": "Fotografii și radiografii — {{count}} imagine pe fișă",
+    "photos_other": "Fotografii și radiografii — {{count}} de imagini pe fișă",
+    "visitHistory": "Istoricul vizitelor și mementouri pentru recontrol",
+    "users_one": "{{count}} utilizator",
+    "users_other": "{{count}} de utilizatori",
+    "everythingIn": "Tot ce include {{plan}}",
+    "aiAutofill": "Completare vocală cu IA — dictați, fișa se completează singură",
+    "imagesPerChart_one": "{{count}} imagine pe fișă",
+    "imagesPerChart_other": "{{count}} de imagini pe fișă",
+    "teamMembers_one": "Până la {{count}} membru al echipei",
+    "teamMembers_other": "Până la {{count}} de membri ai echipei",
+    "sharedCharts": "Fișe partajate, șabloane și sigla cabinetului",
+    "teamRoles": "Roluri în echipă și transferul proprietății",
+    "aiAutofillTeam": "Completare vocală cu IA pentru întreaga echipă",
+    "photos_few": "Fotografii și radiografii — {{count}} imagini pe fișă",
+    "users_few": "{{count}} utilizatori",
+    "imagesPerChart_few": "{{count}} imagini pe fișă",
+    "teamMembers_few": "Până la {{count}} membri ai echipei"
+  },
+  "plans": {
+    "individual_basic": {
+      "name": "Individual",
+      "tagline": "Pentru un medic independent"
+    },
+    "individual_pro": {
+      "name": "Individual Pro",
+      "tagline": "Independent, cu IA la microfon"
+    },
+    "practice_basic": {
+      "name": "Cabinet",
+      "tagline": "Întreaga echipă, o singură evidență"
+    },
+    "practice_pro": {
+      "name": "Cabinet Pro",
+      "tagline": "Întreaga clinică, fără mâini"
+    }
+  },
+  "perMonth": "/lună",
+  "gate": {
+    "settingUpTitle": "Se configurează abonamentul…",
+    "settingUpSub": "Plata este confirmată — se deblochează contul.",
+    "loading": "Se încarcă",
+    "checkFailedTitle": "Abonamentul nu a putut fi verificat",
+    "checkFailed": "Abonamentul nu a putut fi verificat.",
+    "tryAgain": "Încercați din nou",
+    "memberTitle": "{{practice}} are nevoie de un abonament",
+    "yourPractice": "Cabinetul dumneavoastră",
+    "memberNone": "Abonamentul cabinetului nu a fost încă configurat. Rugați <strong>{{owner}}</strong> să configureze facturarea — accesul va fi restabilit imediat.",
+    "yourOwner": "proprietarul cabinetului",
+    "opening": "Se deschide…",
+    "chooseTitle": "Alegeți planul",
+    "trialSub": "Fiecare plan începe cu o perioadă de probă gratuită de {{days}} zile — puteți anula oricând.",
+    "openingCheckout": "Se deschide pagina de plată…",
+    "startTrial": "Începeți proba gratuită de {{days}} zile — apoi {{price}}/lună",
+    "pickPlan": "Alegeți un plan mai sus",
+    "checkoutFailed": "Plata nu a putut fi inițiată.",
+    "larger": "Aveți mai mult de 5 membri ai echipei sau mai multe sedii? <a>Contactați-ne</a> pentru o ofertă personalizată.",
+    "slowConfirm": "Plata a fost efectuată, dar confirmarea durează mai mult decât de obicei — reîncărcați peste un minut sau contactați-ne dacă problema persistă."
+  },
+  "settings": {
+    "title": "Facturare",
+    "loading": "Se încarcă facturarea…",
+    "loadFailed": "Facturarea nu a putut fi încărcată.",
+    "retry": "Reîncercați",
+    "comped": "Acest cabinet beneficiază de acces gratuit — nu este necesar un abonament.",
+    "lapsed": "Abonamentul a expirat, iar cabinetul folosește planul gratuit. Toate fișele sunt păstrate.",
+    "resubscribe": "Abonați-vă din nou",
+    "freeBeta": "<strong>Beta gratuită</strong> · {{seats}} locuri · {{images}} imagini pe fișă · dictare cu IA inclusă",
+    "noCard": "Nu este necesar un card în perioada beta.",
+    "seatsInUse": "{{used}} din {{seats}} locuri utilizate.",
+    "needMoreBeta": "Aveți nevoie de peste {{seats}} locuri? <a>Contactați-ne</a>.",
+    "history": "Istoricul facturării",
+    "noPlan": "Fără plan",
+    "seatsUsed": "{{used}}/{{seats}} locuri",
+    "changePlan": "Schimbați planul",
+    "planOption": "{{name}} — {{price}}/lună",
+    "manage": "Gestionați facturarea",
+    "hintStripe": "Gestionarea facturării deschide Stripe — card, facturi și anulare.",
+    "hintNoStripe": "Vi se va solicita să alegeți un plan când accesul o va necesita.",
+    "needMore": "Aveți nevoie de peste 5 locuri? <a>Contactați-ne</a>.",
+    "managedBy": "Facturarea este gestionată de {{owner}}.",
+    "theOwner": "proprietarul cabinetului",
+    "planUpdated": "Planul a fost actualizat.",
+    "switchTitle": "Treceți la {{plan}}?",
+    "switchMessage": "{{price}}/lună. Diferența este calculată proporțional pe următoarea factură.",
+    "switchConfirm": "Schimbați planul",
+    "changeFailed": "Planul nu a putut fi schimbat.",
+    "portalFailed": "Portalul de facturare nu a putut fi deschis.",
+    "status": {
+      "trialing": "probă gratuită",
+      "trialingDate": "probă gratuită — prima plată la {{date}}",
+      "active": "activ",
+      "activeDate": "activ — reînnoire la {{date}}",
+      "past_due": "plată eșuată — actualizați cardul",
+      "none": "fără abonament încă",
+      "canceled": "anulat",
+      "incomplete": "incomplet",
+      "incomplete_expired": "incomplet și expirat",
+      "unpaid": "neplătit",
+      "paused": "în pauză"
+    }
+  },
+  "errors": {
+    "checkoutLink": "Stripe nu a returnat un link de plată.",
+    "portalLink": "Stripe nu a returnat un link către portal."
+  }
+}

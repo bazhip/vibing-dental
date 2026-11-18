@@ -46,6 +46,9 @@
 
 .animal-tabs__heading { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
 .animal-tabs__heading strong { min-width: 0; flex: 1; }
+.animal-tabs__indicators { display: inline-flex; align-items: baseline; gap: 6px; flex-shrink: 0; }
+.animal-tabs__save { font-size: 11px; font-weight: 500; color: var(--text-muted); white-space: nowrap; }
+.animal-tabs__save--saved { color: var(--primary); }
 .animal-tabs__editing { flex-shrink: 0; font-size: 11px; font-weight: 500; color: var(--text-muted); }
 
 .animal-tabs__item--editing::before { background: var(--ios-warning-solid, #d97706); }

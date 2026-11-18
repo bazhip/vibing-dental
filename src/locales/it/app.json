@@ -34,9 +34,14 @@
     "hint": "Tasche per radice, colonne, cosa mostrare accanto ai denti, opzioni PDF"
   },
   "radiographic": {
-    "title": "Reperti radiografici",
+    "title": "Referto radiografico",
     "placeholder": "es. 108: perdita ossea verticale radice distale, esposizione della forcazione. 307: riassorbimento dentale di tipo 2.",
-    "hint": "Viene stampato nel PDF sopra il referto del trattamento."
+    "hint": "Viene stampato nel PDF sotto il referto del trattamento."
+  },
+  "ct": {
+    "title": "Referto TC",
+    "placeholder": "es. Mascellare caudale destro: nessuna osteolisi. 108: radiotrasparenza periapicale, radice mesiale. ATM nei limiti della norma.",
+    "hint": "Viene stampato nel PDF sotto il referto radiografico."
   },
   "lock": {
     "title": "Sola lettura — scelga Modifica cartella per apportare modifiche",
@@ -90,7 +95,8 @@
     "local": "Solo su questo dispositivo",
     "localTitle": "Le cartelle di prova restano in questo browser. Crei un account gratuito per salvare nel cloud.",
     "saveHint": "Aggiunga il nome del paziente prima di salvare: è così che ritroverà questa cartella.",
-    "savedRich": "<word>Salvato · </word>{{when}}"
+    "savedRich": "<word>Salvato · </word>{{when}}",
+    "saved": "Salvato"
   },
   "otherTab": {
     "text": "Questa cartella è aperta in un’altra scheda o finestra. Entrambe modificano la stessa copia di lavoro: ne chiuda una per evitare di sovrascrivere le Sue modifiche."
@@ -333,6 +339,12 @@
     "saveAndClose": "Salva e chiudi",
     "closeChoiceMessage": "Salvi le modifiche prima di chiudere oppure chiuda senza salvare per scartarle. Le immagini delle cartelle salvate saranno conservate.",
     "closeImageChoiceMessage": "Salvi questa cartella prima di chiudere oppure chiuda senza salvare per scartare il contenuto ed eliminare definitivamente le immagini caricate."
+  },
+  "finalization": {
+    "finalize": "Finalizza",
+    "finalized": "Finalizzato",
+    "description": "Questa cartella è finalizzata. Selezioni Modifica cartella per apportare modifiche.",
+    "failed": "Impossibile modificare lo stato di finalizzazione della cartella. {{error}}"
   },
   "radiologyReport": {
     "title": "Referto radiologico",

@@ -327,7 +327,7 @@ it('keeps saving disabled if a mapping is cleared while the saved version is sti
   await act(async () => resolve({ provider: 'pulse', origin: target.origin, template_id: 'record-note-v1', version: 3, mapping: { exam: 'Notes', treatment: 'Plan', recheck: 'Notes' } }));
   expect(screen.getByLabelText('Exam')).toHaveValue('');
   fireEvent.click(screen.getByRole('button', { name: 'Save mapping' }));
-  expect(mappingBackend.save).toHaveBeenCalledWith({ provider: 'pulse', origin: target.origin, template_id: 'record-note-v1', expected_version: 3, mapping: expect.objectContaining({ exam: null, treatment: null, recheck: null, gpPhysicalExam: null, ctReport: null, dischargeInstructions: null }) });
+  expect(mappingBackend.save).toHaveBeenCalledWith({ provider: 'pulse', origin: target.origin, template_id: 'record-note-v1', expected_version: 3, mapping: expect.objectContaining({ exam: null, treatment: null, recheck: null, gpPhysicalExam: null, ct: null, dischargeInstructions: null }) });
 });
 it('keeps an uncertain paste warning when inspection of a different tab is blocked', async () => {
   const { props, noteAutofill } = setup('unknown'); const original = noteAutofill.getMockImplementation()!;
@@ -346,7 +346,7 @@ function clinicalMappedSetup() {
     ? Promise.resolve({ state: 'fields', ...target, fields: ['Notes', 'Plan', 'Medical Notes'] }) as ReturnType<typeof original> : original(request));
   const clinicalNote = { sections: [...base.props.note.sections,
     { key: 'gpPhysicalExam' as const, heading: 'Physical examination', lines: ['Recorded exam findings'] },
-    { key: 'ctReport' as const, heading: 'CT report', lines: ['Recorded CT findings'] },
+    { key: 'ct' as const, heading: 'CT report', lines: ['Recorded CT findings'] },
     { key: 'dischargeInstructions' as const, heading: 'Discharge instructions', lines: ['Recorded home care'] },
   ] };
   return { ...base, props: { ...base.props, note: clinicalNote } };
@@ -407,7 +407,7 @@ it('keeps future clinical sections disabled after clearing and saving a template
   fireEvent.click(screen.getByText('Mapping options')); fireEvent.click(screen.getByRole('button', { name: 'Clear mapping' }));
   fireEvent.click(screen.getByRole('button', { name: 'Save mapping' }));
   const saved = (mappingBackend.save.mock.calls as unknown as [{ mapping: Record<string, string | null> }][])[0][0];
-  expect(saved.mapping).toMatchObject({ ctReport: null, gpVitals: null, dischargeMedications: null });
+  expect(saved.mapping).toMatchObject({ ct: null, gpVitals: null, dischargeMedications: null });
   view.unmount();
   mappingBackend.load.mockResolvedValue({ provider: 'pulse', origin: target.origin, template_id: 'record-note-v1', version: 4, mapping: saved.mapping } as Awaited<ReturnType<typeof mappingBackend.load>>);
   render(<PimsNoteAutofill {...props} chartKey="another-visit" note={{ sections: [...props.note.sections, { key: 'gpVitals', heading: 'Vital signs', lines: ['Recorded weight'] }] }} />); await openMapping();

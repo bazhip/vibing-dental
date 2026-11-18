@@ -12,7 +12,7 @@ const SOAP_DESTINATIONS = {
   gpVitals: [['Vitals', 'Vital signs'], ...EXAM],
   gpPhysicalExam: EXAM,
   gpDiagnostics: [['Diagnostics', 'Diagnostic results'], ...EXAM],
-  ctReport: [['CT report'], ['Imaging', 'Radiology'], ...EXAM],
+  ct: [['CT report'], ['Imaging', 'Radiology'], ...EXAM],
   dischargeMedications: DISCHARGE, dischargeInstructions: DISCHARGE, dischargeFollowUp: DISCHARGE,
 } as const;
 export type ClinicalMappingKey = keyof typeof SOAP_DESTINATIONS;
@@ -21,7 +21,7 @@ export type ClinicalMappingDefaults = Record<ClinicalMappingKey, string | null>;
 export const EZYVET_CLINICAL_DEFAULTS: ClinicalMappingDefaults = {
   complaint: 'History',
   consultationHistory: 'History', consultationAssessment: 'Assessment', consultationPlan: 'Plan',
-  gpVitals: 'Physical Exam', gpPhysicalExam: 'Physical Exam', gpDiagnostics: 'Physical Exam', ctReport: 'Physical Exam',
+  gpVitals: 'Physical Exam', gpPhysicalExam: 'Physical Exam', gpDiagnostics: 'Physical Exam', ct: 'Physical Exam',
   dischargeMedications: 'Discharge Summary', dischargeInstructions: 'Discharge Summary', dischargeFollowUp: 'Discharge Summary',
 };
 const normalize = (text: string) => text.trim().toLowerCase().replace(/[?:;.!]+$/, '').trim();
@@ -48,7 +48,7 @@ export function clinicalMappingDefaults(provider: PimsId, fields?: readonly Fiel
     if (provider === 'shepherd') {
       const specific: Partial<Record<ClinicalMappingKey, string[]>> = {
         complaint: ['Subjective > Initial Complaint'], consultationHistory: ['Subjective > History'], consultationAssessment: ['Assessment > Assessment'],
-        consultationPlan: ['Plan/Schedule > Recommendation'], gpDiagnostics: ['Assessment > Laboratory'], ctReport: ['Assessment > Imaging'],
+        consultationPlan: ['Plan/Schedule > Recommendation'], gpDiagnostics: ['Assessment > Laboratory'], ct: ['Assessment > Imaging'],
         dischargeMedications: ['Plan/Schedule > Notes'], dischargeInstructions: ['Plan/Schedule > Notes'], dischargeFollowUp: ['Plan/Schedule > Recommendation'],
       };
       preferred = [...(specific[key as ClinicalMappingKey] ?? []).map(label => [label]), ...preferred];
@@ -63,4 +63,9 @@ export function clinicalMappingDefaults(provider: PimsId, fields?: readonly Fiel
     }
     return [key, destination];
   })) as ClinicalMappingDefaults;
+}
+
+/** Preserve existing CT destinations/skips when adopting main's record-note section ID. */
+export function compatibleClinicalMapping<T extends Record<string, string | null | undefined>>(saved: T): T & { ct?: string | null } {
+  return !Object.hasOwn(saved, 'ct') && Object.hasOwn(saved, 'ctReport') ? { ...saved, ct: saved.ctReport } : saved;
 }

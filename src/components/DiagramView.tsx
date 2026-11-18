@@ -18,6 +18,12 @@ const ARROW_UTURN_BACKWARD_ICON = 'arrow-uturn-backward';
 const ARROW_UTURN_FORWARD_ICON = 'arrow-uturn-forward';
 const MINUS_ICON = 'minus';
 const PLUS_ICON = 'plus';
+const PENCIL_ICON = 'pencil-tip';
+const MARK_ICON = 'xmark';
+const COMMENT_ICON = 'text-bubble';
+const FREE_COMMENT_ICON = 'plus-bubble';
+const CHEVRON_DOWN_ICON = 'chevron-down';
+const TRASH_ICON = 'trash';
 
 interface DiagramViewProps {
   title: string;
@@ -114,24 +120,11 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
   // a momentary "let me get closer" gesture, and every chart should open
   // at fit-to-width.
   const [zoom, setZoom] = React.useState(1);
-  // Secondary controls share one disclosure across screen sizes.
-  const [moreOpen, setMoreOpen] = React.useState(false);
-  const moreRef = React.useRef<HTMLDivElement>(null);
-  const moreButtonRef = React.useRef<HTMLButtonElement>(null);
-  const moreId = React.useId();
-  React.useEffect(() => {
-    if (!moreOpen) return;
-    const onDown = (e: PointerEvent) => {
-      if (moreRef.current && !moreRef.current.contains(e.target as Node)) setMoreOpen(false);
-    };
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') { setMoreOpen(false); moreButtonRef.current?.focus(); } };
-    document.addEventListener('pointerdown', onDown);
-    document.addEventListener('keydown', onKey);
-    return () => {
-      document.removeEventListener('pointerdown', onDown);
-      document.removeEventListener('keydown', onKey);
-    };
-  }, [moreOpen]);
+  // Settings rows for the active tool; each can be folded away.
+  const [drawOpen, setDrawOpen] = React.useState(true);
+  const drawId = React.useId();
+  const [textOpen, setTextOpen] = React.useState(true);
+  const textId = React.useId();
   const ZOOM_MIN = 0.5;
   const ZOOM_MAX = 3;
   const zoomBy = (factor: number) =>
@@ -201,11 +194,23 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
         style={{ ['--diagram-comment-font-size' as string]: `${0.95 * commentTextScale * zoom}rem` }}
       >
         <div className={`diagram-view__toolbar${readOnly ? ' diagram-view__toolbar--readonly' : ''}`}>
+          {/* One line: modes + Free comment, history, then view controls. */}
+          <div className="diagram-view__toolbar-main">
           <div
             className="diagram-view__tool-group"
             role="group"
             aria-label={t('diagramView.toolGroup')}
           >
+            <button
+              type="button"
+              className={`diagram-view__tool ${tool === 'draw' ? 'diagram-view__tool--active' : ''}`}
+              onClick={() => setTool('draw')}
+              aria-pressed={tool === 'draw'}
+              title={t('diagramView.draw')}
+            >
+              <Icon name={PENCIL_ICON} size={18} />
+              <span className="diagram-view__tool-label">{t('diagramView.draw')}</span>
+            </button>
             <button
               type="button"
               className={`diagram-view__tool ${tool === 'mark' ? 'diagram-view__tool--active' : ''}`}
@@ -219,25 +224,33 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
                     : t('diagramView.markTitle')
               }
             >
-              <span className="diagram-view__long">{markMode === 'missing-only' ? t('diagramView.markMissing') : markMode === 'extracted-only' ? t('diagramView.markExtracted') : t('diagramView.mark')}</span>
-              <span className="diagram-view__short">{t('diagramView.mark')}</span>
+              <Icon name={MARK_ICON} size={16} />
+              <span className="diagram-view__tool-label">
+                <span className="diagram-view__long">{markMode === 'missing-only' ? t('diagramView.markMissing') : markMode === 'extracted-only' ? t('diagramView.markExtracted') : t('diagramView.mark')}</span>
+                <span className="diagram-view__short">{t('diagramView.mark')}</span>
+              </span>
             </button>
             <button
               type="button"
               className={`diagram-view__tool ${tool === 'comment' ? 'diagram-view__tool--active' : ''}`}
               onClick={() => setTool('comment')}
               aria-pressed={tool === 'comment'}
+              title={t('diagramView.comment')}
             >
-              {t('diagramView.comment')}
+              <Icon name={COMMENT_ICON} size={18} />
+              <span className="diagram-view__tool-label">{t('diagramView.comment')}</span>
             </button>
-            <button
-              type="button"
-              className={`diagram-view__tool ${tool === 'draw' ? 'diagram-view__tool--active' : ''}`}
-              onClick={() => setTool('draw')}
-              aria-pressed={tool === 'draw'}
-            >
-              {t('diagramView.draw')}
-            </button>
+            {!readOnly && (
+              <button
+                type="button"
+                className="diagram-view__tool diagram-view__free-comment"
+                onClick={addFreeComment}
+                title={t('ios.diagram.freeComment')}
+              >
+                <Icon name={FREE_COMMENT_ICON} size={18} />
+                <span className="diagram-view__tool-label">{native ? t('ios.diagram.freeComment') : t('diagramView.freeComment')}</span>
+              </button>
+            )}
           </div>
 
           <div
@@ -267,27 +280,9 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
             </button>
           </div>
 
-          {/* Secondary controls stay in the same place at every screen size. */}
-          <div className="diagram-view__more-wrap" ref={moreRef}>
-          <button
-            type="button"
-            className={`diagram-view__action diagram-view__more${moreOpen ? ' diagram-view__more--open' : ''}`}
-            onClick={() => setMoreOpen((o) => !o)}
-            ref={moreButtonRef}
-            aria-controls={moreId}
-            aria-expanded={moreOpen}
-            aria-haspopup="true"
-            aria-label={t('diagramView.more')}
-            title={t('diagramView.moreTitle')}
-          >
-            <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><circle cx="3" cy="8" r="1.5" fill="currentColor" /><circle cx="8" cy="8" r="1.5" fill="currentColor" /><circle cx="13" cy="8" r="1.5" fill="currentColor" /></svg>
-            <span>{t('diagramView.moreLabel')}</span>
-          </button>
-          <div id={moreId} className={`diagram-view__extras${moreOpen ? ' diagram-view__extras--open' : ''}`}>
-          {!readOnly && <button type="button" className="diagram-view__action diagram-view__free-comment" onClick={() => { addFreeComment(); setMoreOpen(false); }}>
-            {native ? <><Icon name={PLUS_ICON} size={15} /> {t('ios.diagram.freeComment')}</> : t('diagramView.freeComment')}
-          </button>}
 
+          {/* View controls stay on the toolbar: tooth numbers and zoom. */}
+          <div className="diagram-view__view">
           <button
             type="button"
             className={`diagram-view__tool diagram-view__numbers ${showNumbers ? 'diagram-view__tool--active' : ''}`}
@@ -295,7 +290,8 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
             aria-pressed={showNumbers}
             title={t('diagramView.numbersTitle')}
           >
-            {native ? t('ios.diagram.numbers') : t('diagramView.numbers')}
+            <span className="diagram-view__numbers-glyph" aria-hidden="true">#</span>
+            <span className="diagram-view__tool-label">{t('ios.diagram.numbers')}</span>
           </button>
 
           <div className="diagram-view__zoom" role="group" aria-label={t('diagramView.zoomGroup')}>
@@ -331,38 +327,38 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
             </button>
           </div>
 
-          {/* Text-size picker. Visible whenever the tool isn't Draw — i.e.
-              Mark and Comment, since both modes work alongside comment
-              boxes whose text size this controls. */}
-          {tool !== 'draw' && (
-            <div
-              className="diagram-view__textsize"
-              role="group"
-              aria-label={t('diagramView.textSize.group')}
-            >
-              <span className="diagram-view__textsize-label" aria-hidden="true">{t('diagramView.textSize.glyph')}</span>
-              {TEXT_SIZES.map((s) => (
-                <button
-                  type="button"
-                  key={s.name}
-                  className={`diagram-view__textsize-btn ${commentTextScale === s.value ? 'diagram-view__textsize-btn--active' : ''}`}
-                  onClick={() => setCommentTextScale(s.value)}
-                  aria-pressed={commentTextScale === s.value}
-                  aria-label={t('diagramView.textSize.aria', { size: t(`diagramView.textSize.${s.name}`) })}
-                  title={t('diagramView.textSize.title', { size: t(`diagramView.textSize.${s.name}`) })}
-                >
-                  {t(`diagramView.textSize.${s.name}`)}
-                </button>
-              ))}
-            </div>
-          )}
+          </div>
+          </div>
 
           {tool === 'draw' && !readOnly && (
             <div
-              className="diagram-view__draw-controls"
+              className={`diagram-view__panel diagram-view__draw-panel${drawOpen ? '' : ' diagram-view__panel--collapsed'}`}
               role="group"
               aria-label={t('diagramView.drawSettings')}
             >
+              <button
+                type="button"
+                className="diagram-view__panel-toggle"
+                onClick={() => setDrawOpen((o) => !o)}
+                aria-expanded={drawOpen}
+                aria-controls={drawId}
+              >
+                <span className="diagram-view__draw-swatch" style={{ backgroundColor: strokeColor }} aria-hidden="true" />
+                {t('diagramView.drawSettings')}
+                <Icon name={CHEVRON_DOWN_ICON} size={14} />
+              </button>
+              {drawOpen && (
+                <button
+                  type="button"
+                  className="diagram-view__action diagram-view__action--danger diagram-view__clear-strokes"
+                  onClick={clearStrokes}
+                >
+                  <Icon name={TRASH_ICON} size={16} />
+                  <span className="diagram-view__clear-label">{t('diagramView.clearStrokes')}</span>
+                </button>
+              )}
+              {drawOpen && (
+              <div id={drawId} className="diagram-view__panel-controls diagram-view__draw-controls">
               <div role="group" aria-label={t('diagramView.strokeColor')}>
                 {STROKE_COLORS.map((c) => (
                   <button
@@ -390,18 +386,46 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
                   aria-valuetext={t('diagramView.strokeWidthValue', { width: strokeWidth })}
                 />
               </label>
-              <button
-                type="button"
-                className="diagram-view__action diagram-view__action--danger"
-                onClick={clearStrokes}
-              >
-                {t('diagramView.clearStrokes')}
-              </button>
+            </div>
+              )}
             </div>
           )}
-          </div>
-          </div>
-
+          {(readOnly || tool === 'comment' || tool === 'stamp') && (
+            <div
+              className={`diagram-view__panel diagram-view__text-panel${textOpen ? '' : ' diagram-view__panel--collapsed'}`}
+              role="group"
+              aria-label={t('diagramView.textSize.group')}
+            >
+              <button
+                type="button"
+                className="diagram-view__panel-toggle"
+                onClick={() => setTextOpen((o) => !o)}
+                aria-expanded={textOpen}
+                aria-controls={textId}
+              >
+                <span className="diagram-view__textsize-label" aria-hidden="true">{t('diagramView.textSize.glyph')}</span>
+                {t('diagramView.textSize.group')}
+                <Icon name={CHEVRON_DOWN_ICON} size={14} />
+              </button>
+              {textOpen && (
+              <div id={textId} className="diagram-view__panel-controls diagram-view__textsize">
+              {TEXT_SIZES.map((s) => (
+                <button
+                  type="button"
+                  key={s.name}
+                  className={`diagram-view__textsize-btn ${commentTextScale === s.value ? 'diagram-view__textsize-btn--active' : ''}`}
+                  onClick={() => setCommentTextScale(s.value)}
+                  aria-pressed={commentTextScale === s.value}
+                  aria-label={t('diagramView.textSize.aria', { size: t(`diagramView.textSize.${s.name}`) })}
+                  title={t('diagramView.textSize.title', { size: t(`diagramView.textSize.${s.name}`) })}
+                >
+                  {t(`diagramView.textSize.${s.name}`)}
+                </button>
+              ))}
+              </div>
+              )}
+            </div>
+          )}
         </div>
 
         {!readOnly && quickCodes.length > 0 && (
@@ -412,6 +436,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
         )}
 
         <div
+          dir="ltr"
           className="diagram-view__canvas"
           style={{ ['--diagram-zoom' as string]: zoom }}
         >

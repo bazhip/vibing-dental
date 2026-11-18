@@ -11,7 +11,7 @@ const storeAt = process.argv.indexOf('--store');
 const store = storeAt >= 0;
 const out = store ? process.argv[storeAt + 1] : 'build-extension';
 if (!out) throw new Error('--store needs an output directory');
-const LANGS = ['en', 'fr', 'de', 'it', 'es'];
+const LANGS = ['en', 'fr', 'de', 'it', 'es', 'hu', 'ro', 'zh', 'ar'];
 const DEV_ONLY_MATCH = 'http://localhost:5173/*';
 
 // src/extension/version.ts reads this at build time.
@@ -59,7 +59,7 @@ cpSync('src/extension/icons', `${out}/icons`, { recursive: true });
 
 for (const lng of LANGS) {
   const { extension } = JSON.parse(readFileSync(`src/locales/${lng}/pims.json`, 'utf8'));
-  const dir = `${out}/_locales/${lng}`;
+  const dir = `${out}/_locales/${lng === 'zh' ? 'zh_CN' : lng}`;
   mkdirSync(dir, { recursive: true });
   const messages = {
     extName: { message: extension.name },

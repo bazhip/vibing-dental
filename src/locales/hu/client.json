@@ -1,0 +1,20 @@
+{
+  "reminder": {
+    "body": "Kedves {{owner}}!\n\nEmlékeztetjük, hogy {{patient}} fogászati kontrollvizsgálata esedékes. Kérjük, hívjon minket időpont-egyeztetés céljából.\n\nKöszönettel:\n{{practice}}",
+    "fallback": {
+      "owner": "gazdi",
+      "pet": "kedvence",
+      "practice": "az Ön állatorvosi rendelője"
+    },
+    "subject": "{{patient}} fogászati kontrollvizsgálata esedékes"
+  },
+  "sample": {
+    "buccalComment": "Enyhe bőrpír a bal pofa mentén",
+    "extraNotes": "Puha eledel a következő 10 napban, amíg a foghúzás helye gyógyul.",
+    "postComment": "Kis lepattanás a csúcson – sima, kezelést nem igényel"
+  },
+  "ownerReportEmail": {
+    "subject": "{{pet}} fogászati lelete",
+    "body": "Kedves {{owner}}!\n\nMellékelten küldjük {{pet}} mai vizsgálatának fogászati leletét. Kérdés esetén kérjük, forduljon hozzánk bizalommal.\n\nKöszönettel:\n{{practice}}"
+  }
+}

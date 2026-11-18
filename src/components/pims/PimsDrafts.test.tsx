@@ -18,6 +18,7 @@ function backend() {
 const open = async () => {
   fireEvent.click(screen.getByRole('button', { name: 'Prepare history or radiology notes' }));
   await screen.findByLabelText('Review and edit the notes');
+  await waitFor(() => expect(screen.getByRole('button', { name: 'Close drafts' })).toBeEnabled());
 };
 beforeEach(() => vi.stubEnv('VITE_PIMS_ROLLOUT_ENABLED', 'true'));
 afterEach(() => { cleanup(); vi.unstubAllEnvs(); });

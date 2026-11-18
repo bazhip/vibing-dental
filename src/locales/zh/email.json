@@ -1,0 +1,44 @@
+{
+  "common": {
+    "setPasswordButton": "设置密码并加入"
+  },
+  "invite": {
+    "body1": "{{who}}已邀请您加入其 ToothOps 团队，这是用于诊疗现场记录的兽医牙科图表应用。",
+    "body2": "请设置密码以激活账户并查看诊所的牙科图表。",
+    "fallback": {
+      "preheader": "该诊所",
+      "title": "一家诊所",
+      "who": "一家诊所"
+    },
+    "footnote": "如果您并未预期收到此邮件，可以忽略。",
+    "preheader": "设置密码以在 ToothOps 中加入{{practice}}。",
+    "subject": "{{who}}邀请您加入 ToothOps",
+    "title": "您受邀加入{{practice}}"
+  },
+  "join": {
+    "body1": "{{name}}邀请您加入其 ToothOps 团队。请使用现有账户登录以接受邀请。",
+    "body2": "在您接受之前，不会发生任何更改。加入时，您可以另行选择是否与诊所共享现有牙科图表。",
+    "button": "查看邀请",
+    "fallback": "一家诊所",
+    "footnote": "此链接有效期为14天。如果您并未预期收到此邮件，请忽略。",
+    "preheader": "{{name}}邀请您加入其 ToothOps 团队。",
+    "subject": "在 ToothOps 中加入{{name}}？",
+    "title": "加入{{name}}？"
+  },
+  "layout": {
+    "linkFallback": "如果按钮无法使用，请将此链接复制到浏览器中：",
+    "tagline": "兽医牙科图表记录"
+  },
+  "reminder": {
+    "body1": "{{who}}邀请您使用 ToothOps 兽医牙科图表应用。您的账户已准备就绪，设置密码后即可开始使用。",
+    "body2": "下方链接有效期为24小时。",
+    "fallback": "您的诊所",
+    "footnote": "没有预期收到此邀请，或不想加入？请忽略此邮件。我们最多再发送一次提醒。",
+    "footnoteFinal": "这是最后一次提醒。如果您未在 {{date}} 前加入，此邀请将过期，待激活账户也将被移除。{{who}}随时可以重新邀请您。",
+    "preheader": "{{who}}正在 ToothOps 等候您，请设置密码以加入。",
+    "subject": "提醒：{{who}}邀请您加入 ToothOps",
+    "subjectFinal": "最后提醒：在 ToothOps 中加入{{who}}",
+    "title": "您受邀加入{{who}}",
+    "titleFinal": "您的邀请仍待接受"
+  }
+}

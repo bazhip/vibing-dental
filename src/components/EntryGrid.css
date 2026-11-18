@@ -131,7 +131,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.15rem;
-  padding-left: 0.5rem;
+  padding-inline-start: 0.5rem;
   border: 1px solid var(--border-strong, #cbd5e1);
   border-radius: 999px;
   background: var(--surface-alt, #f7f9fa);
@@ -159,8 +159,9 @@
   border-radius: 999px;
   padding: 0.12rem 1.35rem 0.12rem 0.3rem;
   cursor: pointer;
-  /* Native caret keeps the "this opens" affordance. */
-  appearance: auto;
+  /* Compact pill: chevron tucked close (styles/controls.css). */
+  --select-pad-end: 1.5rem;
+  --select-chevron-inset: 6px;
 }
 .entry-grid__visit-select:focus-visible {
   outline: 2px solid var(--primary, #0c6b63);
@@ -201,7 +202,7 @@
   flex: 0 1 auto;
   justify-content: flex-end;
   row-gap: 0.35rem;
-  margin-left: auto;
+  margin-inline-start: auto;
   white-space: nowrap;
 }
 .topbar-label-short { display: none; } /* switched in RESPONSIVE HEADER below */
@@ -263,7 +264,7 @@
   font-size: 0.7rem;
   font-weight: 500;
   opacity: 0.7;
-  margin-left: 0.15rem;
+  margin-inline-start: 0.15rem;
   font-style: italic;
 }
 .voice-input--recording {
@@ -338,7 +339,7 @@
 .voice-input__live-label {
   font-style: normal; font-weight: 600;
   color: var(--text);
-  margin-right: 0.3rem;
+  margin-inline-end: 0.3rem;
 }
 .voice-input__activity-list {
   flex: 1; min-height: 0;
@@ -404,7 +405,7 @@
 .ai-intro__lead { margin: 0 0 0.75rem; font-size: 0.95rem; color: var(--text); }
 .ai-intro__list {
   margin: 0 0 0.75rem;
-  padding-left: 1.1rem;
+  padding-inline-start: 1.1rem;
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
@@ -458,7 +459,7 @@
   font: inherit;
   color: inherit;
   cursor: pointer;
-  text-align: left;
+  text-align: start;
 }
 .ai-sidebar__toggle:hover { background: var(--surface-alt, #f1f5f9); }
 .ai-sidebar__status {
@@ -471,7 +472,7 @@
 }
 .ai-sidebar__status--live { color: var(--ios-danger, #b91c1c); }
 .ai-sidebar__status--warn { color: var(--ios-warning-label, #b45309); }
-.ai-sidebar__chevron { margin-left: auto; color: var(--text-muted, #64748b); font-size: 1.1rem; line-height: 1; }
+.ai-sidebar__chevron { margin-inline-start: auto; color: var(--text-muted, #64748b); font-size: 1.1rem; line-height: 1; }
 .ai-sidebar__primary {
   flex: none;
   min-height: 44px;
@@ -510,7 +511,7 @@
   font: inherit;
   font-size: 0.88rem;
   color: var(--text);
-  text-align: left;
+  text-align: start;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -565,8 +566,8 @@
   grid-template-columns: auto 1fr;
   column-gap: 0.55em;
   align-items: baseline;
-  padding-left: 0.5em;
-  border-left: 3px solid var(--speaker);
+  padding-inline-start: 0.5em;
+  border-inline-start: 3px solid var(--speaker);
 }
 .ai-sidebar__turn--s1 { --speaker: #b45309; }
 .ai-sidebar__turn--s2 { --speaker: #7c3aed; }
@@ -614,7 +615,7 @@
   border-top: 1px solid var(--border, #e2e8f0);
   white-space: nowrap;
 }
-.ai-sidebar__foot .voice-input__provider-badge { margin-left: auto; }
+.ai-sidebar__foot .voice-input__provider-badge { margin-inline-start: auto; }
 .ai-sidebar__link {
   min-height: 36px;
   padding: 0 0.6rem;
@@ -899,7 +900,7 @@
 /* Charting → Diagnosis / PDF switches, pushed to the header's right
    edge; they wrap under the title on narrow screens. */
 .dental-grid__options {
-  margin-left: auto;
+  margin-inline-start: auto;
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
@@ -921,10 +922,13 @@
 }
 
 /* Keyboard skip link — visually hidden until focused, then a small
-   pill pinned to the top-left above the sticky topbar. */
+   pill pinned to the reading start above the sticky topbar. */
 .skip-link {
-  position: absolute;
-  left: -9999px;
+  position: fixed;
+  inset-inline-start: 0.5rem;
+  top: 0.5rem;
+  transform: translateY(calc(-100% - 1rem));
+  min-height: 44px;
   z-index: 100;
   padding: 0.5rem 0.9rem;
   border-radius: var(--radius-sm, 8px);
@@ -935,8 +939,7 @@
 }
 
 .skip-link:focus-visible {
-  left: 0.5rem;
-  top: 0.5rem;
+  transform: translateY(0);
 }
 
 
@@ -1016,7 +1019,7 @@
   top: var(--topbar-height, 0px) !important;
   z-index: 10;
   background: var(--ios-grid-header-bg, var(--primary));
-  border-right: 1px solid var(--ios-grid-header-hairline, rgba(255, 255, 255, 0.16));
+  border-inline-end: 1px solid var(--ios-grid-header-hairline, rgba(255, 255, 255, 0.16));
   /* Titles centered vertically in the fixed-height header row. */
   display: flex;
   align-items: center;
@@ -1027,7 +1030,7 @@
    the layout slack), so the container's rounded clip finishes the teal
    header — no separator against the clipped edge. */
 .dental-grid .rdg-header-row .rdg-cell:last-child {
-  border-right: none;
+  border-inline-end: none;
 }
 
 /* Previous visit's value shown in an empty cell — visibly "not this
@@ -1045,7 +1048,7 @@
    at the previous visit and was carried forward automatically. */
 .dental-grid__prior-chip {
   flex: none;
-  margin-left: 0.25rem;
+  margin-inline-start: 0.25rem;
   padding: 0 0.28rem;
   border-radius: 999px;
   background: var(--surface-sunken, #f1f5f9);
@@ -1118,7 +1121,7 @@
 
 .owner-report__preview-list {
   margin: 0.35rem 0;
-  padding-left: 1.1rem;
+  padding-inline-start: 1.1rem;
   font-size: 0.88rem;
   color: var(--text);
 }
@@ -1155,7 +1158,7 @@
 }
 
 .dental-grid .rdg-cell {
-  border-right: 1px solid var(--border);
+  border-inline-end: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   padding: 0.5rem 0.4rem;
   line-height: 1.5;
@@ -1272,7 +1275,7 @@
   .dental-grid .dental-grid__pin--0 { left: 0; }
   .dental-grid .dental-grid__pin--1 { left: var(--pin-1); box-shadow: 2px 0 4px -2px var(--ios-shadow, rgba(15, 23, 42, 0.18)); }
   .dental-grid .rdg-header-row .dental-grid__pin { z-index: 12; background: var(--ios-grid-header-bg, var(--primary)); }
-  .dental-grid .rdg-row .dental-grid__pin { padding-left: 0.3rem; padding-right: 0.3rem; }
+  .dental-grid .rdg-row .dental-grid__pin { padding-inline-start: 0.3rem; padding-inline-end: 0.3rem; }
   .dental-grid .rdg-row .dental-grid__pin--0 { padding: 0; }
   /* "prev" (already gone last visit) shrinks to a dot on the checkbox
      corner — the compact Missing column has no room for the chip. */
@@ -1343,12 +1346,12 @@
 .anesthesia-drug__strength .patient-form__input {
   width: 100%;
   box-sizing: border-box;
-  padding-left: 0.7em;
-  padding-right: 1.8em;
+  padding-inline-start: 0.7em;
+  padding-inline-end: 1.8em;
 }
 /* Adjuncts: room for the mg/mL suffix. */
 .anesthesia-drug__strength--wide { width: 7.5rem; }
-.anesthesia-drug__strength--wide .patient-form__input { padding-right: 3.6em; }
+.anesthesia-drug__strength--wide .patient-form__input { padding-inline-end: 3.6em; }
 
 .anesthesia-drug__remove {
   flex: none;
@@ -1408,7 +1411,7 @@
 }
 
 .anesthesia-table thead th {
-  text-align: left;
+  text-align: start;
   font-size: 0.7rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -1442,7 +1445,7 @@
 }
 
 .anesthesia-unit .patient-form__input {
-  padding-right: 2.5em;
+  padding-inline-end: 2.5em;
 }
 
 .anesthesia-unit__suffix {
@@ -1501,7 +1504,7 @@
 }
 
 .exam-table thead th {
-  text-align: left;
+  text-align: start;
   font-size: 0.7rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -1633,7 +1636,7 @@
   padding: 10px 14px;
   width: 100%;
   min-height: 44px;
-  text-align: left;
+  text-align: start;
   overflow-wrap: anywhere;
   font-weight: 600;
   border: 1px solid var(--action-border);
@@ -1788,9 +1791,8 @@
 .diagram-view { container: diagram / inline-size; }
 .diagram-view__toolbar {
   display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
+  gap: 8px;
   padding: 8px;
   background: var(--surface, #fff);
   border-radius: var(--radius-sm, 8px);
@@ -1798,6 +1800,14 @@
   position: sticky;
   top: calc(var(--topbar-height, 0px) + 0.5rem);
   z-index: 30;
+}
+/* The main row: labels give way to icons as it narrows. */
+.diagram-view__toolbar-main {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
 }
 .diagram-view__toolbar .diagram-view__tool-group,
 .diagram-view__toolbar .diagram-view__history {
@@ -1811,13 +1821,15 @@
   flex: none;
 }
 .diagram-view__toolbar .diagram-view__history {
-  border-left: 1px solid var(--border);
-  padding-left: 12px;
+  border-inline-start: 1px solid var(--border);
+  padding-inline-start: 12px;
 }
 .diagram-view__toolbar .diagram-view__tool-group .diagram-view__tool {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
   min-height: 36px;
   padding: 6px 12px;
   font-size: 14px;
@@ -1844,82 +1856,94 @@
 }
 .diagram-view__toolbar .diagram-view__history .diagram-view__action:disabled { color: var(--text-muted); opacity: 0.45; }
 .diagram-view__toolbar button:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
-.diagram-view__more-wrap { display: block; margin-left: auto; min-width: 0; }
-.diagram-view__toolbar .diagram-view__more {
+.diagram-view__toolbar .diagram-view__tool-group .diagram-view__tool > .ios-icon { display: none; flex: none; }
+/* Free comment is an action beside the modes, never a pressed mode. */
+.diagram-view__toolbar .diagram-view__tool-group .diagram-view__free-comment { color: var(--primary); font-weight: 600; }
+.diagram-view__toolbar .diagram-view__tool-group .diagram-view__free-comment:hover { background: var(--primary-tint, #e6f2ef); }
+.diagram-view__short { display: none; }
+/* Tooth numbers and zoom: always on the toolbar, after the history. */
+.diagram-view__view {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-inline-start: auto;
+  flex: none;
+}
+.diagram-view__toolbar .diagram-view__view .diagram-view__numbers {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 6px;
+  gap: 4px;
   min-height: 36px;
   padding: 6px 10px;
-  font-size: 13px;
-  line-height: 1.25;
-  border-color: transparent;
-  background: transparent;
-}
-.diagram-view__toolbar .diagram-view__more--open,
-.diagram-view__toolbar .diagram-view__more:hover { background: var(--surface-alt); color: var(--primary); }
-.diagram-view__short { display: none; }
-.diagram-view__extras { display: none; }
-.diagram-view__extras--open {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-items: center;
-  gap: 10px;
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  box-sizing: border-box;
-  width: min(360px, 100%);
-  max-height: min(65dvh, 480px);
-  overflow-y: auto;
-  padding: 12px;
-  background: var(--surface-overlay, var(--surface, #fff));
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  box-shadow: var(--shadow-md);
-  z-index: 35;
-}
-.diagram-view__extras--open > :is(.diagram-view__free-comment, .diagram-view__numbers) { width: 100%; min-height: 44px; margin: 0; padding: 8px; white-space: normal; }
-.diagram-view__toolbar .diagram-view__extras--open :is(.diagram-view__zoom, .diagram-view__textsize, .diagram-view__draw-controls) {
-  grid-column: 1 / -1;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
   margin: 0;
-  padding: 10px 0 0;
+  white-space: nowrap;
+}
+.diagram-view__numbers-glyph { font-weight: 700; }
+.diagram-view__toolbar .diagram-view__view .diagram-view__zoom {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin: 0;
+  padding: 0 0 0 8px;
   border: 0;
-  border-top: 1px solid var(--border);
+  border-inline-start: 1px solid var(--border);
   border-radius: 0;
   background: transparent;
 }
-.diagram-view__extras--open :is(.diagram-view__zoom, .diagram-view__textsize, .diagram-view__draw-controls)::before {
-  content: attr(aria-label);
-  flex-basis: 100%;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-muted);
+.diagram-view__toolbar .diagram-view__view .diagram-view__zoom :is(.diagram-view__action, .diagram-view__zoom-level) { min-width: 32px; min-height: 36px; }
+/* Quiet like Undo / Redo; Numbers shows the active tint when on. */
+.diagram-view__toolbar .diagram-view__view :is(.diagram-view__action, .diagram-view__zoom-level, .diagram-view__numbers:not(.diagram-view__tool--active)) {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
 }
-.diagram-view__extras--open .diagram-view__textsize-label { display: none; }
-.diagram-view__extras--open :is(.diagram-view__textsize-btn, .diagram-view__zoom-level, .diagram-view__action) { min-width: 44px; min-height: 44px; }
-.diagram-view__extras--open .diagram-view__draw-controls > [role='group'] { display: flex; gap: 4px; flex-wrap: wrap; }
-.diagram-view__extras--open .diagram-view__color { box-sizing: border-box; width: 44px; height: 44px; padding: 10px; background-clip: content-box; border-color: transparent; }
-.diagram-view__extras--open .diagram-view__color--active { transform: none; }
-.diagram-view__extras--open .diagram-view__width { min-height: 44px; }
+.diagram-view__toolbar .diagram-view__view :is(.diagram-view__action, .diagram-view__numbers):hover:not(:disabled) { background: var(--surface-alt); }
+.diagram-view__toolbar .diagram-view__view .diagram-view__action:disabled { color: var(--text-muted); opacity: 0.45; }
 
-@container diagram (max-width: 600px) {
+/* Labels step down as the diagram narrows; the row only wraps on phones. */
+@container diagram (max-width: 860px) {
   .diagram-view__toolbar .diagram-view__long { display: none; }
   .diagram-view__toolbar .diagram-view__short { display: inline; }
-  .diagram-view__toolbar .diagram-view__tool-group .diagram-view__tool { padding-inline: 8px; min-height: 44px; }
-  .diagram-view__toolbar .diagram-view__history .diagram-view__action { width: 44px; min-width: 44px; height: 44px; min-height: 44px; }
-  .diagram-view__toolbar .diagram-view__more { min-height: 44px; }
 }
-@container diagram (max-width: 600px) {
-  .diagram-view__toolbar { flex-wrap: wrap; gap: 6px; }
-  .diagram-view__toolbar .diagram-view__tool-group { flex: 1 0 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .diagram-view__toolbar .diagram-view__tool-group .diagram-view__tool { min-width: 0; white-space: normal; }
-  .diagram-view__toolbar .diagram-view__history { border-left: 0; padding-left: 0; }
+@container diagram (max-width: 760px) {
+  .diagram-view__toolbar .diagram-view__numbers .diagram-view__tool-label {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+  .diagram-view__toolbar .diagram-view__view .diagram-view__numbers { justify-content: center; min-width: 36px; padding: 0; }
+}
+@container diagram (max-width: 700px) {
+  .diagram-view__toolbar-main { gap: 6px; }
+  .diagram-view__toolbar .diagram-view__tool-group { flex: 1 1 auto; min-width: 0; gap: 2px; }
+  .diagram-view__toolbar .diagram-view__tool-group .diagram-view__tool { flex: 1 1 0; min-width: 40px; padding: 0; }
+  .diagram-view__toolbar .diagram-view__tool-group .diagram-view__tool > .ios-icon { display: block; }
+  .diagram-view__toolbar .diagram-view__tool-label {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+  .diagram-view__toolbar .diagram-view__history { gap: 2px; padding-inline-start: 6px; }
+  .diagram-view__toolbar .diagram-view__view { gap: 6px; }
+  .diagram-view__toolbar .diagram-view__view .diagram-view__zoom { padding-inline-start: 6px; }
+}
+/* Phones: 44px targets; view controls drop to a second line when needed. */
+@container diagram (max-width: 620px) {
+  .diagram-view__toolbar-main { flex-wrap: wrap; row-gap: 6px; }
+  .diagram-view__toolbar .diagram-view__tool-group .diagram-view__tool { min-height: 44px; }
+  .diagram-view__toolbar .diagram-view__history .diagram-view__action { width: 44px; min-width: 44px; height: 44px; min-height: 44px; }
+  .diagram-view__toolbar .diagram-view__view .diagram-view__numbers { min-width: 44px; min-height: 44px; }
+  .diagram-view__toolbar .diagram-view__view .diagram-view__zoom :is(.diagram-view__action, .diagram-view__zoom-level) { min-width: 44px; min-height: 44px; }
+}
+@container diagram (max-width: 330px) {
+  .diagram-view__toolbar .diagram-view__view .diagram-view__zoom-level { display: none; }
+  .diagram-view__toolbar .diagram-view__history { border-inline-start: 0; padding-inline-start: 0; }
+  .diagram-view__clear-label {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+  .diagram-view__toolbar .diagram-view__clear-strokes { width: 44px; min-width: 44px; padding: 0; }
+  .diagram-view__toolbar .diagram-view__clear-strokes > .ios-icon { display: block; }
+  .diagram-view__toolbar .diagram-view__draw-controls { flex-wrap: wrap; row-gap: 0; }
+  .diagram-view__toolbar .diagram-view__draw-controls .diagram-view__width-label { flex: 1 0 100%; }
 }
 
 .diagram-view__tool-group {
@@ -2027,8 +2051,8 @@
   font-weight: 600;
   color: var(--text-muted);
   padding: 0 0.25rem;
-  border-right: 1px solid var(--border);
-  margin-right: 0.15rem;
+  border-inline-end: 1px solid var(--border);
+  margin-inline-end: 0.15rem;
   line-height: 1;
 }
 .diagram-view__textsize-btn {
@@ -2054,10 +2078,65 @@
   color: var(--ios-on-tint, white);
 }
 
-.diagram-view__draw-controls {
+.diagram-view__panel {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem;
+  gap: 8px 16px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+.diagram-view__panel-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.diagram-view__panel-toggle:hover { background: var(--surface-alt); color: var(--text); }
+.diagram-view__panel-toggle > .ios-icon { transition: transform 0.15s ease; }
+.diagram-view__panel--collapsed .diagram-view__panel-toggle > .ios-icon { transform: rotate(-90deg); }
+[dir='rtl'] .diagram-view__panel--collapsed .diagram-view__panel-toggle > .ios-icon { transform: rotate(90deg); }
+.diagram-view__panel-toggle .diagram-view__textsize-label { padding: 0; margin: 0; border: 0; color: inherit; }
+.diagram-view__text-panel .diagram-view__textsize { gap: 2px; }
+.diagram-view__text-panel .diagram-view__textsize-btn { min-width: 36px; min-height: 30px; }
+@container diagram (max-width: 620px) {
+  .diagram-view__text-panel .diagram-view__textsize { flex: 0 1 auto; }
+  .diagram-view__text-panel .diagram-view__textsize-btn { min-width: 44px; min-height: 44px; }
+}
+.diagram-view__draw-swatch { width: 12px; height: 12px; border-radius: 50%; box-shadow: 0 0 0 1px var(--border-strong); }
+.diagram-view__clear-strokes { order: 2; margin-inline-start: auto; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+.diagram-view__clear-strokes > .ios-icon { display: none; }
+/* Wide: one row (toggle, controls … Clear). Narrow: the controls get
+   their own row under the header. */
+.diagram-view__panel-controls {
+  order: 1;
+  display: flex;
+  flex: 0 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  min-width: 0;
+}
+.diagram-view__draw-controls > [role='group'] { display: flex; align-items: center; gap: 8px; }
+@container diagram (max-width: 620px) {
+  .diagram-view__panel-toggle { min-height: 44px; }
+  .diagram-view__panel-controls { order: 2; flex: 1 0 100%; }
+  .diagram-view__draw-controls > [role='group'] { gap: 0; }
+  .diagram-view__draw-controls .diagram-view__color { box-sizing: border-box; width: 44px; height: 44px; padding: 11px; background-clip: content-box; border-color: transparent; outline-offset: -9px; }
+  .diagram-view__draw-controls .diagram-view__color--active { transform: none; }
+  .diagram-view__clear-strokes { order: 1; }
+  .diagram-view__draw-controls { flex-wrap: nowrap; gap: 8px; }
+  .diagram-view__draw-controls .diagram-view__width-label { flex: 1 1 auto; min-width: 0; display: flex; }
+  .diagram-view__draw-controls .diagram-view__width { width: 100%; min-width: 48px; min-height: 44px; }
 }
 
 .diagram-view__color {
@@ -2112,7 +2191,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  margin-left: auto; /* park zoom at the toolbar's right edge */
+  margin-inline-start: auto; /* park zoom at the toolbar's right edge */
 }
 .diagram-view__zoom-level {
   font: inherit;
@@ -2698,7 +2777,7 @@
   border-radius: 999px;
   background: var(--surface-alt, #f1f5f9);
   color: var(--text-muted);
-  margin-left: 0.5rem;
+  margin-inline-start: 0.5rem;
 }
 
 .ai-settings-footer {
@@ -2782,7 +2861,7 @@
   padding: 0.4rem 0.6rem;
   background: var(--ios-cell, white);
   border: 0;
-  text-align: left;
+  text-align: start;
   font: inherit;
   color: var(--text);
   cursor: pointer;
@@ -2940,6 +3019,8 @@
 
 /* Owner-report tag on an image card. */
 .imaging__role {
+  --select-pad-end: 26px;
+  --select-chevron-inset: 8px;
   flex: none;
   padding: 0.25rem 0.4rem;
   border: 1px solid var(--border);
@@ -3065,7 +3146,7 @@ button.save-status--error {
 .tour__dots { display: flex; gap: 0.28rem; }
 .tour__dot { width: 0.4rem; height: 0.4rem; border-radius: 50%; background: var(--border-strong, #cbd5e1); }
 .tour__dot--on { background: var(--primary, #0c6b63); }
-.tour__nav { margin-left: auto; display: flex; align-items: center; gap: 0.4rem; }
+.tour__nav { margin-inline-start: auto; display: flex; align-items: center; gap: 0.4rem; }
 .tour__skip { background: none; border: none; color: var(--text-muted, #64748b); font: inherit; font-size: 0.82rem; cursor: pointer; padding: 0.3rem 0.4rem; }
 @media (prefers-reduced-motion: reduce) { .tour__spotlight { transition: none; } }
 
@@ -3111,7 +3192,7 @@ button.save-status--error {
   color: var(--text-muted, #64748b);
 }
 .walkthrough__nav {
-  margin-left: auto;
+  margin-inline-start: auto;
   display: flex;
   gap: 0.5rem;
 }
@@ -3250,6 +3331,8 @@ button.save-status--error {
   padding: 0.6rem;
 }
 .imaging__kind-select {
+  --select-pad-end: 26px;
+  --select-chevron-inset: 8px;
   align-self: flex-start;
   padding: 0.25rem 0.4rem;
   border: 1px solid var(--border);
@@ -3292,7 +3375,7 @@ a.imaging__dicom:hover { background: var(--surface-2, rgba(0, 0, 0, 0.05)); }
 .imaging__outputs { display: flex; flex-direction: column; gap: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
 .imaging__outputs .imaging__in-pdf { min-height: 32px; gap: 8px; }
 .imaging__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-.imaging__actions .imaging__delete { min-height: 40px; margin-left: auto; font-size: 13px; }
+.imaging__actions .imaging__delete { min-height: 40px; margin-inline-start: auto; font-size: 13px; }
 .imaging__actions .imaging__dicom { padding: 8px 0; border: 0; border-radius: 0; font-size: 12px; font-weight: 500; letter-spacing: normal; }
 @media (max-width: 600px) {
   .imaging__field > select, .imaging__outputs .imaging__in-pdf, .imaging__actions .imaging__delete, .imaging__actions .imaging__dicom { min-height: 44px; }
@@ -3327,6 +3410,8 @@ a.imaging__dicom:hover { background: var(--surface-2, rgba(0, 0, 0, 0.05)); }
   background: rgba(15, 23, 42, 0.8); color: #fff; font-size: 0.72rem; font-weight: 700;
 }
 .imaging__tooth-select {
+  --select-pad-end: 26px;
+  --select-chevron-inset: 8px;
   align-self: stretch;
   padding: 0.25rem 0.4rem;
   border: 1px solid var(--border);
@@ -3340,7 +3425,7 @@ a.imaging__dicom:hover { background: var(--surface-2, rgba(0, 0, 0, 0.05)); }
 .image-history__body { margin-top: 0.75rem; display: flex; flex-direction: column; gap: 1rem; }
 .image-history__visit-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.6rem; margin-bottom: 0.5rem; }
 .image-history__date { margin: 0; font-size: 0.95rem; font-weight: 700; color: var(--text); }
-.image-history__open { margin-left: auto; }
+.image-history__open { margin-inline-start: auto; }
 .image-history__grid {
   list-style: none; margin: 0; padding: 0;
   display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.6rem;
@@ -3508,7 +3593,7 @@ a.imaging__dicom:hover { background: var(--surface-2, rgba(0, 0, 0, 0.05)); }
   display: flex;
   gap: 0.4rem;
   flex-wrap: wrap;
-  margin-left: auto;
+  margin-inline-start: auto;
 }
 .team__badge {
   font-size: 0.68rem;
@@ -3571,7 +3656,7 @@ button.save-status--manual:hover {
   border: 0;
   background: none;
   font: inherit;
-  text-align: left;
+  text-align: start;
   cursor: pointer;
 }
 .ai-review__heard { display: block; font-weight: 700; font-size: 0.92rem; color: var(--text); }
@@ -3629,7 +3714,7 @@ button.save-status--manual:hover {
 
 /* Locked form sections: a hint on hover instead of silently dead clicks. */
 .lock-wrap--locked { cursor: not-allowed; }
-.diagram-view__toolbar.diagram-view__toolbar--readonly :is(.diagram-view__tool-group, .diagram-view__history, .diagram-view__free-comment, .diagram-view__draw-controls) { display: none; }
+.diagram-view__toolbar.diagram-view__toolbar--readonly :is(.diagram-view__tool-group, .diagram-view__history, .diagram-view__free-comment, .diagram-view__draw-panel) { display: none; }
 
 /* Tour anchor around the Settings menu — layout-neutral. */
 .topbar-tour-anchor { display: inline-flex; }
@@ -3641,7 +3726,7 @@ button.save-status--manual:hover {
 .diagram-comment--mirrored .diagram-comment__delete,
 .diagram-comment--mirrored .diagram-comment__resize { display: none; }
 .diagram-comment__badge {
-  margin-left: 0.35rem;
+  margin-inline-start: 0.35rem;
   padding: 0 0.35rem;
   border-radius: 999px;
   background: var(--surface-sunken, #eef2f6);
@@ -3666,7 +3751,7 @@ button.save-status--manual:hover {
   .exam-table { display: block; overflow-x: auto; }
 }
 /* Header actions (e.g. "Mark the rest normal") sit at the right edge. */
-.dental-grid__section-header > .diagram-view__action { margin-left: auto; }
+.dental-grid__section-header > .diagram-view__action { margin-inline-start: auto; }
 
 /* ---- Tooth numbers on the diagram (optional, screen only) ---- */
 .diagram-view__numbers {
@@ -3965,7 +4050,7 @@ button.save-status--manual:hover {
 /* Per-root pocket boxes: grid cell editor and By tooth panel. */
 .dental-grid__roots { display: flex; height: 100%; align-items: stretch; background: var(--ios-cell, #fff); }
 .dental-grid__root { flex: 1 1 0; display: flex; align-items: center; gap: 2px; padding: 0 3px; min-width: 0; }
-.dental-grid__root + .dental-grid__root { border-left: 1px solid var(--border, #e2e8f0); }
+.dental-grid__root + .dental-grid__root { border-inline-start: 1px solid var(--border, #e2e8f0); }
 .dental-grid__root-label { font-size: 0.7rem; font-weight: 700; color: var(--text-muted, #64748b); }
 .dental-grid__root input { width: 100%; min-width: 0; border: 0; outline: none; font: inherit; background: transparent; color: var(--text, #0f172a); }
 .dental-grid__root input:focus { background: color-mix(in srgb, var(--primary, #0c6b63) 10%, var(--ios-cell, white)); }
@@ -4026,7 +4111,7 @@ button.save-status--manual:hover {
 .whats-new__body { overflow-y: auto; min-height: 0; flex: 1 1 auto; gap: 1rem; }
 .whats-new__intro { margin: 0; font-size: 0.95rem; color: var(--text); }
 .whats-new__group { display: flex; flex-direction: column; gap: 0.4rem; }
-.whats-new__list { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: 0.45rem; font-size: 0.92rem; line-height: 1.45; color: var(--text); }
+.whats-new__list { margin: 0; padding-inline-start: 1.1rem; display: flex; flex-direction: column; gap: 0.45rem; font-size: 0.92rem; line-height: 1.45; color: var(--text); }
 .whats-new__list strong { color: var(--text); }
 
 /* Anesthesia: custom fields ("Anesthesia record") and settings editor. */
@@ -4045,11 +4130,11 @@ button.save-status--manual:hover {
 /* ---- Chart history ----------------------------------------------------- */
 .ai-settings-modal.chart-history { max-width: 64rem; height: min(88vh, 52rem); height: min(88dvh, 52rem); }
 .chart-history__body { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: minmax(15rem, 20rem) 1fr; }
-.chart-history__list { border-right: 1px solid var(--border, #e2e8f0); overflow-y: auto; }
+.chart-history__list { border-inline-end: 1px solid var(--border, #e2e8f0); overflow-y: auto; }
 .chart-history__list ul { list-style: none; margin: 0; padding: 0; }
 .chart-history__list li + li { border-top: 1px solid var(--border, #e2e8f0); }
 .chart-history__row {
-  width: 100%; display: flex; flex-direction: column; gap: 2px; text-align: left;
+  width: 100%; display: flex; flex-direction: column; gap: 2px; text-align: start;
   padding: 0.6rem 0.9rem; background: none; border: 0; font: inherit; color: var(--text); cursor: pointer;
 }
 .chart-history__row:hover, .chart-history__row:focus-visible { background: color-mix(in srgb, var(--primary, #0c6b63) 6%, var(--ios-cell, white)); }
@@ -4064,7 +4149,7 @@ button.save-status--manual:hover {
 .chart-history__hint { color: var(--text-muted, #64748b); font-size: 0.82rem; }
 @media (max-width: 700px) {
   .chart-history__body { grid-template-columns: 1fr; grid-template-rows: minmax(8rem, 35%) 1fr; }
-  .chart-history__list { border-right: 0; border-bottom: 1px solid var(--border, #e2e8f0); }
+  .chart-history__list { border-inline-end: 0; border-bottom: 1px solid var(--border, #e2e8f0); }
 }
 .chart-history__bar { flex: none; display: flex; justify-content: flex-end; padding: 0.4rem 1rem; border-bottom: 1px solid var(--border, #e2e8f0); }
 
@@ -4154,8 +4239,8 @@ button.save-status--manual:hover {
   .anesthesia-table thead th:nth-child(3) { width: 32%; }
   .anesthesia-table__label { min-width: 0; width: auto; font-size: 0.9rem; overflow-wrap: break-word; hyphens: auto; }
   .anesthesia-table tbody td { padding: 0.3rem 0.25rem; }
-  .anesthesia-table tbody td:first-child { padding-left: 0.45rem; }
-  .anesthesia-unit .patient-form__input { padding-left: 0.55rem; padding-right: 2.1em; }
+  .anesthesia-table tbody td:first-child { padding-inline-start: 0.45rem; }
+  .anesthesia-unit .patient-form__input { padding-inline-start: 0.55rem; padding-inline-end: 2.1em; }
   .anesthesia-unit__suffix { right: 0.55em; }
   .anesthesia-other { padding: 0 0.25rem 0 0.45rem; }
   .anesthesia-custom__grid { grid-template-columns: 1fr; }
@@ -4331,7 +4416,7 @@ a, button, input, select, textarea, label, summary, [role='button'] {
   display: flex;
   align-items: center;
   padding: 0 0.4rem;
-  border-right: 1px solid var(--ios-grid-header-hairline, rgba(255, 255, 255, 0.16));
+  border-inline-end: 1px solid var(--ios-grid-header-hairline, rgba(255, 255, 255, 0.16));
   color: var(--ios-grid-header-label, #f2f7f6);
   font-size: 0.7rem;
   font-weight: 600;
@@ -4344,8 +4429,8 @@ a, button, input, select, textarea, label, summary, [role='button'] {
 /* Missing: a red ✕ badge for the title, centered over the checkboxes. */
 .dental-grid .rdg-header-row .dental-grid__head--missing,
 .dental-grid__float-cell.dental-grid__head--missing {
-  padding-left: 0;
-  padding-right: 0;
+  padding-inline-start: 0;
+  padding-inline-end: 0;
   justify-content: center;
   text-align: center;
 }
@@ -4440,7 +4525,7 @@ a, button, input, select, textarea, label, summary, [role='button'] {
 .topbar-state-chip--viewing { background: var(--surface-sunken, #eef2f6); border: 1px solid var(--border-strong, #cbd5e1); color: var(--text-muted, #475569); }
 
 /* My charts ▾ and + New patient. */
-.charts-menu__caret { margin-left: 0.35rem; flex: none; opacity: 0.7; }
+.charts-menu__caret { margin-inline-start: 0.35rem; flex: none; opacity: 0.7; }
 .chart-menu--open .charts-menu__caret { transform: rotate(180deg); }
 .topbar-new-patient { display: inline-flex; align-items: center; gap: 0.35rem; }
 .topbar-plus { flex: none; }
@@ -4461,7 +4546,7 @@ a, button, input, select, textarea, label, summary, [role='button'] {
  * describes (as Docs / Notion do).
  * ========================================================================== */
 .entry-grid__patient .save-status,
-.entry-grid__patient .save-status-error-wrap { margin-left: 0.15rem; align-self: center; }
+.entry-grid__patient .save-status-error-wrap { margin-inline-start: 0.15rem; align-self: center; }
 
 @media (max-width: 1280px) {
   .topbar-label-long { display: none; }
@@ -4481,7 +4566,7 @@ a, button, input, select, textarea, label, summary, [role='button'] {
   }
   .entry-grid__topbar .voice-input,
   .topbar-tour-anchor .chart-menu__trigger,
-  .topbar-editing__undo { padding-left: 0.65rem; padding-right: 0.65rem; }
+  .topbar-editing__undo { padding-inline-start: 0.65rem; padding-inline-end: 0.65rem; }
 }
 
 @media (min-width: 1025px) {
@@ -4494,7 +4579,7 @@ a, button, input, select, textarea, label, summary, [role='button'] {
   /* Row 1: patient … chip … save status pushed to the row's end. */
   .entry-grid__topbar-lead { flex: 1 1 100%; }
   .entry-grid__patient .save-status,
-  .entry-grid__patient .save-status-error-wrap { margin-left: auto; }
+  .entry-grid__patient .save-status-error-wrap { margin-inline-start: auto; }
 
   /* Row 2: a full-width toolbar — text buttons share the width, icon
      buttons are a fixed 48px. */
@@ -4522,8 +4607,8 @@ a, button, input, select, textarea, label, summary, [role='button'] {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding-left: 0.4rem;
-    padding-right: 0.4rem;
+    padding-inline-start: 0.4rem;
+    padding-inline-end: 0.4rem;
     white-space: nowrap;
   }
 
@@ -4612,7 +4697,7 @@ a, button, input, select, textarea, label, summary, [role='button'] {
 }
 @media (max-width: 420px) {
   .chart-readonly-notice { flex-wrap: wrap; gap: 8px; }
-  .chart-readonly-notice button { margin-left: 26px; }
+  .chart-readonly-notice button { margin-inline-start: 26px; }
 }
 
 /* Independent imaging reports share a layout with consistent section spacing. */

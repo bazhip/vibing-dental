@@ -10,6 +10,10 @@ export type GlossaryTerm = {
   it: string;
   es: string;
   pt: string;
+  hu?: string;
+  ro?: string;
+  zh?: string;
+  ar?: string;
   note?: string;
 };
 

@@ -1,3 +1,4 @@
+import { arabicTermsPattern, replaceScriptNumbers } from './scriptNumbers';
 import type { AppLanguage } from '../../i18n/config';
 import { GERMAN_COMPOUND_ENDS, nativeScoreTerms, SCORE_ABBREVIATIONS, SCORE_LINK_WORDS, UNIT_WORDS } from './terms';
 import {
@@ -66,7 +67,7 @@ export function englishDigitRuns(text: string): string {
   });
 }
 
-// ----- fr / de / it / es ----------------------------------------------------
+// ----- Native languages ----------------------------------------------------
 // Matching runs on a folded copy of the text (lowercase, accents stripped,
 // same length) and replacements are spliced into the original, so case and
 // accents of everything else are kept. Word lists below are written folded.
@@ -76,7 +77,7 @@ export type OtherLanguage = Exclude<AppLanguage, 'en'>;
 interface LanguageNumbers {
   /** Words read digit by digit in a tooth number ("un zéro quatre"). */
   digits: Record<string, number>;
-  /** Single number words 0–15, for a score or a measurement. */
+  /** Number words for a score or measurement (0–15; hu/ro through 99). */
   small: Record<string, number>;
   /** Small words that are also articles ("un peu"): only converted when a
    *  number, unit or punctuation follows. */
@@ -129,12 +130,47 @@ const ES_SMALL = withValues(
   { un: 1, una: 1 },
 );
 
+// Hungarian writes native tens and hundreds together ("száztizenegy").
+// Romanian compounds retain spaces and the conjunction ("douăzeci și unu").
+const HU_SMALL = withValues(toMap('nulla egy ketto harom negy ot hat het nyolc kilenc tiz tizenegy tizenketto tizenharom tizennegy tizenot'), { ket: 2, tizenket: 12 });
+const RO_SMALL = withValues(toMap('zero unu doi trei patru cinci sase sapte opt noua zece unsprezece doisprezece treisprezece paisprezece cincisprezece'), { un: 1, una: 1, doua: 2, douasprezece: 12 });
+const HU_ONES = ['','egy','ketto','harom','negy','ot','hat','het','nyolc','kilenc'];
+const HU_TENS = ['','','husz','harminc','negyven','otven','hatvan','hetven','nyolcvan','kilencven'];
+const RO_ONES = ['','unu','doi','trei','patru','cinci','sase','sapte','opt','noua'];
+const RO_TENS = ['','','douazeci','treizeci','patruzeci','cincizeci','saizeci','saptezeci','optzeci','nouazeci'];
+for (let n = 16; n < 100; n++) {
+  const tens = Math.floor(n / 10), ones = n % 10;
+  const hu = tens === 1 ? `tizen${HU_ONES[ones]}` : tens === 2 && ones ? `huszon${HU_ONES[ones]}` : `${HU_TENS[tens]}${HU_ONES[ones]}`;
+  HU_SMALL[hu] = n;
+  if (ones === 2) HU_SMALL[hu.replace(/ketto$/, 'ket')] = n;
+  const ro = tens === 1 ? ['saisprezece','saptesprezece','optsprezece','nouasprezece'][n - 16] : `${RO_TENS[tens]}${ones ? ` si ${RO_ONES[ones]}` : ''}`;
+  RO_SMALL[ro] = n;
+  if (tens >= 2 && ones === 1) RO_SMALL[ro.replace(/unu$/, 'una')] = n;
+  if (tens >= 2 && ones === 2) RO_SMALL[ro.replace(/doi$/, 'doua')] = n;
+}
+
 const digitsOf = (small: Record<string, number>, keys: string) =>
   Object.fromEntries(words(keys).map((w) => [w, small[w]])) as Record<string, number>;
 const remainderAlt = (small: Record<string, number>, exclude: string[] = []) =>
-  alt(Object.keys(small).filter((w) => small[w] > 0 && !exclude.includes(w)));
+  alt(Object.keys(small).filter((w) => small[w] > 0 && !exclude.includes(w))).replace(/ /g, '[\\s-]+');
 
-const LANGS: Record<OtherLanguage, LanguageNumbers> = {
+const LANGS: Record<Exclude<OtherLanguage, 'zh' | 'ar'>, LanguageNumbers> = {
+  hu: {
+    digits: digitsOf(HU_SMALL, 'nulla egy ketto ket harom negy ot hat het nyolc kilenc'),
+    small: HU_SMALL,
+    articles: ['egy'],
+    compound: `(?:(?<h>egy|ket|ketto|harom|negy|ot|hat|het|nyolc)[\\s-]*)?szaz[\\s-]*(?<r>${remainderAlt(HU_SMALL)})`,
+    hundreds: (h) => h ? HU_SMALL[h] : 1,
+    scoreTerms: scoreTermsFor('hu'), units: unitsFor('hu'), links: linksFor('hu'),
+  },
+  ro: {
+    digits: digitsOf(RO_SMALL, 'zero unu un doi doua trei patru cinci sase sapte opt noua'),
+    small: RO_SMALL,
+    articles: ['un', 'una'],
+    compound: `(?:(?<h>doua|trei|patru|cinci|sase|sapte|opt)[\\s-]+sute|o[\\s-]+suta)[\\s-]+(?<r>${remainderAlt(RO_SMALL)})`,
+    hundreds: (h) => h ? RO_SMALL[h] : 1,
+    scoreTerms: scoreTermsFor('ro'), units: unitsFor('ro'), links: linksFor('ro'),
+  },
   fr: {
     digits: digitsOf(FR_SMALL, 'zero un deux trois quatre cinq six sept huit neuf'),
     small: FR_SMALL,
@@ -225,6 +261,11 @@ export function replaceFolded(
  *  `lng` at a word start: the native terms, the English abbreviations and,
  *  in German, words ending in a long clinical term. */
 export function scoreTermPattern(lng: OtherLanguage): string {
+  if (lng === 'zh' || lng === 'ar') {
+    const native = lng === 'ar' ? arabicTermsPattern(nativeScoreTerms(lng)) : nativeTermsAlt(lng);
+    const latin = alt(SCORE_ABBREVIATIONS.map((term) => fold(term)));
+    return lng === 'zh' ? `(?:${native}|${NOT_BEFORE}(?:${latin}))` : `${NOT_BEFORE}(?:و)?(?:ال)?(?:${native}|${latin})`;
+  }
   const L = LANGS[lng];
   const ends = L.compoundEnds ? `|\\p{L}*(?:${L.compoundEnds})` : '';
   return `(?:${NOT_BEFORE}(?:${L.scoreTerms}${ends}))`;
@@ -232,7 +273,7 @@ export function scoreTermPattern(lng: OtherLanguage): string {
 
 /** Regex source (folded) of the unit words for `lng`. */
 export function unitPattern(lng: OtherLanguage): string {
-  return LANGS[lng].units;
+  return lng === 'ar' ? arabicTermsPattern(UNIT_WORDS.ar) : lng === 'zh' ? unitsFor(lng) : LANGS[lng].units;
 }
 
 /** Folded source of a caller-supplied term regex (accents stripped). */
@@ -261,6 +302,10 @@ export function replaceSpokenNumbers(
   opts?: { scoreTerms?: RegExp; unitTerms?: RegExp },
 ): string {
   if (lng === 'en') return englishDigitRuns(englishUnitWords(englishScoreWords(text)));
+  if (lng === 'zh' || lng === 'ar') return replaceScriptNumbers(text, lng, {
+    isTooth: isTriadan, scores: opts?.scoreTerms?.source ?? scoreTermPattern(lng),
+    units: opts?.unitTerms?.source ?? unitPattern(lng),
+  });
 
   // Decomposed accents (NFD from some keyboards/STT) are composed first so
   // the folded copy keeps the same length as the text.
@@ -268,7 +313,7 @@ export function replaceSpokenNumbers(
   const L = LANGS[lng];
   const scoreTerm = opts?.scoreTerms ? `(?:${NOT_BEFORE}(?:${termSource(opts.scoreTerms)}))` : scoreTermPattern(lng);
   const units = opts?.unitTerms ? termSource(opts.unitTerms) : L.units;
-  const small = alt(Object.keys(L.small));
+  const small = alt(Object.keys(L.small)).replace(/ /g, '[\\s-]+');
   const digits = alt(Object.keys(L.digits));
   const afterTerm = `${scoreTerm}[\\s,.-]+(?:(?:${L.links})\\s+)?`;
   const afterScore = `(?<=${afterTerm})`;
@@ -284,13 +329,13 @@ export function replaceSpokenNumbers(
   let out = replaceFolded(text, new RegExp(`${afterScore}(${small})${NOT_AFTER}`, 'giu'), (m, folded) => {
     const word = m[1];
     if (L.articles.includes(word) && !numericNext.test(folded.slice(m.index + word.length))) return null;
-    return String(L.small[word]);
+    return String(L.small[word.replace(/[\s-]+/g, ' ')]);
   });
 
   // 2. compound hundreds
   out = replaceFolded(out, new RegExp(`${NOT_BEFORE}${L.compound}${NOT_AFTER}`, 'giu'), (m, folded) => {
     const g = m.groups ?? {};
-    const n = L.hundreds(g.h) * 100 + L.small[g.r];
+    const n = L.hundreds(g.h) * 100 + L.small[g.r.replace(/[\s-]+/g, ' ')];
     const ok = isTriadan(n)
       || unitAfter.test(folded.slice(m.index + m[0].length))
       || scoreBefore.test(folded.slice(0, m.index));
@@ -299,7 +344,7 @@ export function replaceSpokenNumbers(
 
   // 3. single word + unit
   out = replaceFolded(out, new RegExp(`${NOT_BEFORE}(${small})(?=${unitAhead})`, 'giu'),
-    (m) => String(L.small[m[1]]));
+    (m) => String(L.small[m[1].replace(/[\s-]+/g, ' ')]));
 
   // 4. digit-by-digit runs. Like English, a 2-word run converts with no
   // check, so "deux trois dents" becomes "23 dents" (a known false positive);

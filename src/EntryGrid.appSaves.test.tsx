@@ -32,6 +32,7 @@ const cloud = vi.hoisted(() => ({
   listPatientVisits: vi.fn(async () => []),
   skipDuplicateCheckFor: vi.fn(),
   saveNow: vi.fn(async () => {}),
+  setFinalized: vi.fn(async (_value: boolean) => true),
   signOut: vi.fn(async () => {}),
   restoreRevision: vi.fn(async () => {}),
 }));
@@ -162,12 +163,11 @@ describe('the Chart tab live region (VoiceOver)', () => {
     expect(liveRegion()).toHaveTextContent('Network down');
   });
 
-  it('announces "Chart saved" after Done saves an edited visit, then goes quiet for later autosaves', async () => {
+  it('announces "Chart saved" after Finalize saves a visit, then goes quiet for later autosaves', async () => {
     const { rerender } = await renderApp('2026-03-04');
-    act(() => fireEvent.click(within(chartPanel()).getByRole('button', { name: 'Edit' })));
     cloud.dirty = true;
-    await act(async () => fireEvent.click(within(chartPanel()).getByRole('button', { name: 'Done' })));
-    expect(cloud.saveNow).toHaveBeenCalled();
+    await act(async () => fireEvent.click(within(chartPanel()).getByRole('button', { name: 'Finalize' })));
+    expect(cloud.setFinalized).toHaveBeenCalledWith(true);
     await act(async () => { cloud.status = 'saving'; rerender(ui()); });
     await act(async () => { cloud.dirty = false; cloud.status = 'saved'; cloud.lastSavedAt = '2026-11-13T10:00:00Z'; rerender(ui()); });
     expect(liveRegion()).toHaveTextContent('Chart saved');

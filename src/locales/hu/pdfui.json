@@ -1,0 +1,74 @@
+{
+  "style": {
+    "label": "PDF stílusa",
+    "done": "Kész",
+    "custom": "Egyéni szín",
+    "customShort": "Egyéni",
+    "customDesc": "Tetszőleges szín a(z) {{layout}} elrendezésben.",
+    "currentLayout": "jelenlegi",
+    "chooseColor": "Egyéni szín kiválasztása"
+  },
+  "presets": {
+    "clinic": {
+      "name": "Klinikai türkiz",
+      "description": "Az alkalmazáshoz illő türkiz fejlécek, piros kóros jelzések, lekerekített kártyák."
+    },
+    "classic-blue": {
+      "name": "Klasszikus kék",
+      "description": "Hagyományos egészségügyi kék, tömör szakaszfejlécekkel."
+    },
+    "slate": {
+      "name": "Palaszürke",
+      "description": "Semleges grafitszürke – fekete-fehérben is élesen nyomtatható."
+    },
+    "iris": {
+      "name": "Írisz",
+      "description": "Visszafogott indigókék kiemelések, tömör nagybetűs fejlécekkel."
+    },
+    "journal": {
+      "name": "Folyóirat",
+      "description": "Klasszikus talpas betűk – mélyvörös kiemelések meleg árnyalatú papíron."
+    }
+  },
+  "preview": {
+    "retryImages": "Képek újratöltése",
+    "withoutImages": "Letöltés képek nélkül",
+    "title": "Klinikai fogászati lap",
+    "subtitle": "Nyilvántartáshoz és beutalókhoz. Válasszon stílust vagy saját színt – az előnézet azonnal frissül.",
+    "closeAria": "Előnézet bezárása",
+    "download": "PDF letöltése",
+    "loadingImages": "Képek betöltése…",
+    "generating": "Előnézet létrehozása…",
+    "buildFailed": "Nem sikerült létrehozni az előnézetet. Részletek a konzolban.",
+    "imagesFailed": "Nem sikerült betölteni a fogászati lap képeit. Próbálja újra, vagy töltse le a PDF-et képek nélkül.",
+    "imagesPartial": "Néhány kép nem tölthető be. Próbálja újra, vagy töltse le a PDF-et képek nélkül.",
+    "frameTitle": "Klinikai fogászati lap előnézete"
+  },
+  "link": {
+    "preparing": "Letöltési hivatkozás előkészítése…",
+    "open": "Koppintson a PDF letöltéséhez",
+    "copy": "Hivatkozás másolása",
+    "copied": "Hivatkozás másolva – a letöltéshez illessze be a Chrome böngészőbe.",
+    "copyPrompt": "Másolja ki ezt a hivatkozást, és nyissa meg a Chrome böngészőben:",
+    "note": "Az alkalmazás böngészője nem tudja közvetlenül menteni a PDF-et, ezért letöltési hivatkozást adunk. Ez {{minutes}} percig működik – ha nem indul a letöltés, másolja be a Chrome böngészőbe."
+  },
+  "pages": {
+    "pageAria": "{{title}}, {{n}}. oldal / {{total}}",
+    "failed": "Nem sikerült megjeleníteni az előnézetet – a letöltés továbbra is működik."
+  },
+  "hints": {
+    "firefoxAndroid": "A Firefox új lapon nyitja meg a PDF-et – a fájl mentéséhez koppintson felül a Letöltés gombra.",
+    "inAppBrowser": "Az alkalmazás beépített böngészője nem mindig tud fájlokat menteni. Koppintson a Letöltés gombra a letöltési hivatkozásért, vagy nyissa meg a ToothOps alkalmazást a Chrome böngészőben (⋮ menü → „Megnyitás böngészőben”).",
+    "inAppBrowserMessage": "Az alkalmazás beépített böngészője nem tud fájlokat menteni. A PDF letöltéséhez nyissa meg a ToothOps alkalmazást a Chrome böngészőben (⋮ menü → „Megnyitás böngészőben”)."
+  },
+  "exportWarning": {
+    "title": "Letöltés előtt",
+    "both": "A karton nem mentett módosításokat tartalmaz, és még nincs véglegesítve.",
+    "unsaved": "A karton nem mentett módosításokat tartalmaz.",
+    "unfinalized": "A karton még nincs véglegesítve.",
+    "finalize": "Véglegesítés és letöltés",
+    "anyway": "Letöltés mindenképpen",
+    "finalizing": "Véglegesítés…",
+    "failed": "A karton véglegesítése nem sikerült. Próbálja újra, vagy töltse le mindenképpen."
+  }
+}

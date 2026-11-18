@@ -1,0 +1,87 @@
+{
+  "header": {
+    "title": {
+      "canine": "Fișă stomatologică canină",
+      "canineDeciduous": "Fișă stomatologică canină (dentiție deciduală)",
+      "feline": "Fișă stomatologică felină",
+      "felineDeciduous": "Fișă stomatologică felină (dentiție deciduală)",
+      "equine": "Fișă stomatologică ecvină"
+    },
+    "subtitle": "Evaluare parodontală și plan de tratament",
+    "tech": "Asistent: {{name}}"
+  },
+  "patient": {
+    "title": "Datele pacientului",
+    "date": "Dată",
+    "patient": "Pacient",
+    "pid": "ID pacient",
+    "complaint": "Motivul principal al prezentării"
+  },
+  "exam": {
+    "title": "Constatări ale examenului oral",
+    "normal": "NORMAL",
+    "abnormal": "ANORMAL",
+    "comment": "COMENTARIU",
+    "items": {
+      "extraoral": "Extraoral/facial",
+      "lymph": "Ganglioni limfatici",
+      "buccal": "Mucoasă bucală",
+      "tongue": "Limbă",
+      "palate": "Palat",
+      "pharynx": "Faringe/Amigdale"
+    },
+    "additional": "Zone suplimentare examinate",
+    "alsoNormal": "Normal: {{areas}}",
+    "moreAreas_one": "+{{count}} zonă suplimentară în aplicație",
+    "moreAreas_other": "+{{count}} de zone suplimentare în aplicație",
+    "moreAreas_few": "+{{count}} zone suplimentare în aplicație"
+  },
+  "grid": {
+    "maxilla": "Arcadă maxilară",
+    "mandible": "Arcadă mandibulară"
+  },
+  "codes": {
+    "title": "Coduri utilizate",
+    "more": "+încă {{n}}"
+  },
+  "treatment": {
+    "title": "Raport de tratament și chirurgie",
+    "radiographicTitle": "Raport radiografic",
+    "ctTitle": "Raport CT",
+    "continued": "… continuare — raportul complet este încorporat în acest fișier (încărcați-l din nou în aplicație)."
+  },
+  "anesthesia": {
+    "title": "Anestezie · Blocuri nervoase",
+    "nerveBlock": "Bloc nervos",
+    "nerveBlockWith": "Bloc nervos {{drug}}",
+    "anesthetic": "Anestezic",
+    "anesthetics": "Anestezice",
+    "right": "DREAPTA",
+    "left": "STÂNGA",
+    "dose": "{{value}} mL",
+    "other": "Altele",
+    "blocks": {
+      "infraorbital": "Infraorbitar",
+      "caudalMaxillary": "Maxilar caudal",
+      "inferiorAlveolar": "Alveolar inferior",
+      "mental": "Mentonier"
+    }
+  },
+  "footer": {
+    "generated": "Generat la {{at}}",
+    "pid": "ID pacient {{id}}",
+    "pageOf": "Pagina {{n}} din {{total}}"
+  },
+  "images": {
+    "title": "Imagini și radiografii",
+    "titleRange": "Imagini și radiografii ({{range}} din {{total}})",
+    "failed": "Imaginea nu a putut fi încărcată",
+    "photo": "Fotografie",
+    "radiograph": "Radiografie",
+    "tooth": "Dinte {{triadan}}"
+  },
+  "continuation": {
+    "title": "Note clinice",
+    "notice": "Detaliile complete continuă pe paginile următoare."
+  }
+}

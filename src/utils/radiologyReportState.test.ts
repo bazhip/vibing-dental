@@ -77,7 +77,7 @@ it('keeps legacy study fields visible once and preserves an explicitly cleared e
  const chart=radiologySnapshot();chart.patientInfo.radiologyTechnique='Two recorded intraoral views';
  expect(radiologyEditorText(chart)).toContain('Two recorded intraoral views');
  expect(radiologyEditorText(chart)).toContain(chart.patientInfo.radiographicFindings);
- chart.patientInfo.radiologyReport='Revised report';
+ chart.patientInfo.radiologyReport='Legacy shadow';chart.patientInfo.radiographicFindings='Revised report';
  Object.assign(chart.patientInfo,appendRadiologyDictation(chart,'409: possible resorption','fr'));
  expect(chart.patientInfo.radiologyReport).toBe('Revised report\n409: possible resorption');
  expect(chart.patientInfo.radiologyReviewedBasis).toBe('');

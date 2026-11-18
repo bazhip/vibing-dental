@@ -25,6 +25,11 @@ export const SURFACE_GLOSSARY_IDS: readonly string[] = ['mesial', 'distal', 'pal
 /** What vets actually say before a score that the glossary doesn't hold as a
  *  clinical value: short column labels, lay words and grade/class words. */
 export const SPOKEN_SYNONYMS: Record<AppLanguage, string[]> = {
+  zh: ['松动度', '牙周袋', '袋深', '退缩', '分叉', '阶段', '分期', '等级', '牙结石'],
+  ar: ['تخلخل', 'حركة', 'جيب', 'انحسار', 'تفرع الجذور', 'قلح', 'جير', 'مرحلة', 'درجة', 'تصنيف'],
+  hu: ['mobilitás', 'tasak', 'recesszió', 'furkáció', 'stádium', 'fok', 'fokozat', 'osztály'],
+  ro: ['mobilitate', 'pungă', 'recesiune', 'furcație', 'tartru', 'stadiu', 'grad', 'clasă'],
+
   en: [], // English keeps its own SCORE_TERMS list in numbers.ts.
   fr: [
     'mobilité', // column label; glossary value is "mobilité dentaire"
@@ -80,6 +85,11 @@ export const DANGLING_ABBREVIATIONS = ['GI', 'GE', 'G', 'calc', 'F', 'PD'];
 
 /** "and" at the end of an utterance: the vet is going on ("GI deux et"). */
 export const AND_WORDS: Record<AppLanguage, string[]> = {
+  zh: ['和', '以及', '还有'],
+  ar: ['و', 'ثم'],
+  hu: ['és'],
+  ro: ['și'],
+
   en: [], // English keeps "and" in DANGLING_RE.
   fr: ['et'],
   de: ['und'],
@@ -112,6 +122,11 @@ export const GERMAN_COMPOUND_ENDS = [
 
 /** Millimetre words, said after a measurement. */
 export const UNIT_WORDS: Record<AppLanguage, string[]> = {
+  zh: ['mm', '毫米', '公厘'],
+  ar: ['mm', 'مم', 'مليمتر', 'مليمترات', 'ملليمتر', 'ملليمترات'],
+  hu: ['mm', 'milliméter', 'milliméteres'],
+  ro: ['mm', 'milimetru', 'milimetri'],
+
   en: [], // English keeps its own unit pattern in numbers.ts.
   fr: ['mm', 'millimètre', 'millimètres'],
   de: ['mm', 'Millimeter', 'Millimetern'],
@@ -121,6 +136,11 @@ export const UNIT_WORDS: Record<AppLanguage, string[]> = {
 
 /** What STT writes when a vet says "/" inside an AVDC code ("T slash FX"). */
 export const SLASH_WORDS: Record<AppLanguage, string[]> = {
+  zh: ['斜杠', '斜线', 'slash'],
+  ar: ['شرطة مائلة', 'سلاش', 'slash'],
+  hu: ['per', 'törtvonal', 'slash'],
+  ro: ['bară oblică', 'bară', 'slash'],
+
   en: ['slash'],
   fr: ['barre oblique', 'slash'],
   de: ['Schrägstrich', 'slash'],
@@ -135,6 +155,11 @@ const ENGLISH_LETTER_NAMES: Record<string, string> = {
   'gee eye': 'GI', 'gee i': 'GI', 'pee dee': 'PD', 'eff': 'F',
 };
 export const SPELLED_LETTERS: Record<AppLanguage, Record<string, string>> = {
+  zh: { '吉艾': 'GI', '吉哎': 'GI', '皮迪': 'PD', '艾弗': 'F', ...ENGLISH_LETTER_NAMES },
+  ar: { 'جي آي': 'GI', 'جي اي': 'GI', 'بي دي': 'PD', 'إف': 'F', 'اف': 'F', ...ENGLISH_LETTER_NAMES },
+  hu: { 'gé i': 'GI', 'gé-i': 'GI', 'pé dé': 'PD', 'ef': 'F', ...ENGLISH_LETTER_NAMES },
+  ro: { 'ge i': 'GI', 'ge-i': 'GI', 'pe de': 'PD', 'ef': 'F', 'efe': 'F', ...ENGLISH_LETTER_NAMES },
+
   en: {}, // English keeps its own letter passes in normalizeTranscript.
   fr: { 'gé i': 'GI', 'gé-i': 'GI', 'pé dé': 'PD', 'effe': 'F', 'èf': 'F', ...ENGLISH_LETTER_NAMES },
   de: { 'ge i': 'GI', 'ge-i': 'GI', 'pe de': 'PD', 'eff': 'F', 'ef': 'F', ...ENGLISH_LETTER_NAMES },
@@ -146,6 +171,11 @@ export const SPELLED_LETTERS: Record<AppLanguage, Record<string, string>> = {
  *  (side talk, acknowledgements) is not sent to the model. Multi-word and
  *  elided entries ("d'accord", "va bene") are matched as phrases. */
 export const FILLER_WORDS: Record<AppLanguage, string[]> = {
+  zh: ['嗯', '呃', '好的', '好', '谢谢', '是的', '对', '然后'],
+  ar: ['نعم', 'حسنا', 'حسنًا', 'شكرا', 'شكرًا', 'تمام', 'حاضر', 'آه', 'إذن'],
+  hu: ['öö', 'öhm', 'igen', 'nem', 'rendben', 'jó', 'köszönöm', 'tehát', 'és'],
+  ro: ['ăă', 'ăhm', 'da', 'nu', 'bine', 'mulțumesc', 'deci', 'și'],
+
   en: [], // English keeps its own FILLER_WORDS set in aiAutofill.ts.
   fr: ['euh', 'hein', 'bon', 'voilà', "d'accord", 'ok', 'merci', 'oui', 'non', 'alors', 'donc', 'et'],
   de: ['äh', 'ähm', 'ähmm', 'öhm', 'also', 'okay', 'ja', 'nein', 'danke', 'gut', 'und', 'so'],
@@ -158,6 +188,11 @@ export const UNIVERSAL_FILLERS = ['ok', 'okay', 'hm', 'hmm', 'mm', 'mhm'];
 
 /** Words between a score term and its number ("poche de 5 mm"). */
 export const SCORE_LINK_WORDS: Record<AppLanguage, string[]> = {
+  zh: ['为', '是', '的'],
+  ar: ['درجة', 'بدرجة', 'بمقدار', 'هو', 'هي'],
+  hu: ['értéke', 'foka'],
+  ro: ['de', 'este'],
+
   en: [],
   fr: ['de', 'à'],
   de: ['von'],

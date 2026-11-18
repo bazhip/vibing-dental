@@ -7,7 +7,7 @@ import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
 import { AnesthesiaCustomEditor } from './AnesthesiaCustomEditor';
 import { QuickCodesEditor } from './QuickCodesEditor';
 import { ExamAreasEditor } from './ExamAreasEditor';
-import { BLOCK_ROW_OPTIONS, ChartPrefs, PERIO_FIELDS, PATIENT_FIELD_OPTIONS } from '../utils/chartSettings';
+import { SCORE_PICKER_OPTIONS, BLOCK_ROW_OPTIONS, ChartPrefs, PERIO_FIELDS, PATIENT_FIELD_OPTIONS } from '../utils/chartSettings';
 import { isNativeApp } from '../native/platform';
 import { Sheet } from '../ios/Sheet';
 import { ChartSettingsList } from './ChartSettingsList';
@@ -203,6 +203,16 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
             </fieldset>
 
             <fieldset className="chart-settings__field">
+              <legend>{t('chart.charting.scorePicker')}</legend>
+              {SCORE_PICKER_OPTIONS.map((value) => (
+                <label key={value} className="chart-settings__choice">
+                  <input type="radio" name="scorePicker" checked={prefs.scorePicker === value} onChange={() => onChange({ scorePicker: value })} />
+                  {t(`chart.charting.scorePickerOptions.${value}`)}
+                </label>
+              ))}
+            </fieldset>
+
+            <fieldset className="chart-settings__field">
               <legend>{t('chart.charting.scoreTap')}</legend>
               <label className="chart-settings__choice">
                 <input type="radio" name="scoreTapMoves" checked={prefs.scoreTapMoves === 'finding'} onChange={() => onChange({ scoreTapMoves: 'finding' })} />
@@ -386,6 +396,18 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
             <label className="chart-settings__choice">
               <input type="checkbox" checked={prefs.pdfIncludeImages} onChange={(e) => onChange({ pdfIncludeImages: e.target.checked })} />
               {t('chart.pdf.images')} <span className="chart-settings__hint">{t('chart.pdf.imagesHint')}</span>
+            </label>
+            )}
+            {show.pdfImages && (
+            <label className="chart-settings__choice">
+              <input type="checkbox" checked={prefs.pdfIncludeRadiographicReport} onChange={(e) => onChange({ pdfIncludeRadiographicReport: e.target.checked })} />
+              {t('chart.pdf.radiographicReport')}
+            </label>
+            )}
+            {show.pdfImages && (
+            <label className="chart-settings__choice">
+              <input type="checkbox" checked={prefs.pdfIncludeCtReport} onChange={(e) => onChange({ pdfIncludeCtReport: e.target.checked })} />
+              {t('chart.pdf.ctReport')}
             </label>
             )}
           </section>

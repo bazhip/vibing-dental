@@ -1,0 +1,149 @@
+{
+  "rechecks": {
+    "title": "复查",
+    "description": "复查在今日到期或已逾期的患者。可打开就诊、发送提醒，或清除已完成的复查。"
+  },
+  "openLatest": "打开{{name}}最近一次就诊",
+  "title": "患者",
+  "unnamedPatient": "未命名患者",
+  "search": {
+    "placeholder": "按患者姓名或编号搜索…",
+    "aria": "搜索牙科图表"
+  },
+  "filters": {
+    "speciesAria": "按物种筛选",
+    "allSpecies": "所有物种",
+    "doctorAria": "按医生筛选",
+    "allDoctors": "所有医生"
+  },
+  "importPdf": "导入牙科图表 PDF",
+  "importPdfTitle": "打开此应用生成的牙科图表 PDF 以继续编辑",
+  "newPatient": "新患者",
+  "newPatientTitle": "清空当前工作图表并开始记录全新的患者",
+  "loading": "正在加载…",
+  "empty": "尚无已保存的牙科图表，记录时会自动保存。",
+  "noMatch": {
+    "search": "没有符合搜索条件的患者。",
+    "due": "没有需要复查的患者。",
+    "filters": "没有符合筛选条件的牙科图表。"
+  },
+  "table": {
+    "aria": "患者",
+    "patient": "患者",
+    "number": "患者编号",
+    "species": "物种",
+    "visits": "就诊",
+    "updated": "更新于",
+    "recheck": "复查",
+    "finalized": "已完成"
+  },
+  "due": "到期复查",
+  "dueCount": "到期复查（{{n}}）",
+  "dueTitle": "仅显示复查到期或已逾期的患者",
+  "recall": {
+    "overdue": "{{date}} · 已逾期",
+    "today": "{{date}} · 今日"
+  },
+  "deciduousSuffix": "{{species}} · 乳牙",
+  "visits_one": "{{count}}次就诊",
+  "visits_other": "{{count}}次就诊",
+  "visitsExpand_one": "{{count}}次就诊，展开",
+  "visitsExpand_other": "{{count}}次就诊，展开",
+  "openPatient": "打开{{name}}",
+  "visit": {
+    "undated": "未注明日期的就诊",
+    "openDated": "打开 {{date}} 的就诊",
+    "openUndated": "打开未注明日期的就诊",
+    "deleteDated": "删除{{name}}在 {{date}} 的就诊",
+    "deleteUndated": "删除{{name}}未注明日期的就诊",
+    "updated": "更新于{{when}}"
+  },
+  "actions": {
+    "menu": "操作",
+    "reminder": "提醒",
+    "reminderTitle": "向{{who}}发送复查提醒",
+    "clearRecall": "清除{{name}}的复查提醒",
+    "clearRecallTitle": "清除{{name}}的复查提醒，例如已复查但未创建新图表",
+    "newVisit": "新建就诊",
+    "newVisitTitle": "为{{name}}开始新的就诊",
+    "history": "版本历史",
+    "historyChartTitle": "{{name}}牙科图表的保存者和保存时间",
+    "historyVisitTitle": "此就诊的保存者和保存时间",
+    "deleteChart": "删除{{name}}的牙科图表",
+    "loadMore": "加载更多图表",
+    "clearRecallShort": "清除复查"
+  },
+  "errors": {
+    "load": "无法加载您的图表。{{error}}",
+    "loadMore": "无法加载更多图表。{{error}}",
+    "open": "无法打开此图表。{{error}}",
+    "delete": "无法删除此就诊。{{error}}",
+    "clearRecall": "无法清除此复查。{{error}}"
+  },
+  "deleteDialog": {
+    "title": "删除{{name}}{{when}}？",
+    "titleUnnamed": "删除此图表{{when}}？",
+    "message": "此就诊将从云端移除，影响诊所所有成员。此操作无法撤销。",
+    "confirm": "删除就诊"
+  },
+  "clearDialog": {
+    "title": "清除{{name}}的复查？",
+    "message": "适用于已完成复查但未创建新图表，或不再需要复查的情况。患者将从到期列表中移除。",
+    "confirm": "清除复查"
+  },
+  "history": {
+    "aria": "图表历史",
+    "title": "图表历史",
+    "titleWith": "历史 — {{label}}",
+    "openVisit": "打开此就诊",
+    "loading": "正在加载…",
+    "empty": "尚无已保存版本，首次保存后即开始记录历史。",
+    "pick": "选择一个版本以查看。",
+    "loadingVersion": "正在加载此版本…",
+    "current": "当前",
+    "outside": "诊所以外的人员",
+    "automatic": "ToothOps（自动）",
+    "baseline": "历史记录开始前 · 上次保存于{{when}}",
+    "range": "{{start}} – {{end}}",
+    "restore": "恢复此版本",
+    "restoring": "正在恢复…",
+    "restoreHint": "选择“编辑图表”以恢复较早版本。",
+    "loadFailed": "无法加载此版本。{{error}}",
+    "restoreFailed": "无法恢复。{{error}}",
+    "restored": "版本已恢复。",
+    "confirmTitle": "恢复此版本？",
+    "confirmMessage": "图表将恢复至{{when}}保存的状态。今天的版本会保留在历史记录中，您可切换回来。",
+    "confirmButton": "恢复"
+  },
+  "templates": {
+    "aria": "报告模板",
+    "title": "报告模板",
+    "saved": "已保存的模板",
+    "new": "新建模板",
+    "empty": "暂无模板。请在下方编写并保存，或使用“治疗报告”章节中的“另存为模板”。",
+    "untitled": "无标题",
+    "nameLabel": "模板名称",
+    "namePlaceholder": "例如：常规洁牙（猫）",
+    "bodyLabel": "报告文本",
+    "bodyPlaceholder": "要插入“治疗与手术报告”的报告文本…",
+    "nameRequired": "请为模板命名，以便在插入菜单中识别。",
+    "saveFailed": "无法保存模板。",
+    "deleteFailed": "无法删除模板。",
+    "cloudOff": "尚未配置云端服务。",
+    "deleteTitle": "删除“{{name}}”？",
+    "deleteMessage": "此模板将对诊所所有成员移除。此操作无法撤销。",
+    "deleteConfirm": "删除模板",
+    "saving": "正在保存…",
+    "saveChanges": "保存更改",
+    "saveTemplate": "保存模板"
+  },
+  "workspace": {
+    "description": "搜索患者病历、查看就诊并管理复查。",
+    "backToVisit": "返回当前就诊"
+  },
+  "finalized": {
+    "yes": "是",
+    "no": "否",
+    "count": "{{n}} / {{total}}"
+  }
+}

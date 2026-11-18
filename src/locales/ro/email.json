@@ -1,0 +1,44 @@
+{
+  "common": {
+    "setPasswordButton": "Setați parola și alăturați-vă"
+  },
+  "invite": {
+    "body1": "{{who}} v-a adăugat în echipa sa pe ToothOps — aplicația de fișe stomatologice veterinare utilizată lângă pacient.",
+    "body2": "Setați parola pentru a activa contul și a vedea fișele cabinetului.",
+    "fallback": {
+      "preheader": "cabinetul",
+      "title": "un cabinet",
+      "who": "Un cabinet"
+    },
+    "footnote": "Dacă nu vă așteptați la această invitație, puteți ignora e-mailul.",
+    "preheader": "Setați parola pentru a vă alătura cabinetului {{practice}} pe ToothOps.",
+    "subject": "{{who}} v-a invitat pe ToothOps",
+    "title": "Sunteți invitat să vă alăturați cabinetului {{practice}}"
+  },
+  "join": {
+    "body1": "{{name}} v-a invitat în echipa sa pe ToothOps. Autentificați-vă cu contul existent pentru a accepta.",
+    "body2": "Nimic nu se schimbă până când acceptați — iar partajarea fișelor existente cu cabinetul este o alegere separată pe care o faceți la alăturare.",
+    "button": "Consultați invitația",
+    "fallback": "un cabinet",
+    "footnote": "Linkul este valabil 14 zile. Dacă nu vă așteptați la invitație, ignorați acest e-mail.",
+    "preheader": "{{name}} v-a invitat în echipa sa pe ToothOps.",
+    "subject": "Vă alăturați cabinetului {{name}} pe ToothOps?",
+    "title": "Vă alăturați cabinetului {{name}}?"
+  },
+  "layout": {
+    "linkFallback": "Dacă butonul nu funcționează, copiați acest link în browser:",
+    "tagline": "Fișe stomatologice veterinare"
+  },
+  "reminder": {
+    "body1": "{{who}} v-a invitat pe ToothOps, aplicația sa de fișe stomatologice veterinare. Contul vă așteaptă — trebuie doar să setați o parolă pentru a începe.",
+    "body2": "Linkul de mai jos este valabil 24 de ore.",
+    "fallback": "cabinetul dumneavoastră",
+    "footnote": "Nu vă așteptați la invitație sau nu doriți să vă alăturați? Ignorați acest e-mail — vom mai trimite cel mult un memento.",
+    "footnoteFinal": "Acesta este ultimul memento. Dacă nu vă alăturați până la {{date}}, invitația expiră și contul în așteptare este eliminat — {{who}} vă poate invita din nou oricând.",
+    "preheader": "{{who}} vă așteaptă pe ToothOps — setați parola pentru a vă alătura.",
+    "subject": "Memento: {{who}} v-a invitat pe ToothOps",
+    "subjectFinal": "Ultimul memento: alăturați-vă cabinetului {{who}} pe ToothOps",
+    "title": "Sunteți invitat să vă alăturați cabinetului {{who}}",
+    "titleFinal": "Invitația dumneavoastră vă așteaptă în continuare"
+  }
+}

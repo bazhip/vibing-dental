@@ -1,0 +1,72 @@
+{
+  "title": "Páciensek",
+  "search": {
+    "placeholder": "Keresés",
+    "label": "Páciensek keresése név, azonosító vagy gazdi alapján",
+    "clear": "Keresés törlése"
+  },
+  "signIn": "Jelentkezzen be a mentett fogászati lapok megtekintéséhez.",
+  "unnamed": "Névtelen páciens",
+  "empty": "Még nincs mentett fogászati lap. Rögzítés közben automatikusan mentjük őket.",
+  "retry": "Újrapróbálkozás",
+  "loadMore": "Továbbiak betöltése",
+  "filter": {
+    "button": "Szűrés és rendezés",
+    "sortBy": "Rendezési szempont",
+    "sortPatient": "Név",
+    "sortUpdated": "Utolsó módosítás",
+    "sortRecall": "Kontrollvizsgálat dátuma",
+    "order": "Sorrend",
+    "patientAsc": "A–Z",
+    "patientDesc": "Z–A",
+    "updatedDesc": "Legújabb elöl",
+    "updatedAsc": "Legrégebbi elöl",
+    "recallAsc": "Legközelebbi elöl",
+    "recallDesc": "Legkésőbbi elöl",
+    "species": "Állatfaj",
+    "allSpecies": "Minden állatfaj",
+    "doctor": "Orvos",
+    "allDoctors": "Minden orvos",
+    "due": "Esedékes kontrollvizsgálat",
+    "dueCount": "Esedékes kontrollvizsgálat ({{count}})"
+  },
+  "add": {
+    "button": "Hozzáadás",
+    "newPatient": "Új páciens"
+  },
+  "row": {
+    "number": "#{{number}}",
+    "visits_one": "{{count}} vizit",
+    "visits_other": "{{count}} vizit",
+    "updated": "Módosítva: {{date}}"
+  },
+  "recall": {
+    "overdue": "Lejárt · {{date}}",
+    "today": "Ma esedékes",
+    "upcoming": "Kontrollvizsgálat: {{date}}"
+  },
+  "actions": {
+    "open": "Megnyitás",
+    "delete": "Törlés",
+    "newVisit": "Új vizit"
+  },
+  "confirmDelete": {
+    "title": "Törli a következőt: {{name}}?",
+    "titleDated": "Törli a következőt: {{name}} ({{date}})?",
+    "confirm": "Vizit törlése"
+  },
+  "visits": {
+    "undated": "Dátum nélküli vizit",
+    "byDoctor": "{{doctor}} · Módosítva: {{date}}",
+    "updated": "Módosítva: {{date}}",
+    "empty": "Nincs vizit.",
+    "historyLabel": "{{name}} · {{date}}"
+  },
+  "rechecks": {
+    "title": "Kontrollvizsgálatok",
+    "overdue": "Lejárt",
+    "today": "Ma esedékes",
+    "empty": "Nincs esedékes kontrollvizsgálat",
+    "emptyHint": "A páciensek a kontrollvizsgálat esedékességének napján jelennek meg itt."
+  }
+}

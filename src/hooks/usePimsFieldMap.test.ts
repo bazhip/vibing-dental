@@ -121,7 +121,7 @@ it('updates detected clinical defaults on a field change while retaining saved s
   const { result, rerender } = renderHook(({ provider, titles }) => usePimsFieldMap(provider, available(titles)), {
     initialProps: { provider: 'ezyvet' as import('../extension/pims/types').PimsId, titles: ['Physical Exam', 'History', 'Plan'] },
   });
-  await waitFor(() => expect(result.current.map.ctReport).toBe('Specialist CT'));
+  await waitFor(() => expect(result.current.map.ct).toBe('Specialist CT'));
   expect(result.current.map.gpVitals).toBeNull();
   expect(result.current.map.gpPhysicalExam).toBe('Physical Exam');
   rerender({ provider: 'rhapsody', titles: ['Medical notes', 'Discharge notes'] });
@@ -130,5 +130,5 @@ it('updates detected clinical defaults on a field change while retaining saved s
   expect(result.current.map.dischargeMedications).toBe('Discharge notes');
   rerender({ provider: 'rhapsody', titles: ['Unrelated'] });
   expect(result.current.map.gpVitals).toBeNull();
-  expect(result.current.map.ctReport).toBeNull();
+  expect(result.current.map.ct).toBeNull();
 });

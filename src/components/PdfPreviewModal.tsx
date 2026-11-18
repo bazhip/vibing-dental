@@ -1,4 +1,7 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
+import { useModalFocus } from '../hooks/useModalFocus';
+import './PdfExportWarning.css';
 import { useTranslation } from 'react-i18next';
 import i18n from '../i18n';
 import { isAppLanguage } from '../i18n/config';
@@ -53,6 +56,9 @@ export interface ChartSnapshot {
   branding?: PdfBranding;
   /** False drops the arch grids from page 1 (diagram-first layout). */
   includeGrid?: boolean;
+  /** False leaves the radiographic / CT report off the treatment card. */
+  includeRadiographicReport?: boolean;
+  includeCtReport?: boolean;
   /** Cloud chart id whose images get appended as extra pages (4 per
    *  page). Absent/empty → no image pages. */
   imagesChartId?: string;
@@ -64,7 +70,15 @@ export interface ChartSnapshot {
  *  wide, so this prints at ~280 dpi while keeping file size sane. */
 const PDF_IMAGE_MAX_EDGE = 1400;
 
+export interface PdfExportLifecycle {
+  unsaved: boolean;
+  unfinalized: boolean;
+  canFinalize: boolean;
+  finalize: () => Promise<boolean>;
+}
+
 interface PdfPreviewModalProps {
+  lifecycle?: PdfExportLifecycle;
   open: boolean;
   onClose: () => void;
   /** Returns the chart snapshot — captured fresh each time the modal opens. */
@@ -74,7 +88,7 @@ interface PdfPreviewModalProps {
   bare?: boolean;
 }
 
-export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose, snapshot, bare = false }) => {
+export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose, snapshot, bare = false, lifecycle }) => {
   const { t, i18n: i18nInstance } = useTranslation('pdfui');
   // The document's labels print in the app language; the preview rebuilds
   // when it changes.
@@ -102,6 +116,35 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
   const [imageAttempt, setImageAttempt] = React.useState(0);
   const loadedSnapshot = React.useRef<ChartSnapshot | null>(null);
   const [imageWarning, setImageWarning] = React.useState<string | null>(null);
+  const [pendingDownload, setPendingDownload] = React.useState<boolean | null>(null);
+  const [finalizing, setFinalizing] = React.useState(false);
+  const [finalizeError, setFinalizeError] = React.useState(false);
+  const finalizingRef = React.useRef(false);
+  const warningRef = useModalFocus(pendingDownload !== null);
+
+  React.useEffect(() => {
+    setPendingDownload(null);
+    setFinalizeError(false);
+    setFinalizing(false);
+    finalizingRef.current = false;
+  }, [open, snapshot]);
+
+  React.useEffect(() => {
+    if (finalizing) warningRef.current?.focus();
+  }, [finalizing, warningRef]);
+
+  React.useEffect(() => {
+    if (pendingDownload === null) return;
+    const escape = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      if (!finalizingRef.current) setPendingDownload(null);
+    };
+    document.addEventListener('keydown', escape, true);
+    return () => document.removeEventListener('keydown', escape, true);
+  }, [pendingDownload]);
+
 
   // Move focus into the dialog on open so keyboard / screen-reader users
   // land inside it rather than back on the trigger.
@@ -199,7 +242,13 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
           { state: snapshot.postState, png: postPng },
           styleId,
           snapshot.branding ?? {},
-          { includeGrid: snapshot.includeGrid, images, lng }
+          {
+            includeGrid: snapshot.includeGrid,
+            includeRadiographicReport: snapshot.includeRadiographicReport,
+            includeCtReport: snapshot.includeCtReport,
+            images,
+            lng,
+          }
         );
         if (cancelled) return;
         const blob = new Blob([bytes as BlobPart], { type: 'application/pdf' });
@@ -224,7 +273,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
     };
   }, [open, snapshot, styleId, images, lng, imageAttempt, inAppLink.reset]);
 
-  const handleDownload = (withoutImages = false) => {
+  const download = (withoutImages = false) => {
     if (!pdfUrl || !snapshot || generating || images === null || error || (imageWarning && !withoutImages)) return;
     const sanitize = (str: string) => str.replace(/[^a-z0-9]/gi, '_').toLowerCase();
     const { patientInfo } = snapshot;
@@ -242,6 +291,36 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
       if (attempt !== downloadGeneration.current || pdfBlobRef.current !== blob) return;
       if (outcome === 'unsupported') void inAppLink.start(blob, filename);
     });
+  };
+
+  const handleDownload = (withoutImages = false) => {
+    if (lifecycle && (lifecycle.unsaved || lifecycle.unfinalized)) {
+      setFinalizeError(false);
+      setPendingDownload(withoutImages);
+    } else download(withoutImages);
+  };
+
+  const finalizeAndDownload = async () => {
+    if (finalizingRef.current || pendingDownload === null || !lifecycle?.canFinalize) return;
+    finalizingRef.current = true;
+    setFinalizing(true);
+    setFinalizeError(false);
+    const generation = downloadGeneration.current;
+    const withoutImages = pendingDownload;
+    try {
+      const saved = await lifecycle.finalize();
+      if (generation !== downloadGeneration.current) return;
+      if (!saved) { setFinalizeError(true); return; }
+      setPendingDownload(null);
+      download(withoutImages);
+    } catch {
+      if (generation === downloadGeneration.current) setFinalizeError(true);
+    } finally {
+      if (generation === downloadGeneration.current) {
+        finalizingRef.current = false;
+        setFinalizing(false);
+      }
+    }
   };
 
   if (!open) return null;
@@ -264,7 +343,60 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
     </button>
   );
 
+  const warning = pendingDownload !== null && createPortal(
+    <div
+      className="ui-dialog-overlay pdf-export-warning-overlay"
+      onClick={(event) => {
+        event.stopPropagation();
+        if (!finalizingRef.current) setPendingDownload(null);
+      }}
+    >
+      <div
+        ref={warningRef}
+        tabIndex={-1}
+        className="ui-dialog pdf-export-warning"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="pdf-export-warning-title"
+        aria-describedby="pdf-export-warning-message"
+        aria-busy={finalizing}
+        onKeyDown={event => {
+          // Portals still bubble through the native Sheet's React tree;
+          // its focus trap must not move focus behind this dialog.
+          event.stopPropagation();
+          if (finalizing && event.key === 'Tab') event.preventDefault();
+        }}
+        onClick={event => event.stopPropagation()}
+      >
+        <h2 className="ui-dialog__title" id="pdf-export-warning-title">{t('exportWarning.title')}</h2>
+        <p className="ui-dialog__message" id="pdf-export-warning-message">
+          {t(lifecycle?.unsaved ? (lifecycle.unfinalized ? 'exportWarning.both' : 'exportWarning.unsaved') : 'exportWarning.unfinalized')}
+        </p>
+        {finalizeError && <p className="ui-dialog__error" role="alert">{t('exportWarning.failed')}</p>}
+        <div className="pdf-export-warning__actions">
+          {(lifecycle?.canFinalize || finalizing) && (
+            <button type="button" className="ui-btn ui-btn--primary" disabled={finalizing} onClick={() => { void finalizeAndDownload(); }}>
+              {t(finalizing ? 'exportWarning.finalizing' : 'exportWarning.finalize')}
+            </button>
+          )}
+          <button
+            type="button"
+            className="ui-btn ui-btn--secondary"
+            disabled={finalizing}
+            onClick={() => { setPendingDownload(null); download(pendingDownload); }}
+          >
+            {t('exportWarning.anyway')}
+          </button>
+          <button type="button" className="ui-btn ui-btn--secondary" disabled={finalizing} onClick={() => setPendingDownload(null)}>
+            {t('actions.cancel', { ns: 'common' })}
+          </button>
+        </div>
+      </div>
+    </div>, document.body,
+  );
+
   const body = (
+    <>{warning}
         <div className="pdf-preview-body">
           <aside className="pdf-preview-styles">
             {compact ? (
@@ -309,6 +441,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
             ))}
           </div>
         </div>
+    </>
   );
 
   if (bare) return body;

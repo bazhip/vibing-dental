@@ -1,0 +1,393 @@
+{
+  "lng": "ar",
+  "lines": [
+    {
+      "heard": "Speaker 0: حسنا، نبدأ في الفك العلوي الأيمن.",
+      "cleaned": "Speaker 0: حسنا, نبدأ في الفك العلوي الأيمن.",
+      "finding": false
+    },
+    {
+      "heard": "Speaker 0: واحد صفر واحد GI اثنان، قلح اثنان.",
+      "cleaned": "Speaker 0: 101 GI 2, قلح 2.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: واحد صفر اثنان، نفس الشيء،",
+      "cleaned": "Speaker 0: 102, نفس الشيء,",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: وتخلخل واحد.",
+      "cleaned": "Speaker 0: وتخلخل 1.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 1: حسنا.",
+      "cleaned": "Speaker 1: حسنا.",
+      "finding": false
+    },
+    {
+      "heard": "Speaker 0: مائة وأربعة كسر تاج معقد، اللب مكشوف.",
+      "cleaned": "Speaker 0: 104 كسر تاج معقد, اللب مكشوف.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: مائة وثمانية مرحلة ثلاثة، جيب خمسة مليمتر وحشي، إف اثنان.",
+      "cleaned": "Speaker 0: 108 مرحلة 3, جيب 5 مليمتر وحشي, F2.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 1: هل قلت مائة وثمانية أم مائة وتسعة؟",
+      "cleaned": "Speaker 1: هل قلت 108 أم 109؟",
+      "finding": false
+    },
+    {
+      "heard": "Speaker 0: مائة وثمانية. ومائة وتسعة يبدو 8T.",
+      "cleaned": "Speaker 0: 108. ومائة وتسعة يبدو 8 T.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: تصحيح، واحد صفر اثنان تخلخل اثنان وليس واحدا.",
+      "cleaned": "Speaker 0: تصحيح, 102 تخلخل 2 وليس واحدا.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: خمسمائة وأربعة امتصاص السن.",
+      "cleaned": "Speaker 0: 504 امتصاص السن.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: اللسان والحنك طبيعيان.",
+      "cleaned": "Speaker 0: اللسان والحنك طبيعيان.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: ننتقل إلى العلوي الأيسر. 204 T سلاش FX سلاش UCF.",
+      "cleaned": "Speaker 0: ننتقل إلى العلوي الأيسر. 204 T/FX/UCF.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: مئتان وخمسة مفقود.",
+      "cleaned": "Speaker 0: 205 مفقود.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: هل يمكنك مناولتي المسبار؟",
+      "cleaned": "Speaker 0: هل يمكنك مناولتي المسبار؟",
+      "finding": false
+    },
+    {
+      "heard": "Speaker 1: نعم، تفضل.",
+      "cleaned": "Speaker 1: نعم, تفضل.",
+      "finding": false
+    },
+    {
+      "heard": "Speaker 0: ستمائة وأربعة، ناب لبني باق.",
+      "cleaned": "Speaker 0: 604, ناب لبني باق.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: 309 GI 1، قلح 1.",
+      "cleaned": "Speaker 0: 309 GI 1, قلح 1.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: ثلاثمائة وخمسة مفقود.",
+      "cleaned": "Speaker 0: 305 مفقود.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: أربعمائة وتسعة GI اثنان، قلح ثلاثة.",
+      "cleaned": "Speaker 0: 409 GI 2, قلح 3.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: قد نضطر إلى قلع أربعمائة وتسعة، لنر الأشعة أولا.",
+      "cleaned": "Speaker 0: قد نضطر إلى قلع 409, لنر الأشعة أولا.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: الفحص خارج الفم طبيعي، والعقد اللمفاوية طبيعية.",
+      "cleaned": "Speaker 0: الفحص خارج الفم طبيعي, والعقد اللمفاوية طبيعية.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: مخاطية الفم غير طبيعية، تقرح خفيف في الخد الأيسر.",
+      "cleaned": "Speaker 0: مخاطية الفم غير طبيعية, تقرح خفيف في الخد الأيسر.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 1: معدل القلب تسعون، وهي مستقرة.",
+      "cleaned": "Speaker 1: معدل القلب تسعون, وهي مستقرة.",
+      "finding": false
+    },
+    {
+      "heard": "Speaker 0: للإحصار بوبيفاكايين بتركيز نصف بالمئة، 0.3 mL تحت الحجاج الأيمن.",
+      "cleaned": "Speaker 0: للإحصار بوبيفاكايين بتركيز نصف بالمئة, 0.3 mL تحت الحجاج الأيمن.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: وصفر فاصلة اثنين ملليلتر للعصب السنخي السفلي الأيسر.",
+      "cleaned": "Speaker 0: وصفر فاصلة اثنين ملليلتر للعصب السنخي السفلي الأيسر.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: اكتمل تنظيف القلح وتلميع كامل الفم.",
+      "cleaned": "Speaker 0: اكتمل تنظيف القلح وتلميع كامل الفم.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: تم قلع مائة وثمانية.",
+      "cleaned": "Speaker 0: تم قلع 108.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: تم قلع ستمائة وأربعة أيضا.",
+      "cleaned": "Speaker 0: تم قلع 604 أيضا.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 1: حسنا.",
+      "cleaned": "Speaker 1: حسنا.",
+      "finding": false
+    },
+    {
+      "heard": "Speaker 0: انتهى تسجيل الزيارة.",
+      "cleaned": "Speaker 0: انتهى تسجيل الزيارة.",
+      "finding": false
+    }
+  ],
+  "actions": [
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 101,
+        "field": "gingivitis",
+        "value": "2"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 101,
+        "field": "calculus",
+        "value": "2"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 102,
+        "field": "gingivitis",
+        "value": "2"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 102,
+        "field": "calculus",
+        "value": "2"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 102,
+        "field": "mobility",
+        "value": "2"
+      }
+    },
+    {
+      "name": "add_comment",
+      "input": {
+        "diagram": "pre",
+        "triadan": 104,
+        "text": "T/FX/CCF"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 108,
+        "field": "pdstate",
+        "value": "3"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 108,
+        "field": "pocket",
+        "value": "5"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 108,
+        "field": "furcation",
+        "value": "2"
+      }
+    },
+    {
+      "name": "add_comment",
+      "input": {
+        "diagram": "pre",
+        "triadan": 109,
+        "text": "AT"
+      }
+    },
+    {
+      "name": "add_comment",
+      "input": {
+        "diagram": "pre",
+        "triadan": 504,
+        "text": "TR"
+      }
+    },
+    {
+      "name": "set_exam_finding",
+      "input": {
+        "area": "tongue",
+        "status": "normal"
+      }
+    },
+    {
+      "name": "set_exam_finding",
+      "input": {
+        "area": "palate",
+        "status": "normal"
+      }
+    },
+    {
+      "name": "add_comment",
+      "input": {
+        "diagram": "pre",
+        "triadan": 204,
+        "text": "T/FX/UCF"
+      }
+    },
+    {
+      "name": "set_tooth_mark",
+      "input": {
+        "diagram": "pre",
+        "triadan": 205,
+        "mark": "missing"
+      }
+    },
+    {
+      "name": "add_comment",
+      "input": {
+        "diagram": "pre",
+        "triadan": 604,
+        "text": "DT/P"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 309,
+        "field": "gingivitis",
+        "value": "1"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 309,
+        "field": "calculus",
+        "value": "1"
+      }
+    },
+    {
+      "name": "set_tooth_mark",
+      "input": {
+        "diagram": "pre",
+        "triadan": 305,
+        "mark": "missing"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 409,
+        "field": "gingivitis",
+        "value": "2"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 409,
+        "field": "calculus",
+        "value": "3"
+      }
+    },
+    {
+      "name": "set_exam_finding",
+      "input": {
+        "area": "extraoral",
+        "status": "normal"
+      }
+    },
+    {
+      "name": "set_exam_finding",
+      "input": {
+        "area": "lymph",
+        "status": "normal"
+      }
+    },
+    {
+      "name": "set_exam_finding",
+      "input": {
+        "area": "buccal",
+        "status": "abnormal",
+        "comment": "تقرح خفيف في الخد الأيسر"
+      }
+    },
+    {
+      "name": "set_anesthetic_drug",
+      "input": {
+        "drug": "Bupivacaine",
+        "concentration": "0.5"
+      }
+    },
+    {
+      "name": "set_nerve_block",
+      "input": {
+        "site": "infraorbitalRight",
+        "mL": "0.3"
+      }
+    },
+    {
+      "name": "set_nerve_block",
+      "input": {
+        "site": "inferiorAlveolarLeft",
+        "mL": "0.2"
+      }
+    },
+    {
+      "name": "append_treatment_report",
+      "input": {
+        "text": "إزالة القلح وتلميع كامل الفم."
+      }
+    },
+    {
+      "name": "set_tooth_mark",
+      "input": {
+        "diagram": "post",
+        "triadan": 108,
+        "mark": "extracted"
+      }
+    },
+    {
+      "name": "set_tooth_mark",
+      "input": {
+        "diagram": "post",
+        "triadan": 604,
+        "mark": "extracted"
+      }
+    }
+  ]
+}

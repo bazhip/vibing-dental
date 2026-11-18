@@ -1,0 +1,74 @@
+{
+  "style": {
+    "label": "Stil PDF",
+    "done": "Gata",
+    "custom": "Culoare personalizată",
+    "customShort": "Personalizat",
+    "customDesc": "Orice culoare doriți, cu aspectul {{layout}}.",
+    "currentLayout": "actual",
+    "chooseColor": "Alegeți culoarea personalizată"
+  },
+  "presets": {
+    "clinic": {
+      "name": "Turcoaz clinic",
+      "description": "Se potrivește cu aplicația — antete turcoaz, marcaje roșii pentru anomalii, carduri rotunjite."
+    },
+    "classic-blue": {
+      "name": "Albastru clasic",
+      "description": "Albastru tradițional al fișelor medicale, cu antete de secțiune uniforme."
+    },
+    "slate": {
+      "name": "Ardezie",
+      "description": "Grafit neutru — imprimare clară în alb-negru."
+    },
+    "iris": {
+      "name": "Iris",
+      "description": "Accente discrete indigo, cu antete compacte cu majuscule."
+    },
+    "journal": {
+      "name": "Jurnal",
+      "description": "Stil clasic cu serife — accente roșu închis pe hârtie în tonuri calde."
+    }
+  },
+  "preview": {
+    "retryImages": "Reîncercați imaginile",
+    "withoutImages": "Descărcați fără imagini",
+    "title": "Fișă clinică",
+    "subtitle": "Pentru arhiva dumneavoastră și trimiteri. Alegeți un stil sau propria culoare — previzualizarea se actualizează imediat.",
+    "closeAria": "Închideți previzualizarea",
+    "download": "Descărcați PDF-ul",
+    "loadingImages": "Se încarcă imaginile…",
+    "generating": "Se generează previzualizarea…",
+    "buildFailed": "Previzualizarea nu a putut fi creată. Consultați consola pentru detalii.",
+    "imagesFailed": "Imaginile fișei nu au putut fi încărcate. Reîncercați sau descărcați un PDF fără imagini.",
+    "imagesPartial": "Unele imagini nu au putut fi încărcate. Reîncercați sau descărcați un PDF fără imagini.",
+    "frameTitle": "Previzualizarea fișei clinice"
+  },
+  "link": {
+    "preparing": "Se pregătește un link de descărcare…",
+    "open": "Atingeți pentru a descărca PDF-ul",
+    "copy": "Copiați linkul",
+    "copied": "Link copiat — lipiți-l în Chrome pentru descărcare.",
+    "copyPrompt": "Copiați acest link și deschideți-l în Chrome:",
+    "note": "Browserul acestei aplicații nu poate salva direct PDF-ul, așa că vă oferim un link de descărcare. Este valabil {{minutes}} minute — dacă descărcarea nu începe, copiați-l în Chrome."
+  },
+  "pages": {
+    "pageAria": "{{title}}, pagina {{n}} din {{total}}",
+    "failed": "Previzualizarea nu a putut fi afișată — descărcarea funcționează în continuare."
+  },
+  "hints": {
+    "firefoxAndroid": "Firefox deschide PDF-ul într-o filă nouă — atingeți Descărcați în partea de sus pentru a salva fișierul.",
+    "inAppBrowser": "Browserul integrat al acestei aplicații nu poate salva întotdeauna fișiere. Atingeți Descărcați pentru un link de descărcare sau deschideți ToothOps în Chrome (meniul ⋮ → „Deschideți în browser”).",
+    "inAppBrowserMessage": "Browserul integrat al acestei aplicații nu poate salva fișiere. Deschideți ToothOps în Chrome (meniul ⋮ → „Deschideți în browser”) pentru a descărca PDF-ul."
+  },
+  "exportWarning": {
+    "title": "Înainte de descărcare",
+    "both": "Această fișă conține modificări nesalvate și nu a fost finalizată.",
+    "unsaved": "Această fișă conține modificări nesalvate.",
+    "unfinalized": "Această fișă nu a fost finalizată.",
+    "finalize": "Finalizați și descărcați",
+    "anyway": "Descărcați oricum",
+    "finalizing": "Se finalizează…",
+    "failed": "Fișa nu a putut fi finalizată. Puteți încerca din nou sau o puteți descărca oricum."
+  }
+}

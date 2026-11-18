@@ -34,9 +34,14 @@
     "hint": "Poches par racine, colonnes, éléments affichés à côté des dents, options PDF"
   },
   "radiographic": {
-    "title": "Observations radiographiques",
+    "title": "Compte rendu radiographique",
     "placeholder": "p. ex. 108 : perte osseuse verticale racine distale, exposition de la furcation. 307 : résorption dentaire de type 2.",
-    "hint": "Figure dans le PDF au-dessus du compte rendu de traitement."
+    "hint": "Figure dans le PDF sous le compte rendu de traitement."
+  },
+  "ct": {
+    "title": "Compte rendu de scanner",
+    "placeholder": "p. ex. Maxillaire caudal droit : pas d’ostéolyse. 108 : radiotransparence périapicale, racine mésiale. ATM dans les limites de la normale.",
+    "hint": "Figure dans le PDF sous le compte rendu radiographique."
   },
   "lock": {
     "title": "Lecture seule — choisissez Modifier le dossier pour apporter des changements",
@@ -90,7 +95,8 @@
     "local": "Sur cet appareil uniquement",
     "localTitle": "Les dossiers d’essai restent dans ce navigateur. Créez un compte gratuit pour enregistrer dans le cloud.",
     "saveHint": "Ajoutez un nom de patient avant d’enregistrer — c’est ainsi que vous retrouverez ce dossier.",
-    "savedRich": "<word>Enregistré · </word>{{when}}"
+    "savedRich": "<word>Enregistré · </word>{{when}}",
+    "saved": "Enregistré"
   },
   "otherTab": {
     "text": "Ce dossier est ouvert dans un autre onglet ou une autre fenêtre. Les deux onglets modifient la même copie de travail — fermez-en un pour éviter d’écraser vos modifications."
@@ -333,6 +339,12 @@
     "saveAndClose": "Enregistrer et fermer",
     "closeChoiceMessage": "Enregistrez vos modifications avant de fermer, ou fermez sans enregistrer pour les abandonner. Les images des dossiers enregistrés seront conservées.",
     "closeImageChoiceMessage": "Enregistrez ce dossier avant de fermer, ou fermez sans enregistrer pour abandonner son contenu et supprimer définitivement les images téléversées."
+  },
+  "finalization": {
+    "finalize": "Finaliser",
+    "finalized": "Finalisé",
+    "description": "Ce dossier est finalisé. Sélectionnez Modifier le dossier pour le modifier.",
+    "failed": "Impossible de modifier le statut de finalisation du dossier. {{error}}"
   },
   "radiologyReport": {
     "title": "Compte rendu radiologique",

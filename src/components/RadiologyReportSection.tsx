@@ -17,6 +17,7 @@ import './RadiologyReportSection.css';
 
 interface Props {
   snapshot: ChartSnapshot;
+  controlsOnly?: boolean;
   reportKind?: 'radiology' | 'ct';
   chartId?: string | null;
   chartSession?: number;
@@ -33,7 +34,7 @@ type Guard = { epoch: number; source: string; report: string; reviewed: string; 
 const reportFields = ['radiologyReport', 'radiologyReportLanguage', 'radiologyReportBasis', 'radiologyReviewedBasis', 'radiologyReportGeneratedAt'] as const;
 const escapeHtml = (value: string) => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-export function RadiologyReportSection({ snapshot: originalSnapshot, reportKind = 'radiology', chartId = null, chartSession = 0, readOnly = false, aiEnabled = false, showAiNotice = true, onDictationApply, dictationDisabled, onDictationOpenChange, refineRequest, onChange: onPatientChange }: Props): React.ReactElement {
+export function RadiologyReportSection({ snapshot: originalSnapshot, controlsOnly = false, reportKind = 'radiology', chartId = null, chartSession = 0, readOnly = false, aiEnabled = false, showAiNotice = true, onDictationApply, dictationDisabled, onDictationOpenChange, refineRequest, onChange: onPatientChange }: Props): React.ReactElement {
   const { t, i18n } = useTranslation('app');
   const snapshot = reportKind === 'ct' ? ctReportSnapshot(originalSnapshot) : originalSnapshot;
   const onChange = (changes: Partial<PatientInfo>) => onPatientChange(reportKind === 'ct' ? ctReportChanges(changes) : changes);
@@ -76,7 +77,7 @@ export function RadiologyReportSection({ snapshot: originalSnapshot, reportKind 
   }, []);
   const storedLanguage = isAppLanguage(info.radiologyReportLanguage) ? info.radiologyReportLanguage : language;
   const reviewed = isRadiologyReportReviewed(snapshot, storedLanguage);
-  const stale = !!report.trim() && info.radiologyReportBasis !== source;
+  const stale = !!report.trim() && !!info.radiologyReportBasis && info.radiologyReportBasis !== source;
   const guard = (): Guard => ({ epoch: epoch.current, source, report, reviewed: info.radiologyReviewedBasis ?? '', storedLanguage: info.radiologyReportLanguage ?? '', chartId, session: chartSession, language });
   const active = (value: Guard, editing = true) => {
     const live = current.current, data = live.snapshot.patientInfo;
@@ -147,18 +148,18 @@ export function RadiologyReportSection({ snapshot: originalSnapshot, reportKind 
       if (mounted.current && request.epoch === epoch.current) { locked.current = false; setBusy(false); }
     }
   };
-  return <section className="radiology-report patient-form" aria-label={t(reportKey('title'))} aria-busy={busy}>
-    <SectionHeader title={t(reportKey('title'))}>
+  return <section className={controlsOnly ? "radiology-report" : "radiology-report patient-form"} aria-label={t(reportKey('title'))} aria-busy={busy}>
+    {!controlsOnly && <SectionHeader title={t(reportKey('title'))}>
       <p className="patient-form__hint" id={`${fieldId}-help`}>{t(reportKey('editorHelp'))}</p>
-    </SectionHeader>
+    </SectionHeader>}
     <div className="radiology-report__body">
-    <div className="radiographic-findings radiology-report__field">
+    {!controlsOnly && <div className="radiographic-findings radiology-report__field">
       <label className="visually-hidden radiographic-findings__title" htmlFor={`${fieldId}-report`}>{t('radiologyReport.body')}</label>
       <textarea id={`${fieldId}-report`} className="patient-form__textarea surgery-report__textarea radiographic-findings__text radiology-report__editor"
         aria-describedby={`${fieldId}-help`} placeholder={t(reportKey('editorPlaceholder'))} rows={8} maxLength={60000}
         value={draft} disabled={readOnly || busy} onChange={event => update({ radiologyReport: event.target.value,
           radiologyReportBasis: source, radiologyReportLanguage: storedLanguage })} />
-    </div>
+    </div>}
     <div className="radiology-report__actions">
       <label className="patient-form__label">{t('radiologyReport.editorLanguage')}<select className="patient-form__input" disabled={readOnly || busy} value={language} onChange={event => {
         if (readOnly || busy) return;

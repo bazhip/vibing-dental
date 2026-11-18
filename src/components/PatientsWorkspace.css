@@ -9,13 +9,16 @@
 }
 .patients-workspace__content.chart-library-modal {
   --lib-cols: minmax(8rem, 1.7fr) minmax(4.5rem, 0.8fr) minmax(5.5rem, 1fr)
-    minmax(7rem, 1fr) minmax(9rem, 1.2fr);
+    minmax(5.5rem, 0.8fr) minmax(7rem, 1fr) minmax(9rem, 1.2fr);
   --lib-actions: 16rem;
   width: 100%;
   max-width: var(--container-max);
   margin: 0 auto;
   max-height: none;
 }
+.patients-workspace .chart-library__visit-date { grid-column: 1 / 4; }
+.patients-workspace .chart-library__visit-main > .chart-library__cell--finalized { grid-column: 4; }
+.patients-workspace .chart-library__visit-main > :last-child { grid-column: 5 / -1; }
 .patients-workspace__header {
   display: flex;
   align-items: flex-start;
@@ -226,20 +229,21 @@
   .chart-library__remove-recheck { flex-basis: 44px; width: 44px; height: 44px; }
 }
 
-.patients-workspace .chart-library__filter-select { height: 44px; appearance: none; padding-right: 28px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='m3 4.5 3 3 3-3' fill='none' stroke='%23556677' stroke-width='1.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; }
+.patients-workspace .chart-library__filter-select { height: 44px; --select-pad-end: 28px; --select-chevron-inset: 10px; }
 @container patient-directory (max-width: 980px) {
   .patients-workspace .chart-library__row { grid-template-columns: minmax(0, 1fr) auto; }
   .patients-workspace .chart-library__row-main { display: flex; flex-wrap: wrap; align-items: baseline; align-content: center; gap: 6px 12px; padding: 12px; }
   .patients-workspace .chart-library__patient { flex-basis: 100%; white-space: normal; }
   .patients-workspace .chart-library__cell { white-space: normal; }
   .patients-workspace .chart-library__cell--number::before { content: '#'; }
+  .patients-workspace .chart-library__cell--finalized::before,
   .patients-workspace .chart-library__cell--date::before,
   .patients-workspace .chart-library__cell--recall::before { content: attr(data-label) ' '; }
-  .patients-workspace .chart-library__head-main > :is(:nth-child(2), :nth-child(3), :nth-child(4)) { display: none; }
+  .patients-workspace .chart-library__head-main > :is(:nth-child(2), :nth-child(3), :nth-child(4), :nth-child(5)) { display: none; }
   .patients-workspace .chart-library__head-main { padding-block: 0; }
   .patients-workspace .chart-library__row-actions { max-width: 260px; padding: 8px 12px; }
   .patients-workspace .chart-library__visit-main { padding-left: 24px; }
-  .patients-workspace .chart-library__visit-date { flex-basis: 100%; }
+  .patients-workspace .chart-library__visit-date { padding-inline-start: 0; flex-basis: 100%; }
 }
 @container patient-directory (max-width: 600px) {
   .patients-workspace .chart-library__row { grid-template-columns: minmax(0, 1fr); }
@@ -248,7 +252,7 @@
   .patients-workspace .chart-library__controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 12px; }
   .patients-workspace .chart-library__search { grid-column: 1 / -1; min-width: 0; width: 100%; }
   .patients-workspace .chart-library__controls > :is(button, select) { min-width: 0; width: 100%; margin: 0; white-space: normal; font-size: 12px; }
-  .patients-workspace .chart-library__controls > select { padding-left: 8px; padding-right: 24px; }
+  .patients-workspace .chart-library__controls > select { padding-left: 8px; --select-pad-end: 24px; --select-chevron-inset: 8px; }
   .patients-workspace .chart-library__act, .patients-workspace .chart-library__actions-menu summary, .chart-library__due-toggle { min-height: 44px; }
   .patients-workspace .chart-library__group-main .chart-library__cell--recall:not(.chart-library__cell--empty) { flex-basis: 100%; }
 }

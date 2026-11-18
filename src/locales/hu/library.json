@@ -1,0 +1,149 @@
+{
+  "rechecks": {
+    "title": "Kontrollvizsgálatok",
+    "description": "Ma esedékes vagy lejárt kontrollvizsgálatú páciensek. Nyisson meg egy vizitet, küldjön emlékeztetőt, vagy törölje a teljesített kontrollvizsgálat jelzését."
+  },
+  "openLatest": "{{name}} legutóbbi vizitjének megnyitása",
+  "title": "Páciensek",
+  "unnamedPatient": "Névtelen páciens",
+  "search": {
+    "placeholder": "Keresés páciensnév vagy azonosító alapján…",
+    "aria": "Fogászati lapok keresése"
+  },
+  "filters": {
+    "speciesAria": "Szűrés állatfaj szerint",
+    "allSpecies": "Minden állatfaj",
+    "doctorAria": "Szűrés orvos szerint",
+    "allDoctors": "Minden orvos"
+  },
+  "importPdf": "Fogászati PDF importálása",
+  "importPdfTitle": "Az alkalmazással készített fogászati PDF megnyitása további szerkesztéshez",
+  "newPatient": "Új páciens",
+  "newPatientTitle": "A munkalap törlése és teljesen új páciens indítása",
+  "loading": "Betöltés…",
+  "empty": "Még nincs mentett fogászati lap – rögzítés közben automatikusan mentjük őket.",
+  "noMatch": {
+    "search": "Nincs a keresésnek megfelelő páciens.",
+    "due": "Nincs esedékes kontrollvizsgálatú páciens.",
+    "filters": "Nincs a szűrőknek megfelelő fogászati lap."
+  },
+  "table": {
+    "aria": "Páciensek",
+    "patient": "Páciens",
+    "number": "Páciensazonosító",
+    "species": "Állatfaj",
+    "visits": "Vizitek",
+    "updated": "Módosítva",
+    "recheck": "Kontrollvizsgálat",
+    "finalized": "Lezárva"
+  },
+  "due": "Esedékes kontrollvizsgálatok",
+  "dueCount": "Esedékes kontrollvizsgálatok ({{n}})",
+  "dueTitle": "Csak az esedékes vagy lejárt kontrollvizsgálatú páciensek megjelenítése",
+  "recall": {
+    "overdue": "{{date}} · lejárt",
+    "today": "{{date}} · ma"
+  },
+  "deciduousSuffix": "{{species}} · Tejfogazat",
+  "visits_one": "{{count}} vizit",
+  "visits_other": "{{count}} vizit",
+  "visitsExpand_one": "{{count}} vizit – kibontás",
+  "visitsExpand_other": "{{count}} vizit – kibontás",
+  "openPatient": "{{name}} megnyitása",
+  "visit": {
+    "undated": "Dátum nélküli vizit",
+    "openDated": "A(z) {{date}} napi vizit megnyitása",
+    "openUndated": "Dátum nélküli vizit megnyitása",
+    "deleteDated": "{{name}} {{date}} napi vizitjének törlése",
+    "deleteUndated": "{{name}} dátum nélküli vizitjének törlése",
+    "updated": "Módosítva: {{when}}"
+  },
+  "actions": {
+    "menu": "Műveletek",
+    "reminder": "Emlékeztető",
+    "reminderTitle": "Kontrollvizsgálati emlékeztető küldése: {{who}}",
+    "clearRecall": "{{name}} kontrollvizsgálati emlékeztetőjének törlése",
+    "clearRecallTitle": "{{name}} kontrollvizsgálati emlékeztetőjének törlése – például ha a kontrollvizsgálatról nem készült új fogászati lap",
+    "newVisit": "Új vizit",
+    "newVisitTitle": "Új vizit indítása: {{name}}",
+    "history": "Verzióelőzmények",
+    "historyChartTitle": "Ki és mikor mentette {{name}} fogászati lapját",
+    "historyVisitTitle": "Ki és mikor mentette ezt a vizitet",
+    "deleteChart": "{{name}} fogászati lapjának törlése",
+    "loadMore": "További fogászati lapok betöltése",
+    "clearRecallShort": "Kontrolljelzés törlése"
+  },
+  "errors": {
+    "load": "Nem sikerült betölteni a fogászati lapokat. {{error}}",
+    "loadMore": "Nem sikerült további fogászati lapokat betölteni. {{error}}",
+    "open": "Nem sikerült megnyitni a fogászati lapot. {{error}}",
+    "delete": "Nem sikerült törölni a vizitet. {{error}}",
+    "clearRecall": "Nem sikerült törölni a kontrolljelzést. {{error}}"
+  },
+  "deleteDialog": {
+    "title": "Törli a következőt: {{name}}{{when}}?",
+    "titleUnnamed": "Törli ezt a fogászati lapot{{when}}?",
+    "message": "A vizit a rendelő minden tagja számára törlődik a felhőből. Ez nem vonható vissza.",
+    "confirm": "Vizit törlése"
+  },
+  "clearDialog": {
+    "title": "Törli {{name}} kontrolljelzését?",
+    "message": "Akkor használja, ha a kontrollvizsgálat új fogászati lap nélkül megtörtént, vagy nincs rá szükség. A páciens eltűnik az esedékes listáról.",
+    "confirm": "Kontrolljelzés törlése"
+  },
+  "history": {
+    "aria": "Fogászati lap előzményei",
+    "title": "Fogászati lap előzményei",
+    "titleWith": "Előzmények – {{label}}",
+    "openVisit": "Vizit megnyitása",
+    "loading": "Betöltés…",
+    "empty": "Még nincsenek mentett verziók – az előzmények az első mentéstől kezdődnek.",
+    "pick": "Válasszon egy verziót a megtekintéshez.",
+    "loadingVersion": "Verzió betöltése…",
+    "current": "Jelenlegi",
+    "outside": "Valaki a rendelőn kívülről",
+    "automatic": "ToothOps (automatikus)",
+    "baseline": "Az előzmények kezdete előtt · utoljára mentve: {{when}}",
+    "range": "{{start}} – {{end}}",
+    "restore": "Verzió visszaállítása",
+    "restoring": "Visszaállítás…",
+    "restoreHint": "Korábbi verzió visszaállításához válassza a Fogászati lap szerkesztése lehetőséget.",
+    "loadFailed": "Nem sikerült betölteni ezt a verziót. {{error}}",
+    "restoreFailed": "Nem sikerült a visszaállítás. {{error}}",
+    "restored": "Verzió visszaállítva.",
+    "confirmTitle": "Visszaállítja ezt a verziót?",
+    "confirmMessage": "A fogászati lap visszaáll a(z) {{when}} mentett állapotra. A mai verzió megmarad az előzményekben, így visszatérhet hozzá.",
+    "confirmButton": "Visszaállítás"
+  },
+  "templates": {
+    "aria": "Leletsablonok",
+    "title": "Leletsablonok",
+    "saved": "Mentett sablonok",
+    "new": "Új sablon",
+    "empty": "Még nincsenek sablonok – írjon egyet alább és mentse el, vagy használja a „Mentés sablonként” lehetőséget a Kezelési leírás résznél.",
+    "untitled": "Névtelen",
+    "nameLabel": "Sablon neve",
+    "namePlaceholder": "pl. Rutinszerű fogtisztítás (macska)",
+    "bodyLabel": "Lelet szövege",
+    "bodyPlaceholder": "A Kezelési és műtéti leírásba beillesztendő szöveg…",
+    "nameRequired": "Adjon nevet a sablonnak – ez jelenik meg a beszúrási menüben.",
+    "saveFailed": "Nem sikerült menteni a sablont.",
+    "deleteFailed": "Nem sikerült törölni a sablont.",
+    "cloudOff": "A felhő nincs beállítva.",
+    "deleteTitle": "Törli a(z) „{{name}}” sablont?",
+    "deleteMessage": "Ez a sablon a rendelő minden tagja számára törlődik. Ez nem vonható vissza.",
+    "deleteConfirm": "Sablon törlése",
+    "saving": "Mentés…",
+    "saveChanges": "Módosítások mentése",
+    "saveTemplate": "Sablon mentése"
+  },
+  "workspace": {
+    "description": "Keressen a páciensadatok között, tekintse át a viziteket és kezelje a kontrollvizsgálatokat.",
+    "backToVisit": "Vissza az aktuális vizithez"
+  },
+  "finalized": {
+    "yes": "Igen",
+    "no": "Nem",
+    "count": "{{n}} / {{total}}"
+  }
+}

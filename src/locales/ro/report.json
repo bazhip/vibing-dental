@@ -1,0 +1,164 @@
+{
+  "draftLabel": "CIORNĂ — NEVERIFICATĂ",
+  "draftNotice": "Acest raport nu a fost verificat pentru fișa actuală. Informațiile pot fi incomplete.",
+  "abnormalityNoted": "anomalie observată",
+  "after": "După",
+  "alreadyMissingLine": "Deja absenți înainte de această vizită: {{list}}.",
+  "before": "Înainte",
+  "defaultTitle": "Raportul vizitei stomatologice",
+  "examAreas": {
+    "buccal": "Mucoasă bucală",
+    "extraoral": "Extraoral / facial",
+    "lymph": "Ganglioni limfatici",
+    "palate": "Palat",
+    "pharynx": "Faringe / Amigdale",
+    "tongue": "Limbă"
+  },
+  "extractionsLead": "Acești dinți au fost consemnați ca extrași în timpul acestei vizite:",
+  "fieldPhrases": {
+    "calculus": "depuneri de tartru (grad {{value}})",
+    "furcation": "pierdere osoasă între rădăcini (grad {{value}})",
+    "gingivitis": "inflamație gingivală (grad {{value}})",
+    "hyperplasia": "țesut gingival crescut excesiv ({{value}})",
+    "mobility": "dinte mobil (mobilitate {{value}})",
+    "pdstate": "boală parodontală, stadiul {{value}}",
+    "pocket": "pungă gingivală adâncită ({{value}} mm)",
+    "recession": "retracție gingivală ({{value}})"
+  },
+  "fieldPlain": {
+    "calculus": "depuneri de tartru",
+    "furcation": "pierdere osoasă între rădăcini",
+    "gingivitis": "inflamație gingivală",
+    "hyperplasia": "țesut gingival crescut excesiv",
+    "mobility": "dinte mobil",
+    "pdstate": "boală parodontală",
+    "pocket": "pungă gingivală adâncită",
+    "recession": "retracție gingivală"
+  },
+  "headings": {
+    "alreadyMissing": "Deja absenți înainte de această vizită",
+    "diagram_named": "Cavitatea orală a pacientului {{pet}}",
+    "diagram_unnamed": "Cavitatea orală a animalului dumneavoastră",
+    "examNotes": "Alte note de examinare",
+    "extractions": "Dinți extrași în timpul acestei vizite",
+    "findings": "Ce am constatat",
+    "homecare_named": "Îngrijirea dinților pacientului {{pet}} acasă",
+    "homecare_unnamed": "Îngrijirea dinților animalului dumneavoastră acasă",
+    "photos": "Înainte și după",
+    "recheck": "Recontrol recomandat",
+    "teamNote": "Un mesaj de la echipa veterinară"
+  },
+  "homecareTips": {
+    "brushing": "Periajul zilnic cu o pastă de dinți sigură pentru animale este cel mai eficient lucru pe care îl puteți face.",
+    "products": "Hrana dentară, produsele de ros și aditivii pentru apă cu sigiliul VOHC ajută între periaje.",
+    "warningSigns": "Urmăriți respirația urât mirositoare, salivația, scăparea hranei sau frecarea gurii cu laba — sunați-ne dacă observați vreunul dintre aceste semne."
+  },
+  "homecareTipsEquine": {
+    "checkups": "Majoritatea cailor necesită un control dentar la fiecare 6–12 luni; caii tineri și vârstnici pot avea nevoie de îngrijire mai frecventă.",
+    "forage": "Asigurați furaj fibros din abundență — fânul cu tulpini lungi și pășunatul contribuie la uzura uniformă a dinților.",
+    "warningSigns": "Urmăriți scăparea hranei, scăderea în greutate, mestecatul lent, scuturarea capului sau rezistența la zăbală, respirația urât mirositoare ori secrețiile nazale — sunați-ne dacă observați vreunul dintre aceste semne."
+  },
+  "intro": "Acest raport rezumă informațiile consemnate pentru vizita stomatologică a pacientului {{pet}}. Adresați întrebările echipei veterinare.",
+  "legendFilled": "colorat = absent înainte de această vizită",
+  "legendNumbers": "Numerele corespund constatărilor de mai jos",
+  "legendRemoved": "✕ roșu = extras astăzi",
+  "noProblems": "Nu au fost consemnate constatări stomatologice pentru această vizită.",
+  "ourPractice": "cabinetul nostru",
+  "ownerLabel": "Proprietar",
+  "patientLabel": "Pacient",
+  "preparedBy": {
+    "byTeam": "Pregătit de echipa dumneavoastră veterinară.",
+    "byTeamAtPractice": "Pregătit de echipa dumneavoastră veterinară, {{practice}}.",
+    "doctor": "Pregătit de {{doctor}}.",
+    "doctorAtPractice": "Pregătit de {{doctor}}, {{practice}}."
+  },
+  "removedToday": "extras astăzi",
+  "species": {
+    "canine": "Câine",
+    "canine-deciduous": "Cățel",
+    "feline": "Pisică",
+    "feline-deciduous": "Pisoi",
+    "equine": "Cal"
+  },
+  "tooth": {
+    "deciduous": "de lapte",
+    "kinds": {
+      "canine": "canin",
+      "incisor": "incisiv",
+      "molar": "molar",
+      "premolar": "premolar"
+    },
+    "ordinals": {
+      "first": "primul",
+      "fourth": "al patrulea",
+      "second": "al doilea",
+      "third": "al treilea"
+    },
+    "sides": {
+      "lowerLeft": "inferior stâng",
+      "lowerRight": "inferior drept",
+      "upperLeft": "superior stâng",
+      "upperRight": "superior drept"
+    }
+  },
+  "yourPet": "animalul dumneavoastră",
+  "yourTeam": "echipa dumneavoastră veterinară",
+  "plainCodes": {
+    "T/FX": "un dinte fracturat",
+    "T/FX/EI": "o fisură în smalțul dintelui",
+    "T/FX/EF": "un dinte ciobit (doar smalțul)",
+    "T/FX/UCF": "un dinte fracturat (nervul nu este expus)",
+    "T/FX/CCF": "un dinte fracturat cu nervul expus",
+    "T/FX/UCRF": "un dinte fracturat sub marginea gingiei (nervul nu este expus)",
+    "T/FX/CCRF": "un dinte fracturat sub marginea gingiei, cu nervul expus",
+    "T/FX/RF": "o rădăcină dentară fracturată",
+    "T/PE": "nervul dintelui este expus",
+    "T/NV": "un dinte care nu mai este viu",
+    "TR": "resorbție dentară (organismul descompune dintele)",
+    "T/A": "un dinte avulsionat",
+    "T/U": "un dinte care nu a erupt prin gingie",
+    "T/I": "un dinte blocat sub gingie",
+    "DT": "un dinte de lapte",
+    "AT": "uzură dentară prin frecarea dinților între ei",
+    "AB": "uzură dentară prin mestecarea obiectelor dure",
+    "E/D": "un defect al smalțului dentar",
+    "E/H": "smalț subțire sau slab format",
+    "CA": "o carie dentară",
+    "GR": "retracție gingivală",
+    "GH": "țesut gingival crescut excesiv",
+    "OM": "o formațiune în cavitatea orală",
+    "B": "o biopsie (probă de țesut pentru laborator)",
+    "B/I": "o biopsie (probă din formațiune pentru laborator)",
+    "B/E": "îndepărtarea formațiunii pentru analize de laborator",
+    "X": "dinte extras",
+    "XS": "dinte extras pe secțiuni",
+    "XSS": "dinte extras chirurgical",
+    "RCT": "tratament de canal",
+    "VPT": "tratament pentru menținerea vitalității dintelui",
+    "PRO": "curățare profesională (detartraj și lustruire)"
+  },
+  "summary": {
+    "gingivitis": "Inflamație gingivală la {{extent}}{{severity}}",
+    "calculus": "Tartru la {{extent}}{{severity}}",
+    "recession": "Retracție gingivală la {{extent}}",
+    "hyperplasia": "Țesut gingival crescut excesiv la {{extent}}"
+  },
+  "extent": {
+    "most": "majoritatea dinților",
+    "many": "mulți dinți",
+    "some": "unii dinți"
+  },
+  "severity": {
+    "mild": "ușor",
+    "moderate": "moderat",
+    "severe": "sever",
+    "single": " ({{level}})",
+    "range": " (de la {{from}} la {{to}})"
+  },
+  "otherFindings": "Alte constatări",
+  "dischargeSource": {
+    "dischargeMedications": "Medicamente la externare",
+    "dischargeInstructions": "Instrucțiuni la externare",
+    "dischargeFollowUp": "Monitorizare după externare"
+  }
+}

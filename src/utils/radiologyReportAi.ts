@@ -11,7 +11,7 @@ import { hasRadiologySource } from './radiologyReportState';
 
 const sections = ['clinical_history', 'technique', 'findings', 'impression', 'recommendations', 'clinical_question'] as const;
 const headingKeys = ['headingHistory', 'headingTechnique', 'headingFindings', 'headingImpression', 'headingRecommendations', 'headingQuestion'] as const;
-const languageNames: Record<AppLanguage, string> = { en: 'English', fr: 'French', de: 'German', it: 'Italian', es: 'Spanish' };
+const languageNames: Record<AppLanguage, string> = { en: 'English', fr: 'French', de: 'German', it: 'Italian', es: 'Spanish', hu: 'Hungarian', ro: 'Romanian', zh: 'Simplified Chinese', ar: 'Arabic' };
 const MAX_SOURCE = 90000, MAX_SECTION = 16000, MAX_REPORT = 60000;
 const object = (value: unknown): value is Record<string, unknown> => !!value && typeof value === 'object' && !Array.isArray(value);
 const TOOL: Anthropic.Messages.Tool = {

@@ -1,0 +1,86 @@
+{
+  "header": {
+    "title": {
+      "canine": "Kutya fogászati lapja",
+      "canineDeciduous": "Kutya tejfogazatának fogászati lapja",
+      "feline": "Macska fogászati lapja",
+      "felineDeciduous": "Macska tejfogazatának fogászati lapja",
+      "equine": "Ló fogászati lapja"
+    },
+    "subtitle": "Parodontális állapotfelmérés és kezelési terv",
+    "tech": "Asszisztens: {{name}}"
+  },
+  "patient": {
+    "title": "Páciens adatai",
+    "date": "Dátum",
+    "patient": "Páciens",
+    "pid": "PID",
+    "complaint": "Fő panasz"
+  },
+  "exam": {
+    "title": "Szájüregi vizsgálat lelete",
+    "normal": "ÉP",
+    "abnormal": "KÓROS",
+    "comment": "MEGJEGYZÉS",
+    "items": {
+      "extraoral": "Szájüregen kívüli terület/arc",
+      "lymph": "Nyirokcsomók",
+      "buccal": "Pofanyálkahártya",
+      "tongue": "Nyelv",
+      "palate": "Szájpadlás",
+      "pharynx": "Garat/mandulák"
+    },
+    "additional": "További vizsgálati területek",
+    "alsoNormal": "Ép: {{areas}}",
+    "moreAreas_one": "+{{count}} további terület az alkalmazásban",
+    "moreAreas_other": "+{{count}} további terület az alkalmazásban"
+  },
+  "grid": {
+    "maxilla": "Felső fogív",
+    "mandible": "Alsó fogív"
+  },
+  "codes": {
+    "title": "Használt kódok",
+    "more": "+{{n}} további"
+  },
+  "treatment": {
+    "title": "Kezelési és műtéti leírás",
+    "radiographicTitle": "Röntgenlelet",
+    "ctTitle": "CT-lelet",
+    "continued": "… folytatás – a teljes lelet be van ágyazva ebbe a fájlba (töltse vissza az alkalmazásba)."
+  },
+  "anesthesia": {
+    "title": "Érzéstelenítés · Idegblokádok",
+    "nerveBlock": "Idegblokád",
+    "nerveBlockWith": "Idegblokád: {{drug}}",
+    "anesthetic": "Érzéstelenítőszer",
+    "anesthetics": "Érzéstelenítőszerek",
+    "right": "JOBB",
+    "left": "BAL",
+    "dose": "{{value}} mL",
+    "other": "Egyéb",
+    "blocks": {
+      "infraorbital": "Infraorbitális",
+      "caudalMaxillary": "Kaudális maxilláris",
+      "inferiorAlveolar": "Alsó alveoláris",
+      "mental": "Mentális"
+    }
+  },
+  "footer": {
+    "generated": "Létrehozva: {{at}}",
+    "pid": "PID {{id}}",
+    "pageOf": "{{n}}. oldal / {{total}}"
+  },
+  "images": {
+    "title": "Képek és röntgenfelvételek",
+    "titleRange": "Képek és röntgenfelvételek ({{range}} / {{total}})",
+    "failed": "A kép nem tölthető be",
+    "photo": "Fénykép",
+    "radiograph": "Röntgenfelvétel",
+    "tooth": "{{triadan}}. fog"
+  },
+  "continuation": {
+    "title": "Klinikai feljegyzések",
+    "notice": "A részletek a következő oldalakon folytatódnak."
+  }
+}

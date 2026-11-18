@@ -85,10 +85,10 @@ it('keeps explicit visit sources available to AI even with a manual report overr
   expect(facts).toContain('Manual note');
 });
 it('uses visible radiology report text instead of superseded legacy findings', () => {
-  const value = { ...snap, patientInfo: { ...snap.patientInfo, radiographicFindings: 'Old hidden 108 finding', radiologyReport: '409: corrected possible resorption' } };
+  const value = { ...snap, patientInfo: { ...snap.patientInfo, radiographicFindings: '409: corrected possible resorption', radiologyReport: 'Old hidden 108 finding' } };
   expect(ownerReportFacts(value)).toContain('409: corrected possible resorption');
   expect(ownerReportFacts(value)).not.toContain('Old hidden');
-  value.patientInfo.radiologyReport = '';
+  value.patientInfo.radiographicFindings = '';
   expect(ownerReportFacts(value)).not.toContain('Old hidden');
 });
 it('includes recorded CT text separately from x-ray observations', () => {

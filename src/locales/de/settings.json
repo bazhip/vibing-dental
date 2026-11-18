@@ -147,7 +147,13 @@
       "scoreTooth": "Nach unten zum nächsten Zahn gehen",
       "scoreToothHint": "um einen Befund im ganzen Gebiss zu bewerten",
       "scoreStay": "Aktuelle Zelle ausgewählt lassen",
-      "columns": "Sichtbare Messwerte"
+      "columns": "Sichtbare Messwerte",
+      "scorePicker": "Bewertungsschaltflächen im Raster",
+      "scorePickerOptions": {
+        "touch": "Nur bei Touchbedienung",
+        "always": "Immer anzeigen",
+        "never": "Nie anzeigen"
+      }
     },
     "beside": {
       "title": "Befunde im Zahnschema",
@@ -187,7 +193,9 @@
       "grid": "Befundraster einbeziehen",
       "gridHint": "Erforderlich bei ausgeblendeten Diagrammbefunden, damit Messwerte im PDF erhalten bleiben.",
       "images": "Bilder einbeziehen",
-      "imagesHint": "(4 pro Seite, nach der Akte)"
+      "imagesHint": "(4 pro Seite, nach der Akte)",
+      "radiographicReport": "Röntgenbericht einbeziehen",
+      "ctReport": "CT-Bericht einbeziehen"
     },
     "noteDevice": "Persönliche Einstellungen werden automatisch auf diesem Gerät gespeichert.",
     "spaceMovesDownHint": "Schnell, um eine Reihe von Tiefen anzusagen",

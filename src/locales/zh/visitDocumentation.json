@@ -1,0 +1,62 @@
+{
+  "consultation": {
+    "title": "诊疗",
+    "purpose": "在共享的检查记录和患者病历中，记录本次就诊原因、病史、评估和计划。",
+    "review": "审核临床病历"
+  },
+  "discharge": {
+    "title": "出院",
+    "purpose": "记录本次就诊时讨论的用药、护理指导和随访安排。",
+    "review": "审核宠物主人报告"
+  },
+  "sourceNotice": "记录的措辞将保留原样。分享前，请检查面向客户的语言。",
+  "treatmentRecap": "治疗报告",
+  "noTreatment": "尚未记录治疗报告。",
+  "fields": {
+    "complaint": {
+      "label": "就诊原因",
+      "helper": "与本次就诊的患者详细信息一同共享。"
+    },
+    "consultationHistory": {
+      "label": "病史",
+      "helper": "记录所提供的病史和相关背景。"
+    },
+    "consultationAssessment": {
+      "label": "评估",
+      "helper": "记录您的评估，包括任何不确定之处。"
+    },
+    "consultationPlan": {
+      "label": "计划",
+      "helper": "记录已讨论的计划；请勿暗示计划中的诊疗已经完成。"
+    },
+    "dischargeMedications": {
+      "label": "用药",
+      "helper": "仅输入已记录的药物和剂量，并保留任何不确定之处。"
+    },
+    "dischargeInstructions": {
+      "label": "指导",
+      "helper": "记录本次就诊时讨论的护理指导。"
+    },
+    "dischargeFollowUp": {
+      "label": "随访",
+      "helper": "记录已讨论的随访安排；已预约的复查请使用现有的复诊日期。"
+    },
+    "gpVitals": {
+      "label": "生命体征",
+      "helper": "记录测量值及其单位，并注明任何不确定之处。"
+    },
+    "gpPhysicalExam": {
+      "label": "体格检查",
+      "helper": "仅记录观察到或报告的检查所见。"
+    },
+    "gpDiagnostics": {
+      "label": "诊断检查",
+      "helper": "记录诊断检查结果和待完成的检查，并保留不确定之处。"
+    }
+  },
+  "gp-exam": {
+    "title": "全科检查",
+    "purpose": "记录本次就诊的生命体征、体格检查和诊断检查结果。",
+    "review": "审核临床病历"
+  }
+}

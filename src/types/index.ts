@@ -287,19 +287,19 @@ export interface PatientInfo {
   /** Radiographic findings (free text). Optional: absent on charts saved
    *  before the field existed. */
   radiographicFindings?: string;
-  /** Optional study context and separate reviewable report; original findings stay unchanged. */
+  /** CT report (free text). Optional: absent on charts saved before the
+   *  field existed. */
+  ctReport?: string;
+  /** Optional authoring/review metadata retained for existing dictated reports. */
   radiologyHistory?: string;
   radiologyTechnique?: string;
   radiologyQuestion?: string;
   radiologyReport?: string;
-  radiologyReportLanguage?: 'en' | 'fr' | 'de' | 'it' | 'es';
-  /** Exact local source/review bases, not provider or authorization evidence. */
+  radiologyReportLanguage?: AppLanguage;
   radiologyReportBasis?: string;
   radiologyReviewedBasis?: string;
   radiologyReportGeneratedAt?: string;
-  /** Independent computed-tomography report; absent on older visits. */
-  ctReport?: string;
-  ctReportLanguage?: 'en' | 'fr' | 'de' | 'it' | 'es';
+  ctReportLanguage?: AppLanguage;
   ctReportBasis?: string;
   ctReviewedBasis?: string;
   ctReportGeneratedAt?: string;
@@ -433,8 +433,9 @@ export interface ClinicalDictationSource {
 }
 
 export interface ChartSnapshot {
-  /** Raw dictation provenance: storage only, excluded from reports and PDF stashes. */
   clinicalDictations?: ClinicalDictationSource[];
+  /** Explicitly closed for editing; absent on unfinalized records. */
+  finalizedAt?: string;
   /** Snapshot schema version — absent on charts saved before the field
    *  existed (treat as 1). Bump when the shape changes incompatibly so
    *  loaders have something to key migrations on. */

@@ -1,0 +1,6 @@
+/* Below shared save/conflict dialogs (1200), above Documents (1100). */
+.pdf-export-warning-overlay { z-index: 1190; }
+.pdf-export-warning { box-sizing: border-box; }
+.pdf-export-warning__actions { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem; }
+.pdf-export-warning__actions .ui-btn { min-height: 44px; height: auto; padding: 0.65rem 1rem; line-height: 1.35; overflow-wrap: anywhere; }
+.pdf-export-warning__actions .ui-btn:disabled { opacity: 0.6; cursor: wait; }

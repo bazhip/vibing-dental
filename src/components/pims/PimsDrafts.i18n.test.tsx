@@ -1,3 +1,4 @@
+import { LANGUAGE_NAMES } from '../../i18n/config';
 import { sampleOwnerReportSnapshot } from '../../utils/ownerReportSample';
 vi.mock('../../utils/radiologyReportAi',()=>({draftRadiologyReport:async()=> '108: 4.5 mm'}));
 vi.mock('../../native/aiConsent',()=>({ensureAiConsent:async()=>true}));
@@ -21,7 +22,7 @@ it('translates draft composition, review, transfer and source labels', async () 
   render(<PimsDrafts chartId="chart" backend={backend} />);
   fireEvent.click(screen.getByRole('button', { name: i18n.t('pims:drafts.open') }));
   await screen.findByLabelText(i18n.t('pims:drafts.body'));
-  expect(findUntranslated(document.body, ['English', 'Français', 'Deutsch', 'Italiano', 'Español'])).toEqual([]);
+  expect(findUntranslated(document.body, [...Object.values(LANGUAGE_NAMES)])).toEqual([]);
 });
 
 it('translates the prepared Instinct destination and explicit confirmation', async () => {
@@ -36,7 +37,7 @@ it('translates the prepared Instinct destination and explicit confirmation', asy
   fireEvent.click(screen.getByRole('button', { name: i18n.t('pims:drafts.open') }));
   fireEvent.click(await screen.findByRole('button', { name: i18n.t('pims:drafts.instinct.prepare') }));
   await screen.findByLabelText(i18n.t('pims:drafts.instinct.checked'));
-  expect(findUntranslated(document.body, ['English', 'Français', 'Deutsch', 'Italiano', 'Español', 'P-1', '108: 4.5 mm'])).toEqual([]);
+  expect(findUntranslated(document.body, [...Object.values(LANGUAGE_NAMES), 'P-1', '108: 4.5 mm'])).toEqual([]);
 });
 
 it.each(['filled', 'blocked', 'unknown'] as const)('translates radiology target review and %s outcomes', async state => {
@@ -54,10 +55,10 @@ it.each(['filled', 'blocked', 'unknown'] as const)('translates radiology target 
   fireEvent.click(await screen.findByRole('button', { name: i18n.t('pims:drafts.radiologyAutofill.review') }));
   fireEvent.change(await screen.findByLabelText(i18n.t('pims:drafts.radiologyAutofill.destination')), { target: { value: '21' } });
   fireEvent.click(await screen.findByLabelText(i18n.t('pims:drafts.radiologyAutofill.checked')));
-  expect(findUntranslated(document.body, ['English', 'Français', 'Deutsch', 'Italiano', 'Español', 'Milo', 'P-1', '108: 4.5 mm'])).toEqual([]);
+  expect(findUntranslated(document.body, [...Object.values(LANGUAGE_NAMES), 'Milo', 'P-1', '108: 4.5 mm'])).toEqual([]);
   fireEvent.click(screen.getByRole('button', { name: i18n.t('pims:drafts.radiologyAutofill.fill') }));
   await screen.findByText(i18n.t(`pims:drafts.radiologyAutofill.${state}`));
-  expect(findUntranslated(document.body, ['English', 'Français', 'Deutsch', 'Italiano', 'Español', 'Milo', 'P-1', '108: 4.5 mm'])).toEqual([]);
+  expect(findUntranslated(document.body, [...Object.values(LANGUAGE_NAMES), 'Milo', 'P-1', '108: 4.5 mm'])).toEqual([]);
 });
 
 it('translates radiology AI generation and its unapplied preview',async()=>{
@@ -69,5 +70,5 @@ it('translates radiology AI generation and its unapplied preview',async()=>{
  fireEvent.change(await screen.findByLabelText(i18n.t('pims:drafts.kind')),{target:{value:'radiology'}});
  fireEvent.click(screen.getByRole('button',{name:i18n.t('pims:drafts.aiRadiology.generate')}));
  await screen.findByLabelText(i18n.t('pims:drafts.aiRadiology.preview'));
- expect(findUntranslated(document.body,['English','Français','Deutsch','Italiano','Español','108: 4.5 mm'])).toEqual([]);
+ expect(findUntranslated(document.body,[...Object.values(LANGUAGE_NAMES),'108: 4.5 mm'])).toEqual([]);
 });

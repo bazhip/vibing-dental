@@ -30,6 +30,8 @@ import {
 import { createPenFilter } from './toothDiagram/penFilter';
 
 // SF Symbol names (not text).
+const DIAGRAM_DIRECTION = 'ltr' as const;
+
 const XMARK_ICON = 'xmark';
 
 // One filter for the whole session: once Apple Pencil has drawn on any
@@ -861,7 +863,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
 
   // Comments that arrive without being typed — mirrored from the Charting
   // grid, or added by voice autofill — never get focus, so the on-blur fit
-  // never runs for them. Fit any with text but no size (new, or re-texted)
+  // never runs for them. Fit any without a size (new, or re-texted)
   // once the diagram is visible; the side stacks then re-pack around the
   // real heights. Measurement needs real layout, so a hidden section just
   // waits for its next render. Skips the comment being typed in (that one
@@ -873,7 +875,9 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
     const pending = comments.filter((c) => {
       if (c.width != null && c.height != null) return false;
       if (isGridComment(c)) return true;
-      if (!c.text.trim()) return false;
+      // A box just added by clicking a tooth is empty: fit it to its label
+      // and one line now, not on the first keystroke (no text to race).
+      if (!c.text.trim()) return true;
       const el = wrapperRef.current?.querySelector(`.diagram-comment[data-comment-id="${c.id}"]`);
       return !(el && focused && el.contains(focused));
     });
@@ -1097,7 +1101,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
 
   return (
     <div className={`tooth-diagram-wrapper${readOnly ? ' tooth-diagram-wrapper--readonly' : ''}`} ref={wrapperRef}>
-    <svg
+    <svg direction={DIAGRAM_DIRECTION}
       ref={svgRef}
       viewBox={`${viewBoxX} ${viewBoxY} ${viewBoxWidth} ${viewBoxHeight}`}
       className="tooth-diagram"

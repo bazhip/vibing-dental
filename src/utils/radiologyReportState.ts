@@ -56,7 +56,7 @@ export function radiologyReportText(snapshot: ChartSnapshot, lng?: AppLanguage, 
 
 /** Current visible radiology text, including an explicit clear, owns downstream output. */
 export function radiologyRecordedText(info: PatientInfo): string {
-  return typeof info.radiologyReport === 'string' ? info.radiologyReport : text(info.radiographicFindings);
+  return typeof info.radiographicFindings === 'string' ? info.radiographicFindings : text(info.radiologyReport);
 }
 
 /** A stored editor value, including an explicit empty string, owns the text.
@@ -73,12 +73,13 @@ export function radiologyEditorText(snapshot: ChartSnapshot, lng: AppLanguage = 
 }
 
 export function appendRadiologyDictation(snapshot: ChartSnapshot, value: string, lng: AppLanguage): Partial<ChartSnapshot['patientInfo']> {
-  const draft = radiologyEditorText(snapshot, lng), findings = text(snapshot.patientInfo.radiographicFindings);
+  const draft = radiologyRecordedText(snapshot.patientInfo), findings = draft;
   return { radiologyReport: draft ? `${draft}\n${value}` : value,
     radiographicFindings: findings ? `${findings}\n${value}` : value,
     radiologyReportLanguage: lng, radiologyReviewedBasis: '' };
 }
 
 export function hasRadiologySource(snapshot: ChartSnapshot): boolean {
-  return !!radiologyRecordedText(snapshot.patientInfo).trim();
+  const info = snapshot.patientInfo;
+  return !!(typeof info.radiologyReport === 'string' ? info.radiologyReport : text(info.radiographicFindings)).trim();
 }

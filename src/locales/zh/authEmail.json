@@ -1,0 +1,88 @@
+{
+  "common": {
+    "fallback": "如果按钮无法使用，请将此链接复制到浏览器中：",
+    "tagline": "兽医牙科图表记录"
+  },
+  "confirmSignup": {
+    "subject": "确认您的 ToothOps 账户",
+    "title": "确认您的邮箱",
+    "preheader": "请确认邮箱以激活您的 ToothOps 账户。",
+    "body": "欢迎使用 ToothOps。请确认 <strong>{{email}}</strong> 以激活您的诊所账户，随后即可自动登录。",
+    "button": "确认邮箱并登录",
+    "ignore": "没有注册 ToothOps？您可以忽略此邮件。只有使用此链接后，账户才会激活。"
+  },
+  "resetPassword": {
+    "subject": "重置您的 ToothOps 密码",
+    "title": "重置密码",
+    "preheader": "重置您的 ToothOps 账户密码。",
+    "body": "我们收到了重置 <strong>{{email}}</strong> 密码的请求。此链接有效期为一小时。",
+    "button": "设置新密码",
+    "ignore": "并非您本人请求？请忽略此邮件，您的密码将保持不变。"
+  },
+  "changeEmail": {
+    "subject": "确认您的 ToothOps 新邮箱",
+    "title": "确认新邮箱",
+    "preheader": "确认您 ToothOps 账户的新电子邮箱地址。",
+    "body": "请确认以 <strong>{{newEmail}}</strong> 替换 <strong>{{email}}</strong>，作为您 ToothOps 账户的登录邮箱。",
+    "button": "确认新邮箱",
+    "ignore": "并非您请求此更改？请忽略此邮件，您的登录邮箱将保持不变。"
+  },
+  "invite": {
+    "subject": "您受邀加入 ToothOps",
+    "title": "接受邀请",
+    "preheader": "您受邀创建 ToothOps 账户。",
+    "body": "您受邀使用 <strong>{{email}}</strong> 创建 ToothOps 账户。接受邀请后，即可设置密码并开始使用。",
+    "button": "接受邀请",
+    "ignore": "没有预期会收到此邀请？您可以忽略此邮件。只有使用此链接后，才会创建账户。"
+  },
+  "magiclink": {
+    "subject": "您的 ToothOps 登录链接",
+    "title": "登录 ToothOps",
+    "preheader": "用于登录 ToothOps 的链接。",
+    "body": "请使用下方按钮以 <strong>{{email}}</strong> 身份登录 ToothOps。此链接只能使用一次。",
+    "button": "登录",
+    "ignore": "并非您尝试登录？请忽略此邮件，没有此链接便无法登录。"
+  },
+  "reauthentication": {
+    "subject": "您的 ToothOps 验证码",
+    "title": "验证您的身份",
+    "preheader": "您的 ToothOps 验证码。",
+    "body": "请在 ToothOps 中输入此验证码以验证您的身份：",
+    "ignore": "并非您请求此验证码？请忽略此邮件，并考虑更改密码。"
+  },
+  "notice": {
+    "footnote": "如果并非您本人进行此更改，请立即重置密码。",
+    "passwordChanged": {
+      "subject": "您的 ToothOps 密码已更改",
+      "body": "您的 ToothOps 账户密码已更改。"
+    },
+    "emailChanged": {
+      "subject": "您的 ToothOps 登录邮箱已更改",
+      "body": "您的 ToothOps 账户登录邮箱已更改。"
+    },
+    "phoneChanged": {
+      "subject": "您的 ToothOps 电话号码已更改",
+      "body": "您的 ToothOps 账户电话号码已更改。"
+    },
+    "identityLinked": {
+      "subject": "您的 ToothOps 账户已添加登录方式",
+      "body": "您的 ToothOps 账户已关联新的登录方式。"
+    },
+    "identityUnlinked": {
+      "subject": "您的 ToothOps 账户已移除登录方式",
+      "body": "您的 ToothOps 账户已移除一种登录方式。"
+    },
+    "mfaEnrolled": {
+      "subject": "您的 ToothOps 账户已启用双重身份验证",
+      "body": "您的 ToothOps 账户已添加双重身份验证方式。"
+    },
+    "mfaUnenrolled": {
+      "subject": "您的 ToothOps 账户已移除双重身份验证",
+      "body": "您的 ToothOps 账户已移除一种双重身份验证方式。"
+    },
+    "generic": {
+      "subject": "您的 ToothOps 账户已更新",
+      "body": "您的 ToothOps 账户的一项安全设置已更改。"
+    }
+  }
+}

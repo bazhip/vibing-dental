@@ -52,3 +52,15 @@ it('shows the patient ID and visit date instead of the owner', () => {
   expect(luna).not.toHaveTextContent('Sarah');
   expect(luna).not.toHaveTextContent('PID');
 });
+
+
+it('translates saving and saved beside the active patient name', async () => {
+  await installPseudoLocale();
+  const props = { tabs, activeId: 'a', busy: false, editing: true, onSelect: vi.fn(), onClose: vi.fn(), onAdd: vi.fn() };
+  const { container, rerender } = render(<AnimalTabs {...props} saveStatus="saving" />);
+  expect(screen.getByRole('status')).toHaveTextContent('⟦Saving…⟧');
+  expect(findUntranslated(container, ['Luna', 'Oliver'])).toEqual([]);
+  rerender(<AnimalTabs {...props} saveStatus="saved" />);
+  expect(screen.getByRole('status')).toHaveTextContent('⟦Saved⟧');
+  expect(findUntranslated(container, ['Luna', 'Oliver'])).toEqual([]);
+});

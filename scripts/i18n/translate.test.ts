@@ -10,7 +10,7 @@ import { runRehash, runTranslate } from './translate';
 import type { Translator } from './work';
 import { parseReply } from './claudeTranslator';
 
-const LNGS = ['fr', 'de', 'it', 'es'];
+const LNGS = ['fr', 'de', 'it', 'es', 'hu', 'ro', 'zh', 'ar'];
 let dir: string;
 
 // Test seeding helper: unlike writeCatalogs it also writes English.

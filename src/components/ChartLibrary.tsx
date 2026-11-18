@@ -380,6 +380,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                   <span role="columnheader">{t('table.number')}</span>
                   <span role="columnheader">{t('table.species')}</span>
                   <span role="columnheader">{t('table.visits')}</span>
+                  <span role="columnheader">{t('table.finalized')}</span>
                   {heads.updated}
                   {heads.recall}
                 </div>
@@ -432,6 +433,9 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                           </span>
                           <span role="cell" className="chart-library__cell chart-library__cell--visits">
                             {t('visits', { count: g.visits.length })}
+                          </span>
+                          <span role="cell" data-label={t('table.finalized')} className="chart-library__cell chart-library__cell--finalized">
+                            {multi ? t('finalized.count', { n: g.visits.filter(v => !!v.finalized_at).length, total: g.visits.length }) : t(only.finalized_at ? 'finalized.yes' : 'finalized.no')}
                           </span>
                           <span role="cell" data-label={t('table.updated')} className="chart-library__cell chart-library__cell--date">
                             {formatDate(g.latestUpdated)}
@@ -503,6 +507,9 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                             >
                               <span role="cell" className="chart-library__visit-date">
                                 {v.chart_date ? formatChartDate(v.chart_date) : t('visit.undated')}
+                              </span>
+                              <span role="cell" data-label={t('table.finalized')} className="chart-library__cell chart-library__cell--finalized">
+                                {t(v.finalized_at ? 'finalized.yes' : 'finalized.no')}
                               </span>
                               <span role="cell" className="chart-library__cell">
                                 {showDoctors && doctorById.get(v.created_by) && (

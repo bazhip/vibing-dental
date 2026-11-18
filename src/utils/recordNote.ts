@@ -64,7 +64,7 @@ export const HEADING_KEYS = {
   findings: 'media:recordNote.h.findings',
   procedures: 'media:recordNote.h.procedures',
   radiographs: 'media:recordNote.h.radiographs',
-  ctReport: 'app:ctReport.title',
+  ct: 'media:recordNote.h.ct',
   treatment: 'forms:report.title',
   dischargeMedications: 'media:recordNote.h.dischargeMedications',
   dischargeInstructions: 'media:recordNote.h.dischargeInstructions',
@@ -196,8 +196,8 @@ export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): Record
   ]);
 
   // 6–8. Free text and recheck
-  add('radiographs', textLines(radiologyRecordedText(info)), t(typeof info.radiologyReport === 'string' ? 'app:radiologyReport.title' : HEADING_KEYS.radiographs));
-  add('ctReport', textLines(ctRecordedText(info)));
+  add('radiographs', textLines(radiologyRecordedText(info)));
+  add('ct', textLines(info.ctReport));
   add('treatment', textLines(info.treatmentReport));
   add('dischargeMedications', textLines(info.dischargeMedications));
   add('dischargeInstructions', textLines(info.dischargeInstructions));
@@ -248,16 +248,9 @@ export function recordNoteBasis(snapshot: ChartSnapshot): string {
     snapshot.species, snapshot.logo,
     i.patientName, i.patientNumber, i.date, i.doctor, i.tech, i.complaint,
     i.nerveBlocks, i.customAnesthesia ?? null, i.exam, i.customExam ?? null,
-    radiologyRecordedText(i), i.treatmentReport, i.recallDate,
-    i.consultationHistory ?? '',
-    i.consultationAssessment ?? '',
-    i.consultationPlan ?? '',
-    i.dischargeMedications ?? '',
-    i.dischargeInstructions ?? '',
-    i.dischargeFollowUp ?? '',
-    ...(i.gpVitals || i.gpPhysicalExam || i.gpDiagnostics ? [i.gpVitals ?? '', i.gpPhysicalExam ?? '', i.gpDiagnostics ?? ''] : []),
-    ...(typeof i.ctReport === 'string' ? [i.ctReport] : []),
-
+    radiologyRecordedText(i), i.ctReport ?? '', i.treatmentReport, i.recallDate,
+    ...([i.consultationHistory, i.consultationAssessment, i.consultationPlan, i.dischargeMedications, i.dischargeInstructions, i.dischargeFollowUp, i.gpVitals, i.gpPhysicalExam, i.gpDiagnostics].some(value => value?.trim())
+      ? [i.consultationHistory ?? '', i.consultationAssessment ?? '', i.consultationPlan ?? '', i.dischargeMedications ?? '', i.dischargeInstructions ?? '', i.dischargeFollowUp ?? '', i.gpVitals ?? '', i.gpPhysicalExam ?? '', i.gpDiagnostics ?? ''] : []),
     snapshot.toothData.map((td) => GRID_FIELDS.map((f) => td[f] ?? '')),
     snapshot.preMarks, snapshot.postMarks,
     (snapshot.preComments ?? []).map((c) => [c.id, c.text, c.anchorTriadan]),

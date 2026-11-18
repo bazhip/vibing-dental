@@ -1,3 +1,4 @@
+import { isAppLanguage } from '../i18n/config';
 import React from 'react';
 import type { ClinicalDictationSource } from '../types';
 import { normalizeClinicalDictations, appendClinicalDictationSource } from '../utils/clinicalDictationSources';
@@ -44,6 +45,8 @@ import { LocalizedError } from '../utils/apiErrors';
  * with layout + capture-for-preview, not state plumbing.
  */
 export interface UseChartStateReturn {
+  finalizedAt: string | null;
+  setFinalizedAt: React.Dispatch<React.SetStateAction<string | null>>;
   // ----- Patient + species + logo --------------------------------------
   patientInfo: PatientInfo;
   setPatientInfo: React.Dispatch<React.SetStateAction<PatientInfo>>;
@@ -120,8 +123,8 @@ export interface UseChartStateReturn {
    *  cloud) and adopt its cloud id. */
   applySnapshot: (snapshot: ChartSnapshot, id: string) => void;
 
-  /** True when the working chart came from a saved chart (cloud/PDF) —
-   *  it opens read-only and needs a deliberate manual save. */
+  /** True when the working chart was opened from a saved chart.
+   *  Read-only status is controlled separately by finalizedAt. */
   openedExisting: boolean;
   setOpenedExisting: React.Dispatch<React.SetStateAction<boolean>>;
 
@@ -207,11 +210,11 @@ function normalizeRadiologyInfo(info: PatientInfo): PatientInfo {
     const value: unknown = result[key];
     if (value !== undefined && (typeof value !== 'string' || value.length > limit)) delete result[key];
   }
-  if (!['en', 'fr', 'de', 'it', 'es'].includes(result.radiologyReportLanguage ?? '')) delete result.radiologyReportLanguage;
+  if (!isAppLanguage(result.radiologyReportLanguage ?? '')) delete result.radiologyReportLanguage;
   if (!result.radiologyReport?.trim() || !result.radiologyReportLanguage) {
     delete result.radiologyReportBasis; delete result.radiologyReviewedBasis; delete result.radiologyReportGeneratedAt;
   }
-  if (!['en', 'fr', 'de', 'it', 'es'].includes(result.ctReportLanguage ?? '')) delete result.ctReportLanguage;
+  if (!isAppLanguage(result.ctReportLanguage ?? '')) delete result.ctReportLanguage;
   if (!result.ctReport?.trim() || !result.ctReportLanguage) {
     delete result.ctReportBasis; delete result.ctReviewedBasis; delete result.ctReportGeneratedAt;
   }
@@ -221,14 +224,16 @@ function normalizeRadiologyInfo(info: PatientInfo): PatientInfo {
 export function normalizeSnapshot(s: ChartSnapshot): ChartSnapshot {
   const { clinicalDictations: rawDictations, ...chart } = s;
   const clinicalDictations = normalizeClinicalDictations(rawDictations);
+  const patient = normalizeVisitDocumentation(normalizeRadiologyInfo(s.patientInfo));
   return {
     ...chart,
     ...(clinicalDictations.length ? { clinicalDictations } : {}),
     patientInfo: {
-      ...normalizeVisitDocumentation(normalizeRadiologyInfo(s.patientInfo)),
+      ...patient,
       complaint: s.patientInfo.complaint ?? '',
       treatmentReport: s.patientInfo.treatmentReport ?? '',
-      radiographicFindings: s.patientInfo.radiographicFindings ?? '',
+      radiographicFindings: patient.radiographicFindings ?? patient.radiologyReport ?? '',
+      ctReport: patient.ctReport ?? '',
       ...(s.patientInfo.customAnesthesia ? { customAnesthesia: normalizeCustomAnesthesia(s.patientInfo.customAnesthesia) } : {}),
       ...(s.patientInfo.customExam ? { customExam: normalizeCustomExam(s.patientInfo.customExam) } : {}),
       recallDate: s.patientInfo.recallDate ?? '',
@@ -269,6 +274,7 @@ export function reloadIntoNewChart(reload: () => void = () => window.location.re
 }
 
 export function useChartState(): UseChartStateReturn {
+  const [finalizedAt, setFinalizedAt] = usePersistedState<string | null>('chart.finalizedAt', 1, null);
   const [patientInfo, setPatientInfo] = usePersistedState<PatientInfo>(
     'chart.patientInfo', 1,
     () => ({
@@ -519,11 +525,8 @@ export function useChartState(): UseChartStateReturn {
     []
   );
 
-  // True when the working chart was OPENED from an existing saved chart
-  // (cloud library or PDF), vs. a brand-new one. New charts autosave;
-  // opened ones start read-only and require a deliberate manual save so
-  // history isn't overwritten by accident. Persisted so a refresh mid-
-  // review keeps the read-only stance.
+  // Distinguishes an existing cloud record from its first save. Finalized
+  // status controls editing; this flag preserves save/conflict bookkeeping.
   const [openedExisting, setOpenedExisting] = usePersistedState<boolean>(
     'chart.openedExisting', 1, false
   );
@@ -576,6 +579,7 @@ export function useChartState(): UseChartStateReturn {
     const newId = generateChartId();
     openChartId(newId);
     setOpenedExisting(false); // a new visit is a fresh chart → autosaves
+    setFinalizedAt(null);
     setImageRoles({}); // image tags belong to the prior visit's images
     setPdfExcludedImages([]);
     setOwnerReport({}); // report edits are visit-specific
@@ -631,8 +635,9 @@ export function useChartState(): UseChartStateReturn {
     postMarks: postToothMarks,
     postComments: postDiagramComments,
     postStrokes: postDiagramStrokes,
+    ...(finalizedAt ? { finalizedAt } : {}),
   }), [
-    imageRoles, pdfExcludedImages, ownerReport, recordNote, clinicalDictations, plannedExtractions, patientInfo, toothData, species, logo,
+    clinicalDictations, finalizedAt, imageRoles, pdfExcludedImages, ownerReport, recordNote, plannedExtractions, patientInfo, toothData, species, logo,
     preToothMarks, preDiagramComments, preDiagramStrokes,
     postToothMarks, postDiagramComments, postDiagramStrokes,
   ]);
@@ -662,6 +667,7 @@ export function useChartState(): UseChartStateReturn {
     storageForeignRef.current = false;
     writeJson('chart.cloudId', 1, cloudChartId);
     writeJson('chart.openedExisting', 1, openedExisting);
+    writeJson('chart.finalizedAt', 1, finalizedAt);
     writeJson('chart.patientInfo', 1, patientInfo);
     writeJson('chart.species', 1, species);
     writeJson('chart.logo', 1, logo);
@@ -688,7 +694,8 @@ export function useChartState(): UseChartStateReturn {
       throw new LocalizedError(i18n.t('errors.damagedChart', { ns: 'app' }));
     }
     const snapshot = normalizeSnapshot(raw);
-    setOpenedExisting(true); // opened from a saved chart → read-only until unlocked
+    setOpenedExisting(true);
+    setFinalizedAt(snapshot.finalizedAt || null);
     setImageRoles(snapshot.imageRoles ?? {});
     setPdfExcludedImages(Array.isArray(snapshot.pdfExcludedImages) ? snapshot.pdfExcludedImages : []);
     setOwnerReport(snapshot.ownerReport ?? {});
@@ -742,6 +749,7 @@ export function useChartState(): UseChartStateReturn {
       // new chart — not a "saved chart" it never was.
       openChartId(generateChartId());
       setOpenedExisting(false);
+      setFinalizedAt(null);
       // Always start from blank diagrams, so nothing of the previous
       // patient survives a PDF without diagram data.
       setPreToothMarks({}); setPreDiagramComments([]); setPreDiagramStrokes([]);
@@ -824,6 +832,7 @@ export function useChartState(): UseChartStateReturn {
 
     openedExisting,
     setOpenedExisting,
+    finalizedAt, setFinalizedAt,
 
     imageRoles,
     setImageRole,

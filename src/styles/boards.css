@@ -38,7 +38,7 @@
   font-weight: 500;
   font-size: 0.92rem;
   color: var(--text-muted);
-  text-align: left;
+  text-align: start;
   cursor: pointer;
   transition: background 0.12s, color 0.12s, border-color 0.12s;
 }
@@ -195,8 +195,8 @@
     max-height: calc(100dvh - var(--topbar-height, 64px) - 1.5rem);
     overflow-y: auto;
     overscroll-behavior: contain;
-    padding-left: 1.25rem;
-    border-left: 1px solid var(--border);
+    padding-inline-start: 1.25rem;
+    border-inline-start: 1px solid var(--border);
   }
   /* No room for the codes reference beside a side-by-side diagram; it's
      a tap away in the Diagnosis section. */
@@ -230,7 +230,7 @@
   font: inherit; font-weight: 600; font-size: 0.95rem;
   color: var(--text);
   cursor: pointer;
-  text-align: left;
+  text-align: start;
 }
 .mobile-section-menu__icon {
   font-size: 1.05rem;
@@ -274,7 +274,7 @@
   border-radius: 8px;
   font: inherit; font-size: 0.95rem;
   color: var(--text);
-  text-align: left;
+  text-align: start;
   cursor: pointer;
 }
 .mobile-section-menu__item:hover {
@@ -403,7 +403,7 @@
   background: transparent;
   border: none;
   font: inherit;
-  text-align: left;
+  text-align: start;
   cursor: pointer;
   width: 100%;
   color: inherit;
@@ -435,7 +435,7 @@
   background: transparent;
   border: 1px solid transparent;
   border-radius: 8px;
-  font: inherit; text-align: left; cursor: pointer;
+  font: inherit; text-align: start; cursor: pointer;
   color: inherit;
 }
 .chart-menu__board:hover {
@@ -508,7 +508,7 @@
 }
 
 .pdf-preview-styles {
-  border-right: 1px solid var(--ios-separator, #e2e8f0);
+  border-inline-end: 1px solid var(--ios-separator, #e2e8f0);
   padding: 1rem;
   display: flex; flex-direction: column; gap: 8px;
   background: var(--ios-cell-alt, #f8fafc);
@@ -529,7 +529,7 @@
   background: var(--ios-cell, white);
   border: 1px solid var(--ios-separator, #e2e8f0);
   border-radius: 10px;
-  font: inherit; text-align: left; cursor: pointer;
+  font: inherit; text-align: start; cursor: pointer;
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 .pdf-preview-style:hover { border-color: var(--ios-separator, #cbd5e0); }
@@ -557,7 +557,7 @@
   color: var(--ios-warning-label, #92400e);
   padding: 12px;
   background: var(--ios-warning-fill, var(--warning-tint));
-  border-left: 3px solid var(--ios-warning-border, var(--warning-border));
+  border-inline-start: 3px solid var(--ios-warning-border, var(--warning-border));
   border-radius: var(--radius-sm);
 }
 /* Heads-up beside Download where the browser won't simply save the
@@ -606,7 +606,7 @@
 
 @media (max-width: 800px) {
   .pdf-preview-body { grid-template-columns: 1fr; }
-  .pdf-preview-styles { border-right: none; border-bottom: 1px solid var(--ios-separator, #e2e8f0); max-height: 40vh; max-height: 40dvh; }
+  .pdf-preview-styles { border-inline-end: none; border-bottom: 1px solid var(--ios-separator, #e2e8f0); max-height: 40vh; max-height: 40dvh; }
 }
 
 /* ---------- Chart menu: cloud chart browser ------------------------------ */
@@ -634,7 +634,7 @@
   background: transparent;
   border: none;
   font: inherit;
-  text-align: left;
+  text-align: start;
   cursor: pointer;
 }
 
@@ -694,11 +694,11 @@
   max-width: 62rem;
   height: min(80vh, 46rem);
   height: min(80dvh, 46rem);
-  /* Six columns matching the grouped table: Patient · Patient # ·
-     Species · Visits · Updated · Recall. Header row and each row's
+  /* Columns matching the grouped table: Patient · Patient # ·
+     Species · Visits · Finalized · Updated · Recall. Header row and each row's
      open-button share this via --lib-cols so they stay aligned. */
   --lib-cols: minmax(8rem, 1.7fr) minmax(4.5rem, 0.8fr) minmax(5.5rem, 1fr)
-    minmax(4rem, 0.7fr) minmax(6.5rem, 1fr) minmax(5.5rem, 0.9fr);
+    minmax(4rem, 0.7fr) minmax(5.5rem, 0.8fr) minmax(6.5rem, 1fr) minmax(5.5rem, 0.9fr);
   --lib-actions: 12rem;
 }
 
@@ -864,7 +864,7 @@
   background: transparent;
   border: none;
   font: inherit;
-  text-align: left;
+  text-align: start;
   cursor: pointer;
 }
 
@@ -922,7 +922,7 @@
   .chart-library__cell--species,
   .chart-library__cell--recall,
   .chart-library-modal:not(.admin-panel) .chart-library__head-row [role='columnheader']:nth-child(3),
-  .chart-library-modal:not(.admin-panel) .chart-library__head-row [role='columnheader']:nth-child(6) {
+  .chart-library-modal:not(.admin-panel) .chart-library__head-row [role='columnheader']:nth-child(7) {
     display: none;
   }
 }
@@ -939,7 +939,7 @@
 }
 /* Same side padding as the header row, so the fr columns resolve to the
    same widths and every header sits over its cells. */
-.admin-panel .chart-library__row-main { padding-right: 0.75rem; }
+.admin-panel .chart-library__row-main { padding-inline-end: 0.75rem; }
 
 .admin-panel__row--active {
   background: color-mix(in srgb, var(--primary) 10%, transparent) !important;
@@ -1022,7 +1022,7 @@
 .chart-library__filter:disabled { opacity: 0.5; cursor: default; }
 /* Primary action (New patient) — filled, sits on the far right. */
 .chart-library__filter--primary {
-  margin-left: auto;
+  margin-inline-start: auto;
   background: var(--primary);
   border-color: var(--primary);
   color: var(--ios-on-tint, #fff);
@@ -1052,19 +1052,24 @@
 }
 .chart-library__visit-main {
   display: grid;
-  grid-template-columns: minmax(9rem, 1fr) minmax(10rem, 1.4fr);
+  grid-template-columns: var(--lib-cols);
   gap: 1rem;
   align-items: center;
-  padding: 0.5rem 0 0.5rem 2.25rem;
+  padding-block: 0.5rem;
+  padding-inline: 0.75rem 0;
   background: transparent;
   border: none;
   font: inherit;
-  text-align: left;
+  text-align: start;
   cursor: pointer;
   min-width: 0;
 }
 .chart-library__visit-main:hover { background: color-mix(in srgb, var(--primary) 6%, transparent); }
+.chart-library__visit-main > .chart-library__cell--finalized { grid-column: 5; }
+.chart-library__visit-main > :last-child { grid-column: 6 / -1; white-space: normal; }
 .chart-library__visit-date {
+  grid-column: 1 / 5;
+  padding-inline-start: 1.5rem;
   font-weight: 600;
   color: var(--text);
   font-variant-numeric: tabular-nums;
@@ -1120,9 +1125,9 @@
 .admin-panel__ai-total { margin: 0; font-size: 0.9rem; color: var(--text); }
 .admin-panel__usage-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
 .admin-panel__usage-table th, .admin-panel__usage-table td {
-  text-align: right; padding: 0.4rem 0.5rem; border-bottom: 1px solid var(--border, #e2e8f0);
+  text-align: end; padding: 0.4rem 0.5rem; border-bottom: 1px solid var(--border, #e2e8f0);
 }
-.admin-panel__usage-table th:first-child, .admin-panel__usage-table td:first-child { text-align: left; }
+.admin-panel__usage-table th:first-child, .admin-panel__usage-table td:first-child { text-align: start; }
 .admin-panel__usage-table th { color: var(--text-muted, #64748b); font-weight: 600; }
 
 .admin-panel__tab {
@@ -1179,7 +1184,7 @@
   align-items: center;
   justify-content: flex-end;
   gap: 0.35rem;
-  padding-right: 0.75rem;
+  padding-inline-end: 0.75rem;
 }
 .chart-library__act {
   background: transparent;
@@ -1275,7 +1280,7 @@
 .admin-panel__chart-list li + li { border-top: 1px solid var(--border); }
 .admin-panel__chart-row {
   width: 100%; display: flex; justify-content: space-between; gap: 0.75rem;
-  padding: 0.5rem 0.75rem; background: none; border: 0; text-align: left;
+  padding: 0.5rem 0.75rem; background: none; border: 0; text-align: start;
   font: inherit; font-size: 0.88rem; color: var(--text); cursor: pointer;
 }
 .admin-panel__chart-row:hover,
@@ -1339,7 +1344,7 @@
 .admin-panel__chart-table td,
 .admin-panel__chart-table th { white-space: nowrap; }
 .admin-panel__chart-table th,
-.admin-panel__chart-table td { text-align: left; }
+.admin-panel__chart-table td { text-align: start; }
 .admin-panel__chart-open {
   background: none;
   border: 0;
@@ -1347,7 +1352,7 @@
   font: inherit;
   font-weight: 600;
   color: var(--primary, #0c6b63);
-  text-align: left;
+  text-align: start;
   cursor: pointer;
 }
 .admin-panel__chart-open:hover { text-decoration: underline; }
@@ -1460,7 +1465,8 @@
     display: none;
   }
   .chart-library-modal:not(.admin-panel) .chart-library__cell--number::before { content: '#'; }
-  .chart-library-modal:not(.admin-panel) .chart-library__cell--date::before { content: 'Updated '; }
+  .chart-library-modal:not(.admin-panel) .chart-library__cell--date::before,
+  .chart-library-modal:not(.admin-panel) .chart-library__cell--finalized::before { content: attr(data-label) ' '; }
   .chart-library-modal:not(.admin-panel) .chart-library__cell--recall::before { content: 'Recheck '; }
   .chart-library-modal:not(.admin-panel) .chart-library__row-actions {
     justify-content: flex-start;
@@ -1483,10 +1489,11 @@
   }
   .chart-library-modal:not(.admin-panel) .chart-library__head-row [role='columnheader']:nth-child(2),
   .chart-library-modal:not(.admin-panel) .chart-library__head-row [role='columnheader']:nth-child(3),
-  .chart-library-modal:not(.admin-panel) .chart-library__head-row [role='columnheader']:nth-child(4) {
+  .chart-library-modal:not(.admin-panel) .chart-library__head-row [role='columnheader']:nth-child(4),
+  .chart-library-modal:not(.admin-panel) .chart-library__head-row [role='columnheader']:nth-child(5) {
     display: none;
   }
-  .chart-library-modal:not(.admin-panel) .chart-library__head-row [role='columnheader']:nth-child(6) {
+  .chart-library-modal:not(.admin-panel) .chart-library__head-row [role='columnheader']:nth-child(7) {
     display: inline;
   }
   .chart-library-modal:not(.admin-panel) .chart-library__head-row .chart-library__row-actions {
@@ -1494,9 +1501,10 @@
   }
   /* Expanded visits under a patient. */
   .chart-library-modal:not(.admin-panel) .chart-library__visit-main {
-    padding-left: 1.5rem;
+    padding-inline-start: 1.5rem;
   }
   .chart-library-modal:not(.admin-panel) .chart-library__visit-date {
+    padding-inline-start: 0;
     flex: 1 0 100%;
   }
 }
@@ -1541,9 +1549,9 @@
   flex: 1; min-width: 0;
   display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
   padding: 0.7rem 0.85rem;
-  background: none; border: 0; font: inherit; text-align: left; cursor: pointer;
+  background: none; border: 0; font: inherit; text-align: start; cursor: pointer;
 }
-.pdf-style-custom__color { flex: none; margin-right: 0.6rem; display: flex; }
+.pdf-style-custom__color { flex: none; margin-inline-end: 0.6rem; display: flex; }
 .pdf-style-custom__color input[type='color'] {
   width: 40px; height: 40px; padding: 0; border: 0; background: none;
   border-radius: 50%; cursor: pointer;

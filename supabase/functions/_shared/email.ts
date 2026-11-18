@@ -41,7 +41,7 @@ export function renderBrandedEmail(e: BrandedEmail, lng = 'en'): { html: string;
   const code = e.code
     ? `
       <tr><td style="padding:4px 32px 8px;">
-        <div style="display:inline-block;font-family:SFMono-Regular,Menlo,Consolas,monospace;font-size:28px;font-weight:700;letter-spacing:0.2em;color:#17232e;background:#f4f6f7;border:1px solid #e2e8f0;border-radius:8px;padding:10px 18px;">${esc(e.code)}</div>
+        <div${lang === 'ar' ? ' dir="ltr"' : ''} style="display:inline-block;font-family:SFMono-Regular,Menlo,Consolas,monospace;font-size:28px;font-weight:700;letter-spacing:0.2em;color:#17232e;background:#f4f6f7;border:1px solid #e2e8f0;border-radius:8px;padding:10px 18px;">${esc(e.code)}</div>
       </td></tr>`
     : '';
   const url = e.button ? esc(e.button.url) : '';
@@ -52,7 +52,7 @@ export function renderBrandedEmail(e: BrandedEmail, lng = 'en'): { html: string;
       </td></tr>
       <tr><td style="padding:12px 32px 28px;font-size:13px;line-height:1.5;color:#64748b;">
         ${esc(emailT(lang, 'layout.linkFallback'))}<br>
-        <a href="${url}" style="color:#0c6b63;word-break:break-all;">${url}</a>
+        <a${lang === 'ar' ? ' dir="ltr"' : ''} href="${url}" style="color:#0c6b63;word-break:break-all;">${url}</a>
         ${e.footnote ? `<p style="margin:16px 0 0;">${esc(e.footnote)}</p>` : ''}
       </td></tr>`
     : `
@@ -60,7 +60,7 @@ export function renderBrandedEmail(e: BrandedEmail, lng = 'en'): { html: string;
         ${e.footnote ? `<p style="margin:0;">${esc(e.footnote)}</p>` : ''}
       </td></tr>`;
   const html = `<!doctype html>
-<html lang="${lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${esc(e.title)}</title></head>
+<html lang="${lang}"${lang === 'ar' ? ' dir="rtl"' : ''}><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${esc(e.title)}</title></head>
 <body style="margin:0;padding:0;background:#f4f6f7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#17232e;">
 <span style="display:none;max-height:0;overflow:hidden;opacity:0;">${esc(e.preheader)}</span>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f7;padding:32px 12px;">

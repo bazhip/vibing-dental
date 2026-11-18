@@ -33,6 +33,8 @@ function asSaved(value: unknown): PimsFieldMap | null {
     const v = (value as Record<string, unknown>)[key];
     if (typeof v === 'string' || v === null) out[key] = v;
   }
+  const legacyCt = (value as Record<string, unknown>).ctReport;
+  if (!Object.hasOwn(out, 'ct') && (typeof legacyCt === 'string' || legacyCt === null)) out.ct = legacyCt;
   return out;
 }
 

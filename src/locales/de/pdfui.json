@@ -46,5 +46,15 @@
     "firefoxAndroid": "Firefox öffnet das PDF in einem neuen Tab — tippen Sie dort oben auf Herunterladen, um die Datei zu speichern.",
     "inAppBrowser": "Der integrierte Browser dieser App kann Dateien nicht immer speichern. Tippen Sie auf Herunterladen, um einen Download-Link zu erhalten — oder öffnen Sie ToothOps in Chrome (Menü ⋮ → „Im Browser öffnen“).",
     "inAppBrowserMessage": "Der integrierte Browser dieser App kann keine Dateien speichern. Öffnen Sie ToothOps in Chrome (Menü ⋮ → „Im Browser öffnen“), um das PDF herunterzuladen."
+  },
+  "exportWarning": {
+    "title": "Vor dem Herunterladen",
+    "both": "Diese Patientenakte enthält ungespeicherte Änderungen und wurde noch nicht abgeschlossen.",
+    "unsaved": "Diese Patientenakte enthält ungespeicherte Änderungen.",
+    "unfinalized": "Diese Patientenakte wurde noch nicht abgeschlossen.",
+    "finalize": "Abschließen und herunterladen",
+    "anyway": "Trotzdem herunterladen",
+    "finalizing": "Wird abgeschlossen…",
+    "failed": "Diese Patientenakte konnte nicht abgeschlossen werden. Sie können es erneut versuchen oder sie trotzdem herunterladen."
   }
 }

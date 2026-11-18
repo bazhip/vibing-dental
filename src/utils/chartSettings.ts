@@ -43,6 +43,9 @@ export const BLOCK_ROW_OPTIONS = [
 export type BlockRowId = (typeof BLOCK_ROW_OPTIONS)[number]['id'];
 const BLOCK_IDS = new Set<string>(BLOCK_ROW_OPTIONS.map((b) => b.id));
 
+export const SCORE_PICKER_OPTIONS = ['touch', 'always', 'never'] as const;
+export type ScorePicker = (typeof SCORE_PICKER_OPTIONS)[number];
+
 export type ScoreTapMove = 'finding' | 'tooth' | 'stay';
 const SCORE_TAP_MOVES = new Set<string>(['finding', 'tooth', 'stay']);
 
@@ -66,6 +69,10 @@ export interface ChartPrefs {
   pdfIncludeGrid: boolean;
   /** PDF includes image pages. */
   pdfIncludeImages: boolean;
+  /** PDF prints the radiographic report on the treatment card. */
+  pdfIncludeRadiographicReport: boolean;
+  /** PDF prints the CT report on the treatment card. */
+  pdfIncludeCtReport: boolean;
   /** Leave out the Recheck due field on the Patient page. */
   hideRecheck: boolean;
   hiddenPatientFields: OptionalPatientField[];
@@ -76,6 +83,8 @@ export interface ChartPrefs {
    *  tooth's next finding (exams go tooth by tooth), the next tooth in
    *  the same column, or nowhere. */
   scoreTapMoves: ScoreTapMove;
+  /** Grid score buttons: follow the device by default, or explicitly show/hide. */
+  scorePicker: ScorePicker;
   /** Nerve block rows hidden on the Anesthesia page (shown anyway when
    *  they hold a dose). */
   hiddenBlocks: BlockRowId[];
@@ -112,10 +121,13 @@ export const DEFAULT_CHART_PREFS: ChartPrefs = {
   chartingView: 'grid',
   pdfIncludeGrid: true,
   pdfIncludeImages: true,
+  pdfIncludeRadiographicReport: true,
+  pdfIncludeCtReport: true,
   hideRecheck: false,
   hiddenPatientFields: [],
   spaceMovesDown: true,
   scoreTapMoves: 'finding',
+  scorePicker: 'touch',
   hiddenBlocks: [],
   usualDrug: null,
   usualAdjunct: null,
@@ -155,9 +167,12 @@ export function normalizeChartPrefs(raw: unknown, fallback: ChartPrefs = DEFAULT
     chartingView: r.chartingView === 'tooth' || r.chartingView === 'grid' ? r.chartingView : fallback.chartingView,
     pdfIncludeGrid: bool(r.pdfIncludeGrid, fallback.pdfIncludeGrid),
     pdfIncludeImages: bool(r.pdfIncludeImages, fallback.pdfIncludeImages),
+    pdfIncludeRadiographicReport: bool(r.pdfIncludeRadiographicReport, fallback.pdfIncludeRadiographicReport),
+    pdfIncludeCtReport: bool(r.pdfIncludeCtReport, fallback.pdfIncludeCtReport),
     hideRecheck: bool(r.hideRecheck, fallback.hideRecheck),
     hiddenPatientFields: Array.isArray(r.hiddenPatientFields) ? [...new Set(r.hiddenPatientFields.filter((key): key is OptionalPatientField => PATIENT_FIELD_OPTIONS.includes(key as OptionalPatientField)))] : fallback.hiddenPatientFields,
     spaceMovesDown: bool(r.spaceMovesDown, fallback.spaceMovesDown),
+    scorePicker: r.scorePicker === 'touch' || r.scorePicker === 'always' || r.scorePicker === 'never' ? r.scorePicker : fallback.scorePicker,
     scoreTapMoves: typeof r.scoreTapMoves === 'string' && SCORE_TAP_MOVES.has(r.scoreTapMoves) ? (r.scoreTapMoves as ScoreTapMove) : fallback.scoreTapMoves,
     hiddenBlocks: Array.isArray(r.hiddenBlocks)
       ? (r.hiddenBlocks.filter((b) => typeof b === 'string' && BLOCK_IDS.has(b)) as BlockRowId[])

@@ -3,7 +3,7 @@ import { hashEnglish } from './catalog';
 import type { Catalogs, Meta } from './catalog';
 import { applyTranslations, findWork, rehashMeta } from './work';
 
-const LNGS = ['fr', 'de', 'it', 'es'];
+const LNGS = ['fr', 'de', 'it', 'es', 'hu', 'ro', 'zh', 'ar'];
 const en = { common: { a: 'Hello {{pet}}', b: 'Bye' } };
 
 function full(): { c: Catalogs; m: Meta } {

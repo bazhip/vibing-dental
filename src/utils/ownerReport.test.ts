@@ -329,6 +329,17 @@ describe('report languages', () => {
       }
     }
   });
+
+  test('PDF text cleaning preserves Hungarian and Romanian diacritics', () => {
+    expect(pdfSafe('Őrölt tű, îngrijire și extracție')).toBe('Őrölt tű, îngrijire și extracție');
+  });
+
+  test('Hungarian and Romanian compose native permanent and baby tooth names', () => {
+    expect(toothLayName(108, false, 'hu')).toBe('Jobb felső negyedik kisőrlőfog');
+    expect(toothLayName(504, false, 'hu')).toBe('Jobb felső tejszemfog');
+    expect(toothLayName(301, false, 'ro')).toBe('Primul incisiv inferior stâng');
+    expect(toothLayName(504, false, 'ro')).toBe('Canin superior drept de lapte');
+  });
 });
 
 it('a horse chart gets the equine home-care tips, not brushing and chews', () => {

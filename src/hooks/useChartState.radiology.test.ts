@@ -33,7 +33,7 @@ describe('radiology report chart persistence',()=>{
  it('preserves review through normalized cloud-style object key reordering',()=>{
   const {result}=renderHook(()=>useChartState());
   const initial=result.current.getSnapshot();
-  const snapshot={...initial,patientInfo:{...initial.patientInfo,...report}};
+  const snapshot=normalizeSnapshot({...initial,patientInfo:{...initial.patientInfo,...report}});
   snapshot.patientInfo.radiologyReportBasis=radiologySourceBasis(snapshot);
   snapshot.patientInfo.radiologyReviewedBasis=radiologyReviewBasis(snapshot,'en');
   expect(isRadiologyReportReviewed(snapshot,'en')).toBe(true);
@@ -68,7 +68,21 @@ it('persists CT independently, normalizes imported CT metadata and clears it for
   const snapshot = result.current.getSnapshot();
   expect(normalizeSnapshot(snapshot).patientInfo).toMatchObject({ ctReport: 'CT: 409 lesion.', radiologyReport: 'X-ray report' });
   const normalized = normalizeSnapshot({ ...snapshot, patientInfo: { ...snapshot.patientInfo, ctReport: [], ctReportLanguage: 'xx', ctReviewedBasis: 'untrusted' } } as never);
-  expect(normalized.patientInfo).not.toHaveProperty('ctReport'); expect(normalized.patientInfo).not.toHaveProperty('ctReviewedBasis');
+  expect(normalized.patientInfo.ctReport).toBe(''); expect(normalized.patientInfo).not.toHaveProperty('ctReviewedBasis');
   act(() => result.current.startNewVisit());
-  expect(result.current.patientInfo.patientName).toBe('Milo'); expect(result.current.patientInfo).not.toHaveProperty('ctReport');
+  expect(result.current.patientInfo.patientName).toBe('Milo'); expect(result.current.patientInfo.ctReport ?? '').toBe('');
+});
+it('migrates only absent canonical radiographic text and preserves an explicit main clear', () => {
+  const { result } = renderHook(() => useChartState());
+  const snapshot = result.current.getSnapshot();
+  const legacy = { ...snapshot, patientInfo: { ...snapshot.patientInfo, radiologyReport: 'Legacy recorded text' } };
+  delete legacy.patientInfo.radiographicFindings;
+  expect(normalizeSnapshot(legacy).patientInfo.radiographicFindings).toBe('Legacy recorded text');
+  expect(normalizeSnapshot({ ...legacy, patientInfo: { ...legacy.patientInfo, radiographicFindings: '' } }).patientInfo.radiographicFindings).toBe('');
+});
+it.each(['hu','ro','zh','ar'] as const)('keeps report dictation language %s after snapshot normalization', language => {
+  const { result } = renderHook(() => useChartState());
+  const snapshot = result.current.getSnapshot();
+  const normalized = normalizeSnapshot({ ...snapshot, patientInfo: { ...snapshot.patientInfo, ctReport: 'Recorded CT', ctReportLanguage: language } });
+  expect(normalized.patientInfo.ctReportLanguage).toBe(language);
 });

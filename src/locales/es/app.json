@@ -34,9 +34,14 @@
     "hint": "Bolsas por raíz, columnas, qué se muestra junto a los dientes, opciones de PDF"
   },
   "radiographic": {
-    "title": "Hallazgos radiográficos",
+    "title": "Informe radiográfico",
     "placeholder": "p. ej. 108: pérdida ósea vertical en la raíz distal, exposición de la furca. 307: reabsorción dental de tipo 2.",
-    "hint": "Se imprime en el PDF encima del informe del tratamiento."
+    "hint": "Se imprime en el PDF debajo del informe del tratamiento."
+  },
+  "ct": {
+    "title": "Informe de TC",
+    "placeholder": "p. ej. Maxilar caudal derecho: sin osteólisis. 108: radiolucidez periapical, raíz mesial. ATM dentro de los límites normales.",
+    "hint": "Se imprime en el PDF debajo del informe radiográfico."
   },
   "lock": {
     "title": "Solo lectura: elija Editar historial para hacer cambios",
@@ -90,7 +95,8 @@
     "local": "Solo en este dispositivo",
     "localTitle": "Los historiales de prueba se quedan en este navegador. Cree una cuenta gratuita para guardar en la nube.",
     "saveHint": "Añada el nombre del paciente antes de guardar: así encontrará este historial.",
-    "savedRich": "<word>Guardado · </word>{{when}}"
+    "savedRich": "<word>Guardado · </word>{{when}}",
+    "saved": "Guardado"
   },
   "otherTab": {
     "text": "Este historial está abierto en otra pestaña o ventana. Ambas editan la misma copia de trabajo: cierre una para evitar sobrescribir sus cambios."
@@ -333,6 +339,12 @@
     "saveAndClose": "Guardar y cerrar",
     "closeChoiceMessage": "Guarde los cambios antes de cerrar o cierre sin guardar para descartarlos. Se conservarán las imágenes de los historiales guardados.",
     "closeImageChoiceMessage": "Guarde este historial antes de cerrar o cierre sin guardar para descartar su contenido y eliminar permanentemente las imágenes subidas."
+  },
+  "finalization": {
+    "finalize": "Finalizar",
+    "finalized": "Finalizado",
+    "description": "Este historial está finalizado. Seleccione Editar historial para realizar cambios.",
+    "failed": "No se ha podido cambiar el estado de finalización del historial. {{error}}"
   },
   "radiologyReport": {
     "title": "Informe radiológico",
