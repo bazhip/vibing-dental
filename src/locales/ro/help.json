@@ -68,7 +68,7 @@
         },
         "second": {
           "title": "Comutați între vizite și filele pacienților",
-          "text": "Fila afișează pacientul și data vizitei. Dacă există mai multe vizite salvate, alegeți-o pe cea dorită din selectorul de vizite. Pentru a deschide alt pacient, folosiți butonul plus. Închiderea filei nu șterge pacientul."
+          "text": "Fila afișează pacientul și data vizitei. Dacă există mai multe vizite salvate, alegeți-o pe cea dorită din selectorul de vizite. Pentru a deschide alt pacient, folosiți butonul plus. Închiderea filei nu șterge pacientul. Pe computer, verificați numărul pacientului sub nume și folosiți săgeata de lângă dată pentru a schimba vizita."
         },
         "third": {
           "title": "Consultați documentele anterioare",

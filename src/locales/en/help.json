@@ -68,7 +68,7 @@
         },
         "second": {
           "title": "Switch visits and patient tabs",
-          "text": "The tab shows the patient and visit date. Use its visit switcher when there are multiple saved visits, or open another patient with the plus button. Closing a tab does not delete the patient."
+          "text": "The tab shows the patient and visit date. Use its visit switcher when there are multiple saved visits, or open another patient with the plus button. Closing a tab does not delete the patient. On desktop, check the patient number under the name and use the arrow beside the date to switch visits."
         },
         "third": {
           "title": "Review earlier records",

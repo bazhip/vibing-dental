@@ -68,7 +68,7 @@
         },
         "second": {
           "title": "Cambiar de visita o de pestaña de paciente",
-          "text": "La pestaña muestra el paciente y la fecha de la visita. Cuando haya varias visitas guardadas, use el selector de visitas de la pestaña. Para abrir otro paciente, use el botón con el signo más. Cerrar una pestaña no elimina al paciente."
+          "text": "La pestaña muestra el paciente y la fecha de la visita. Cuando haya varias visitas guardadas, use el selector de visitas de la pestaña. Para abrir otro paciente, use el botón con el signo más. Cerrar una pestaña no elimina al paciente. En el ordenador, compruebe el número del paciente bajo su nombre y use la flecha junto a la fecha para cambiar de visita."
         },
         "third": {
           "title": "Consultar los registros anteriores",

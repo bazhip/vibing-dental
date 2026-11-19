@@ -68,7 +68,7 @@
         },
         "second": {
           "title": "Zwischen Besuchen und Patienten-Tabs wechseln",
-          "text": "Der Tab zeigt den Patienten und das Besuchsdatum an. Nutzen Sie die Besuchsauswahl im Tab, wenn mehrere Besuche gespeichert sind. Mit der Plus-Schaltfläche öffnen Sie einen weiteren Patienten. Beim Schließen eines Tabs bleibt die Patientenakte erhalten."
+          "text": "Der Tab zeigt den Patienten und das Besuchsdatum an. Nutzen Sie die Besuchsauswahl im Tab, wenn mehrere Besuche gespeichert sind. Mit der Plus-Schaltfläche öffnen Sie einen weiteren Patienten. Beim Schließen eines Tabs bleibt die Patientenakte erhalten. Prüfen Sie am Computer die Patientennummer unter dem Namen und wechseln Sie den Besuch über den Pfeil neben dem Datum."
         },
         "third": {
           "title": "Frühere Akten prüfen",

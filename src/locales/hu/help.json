@@ -68,7 +68,7 @@
         },
         "second": {
           "title": "Váltás a vizitek és a pácienslapok között",
-          "text": "A lapfülön a páciens és a vizit dátuma látható. Több mentett vizit esetén használja a lapfül vizitválasztóját. Másik páciens megnyitásához nyomja meg a plusz gombot. A lapfül bezárása nem törli a pácienst."
+          "text": "A lapfülön a páciens és a vizit dátuma látható. Több mentett vizit esetén használja a lapfül vizitválasztóját. Másik páciens megnyitásához nyomja meg a plusz gombot. A lapfül bezárása nem törli a pácienst. Számítógépen ellenőrizze a név alatti páciensszámot, és a dátum melletti nyíllal váltson vizitet."
         },
         "third": {
           "title": "Korábbi bejegyzések áttekintése",

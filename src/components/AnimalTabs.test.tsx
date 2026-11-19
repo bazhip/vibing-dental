@@ -14,7 +14,6 @@ it('reveals the full selected tab after the tab strip is resized', () => {
   vi.spyOn(selected, 'getBoundingClientRect').mockReturnValue({ left: 250, right: 450 } as DOMRect);
   act(() => resize!([], {} as ResizeObserver));
   expect(list.scrollLeft).toBeGreaterThanOrEqual(150);
-  expect(list.style.getPropertyValue('--animal-tab-available')).toBe('200px');
   vi.unstubAllGlobals();
 });
 

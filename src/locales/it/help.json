@@ -68,7 +68,7 @@
         },
         "second": {
           "title": "Passare da una visita o da un paziente all’altro",
-          "text": "La scheda mostra il paziente e la data della visita. Se sono presenti più visite salvate, usi il selettore delle visite nella scheda. Per aprire un altro paziente, usi il pulsante con il segno più. La chiusura di una scheda non elimina il paziente."
+          "text": "La scheda mostra il paziente e la data della visita. Se sono presenti più visite salvate, usi il selettore delle visite nella scheda. Per aprire un altro paziente, usi il pulsante con il segno più. La chiusura di una scheda non elimina il paziente. Sul computer, controlli il numero del paziente sotto il nome e usi la freccia accanto alla data per passare a un’altra visita."
         },
         "third": {
           "title": "Consultare le cartelle precedenti",

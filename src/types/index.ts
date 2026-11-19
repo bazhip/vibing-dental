@@ -369,9 +369,11 @@ export interface DiagramComment {
    *  closest to the anchor tooth. Once the user drags, x/y get set. */
   x?: number;
   y?: number;
-  /** User-set size in SVG coords. Defaults to the layout's standard size. */
+  /** Saved size in SVG coordinates. Older charts also stored their automatic size here. */
   width?: number;
   height?: number;
+  /** Preserve a size set with the resize handle. Automatic fitting is local to the viewport. */
+  manualSize?: boolean;
 }
 
 export interface StrokePoint {

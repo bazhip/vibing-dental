@@ -68,7 +68,7 @@
         },
         "second": {
           "title": "Changer de consultation ou d’onglet patient",
-          "text": "L’onglet affiche le patient et la date de la consultation. Si plusieurs consultations sont enregistrées, utilisez le sélecteur de l’onglet. Pour ouvrir un autre patient, utilisez le bouton plus. Le dossier du patient est conservé lorsque vous fermez un onglet."
+          "text": "L’onglet affiche le patient et la date de la consultation. Si plusieurs consultations sont enregistrées, utilisez le sélecteur de l’onglet. Pour ouvrir un autre patient, utilisez le bouton plus. Le dossier du patient est conservé lorsque vous fermez un onglet. Sur ordinateur, vérifiez le numéro du patient sous son nom et utilisez la flèche à côté de la date pour changer de visite."
         },
         "third": {
           "title": "Consulter les dossiers antérieurs",
