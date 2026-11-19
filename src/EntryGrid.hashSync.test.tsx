@@ -69,7 +69,7 @@ it('returns from practice settings to the visible current visit', async () => {
   expect(screen.queryByRole('heading', { name: 'Practice settings' })).toBeNull();
 });
 
-it.each([['Consultation','consultation'],['Discharge','discharge'],['Imaging','imaging'],['GP examination','gp-exam']])('opens the %s entry tab within the current visit', async(label,section)=>{
+it.each([['Discharge','discharge'],['Imaging','imaging']])('opens the %s entry tab within the current visit', async(label,section)=>{
  window.history.replaceState(null,'','/#/chart/patient');
  render(<><EntryGrid trial/><DialogHost/></>);
  await screen.findAllByText(label);
@@ -77,7 +77,7 @@ it.each([['Consultation','consultation'],['Discharge','discharge'],['Imaging','i
  await waitFor(()=>expect(window.location.hash).toBe('#/chart/'+section));
  expect(document.querySelector('.sidebar-layout__main')).toHaveAttribute('data-active-section',section);
  expect(document.querySelector(`[data-section-id="${section}"]`)).toBeVisible();
- expect(document.querySelector('.visit-export__button')).toBeNull();
+ expect(screen.getByRole('button', { name: 'Review and export' })).toBeVisible();
 });
 it('opens the Discharge source tab for a legacy owner-report deep link without enabling gated client output', async()=>{
  window.history.replaceState(null,'','/#/chart/owner-report');

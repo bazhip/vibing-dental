@@ -1,5 +1,10 @@
 {
   "imaging": {
+    "inOwnerReport": "A gazdi jelentésében",
+    "beforeAfter": "Előtte / utána",
+    "noLabel": "Címke nélkül",
+    "details": "Képadatok",
+    "reportInclusion": "Beillesztés a jelentésekbe",
     "title": "Képalkotás",
     "signedOut": "Jelentkezzen be rendelői fiókkal intraorális fényképek és fogászati röntgenfelvételek csatolásához – ezeket a fogászati lappal együtt, bizalmasan tároljuk.",
     "usage": "{{used}} / {{max}} kép",
@@ -67,7 +72,23 @@
     "toothLabel": "Fog",
     "ownerReportLabel": "Gazdinak szóló lelet"
   },
+  "patientRecord": {
+    "open": "Vizitelőzmények megtekintése",
+    "title": "Korábbi betegkartonok",
+    "visit": "Vizit",
+    "currentVisit": "Jelenlegi vizit",
+    "undatedVisit": "Dátum nélküli vizit",
+    "loadingVisits": "Korábbi vizitek betöltése…",
+    "visitsFailed": "Nem sikerült betölteni a korábbi viziteket.",
+    "noVisits": "Nincsenek korábbi vizitek a ToothOpsban.",
+    "visitFailed": "Nem sikerült megnyitni ezt a vizitet.",
+    "pdfs": "Vizit-PDF-ek",
+    "notes": "Klinikai feljegyzések"
+  },
   "documents": {
+    "customize": "Testreszabás",
+    "color": "Szín",
+    "included": "A PDF tartalma",
     "title": "Áttekintés és exportálás",
     "chartTab": "Klinikai fogászati lap",
     "chartWho": "Nyilvántartáshoz és beutalókhoz – a teljes fogászati lap kódokkal.",
@@ -163,6 +184,8 @@
     "missing": "Ez a kép nem tölthető be."
   },
   "history": {
+    "expand": "Képelőzmények kibontása",
+    "collapse": "Képelőzmények összecsukása",
     "show_one": "Képelőzmények (1 másik vizit)",
     "show_other": "Képelőzmények ({{count}} másik vizit)",
     "hide": "Képelőzmények elrejtése",

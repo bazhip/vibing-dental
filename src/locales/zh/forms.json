@@ -138,6 +138,14 @@
     "fieldType": "字段类型"
   },
   "report": {
+    "replaceTemplateTitle": "替换治疗报告文本？",
+    "replaceTemplateMessage": "所选模板将替换本次就诊的治疗报告文本。",
+    "replaceTemplate": "使用模板",
+    "useSaved": "使用已保存的模板",
+    "newTemplate": "新建模板",
+    "fillField": "填写模板字段",
+    "fieldRequired": "请输入内容以继续。",
+    "fieldContinue": "继续",
     "title": "治疗报告",
     "insertAria": "插入报告模板",
     "loading": "正在加载模板…",

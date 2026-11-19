@@ -2,6 +2,7 @@ import { AppearanceSelect } from '../theme/AppearanceSelect';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { supabase } from '../utils/supabaseClient';
+import { openDocumentation } from '../help/openDocumentation';
 import { isNativeApp } from '../native/platform';
 import './AccountSurfaces.css';
 
@@ -23,6 +24,7 @@ interface ChartMenuProps {
   visit?: { name: string; onNewVisit: () => void; onHistory: () => void };
   onNewPatient?: () => void;
   onPreviewDocuments?: () => void;
+  onSave?: { onClick: () => void; hint?: string };
   onRevert?: () => void;
   /** Relaunch the getting-started walkthrough. */
   onOpenWalkthrough: () => void;
@@ -67,8 +69,8 @@ function useSignedInIdentity(enabled: boolean) {
  * admin (when applicable), and app-level bits (AI settings, homepage,
  * sign out). Lives in the topbar.
  */
-export const ChartMenu: React.FC<ChartMenuProps> = ({ scope = 'all', visit, onNewPatient, onPreviewDocuments, onRevert, onOpenWalkthrough, onGoHome, onOpenAdmin, onOpenFeedback, onOpenChartSettings, onOpenWhatsNew, cloud, email }) => {
-  const { t } = useTranslation('app');
+export const ChartMenu: React.FC<ChartMenuProps> = ({ scope = 'all', visit, onNewPatient, onPreviewDocuments, onSave, onRevert, onOpenWalkthrough, onGoHome, onOpenAdmin, onOpenFeedback, onOpenChartSettings, onOpenWhatsNew, cloud, email }) => {
+  const { t, i18n } = useTranslation(['app', 'help']);
   const showHelp = scope !== 'account';
   const showAccount = scope !== 'help';
   const [open, setOpen] = React.useState(false);
@@ -213,11 +215,12 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ scope = 'all', visit, onNe
             </div>
           )}
 
-          {scope === 'more' && (visit || onNewPatient || onRevert || onPreviewDocuments) && (
+          {scope === 'more' && (visit || onNewPatient || onRevert || onPreviewDocuments || onSave) && (
             <section className="chart-menu__section">
               <header className="chart-menu__section-head">{visit?.name || t('chartsMenu.thisPatient')}</header>
               {visit && item(t('chartsMenu.newVisit'), t('chartsMenu.newVisitHint'), visit.onNewVisit)}
               {visit && item(t('chartsMenu.history'), t('chartsMenu.historyHint'), visit.onHistory)}
+              {onSave && item(t('ios.menu.saveNow', { ns: 'chart' }), onSave.hint ?? '', onSave.onClick)}
               {onPreviewDocuments && item(t('fab.review'), t('fab.reviewHint'), onPreviewDocuments)}
               {onNewPatient && item(t('topbar.newPatient'), t('topbar.newPatientTitle'), onNewPatient)}
               {onRevert && item(t('topbar.undo'), t('topbar.undoTitle'), onRevert)}
@@ -250,6 +253,7 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ scope = 'all', visit, onNe
             {!cloud && (scope === 'all' || scope === 'more' || scope === 'account') && <AppearanceSelect disclosure />}
             {scope === 'all' && <header className="chart-menu__section-head">{t('menu.heads.app')}</header>}
             {(scope === 'all' || scope === 'more') && onOpenChartSettings && item(t('menu.chartSettings.label'), t('menu.chartSettings.sub'), onOpenChartSettings)}
+            {showHelp && item(t('help:site.title'), t('help:site.intro'), () => openDocumentation(i18n.resolvedLanguage ?? i18n.language))}
             {showHelp && onOpenFeedback && item(t('menu.feedback.label'), t('menu.feedback.sub'), onOpenFeedback)}
             {showHelp && onOpenWhatsNew && item(t('menu.whatsNew.label'), t('menu.whatsNew.sub'), onOpenWhatsNew)}
             {showHelp && item(t('menu.gettingStarted.label'), t('menu.gettingStarted.sub'), onOpenWalkthrough)}

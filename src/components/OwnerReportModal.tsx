@@ -1,3 +1,4 @@
+import { DocumentToolbar } from './DocumentToolbar';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import i18n from '../i18n';
@@ -7,14 +8,15 @@ import { savePdf, downloadHint } from '../utils/savePdf';
 import { saveFile } from '../native/saveFile';
 import { isNativeApp } from '../native/platform';
 import { Icon } from '../ios/icons';
+import { useModalFocus } from '../hooks/useModalFocus';
 import { chooseDialog, toast } from './ui/dialogs';
 import { OwnerReportEmailModal } from './OwnerReportEmailModal';
 import { ChartSnapshot, ImageRole, Species } from '../types';
 import { diagramSvgToPng, type DiagramPin } from '../utils/svgToPng';
 import { TOOTH_DIAGRAMS } from '../constants/toothShapes';
 import { useAttachments, listChartAttachments } from '../hooks/useAttachments';
-import { buildOwnerReportModel, ownerReportReviewBasis, ownerReportAttachmentBasis, hasSection, teethWithFindings } from '../utils/ownerReport';
-import type { OwnerReportConfig } from '../utils/ownerReportConfig';
+import { buildOwnerReportModel, ownerReportReviewBasis, ownerReportAttachmentBasis, ownerReportPhotoRoles, hasSection, teethWithFindings } from '../utils/ownerReport';
+import { resolveTemplate, type OwnerReportConfig } from '../utils/ownerReportConfig';
 import { fetchAsJpeg } from '../utils/imageJpeg';
 import { buildOwnerReportPdfBytes, OwnerReportBranding, OwnerReportPhoto } from '../utils/ownerReportPdf';
 
@@ -34,8 +36,11 @@ interface OwnerReportModalProps {
   cloudActive: boolean;
   /** Render just the preview body inside the Documents dialog. */
   bare?: boolean;
+  viewOnly?: boolean;
   /** Jump to the Owner report section to edit the wording. */
   onEditWording?: () => void;
+  onCustomizeTemplate?: () => void;
+  onTemplateChange?: (id: string | null) => void;
   /** Live procedure-diagram SVG (missing + removed teeth) for the mouth
    *  diagram; omitted → the report has no diagram. */
   diagramSvg?: SVGSVGElement;
@@ -71,7 +76,10 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
   practiceId,
   cloudActive,
   bare = false,
+  viewOnly = false,
   onEditWording,
+  onCustomizeTemplate,
+  onTemplateChange,
   diagramSvg,
   species,
   config,
@@ -83,7 +91,9 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
   const reportContext = React.useMemo(() => ({ config, practiceName: branding.practiceName, doctorName: branding.doctorName }), [config, branding.practiceName, branding.doctorName]);
   const baseModel = React.useMemo(() => buildOwnerReportModel(snapshot, reportContext), [snapshot, reportContext]);
   const attachments = useAttachments(cloudActive ? chartId : '', practiceId);
-  const attachmentBasis = ownerReportAttachmentBasis(attachments.items, imageRoles);
+  const photoRoles = React.useMemo(() => ownerReportPhotoRoles(imageRoles, snapshot.ownerReportImageInclusion),
+    [imageRoles, snapshot.ownerReportImageInclusion]);
+  const attachmentBasis = ownerReportAttachmentBasis(attachments.items, photoRoles);
   const [attachmentInvalid, setAttachmentInvalid] = React.useState(false);
   React.useEffect(() => { setAttachmentInvalid(false); }, [chartId]);
   const model = baseModel;
@@ -107,10 +117,11 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
   const [generating, setGenerating] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const closeButtonRef = React.useRef<HTMLButtonElement>(null);
+  const modalRef = useModalFocus(open && viewOnly && !bare);
 
   React.useEffect(() => {
-    if (open && !bare) closeButtonRef.current?.focus();
-  }, [open, bare]);
+    if (open && !bare && !viewOnly) closeButtonRef.current?.focus();
+  }, [open, bare, viewOnly]);
 
   React.useEffect(() => {
     if (!open || bare) return;
@@ -136,12 +147,11 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
 
     (async () => {
       try {
-        const tagged = attachments.items
-          .map((item) => ({ item, role: imageRoles[item.id] }))
-          .filter((x): x is { item: (typeof attachments.items)[number]; role: ImageRole } => !!x.role);
+        const selected = attachments.items.filter(item => Object.hasOwn(photoRoles, item.id));
         const photos: OwnerReportPhoto[] = [];
-        let missing = tagged.length !== Object.keys(imageRoles).length;
-        for (const { item, role } of tagged) {
+        let missing = selected.length !== Object.keys(photoRoles).length;
+        for (const item of selected) {
+          const role = photoRoles[item.id];
           if (!item.url) { missing = true; continue; }
           const jpegBytes = await fetchAsJpeg(item.url, REPORT_PHOTO_MAX_EDGE);
           if (jpegBytes) photos.push({ role, caption: item.caption, jpegBytes });
@@ -157,7 +167,7 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
             const diag = TOOTH_DIAGRAMS[species];
             const pins: DiagramPin[] = [];
             // No findings list printed → no numbers to match, so no pins.
-            const pinned = hasSection(model, 'findings') ? teethWithFindings(model) : [];
+            const pinned = model.findingsText === undefined && hasSection(model, 'findings') ? teethWithFindings(model) : [];
             pinned.forEach((t, i) => {
               // Measured centre from the live diagram; the shape table's
               // hand-placed centre is only a fallback.
@@ -199,7 +209,7 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
     };
     // Stable manifest covers content changes without rebuilding on signed URL refresh.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, attachments.loaded, attachmentBasis, retry, chartId, snapshot, imageRoles, diagramSvg, species, config, model, branding.practiceName, branding.doctorName, branding.logoUrl]);
+  }, [open, attachments.loaded, attachmentBasis, retry, chartId, snapshot, photoRoles, diagramSvg, species, config, model, branding.practiceName, branding.doctorName, branding.logoUrl]);
 
   const reportFilename = () => {
     const sanitize = (value: string) => value.replace(/[^a-z0-9]/gi, '_').toLowerCase();
@@ -244,29 +254,13 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
 
   if (!open) return null;
 
-  const taggedCount = attachments.items.filter((item) => imageRoles[item.id]).length;
+  const includedPhotos = attachments.items.filter(item => Object.hasOwn(photoRoles, item.id));
+  const hasUnlabelledPhotos = includedPhotos.some(item => photoRoles[item.id] === null);
 
-  const body = (
-        <div className="pdf-preview-body">
-          <aside className="pdf-preview-styles">
-            <ul className="pdf-preview-notes">
-              <li>{t('modal.noteFindings')}</li>
-              <li>
-                {!cloudActive
-                  ? t('modal.photosNeedAccount')
-                  : taggedCount > 0
-                    ? t('modal.photosIncluded', { count: taggedCount })
-                    : t('modal.photosTag')}
-              </li>
-            </ul>
-            {onEditWording && (
-              <button type="button" className="pdf-preview-secondary" onClick={onEditWording}>
-                {t('modal.editWording')}
-              </button>
-            )}
+  const actions = <>
             <button
               type="button"
-              className="pdf-preview-download"
+              className={bare ? "ui-btn ui-btn--primary" : "pdf-preview-download"}
               onClick={handleDownload}
               disabled={!pdfUrl || generating}
             >
@@ -282,7 +276,7 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
             {ensureSaved && (
               <button
                 type="button"
-                className="pdf-preview-secondary"
+                className={bare ? "ui-btn ui-btn--secondary" : "pdf-preview-secondary"}
                 onClick={() => void handleEmail()}
                 disabled={!ready || incomplete || !cloudActive || !pdfUrl || generating}
                 title={!cloudActive ? t('email.needAccount') : undefined}
@@ -290,16 +284,72 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
                 {t('email.button')}
               </button>
             )}
+  </>;
+  const notices = <>
             {!isNativeApp() && !inAppLink.state && downloadHint() && <p className="pdf-preview-hint" role="note">{downloadHint()}</p>}
             <PdfLinkPanel state={inAppLink.state} />
             {(incomplete || attachmentInvalid) && <div className="pdf-preview-warning" role="status"><p>{t('review.incompleteImages')}</p><button type="button" className="pdf-preview-secondary" onClick={() => { setAttachmentInvalid(false); setRetry((value) => value + 1); }}>{t('preview.retryImages', { ns: 'pdfui' })}</button></div>}
-          </aside>
+  </>;
+  const templates = config?.templates ?? [];
+  const templateId = templates.some(template => template.id === snapshot.ownerReport?.templateId)
+    ? snapshot.ownerReport?.templateId ?? '' : '';
+  const practiceTemplate = resolveTemplate(config);
+  const selectedTemplate = resolveTemplate(config, templateId);
+  const templateName = (name: string) => name || t('templates.untitled');
+  const defaultTemplateLabel = t('section.practiceDefault', { name: templateName(practiceTemplate.name) });
+  const photosAvailable = cloudActive && attachments.items.length > 0;
+  const photoWarning = !photosAvailable || !includedPhotos.length;
+  let photoNote: string | undefined;
+  if (attachments.loaded) {
+    if (!cloudActive && !bare) photoNote = t('modal.photosNeedAccount');
+    else if (!photosAvailable) photoNote = t('modal.photosEmpty');
+    else if (!includedPhotos.length) photoNote = t('modal.photosTag');
+    else if (!hasSection(model, 'photos')) photoNote = t('modal.photosDisabled');
+    else if (!incomplete && !attachmentInvalid) photoNote = hasUnlabelledPhotos
+      ? t('modal.imagesIncluded', { total: includedPhotos.length })
+      : t('modal.photosIncluded', { count: includedPhotos.length });
+  }
+  const body = (
+        <div className={viewOnly ? 'pdf-preview-body pdf-preview-body--view-only' : bare ? 'pdf-preview-body pdf-preview-body--toolbar' : 'pdf-preview-body'}>
+          {!viewOnly && (bare ? <DocumentToolbar actions={actions} notice={notices}>
+            <section className="document-toolbar__group">
+              <h3>{t('section.templateLabel')}</h3>
+              <div className="document-toolbar__options">
+                {onTemplateChange && templates.length > 1 ? (
+                  <select className="patient-form__input document-toolbar__template-picker" value={templateId} aria-label={t('section.templateLabel')}
+                    onChange={event => onTemplateChange(event.target.value || null)}>
+                    <option value="">{defaultTemplateLabel}</option>
+                    {templates.map(template => (
+                      <option value={template.id} key={template.id}>
+                        {template.language === 'en' ? templateName(template.name) : t('section.templateOption', { name: templateName(template.name), language: t(`languages.${template.language}`) })}
+                      </option>
+                    ))}
+                  </select>
+                ) : <span className="document-toolbar__template-name">{templateId ? templateName(selectedTemplate.name) : defaultTemplateLabel}</span>}
+                {onEditWording && <button type="button" className="ui-btn ui-btn--secondary" onClick={onEditWording}>{t('modal.editWording')}</button>}
+                {onCustomizeTemplate && <button type="button" className="ui-btn ui-btn--secondary" onClick={onCustomizeTemplate}>{t('modal.customizeTemplate')}</button>}
+              </div>
+              {photoNote && <p className={photoWarning ? 'document-toolbar__note document-toolbar__note--warning' : 'document-toolbar__note'} role="status">{photoNote}</p>}
+            </section>
+          </DocumentToolbar> : <aside className="pdf-preview-styles">
+            <ul className="pdf-preview-notes">
+              <li>{t('modal.noteFindings')}</li>
+              {photoNote && <li>{photoNote}</li>}
+            </ul>
+            {onEditWording && (
+              <button type="button" className="pdf-preview-secondary" onClick={onEditWording}>
+                {t('modal.editWording')}
+              </button>
+            )}
+            {actions}
+            {notices}
+          </aside>)}
           <div className="pdf-preview-iframe-wrap">
             {generating && <div className="pdf-preview-status">{t('modal.generating')}</div>}
             {error && !generating && (
               <div className="pdf-preview-status pdf-preview-status--error">{error}</div>
             )}
-            {pdfUrl && !error && (canShowPdfInline() ? (
+            {pdfUrl && !error && (!viewOnly && canShowPdfInline() ? (
               <iframe src={pdfUrl} title={t('modal.previewTitle')} className="pdf-preview-iframe" />
             ) : pdfBlobRef.current && (
               <PdfPagesPreview blob={pdfBlobRef.current} title={t('modal.previewTitle')} />
@@ -308,7 +358,7 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
         </div>
   );
 
-  const emailDialog = ensureSaved && (
+  const emailDialog = !viewOnly && ensureSaved && (
     <OwnerReportEmailModal
       open={emailOpen}
       onClose={() => setEmailOpen(false)}
@@ -320,9 +370,9 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
       ownerName={snapshot.patientInfo.ownerName}
       validatePdf={async () => {
         if (!currentReport.current.open || !currentReport.current.ready) return false;
-        if (!cloudActive || Object.keys(imageRoles).length === 0) return true;
+        if (!cloudActive || Object.keys(photoRoles).length === 0) return true;
         const items = await listChartAttachments(chartId);
-        if (!items || ownerReportAttachmentBasis(items, imageRoles) !== attachmentBasis) {
+        if (!items || ownerReportAttachmentBasis(items, photoRoles) !== attachmentBasis) {
           if (currentReport.current.open) { setAttachmentInvalid(true); setEmailOpen(false); }
           return false;
         }
@@ -343,11 +393,11 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
         aria-modal="true"
         aria-labelledby="owner-report-title"
       >
-        <div className="pdf-preview-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="pdf-preview-modal" ref={modalRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
           <header className="pdf-preview-header">
             <div>
               <h2 id="owner-report-title">{t('modal.title')}</h2>
-              <p>{t('modal.subtitle')}</p>
+              {!viewOnly && <p>{t('modal.subtitle')}</p>}
             </div>
             <button ref={closeButtonRef} type="button" className="pdf-preview-close" onClick={onClose} aria-label={t('modal.close')}>
               ×

@@ -1,4 +1,25 @@
 {
+  "refinement": {
+    "noChanges": "No changes suggested. Your text is unchanged.",
+    "applied": "Refinement applied.",
+    "kept": "Original wording kept.",
+    "consentRequired": "Enable AI processing to refine this text.",
+    "fieldChanged": "The text changed during refinement. Choose Refine to try again.",
+    "enterText": "Enter text to refine.",
+    "tooLong": "This text is too long to refine at once.",
+    "action": "Refine",
+    "modes": {
+      "clean": "Clean up wording",
+      "concise": "Make concise",
+      "organize": "Organize"
+    },
+    "review": "Review refinement",
+    "original": "Original",
+    "proposed": "Proposed wording",
+    "apply": "Apply refinement",
+    "failed": "Couldn’t refine the text.",
+    "changedFacts": "The draft changed a number, unit, or placeholder. Your text was kept."
+  },
   "brand": "ToothOps Charting",
   "brandTrial": "ToothOps Charting · Trial",
   "skipLink": "Skip to main content",
@@ -76,6 +97,8 @@
     "addLogo": "Add logo"
   },
   "status": {
+    "waitingToChart": "This visit is on this device. It saves to the cloud when you start charting.",
+    "autosaveOff": "Autosave is off. Save this visit to sync it to the cloud.",
     "srSaving": "Saving chart",
     "srSaved": "Chart saved",
     "srNotSaved": "Chart not saved",
@@ -346,6 +369,9 @@
     "failed": "Couldn’t change the record’s finalized status. {{error}}"
   },
   "radiologyReport": {
+    "automaticLanguage": "Automatic",
+    "languageTip": "AI writes in {{language}}. Change it in Customize.",
+    "dictate": "Dictate X-rays",
     "title": "Radiology report",
     "description": "Draft an editable report from recorded findings. Images are not analyzed.",
     "context": "Optional study context",
@@ -419,5 +445,48 @@
     "copyPrompt": "Copy the reviewed CT report:",
     "headingTechnique": "CT technique",
     "headingFindings": "CT findings"
+  },
+  "aiMetrics": {
+    "legacyNotice": "Showing all-time totals. Filters will be available after the metrics backend update.",
+    "legacyBreakdown": "Last 30 days by workflow and model",
+    "title": "AI usage",
+    "range": "Date range",
+    "from": "Start date",
+    "to": "End date",
+    "workflow": "Workflow",
+    "allWorkflows": "All workflows",
+    "model": "Model",
+    "allModels": "All models",
+    "groupBy": "Group by",
+    "apply": "Apply",
+    "dateHint": "Dates are inclusive and use UTC.",
+    "loading": "Loading AI usage…",
+    "failed": "Could not load AI usage. Try applying the filters again.",
+    "calls": "Calls",
+    "input": "Input tokens",
+    "output": "Output tokens",
+    "cache": "Cache reads",
+    "cost": "Est. cost",
+    "empty": "No AI calls match these filters.",
+    "breakdown": "Breakdown",
+    "date": "Date",
+    "perCall": "Cost per call",
+    "byAccount": "Usage by account",
+    "account": "Account",
+    "refineText": "Text refinement",
+    "warmup": "Cache warm-ups",
+    "presets": {
+      "7": "Last 7 days",
+      "30": "Last 30 days",
+      "90": "Last 90 days",
+      "all": "All time",
+      "custom": "Custom dates"
+    },
+    "groups": {
+      "workflow_model": "Workflow and model",
+      "workflow": "Workflow",
+      "model": "Model",
+      "day": "Day"
+    }
   }
 }

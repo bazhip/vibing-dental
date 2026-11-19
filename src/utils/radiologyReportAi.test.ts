@@ -100,3 +100,9 @@ it('builds a CT-specific request from CT text only and formats CT findings headi
   expect(parseRadiologyReport([tool({ ...fields, findings: '409 lesion; extent uncertain.' })], 'en', 'ct')).toContain('CT findings');
   chart.patientInfo.ctReport = ''; expect(() => buildRadiologyReportRequest(chart, 'en', 'ct')).toThrow();
 });
+
+it('attributes CT report generation separately from X-rays', () => {
+  const chart = radiologySnapshot();
+  chart.patientInfo.ctReport = 'CT lucency at 409.';
+  expect(buildRadiologyReportRequest(chart, 'en', 'ct').kind).toBe('ct_report');
+});

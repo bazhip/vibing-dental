@@ -59,6 +59,14 @@
     "warningSigns": "Urmăriți scăparea hranei, scăderea în greutate, mestecatul lent, scuturarea capului sau rezistența la zăbală, respirația urât mirositoare ori secrețiile nazale — sunați-ne dacă observați vreunul dintre aceste semne."
   },
   "intro": "Acest raport rezumă informațiile consemnate pentru vizita stomatologică a pacientului {{pet}}. Adresați întrebările echipei veterinare.",
+  "visitIntro": {
+    "lead": "Iată ce am consemnat la consultația dentară a lui {{pet}}.",
+    "extractions": "Dinți extrași la această consultație: {{total}}.",
+    "findings": "Dinți cu constatări documentate: {{total}}.",
+    "exam": "Am consemnat și alte constatări în timpul examinării orale.",
+    "treatment": "Am consemnat note de tratament pentru această consultație."
+  },
+  "visitImages": "Imagini de la consultație",
   "legendFilled": "colorat = absent înainte de această vizită",
   "legendNumbers": "Numerele corespund constatărilor de mai jos",
   "legendRemoved": "✕ roșu = extras astăzi",

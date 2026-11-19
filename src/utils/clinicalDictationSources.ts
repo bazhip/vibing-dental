@@ -1,18 +1,19 @@
 import type { ClinicalDictationField, ClinicalDictationKind, ClinicalDictationSource } from '../types';
 import i18n from '../i18n';
+import { isAppLanguage } from '../i18n/config';
 import { LocalizedError } from './apiErrors';
 
 export const CLINICAL_DICTATION_MAX_SOURCES = 20;
 export const CLINICAL_DICTATION_MAX_TRANSCRIPT = 40000;
 export const CLINICAL_DICTATION_MAX_TOTAL = 200000;
-const KINDS: readonly ClinicalDictationKind[] = ['gp-visit', 'consultation', 'gp-exam', 'discharge', 'ct'];
-const FIELDS: readonly ClinicalDictationField[] = ['complaint', 'consultationHistory', 'consultationAssessment', 'consultationPlan', 'gpVitals', 'gpPhysicalExam', 'gpDiagnostics', 'treatmentReport', 'ctReport', 'dischargeMedications', 'dischargeInstructions', 'dischargeFollowUp'];
+const KINDS: readonly ClinicalDictationKind[] = ['gp-visit', 'consultation', 'gp-exam', 'discharge', 'ct', 'imaging'];
+const FIELDS: readonly ClinicalDictationField[] = ['complaint', 'consultationHistory', 'consultationAssessment', 'consultationPlan', 'gpVitals', 'gpPhysicalExam', 'gpDiagnostics', 'treatmentReport', 'ctReport', 'radiographicFindings', 'dischargeMedications', 'dischargeInstructions', 'dischargeFollowUp'];
 
 export function isClinicalDictationSource(value: unknown): value is ClinicalDictationSource {
   if (!value || typeof value !== 'object') return false;
   const s = value as ClinicalDictationSource;
   return typeof s.id === 'string' && !!s.id.trim() && s.id.length <= 200
-    && KINDS.includes(s.kind) && ['en', 'fr', 'de', 'it', 'es'].includes(s.language)
+    && KINDS.includes(s.kind) && isAppLanguage(s.language)
     && typeof s.transcript === 'string' && !!s.transcript.trim() && s.transcript.length <= CLINICAL_DICTATION_MAX_TRANSCRIPT
     && typeof s.recordedAt === 'string' && s.recordedAt.length <= 100 && Number.isFinite(Date.parse(s.recordedAt))
     && Array.isArray(s.fields) && s.fields.length <= FIELDS.length && s.fields.every(f => FIELDS.includes(f)) && new Set(s.fields).size === s.fields.length;

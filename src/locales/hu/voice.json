@@ -50,6 +50,21 @@
     "sessionStart": "Nem sikerült elindítani a Deepgram-munkamenetet.",
     "unsupported": "A hangbevitelhez Chrome, Edge vagy Safari szükséges."
   },
+  "destination": {
+    "general": "Általános"
+  },
+  "correction": {
+    "conflict": "Ellenőrizze ezt a módosítást a kórlapon.",
+    "apply": "Javaslat alkalmazása",
+    "keep": "Jelenlegi érték megtartása"
+  },
+  "welcome": {
+    "ready": "A felvétel indítása után itt jelenik meg az átirat.",
+    "title": "Diktálás",
+    "start": "A felvételhez válassza a Diktálás indítása lehetőséget.",
+    "transcript": "Beszéd közben kövesse az átiratot. Ha végzett, válassza a Leállítás lehetőséget.",
+    "review": "Ellenőrizze a leletet vagy a kórlap módosításait, és végezze el a szükséges javításokat."
+  },
   "intro": {
     "ariaLabel": "Diktálás",
     "cancel": "Mégse",
@@ -126,6 +141,7 @@
     "open_other": "{{count}} ellenőrizendő elem."
   },
   "status": {
+    "idle": "Indításra kész",
     "connecting": "Kapcsolódás…",
     "finishing": "Befejezés…",
     "interrupted": "Megszakítva",
@@ -160,6 +176,7 @@
       "ct": "CT-jelentés"
     },
     "help": "Rögzítse vagy illessze be az orvos megfigyeléseit. Alkalmazás előtt ellenőrizze a javasolt szakaszokat. A nem dokumentált leletek üresen maradnak.",
+    "imagingHelp": "Rögzítse vagy illessze be a képalkotó leleteket. Ha nem egyértelmű, nevezze meg a vizsgálat típusát. Alkalmazás előtt ellenőrizze a röntgen- és CT-leletbe kerülő megállapításokat.",
     "ctHelp": "Rögzítse vagy illessze be a CT-megfigyeléseket. Leállításkor csak a CT-jelentéshez adjuk hozzá őket, és automatikusan finomítjuk a szöveget.",
     "ctApply": "CT-jelentés hozzáadása és finomítása",
     "target": "Diktálás célja",

@@ -274,6 +274,8 @@ export interface PatientInfo {
   date: string;
   complaint: string;
   treatmentReport: string;
+  /** Saved template selected for this visit's treatment report. */
+  treatmentReportTemplateId?: string;
   /** Explicit visit sources; absent on older charts. Each is bounded to 20,000 characters. */
   gpVitals?: string;
   gpPhysicalExam?: string;
@@ -414,17 +416,24 @@ export interface OwnerReportOverrides {
   intro?: string;
   /** Home-care advice, one tip per line. */
   homecare?: string;
+  /** Latest generated wording, retained independently of manual edits. */
+  generatedIntro?: string;
+  generatedHomecare?: string;
   /** Optional extra note from the team, printed as its own section. */
   extraNotes?: string;
+  /** Owner-facing wording for the chart-generated report sections. */
+  extractionsText?: string;
+  findingsText?: string;
+  examNotesText?: string;
   /** Practice owner-report template chosen for this chart (absent = the
    *  practice default). Unknown ids fall back to the default too. */
   templateId?: string;
 }
 
-export type ClinicalDictationKind = 'gp-visit' | 'consultation' | 'gp-exam' | 'discharge' | 'ct';
+export type ClinicalDictationKind = 'gp-visit' | 'consultation' | 'gp-exam' | 'discharge' | 'ct' | 'imaging';
 export type ClinicalDictationField =
   | 'complaint' | 'consultationHistory' | 'consultationAssessment' | 'consultationPlan'
-  | 'gpVitals' | 'gpPhysicalExam' | 'gpDiagnostics' | 'treatmentReport' | 'ctReport'
+  | 'gpVitals' | 'gpPhysicalExam' | 'gpDiagnostics' | 'treatmentReport' | 'ctReport' | 'radiographicFindings'
   | 'dischargeMedications' | 'dischargeInstructions' | 'dischargeFollowUp';
 export interface ClinicalDictationSource {
   id: string;
@@ -446,6 +455,8 @@ export interface ChartSnapshot {
   /** Before/after tags for attached images (by attachment id), used by
    *  the owner report's photo section. */
   imageRoles?: Record<string, ImageRole>;
+  /** Explicit owner-report image choices override the legacy before/after tags. */
+  ownerReportImageInclusion?: Record<string, boolean>;
   /** Attachment ids left OUT of the chart PDF's image pages. Stored as
    *  exclusions so a newly added image is in the PDF by default. */
   pdfExcludedImages?: string[];

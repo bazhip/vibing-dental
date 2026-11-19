@@ -1,6 +1,7 @@
 import { act, renderHook } from '@testing-library/react';
 import { beforeEach, afterEach, expect, it, vi } from 'vitest';
 import { normalizeSnapshot, useChartState } from './useChartState';
+import { ownerReportPhotoRoles } from '../utils/ownerReport';
 import { VISIT_DOCUMENT_FIELDS } from '../utils/visitDocumentation';
 const sources = { gpVitals: '4 kg?', gpPhysicalExam: 'Left ear sore', gpDiagnostics: 'CBC pending', consultationHistory: 'History?', consultationAssessment: 'Uncertain', consultationPlan: 'Discuss options', dischargeMedications: 'Drug 2 mg? confirm', dischargeInstructions: 'Recorded wording', dischargeFollowUp: 'As discussed' };
 const values = new Map<string, string>();
@@ -68,4 +69,22 @@ it('keeps a same-batch source append bound to the reset or loaded visit', () => 
   const snapshot = result.current.getSnapshot();
   act(() => { result.current.applySnapshot({ ...snapshot, clinicalDictations: [{ ...source, id: 'loaded' }] }, 'loaded-visit'); result.current.appendClinicalDictation({ ...source, id: 'appended' }); });
   expect(result.current.clinicalDictations.map(item => item.id)).toEqual(['loaded', 'appended']);
+});
+
+it('preserves legacy photo inclusion and saves explicit image choices independently of labels', () => {
+  const first = renderHook(() => useChartState());
+  act(() => first.result.current.applySnapshot({ ...first.result.current.getSnapshot(), imageRoles: { legacy: 'before' } }, 'visit'));
+  act(() => first.result.current.setImageRole('legacy', null));
+  act(() => first.result.current.setImageRole('excluded', 'after'));
+  act(() => first.result.current.setImageInOwnerReport('included', true));
+  const snapshot = first.result.current.getSnapshot();
+  expect(ownerReportPhotoRoles(snapshot.imageRoles ?? {}, snapshot.ownerReportImageInclusion)).toEqual({ legacy: null, included: null });
+  first.unmount();
+
+  const next = renderHook(() => useChartState());
+  expect(next.result.current.getSnapshot().ownerReportImageInclusion).toEqual({ legacy: true, excluded: false, included: true });
+  expect(next.result.current.imageRoles).toEqual({ excluded: 'after' });
+  act(() => next.result.current.startNewVisit());
+  expect(next.result.current.getSnapshot().ownerReportImageInclusion).toBeUndefined();
+  expect(next.result.current.imageRoles).toEqual({});
 });

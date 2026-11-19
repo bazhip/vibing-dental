@@ -1,0 +1,404 @@
+{
+  "site": {
+    "title": "ToothOps-Hilfecenter",
+    "intro": "Praxisnahe Anleitungen für jeden Schritt eines Zahntermins, vom Öffnen der Patientenakte bis zum Versand des Berichts.",
+    "search": "Dokumentation durchsuchen",
+    "searchHint": "Themen, Aufgaben oder Einstellungen suchen",
+    "topics": "Themen",
+    "onPage": "Auf dieser Seite",
+    "openApp": "ToothOps öffnen",
+    "home": "Startseite der Hilfe",
+    "skip": "Zum Artikel springen",
+    "results": "Suchergebnisse",
+    "empty": "Keine passenden Anleitungen gefunden. Suchen Sie nach einem kürzeren Begriff oder sehen Sie sich die Themen an.",
+    "clear": "Suche löschen",
+    "related": "Weitere Anleitungen",
+    "language": "Sprache der Dokumentation",
+    "contact": "Feedback senden",
+    "guide": "Anleitung lesen"
+  },
+  "groups": {
+    "start": "Loslegen",
+    "clinical": "Klinischer Ablauf",
+    "output": "Berichte und Nachsorge",
+    "practice": "Praxis und Support"
+  },
+  "images": {
+    "charting": "Ein Beispiel für ein Zahnschema mit nummerierten Zähnen und einem Befundraster.",
+    "imaging": "Der Abschnitt „Bildgebung“ mit getrennten Feldern für den Röntgen- und CT-Bericht.",
+    "dictation": "Diktatprüfung mit getrennten Vorschlägen für Röntgen und CT aus demselben Transkript.",
+    "owner": "Die Bedienelemente des Besitzerberichts und eine Einleitung zum aktuellen Besuch.",
+    "export": "Die PDF-Vorschau der klinischen Akte mit einem Beispiel-Zahnschema.",
+    "start": "Beispiel-Arbeitsbereich mit Besuchsregister, Abschnittsnavigation und Patienteninformationen.",
+    "patients": "Frühere Besuche in der Patientenakte mit einer ausgewählten Textnotiz.",
+    "exam": "Tabelle der Befunde der Mauluntersuchung mit Normal, Auffällig und einem Kommentar.",
+    "viewer": "Bildbetrachter mit Fenster-, Pegel- und Download-Steuerelementen für eine synthetische DICOM-Datei.",
+    "treatment": "Behandlungsbericht mit gespeicherten Vorlagen und dem bearbeitbaren Bericht darunter.",
+    "preferences": "Akteneinstellungen mit Layout, automatischem Speichern und Optionen für die Taschentiefenmessung.",
+    "help-tools": "Hilfemenü mit Hilfecenter, Einführung, Neuerungen und Feedback.",
+    "by-number": "Die Ansicht „Pro Zahn“ mit ausgewähltem Zahn 108 im nummerierten Schema und den dazugehörigen Befunden.",
+    "imagingSettings": "Einstellungen „Bildgebung und PDF“ mit Berichtssprache und Standardoptionen für den PDF-Inhalt."
+  },
+  "articles": {
+    "start": {
+      "title": "Ihr erster Zahntermin",
+      "intro": "Begleiten Sie den Besuch von der neuen Akte bis zum abschließenden Dokument.",
+      "sections": {
+        "first": {
+          "title": "Patientenakte öffnen oder anlegen",
+          "text": "Verwenden Sie die Plus-Schaltfläche oder „Tier öffnen“. Suchen Sie nach dem Namen oder der Patientennummer, bevor Sie einen Patienten anlegen. Prüfen Sie unter „Patient“ den Namen, die Tierart, die Patientennummer und das Besuchsdatum."
+        },
+        "second": {
+          "title": "Behandlung fortlaufend dokumentieren",
+          "text": "Nutzen Sie „Untersuchung“ und „Narkose“ für Beobachtungen, „Zahnschema“ für Messwerte, „Diagnose“ für Befunde und „Eingriff“ für durchgeführte Maßnahmen. Ergänzen Sie in „Bildgebung“ Bilder und deren Auswertung. Erfassen Sie die Behandlung und die Entlassungshinweise in den jeweiligen Abschnitten."
+        },
+        "third": {
+          "title": "Prüfen, speichern und weitergeben",
+          "text": "Prüfen Sie die klinische Akte oder den Besitzerbericht unter „Prüfen und exportieren“. Wählen Sie „Abschließen“, sobald die Akte vollständig ist. Prüfen Sie vor dem Verlassen den Speicherstatus im Patienten-Tab. Wählen Sie „Akte bearbeiten“, um einen gespeicherten Besuch zu korrigieren."
+        }
+      }
+    },
+    "patients": {
+      "title": "Patienten und Besuchsverlauf",
+      "intro": "Öffnen Sie den Besuch mit dem passenden Datum und vergleichen Sie frühere Akten.",
+      "sections": {
+        "first": {
+          "title": "Patienten finden",
+          "text": "Öffnen Sie die Patientenauswahl im Browser mit der Plus-Schaltfläche. Prüfen Sie bei gleichen Namen die Patientennummer. Wählen Sie einen vorhandenen Besuch, um ihn fortzusetzen, oder legen Sie für einen neuen Termin einen neuen Besuch an."
+        },
+        "second": {
+          "title": "Zwischen Besuchen und Patienten-Tabs wechseln",
+          "text": "Der Tab zeigt den Patienten und das Besuchsdatum an. Nutzen Sie die Besuchsauswahl im Tab, wenn mehrere Besuche gespeichert sind. Mit der Plus-Schaltfläche öffnen Sie einen weiteren Patienten. Beim Schließen eines Tabs bleibt die Patientenakte erhalten."
+        },
+        "third": {
+          "title": "Frühere Akten prüfen",
+          "text": "Wählen Sie unter „Patient“ die Option „Besuchsverlauf ansehen“, wenn frühere Besuche vorhanden sind. Wählen Sie ein Datum und prüfen Sie die PDFs oder klinischen Notizen. Um die Akte zu korrigieren, öffnen Sie den betreffenden Besuch."
+        }
+      }
+    },
+    "charting": {
+      "title": "Zahnschema, Diagnose und Eingriffe",
+      "intro": "Erfassen Sie Messwerte und unterscheiden Sie Befunde von durchgeführten Maßnahmen.",
+      "sections": {
+        "first": {
+          "title": "Messwerte pro Zahn erfassen",
+          "text": "Wählen Sie im „Zahnschema“ zwischen „Raster“ und „Pro Zahn“. Tragen Sie die parodontalen Messwerte bei den entsprechenden nummerierten Zähnen ein. Wählen Sie unter „Anpassen“, welche Spalten angezeigt werden und wie Messwerte der Parodontaltaschen erfasst werden.\n\nWählen Sie in „Pro Zahn“ einen nummerierten Zahn im Schema aus, um seine Messwerte und Notizen gemeinsam zu öffnen. Wählen Sie im „Raster“ die Zahnnummern aus, um mehrere Zähne gleichzeitig zu bearbeiten. Mit Umschalt+Klick wählen Sie einen Bereich aus. Beide Ansichten verwenden dieselben Messwerte."
+        },
+        "second": {
+          "title": "Befunde unter Diagnose dokumentieren",
+          "text": "Wählen Sie den betreffenden Zahn aus und markieren Sie die Befunde vor der Behandlung oder bereits fehlende Zähne. Ergänzen Sie bei Bedarf Dentalcodes und kurze Notizen. Schlagen Sie den Code im Codeverzeichnis nach, wenn Sie unsicher sind."
+        },
+        "third": {
+          "title": "Maßnahmen unter Eingriff dokumentieren",
+          "text": "Erfassen Sie unter „Eingriff“ die Maßnahmen dieses Besuchs, einschließlich abgeschlossener Extraktionen. Ergänzen Sie Details als Freitext im „Behandlungsbericht“. Führen Sie geplante Eingriffe bis zur Durchführung in Ihrer Dokumentation weiter."
+        }
+      }
+    },
+    "exam": {
+      "title": "Untersuchung und Narkose",
+      "intro": "Erfassen Sie Beobachtungen und Angaben zur Narkose in den dafür vorgesehenen Abschnitten.",
+      "sections": {
+        "first": {
+          "title": "Untersuchung dokumentieren",
+          "text": "Öffnen Sie „Untersuchung“ und tragen Sie den Status und Ihre Kommentare zu den untersuchten Bereichen ein. Lassen Sie nicht untersuchte Bereiche leer. Unter „Anpassen“ verwalten Sie die Untersuchungsbereiche."
+        },
+        "second": {
+          "title": "Anästhetika und Nervenblockaden erfassen",
+          "text": "Öffnen Sie „Narkose“, geben Sie die Anästhetika ein und erfassen Sie Ort und Volumen der durchgeführten Blockaden. Prüfen Sie vor dem Abschluss die Seitenangaben und Einheiten anhand der Quelle."
+        },
+        "third": {
+          "title": "Optionale Abschnitte nutzen",
+          "text": "Wenn Ihre Praxis „Konsultation“ oder „Allgemeinuntersuchung“ aktiviert hat, erscheinen diese Abschnitte in der Navigation der Akte. Halten Sie dort die relevanten Angaben zu Anamnese, Beurteilung, Plan und Untersuchung fest."
+        }
+      }
+    },
+    "imaging": {
+      "title": "Bildgebung und Befundberichte",
+      "intro": "Verwalten Sie klinische Bilder, Röntgenaufnahmen und CT-Befunde für den aktuellen Besuch.",
+      "sections": {
+        "first": {
+          "title": "Bilder hinzufügen und den Bildverlauf ansehen",
+          "text": "Wählen Sie im Browser „Bilder hinzufügen“, um Dateien auszuwählen, abzulegen oder einzufügen. Bei unterstützten DICOM-Dateien bleibt das Original zum Herunterladen verfügbar. Klappen Sie im „Bildverlauf“ die Zeile auf oder öffnen Sie den früheren Besuch, um die Bilder anzusehen."
+        },
+        "second": {
+          "title": "Bilder für Berichte auswählen",
+          "text": "Geben Sie für jedes Bild den Typ und bei Bedarf den Zahn und eine Beschreibung an. Wählen Sie, ob das Bild im klinischen PDF oder im Besitzerbericht erscheinen soll. Nutzen Sie „Vor der Behandlung“ oder „Nach der Behandlung“, wenn das die Einordnung erleichtert."
+        },
+        "third": {
+          "title": "Röntgen- und CT-Berichte verfassen",
+          "text": "Tragen Sie Ihre Befunde im „Röntgenbericht“ oder „CT-Bericht“ ein. Wählen Sie in „Bildgebung“ die Option „Diktieren“, um Ihre Befunde zu sprechen. Nennen Sie bei Unklarheiten das bildgebende Verfahren. Prüfen Sie die vorgeschlagene Zuordnung, bevor Sie Änderungen übernehmen. Für eingegebenen Text steht „Überarbeiten“ zur Verfügung."
+        }
+      }
+    },
+    "dictation": {
+      "title": "Diktat und Prüfung von KI-Vorschlägen",
+      "intro": "Diktieren Sie aus dem aktuellen Abschnitt heraus und prüfen Sie, wo die Befunde eingetragen werden.",
+      "sections": {
+        "first": {
+          "title": "Diktat im aktuellen Abschnitt beginnen",
+          "text": "Öffnen Sie den passenden Abschnitt der Akte und wählen Sie „Diktieren“ und anschließend „Diktat starten“. Erlauben Sie bei Aufforderung den Mikrofonzugriff. Nennen Sie den Zahn, die Seite, die Einheiten und das Verfahren, wenn diese Angaben wichtig sind."
+        },
+        "second": {
+          "title": "Transkript und Vorschläge prüfen",
+          "text": "Die Spracherkennung erstellt das Transkript. Die KI bereitet daraus Befunde für die Akte oder Textentwürfe auf. Der aktive Abschnitt liefert Kontext bei mehrdeutigen Aussagen. Eindeutige Befunde können einem anderen unterstützten Abschnitt zugeordnet werden."
+        },
+        "third": {
+          "title": "Korrekturen vor dem Übernehmen prüfen",
+          "text": "Vergleichen Sie unter „Zu prüfen“ den aktuellen Wert mit dem Änderungsvorschlag. Übernehmen Sie einen Vorschlag nur, wenn das Transkript ihn stützt. Behalten Sie andernfalls den aktuellen Wert bei. Prüfen Sie bei Berichten oder Besuchsabschnitten den vorgeschlagenen Text und wählen Sie die Abschnitte aus, die Sie übernehmen möchten."
+        }
+      }
+    },
+    "treatment": {
+      "title": "Behandlungsberichte und Vorlagen",
+      "intro": "Verwenden Sie wiederverwendbare Texte und dokumentieren Sie die Maßnahmen dieses Besuchs.",
+      "sections": {
+        "first": {
+          "title": "Behandlungsbericht schreiben",
+          "text": "Öffnen Sie „Behandlungsbericht“. Geben Sie die durchgeführten Maßnahmen, die relevanten Befunde und die für die Akte notwendigen Details ein. Das Diktat berücksichtigt den aktuellen Abschnitt."
+        },
+        "second": {
+          "title": "Gespeicherte Vorlage verwenden",
+          "text": "Wählen Sie eine Vorlage anhand ihres Namens aus der Liste der gespeicherten Vorlagen. Prüfen Sie den eingefügten Text vor dem Speichern. Der Bericht bleibt bearbeitbar und unter „Überarbeiten“ können Sie Formulierungsvorschläge prüfen."
+        },
+        "third": {
+          "title": "Wiederverwendbare Vorlage erstellen",
+          "text": "Wählen Sie „Neue Vorlage“, geben Sie ihr einen eindeutigen Namen und schreiben Sie den Text, den Sie wiederverwenden möchten. Geben Sie im Vorlageneditor { ein, um die verfügbaren Platzhalter anzuzeigen. Verwenden Sie ein Feld wie {pet} für den Namen des Tiers. Wenn Sie die gespeicherte Vorlage auswählen, setzt ToothOps die vorhandenen Werte aus der Akte ein und fragt fehlende Angaben ab."
+        }
+      }
+    },
+    "discharge": {
+      "title": "Entlassung und Besitzerberichte",
+      "intro": "Bereiten Sie das Dokument zum Mitnehmen anhand des dokumentierten Besuchs vor.",
+      "sections": {
+        "first": {
+          "title": "Entlassungshinweise erfassen",
+          "text": "Öffnen Sie „Entlassung“. Erfassen Sie die dokumentierten Medikamente, Anweisungen und Angaben zur Nachsorge. Prüfen Sie vor der Weitergabe die Medikamentennamen, Dosierungen und Zeitangaben anhand Ihrer Akte."
+        },
+        "second": {
+          "title": "Besitzerbericht entwerfen",
+          "text": "Wählen Sie in „Besitzerbericht“ eine Berichtsvorlage. Mit „Mit KI schreiben“ können Sie aus dem dokumentierten Besuch eine Einleitung und Hinweise zur häuslichen Pflege erstellen. Prüfen Sie, ob wichtige Befunde verständlich erläutert sind, und bearbeiten Sie den Text. Mit „Generierten Text wiederherstellen“ kehren Sie nach Änderungen zum gespeicherten Entwurf zurück."
+        },
+        "third": {
+          "title": "Vorschau öffnen und Bericht weitergeben",
+          "text": "Wählen Sie „Vorschau“ neben „Anpassen“, um das PDF für den Besitzer zu öffnen. Wählen Sie gewünschte Bilder unter „Bildgebung“ aus. Laden Sie den Bericht unter „Prüfen und exportieren“ herunter oder versenden Sie ihn, falls verfügbar, per E-Mail. Prüfen Sie vorher den Empfänger und das Dokument."
+        }
+      }
+    },
+    "export": {
+      "title": "Prüfen, exportieren und abschließen",
+      "intro": "Prüfen Sie das vorgesehene Dokument vor der Weitergabe und schließen Sie den Besuch nach Abschluss der Arbeit ab.",
+      "sections": {
+        "first": {
+          "title": "Dokument auswählen",
+          "text": "Öffnen Sie „Prüfen und exportieren“. „Klinische Akte“ ist das vollständige Akten-PDF. „Besitzerbericht“ enthält das PDF zum Mitnehmen, wenn die Funktion aktiviert ist. „Aktennotiz“ stellt eine Textfassung für die Patientenakte bereit."
+        },
+        "second": {
+          "title": "Klinisches PDF anpassen",
+          "text": "Wählen Sie unter „Klinische Akte“ die Option „Anpassen“, um Farben und Inhalte auszuwählen, etwa Bilder, Befundberichte und verwendete Codes. Prüfen Sie nach einer Änderung die Vorschau und laden Sie das fertige Dokument herunter."
+        },
+        "third": {
+          "title": "Besuch abschließen oder erneut öffnen",
+          "text": "Mit „Abschließen“ speichern Sie den abgeschlossenen Besuch und wechseln zurück zur schreibgeschützten Ansicht. Um einen gespeicherten Besuch zu korrigieren, öffnen Sie ihn, wählen Sie „Akte bearbeiten“ und nehmen Sie die Änderung vor. Wählen Sie anschließend „Bearbeitung beenden“. Prüfen Sie vor dem Übernehmen den Patienten und das Datum."
+        }
+      }
+    },
+    "rechecks": {
+      "title": "Nachkontrollen und Erinnerungen",
+      "intro": "Erfassen Sie den nächsten Kontrolltermin und behalten Sie fällige Besuche im Blick.",
+      "sections": {
+        "first": {
+          "title": "Datum der Nachkontrolle erfassen",
+          "text": "Tragen Sie unter „Patient“ im Feld „Kontrolle fällig“ das vereinbarte Datum ein. Ergänzen Sie bei Bedarf Hinweise unter „Entlassung“. Vergewissern Sie sich, dass die Kontaktdaten des Besitzers stimmen, wenn Erinnerungen versendet werden sollen."
+        },
+        "second": {
+          "title": "Liste der Nachkontrollen bearbeiten",
+          "text": "Öffnen Sie „Kontrollen“, um die geplanten Nachkontrollen anzuzeigen. Öffnen Sie den Patienten oder einen früheren Besuch, wenn Sie den klinischen Zusammenhang benötigen. Entfernen Sie erledigte Einträge, wenn sie nicht mehr benötigt werden."
+        },
+        "third": {
+          "title": "Erinnerungen einrichten",
+          "text": "Öffnen Sie in den Praxis- oder App-Einstellungen „Erinnerungen an Nachkontrollen“, um die verfügbaren Versandoptionen zu prüfen. Prüfen Sie vor dem Versand einer Erinnerung den Empfänger und den vorgesehenen Zeitpunkt."
+        }
+      }
+    },
+    "settings": {
+      "title": "Konto- und Praxiseinstellungen",
+      "intro": "Richten Sie die Akte für das Team ein und unterscheiden Sie persönliche Vorlieben von gemeinsamen Einstellungen.",
+      "sections": {
+        "first": {
+          "title": "Persönliche Einstellungen festlegen",
+          "text": "Ändern Sie unter „Konto“ die App-Sprache und Ihr Profil. Nutzen Sie die „Zahnschema-Einstellungen“ oder „Anpassen“ in einem Aktenabschnitt für Layout, Messwerte, Bildgebung und PDF-Anzeigeoptionen."
+        },
+        "second": {
+          "title": "Gemeinsame Praxiseinstellungen verwalten",
+          "text": "Praxisinhaber können das Erscheinungsbild, den Teamzugriff und gemeinsame Vorlagen für Besitzerberichte verwalten. Die Kundensprache der Praxis bestimmt die Standardtexte für Besitzer, einschließlich der Standardformulierungen in Berichten."
+        },
+        "third": {
+          "title": "Verfügbare Funktionen prüfen",
+          "text": "Einige klinische Abschnitte, KI-Funktionen und Berichtsaktionen hängen von den Praxiseinstellungen, den Zugriffsrechten und Ihrer Rolle ab. Wenn Sie eine Funktion nicht sehen, prüfen Sie, ob die richtige Praxis und ein bearbeitbarer Besuch geöffnet sind."
+        }
+      }
+    },
+    "troubleshooting": {
+      "title": "Probleme beheben",
+      "intro": "Lösen Sie häufige Probleme beim Speichern, Diktieren, Verwenden von Bildern oder Exportieren.",
+      "sections": {
+        "first": {
+          "title": "Ein Besuch wird nicht gespeichert",
+          "text": "Prüfen Sie die Speicheranzeige und Ihre Verbindung. Vergewissern Sie sich, dass ein Patientenname und klinische Angaben erfasst sind. Nutzen Sie, falls verfügbar, die Option zum erneuten Versuch oder zum manuellen Speichern. Lassen Sie die Akte bis zur Speicherbestätigung geöffnet."
+        },
+        "second": {
+          "title": "Mikrofon oder KI ist nicht verfügbar",
+          "text": "Erlauben Sie den Mikrofonzugriff in den Browser- oder Geräteeinstellungen, beenden Sie andere Aufnahmen und prüfen Sie die Verbindung. Öffnen Sie eine bearbeitbare Akte und wählen Sie „Diktat starten“. Wenn ein Ergebnis fehlerhaft erscheint, behalten Sie den gespeicherten Wert bei und prüfen Sie das Transkript."
+        },
+        "third": {
+          "title": "In einem Bericht fehlen Inhalte",
+          "text": "Prüfen Sie den Besuch und den Dokument-Tab. Prüfen Sie die Berichtsvorlage, die PDF-Inhalteinstellungen und die Auswahl der einzelnen Bilder. Wenn das Problem anhält, senden Sie über „Hilfe“ Feedback und beschreiben Sie das erwartete und das tatsächliche Ergebnis."
+        }
+      }
+    },
+    "account": {
+      "title": "Anmelden und Ihr Konto verwalten",
+      "intro": "Richten Sie den Zugang ein, setzen Sie Ihr Passwort zurück oder aktualisieren Sie Ihr Profil.",
+      "sections": {
+        "first": {
+          "title": "Anmelden oder eine Einladung annehmen",
+          "text": "Melden Sie sich mit der E-Mail-Adresse Ihres Kontos an. Folgen Sie beim Anlegen eines neuen Kontos dem Bestätigungslink in Ihrem Posteingang. Wenn eine Praxis Sie eingeladen hat, verwenden Sie die Einladung an die E-Mail-Adresse, mit der Sie ToothOps nutzen möchten."
+        },
+        "second": {
+          "title": "Zugang wiederherstellen",
+          "text": "Wählen Sie auf der Anmeldeseite „Passwort vergessen?“ und öffnen Sie den Link in der E-Mail. Wenn Ihre Sitzung während der Dokumentation abläuft, melden Sie sich erneut an, um weiter in der Cloud zu speichern. Prüfen Sie vor dem Fortfahren, ob der richtige Besuch geöffnet ist."
+        },
+        "third": {
+          "title": "Profil und Anmeldedaten aktualisieren",
+          "text": "Öffnen Sie „Konto“, um Anzeigenamen, E-Mail-Adresse, Passwort oder App-Sprache zu ändern. Folgen Sie den Bestätigungsschritten des jeweiligen Abschnitts."
+        }
+      }
+    },
+    "viewer": {
+      "title": "Bilder und DICOM-Dateien prüfen",
+      "intro": "Prüfen Sie einen Anhang im Bildbetrachter und laden Sie bei Bedarf seine Originaldatei herunter.",
+      "sections": {
+        "first": {
+          "title": "Bildbetrachter öffnen",
+          "text": "Wählen Sie in „Bildgebung“ oder in einem früheren Besuch ein Bild aus. Mit den Bedienelementen können Sie das Bild vergrößern, einpassen oder verschieben. Vergleichen Sie bei Bedarf Details mit der ursprünglichen Aufnahme."
+        },
+        "second": {
+          "title": "Darstellung anpassen",
+          "text": "Bei unterstützten DICOM-Originaldateien können Sie „Fenster / Level“ auf die Originaldaten anwenden. Halten Sie am Computer die Umschalttaste gedrückt und ziehen Sie horizontal für das Fenster oder vertikal für das Level. Wenn Fenster und Level nicht verfügbar sind, passen Sie Helligkeit und Kontrast an."
+        },
+        "third": {
+          "title": "Original herunterladen",
+          "text": "Wählen Sie in den Bildaktionen „DICOM-Original herunterladen“, wenn das Original verfügbar ist. Falls sich die Datei nicht lesen lässt, versuchen Sie es mit einer unkomprimierten DICOM-Datei oder einem unterstützten Bildformat, das aus der ursprünglichen Bildgebungssoftware exportiert wurde."
+        }
+      }
+    },
+    "recovery": {
+      "title": "Gespeicherte Besuche, Versionen und PDF-Import",
+      "intro": "Stellen Sie eine gespeicherte Version wieder her oder führen Sie eine Akte aus einem ToothOps-PDF weiter.",
+      "sections": {
+        "first": {
+          "title": "Speicherstatus verstehen",
+          "text": "Prüfen Sie die Speicheranzeige im aktiven Patienten-Tab. Änderungen, die Sie offline vornehmen, können bis zur Rückkehr der Verbindung auf dem Gerät bleiben. Wenn ToothOps einen neueren Speicherstand von einem anderen Gerät oder Teammitglied meldet, vergleichen Sie die aktuelle Akte, bevor Sie bestätigen, dass Sie diese Änderungen ersetzen möchten."
+        },
+        "second": {
+          "title": "Frühere Version prüfen oder wiederherstellen",
+          "text": "Vergleichen Sie im „Aktenverlauf“ die Speicherstände desselben Besuchs. Wählen Sie eine Version, um die erfassten Angaben zu sehen. Öffnen Sie zur Wiederherstellung den Besuch zur Bearbeitung, wählen Sie „Diese Version wiederherstellen“ und bestätigen Sie. Der Stand vor der Wiederherstellung bleibt im Verlauf erhalten."
+        },
+        "third": {
+          "title": "Akten-PDF importieren",
+          "text": "Wählen Sie im Patientenverzeichnis „Akten-PDF importieren“ und wählen Sie ein zuvor aus ToothOps exportiertes Akten-PDF aus. Reagieren Sie auf etwaige Rückfragen zur geöffneten Akte. Prüfen Sie anschließend den Patienten und das Besuchsdatum, bevor Sie fortfahren. Ein PDF aus einer anderen Quelle enthält möglicherweise keine bearbeitbare ToothOps-Akte."
+        }
+      }
+    },
+    "preferences": {
+      "title": "ToothOps anpassen",
+      "intro": "Finden Sie die passenden Einstellungen für die Eingabe in die Akte, die Schemaanzeige, Berichtsvorlagen oder den PDF-Export.",
+      "sections": {
+        "first": {
+          "title": "Passende Einstellungen für Ihre Aufgabe finden",
+          "text": "Öffnen Sie „Patient“, „Untersuchung“, „Narkose“, „Zahnschema“, „Diagnose“, „Eingriff“ oder „Bildgebung“ und wählen Sie im Abschnittskopf „Anpassen“. Die „Zahnschema-Einstellungen“ öffnen sich in der passenden Kategorie. Über die linke Kategorienliste wechseln Sie zu einem anderen Bereich, ohne den Dialog zu schließen. Ihre persönlichen Einstellungen werden automatisch in Ihrem Konto gespeichert, sofern die Kontosynchronisierung verfügbar ist, sonst im aktuellen Browser.\n\nDie Schaltfläche „Anpassen“ im „Behandlungsbericht“ öffnet die Vorlagen für Behandlungsberichte. Die Schaltfläche „Anpassen“ neben „Vorschau“ im „Besitzerbericht“ öffnet die Vorlagen für Besitzerberichte. Über diese Editoren verwalten Sie wiederverwendbare Texte und die Darstellung für Ihre Praxis. Prüfen Sie daher vor Änderungen, welche Vorlage ausgewählt ist."
+        },
+        "second": {
+          "title": "Kategorien der Zahnschema-Einstellungen verstehen",
+          "text": "Die Seitenleiste der „Zahnschema-Einstellungen“ ordnet die Optionen dem betreffenden Abschnitt des Besuchs zu. Wählen Sie unter „Zahnschema“ zum Beispiel „Raster“ oder „Pro Zahn“, den Modus zur Erfassung der Taschentiefen, die sichtbaren Messwerte und die Aktion nach der Eingabe einer Bewertung. Richten Sie „Diagnosekürzel“ und „Eingriffskürzel“ separat ein, da sie für unterschiedliche Schemas gelten.\n\nPassen Sie die Sichtbarkeit der Felder und die Schemaanzeige an, um sich auf die Eingabe zu konzentrieren. Prüfen Sie vor dem Export die erfassten Befunde in der Patientenakte."
+        },
+        "third": {
+          "title": "Vorgaben für Bildgebung festlegen und Exporte anpassen",
+          "text": "Öffnen Sie „Bildgebung“, wählen Sie „Anpassen“ und dann „Bildgebung und PDF“. Dort legen Sie die Sprache der Bildgebungsberichte und die standardmäßig enthaltenen Inhalte fest. Sie können Bilder, Röntgen- und CT-Berichte sowie den Abschnitt „Verwendete Codes“ einfügen. Wenn Befunde im Schema ausgeblendet sind, ist das Befundraster erforderlich, damit die erfassten Messwerte im klinischen Dokument sichtbar bleiben.\n\nFür einen einzelnen Export öffnen Sie „Prüfen und exportieren“, wählen „Klinische Akte“ und dann „Anpassen“. Wählen Sie die Farbe und die Abschnitte des klinischen PDFs und prüfen Sie die Vorschau. Für das Dokument zum Mitgeben nutzen Sie die Vorlage für den „Besitzerbericht“ und wählen die einzelnen Bilder unter „Bildgebung“ aus. Die Farbe des klinischen PDFs und die Vorlage für den Besitzerbericht werden unabhängig voneinander festgelegt."
+        }
+      }
+    },
+    "team": {
+      "title": "Praxis einrichten und Teamzugriff verwalten",
+      "intro": "Verwalten Sie das gemeinsame Erscheinungsbild, den Teamzugriff und die Berichtsvorlagen.",
+      "sections": {
+        "first": {
+          "title": "Erscheinungsbild der Praxis einrichten",
+          "text": "Öffnen Sie die „Praxiseinstellungen“, um Namen und Logo der Praxis zu aktualisieren, sofern Ihre Rolle dies zulässt. Prüfen Sie in der PDF-Vorschau, wie die Praxisdaten erscheinen. Legen Sie die Kundensprache für Standardtexte an Besitzer fest."
+        },
+        "second": {
+          "title": "Teammitglieder einladen und verwalten",
+          "text": "Öffnen Sie „Team“ in den „Praxiseinstellungen“. Nutzen Sie für Einladungen die E-Mail-Adresse, mit der sich das jeweilige Teammitglied anmelden wird. Prüfen Sie offene Einladungen und senden Sie sie bei Bedarf erneut oder widerrufen Sie sie. Praxisinhaber können den Zugriff von Mitgliedern und die Inhaberschaft verwalten."
+        },
+        "third": {
+          "title": "Gemeinsame Vorlagen verwalten",
+          "text": "Öffnen Sie „Vorlagen“ in den „Praxiseinstellungen“ oder wählen Sie „Anpassen“ neben dem betreffenden Bericht. Praxisinhaber können Layout und Texte für Besitzerberichte sowie die Standardvorlage der Praxis verwalten. Prüfen Sie nach der Bearbeitung einer bestehenden Vorlage vor dem Speichern die Beispielvorschau."
+        }
+      }
+    },
+    "billing": {
+      "title": "Abonnement und Abrechnung",
+      "intro": "Finden Sie die Optionen für Abonnements und Zahlungen Ihrer Praxis.",
+      "sections": {
+        "first": {
+          "title": "Abonnement finden",
+          "text": "Öffnen Sie in der Webversion von ToothOps die „Praxiseinstellungen“ und dann „Abrechnung“. Dort finden Sie die für Ihre Praxis verfügbaren Abonnementinformationen. Wenn Sie keinen Zugriff haben, bitten Sie den Praxisinhaber um Änderungen an der Abrechnung."
+        },
+        "second": {
+          "title": "Zahlungen und Rechnungen verwalten",
+          "text": "Wählen Sie „Abrechnung verwalten“, falls verfügbar, um das Stripe-Portal zu öffnen. Dort können Sie Rechnungen einsehen, die Zahlungsmethode ändern oder Ihr Abonnement verwalten. Prüfen Sie, ob Sie die Abrechnung der gewünschten Praxis geöffnet haben."
+        },
+        "third": {
+          "title": "Zugriffsprobleme lösen",
+          "text": "Folgen Sie bei einem Hinweis zur Abrechnung oder zum Zugriff den angezeigten Schritten in der Webversion. Wenden Sie sich über „Hilfe“ an den Support, wenn der Status einer Zahlung oder eines Abonnements nicht stimmt."
+        }
+      }
+    },
+    "help-tools": {
+      "title": "Hilfe finden und Neuigkeiten ansehen",
+      "intro": "Nutzen Sie die Einführung, die Versionshinweise und die Feedback-Funktion.",
+      "sections": {
+        "first": {
+          "title": "Einführung öffnen",
+          "text": "Wählen Sie „Erste Schritte“ unter „Hilfe“. Die Einführung zeigt Ihnen die Bedienelemente und lässt sich jederzeit erneut öffnen."
+        },
+        "second": {
+          "title": "Aktuelle Änderungen ansehen",
+          "text": "Öffnen Sie „Was ist neu?“ unter „Hilfe“, um die letzten Änderungen zu sehen. Anleitungen zu neuen Abläufen finden Sie im Hilfecenter."
+        },
+        "third": {
+          "title": "Hilfreiches Feedback senden",
+          "text": "Wählen Sie „Feedback senden“ unter „Hilfe“, wenn ein Problem auftritt oder Sie eine Idee haben. Beschreiben Sie den Ablauf, das Ergebnis und Ihre Erwartung. Entfernen Sie vor dem Anhängen eines Screenshots Patienten- oder Besitzerdaten."
+        }
+      }
+    },
+    "by-number": {
+      "title": "Zähne nach Nummer dokumentieren",
+      "intro": "Nutzen Sie das nummerierte Schema, um Messwerte, Diagnose- und Eingriffsnotizen für jeweils einen Zahn zu erfassen.",
+      "sections": {
+        "first": {
+          "title": "„Pro Zahn“ öffnen und eine Nummer auswählen",
+          "text": "Öffnen Sie „Zahnschema“ und wählen Sie „Pro Zahn“ neben „Raster“. Wählen Sie den nummerierten Zahn im Schema aus. Die Überschrift des Eingabebereichs zeigt die Triadan-Nummer und die Zahnbezeichnung. Prüfen Sie dort Ihre Auswahl, bevor Sie einen Befund eingeben. Zahn 108 ist zum Beispiel der vierte Prämolar rechts im Oberkiefer im Schema für erwachsene Hunde. Die Nummern richten sich nach der unter „Patient“ gewählten Tierart und Dentition.\n\nWenn das Schema in einem schmalen Browserfenster eingeklappt ist, öffnen Sie „Zahnübersicht“, wählen Sie einen Quadranten und dann die Nummer. Mit „Vorheriger Zahn“ und „Nächster Zahn“ wechseln Sie zwischen Zähnen, ohne die Übersicht erneut zu öffnen."
+        },
+        "second": {
+          "title": "Befunde, Notizen und Extraktionsstatus erfassen",
+          "text": "Tragen Sie die Messwerte unter „Befunde“ ein. Für die Taschentiefe können Sie einen Wert, einen Wert pro Wurzel oder sechs Werte für einzelne Messstellen erfassen. Öffnen Sie im „Zahnschema“ die Option „Anpassen“, um den Modus und die sichtbaren Messwerte festzulegen. Wählen Sie „Fehlt (vor diesem Besuch)“ nur für Zähne, die bereits fehlten.\n\nDokumentieren Sie Ihre Befunde unter „Diagnosenotiz“ und verwenden Sie die eingerichteten Kürzel. Erfassen Sie durchgeführte Maßnahmen unter „Eingriffsnotiz“. Nutzen Sie „Extraktion planen“ für vorgesehene Extraktionen. Markieren Sie den Zahn als extrahiert, sobald der Eingriff erfolgt ist. Die Legende unterscheidet erfasste Zähne, geplante Extraktionen, extrahierte und fehlende Zähne."
+        },
+        "third": {
+          "title": "Ansicht wechseln oder einen Befund mit Zahnnummer diktieren",
+          "text": "„Raster“ und „Pro Zahn“ bearbeiten dieselbe Akte. Messwerte aus der nummerierten Ansicht erscheinen auch im „Raster“. Diagnose- und Eingriffsnotizen und Markierungen erscheinen im jeweiligen Schema. Sie können jederzeit zwischen den Ansichten wechseln, um die Eingaben zu prüfen.\n\nBleiben Sie zum Diktieren im „Zahnschema“, wählen Sie „Diktieren“ und starten Sie die Aufnahme. Sprechen Sie die vollständige Nummer und den Befund, zum Beispiel „108, distale Tasche fünf Millimeter“. Prüfen Sie, ob das Ergebnis zum beabsichtigten Zahn und zu den verfügbaren Taschenfeldern passt. Prüfen Sie einen Änderungsvorschlag vor der Übernahme, wenn er von einem erfassten Wert abweicht."
+        }
+      }
+    }
+  }
+}

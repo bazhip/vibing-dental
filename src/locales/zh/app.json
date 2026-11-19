@@ -1,4 +1,25 @@
 {
+  "refinement": {
+    "noChanges": "没有建议修改，原文保持不变。",
+    "applied": "已应用润色结果。",
+    "kept": "已保留原文。",
+    "consentRequired": "请允许 AI 处理后再润色这段文字。",
+    "fieldChanged": "润色期间文字发生了更改。请选择“润色”重试。",
+    "enterText": "请输入要润色的文字。",
+    "tooLong": "文字过长，无法一次润色。",
+    "action": "润色",
+    "modes": {
+      "clean": "改善措辞",
+      "concise": "精简内容",
+      "organize": "整理结构"
+    },
+    "review": "审核润色结果",
+    "original": "原文",
+    "proposed": "建议措辞",
+    "apply": "应用润色",
+    "failed": "无法润色文本。",
+    "changedFacts": "草稿更改了数字、单位或占位符，原文已保留。"
+  },
   "brand": "ToothOps Charting",
   "brandTrial": "ToothOps Charting · 试用",
   "skipLink": "跳至主要内容",
@@ -76,6 +97,8 @@
     "addLogo": "添加标志"
   },
   "status": {
+    "waitingToChart": "本次就诊已保存在此设备上。开始填写病历后会同步到云端。",
+    "autosaveOff": "自动保存已关闭。保存本次就诊以同步到云端。",
     "srSaving": "正在保存牙科图表",
     "srSaved": "牙科图表已保存",
     "srNotSaved": "牙科图表未保存",
@@ -346,6 +369,9 @@
     "failed": "无法更改病历的完成状态。{{error}}"
   },
   "radiologyReport": {
+    "automaticLanguage": "自动",
+    "languageTip": "AI 使用 {{language}} 撰写。可在“自定义”中修改语言。",
+    "dictate": "口述 X 光所见",
     "title": "影像学报告",
     "description": "根据已记录的检查结果起草可编辑的报告。系统不会分析图像。",
     "context": "可选检查背景",
@@ -419,5 +445,48 @@
     "copyPrompt": "复制已审核的 CT 报告：",
     "headingTechnique": "CT 技术",
     "headingFindings": "CT 检查结果"
+  },
+  "aiMetrics": {
+    "legacyNotice": "正在显示全部时间的总计。指标服务更新后即可使用筛选。",
+    "legacyBreakdown": "过去 30 天，按工作流和模型",
+    "title": "AI 使用量",
+    "range": "日期范围",
+    "from": "开始日期",
+    "to": "结束日期",
+    "workflow": "工作流",
+    "allWorkflows": "所有工作流",
+    "model": "模型",
+    "allModels": "所有模型",
+    "groupBy": "分组方式",
+    "apply": "应用",
+    "dateHint": "日期按 UTC 计算，包含起止日期。",
+    "loading": "正在加载 AI 使用量…",
+    "failed": "无法加载 AI 使用量。请重新应用筛选条件。",
+    "calls": "调用次数",
+    "input": "输入词元",
+    "output": "输出词元",
+    "cache": "缓存读取词元",
+    "cost": "估算成本",
+    "empty": "没有符合筛选条件的 AI 调用。",
+    "breakdown": "明细",
+    "date": "日期",
+    "perCall": "每次调用成本",
+    "byAccount": "按账户统计",
+    "account": "账户",
+    "refineText": "文本润色",
+    "warmup": "缓存预热",
+    "presets": {
+      "7": "过去 7 天",
+      "30": "过去 30 天",
+      "90": "过去 90 天",
+      "all": "全部时间",
+      "custom": "自定义日期"
+    },
+    "groups": {
+      "workflow_model": "工作流和模型",
+      "workflow": "工作流",
+      "model": "模型",
+      "day": "按天"
+    }
   }
 }

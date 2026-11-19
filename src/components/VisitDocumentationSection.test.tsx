@@ -34,3 +34,11 @@ it('shows the client-language source notice only for discharge', () => {
   rerender(<VisitDocumentationSection kind="discharge" patientInfo={patient} onChange={vi.fn()} />);
   expect(screen.getByText(/Recorded wording stays as entered/)).toBeVisible();
 });
+
+it('places the discharge dictation control in the section title action slot', () => {
+  render(<VisitDocumentationSection kind="discharge" patientInfo={patient} onChange={vi.fn()}
+    dictation={<button type="button">Dictate discharge instructions</button>} />);
+  const heading = screen.getByRole('heading', { name: 'Discharge' });
+  const dictation = screen.getByRole('button', { name: 'Dictate discharge instructions' });
+  expect(heading.parentElement?.querySelector('.section-header__title-action')).toContainElement(dictation);
+});

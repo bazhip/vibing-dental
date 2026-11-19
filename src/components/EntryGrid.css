@@ -209,6 +209,16 @@
 
 /* Voice-input mic button + status. Lives in the topbar, theme-aware via
    var(--primary). Recording state pulses red. */
+.ai-review__destination { display: block; color: var(--text-muted); font-size: .8125rem; font-weight: 600; }
+.ai-review__comparison { margin-block: .5rem; }
+.ai-sidebar__destination {
+  margin: 0;
+  padding: .75rem .85rem 0;
+  font-size: 1rem;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
 .voice-input-wrap {
   position: relative;
   display: inline-flex;
@@ -1133,6 +1143,7 @@
 }
 
 /* Owner Report section */
+.owner-report-editor { scroll-margin-block-start: calc(var(--topbar-height, 56px) + var(--section-menu-h, 0px) + 12px); }
 .owner-report__block {
   display: block;
   margin-bottom: 1rem;
@@ -1141,13 +1152,19 @@
 .owner-report__block-head {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   justify-content: space-between;
   gap: 0.75rem;
   margin-bottom: 0.35rem;
 }
 
-.owner-report__reset {
-  font-size: 0.78rem;
+.owner-report__block-actions {
+  display: flex;
+  margin-inline-start: auto;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .owner-report__textarea {
@@ -1171,16 +1188,17 @@
   color: var(--text);
 }
 
-.owner-report__preview-list {
-  margin: 0.35rem 0;
-  padding-inline-start: 1.1rem;
-  font-size: 0.88rem;
-  color: var(--text);
+.owner-report__generated { padding-block: 10px; }
+.owner-report__generated + .owner-report__generated { border-top: 1px solid var(--border); }
+.owner-report__generated h4 { margin: 0; font-size: .875rem; }
+.owner-report__generated-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: .9rem;
+  line-height: 1.5;
 }
+.owner-report__generated-hint { margin: 0 0 8px; }
 
-.owner-report__preview-list li {
-  margin: 0.25rem 0;
-}
 
 /* Column header with the set-all-teeth action beside the title. */
 .dental-grid__head {
@@ -1639,26 +1657,55 @@
   gap: 0.6rem;
 }
 
-.surgery-report__template-bar {
+.surgery-report__tools {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 8px 12px;
+  margin-bottom: 12px;
 }
-
-.surgery-report__template-select {
-  font: inherit;
-  font-size: 0.875rem;
-  padding: 0.4rem 0.6rem;
-  border: 1px solid var(--border, #cbd5e1);
-  border-radius: 8px;
-  background: var(--surface, #fff);
-  color: var(--text);
-  max-width: 16rem;
+.surgery-report__tools:has(.surgery-report__actions:empty):not(:has(.surgery-report__templates-label)) { display: none; }
+.surgery-report__actions { display: flex; align-items: flex-start; justify-content: flex-end; flex-wrap: wrap; gap: 8px; margin-inline-start: auto; }
+.surgery-report__templates-label { margin: 0; }
+.surgery-report__templates, .treatment-templates__fields {
+  display: flex; flex-wrap: wrap; gap: 6px 8px; list-style: none; margin: 0; padding: 0;
 }
+.surgery-report__templates, .surgery-report__templates-empty { width: 100%; }
+.surgery-report__templates { max-height: 12rem; overflow: auto; padding: 3px; margin-inline: -3px; }
+.surgery-report__templates li { min-width: 0; max-width: 100%; }
+.surgery-report__templates button {
+  max-width: 100%; min-height: 36px; white-space: normal; overflow-wrap: anywhere; text-align: start;
+  box-shadow: none; border-color: var(--border);
+}
+.surgery-report__templates button[aria-pressed="true"] { background: var(--action-tint); border-color: var(--primary); }
+.surgery-report__templates-empty { margin: 0; }
+.treatment-templates__field-help { display: grid; gap: 4px; min-width: 0; }
+.treatment-templates__field-help p { margin: 0; }
+.treatment-templates__code-menu, .treatment-templates__code-guide {
+  list-style: none; padding: 0; margin: 6px 0 0;
+}
+.treatment-templates__code-menu {
+  max-width: 24rem; max-height: min(17rem, 42dvh); overflow: auto;
+  border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface);
+}
+.treatment-templates__code-menu button {
+  display: flex; align-items: center; gap: 8px; min-height: 44px; width: 100%;
+  padding: 6px 10px; border: 0; background: transparent; color: var(--text); font: inherit; text-align: start;
+  cursor: pointer;
+}
+.treatment-templates__code-menu button:is(:hover, .treatment-templates__code--highlight) { background: var(--action-tint); }
+.treatment-templates__code-guide {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(155px, 100%), 1fr)); gap: 6px 8px;
+}
+.treatment-templates__code-guide li { display: flex; align-items: center; gap: 8px; min-width: 0; }
 
-.surgery-report__template-select:disabled {
-  color: var(--text-muted);
+.treatment-templates__fields { margin-block-start: 4px; }
+.treatment-templates__fields code {
+  display: inline-block; padding: 3px 6px; border-radius: var(--radius-sm);
+  color: var(--text); background: var(--surface-alt); overflow-wrap: anywhere;
+}
+@media (max-width: 600px) {
+  .surgery-report__templates button, .surgery-report__actions > button { min-height: 44px; }
 }
 
 /* Report-templates modal */
@@ -3069,20 +3116,6 @@
   background: var(--surface-sunken, #f1f5f9);
 }
 
-/* Owner-report tag on an image card. */
-.imaging__role {
-  --select-pad-end: 26px;
-  --select-chevron-inset: 8px;
-  flex: none;
-  padding: 0.25rem 0.4rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm, 8px);
-  background: var(--surface, #fff);
-  font: inherit;
-  font-size: 0.8rem;
-  color: var(--text);
-}
-
 .fab-download {
   position: fixed;
   right: 1.5rem;
@@ -3310,6 +3343,9 @@ button.save-status--error {
 
 /* Images & radiographs section */
 .radiographic-findings { min-width: 0; }
+.imaging-reports { display: grid; gap: 24px; margin-top: 24px; }
+.imaging-reports > * { min-width: 0; }
+.imaging-reports > :last-child:not(:first-child) { padding-top: 20px; border-top: 1px solid var(--border); }
 .imaging__pdf-option {
   margin: 0 0 0.75rem;
   flex-wrap: wrap;
@@ -3349,7 +3385,7 @@ button.save-status--error {
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
   gap: 1rem;
 }
 .imaging__card {
@@ -3360,7 +3396,7 @@ button.save-status--error {
   flex-direction: column;
   background: var(--surface);
 }
-.imaging__thumb-link { display: block; }
+.imaging__thumb-link { display: block; text-decoration: none; }
 .imaging__thumb {
   width: 100%;
   aspect-ratio: 4 / 3;
@@ -3376,61 +3412,139 @@ button.save-status--error {
   font-size: 0.8rem;
   background: var(--surface-sunken, #f1f5f9);
 }
+.imaging__card .imaging__thumb { object-fit: contain; }
 .imaging__meta {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  padding: 0.6rem;
+  gap: 10px;
+  min-width: 0;
+  padding: 12px;
 }
-.imaging__kind-select {
+.imaging__card-header, .imaging__card-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.imaging__card-header { justify-content: space-between; }
+.imaging__card-header h3 { margin: 0; font-size: .875rem; font-weight: 650; }
+.imaging__dicom-status { color: var(--text-muted); font-size: .75rem; }
+
+.imaging__menu { position: relative; }
+.imaging__menu[open] { z-index: 2; }
+.imaging__menu > summary {
+  display: grid;
+  place-items: center;
+  list-style: none;
+  width: 36px;
+  min-height: 36px;
+  box-sizing: border-box;
+  padding: 0;
+  font-size: 1.25rem;
+}
+.imaging__menu > summary::-webkit-details-marker { display: none; }
+.imaging__menu-panel {
+  position: absolute;
+  inset-inline-end: 0;
+  inset-block-start: calc(100% + 4px);
+  width: min(13rem, calc(100vw - 64px));
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+}
+.imaging__menu:not([open]) > .imaging__menu-panel { display: none; }
+.imaging__menu-panel :is(a, button) {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 6px 10px;
+  min-height: 40px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: .875rem;
+  text-align: start;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.imaging__menu-panel :is(a, button):hover:not(:disabled) { background: var(--surface-alt); }
+.imaging__menu-panel .imaging__menu-delete { color: var(--danger); }
+.imaging__menu-panel button:disabled { opacity: .5; cursor: not-allowed; }
+.imaging__menu :is(summary, a, button):focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+.imaging__classification {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 108px), 1fr));
+  gap: 8px;
+}
+.imaging__field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+  font-size: .8125rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.imaging__field > :is(select, textarea) {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  margin: 0;
+  font-size: .875rem;
+  font-weight: 400;
+}
+.imaging__field > select {
   --select-pad-end: 26px;
   --select-chevron-inset: 8px;
-  align-self: flex-start;
-  padding: 0.25rem 0.4rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm, 8px);
-  background: var(--surface, #fff);
-  font: inherit;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--text);
+  padding-inline-start: 9px;
+  text-overflow: ellipsis;
 }
+.imaging__field > .imaging__caption { min-height: 62px; resize: vertical; padding: 8px 10px; }
+
+.imaging__outputs {
+  min-width: 0;
+  margin: 2px 0 0;
+  padding: 9px 0 0;
+  border: 0;
+  border-top: 1px solid var(--border);
+}
+.imaging__outputs > legend {
+  padding-inline-end: 6px;
+  font-size: .8125rem;
+  font-weight: 650;
+}
+.imaging__output-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: end;
+  gap: 8px;
+}
+.imaging__output-fields > .imaging__field { grid-column: 1 / -1; }
 .imaging__in-pdf {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 0.35rem;
-  font-size: 0.85rem;
+  gap: 8px;
+  min-height: 40px;
+  font-size: .8125rem;
   color: var(--text);
   cursor: pointer;
 }
-.imaging__caption { font-size: 0.85rem; }
-/* Original DICOM kept alongside the preview — badge doubles as download. */
-.imaging__dicom {
-  align-self: flex-start;
-  padding: 0.1rem 0.45rem;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-  color: var(--text);
-  text-decoration: none;
-}
-a.imaging__dicom:hover { background: var(--surface-2, rgba(0, 0, 0, 0.05)); }
+.imaging__in-pdf input { flex: none; accent-color: var(--primary); }
 .imaging__formats { margin: 0.35rem 0 0; }
-/* Labeled attachment fields; output choices stay distinct from image metadata. */
-.imaging__classification { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr)); gap: 10px; }
-.imaging__field { display: flex; flex-direction: column; gap: 6px; min-width: 0; font-size: 12px; font-weight: 600; color: var(--text-muted); }
-.imaging__field > :is(select, textarea) { width: 100%; min-width: 0; box-sizing: border-box; min-height: 40px; font-size: 13px; font-weight: 400; color: var(--text); }
-.imaging__field > select { padding: 8px; }
-.imaging__field > .imaging__caption { min-height: 64px; resize: vertical; padding: 8px 10px; }
-.imaging__outputs { display: flex; flex-direction: column; gap: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
-.imaging__outputs .imaging__in-pdf { min-height: 32px; gap: 8px; }
-.imaging__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-.imaging__actions .imaging__delete { min-height: 40px; margin-inline-start: auto; font-size: 13px; }
-.imaging__actions .imaging__dicom { padding: 8px 0; border: 0; border-radius: 0; font-size: 12px; font-weight: 500; letter-spacing: normal; }
-@media (max-width: 600px) {
-  .imaging__field > select, .imaging__outputs .imaging__in-pdf, .imaging__actions .imaging__delete, .imaging__actions .imaging__dicom { min-height: 44px; }
+@media (max-width: 640px) {
+  .imaging__field > select, .imaging__in-pdf, .imaging__menu > summary, .imaging__menu-panel :is(a, button) { min-height: 44px; }
+  .imaging__menu > summary { width: 44px; }
   .imaging__field > :is(select, textarea) { font-size: 16px; }
 }
 
@@ -3461,23 +3575,32 @@ a.imaging__dicom:hover { background: var(--surface-2, rgba(0, 0, 0, 0.05)); }
   padding: 0.05rem 0.4rem; border-radius: 999px;
   background: rgba(15, 23, 42, 0.8); color: #fff; font-size: 0.72rem; font-weight: 700;
 }
-.imaging__tooth-select {
-  --select-pad-end: 26px;
-  --select-chevron-inset: 8px;
-  align-self: stretch;
-  padding: 0.25rem 0.4rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm, 8px);
-  background: var(--surface, #fff);
-  font: inherit; font-size: 0.8rem; color: var(--text);
-}
-
 /* Image history: the patient's images from other visits, by date. */
 .image-history { margin-top: 1.25rem; padding-top: 0.75rem; border-top: 1px solid var(--border); }
+.image-history__header { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.image-history__header h2 { margin: 0; }
 .image-history__body { margin-top: 0.75rem; display: flex; flex-direction: column; gap: 1rem; }
+.image-history__body--strip {
+  flex-direction: row;
+  overflow-x: auto;
+  padding: 3px 3px 8px;
+  scrollbar-width: thin;
+}
+.image-history__body--strip .image-history__visit { flex: 0 0 auto; min-width: 11rem; }
+.image-history__body--strip .image-history__visit + .image-history__visit {
+  padding-inline-start: 1rem;
+  border-inline-start: 1px solid var(--border);
+}
+.image-history__body--strip .image-history__grid { display: flex; }
+.image-history__body--strip .image-history__item { width: 108px; }
+.image-history__body--strip .imaging__thumb { height: 72px; aspect-ratio: auto; }
+@media (max-width: 600px) {
+  .image-history__header button, .image-history__open { min-height: 44px; }
+}
 .image-history__visit-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.6rem; margin-bottom: 0.5rem; }
 .image-history__date { margin: 0; font-size: 0.95rem; font-weight: 700; color: var(--text); }
 .image-history__open { margin-inline-start: auto; }
+.image-history__body--strip .image-history__open { margin-inline-start: 0; }
 .image-history__grid {
   list-style: none; margin: 0; padding: 0;
   display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.6rem;
@@ -3487,6 +3610,7 @@ a.imaging__dicom:hover { background: var(--surface-2, rgba(0, 0, 0, 0.05)); }
   position: relative; display: block; padding: 0; border: 1px solid var(--border);
   border-radius: 8px; overflow: hidden; cursor: zoom-in; background: none;
 }
+.image-history__thumb-btn:focus-visible { outline-offset: -2px; }
 .image-history__label { font-size: 0.78rem; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .image-history__retry { border: 0; background: none; padding: 0; font: inherit; color: inherit; text-decoration: underline; cursor: pointer; }
 /* Image viewer modal: themed controls around a dark diagnostic canvas. */
@@ -3740,7 +3864,7 @@ button.save-status--manual:hover {
   .ai-sidebar__foot { flex: none; }
   /* Room for the review card without pushing the footer off. */
   .ai-sidebar--has-review { max-height: 64dvh; }
-  .ai-sidebar__foot { flex-wrap: nowrap; padding: 0.15rem 0.35rem; }
+  .ai-sidebar__foot { flex-wrap: wrap; padding: 0.15rem 0.35rem; }
   .ai-sidebar__link { padding: 0 0.5rem; }
 }
 
@@ -4114,7 +4238,6 @@ button.save-status--manual:hover {
 
 /* Owner report header: Customize · Write with AI · Preview. */
 .owner-report__actions { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; justify-content: flex-end; }
-.owner-report__ai { font-weight: 600; }
 
 /* Charting header: Grid / By tooth switch + Customize (Chart settings). */
 .charting-header-actions { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
@@ -4747,7 +4870,7 @@ a, button, input, select, textarea, label, summary, [role='button'] {
 .chart-readonly-notice button { flex: none; min-height: 44px; }
 .imaging__meta select:disabled,
 .imaging__meta input[readonly] {
-  background: var(--surface-alt, #f1f5f9); color: var(--text-muted); border-style: dashed; cursor: not-allowed;
+  background: var(--surface-alt, #f1f5f9); color: var(--text-muted); cursor: not-allowed;
 }
 @media (max-width: 420px) {
   .chart-readonly-notice { flex-wrap: wrap; gap: 8px; }

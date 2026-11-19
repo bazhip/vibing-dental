@@ -70,6 +70,12 @@ describe('procedure diagram available region', () => {
     expect(post.height).toBeGreaterThan(0);
   });
 
+  it('omits the codes legend when the export option is off', async () => {
+    const { texts } = await capture({ ...patient, treatmentReport: 'PD3, X, TR' }, 'canine', { includeCodesUsed: false });
+    expect(texts.some(line => line.text.toLowerCase() === 'codes used')).toBe(false);
+    expect(texts.some(line => line.text.includes('PD3, X, TR'))).toBe(true);
+  });
+
   it.each([true, false])('keeps populated cards above the diagram with grid=%s and appended imaging', async includeGrid => {
     const { post, texts, bytes } = await capture({ ...patient,
       treatmentReport: 'Extraction completed. '.repeat(200), radiographicFindings: 'Root resorption.',

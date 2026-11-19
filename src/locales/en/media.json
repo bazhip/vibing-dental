@@ -1,5 +1,10 @@
 {
   "imaging": {
+    "inOwnerReport": "In owner report",
+    "beforeAfter": "Before / after",
+    "noLabel": "No label",
+    "details": "Image details",
+    "reportInclusion": "Report inclusion",
     "title": "Imaging",
     "signedOut": "Sign in with a practice account to attach intraoral photos and dental radiographs — they're stored privately alongside the chart.",
     "usage": "{{used}} of {{max}} images",
@@ -67,7 +72,23 @@
     "toothLabel": "Tooth",
     "ownerReportLabel": "Owner report"
   },
+  "patientRecord": {
+    "open": "View visit history",
+    "title": "Historical patient records",
+    "visit": "Visit",
+    "currentVisit": "Current visit",
+    "undatedVisit": "Undated visit",
+    "loadingVisits": "Loading previous visits…",
+    "visitsFailed": "Couldn’t load previous visits.",
+    "noVisits": "No previous visits are available in ToothOps.",
+    "visitFailed": "Couldn’t open that visit.",
+    "pdfs": "Visit PDFs",
+    "notes": "Clinical notes"
+  },
   "documents": {
+    "customize": "Customize",
+    "color": "Color",
+    "included": "Included in PDF",
     "title": "Review and export",
     "chartTab": "Clinical chart",
     "chartWho": "For your records and referrals — the full chart with codes.",
@@ -163,6 +184,8 @@
     "missing": "This image couldn’t be loaded."
   },
   "history": {
+    "expand": "Expand image history",
+    "collapse": "Collapse image history",
     "show_one": "Image history (1 other visit)",
     "show_other": "Image history ({{count}} other visits)",
     "hide": "Hide image history",

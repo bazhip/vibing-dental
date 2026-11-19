@@ -318,7 +318,12 @@ describe('ChartSettingsModal', () => {
     render(<ChartSettingsModal {...props} section={section} />);
     expect(screen.getByRole('navigation', { name: '⟦Chart settings categories⟧' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: '⟦Done⟧' })).toBeInTheDocument();
-    expect(findUntranslated(document.body, DRUGS)).toEqual([]);
+    if (section === 'images') {
+      const language = screen.getByRole('combobox', { name: '⟦Report language⟧' });
+      fireEvent.change(language, { target: { value: 'fr' } });
+      expect(props.onChange).toHaveBeenLastCalledWith({ imagingReportLanguage: 'fr' });
+    }
+    expect(findUntranslated(document.body, [...DRUGS, ...Object.values(LANGUAGE_NAMES)])).toEqual([]);
   });
 });
 

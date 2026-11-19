@@ -1,0 +1,404 @@
+{
+  "site": {
+    "title": "Centrul de ajutor ToothOps",
+    "intro": "Ghiduri practice pentru fiecare etapă a unei vizite stomatologice, de la deschiderea fișei pacientului până la trimiterea raportului.",
+    "search": "Căutați în documentație",
+    "searchHint": "Căutați subiecte, acțiuni sau setări",
+    "topics": "Subiecte",
+    "onPage": "Pe această pagină",
+    "openApp": "Deschideți ToothOps",
+    "home": "Pagina principală de ajutor",
+    "skip": "Treceți la articol",
+    "results": "Rezultatele căutării",
+    "empty": "Niciun ghid nu corespunde căutării. Încercați o căutare mai scurtă sau răsfoiți subiectele.",
+    "clear": "Ștergeți căutarea",
+    "related": "Ghiduri asociate",
+    "language": "Limba documentației",
+    "contact": "Trimiteți sugestii",
+    "guide": "Citiți ghidul"
+  },
+  "groups": {
+    "start": "Primii pași",
+    "clinical": "Flux clinic",
+    "output": "Rapoarte și monitorizare",
+    "practice": "Cabinet și asistență"
+  },
+  "images": {
+    "charting": "Exemplu de fișă dentară cu dinți numerotați și o grilă de constatări.",
+    "imaging": "Secțiunea Imagistică, cu câmpuri separate pentru raportul radiografic și raportul CT.",
+    "dictation": "Verificarea unei dictări, cu propuneri separate pentru radiografii și CT din aceeași transcriere.",
+    "owner": "Comenzile raportului pentru proprietar și rezumatul introductiv al unei vizite.",
+    "export": "Previzualizarea PDF a unei fișe clinice cu un exemplu de fișă dentară.",
+    "start": "Spațiu de lucru de exemplu cu fila vizitei, navigarea între secțiuni și datele pacientului.",
+    "patients": "Vizite anterioare în istoricul pacientului, cu o notă clinică selectată.",
+    "exam": "Tabelul examinării orale cu opțiunile Normal și Anormal și un comentariu.",
+    "viewer": "Vizualizator cu setările de fereastră și nivel și butonul de descărcare pentru un DICOM sintetic.",
+    "treatment": "Raportul tratamentului cu șabloanele salvate și textul editabil dedesubt.",
+    "preferences": "Setările fișei cu aspectul, salvarea automată și înregistrarea adâncimii pungilor.",
+    "help-tools": "Meniul Ajutor cu centrul de ajutor, turul, noutățile și trimiterea feedbackului.",
+    "by-number": "Vizualizarea Pe dinte, cu dintele 108 în sistemul Triadan selectat în diagrama numerotată și constatările sale deschise.",
+    "imagingSettings": "Setările Imagini și PDF, cu limba raportului și opțiunile implicite de includere în PDF."
+  },
+  "articles": {
+    "start": {
+      "title": "Prima vizită stomatologică",
+      "intro": "Parcurgeți toate etapele vizitei, de la fișa nouă până la documentul final.",
+      "sections": {
+        "first": {
+          "title": "Deschideți sau creați fișa unui pacient",
+          "text": "Folosiți butonul plus sau opțiunea „Deschideți un animal”. Căutați după nume sau numărul pacientului înainte de a crea o fișă nouă. În „Pacient”, verificați numele, specia, numărul pacientului și data vizitei."
+        },
+        "second": {
+          "title": "Documentați îngrijirea pe parcurs",
+          "text": "Folosiți „Examen” și „Anestezie” pentru observații, „Fișă dentară” pentru măsurătorile dentare, „Diagnostic” pentru constatări și „Procedură” pentru intervențiile efectuate. Adăugați imagini și interpretarea lor în „Imagistică”. Consemnați tratamentul și instrucțiunile de externare în secțiunile respective."
+        },
+        "third": {
+          "title": "Verificați, salvați și distribuiți",
+          "text": "Folosiți „Verificați și exportați” pentru a controla fișa clinică sau raportul pentru proprietar. Alegeți „Finalizați” când documentația este gata de închis. Verificați starea salvării în fila pacientului înainte de a pleca. Pentru a modifica o vizită salvată, redeschideți-o și alegeți „Editați fișa”."
+        }
+      }
+    },
+    "patients": {
+      "title": "Pacienți și istoricul vizitelor",
+      "intro": "Deschideți vizita cu data corectă și comparați documentele anterioare.",
+      "sections": {
+        "first": {
+          "title": "Găsiți un pacient",
+          "text": "În aplicația web, deschideți lista de pacienți cu butonul plus. Dacă numele coincid, verificați numărul pacientului. Selectați o vizită existentă pentru a o continua sau creați o vizită nouă pentru o programare nouă."
+        },
+        "second": {
+          "title": "Comutați între vizite și filele pacienților",
+          "text": "Fila afișează pacientul și data vizitei. Dacă există mai multe vizite salvate, alegeți-o pe cea dorită din selectorul de vizite. Pentru a deschide alt pacient, folosiți butonul plus. Închiderea filei nu șterge pacientul."
+        },
+        "third": {
+          "title": "Consultați documentele anterioare",
+          "text": "În „Pacient”, alegeți „Vizualizați istoricul consultațiilor” când există vizite anterioare. Selectați o dată și consultați PDF-urile sau notele text. Pentru a modifica fișa unei vizite anterioare, deschideți direct vizita de la data respectivă."
+        }
+      }
+    },
+    "charting": {
+      "title": "Fișa dentară, diagnosticul și procedurile",
+      "intro": "Înregistrați valorile măsurate și distingeți constatările de intervențiile efectuate.",
+      "sections": {
+        "first": {
+          "title": "Consemnați măsurătorile dentare",
+          "text": "În „Fișă dentară”, alegeți „Grilă” sau „Pe dinte”. Introduceți măsurătorile parodontale pentru dinții numerotați corespunzători. Folosiți „Personalizați” pentru a alege coloanele afișate și modul de introducere a măsurătorilor pungilor parodontale.\n\nÎn „Pe dinte”, selectați un dinte numerotat pe diagramă ca să deschideți măsurătorile și notele aferente. În „Grilă”, selectați numerele dinților pentru a lucra cu mai mulți dinți. Țineți apăsată tasta Shift în timp ce faceți clic pentru a selecta un interval. Ambele vizualizări folosesc aceleași măsurători."
+        },
+        "second": {
+          "title": "Documentați constatările în Diagnostic",
+          "text": "Selectați dintele corespunzător și marcați constatările dinaintea tratamentului sau dinții deja absenți. Adăugați coduri dentare și note scurte, după necesități. Consultați lista de referință pentru a verifica un cod."
+        },
+        "third": {
+          "title": "Documentați intervențiile în Procedură",
+          "text": "Folosiți „Procedură” pentru intervențiile efectuate la această vizită, inclusiv extracțiile finalizate. Consemnați detaliile în text în „Raport de tratament”. Păstrați procedurile planificate în documentație ca atare până la efectuarea lor."
+        }
+      }
+    },
+    "exam": {
+      "title": "Examen și anestezie",
+      "intro": "Consemnați observațiile și detaliile anesteziei în secțiunile corespunzătoare.",
+      "sections": {
+        "first": {
+          "title": "Documentați examenul",
+          "text": "Deschideți „Examen” și consemnați starea și observațiile pentru zonele evaluate. Lăsați necompletate zonele pe care nu le-ați evaluat. Folosiți „Personalizați” pentru a gestiona zonele de examinare."
+        },
+        "second": {
+          "title": "Consemnați anestezicele și blocurile nervoase",
+          "text": "Deschideți „Anestezie”, introduceți agenții anestezici și consemnați locul și volumul pentru blocurile efectuate. Înainte de finalizare, verificați în documentele sursă părțile și unitățile de măsură."
+        },
+        "third": {
+          "title": "Folosiți secțiunile opționale ale vizitei",
+          "text": "Dacă ați activat în cabinet „Consultație” sau „Examinare de medicină generală”, aceste secțiuni apar în meniul fișei. Folosiți-le pentru anamneză, evaluare, plan și detaliile relevante ale examenului."
+        }
+      }
+    },
+    "imaging": {
+      "title": "Imagistică și rapoarte",
+      "intro": "Gestionați imaginile clinice, radiografiile și constatările CT ale vizitei curente.",
+      "sections": {
+        "first": {
+          "title": "Adăugați imagini și consultați istoricul",
+          "text": "În aplicația web, folosiți „Adăugați imagini” pentru a selecta, a glisa sau a lipi fișiere. Unde există compatibilitate cu DICOM, fișierele originale pot fi descărcate. În „Istoricul imaginilor”, extindeți rândul sau deschideți vizita anterioară pentru a inspecta imaginile."
+        },
+        "second": {
+          "title": "Alegeți imaginile incluse în raport",
+          "text": "Stabiliți tipul fiecărei imagini și, opțional, dintele și descrierea. Alegeți dacă imaginea apare în PDF-ul clinic sau în raportul pentru proprietar. Folosiți eticheta „Înainte de tratament” sau „După tratament” dacă ajută la explicarea imaginii."
+        },
+        "third": {
+          "title": "Redactați rapoartele imagistice",
+          "text": "Consemnați constatările în „Raport radiografic” sau „Raport CT”. Pentru a le dicta, alegeți „Dictați” din „Imagistică” și precizați metoda imagistică dacă nu este clară. Verificați în ce rapoarte vor fi introduse propunerile înainte de a le aplica. Puteți folosi „Rafinați” pentru textul tastat."
+        }
+      }
+    },
+    "dictation": {
+      "title": "Dictare și verificare cu IA",
+      "intro": "Dictați din secțiunea în care lucrați și verificați unde vor fi consemnate constatările.",
+      "sections": {
+        "first": {
+          "title": "Începeți din secțiunea curentă",
+          "text": "Deschideți secțiunea relevantă a fișei, alegeți „Dictați”, apoi „Începeți dictarea”. Permiteți accesul la microfon dacă vi se solicită. Precizați dintele, partea, unitățile și metoda imagistică atunci când aceste detalii sunt importante."
+        },
+        "second": {
+          "title": "Verificați transcrierea și propunerile",
+          "text": "Recunoașterea vocală generează transcrierea. IA o organizează în constatări pentru fișă sau într-un text provizoriu. Secțiunea activă oferă context pentru formulările ambigue. Constatările clare pot fi direcționate către altă secțiune compatibilă."
+        },
+        "third": {
+          "title": "Verificați corecțiile înainte de a le aplica",
+          "text": "În „Necesită verificare”, comparați valoarea curentă și modificarea propusă. Aplicați sugestia numai dacă este susținută de transcriere. Altfel, păstrați valoarea curentă. Pentru rapoarte și secțiuni ale vizitei, verificați textul propus și selectați secțiunile în care doriți să îl aplicați."
+        }
+      }
+    },
+    "treatment": {
+      "title": "Rapoarte de tratament și șabloane",
+      "intro": "Folosiți texte reutilizabile și documentați intervențiile efectuate la această vizită.",
+      "sections": {
+        "first": {
+          "title": "Redactați raportul de tratament",
+          "text": "Deschideți „Raport de tratament” și introduceți procedurile efectuate, constatările relevante și detaliile necesare pentru dosarul medical. Dictarea folosește secțiunea curentă drept context."
+        },
+        "second": {
+          "title": "Folosiți un șablon salvat",
+          "text": "Alegeți un șablon după nume din lista șabloanelor salvate. Verificați textul completat înainte de salvare. Raportul rămâne editabil, iar opțiunea „Rafinați” poate propune formulări mai clare pe care să le verificați."
+        },
+        "third": {
+          "title": "Creați un șablon reutilizabil",
+          "text": "Alegeți „Șablon nou”, dați-i un nume ușor de recunoscut și scrieți textul reutilizabil. Tastați { în editorul de șabloane pentru a vedea substituenții disponibili. Folosiți un câmp precum {pet} pentru numele pacientului. Când selectați șablonul salvat, ToothOps completează valorile cunoscute din fișă și vi le solicită pe cele care lipsesc."
+        }
+      }
+    },
+    "discharge": {
+      "title": "Externare și rapoarte pentru proprietar",
+      "intro": "Pregătiți documentul pe care proprietarul îl va lua acasă pe baza vizitei consemnate.",
+      "sections": {
+        "first": {
+          "title": "Consemnați instrucțiunile de externare",
+          "text": "Deschideți „Externare”. Introduceți medicamentele consemnate, instrucțiunile și monitorizarea. Verificați numele medicamentelor, dozele și termenele în dosar înainte de distribuire."
+        },
+        "second": {
+          "title": "Redactați raportul pentru proprietar",
+          "text": "În „Raport pentru proprietar”, alegeți șablonul de raport. Folosiți „Scrieți cu IA” pentru a redacta rezumatul introductiv și recomandările de îngrijire la domiciliu pe baza vizitei. Verificați că principalele constatări sunt explicate clar și editați textul după necesități. După editare, folosiți „Restaurează textul generat” pentru a reveni la ciorna salvată."
+        },
+        "third": {
+          "title": "Previzualizați și distribuiți raportul",
+          "text": "Folosiți „Previzualizați” de lângă „Personalizați” pentru a deschide PDF-ul destinat proprietarului. Pentru a include imagini, selectați-le în „Imagistică”. Verificați destinatarul și documentul, apoi folosiți „Verificați și exportați” pentru a descărca raportul sau, dacă opțiunea este disponibilă, a-l trimite prin e-mail."
+        }
+      }
+    },
+    "export": {
+      "title": "Verificare, export și finalizare",
+      "intro": "Verificați documentul corect înainte de a-l distribui și închideți vizita când este completă.",
+      "sections": {
+        "first": {
+          "title": "Alegeți documentul",
+          "text": "Deschideți „Verificați și exportați”. „Fișă clinică” este PDF-ul complet al fișei. „Raport pentru proprietar” este PDF-ul pentru acasă, unde această funcție este activată. „Notă pentru dosarul medical” oferă versiunea text pentru dosar."
+        },
+        "second": {
+          "title": "Personalizați PDF-ul clinic",
+          "text": "În „Fișă clinică”, deschideți „Personalizare” pentru a alege culorile și secțiunile incluse, cum ar fi imaginile, rapoartele imagistice și codurile utilizate. Verificați previzualizarea după modificarea unei opțiuni și descărcați documentul când este gata."
+        },
+        "third": {
+          "title": "Finalizați sau redeschideți o vizită",
+          "text": "„Finalizați” salvează vizita completă și o trece în modul doar pentru vizualizare. Pentru a modifica o vizită salvată, deschideți-o, alegeți „Editați fișa”, faceți modificarea și apoi alegeți „Finalizați editarea”. Confirmați pacientul și data înainte de a aplica modificările."
+        }
+      }
+    },
+    "rechecks": {
+      "title": "Recontroale și mementouri",
+      "intro": "Înregistrați următorul recontrol și urmăriți vizitele scadente.",
+      "sections": {
+        "first": {
+          "title": "Stabiliți data recontrolului",
+          "text": "După ce ați convenit asupra unei date, completați „Recontrol scadent” în „Pacient”. Adăugați instrucțiuni în „Externare” dacă este necesar. Verificați datele de contact ale proprietarului dacă veți trimite mementouri."
+        },
+        "second": {
+          "title": "Parcurgeți lista de recontroale",
+          "text": "Deschideți „Recontroale” pentru a vedea vizitele de monitorizare programate. Deschideți pacientul sau o vizită anterioară când aveți nevoie de contextul clinic. Eliminați din listă elementele finalizate, după caz."
+        },
+        "third": {
+          "title": "Configurați mementourile",
+          "text": "Deschideți „Mementouri pentru recontrol” din setările cabinetului sau ale aplicației pentru a examina opțiunile de trimitere. Verificați destinatarul și programul înainte de a trimite un memento."
+        }
+      }
+    },
+    "settings": {
+      "title": "Setările contului și ale cabinetului",
+      "intro": "Configurați fișa pentru echipă și gestionați separat preferințele personale și setările partajate.",
+      "sections": {
+        "first": {
+          "title": "Configurați preferințele personale",
+          "text": "Folosiți „Setările contului” pentru a schimba limba aplicației și profilul. Folosiți „Setările fișei” sau comanda „Personalizați” din secțiunea relevantă pentru aspectul fișei, măsurători, imagistică și afișarea PDF-urilor."
+        },
+        "second": {
+          "title": "Gestionați setările partajate ale cabinetului",
+          "text": "Proprietarii cabinetului pot gestiona identitatea vizuală, accesul echipei și șabloanele partajate pentru rapoartele destinate proprietarilor. Limba aleasă în cabinet pentru comunicarea cu clienții stabilește textele implicite pentru aceștia, inclusiv formulările rapoartelor."
+        },
+        "third": {
+          "title": "Verificați funcțiile disponibile",
+          "text": "Unele secțiuni clinice, instrumente IA și acțiuni pentru rapoarte depind de setările cabinetului, de acces și de rolul dumneavoastră. Dacă nu vedeți un instrument, verificați că ați deschis cabinetul corect și o vizită editabilă."
+        }
+      }
+    },
+    "troubleshooting": {
+      "title": "Depanare",
+      "intro": "Rezolvați problemele frecvente cu salvarea, înregistrarea audio, imaginile sau exportul.",
+      "sections": {
+        "first": {
+          "title": "O vizită nu se salvează",
+          "text": "Verificați indicatorul de salvare și conexiunea. Asigurați-vă că vizita include numele pacientului și conținut clinic. Folosiți opțiunea disponibilă pentru reîncercare sau salvare manuală. Țineți fișa deschisă până la confirmarea salvării."
+        },
+        "second": {
+          "title": "Microfonul sau IA nu este disponibilă",
+          "text": "Permiteți accesul la microfon în setările browserului sau ale dispozitivului, închideți celelalte sesiuni de înregistrare și verificați conexiunea. Deschideți o fișă editabilă și folosiți „Începeți dictarea”. Dacă un rezultat pare greșit, păstrați valoarea salvată și consultați transcrierea."
+        },
+        "third": {
+          "title": "Din raport lipsește conținut",
+          "text": "Confirmați că ați ales vizita și fila documentului corecte. Verificați șablonul de raport, opțiunile de includere în PDF și includerea fiecărei imagini. Dacă problema persistă, trimiteți sugestii din Ajutor și descrieți la ce vă așteptați și ce ați văzut."
+        }
+      }
+    },
+    "account": {
+      "title": "Autentificare și gestionarea contului",
+      "intro": "Configurați accesul, recuperați parola sau actualizați profilul.",
+      "sections": {
+        "first": {
+          "title": "Autentificați-vă sau acceptați o invitație",
+          "text": "Autentificați-vă cu adresa de e-mail a contului. Dacă vă creați un cont, urmați linkul de confirmare primit prin e-mail. Dacă v-a invitat un cabinet, folosiți invitația trimisă la adresa pe care o veți folosi pentru ToothOps."
+        },
+        "second": {
+          "title": "Recuperați accesul",
+          "text": "Folosiți „Ați uitat parola?” în ecranul de autentificare și urmați linkul primit prin e-mail. Dacă sesiunea expiră în timp ce completați fișa, autentificați-vă din nou pentru a relua salvarea în cloud. Verificați că vizita deschisă este cea corectă înainte de a continua."
+        },
+        "third": {
+          "title": "Actualizați profilul și datele de autentificare",
+          "text": "Deschideți „Setările contului” pentru a actualiza numele afișat, adresa de e-mail, parola sau limba aplicației. Urmați pașii de confirmare afișați în fiecare secțiune."
+        }
+      }
+    },
+    "viewer": {
+      "title": "Verificarea imaginilor și a fișierelor DICOM",
+      "intro": "Folosiți vizualizatorul pentru a examina un fișier atașat și a accesa originalul.",
+      "sections": {
+        "first": {
+          "title": "Deschideți vizualizatorul",
+          "text": "Selectați o imagine din „Imagistică” sau dintr-o vizită anterioară. Folosiți comenzile vizualizatorului pentru a mări, încadra sau deplasa imaginea. Dacă este necesar, comparați detaliile cu imaginea achiziționată inițial."
+        },
+        "second": {
+          "title": "Ajustați afișarea",
+          "text": "Pentru fișierele DICOM originale acceptate, folosiți „Fereastră / nivel” ca să lucrați cu datele originale. Pe computer, țineți apăsată tasta Shift și trageți orizontal pentru a ajusta fereastra sau vertical pentru a ajusta nivelul. Folosiți luminozitatea și contrastul când fereastra și nivelul nu sunt disponibile."
+        },
+        "third": {
+          "title": "Descărcați fișierul original",
+          "text": "Din acțiunile imaginii, alegeți „Descărcați originalul DICOM” atunci când originalul este disponibil. Dacă fișierul nu poate fi citit, încercați un DICOM necomprimat sau o imagine într-un format acceptat, exportată din programul de imagistică original."
+        }
+      }
+    },
+    "recovery": {
+      "title": "Vizite salvate, versiuni și import PDF",
+      "intro": "Restabiliți o versiune salvată sau continuați de la un PDF de fișă ToothOps.",
+      "sections": {
+        "first": {
+          "title": "Verificați starea salvării",
+          "text": "Urmăriți indicatorul de salvare în fila pacientului activ. Modificările efectuate offline pot rămâne pe dispozitiv până la restabilirea conexiunii. Dacă ToothOps semnalează o salvare mai recentă de la alt dispozitiv sau coleg, comparați fișa curentă cu cea salvată înainte de a confirma înlocuirea acelor modificări."
+        },
+        "second": {
+          "title": "Verificați sau restabiliți o versiune anterioară",
+          "text": "Folosiți „Istoricul fișei” pentru a compara salvările aceleiași vizite. Selectați o versiune pentru a vedea ce s-a consemnat. Pentru a o restabili, deschideți vizita pentru editare, alegeți „Restabiliți această versiune” și confirmați. Versiunea dinaintea restabilirii rămâne în istoric."
+        },
+        "third": {
+          "title": "Importați o fișă din PDF",
+          "text": "Din lista pacienților, alegeți „Importați PDF-ul fișei” și selectați un PDF exportat anterior din ToothOps. Confirmați orice solicitare privind fișa deschisă, apoi verificați pacientul și data vizitei înainte de a continua. Un PDF din altă sursă poate să nu conțină o fișă ToothOps editabilă."
+        }
+      }
+    },
+    "preferences": {
+      "title": "Personalizarea ToothOps",
+      "intro": "Găsiți comanda potrivită de personalizare pentru completarea fișei, setările implicite ale diagramelor, șabloanele de raport sau exportul PDF.",
+      "sections": {
+        "first": {
+          "title": "Găsiți setările potrivite pentru ce aveți de făcut",
+          "text": "Deschideți „Pacient”, „Examen”, „Anestezie”, „Fișă dentară”, „Diagnostic”, „Procedură” sau „Imagistică” și alegeți „Personalizați” în antetul secțiunii. Se deschide categoria corespunzătoare din „Setările fișei”. Alegeți altă categorie din lista din stânga, fără să închideți fereastra de dialog. Preferințele personale se salvează automat în cont când sincronizarea este disponibilă sau, în caz contrar, în browserul curent.\n\nÎn „Raport de tratament”, comanda „Personalizați” deschide șabloanele de tratament. În „Raport pentru proprietar”, comanda „Personalizați” de lângă „Previzualizați” deschide șabloanele acelui raport. Aceste editoare gestionează formulările și aspectul reutilizabil în cabinet. Verificați șablonul selectat înainte de a-l modifica."
+        },
+        "second": {
+          "title": "Înțelegeți categoriile din Setările fișei",
+          "text": "Bara laterală din „Setările fișei” grupează opțiunile în funcție de partea vizitei pe care o afectează. În „Fișă dentară”, de exemplu, puteți alege între „Grilă” și „Pe dinte”, modul de înregistrare a adâncimii pungilor, măsurătorile vizibile și ce se întâmplă după introducerea unui scor. Configurați separat comenzile rapide de diagnostic și de procedură, deoarece acestea se aplică unor diagrame diferite.\n\nSetările de vizibilitate ale câmpurilor și ale diagramelor vă ajută să vă concentrați când completați fișa. Verificați constatările consemnate în dosarul pacientului înainte de export."
+        },
+        "third": {
+          "title": "Stabiliți setările implicite de imagistică și personalizați exporturile",
+          "text": "Deschideți „Imagistică”, alegeți „Personalizați”, apoi selectați „Imagini și PDF” pentru a configura limba raportului imagistic și opțiunile implicite de includere. Puteți include imagini, rapoarte radiografice și CT, precum și secțiunea de coduri utilizate. Grila fișei dentare este obligatorie atunci când constatările de pe diagramă sunt dezactivate, astfel încât măsurătorile consemnate să rămână vizibile în documentul clinic.\n\nPentru un anumit export, deschideți „Verificați și exportați”, selectați „Fișă clinică” și deschideți „Personalizare”. Alegeți culoarea PDF-ului clinic și secțiunile incluse, apoi verificați previzualizarea. Pentru un document destinat proprietarului, folosiți șablonul din „Raport pentru proprietar” și alegeți imaginile individuale în „Imagistică”. Schimbarea culorii PDF-ului clinic nu modifică șablonul raportului pentru proprietar."
+        }
+      }
+    },
+    "team": {
+      "title": "Configurarea cabinetului și accesul echipei",
+      "intro": "Gestionați identitatea vizuală a cabinetului, accesul colegilor și șabloanele de raport.",
+      "sections": {
+        "first": {
+          "title": "Configurați identitatea vizuală a cabinetului",
+          "text": "Deschideți „Setările cabinetului” pentru a actualiza denumirea și sigla cabinetului, în funcție de accesul asociat rolului dumneavoastră. Previzualizați un PDF pentru a verifica afișarea datelor cabinetului. Setați limba de comunicare cu clienții pentru textul implicit afișat proprietarilor."
+        },
+        "second": {
+          "title": "Invitați colegi și gestionați accesul",
+          "text": "Deschideți „Echipă” în „Setările cabinetului”. Invitați colegii la adresa de e-mail cu care se vor autentifica. Verificați invitațiile în așteptare și folosiți acțiunea disponibilă de retrimitere sau anulare. Un proprietar al cabinetului poate gestiona accesul membrilor și drepturile de proprietar."
+        },
+        "third": {
+          "title": "Gestionați șabloanele partajate",
+          "text": "Deschideți „Șabloane” din „Setările cabinetului” sau alegeți „Personalizați” lângă raportul relevant. Proprietarii cabinetului pot gestiona aspectul și formulările rapoartelor destinate proprietarilor, precum și șablonul implicit al cabinetului. Când editați un șablon existent, previzualizați exemplul înainte de a salva."
+        }
+      }
+    },
+    "billing": {
+      "title": "Abonament și facturare",
+      "intro": "Găsiți comenzile de gestionare a abonamentului și a plăților cabinetului.",
+      "sections": {
+        "first": {
+          "title": "Găsiți abonamentul",
+          "text": "În aplicația web ToothOps, deschideți „Setările cabinetului”, apoi „Facturare”. Pagina afișează informațiile disponibile despre abonamentul cabinetului. Dacă nu aveți acces, cereți proprietarului cabinetului să modifice datele de facturare."
+        },
+        "second": {
+          "title": "Gestionați plățile și facturile",
+          "text": "Dacă opțiunea „Gestionați facturarea” este disponibilă, folosiți-o pentru a deschide portalul Stripe. În portal, puteți vedea facturile, modifica metoda de plată sau gestiona abonamentul. Verificați că ați selectat cabinetul dorit."
+        },
+        "third": {
+          "title": "Remediați o problemă de acces",
+          "text": "Dacă există o notificare privind facturarea sau accesul cabinetului, urmați acțiunea afișată în aplicația web. Folosiți „Ajutor” pentru a contacta asistența dacă starea unei plăți sau a abonamentului pare incorectă."
+        }
+      }
+    },
+    "help-tools": {
+      "title": "Ajutor și noutăți",
+      "intro": "Folosiți turul aplicației, notele de versiune și instrumentele de feedback.",
+      "sections": {
+        "first": {
+          "title": "Deschideți turul aplicației",
+          "text": "Alegeți „Primii pași” din „Ajutor”. Turul prezintă comenzile și poate fi reluat oricând aveți nevoie."
+        },
+        "second": {
+          "title": "Verificați modificările recente",
+          "text": "Deschideți „Noutăți” din „Ajutor” pentru a vedea modificările recente. Găsiți ghidurile pentru fluxurile noi în centrul de ajutor."
+        },
+        "third": {
+          "title": "Trimiteți feedback util",
+          "text": "Folosiți „Trimiteți feedback” din „Ajutor” dacă întâmpinați o problemă sau aveți o idee. Descrieți ce făceați, ce s-a întâmplat și ce așteptați. Eliminați informațiile despre pacient sau proprietar înainte să atașați o captură."
+        }
+      }
+    },
+    "by-number": {
+      "title": "Completarea fișei după numărul dintelui",
+      "intro": "Folosiți diagrama numerotată pentru a consemna măsurătorile și notele de diagnostic și procedură pentru fiecare dinte în parte.",
+      "sections": {
+        "first": {
+          "title": "Deschideți vizualizarea Pe dinte și selectați un număr",
+          "text": "Deschideți secțiunea „Fișă dentară” și selectați „Pe dinte” lângă „Grilă”. Alegeți dintele numerotat din diagramă. Antetul editorului afișează numărul Triadan și denumirea dintelui, ca să puteți verifica selecția înainte de a introduce o constatare. De exemplu, în diagrama câinelui adult, 108 este al patrulea premolar superior drept. Numerele corespund speciei și dentiției selectate în „Pacient”.\n\nDacă diagrama este restrânsă într-o fereastră îngustă a browserului, selectați „Hartă dentară”, alegeți un cadran și apoi numărul. Folosiți butoanele „Dintele anterior” și „Dintele următor” pentru a naviga între dinți fără a redeschide harta."
+        },
+        "second": {
+          "title": "Consemnați constatările, notele și starea extracției",
+          "text": "Introduceți măsurătorile în „Constatări”. Pentru adâncimea pungii parodontale, puteți consemna o singură valoare, câte o valoare pentru fiecare rădăcină sau valorile din șase situsuri. Deschideți „Personalizați” în „Fișă dentară” ca să alegeți modul de înregistrare a adâncimii pungilor și măsurătorile afișate. Bifați „Absent (înainte de această vizită)” doar dacă dintele lipsea deja.\n\nFolosiți „Notă de diagnostic” și codurile rapide configurate pentru constatările făcute, respectiv „Notă de procedură” pentru intervențiile efectuate. Folosiți „Planificați extracția” pentru intervențiile propuse. După efectuarea extracției, marcați dintele ca extras. Legenda diagramei distinge constatările consemnate, extracțiile planificate, extracțiile efectuate și dinții absenți."
+        },
+        "third": {
+          "title": "Comutați între vizualizări sau dictați o constatare cu numărul dintelui",
+          "text": "„Grilă” și „Pe dinte” editează aceeași fișă. Măsurătorile introduse în editorul numerotat apar și în grilă. Notele și marcajele de diagnostic și de procedură apar în diagramele respective. Puteți comuta între vizualizări oricând pentru a verifica datele.\n\nPentru a dicta, rămâneți în „Fișă dentară”, alegeți „Dictați” și porniți înregistrarea. Spuneți numărul complet și constatarea, de exemplu „o sută opt, pungă distală de cinci milimetri”. Verificați că rezultatul este asociat dintelui vizat și câmpului potrivit pentru măsurătorile pungilor. Dacă modificarea propusă diferă de o valoare consemnată, verificați-o înainte de a o aplica."
+        }
+      }
+    }
+  }
+}

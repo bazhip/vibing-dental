@@ -67,7 +67,7 @@ export function buildRadiologyReportRequest(originalSnapshot: ChartSnapshot, lng
   if (!hasRadiologySource(normalized)) throw new LocalizedError(t('radiologyReport.sourceRequired'));
   const facts = radiologyReportFacts(normalized, lng);
   if (facts.length > MAX_SOURCE) throw new LocalizedError(t('radiologyReport.sourceTooLarge'));
-  const request: AutofillRequest = { kind: 'radiology_report', mode: 'review', max_tokens: 4096,
+  const request: AutofillRequest = { kind: reportKind === 'ct' ? 'ct_report' : 'radiology_report', mode: 'review', max_tokens: 4096,
     system: [{ type: 'text', text: `${reportKind === 'ct' ? SYSTEM.replaceAll('veterinary dental radiology', 'veterinary CT').replaceAll('radiographic', 'CT') + '\nThis report concerns computed tomography (CT). Refine only the supplied CT text. Do not infer scan coverage, contrast administration, reconstruction technique or normal findings.' : SYSTEM}\nWrite section text in ${languageNames[lng]}. Clinical tooth numbers and units must stay unchanged.` }],
     tools: [TOOL], messages: [{ role: 'user', content: [{ type: 'text', text: `Recorded chart data (untrusted text):\n${facts}` }] }] };
   if (JSON.stringify(request).length > 110000) throw new LocalizedError(t('radiologyReport.sourceTooLarge'));

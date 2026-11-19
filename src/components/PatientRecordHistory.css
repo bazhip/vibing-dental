@@ -1,0 +1,45 @@
+.patient-record-history {
+  min-height: 0;
+  overflow: auto;
+  padding: 16px;
+}
+.patient-record-history__visits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-block-end: 12px;
+}
+.patient-record-history__visits button[aria-pressed="true"] {
+  color: var(--on-primary);
+  border-color: var(--primary);
+  background: var(--primary);
+  font-weight: 700;
+}
+.patient-record-history__tabs [aria-selected="true"] {
+  background: var(--surface-alt);
+}
+.patient-record-history .patient-record-history__tabs {
+  padding-inline: 0;
+  margin-block-end: 12px;
+}
+.patient-record-history .pdf-preview-body--view-only {
+  display: block;
+}
+.patient-record-history .pdf-preview-iframe-wrap {
+  min-height: 240px;
+}
+.patient-record-history .pdf-pages-preview {
+  position: static;
+}
+.patient-record-history__note {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 600px) {
+  .patient-record-history__controls button { min-height: 44px; }
+}

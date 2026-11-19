@@ -1,5 +1,5 @@
 import React from 'react';
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { vi } from 'vitest';
 import i18n, { loadLanguage } from '../i18n';
 import { installPseudoLocale, restoreLocale, findUntranslated } from '../i18n/testing/pseudo';
@@ -19,7 +19,7 @@ vi.mock('../utils/imageJpeg', () => ({ fetchAsJpeg: vi.fn(async () => new Uint8A
 vi.mock('../utils/svgToPng', () => ({ diagramSvgToPng: vi.fn(async () => new Uint8Array()) }));
 vi.mock('./PdfPagesPreview', () => ({
   canShowPdfInline: () => true,
-  PdfPagesPreview: () => <div />,
+  PdfPagesPreview: ({ title }: { title: string }) => <div title={title} />,
 }));
 
 import { OwnerReportModal } from './OwnerReportModal';
@@ -28,7 +28,7 @@ import { OwnerReportCustomize } from './OwnerReportCustomize';
 import { OwnerReportTemplatesModal } from './OwnerReportTemplatesModal';
 import { defaultConfig, defaultTemplate, defaultSectionTitle, BUILT_IN_SECTION_IDS, type OwnerReportConfig } from '../utils/ownerReportConfig';
 import { appReportLocale, reportStrings, type ReportLocale } from '../utils/ownerReportI18n';
-import { buildOwnerReportModel } from '../utils/ownerReport';
+import { buildOwnerReportModel, ownerReportChartWording } from '../utils/ownerReport';
 import { sampleOwnerReportSnapshot } from '../utils/ownerReportSample';
 
 beforeAll(() => {
@@ -75,7 +75,7 @@ const twoTemplates = (): OwnerReportConfig => ({
 describe('OwnerReportTemplatesModal', () => {
   const props = { open: true, onClose: noop, onSave: vi.fn(async () => {}), canEdit: true, roleKnown: true, branding };
   const allow = [
-    'Standard', 'Cat dentals', 'Elm Vet', 'Dr Kaser', /^[A-Z]{2}$/, /^\{\w+\}$/,
+    'Standard', 'Cat dentals', /^(Standard|Cat dentals)( · [A-Z]{2})?( · ⟦Default⟧)?$/, 'Elm Vet', 'Dr Kaser', /^[A-Z]{2}$/, /^\{\w+\}$/,
     ...reportContent('en', 'es'),
     ...BUILT_IN_SECTION_IDS.map(defaultSectionTitle),
   ];
@@ -99,7 +99,7 @@ describe('OwnerReportTemplatesModal', () => {
 
     custom.defaultTemplateId = 'b';
     rerender(<OwnerReportTemplatesModal {...props} config={custom} />);
-    fireEvent.click(screen.getByRole('button', { name: /Cat dentals/ }));
+    fireEvent.change(screen.getByRole('combobox', { name: '⟦Report template⟧' }), { target: { value: 'b' } });
     expect(findUntranslated(container, [...allow, 'Brush daily'])).toEqual([]);
 
     rerender(<OwnerReportTemplatesModal {...props} config={custom} canEdit={false} />);
@@ -119,7 +119,7 @@ describe('OwnerReportTemplatesModal', () => {
     await i18n.changeLanguage('de');
     const onSave = vi.fn(async () => {});
     render(<OwnerReportTemplatesModal {...props} onSave={onSave} config={defaultConfig()} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Neu' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Neue Vorlage' }));
     fireEvent.click(screen.getByRole('button', { name: 'Vorlagen speichern' }));
     await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
     const saved = (onSave.mock.calls[0] as unknown as [OwnerReportConfig])[0];
@@ -137,7 +137,7 @@ describe('OwnerReportTemplatesModal', () => {
     await i18n.changeLanguage('fr');
     const onSave = vi.fn(async () => {});
     render(<OwnerReportTemplatesModal {...props} onSave={onSave} config={defaultConfig()} clientLanguage="de" />);
-    fireEvent.click(screen.getByRole('button', { name: 'Nouveau' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Nouveau modèle' }));
     fireEvent.click(screen.getByRole('button', { name: /^Enregistrer/ }));
     await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
     const saved = (onSave.mock.calls[0] as unknown as [OwnerReportConfig])[0];
@@ -147,7 +147,7 @@ describe('OwnerReportTemplatesModal', () => {
   it('a template created in an app language reports do not cover (pseudo-locale) is saved as English', async () => {
     const onSave = vi.fn(async () => {});
     render(<OwnerReportTemplatesModal {...props} onSave={onSave} config={defaultConfig()} />);
-    fireEvent.click(screen.getByRole('button', { name: '⟦New⟧' }));
+    fireEvent.click(screen.getByRole('button', { name: '⟦New template⟧' }));
     fireEvent.click(screen.getByRole('button', { name: '⟦Save templates⟧' }));
     await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
     const saved = (onSave.mock.calls[0] as unknown as [OwnerReportConfig])[0];
@@ -170,7 +170,7 @@ describe('appReportLocale', () => {
 
 describe('OwnerReportCustomize', () => {
   it('opens the editor for owners and shows the read-only note to others', () => {
-    const allow = ['Standard', 'Elm Vet', 'Dr Kaser', /^[A-Z]{2}$/, /^\{\w+\}$/, ...reportContent('en'), ...BUILT_IN_SECTION_IDS.map(defaultSectionTitle)];
+    const allow = ['Standard', 'Standard · ⟦Default⟧', 'Elm Vet', 'Dr Kaser', /^[A-Z]{2}$/, /^\{\w+\}$/, ...reportContent('en'), ...BUILT_IN_SECTION_IDS.map(defaultSectionTitle)];
     const { container, unmount } = render(<OwnerReportCustomize onClose={noop} config={defaultConfig()} onSave={async () => {}} branding={branding} />);
     expect(findUntranslated(container, allow)).toEqual([]);
     expect(screen.getByRole('button', { name: '⟦Save templates⟧' })).toBeDisabled();
@@ -186,6 +186,7 @@ describe('OwnerReportSection', () => {
   const previewAllow = (container: HTMLElement, snap = snapshot) => {
     const model = buildOwnerReportModel(snap);
     const text = [
+      ...Object.values(ownerReportChartWording(model)),
       ...model.extracted,
       model.extracted.join(', '),
       ...model.teeth.flatMap((tooth) => [tooth.layName, tooth.notes.join('; ')]),
@@ -206,7 +207,7 @@ describe('OwnerReportSection', () => {
     const { container } = render(
       <OwnerReportSection snapshot={snap} overrides={{}} onOverrideChange={noop} onPreview={noop} context={{ config: defaultConfig() }} />,
     );
-    expect(screen.getByText('⟦Other findings⟧')).toBeInTheDocument();
+    expect(container.querySelector('.owner-report__preview')).toHaveTextContent(model.otherFindings[0]);
     expect(findUntranslated(container, [...previewAllow(container, snap), ...model.summaryLines, ...model.otherFindings])).toEqual([]);
   });
 
@@ -216,19 +217,20 @@ describe('OwnerReportSection', () => {
       <OwnerReportSection snapshot={snapshot} overrides={{}} onOverrideChange={noop} onPreview={noop} context={context} aiEnabled onCustomize={noop} />,
     );
     expect(findUntranslated(container, [...previewAllow(container), 'Cat dentals', 'Standard', 'Elm Vet'])).toEqual([]);
-    expect(screen.getByRole('button', { name: '⟦✨ Write with AI⟧' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: '⟦Generate⟧' })).not.toBeInTheDocument();
     rerender(
       <OwnerReportSection snapshot={snapshot} overrides={{ intro: 'Hello', homecare: 'Brush', templateId: 'b' }} onOverrideChange={noop} onPreview={noop} context={context} readOnly />,
     );
     expect(findUntranslated(container, [...previewAllow(container), 'Cat dentals', 'Standard', 'Elm Vet', 'Hello', 'Brush'])).toEqual([]);
-    expect(screen.getAllByText('⟦Reset to generated⟧')).toHaveLength(2);
+    expect(screen.queryByText('⟦Restore generated⟧')).not.toBeInTheDocument();
   });
 
   it('a chart without findings', () => {
     const empty = { ...snapshot, toothData: [], preComments: [], postComments: [], patientInfo: { ...snapshot.patientInfo, recallDate: '', exam: { ...snapshot.patientInfo.exam } } };
     const { container } = render(<OwnerReportSection snapshot={empty} overrides={{}} onOverrideChange={noop} onPreview={noop} />);
     expect(findUntranslated(container, previewAllow(container, empty))).toEqual([]);
-    expect(screen.getByText(/⟦No findings recorded for individual teeth yet./)).toBeInTheDocument();
+    expect(screen.queryByRole('textbox', { name: '⟦Findings⟧' })).toBeNull();
+    expect(screen.getAllByText('⟦No text generated from the chart yet.⟧').length).toBeGreaterThan(0);
   });
 });
 
@@ -253,13 +255,50 @@ describe('OwnerReportModal', () => {
   });
 
   it('while generating, with no photos tagged, and signed out', async () => {
-    const { container, rerender } = render(<OwnerReportModal {...baseProps} imageRoles={{}} />);
+    const { container, rerender } = render(<OwnerReportModal {...baseProps} imageRoles={{}} bare />);
     expect(screen.getByText('⟦Generating the owner report…⟧')).toBeInTheDocument();
     expect(findUntranslated(container, [])).toEqual([]);
     await waitFor(() => expect(container.querySelector('iframe')).toBeInTheDocument());
-    expect(screen.getByText('⟦Tag photos Before/After in Imaging to include them.⟧')).toBeInTheDocument();
+    expect(screen.getByText('⟦No uploaded images to include.⟧')).toHaveClass('document-toolbar__note--warning');
+    attachmentsState.items = [photo('a1')];
+    rerender(<OwnerReportModal {...baseProps} imageRoles={{}} bare />);
+    expect(screen.getByText('⟦No images are selected for the owner report. Select images in Imaging to include them.⟧')).toHaveClass('document-toolbar__note--warning');
     rerender(<OwnerReportModal {...baseProps} cloudActive={false} imageRoles={{}} bare />);
-    expect(screen.getByText('⟦Photos need a signed-in account.⟧')).toBeInTheDocument();
+    expect(screen.getByText('⟦No uploaded images to include.⟧')).toBeInTheDocument();
+  });
+
+  it('shows the active template and lets the visit use a different one', () => {
+    const onTemplateChange = vi.fn();
+    const config = defaultConfig();
+    const { rerender } = render(<OwnerReportModal {...baseProps} imageRoles={{}} bare config={config} onTemplateChange={onTemplateChange} />);
+    expect(screen.getByText('⟦Practice default (Standard)⟧')).toBeVisible();
+
+    const multiple = twoTemplates();
+    rerender(<OwnerReportModal {...baseProps} imageRoles={{}} bare config={multiple} onTemplateChange={onTemplateChange} />);
+    const picker = screen.getByRole('combobox', { name: '⟦Report template⟧' });
+    fireEvent.change(picker, { target: { value: 'b' } });
+    expect(onTemplateChange).toHaveBeenCalledWith('b');
+    rerender(<OwnerReportModal {...baseProps} snapshot={{ ...snapshot, ownerReport: { ...snapshot.ownerReport, templateId: 'b' } }} imageRoles={{}} bare config={multiple} onTemplateChange={onTemplateChange} />);
+    expect(picker).toHaveValue('b');
+    fireEvent.change(picker, { target: { value: '' } });
+    expect(onTemplateChange).toHaveBeenLastCalledWith(null);
+  });
+
+  it('renders the report-only preview without export settings or actions', async () => {
+    const { container } = render(<OwnerReportModal {...baseProps} imageRoles={{}} viewOnly />);
+    const preview = screen.getByRole('dialog');
+    expect(await screen.findByTitle('⟦Owner report preview⟧')).toBeInTheDocument();
+    expect(preview.querySelector('iframe, aside, .document-toolbar')).toBeNull();
+    expect(within(preview).getAllByRole('button')).toHaveLength(1);
+    expect(findUntranslated(container, [])).toEqual([]);
+  });
+
+  it('includes an unlabelled image and omits a labelled image that was unchecked', async () => {
+    attachmentsState.items = [photo('a1'), photo('a2')];
+    render(<OwnerReportModal {...baseProps} bare imageRoles={{ a2: 'before' }}
+      snapshot={{ ...snapshot, ownerReportImageInclusion: { a1: true, a2: false } }} />);
+    expect(screen.getByText('⟦Images included: 1.⟧')).toBeInTheDocument();
+    await waitFor(() => expect(pdf.build).toHaveBeenCalledWith(expect.any(Object), branding, [expect.objectContaining({ role: null })], undefined));
   });
 
   it('a failed build', async () => {

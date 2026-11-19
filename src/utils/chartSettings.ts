@@ -73,6 +73,9 @@ export interface ChartPrefs {
   pdfIncludeRadiographicReport: boolean;
   /** PDF prints the CT report on the treatment card. */
   pdfIncludeCtReport: boolean;
+  pdfIncludeCodesUsed: boolean;
+  /** Output language for AI-refined imaging reports. Null follows the report or dictation. */
+  imagingReportLanguage: AppLanguage | null;
   /** Leave out the Recheck due field on the Patient page. */
   hideRecheck: boolean;
   hiddenPatientFields: OptionalPatientField[];
@@ -123,6 +126,8 @@ export const DEFAULT_CHART_PREFS: ChartPrefs = {
   pdfIncludeImages: true,
   pdfIncludeRadiographicReport: true,
   pdfIncludeCtReport: true,
+  pdfIncludeCodesUsed: true,
+  imagingReportLanguage: null,
   hideRecheck: false,
   hiddenPatientFields: [],
   spaceMovesDown: true,
@@ -169,6 +174,9 @@ export function normalizeChartPrefs(raw: unknown, fallback: ChartPrefs = DEFAULT
     pdfIncludeImages: bool(r.pdfIncludeImages, fallback.pdfIncludeImages),
     pdfIncludeRadiographicReport: bool(r.pdfIncludeRadiographicReport, fallback.pdfIncludeRadiographicReport),
     pdfIncludeCtReport: bool(r.pdfIncludeCtReport, fallback.pdfIncludeCtReport),
+    pdfIncludeCodesUsed: bool(r.pdfIncludeCodesUsed, fallback.pdfIncludeCodesUsed),
+    imagingReportLanguage: r.imagingReportLanguage === null || isAppLanguage(r.imagingReportLanguage)
+      ? r.imagingReportLanguage : fallback.imagingReportLanguage,
     hideRecheck: bool(r.hideRecheck, fallback.hideRecheck),
     hiddenPatientFields: Array.isArray(r.hiddenPatientFields) ? [...new Set(r.hiddenPatientFields.filter((key): key is OptionalPatientField => PATIENT_FIELD_OPTIONS.includes(key as OptionalPatientField)))] : fallback.hiddenPatientFields,
     spaceMovesDown: bool(r.spaceMovesDown, fallback.spaceMovesDown),

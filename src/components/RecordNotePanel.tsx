@@ -1,3 +1,4 @@
+import { RefineTextAction } from './RefineTextAction';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import type { AppLanguage } from '../i18n/config';
@@ -96,6 +97,7 @@ export const RecordNotePanel: React.FC<RecordNotePanelProps> = ({
             {t('recordNote.rebuild')}
           </button>
         )}
+        <RefineTextAction value={text} onApply={edit} readOnly={readOnly} />
         <button type="button" className="pdf-preview-download" onClick={copy}>
           {t('recordNote.copy')}
         </button>

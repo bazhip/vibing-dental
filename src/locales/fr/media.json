@@ -1,5 +1,10 @@
 {
   "imaging": {
+    "inOwnerReport": "Dans le rapport propriétaire",
+    "beforeAfter": "Avant / après",
+    "noLabel": "Aucun libellé",
+    "details": "Détails de l’image",
+    "reportInclusion": "Inclusion dans les rapports",
     "title": "Imagerie",
     "signedOut": "Connectez-vous avec un compte de clinique pour joindre des photos intra-orales et des radiographies dentaires — elles sont stockées de façon privée avec le dossier.",
     "usage": "{{used}} sur {{max}} images",
@@ -67,7 +72,23 @@
     "toothLabel": "Dent",
     "ownerReportLabel": "Compte rendu pour le propriétaire"
   },
+  "patientRecord": {
+    "open": "Voir l’historique des consultations",
+    "title": "Historique du dossier du patient",
+    "visit": "Visite",
+    "currentVisit": "Visite en cours",
+    "undatedVisit": "Visite sans date",
+    "loadingVisits": "Chargement des consultations précédentes…",
+    "visitsFailed": "Impossible de charger les consultations précédentes.",
+    "noVisits": "Aucune consultation précédente n’est disponible dans ToothOps.",
+    "visitFailed": "Impossible d’ouvrir cette consultation.",
+    "pdfs": "PDF des consultations",
+    "notes": "Notes cliniques"
+  },
   "documents": {
+    "customize": "Personnaliser",
+    "color": "Couleur",
+    "included": "Contenu du PDF",
     "title": "Vérifier et exporter",
     "chartTab": "Dossier clinique",
     "chartWho": "Pour vos dossiers et vos références — le dossier complet avec les codes.",
@@ -163,6 +184,8 @@
     "missing": "Impossible de charger cette image."
   },
   "history": {
+    "expand": "Développer l’historique des images",
+    "collapse": "Réduire l’historique des images",
     "show_one": "Historique des images (1 autre visite)",
     "show_many": "Historique des images ({{count}} autres visites)",
     "show_other": "Historique des images ({{count}} autres visites)",

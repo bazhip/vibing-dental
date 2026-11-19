@@ -1,4 +1,25 @@
 {
+  "refinement": {
+    "noChanges": "Nu s-au sugerat modificări. Textul a rămas neschimbat.",
+    "applied": "Reformularea a fost aplicată.",
+    "kept": "Formularea inițială a fost păstrată.",
+    "consentRequired": "Permiteți procesarea cu IA pentru a reformula acest text.",
+    "fieldChanged": "Textul s-a schimbat în timpul reformulării. Alegeți Rafinați pentru a încerca din nou.",
+    "enterText": "Introduceți textul de reformulat.",
+    "tooLong": "Textul este prea lung pentru a fi reformulat dintr-o dată.",
+    "action": "Rafinați",
+    "modes": {
+      "clean": "Îmbunătățiți formularea",
+      "concise": "Faceți mai concis",
+      "organize": "Organizați"
+    },
+    "review": "Verificați reformularea",
+    "original": "Original",
+    "proposed": "Formulare propusă",
+    "apply": "Aplicați reformularea",
+    "failed": "Textul nu a putut fi reformulat.",
+    "changedFacts": "Ciorna a modificat un număr, o unitate sau un substituent. Textul a fost păstrat."
+  },
   "brand": "ToothOps Charting",
   "brandTrial": "ToothOps Charting · Probă",
   "skipLink": "Treceți la conținutul principal",
@@ -76,6 +97,8 @@
     "addLogo": "Adăugați sigla"
   },
   "status": {
+    "waitingToChart": "Această vizită este salvată pe acest dispozitiv. Se va sincroniza online când începeți să completați fișa.",
+    "autosaveOff": "Salvarea automată este dezactivată. Salvați această vizită pentru a o sincroniza online.",
     "srSaving": "Se salvează fișa",
     "srSaved": "Fișă salvată",
     "srNotSaved": "Fișa nu a fost salvată",
@@ -348,6 +371,9 @@
     "failed": "Nu s-a putut modifica starea de finalizare a fișei. {{error}}"
   },
   "radiologyReport": {
+    "automaticLanguage": "Automat",
+    "languageTip": "IA redactează în limba {{language}}. Puteți schimba limba în Personalizare.",
+    "dictate": "Dictați constatările RX",
     "title": "Raport radiologic",
     "description": "Redactați un raport editabil din constatările înregistrate. Imaginile nu sunt analizate.",
     "context": "Context opțional al examinării",
@@ -421,5 +447,48 @@
     "copyPrompt": "Copiați raportul CT verificat:",
     "headingTechnique": "Tehnică CT",
     "headingFindings": "Constatări CT"
+  },
+  "aiMetrics": {
+    "legacyNotice": "Sunt afișate totalurile pentru toată perioada. Filtrele vor fi disponibile după actualizarea serviciului de statistici.",
+    "legacyBreakdown": "Ultimele 30 de zile după fluxul de lucru și model",
+    "title": "Utilizarea IA",
+    "range": "Interval de date",
+    "from": "Data începerii",
+    "to": "Data de încheiere",
+    "workflow": "Flux de lucru",
+    "allWorkflows": "Toate fluxurile de lucru",
+    "model": "Model",
+    "allModels": "Toate modelele",
+    "groupBy": "Grupare după",
+    "apply": "Aplică",
+    "dateHint": "Datele sunt inclusive și folosesc ora UTC.",
+    "loading": "Se încarcă utilizarea IA…",
+    "failed": "Utilizarea IA nu a putut fi încărcată. Aplicați din nou filtrele.",
+    "calls": "Apeluri",
+    "input": "Tokenuri de intrare",
+    "output": "Tokenuri de ieșire",
+    "cache": "Citiri din cache",
+    "cost": "Cost estimat",
+    "empty": "Niciun apel IA nu corespunde acestor filtre.",
+    "breakdown": "Defalcare",
+    "date": "Dată",
+    "perCall": "Cost pe apel",
+    "byAccount": "Utilizare pe cont",
+    "account": "Cont",
+    "refineText": "Rafinarea textului",
+    "warmup": "Preîncălzirea cache-ului",
+    "presets": {
+      "7": "Ultimele 7 zile",
+      "30": "Ultimele 30 de zile",
+      "90": "Ultimele 90 de zile",
+      "all": "Toată perioada",
+      "custom": "Date personalizate"
+    },
+    "groups": {
+      "workflow_model": "Flux de lucru și model",
+      "workflow": "Flux de lucru",
+      "model": "Model",
+      "day": "Zi"
+    }
   }
 }

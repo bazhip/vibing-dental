@@ -138,6 +138,14 @@
     "fieldType": "Type de champ"
   },
   "report": {
+    "replaceTemplateTitle": "Remplacer le texte du rapport de traitement ?",
+    "replaceTemplateMessage": "Le modèle sélectionné remplacera le texte actuel du rapport de traitement de cette consultation.",
+    "replaceTemplate": "Utiliser le modèle",
+    "useSaved": "Utiliser un modèle enregistré",
+    "newTemplate": "Nouveau modèle",
+    "fillField": "Renseigner le champ du modèle",
+    "fieldRequired": "Saisissez une valeur pour continuer.",
+    "fieldContinue": "Continuer",
     "title": "Compte rendu de traitement",
     "insertAria": "Insérer un modèle de compte rendu",
     "loading": "Chargement des modèles…",

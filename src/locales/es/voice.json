@@ -51,6 +51,21 @@
     "sessionStart": "No se pudo iniciar la sesión de Deepgram.",
     "unsupported": "La entrada de voz requiere Chrome, Edge o Safari."
   },
+  "destination": {
+    "general": "General"
+  },
+  "correction": {
+    "conflict": "Revise este cambio en el historial.",
+    "apply": "Aplicar sugerencia",
+    "keep": "Conservar el valor actual"
+  },
+  "welcome": {
+    "ready": "La transcripción aparecerá aquí cuando inicie la grabación.",
+    "title": "Dictado",
+    "start": "Seleccione Iniciar dictado para comenzar la grabación.",
+    "transcript": "Siga la transcripción mientras habla. Seleccione Detener al terminar.",
+    "review": "Revise el informe o los cambios en el historial y corrija lo que haga falta."
+  },
   "intro": {
     "ariaLabel": "Dictar",
     "cancel": "Cancelar",
@@ -131,6 +146,7 @@
     "open_other": "{{count}} elementos por revisar."
   },
   "status": {
+    "idle": "Listo para comenzar",
     "connecting": "Conectando…",
     "finishing": "Finalizando…",
     "interrupted": "Interrumpido",
@@ -166,6 +182,7 @@
       "ct": "Informe de TC"
     },
     "help": "Grabe o pegue las observaciones del profesional clínico. Revise las secciones propuestas antes de aplicarlas. Los hallazgos no documentados permanecen en blanco.",
+    "imagingHelp": "Grabe o pegue los hallazgos de imagen. Indique la modalidad si no está clara. Revise a qué informe, radiográfico o de TC, corresponde cada hallazgo antes de aplicarlo.",
     "ctHelp": "Grabe o pegue las observaciones de TC. Al detener el dictado, se añaden únicamente al informe de TC y se revisa su redacción automáticamente.",
     "ctApply": "Añadir y revisar el informe de TC",
     "target": "Destino del dictado",

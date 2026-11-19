@@ -1,3 +1,10 @@
+.clinical-dictation__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.clinical-dictation__trigger svg { flex: none; }
+
 .clinical-dictation { width: min(680px, calc(100vw - 32px)); }
 .clinical-dictation__body { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
 .clinical-dictation__label { display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600; min-width: 0; }
@@ -18,3 +25,23 @@
 .clinical-dictation button.clinical-dictation__primary { background: var(--primary); color: var(--on-primary); border-color: var(--primary); font-weight: 600; }
 .clinical-dictation :is(button, textarea, select, input, summary):focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
 @media (max-width: 480px) { .clinical-dictation { width: calc(100vw - 16px); } .clinical-dictation__footer > button { width: 100%; } }
+
+.clinical-dictation button.clinical-dictation__record {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  color: var(--on-primary);
+  background: var(--primary);
+  border-color: var(--primary);
+  font-weight: 600;
+}
+.clinical-dictation button.clinical-dictation__record--live {
+  color: var(--danger);
+  background: var(--surface);
+  border-color: var(--danger);
+}
+.clinical-dictation__tools [role="status"] { color: var(--text-muted); font-size: .875rem; }
+
+.clinical-dictation__current, .ai-review__comparison { margin: 0; padding: .625rem .75rem; background: var(--surface-alt); border-radius: var(--radius-sm); }
+.clinical-dictation__current dt, .ai-review__comparison dt { color: var(--text-muted); font-size: .8125rem; font-weight: 600; }
+.clinical-dictation__current dd, .ai-review__comparison dd { margin: .25rem 0 0; overflow-wrap: anywhere; white-space: pre-wrap; }

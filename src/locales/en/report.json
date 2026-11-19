@@ -59,6 +59,14 @@
     "warningSigns": "Watch for dropping feed, weight loss, slow eating, head tossing or resistance to the bit, bad breath or nasal discharge — call us if you notice any."
   },
   "intro": "This report summarizes the information documented for {{pet}}’s dental visit. Please discuss any questions with your veterinary team.",
+  "visitIntro": {
+    "lead": "Here’s what we documented at {{pet}}’s dental visit.",
+    "extractions": "Teeth removed during this visit: {{total}}.",
+    "findings": "Teeth with documented findings: {{total}}.",
+    "exam": "We recorded additional findings during the oral exam.",
+    "treatment": "We recorded treatment notes for this visit."
+  },
+  "visitImages": "Visit images",
   "legendFilled": "filled = missing before this visit",
   "legendNumbers": "Numbers match the findings below",
   "legendRemoved": "red ✕ = removed today",

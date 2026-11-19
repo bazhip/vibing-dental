@@ -50,6 +50,21 @@
     "sessionStart": "无法启动 Deepgram 会话。",
     "unsupported": "语音输入需要 Chrome、Edge 或 Safari。"
   },
+  "destination": {
+    "general": "通用"
+  },
+  "correction": {
+    "conflict": "请审核这项病历更改。",
+    "apply": "应用建议",
+    "keep": "保留当前值"
+  },
+  "welcome": {
+    "ready": "开始录音后，转录内容将显示在这里。",
+    "title": "听写",
+    "start": "点击开始听写以开始录音。",
+    "transcript": "说话时可查看转录内容。完成后点击停止。",
+    "review": "检查报告或病历的更改，并更正需要调整的内容。"
+  },
   "intro": {
     "ariaLabel": "口述",
     "cancel": "取消",
@@ -126,6 +141,7 @@
     "open_other": "有{{count}}项需要审核。"
   },
   "status": {
+    "idle": "准备就绪",
     "connecting": "正在连接…",
     "finishing": "正在完成…",
     "interrupted": "已中断",
@@ -160,6 +176,7 @@
       "ct": "CT 报告"
     },
     "help": "录制或粘贴临床医生的观察记录。应用前，请审核建议的章节。未记录的检查所见将保持空白。",
+    "imagingHelp": "录制或粘贴影像学所见。如果影像类型不明确，请注明。应用前请核对哪些所见应归入 X 光报告或 CT 报告。",
     "ctHelp": "录制或粘贴 CT 观察记录。停止后，内容仅会添加至 CT 报告，并自动润色。",
     "ctApply": "添加并润色 CT 报告",
     "target": "口述目标",

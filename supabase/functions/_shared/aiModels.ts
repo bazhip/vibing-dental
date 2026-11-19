@@ -38,16 +38,20 @@ export function resolveAiModels(stored: unknown): Record<AiFeature, string> {
 /** The feature an ai-autofill request belongs to. Warm-ups prime the
  *  live prompt cache (caches are per model), so they use the live model. */
 export function featureForRequest(mode: unknown, kind: string): AiFeature {
-  if (kind === 'radiology_report') return 'radiology_report';
+  if (kind === 'radiology_report' || kind === 'ct_report') return 'radiology_report';
   if (mode === 'review') return 'review';
   if (kind === 'owner_report') return 'owner_report';
   return 'live';
 }
 
 /** Request kinds retained by the shared authenticated usage log. */
-export const AI_REQUEST_KINDS = ['live', 'review', 'owner_report', 'warmup', 'radiology_report'] as const;
+export const AI_REQUEST_KINDS = [
+  'live', 'review', 'owner_report', 'warmup', 'radiology_report', 'ct_report',
+  'refine_text', 'gp-visit', 'gp-exam', 'consultation', 'discharge',
+] as const;
+export type AiRequestKind = typeof AI_REQUEST_KINDS[number];
 
 /** Structured radiology drafts need the same response room as a final review. */
 export function usesReviewSettings(mode: unknown, kind: unknown): boolean {
-  return mode === 'review' || kind === 'radiology_report';
+  return mode === 'review' || kind === 'radiology_report' || kind === 'ct_report';
 }

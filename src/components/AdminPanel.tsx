@@ -4,6 +4,8 @@ import { AdminChartViewer } from './AdminChartViewer';
 import { AdminChartList, type AdminChartMeta } from './AdminChartList';
 import { SortButton, dateValue, sortRows, useTableSort, type SortState } from '../utils/tableSort';
 import { AI_FEATURE_INFO, AI_MODEL_CHOICES, type AiFeature } from '../constants/aiModels';
+import { AI_REQUEST_KINDS } from '../../supabase/functions/_shared/aiModels';
+import { AI_USAGE_GROUPS, parseAiUsageQuery, type AiUsageQuery, type AiUsageReport } from '../../supabase/functions/_shared/aiUsageQuery';
 import { FREE_BETA, FREE_BETA_SEATS } from '../constants/plans';
 import { PLAN_LIMITS } from '../hooks/useProfile';
 
@@ -167,30 +169,20 @@ interface BillingOverviewRow {
   cancelAtPeriodEnd: boolean;
 }
 
-interface AiUsageRow {
-  userId: string;
-  email: string;
-  calls: number;
-  inputTokens: number;
-  outputTokens: number;
-  cacheReadTokens: number;
-  estCostUsd: number;
-}
-
-interface AiFeatureUsageRow {
-  feature: string;
-  model: string;
-  calls: number;
-  inputTokens: number;
-  outputTokens: number;
-  cacheReadTokens: number;
-  estCostUsd: number;
-  costPerCallUsd: number;
-}
-
 const modelLabel = (id: string) => AI_MODEL_CHOICES.find((c) => c.id === id)?.label ?? id;
-const featureLabel = (id: string) =>
-  AI_FEATURE_INFO.find((f) => f.id === id)?.label ?? (id === 'warmup' ? 'Cache warm-ups (live)' : id);
+const AI_DATE_PRESETS = ['7', '30', '90', 'all', 'custom'] as const;
+type AiDatePreset = typeof AI_DATE_PRESETS[number];
+const recentAiDates = (days: number) => {
+  const now = new Date();
+  const start = new Date(now.getTime() - (days - 1) * 86_400_000);
+  return { from: start.toISOString().slice(0, 10), to: now.toISOString().slice(0, 10) };
+};
+const defaultAiQuery = (): AiUsageQuery => ({ ...recentAiDates(30), kind: '', model: '', groupBy: 'workflow_model' });
+type LegacyAiReport = {
+  users: AiUsageReport['users'];
+  totalEstCostUsd: number;
+  byFeature?: Array<Omit<AiUsageReport['breakdown'][number], 'day'>>;
+};
 
 /** Downscale any image to a ≤600px PNG and return raw base64 (no data:
  *  prefix) — matches the logos bucket's PNG-only rule. */
@@ -262,7 +254,7 @@ interface AdminPanelProps {
 }
 
 export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose, presentation = 'modal' }) => {
-  const { t } = useTranslation('app');
+  const { t } = useTranslation(['app', 'voice']);
   const asScreen = presentation === 'screen';
   const stack = useOptionalStack();
   const [stats, setStats] = React.useState<AdminStats | null>(null);
@@ -282,12 +274,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose, presentat
   const [setupNote, setSetupNote] = React.useState('');
   // AI tab state.
   const [aiFeatureModels, setAiFeatureModels] = React.useState<Partial<Record<AiFeature, string>>>({});
-  const [aiByFeature, setAiByFeature] = React.useState<AiFeatureUsageRow[] | null>(null);
-  const [aiFeatureDays, setAiFeatureDays] = React.useState(30);
+  const [aiQuery, setAiQuery] = React.useState(defaultAiQuery);
+  const [aiDraft, setAiDraft] = React.useState(aiQuery);
+  const [aiDatePreset, setAiDatePreset] = React.useState<AiDatePreset>('30');
+  const [aiReport, setAiReport] = React.useState<AiUsageReport | null>(null);
+  const [aiLoading, setAiLoading] = React.useState(true);
+  const [aiQueryError, setAiQueryError] = React.useState(false);
+  const [aiLegacy, setAiLegacy] = React.useState(false);
   const [aiModels, setAiModels] = React.useState<Array<{ id: string; displayName: string }>>([]);
   const [aiConfigured, setAiConfigured] = React.useState(false);
-  const [aiUsage, setAiUsage] = React.useState<AiUsageRow[] | null>(null);
-  const [aiTotalCost, setAiTotalCost] = React.useState(0);
   const [aiBalance, setAiBalance] = React.useState<{ deepgram: string | null; note: string } | null>(null);
   const [practices, setPractices] = React.useState<AdminPractice[] | null>(null);
   const [selectedPracticeId, setSelectedPracticeId] = React.useState<string | null>(null);
@@ -424,11 +419,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose, presentat
       setAiFeatureModels(cfg.featureModels ?? {});
       setAiModels(cfg.models ?? []);
       setAiConfigured(cfg.configured);
-      const usage = await adminCall<{ users: AiUsageRow[]; totalEstCostUsd: number; byFeature?: AiFeatureUsageRow[]; featureDays?: number }>({ action: 'ai_usage' });
-      setAiUsage(usage.users ?? []);
-      setAiByFeature(usage.byFeature ?? []);
-      setAiFeatureDays(usage.featureDays ?? 30);
-      setAiTotalCost(usage.totalEstCostUsd ?? 0);
       const bal = await adminCall<{ deepgram: string | null; note: string }>({ action: 'ai_balance' });
       setAiBalance(bal);
     } catch (e) {
@@ -438,6 +428,64 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose, presentat
   React.useEffect(() => {
     if (open && tab === 'ai') loadAi();
   }, [open, tab, loadAi]);
+  React.useEffect(() => {
+    if (!open || tab !== 'ai') return;
+    let active = true;
+    setAiLoading(true);
+    setAiQueryError(false);
+    const fetchUsage = async () => {
+      try {
+        const report = await adminCall<AiUsageReport>({ action: 'ai_usage_query', ...aiQuery });
+        if (!active) return;
+        if (!report?.totals || !Array.isArray(report.breakdown) || !Array.isArray(report.users) || !Array.isArray(report.models)) {
+          setAiQueryError(true);
+          return;
+        }
+        setAiReport(report);
+        setAiLegacy(false);
+      } catch (error) {
+        if (!active) return;
+        if (!(error instanceof Error) || !/unknown action: ai_usage_query|AI usage query migration not applied/i.test(error.message)) {
+          setAiQueryError(true);
+          return;
+        }
+        try {
+          const legacy = await adminCall<LegacyAiReport>({ action: 'ai_usage' });
+          if (!active) return;
+          const users = legacy.users ?? [];
+          const totals = users.reduce((total, user) => ({
+            calls: total.calls + user.calls,
+            inputTokens: total.inputTokens + user.inputTokens,
+            outputTokens: total.outputTokens + user.outputTokens,
+            cacheReadTokens: total.cacheReadTokens + user.cacheReadTokens,
+            estCostUsd: legacy.totalEstCostUsd,
+          }), { calls: 0, inputTokens: 0, outputTokens: 0, cacheReadTokens: 0, estCostUsd: legacy.totalEstCostUsd });
+          const breakdown = (legacy.byFeature ?? []).map(row => ({ ...row, day: '' }));
+          setAiReport({ users, totals, breakdown, models: [] });
+          setAiLegacy(true);
+        } catch {
+          if (active) setAiQueryError(true);
+        }
+      } finally {
+        if (active) setAiLoading(false);
+      }
+    };
+    void fetchUsage();
+    return () => { active = false; };
+  }, [open, tab, aiQuery]);
+
+  const aiGroupBy = aiLegacy ? 'workflow_model' : aiQuery.groupBy;
+  const featureLabel = (id: string) => {
+    switch (id) {
+      case 'refine_text': return t('aiMetrics.refineText');
+      case 'ct_report': return t('ctReport.title');
+      case 'gp-visit': case 'gp-exam': case 'consultation': case 'discharge':
+        return t(`voice:clinical.kinds.${id}`);
+      case 'warmup': return t('aiMetrics.warmup');
+      default: return AI_FEATURE_INFO.find(feature => feature.id === id)?.label ?? id;
+    }
+  };
+
 
   const loadBilling = React.useCallback(async () => {
     try {
@@ -814,7 +862,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose, presentat
       case 'renews': return dateValue(r.periodEnd);
     }
   });
-  const sortedAi = sortRows(aiUsage ?? [], aiSort.sort, (u, k) => {
+  const sortedAi = sortRows(aiReport?.users ?? [], aiSort.sort, (u, k) => {
     switch (k) {
       case 'user': return u.email.toLowerCase() || null;
       case 'calls': return u.calls;
@@ -1456,6 +1504,122 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose, presentat
 
       {tab === 'ai' && (
         <section className="admin-panel__ai">
+          <div className="admin-panel__ai-block">
+            <h3 className="ai-settings-subhead">{t('aiMetrics.title')}</h3>
+            {!aiLegacy && <form className="admin-panel__ai-filters" onSubmit={event => {
+              event.preventDefault();
+              if (parseAiUsageQuery({ ...aiDraft })) setAiQuery({ ...aiDraft });
+            }}>
+              <label className="patient-form__label">{t('aiMetrics.range')}
+                <select className="patient-form__input" value={aiDatePreset} onChange={event => {
+                  const value = event.target.value as AiDatePreset;
+                  setAiDatePreset(value);
+                  if (value !== 'custom') setAiDraft(draft => ({ ...draft, ...(value === 'all' ? { from: '', to: '' } : recentAiDates(Number(value))) }));
+                }}>
+                  {AI_DATE_PRESETS.map(value => <option key={value} value={value}>{t(`aiMetrics.presets.${value}`)}</option>)}
+                </select>
+              </label>
+              {aiDatePreset === 'custom' && <>
+              <label className="patient-form__label">{t('aiMetrics.from')}
+                <input className="patient-form__input" type="date" value={aiDraft.from} max={aiDraft.to || undefined} onChange={event => {
+                  setAiDatePreset('custom');
+                  setAiDraft({ ...aiDraft, from: event.target.value });
+                }} />
+              </label>
+              <label className="patient-form__label">{t('aiMetrics.to')}
+                <input className="patient-form__input" type="date" value={aiDraft.to} min={aiDraft.from || undefined} onChange={event => {
+                  setAiDatePreset('custom');
+                  setAiDraft({ ...aiDraft, to: event.target.value });
+                }} />
+              </label>
+              </>}
+              <label className="patient-form__label">{t('aiMetrics.workflow')}
+                <select className="patient-form__input" value={aiDraft.kind} onChange={event => setAiDraft({ ...aiDraft, kind: event.target.value })}>
+                  <option value="">{t('aiMetrics.allWorkflows')}</option>
+                  {AI_REQUEST_KINDS.map(kind => <option key={kind} value={kind}>{featureLabel(kind)}</option>)}
+                </select>
+              </label>
+              <label className="patient-form__label">{t('aiMetrics.model')}
+                <select className="patient-form__input" value={aiDraft.model} onChange={event => setAiDraft({ ...aiDraft, model: event.target.value })}>
+                  <option value="">{t('aiMetrics.allModels')}</option>
+                  {[...new Set([...(aiReport?.models ?? []), ...AI_MODEL_CHOICES.map(model => model.id)])]
+                    .sort().map(model => <option key={model} value={model}>{modelLabel(model)}</option>)}
+                </select>
+              </label>
+              <label className="patient-form__label">{t('aiMetrics.groupBy')}
+                <select className="patient-form__input" value={aiDraft.groupBy} onChange={event => setAiDraft({ ...aiDraft, groupBy: event.target.value as AiUsageQuery['groupBy'] })}>
+                  {AI_USAGE_GROUPS.map(group => <option key={group} value={group}>{t(`aiMetrics.groups.${group}`)}</option>)}
+                </select>
+              </label>
+              <button type="submit" className="ui-btn ui-btn--primary">{t('aiMetrics.apply')}</button>
+            </form>}
+            <p className="patient-form__hint">{t(aiLegacy ? 'aiMetrics.legacyNotice' : 'aiMetrics.dateHint')}</p>
+          </div>
+
+          {aiLoading ? <p className="chart-library__empty" role="status">{t('aiMetrics.loading')}</p>
+            : aiQueryError ? <p className="login-error" role="alert">{t('aiMetrics.failed')}</p>
+            : aiReport && (
+              <>
+                <dl className="admin-panel__ai-totals">
+                  {([
+                    ['calls', aiReport.totals.calls.toLocaleString()],
+                    ['input', aiReport.totals.inputTokens.toLocaleString()],
+                    ['output', aiReport.totals.outputTokens.toLocaleString()],
+                    ['cache', aiReport.totals.cacheReadTokens.toLocaleString()],
+                    ['cost', `$${aiReport.totals.estCostUsd.toFixed(2)}`],
+                  ] as const).map(([key, value]) => <div key={key}><dt>{t(`aiMetrics.${key}`)}</dt><dd>{value}</dd></div>)}
+                </dl>
+                {!aiReport.breakdown.length && !aiReport.users.length ? <p className="practice-logo-empty">{t('aiMetrics.empty')}</p> : (
+                  <>
+                    {aiReport.breakdown.length > 0 && <div className="admin-panel__ai-block">
+                      <h3 className="ai-settings-subhead">{t(aiLegacy ? 'aiMetrics.legacyBreakdown' : 'aiMetrics.breakdown')}</h3>
+                      <table className="admin-panel__usage-table">
+                        <thead><tr>
+                          {aiGroupBy === 'day' && <th>{t('aiMetrics.date')}</th>}
+                          {aiGroupBy.startsWith('workflow') && <th>{t('aiMetrics.workflow')}</th>}
+                          {(aiGroupBy === 'model' || aiGroupBy === 'workflow_model') && <th>{t('aiMetrics.model')}</th>}
+                          {(['calls', 'input', 'output', 'cache', 'perCall', 'cost'] as const).map(key => <th key={key}>{t(`aiMetrics.${key}`)}</th>)}
+                        </tr></thead>
+                        <tbody>{aiReport.breakdown.map(row => (
+                          <tr key={JSON.stringify([row.feature, row.model, row.day])}>
+                            {aiGroupBy === 'day' && <td>{row.day}</td>}
+                            {aiGroupBy.startsWith('workflow') && <td>{featureLabel(row.feature)}</td>}
+                            {(aiGroupBy === 'model' || aiGroupBy === 'workflow_model') && <td>{modelLabel(row.model)}</td>}
+                            <td>{row.calls.toLocaleString()}</td>
+                            <td>{row.inputTokens.toLocaleString()}</td>
+                            <td>{row.outputTokens.toLocaleString()}</td>
+                            <td>{row.cacheReadTokens.toLocaleString()}</td>
+                            <td>${row.costPerCallUsd.toFixed(4)}</td>
+                            <td>${row.estCostUsd.toFixed(2)}</td>
+                          </tr>
+                        ))}</tbody>
+                      </table>
+                    </div>}
+                    <div className="admin-panel__ai-block">
+                      <h3 className="ai-settings-subhead">{t('aiMetrics.byAccount')}</h3>
+                      <table className="admin-panel__usage-table">
+                        <thead><tr>
+                          {th(aiSort, 'user', t('aiMetrics.account'))}
+                          {th(aiSort, 'calls', t('aiMetrics.calls'))}
+                          {th(aiSort, 'input', t('aiMetrics.input'))}
+                          {th(aiSort, 'output', t('aiMetrics.output'))}
+                          {th(aiSort, 'cache', t('aiMetrics.cache'))}
+                          {th(aiSort, 'cost', t('aiMetrics.cost'))}
+                        </tr></thead>
+                        <tbody>{sortedAi.map(row => (
+                          <tr key={row.userId}>
+                            <td>{row.email}</td><td>{row.calls.toLocaleString()}</td>
+                            <td>{row.inputTokens.toLocaleString()}</td><td>{row.outputTokens.toLocaleString()}</td>
+                            <td>{row.cacheReadTokens.toLocaleString()}</td><td>${row.estCostUsd.toFixed(2)}</td>
+                          </tr>
+                        ))}</tbody>
+                      </table>
+                    </div>
+                  </>
+                )}
+              </>
+            )}
+
           {/* Model per feature — chosen from what the account can use. */}
           <div className="admin-panel__ai-block">
             <h3 className="ai-settings-subhead">Models</h3>
@@ -1505,91 +1669,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose, presentat
             </p>
           </div>
 
-          {/* Where the money goes. */}
-          <div className="admin-panel__ai-block">
-            <h3 className="ai-settings-subhead">Spend by feature (last {aiFeatureDays} days)</h3>
-            {aiByFeature === null ? (
-              <p className="chart-library__empty">Loading…</p>
-            ) : aiByFeature.length === 0 ? (
-              <p className="practice-logo-empty">No AI usage in this period (or migration 20261128 isn't applied yet).</p>
-            ) : (
-              <table className="admin-panel__usage-table">
-                <thead>
-                  <tr>
-                    <th>Feature</th>
-                    <th>Model</th>
-                    <th>Calls</th>
-                    <th>Input</th>
-                    <th>Output</th>
-                    <th>Cache</th>
-                    <th>Per call</th>
-                    <th>Est. cost</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {aiByFeature.map((r) => (
-                    <tr key={`${r.feature}|${r.model}`}>
-                      <td>{featureLabel(r.feature)}</td>
-                      <td>{modelLabel(r.model)}</td>
-                      <td>{r.calls.toLocaleString()}</td>
-                      <td>{r.inputTokens.toLocaleString()}</td>
-                      <td>{r.outputTokens.toLocaleString()}</td>
-                      <td>{r.cacheReadTokens.toLocaleString()}</td>
-                      <td>${r.costPerCallUsd.toFixed(4)}</td>
-                      <td>${r.estCostUsd.toFixed(2)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </div>
-
-          {/* Credit / balance. */}
-          <div className="admin-panel__ai-block">
-            <h3 className="ai-settings-subhead">AI spend</h3>
-            <p className="admin-panel__ai-total">
-              Estimated Claude spend to date: <strong>${aiTotalCost.toFixed(2)}</strong>
-            </p>
-            {aiBalance?.deepgram && (
-              <p className="admin-panel__ai-total">Deepgram balance: <strong>{aiBalance.deepgram}</strong></p>
-            )}
-            {aiBalance?.note && <p className="patient-form__hint">{aiBalance.note}</p>}
-          </div>
-
-          {/* Per-user usage. */}
-          <div className="admin-panel__ai-block">
-            <h3 className="ai-settings-subhead">Token usage by user</h3>
-            {aiUsage === null ? (
-              <p className="chart-library__empty">Loading…</p>
-            ) : aiUsage.length === 0 ? (
-              <p className="practice-logo-empty">No AI usage recorded yet.</p>
-            ) : (
-              <table className="admin-panel__usage-table">
-                <thead>
-                  <tr>
-                    {th(aiSort, 'user', 'User')}
-                    {th(aiSort, 'calls', 'Calls')}
-                    {th(aiSort, 'input', 'Input')}
-                    {th(aiSort, 'output', 'Output')}
-                    {th(aiSort, 'cache', 'Cache')}
-                    {th(aiSort, 'cost', 'Est. cost')}
-                  </tr>
-                </thead>
-                <tbody>
-                  {sortedAi.map((u) => (
-                    <tr key={u.userId}>
-                      <td>{u.email}</td>
-                      <td>{u.calls.toLocaleString()}</td>
-                      <td>{u.inputTokens.toLocaleString()}</td>
-                      <td>{u.outputTokens.toLocaleString()}</td>
-                      <td>{u.cacheReadTokens.toLocaleString()}</td>
-                      <td>${u.estCostUsd.toFixed(2)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </div>
+          {aiBalance?.deepgram && <p className="admin-panel__ai-total">Deepgram balance: <strong>{aiBalance.deepgram}</strong></p>}
+          {aiBalance?.note && <p className="patient-form__hint">{aiBalance.note}</p>}
         </section>
       )}
     </>

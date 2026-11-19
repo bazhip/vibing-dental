@@ -1,4 +1,25 @@
 {
+  "refinement": {
+    "noChanges": "Nessuna modifica suggerita. Il Suo testo è rimasto invariato.",
+    "applied": "Riformulazione applicata.",
+    "kept": "Testo originale mantenuto.",
+    "consentRequired": "Consenta l’elaborazione con IA per riformulare questo testo.",
+    "fieldChanged": "Il testo è cambiato durante la riformulazione. Scelga Rifinisci per riprovare.",
+    "enterText": "Inserisca un testo da riformulare.",
+    "tooLong": "Il testo è troppo lungo per essere riformulato in una volta.",
+    "action": "Rifinisci",
+    "modes": {
+      "clean": "Migliora la formulazione",
+      "concise": "Rendi più conciso",
+      "organize": "Organizza"
+    },
+    "review": "Rivedi la riformulazione",
+    "original": "Testo originale",
+    "proposed": "Testo proposto",
+    "apply": "Applica riformulazione",
+    "failed": "Impossibile riformulare il testo.",
+    "changedFacts": "La bozza ha modificato un numero, un’unità o un segnaposto. Il Suo testo è stato mantenuto."
+  },
   "brand": "ToothOps Charting",
   "brandTrial": "ToothOps Charting · Prova",
   "skipLink": "Vai al contenuto principale",
@@ -76,6 +97,8 @@
     "addLogo": "Aggiungi logo"
   },
   "status": {
+    "waitingToChart": "Questa visita è salvata su questo dispositivo. Verrà sincronizzata online quando inizierà a compilare la cartella.",
+    "autosaveOff": "Il salvataggio automatico è disattivato. Salvi questa visita per sincronizzarla online.",
     "srSaving": "Salvataggio della cartella",
     "srSaved": "Cartella salvata",
     "srNotSaved": "Cartella non salvata",
@@ -348,6 +371,9 @@
     "failed": "Impossibile modificare lo stato di finalizzazione della cartella. {{error}}"
   },
   "radiologyReport": {
+    "automaticLanguage": "Automatico",
+    "languageTip": "L’IA scrive in {{language}}. Può cambiare la lingua in Personalizza.",
+    "dictate": "Detta i reperti RX",
     "title": "Referto radiologico",
     "description": "Generi un referto modificabile dai reperti registrati. Le immagini non vengono analizzate.",
     "context": "Contesto facoltativo dell’esame",
@@ -421,5 +447,48 @@
     "copyPrompt": "Copi il referto TC verificato:",
     "headingTechnique": "Tecnica TC",
     "headingFindings": "Reperti TC"
+  },
+  "aiMetrics": {
+    "legacyNotice": "I totali riguardano tutto il periodo. I filtri saranno disponibili dopo l’aggiornamento del servizio delle statistiche.",
+    "legacyBreakdown": "Ultimi 30 giorni per flusso di lavoro e modello",
+    "title": "Utilizzo dell’IA",
+    "range": "Intervallo di date",
+    "from": "Data iniziale",
+    "to": "Data finale",
+    "workflow": "Flusso di lavoro",
+    "allWorkflows": "Tutti i flussi di lavoro",
+    "model": "Modello",
+    "allModels": "Tutti i modelli",
+    "groupBy": "Raggruppa per",
+    "apply": "Applica",
+    "dateHint": "Le date sono incluse e si riferiscono all’ora UTC.",
+    "loading": "Caricamento dell’utilizzo dell’IA…",
+    "failed": "Impossibile caricare l’utilizzo dell’IA. Applichi di nuovo i filtri.",
+    "calls": "Chiamate",
+    "input": "Token in ingresso",
+    "output": "Token in uscita",
+    "cache": "Letture della cache",
+    "cost": "Costo stimato",
+    "empty": "Nessuna chiamata IA corrisponde a questi filtri.",
+    "breakdown": "Dettaglio",
+    "date": "Data",
+    "perCall": "Costo per chiamata",
+    "byAccount": "Utilizzo per account",
+    "account": "Account",
+    "refineText": "Revisione del testo",
+    "warmup": "Preriscaldamento della cache",
+    "presets": {
+      "7": "Ultimi 7 giorni",
+      "30": "Ultimi 30 giorni",
+      "90": "Ultimi 90 giorni",
+      "all": "Tutto il periodo",
+      "custom": "Date personalizzate"
+    },
+    "groups": {
+      "workflow_model": "Flusso di lavoro e modello",
+      "workflow": "Flusso di lavoro",
+      "model": "Modello",
+      "day": "Giorno"
+    }
   }
 }

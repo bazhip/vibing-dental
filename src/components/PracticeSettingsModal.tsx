@@ -271,6 +271,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   if (templatesOpen === 'treatment') {
     return (
       <ReportTemplatesModal
+        aiEnabled={profile.aiEnabled}
         open
         store={treatmentTemplates}
         initialTemplateId={treatmentTemplateId}
@@ -282,6 +283,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   if (templatesOpen === 'owner') {
     return (
       <OwnerReportTemplatesModal
+        aiEnabled={profile.aiEnabled}
         open
         onLeaveGuardChange={registerTemplateLeaveGuard}
         onClose={() => setTemplatesOpen(null)}

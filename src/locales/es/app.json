@@ -1,4 +1,25 @@
 {
+  "refinement": {
+    "noChanges": "No se sugirieron cambios. Su texto sigue igual.",
+    "applied": "Reformulación aplicada.",
+    "kept": "Se conservó la redacción original.",
+    "consentRequired": "Autorice el procesamiento con IA para reformular este texto.",
+    "fieldChanged": "El texto cambió durante la reformulación. Elija Refinar para volver a intentarlo.",
+    "enterText": "Introduzca texto para reformularlo.",
+    "tooLong": "El texto es demasiado largo para reformularlo de una vez.",
+    "action": "Refinar",
+    "modes": {
+      "clean": "Mejorar la redacción",
+      "concise": "Hacer más conciso",
+      "organize": "Organizar"
+    },
+    "review": "Revisar la reformulación",
+    "original": "Original",
+    "proposed": "Redacción propuesta",
+    "apply": "Aplicar reformulación",
+    "failed": "No se pudo reformular el texto.",
+    "changedFacts": "El borrador cambió un número, una unidad o un campo rellenable. Se conservó su texto."
+  },
   "brand": "ToothOps Charting",
   "brandTrial": "ToothOps Charting · Prueba",
   "skipLink": "Ir al contenido principal",
@@ -76,6 +97,8 @@
     "addLogo": "Añadir logotipo"
   },
   "status": {
+    "waitingToChart": "Esta visita está guardada en este dispositivo. Se sincronizará en línea cuando empiece a rellenar el historial.",
+    "autosaveOff": "El guardado automático está desactivado. Guarde esta visita para sincronizarla en línea.",
     "srSaving": "Guardando el historial",
     "srSaved": "Historial guardado",
     "srNotSaved": "Historial no guardado",
@@ -348,6 +371,9 @@
     "failed": "No se ha podido cambiar el estado de finalización del historial. {{error}}"
   },
   "radiologyReport": {
+    "automaticLanguage": "Automático",
+    "languageTip": "La IA redacta en {{language}}. Puede cambiar el idioma en Personalizar.",
+    "dictate": "Dictar hallazgos de RX",
     "title": "Informe radiológico",
     "description": "Genere un informe editable a partir de los hallazgos registrados. Las imágenes no se analizan.",
     "context": "Contexto opcional del estudio",
@@ -421,5 +447,48 @@
     "copyPrompt": "Copie el informe de TC revisado:",
     "headingTechnique": "Técnica de TC",
     "headingFindings": "Hallazgos de TC"
+  },
+  "aiMetrics": {
+    "legacyNotice": "Los totales abarcan todo el período. Los filtros estarán disponibles tras la actualización del servidor de métricas.",
+    "legacyBreakdown": "Últimos 30 días por flujo de trabajo y modelo",
+    "title": "Uso de la IA",
+    "range": "Intervalo de fechas",
+    "from": "Fecha de inicio",
+    "to": "Fecha de fin",
+    "workflow": "Flujo de trabajo",
+    "allWorkflows": "Todos los flujos de trabajo",
+    "model": "Modelo",
+    "allModels": "Todos los modelos",
+    "groupBy": "Agrupar por",
+    "apply": "Aplicar",
+    "dateHint": "Las fechas son inclusivas y se basan en la hora UTC.",
+    "loading": "Cargando el uso de la IA…",
+    "failed": "No se pudo cargar el uso de la IA. Vuelva a aplicar los filtros.",
+    "calls": "Llamadas",
+    "input": "Tokens de entrada",
+    "output": "Tokens de salida",
+    "cache": "Lecturas de caché",
+    "cost": "Coste estimado",
+    "empty": "Ninguna llamada de IA coincide con estos filtros.",
+    "breakdown": "Desglose",
+    "date": "Fecha",
+    "perCall": "Coste por llamada",
+    "byAccount": "Uso por cuenta",
+    "account": "Cuenta",
+    "refineText": "Revisión de texto",
+    "warmup": "Precalentamiento de caché",
+    "presets": {
+      "7": "Últimos 7 días",
+      "30": "Últimos 30 días",
+      "90": "Últimos 90 días",
+      "all": "Todo el período",
+      "custom": "Fechas personalizadas"
+    },
+    "groups": {
+      "workflow_model": "Flujo de trabajo y modelo",
+      "workflow": "Flujo de trabajo",
+      "model": "Modelo",
+      "day": "Día"
+    }
   }
 }

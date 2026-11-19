@@ -75,6 +75,8 @@ export interface UseProfileReturn extends PracticeProfile {
    *  off by default (practices.pims_send_enabled); on for everyone during
    *  the free beta. */
   pimsSendEnabled: boolean;
+  gpExamEnabled: boolean;
+  consultationEnabled: boolean;
   /** The practice's owner report templates (normalized; the built-in
    *  default when the practice hasn't customized anything). */
   ownerReportConfig: OwnerReportConfig;
@@ -197,6 +199,8 @@ export function useProfile(): UseProfileReturn {
   const [dicomReady, setDicomReady] = React.useState(false);
   const [isAdmin, setIsAdmin] = React.useState(false);
   const [ownerReportEnabled, setOwnerReportEnabled] = React.useState(false);
+  const [gpExamEnabled, setGpExamEnabled] = React.useState(false);
+  const [consultationEnabled, setConsultationEnabled] = React.useState(false);
   const [pimsSendEnabled, setPimsSendEnabled] = React.useState(false);
   const [ownerReportConfig, setOwnerReportConfig] = React.useState<OwnerReportConfig>(defaultConfig);
   const [ownerReportConfigLoadFailed, setOwnerReportConfigLoadFailed] = React.useState(false);
@@ -237,6 +241,8 @@ export function useProfile(): UseProfileReturn {
       const admin = sessionData.session?.user.app_metadata?.role === 'admin';
       let ownerReportOn = false;
       let pimsSendOn = false;
+      let gpExamOn = false;
+      let consultationOn = false;
       let reportConfig: OwnerReportConfig | null = null;
       let reportRev: number | null = null;
       let reportLoadFailed = false;
@@ -271,6 +277,19 @@ export function useProfile(): UseProfileReturn {
         if (!pimsError) {
           pimsSendOn = !!(pimsRow as { pims_send_enabled?: boolean } | null)?.pims_send_enabled;
         }
+        // A missing column or failed read leaves the GP rollout off.
+        const { data: gpFeatures, error: gpError } = await supabase
+          .from('practices')
+          .select('gp_exam_enabled')
+          .eq('id', pid)
+          .maybeSingle();
+        gpExamOn = !gpError && gpFeatures?.gp_exam_enabled === true;
+        const { data: consultationFeatures, error: consultationError } = await supabase
+          .from('practices')
+          .select('consultation_enabled')
+          .eq('id', pid)
+          .maybeSingle();
+        consultationOn = !consultationError && consultationFeatures?.consultation_enabled === true;
         // Owner report templates (+ their version). A failed read is NOT
         // "no templates": it's remembered, and saving is blocked, so the
         // built-in default shown meanwhile can never be saved over them.
@@ -321,6 +340,8 @@ export function useProfile(): UseProfileReturn {
           setPlan(practicePlan);
           setOwnerReportEnabled(ownerReportOn);
           setPimsSendEnabled(pimsSendOn);
+          setGpExamEnabled(gpExamOn);
+          setConsultationEnabled(consultationOn);
           if (reportConfig) setOwnerReportConfig(reportConfig);
           reportRevRef.current = reportRev;
           reportLoadFailedRef.current = reportLoadFailed;
@@ -413,6 +434,8 @@ export function useProfile(): UseProfileReturn {
     ownerReportEnabled: FREE_BETA || ownerReportEnabled,
     // Free beta: Send to PIMS is on for everyone too.
     pimsSendEnabled: pimsSendAllowed(pimsSendEnabled),
+    gpExamEnabled,
+    consultationEnabled,
     ownerReportConfigLoadFailed,
     ownerReportConfig,
     saveOwnerReportConfig,
@@ -420,5 +443,5 @@ export function useProfile(): UseProfileReturn {
     update,
     uploadLogo,
     removeLogo,
-  }), [profile, loaded, practiceKnown, practiceId, plan, dicomReady, isAdmin, ownerReportEnabled, pimsSendEnabled, ownerReportConfig, saveOwnerReportConfig, logoUrl, update, uploadLogo, removeLogo]);
+  }), [profile, loaded, practiceKnown, practiceId, plan, dicomReady, isAdmin, ownerReportEnabled, pimsSendEnabled, gpExamEnabled, consultationEnabled, ownerReportConfig, saveOwnerReportConfig, logoUrl, update, uploadLogo, removeLogo]);
 }

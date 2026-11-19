@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { vi } from 'vitest';
 import { sampleOwnerReportSnapshot } from '../utils/ownerReportSample';
 import type { ChartSnapshot, PatientInfo } from '../types';
@@ -117,16 +117,20 @@ it('keeps manual editing available without AI and locks the editor for saved rea
   view.rerender(<RadiologyReportSection snapshot={value} readOnly onChange={vi.fn()} />);
   expect(screen.getByLabelText('Report text')).toBeDisabled();
 });
-it('invalidates review when language or recorded chart context changes without deleting text', async () => {
+it('shows the Customize tip for a non-English preference and applies it on refinement', async () => {
   const value = snapshot(); value.patientInfo.radiologyReport = 'Report'; value.patientInfo.radiologyReportLanguage = 'en';
-  const { radiologySourceBasis, radiologyReviewBasis } = await import('../utils/radiologyReportState');
-  value.patientInfo.radiologyReportBasis = radiologySourceBasis(value); value.patientInfo.radiologyReviewedBasis = radiologyReviewBasis(value, 'en');
-  render(<Editor initial={value} />);
-  expect(screen.getByRole('button', { name: 'Copy report' })).toBeEnabled();
-  fireEvent.change(screen.getByRole('combobox'), { target: { value: 'fr' } });
-  expect(screen.getByRole('button', { name: 'Copy report' })).toBeDisabled();
-  expect(screen.getByLabelText('Report text')).toHaveValue('Report');
+  const customize = vi.fn(), change = vi.fn();
+  render(<RadiologyReportSection snapshot={value} aiEnabled preferredLanguage="fr" onCustomizeLanguage={customize} onChange={change} />);
+  expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: 'AI writes in Français. Change it in Customize.' }));
+  expect(customize).toHaveBeenCalledOnce();
+  const refine = screen.getByRole('button', { name: 'Refine with AI' });
+  expect(refine.compareDocumentPosition(screen.getByLabelText('Report text')) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  fireEvent.click(refine);
+  await waitFor(() => expect(change).toHaveBeenCalledWith(expect.objectContaining({ radiologyReportLanguage: 'fr', radiologyReviewedBasis: '' })));
+  expect(mocks.generate).toHaveBeenCalledWith(expect.anything(), 'fr');
 });
+
 it.each(['source', 'auth'] as const)('does not save a PDF after %s changes during rendering', async mode => {
   let resolve!: (value: Uint8Array<ArrayBuffer>) => void;
   mocks.pdf.mockImplementationOnce(() => new Promise(done => { resolve = done; }));
@@ -166,17 +170,17 @@ it('does not retry an automatic refinement failure on another render', async () 
 
 it('restores the original language when undoing automatic refinement into a different language', async()=>{
  const value=snapshot();value.patientInfo.radiologyReport='Original English findings.';
- function AutoEditor(){const [s,setS]=React.useState(value);const [request,setRequest]=React.useState<{id:number;language:'fr'}>();return <><button onClick={()=>setRequest({id:1,language:'fr'})}>Stop test dictation</button><RadiologyReportSection snapshot={s} aiEnabled refineRequest={request} onChange={changes=>setS(previous=>({...previous,patientInfo:{...previous.patientInfo,...changes}}))}/></>;}
+ function AutoEditor(){const [s,setS]=React.useState(value);const [request,setRequest]=React.useState<{id:number;language:'fr'}>();return <><button onClick={()=>setRequest({id:1,language:'fr'})}>Stop test dictation</button><RadiologyReportSection snapshot={s} aiEnabled onCustomizeLanguage={() => {}} refineRequest={request} onChange={changes=>setS(previous=>({...previous,patientInfo:{...previous.patientInfo,...changes}}))}/></>;}
  render(<AutoEditor/>);fireEvent.click(screen.getByRole('button',{name:'Stop test dictation'}));
- await screen.findByRole('button',{name:'Undo refinement'});expect(screen.getByRole('combobox')).toHaveValue('fr');
- fireEvent.click(screen.getByRole('button',{name:'Undo refinement'}));expect(screen.getByRole('combobox')).toHaveValue('en');
+ await screen.findByRole('button',{name:'Undo refinement'});expect(screen.getByRole('button', { name: /Français/ })).toBeVisible();
+ fireEvent.click(screen.getByRole('button',{name:'Undo refinement'}));expect(screen.queryByRole('button', { name: /Change it in Customize/ })).not.toBeInTheDocument();
  expect(screen.getByLabelText('Report text')).toHaveValue('Original English findings.');
 });
 it('shows externally captured dictation language even if refinement fails', async()=>{
  mocks.generate.mockRejectedValueOnce(new TypeError());const value=snapshot();value.patientInfo.radiologyReport='Original';
  const view=render(<RadiologyReportSection snapshot={value} aiEnabled onChange={vi.fn()}/>);
- view.rerender(<RadiologyReportSection snapshot={{...value,patientInfo:{...value.patientInfo,radiologyReportLanguage:'fr'}}} aiEnabled onChange={vi.fn()} refineRequest={{id:1,language:'fr'}}/>);
- await screen.findByRole('alert');expect(screen.getByRole('combobox')).toHaveValue('fr');
+ view.rerender(<RadiologyReportSection snapshot={{...value,patientInfo:{...value.patientInfo,radiologyReportLanguage:'fr'}}} aiEnabled onCustomizeLanguage={() => {}} onChange={vi.fn()} refineRequest={{id:1,language:'fr'}}/>);
+ await screen.findByRole('alert');expect(screen.getByRole('button', { name: /Français/ })).toBeVisible();
  expect(mocks.generate).toHaveBeenCalledExactlyOnceWith(expect.anything(),'fr');
 });
 
@@ -260,14 +264,27 @@ it('keeps real CT capture language and clears review when automatic refinement f
     await waitFor(() => expect(mocks.generate).toHaveBeenCalledOnce()); await screen.findByRole('alert');
     expect(latest.patientInfo).toMatchObject({ ctReportLanguage: 'fr', ctReviewedBasis: '', ctReport: 'Existing CT report.\n\nLésion de 409, étendue incertaine.' });
     expect(latest.clinicalDictations?.[0]).toMatchObject({ language: 'fr', kind: 'ct', transcript: 'Lésion de 409, étendue incertaine.' });
-    expect(screen.getByRole('combobox')).toHaveValue('fr');
     expect(screen.queryByRole('dialog')).toBeNull();
     expect(screen.getByLabelText(i18n.t('app:radiologyReport.checked'))).not.toBeChecked();
   } finally { await act(async () => { await i18n.changeLanguage('en'); }); }
 });
 it('does not label a manually entered main report as an outdated AI draft', () => {
   const value = snapshot(); value.patientInfo.radiologyReport = value.patientInfo.radiographicFindings;
-  render(<RadiologyReportSection controlsOnly snapshot={value} aiEnabled onChange={() => {}} />);
+  render(<RadiologyReportSection chartEditor snapshot={value} aiEnabled onChange={() => {}} />);
   expect(screen.queryByText(/The chart changed since this report was drafted/)).not.toBeInTheDocument();
-  expect(screen.getByRole('button', { name: 'Refine with AI' })).toBeEnabled();
+  expect(screen.getByText('Refine', { exact: false }).closest('summary')).toBeInTheDocument();
+});
+
+it('uses the report Refine control for empty X-ray and CT editors and labels CT dictation beside a mic', () => {
+  const value = snapshot();
+  value.patientInfo.radiographicFindings = '';
+  render(<>
+    <RadiologyReportSection chartEditor snapshot={value} aiEnabled onChange={vi.fn()} />
+    <RadiologyReportSection chartEditor reportKind="ct" snapshot={value} aiEnabled onChange={vi.fn()} onDictationApply={vi.fn()} />
+  </>);
+  const xray = within(screen.getByRole('region', { name: 'Radiographic report' }));
+  const ct = within(screen.getByRole('region', { name: 'CT report' }));
+  expect(xray.getByRole('button', { name: 'Refine' })).toBeDisabled();
+  expect(ct.getByRole('button', { name: 'Refine' })).toBeDisabled();
+  expect(ct.getByRole('button', { name: 'Dictate CT report' }).querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
 });

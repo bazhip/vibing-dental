@@ -126,7 +126,8 @@ describe('settings dialogs on the website render as before', () => {
   });
   it('Report templates', async () => {
     const store = { templates: [{ id: 't1', name: 'Dental', body: 'Body' }], save: vi.fn(), remove: vi.fn() };
-    expect((await snap(<ReportTemplatesModal open onClose={noop} store={store as never} draftBody="Draft" />)).html).toMatchSnapshot();
+    const { html } = await snap(<ReportTemplatesModal open onClose={noop} store={store as never} draftBody="Draft" />);
+    expect(html.replace(/_r_[a-z0-9]+_/g, 'template-field-help')).toMatchSnapshot();
   });
   it('Admin panel', async () => {
     expect((await snap(<AdminPanel open onClose={noop} />)).html).toMatchSnapshot();

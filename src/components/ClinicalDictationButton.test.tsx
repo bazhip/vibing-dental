@@ -16,6 +16,24 @@ function paste() { fireEvent.change(screen.getByLabelText(label('transcript')), 
 async function prepare() { paste(); fireEvent.click(screen.getByRole('button', { name: label('prepare') })); await screen.findByRole('checkbox'); }
 beforeEach(async () => { await i18n.changeLanguage('en'); mocks.extract.mockReset().mockResolvedValue([{ field: 'complaint', value: text, evidence: text }]); mocks.consent.mockReset().mockResolvedValue(true); mocks.copy.mockReset().mockResolvedValue('plain'); mocks.start.mockReset(); mocks.startInLanguage.mockReset().mockImplementation(() => mocks.start()); mocks.stop.mockReset(); mocks.recording = false; mocks.captureError = null; mocks.captureText = ''; });
 afterEach(cleanup);
+it('requires explicit recording and leaves destructive edits unchecked in managed review', async () => {
+  const snapshot = sampleOwnerReportSnapshot();
+  snapshot.patientInfo.complaint = 'Existing reason for visit';
+  const onApply = vi.fn();
+  render(<ClinicalDictationButton kind="discharge" snapshot={snapshot} chartId="chart" chartSession={1} aiEnabled
+    openRequest={1} onApply={onApply} />);
+  expect(await screen.findByRole('dialog')).toBeVisible();
+  expect(screen.getByRole('button', { name: label('start') })).toBeEnabled();
+  expect(mocks.start).not.toHaveBeenCalled();
+  await prepare();
+  expect(screen.getByText('Existing reason for visit')).toBeVisible();
+  expect(screen.getByRole('checkbox')).not.toBeChecked();
+  expect(screen.getByRole('button', { name: label('apply') })).toBeDisabled();
+  expect(mocks.extract.mock.calls[0][0]).toMatchObject({ kind: 'discharge', routedGpExamEnabled: false });
+  fireEvent.click(screen.getByRole('checkbox'));
+  fireEvent.click(screen.getByRole('button', { name: label('apply') }));
+  expect(onApply).toHaveBeenCalledExactlyOnceWith({ complaint: text }, expect.objectContaining({ fields: ['complaint'] }), true);
+});
 it('reviews editable proposals and applies text with raw provenance exactly once', async () => { const { props } = setup(); await prepare(); expect(props.onApply).not.toHaveBeenCalled(); fireEvent.change(screen.getByLabelText(i18n.t('visitDocumentation:fields.complaint.label')), { target: { value: 'Reviewed cough' } }); fireEvent.click(screen.getByRole('button', { name: label('apply') })); expect(props.onApply).toHaveBeenCalledExactlyOnceWith({ complaint: 'Reviewed cough' }, expect.objectContaining({ kind: 'gp-visit', language: 'en', transcript: text, fields: ['complaint'] })); });
 it('blocks old proposals when chart text changes', async () => { const { props, rerender } = setup(); await prepare(); rerender(<ClinicalDictationButton {...props} snapshot={{ ...props.snapshot, patientInfo: { ...props.snapshot.patientInfo, complaint: 'Manual update' } }}/>); expect(screen.queryByRole('button', { name: label('apply') })).not.toBeInTheDocument(); expect(screen.getByRole('button', { name: label('prepare') })).toBeEnabled(); expect(screen.getByText(label('stale'))).toBeInTheDocument(); });
 it('appends CT only with provenance without GP extraction', async () => { const { props } = setup('ct'); paste(); fireEvent.click(screen.getByRole('button', { name: label('ctApply') })); await waitFor(() => expect(props.onApply).toHaveBeenCalledOnce()); expect(props.onApply.mock.calls[0][0]).toEqual({ ctReport: [props.snapshot.patientInfo.ctReport, text].filter(Boolean).join('\n\n'), ctReportLanguage: 'en', ctReviewedBasis: '' }); expect(mocks.extract).not.toHaveBeenCalled(); });
@@ -177,4 +195,17 @@ it('unlocks draining controls after a source edit when the final suffix is empty
   expect(screen.getByLabelText(label('transcript'))).not.toHaveAttribute('readonly');
   expect(mocks.extract).not.toHaveBeenCalled();
   expect(props.onApply).not.toHaveBeenCalled();
+});
+
+it('hides GP dictation targets from consultation when GP exam is off', () => {
+  setup('consultation');
+  const select = screen.getByLabelText(i18n.t('voice:clinical.target'));
+  expect([...select.querySelectorAll('option')].map(option => option.value)).toEqual(['consultation', 'discharge']);
+});
+
+it('omits Consultation from dictation targets when only GP examination is enabled', () => {
+  render(<ClinicalDictationButton kind="gp-visit" snapshot={sampleOwnerReportSnapshot()} chartId="chart" chartSession={1}
+    aiEnabled gpExamEnabled consultationEnabled={false} onApply={vi.fn()} />);
+  fireEvent.click(screen.getByRole('button'));
+  expect(screen.getAllByRole('option').map(option => (option as HTMLOptionElement).value)).toEqual(['gp-visit', 'gp-exam', 'discharge']);
 });

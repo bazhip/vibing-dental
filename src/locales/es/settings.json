@@ -195,7 +195,8 @@
       "images": "Incluir las imágenes",
       "imagesHint": "(4 por página, después del historial)",
       "radiographicReport": "Incluir el informe radiográfico",
-      "ctReport": "Incluir el informe de TC"
+      "ctReport": "Incluir el informe de TC",
+      "codesUsed": "Incluir los códigos utilizados"
     },
     "noteDevice": "Preferencias personales guardadas automáticamente en este dispositivo.",
     "spaceMovesDownHint": "Rápido para dictar una serie de profundidades",

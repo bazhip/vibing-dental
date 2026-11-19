@@ -1,3 +1,4 @@
+import { PLACEHOLDERS } from '../utils/ownerReportConfig';
 // Pseudo-locale coverage for what only the iOS app shows: the lock screen,
 // Sign in with Apple, the inactive-plan screen, the app's sign-in and
 // session screens, the app's sheets (finish setup, invitation, history,
@@ -163,7 +164,7 @@ test('the app\'s sheets: finish setup, invitation, history, feedback, reminder',
 test('the app\'s sheets: report templates, chart settings, what\'s new', () => {
   const store = { templates: [{ id: 't1', name: 'Dental', body: 'Body' }], save: vi.fn(), remove: vi.fn(), loaded: true } as unknown as UseReportTemplatesReturn;
   const a = render(<ReportTemplatesModal open onClose={() => {}} store={store} />);
-  expect(body()).toEqual([]);
+  expect(findUntranslated(document.body, [...ALLOW, ...PLACEHOLDERS.map(code => `{${code}}`)])).toEqual([]);
   a.unmount();
   const b = render(<ChartSettingsModal onClose={() => {}} prefs={DEFAULT_CHART_PREFS} followsAccount onChange={() => {}} section="charting" />);
   expect(body()).toEqual([]);

@@ -119,6 +119,7 @@ export interface PdfLayoutOptions {
   includeRadiographicReport?: boolean;
   /** Same for the CT report. Default true. */
   includeCtReport?: boolean;
+  includeCodesUsed?: boolean;
   /** Chart images to append after page 2, IMAGES_PER_PAGE to a page.
    *  Empty / absent → no image pages. Not round-tripped through the
    *  stash: the images live in cloud storage with the chart. */
@@ -203,7 +204,7 @@ export async function buildDentalChartPDFBytes(
 
   // Codes are needed before the diagrams draw: each page's diagram
   // centers vertically in the space left over by its codes legend.
-  const usedByPage = collectUsedCodesByPage({
+  const usedByPage = layoutOptions.includeCodesUsed === false ? { page1: [], page2: [] } : collectUsedCodesByPage({
     patientInfo: { ...patientInfo, radiographicFindings: printedRadiographic, ctReport: printedCt },
     toothData,
     preCommentTexts:  preDiagram.state.comments.map((c)  => c.text),

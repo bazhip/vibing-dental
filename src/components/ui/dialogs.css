@@ -102,6 +102,8 @@
   font-weight: 700;
   cursor: pointer;
 }
+.ui-toast--success .ui-toast__action { color: inherit; border-color: currentColor; }
+.ui-toast--success .ui-toast__action:hover { background: color-mix(in srgb, currentColor 8%, transparent); }
 .ui-toast__close {
   flex: none;
   width: 32px;

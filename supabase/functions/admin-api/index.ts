@@ -11,6 +11,7 @@
 
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { AI_FEATURES, ALLOWED_AI_MODELS, isAiFeature, resolveAiModels } from '../_shared/aiModels.ts';
+import { aggregateAiUsage, costOfAiUsage, parseAiUsageQuery } from '../_shared/aiUsageQuery.ts';
 import { cancelPracticeSubscription } from '../_shared/deletion.ts';
 import { freshInviteLink, isPendingAccount, markInviteRevoked, resetInviteState, safeAppUrl } from '../_shared/pendingInvites.ts';
 
@@ -719,34 +720,25 @@ Deno.serve(async (req: Request) => {
         return json({ ok: true, featureModels: next });
       }
 
+      case 'ai_usage_query': {
+        const query = parseAiUsageQuery(body);
+        if (!query) return json({ error: 'Invalid AI usage filters.' }, 400);
+        const { data, error } = await admin.rpc('admin_ai_usage_query', {
+          from_date: query.from || null, to_date: query.to || null,
+          filter_kind: query.kind || null, filter_model: query.model || null, daily: query.groupBy === 'day',
+        });
+        if (error?.code === 'PGRST202' || error?.code === '42883') return json({ error: 'AI usage query migration not applied.' }, 503);
+        if (error) throw error;
+        const emails = new Map<string, string>((await listAllUsers(admin)).map(user => [user.id, user.email ?? '']));
+        return json({ ...aggregateAiUsage(data, query.groupBy, emails) });
+      }
+
       case 'ai_usage': {
-        // Per-user token totals + a cost estimate at list $/million tokens.
-        // input_tokens already includes cache writes at the input rate;
-        // writes are billed x1.25, so the extra quarter is added below.
-        const RATES: Record<string, { in: number; out: number; cacheRead: number }> = {
-          'claude-opus-5-5':   { in: 4,    out: 20,   cacheRead: 0.20 },
-          'claude-sonnet-5-5': { in: 2,    out: 10,   cacheRead: 0.10 },
-          'claude-haiku-5-5':  { in: 0.10, out: 0.50, cacheRead: 0.01 },
-          'claude-opus-4':     { in: 5,    out: 25,   cacheRead: 0.50 },
-          'claude-sonnet-4':   { in: 3,    out: 15,   cacheRead: 0.30 },
-          'claude-haiku-4':    { in: 1,    out: 5,    cacheRead: 0.10 },
-        };
-        const rate = (model: string) => {
-          const k = Object.keys(RATES).find((r) => model.startsWith(r));
-          return k ? RATES[k] : { in: 5, out: 25, cacheRead: 0.5 };
-        };
-        const costOf = (r: Pick<AiUsageTotal, 'model' | 'input_tokens' | 'output_tokens' | 'cache_read_tokens' | 'cache_write_tokens'>) => {
-          const rt = rate(r.model);
-          return (r.input_tokens / 1e6) * rt.in +
-            ((r.cache_write_tokens ?? 0) / 1e6) * rt.in * 0.25 +
-            (r.output_tokens / 1e6) * rt.out +
-            (r.cache_read_tokens / 1e6) * rt.cacheRead;
-        };
         const byUser = new Map<string, { input: number; output: number; cacheRead: number; calls: number; cost: number }>();
         let totalCost = 0;
         for (const r of await aiUsageTotals(admin)) {
           const cur = byUser.get(r.user_id) ?? { input: 0, output: 0, cacheRead: 0, calls: 0, cost: 0 };
-          const cost = costOf(r);
+          const cost = costOfAiUsage(r);
           cur.input += r.input_tokens;
           cur.output += r.output_tokens;
           cur.cacheRead += r.cache_read_tokens;
@@ -777,7 +769,7 @@ Deno.serve(async (req: Request) => {
         });
         if (!featureError && Array.isArray(featureRows)) {
           for (const r of featureRows as Array<AiUsageTotal & { kind: string }>) {
-            const cost = costOf(r);
+            const cost = costOfAiUsage(r);
             byFeature.push({
               feature: r.kind,
               model: r.model,

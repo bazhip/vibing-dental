@@ -50,6 +50,21 @@
     "sessionStart": "Die Deepgram-Sitzung konnte nicht gestartet werden.",
     "unsupported": "Spracheingabe erfordert Chrome, Edge oder Safari."
   },
+  "destination": {
+    "general": "Allgemein"
+  },
+  "correction": {
+    "conflict": "Prüfen Sie diese Änderung der Patientenakte.",
+    "apply": "Vorschlag übernehmen",
+    "keep": "Aktuellen Wert beibehalten"
+  },
+  "welcome": {
+    "ready": "Sobald Sie die Aufnahme starten, erscheint hier die Transkription.",
+    "title": "Diktat",
+    "start": "Wählen Sie Diktat starten, um die Aufnahme zu beginnen.",
+    "transcript": "Verfolgen Sie die Transkription beim Sprechen. Wählen Sie zum Abschluss Stopp.",
+    "review": "Prüfen Sie den Bericht oder die Änderungen in der Patientenakte und korrigieren Sie diese bei Bedarf."
+  },
   "intro": {
     "ariaLabel": "Diktieren",
     "cancel": "Abbrechen",
@@ -126,6 +141,7 @@
     "open_other": "{{count}} Einträge zu prüfen."
   },
   "status": {
+    "idle": "Bereit zum Starten",
     "connecting": "Verbindung wird hergestellt …",
     "finishing": "Abschluss …",
     "interrupted": "Unterbrochen",
@@ -160,6 +176,7 @@
       "ct": "CT-Bericht"
     },
     "help": "Nehmen Sie die Beobachtungen des behandelnden Tierarztes auf oder fügen Sie sie ein. Prüfen Sie die vorgeschlagenen Abschnitte, bevor Sie sie übernehmen. Nicht dokumentierte Befunde bleiben leer.",
+    "imagingHelp": "Nehmen Sie Bildgebungsbefunde auf oder fügen Sie diese ein. Geben Sie bei Unklarheit das Verfahren an. Prüfen Sie vor dem Übernehmen die Zuordnung zum Röntgen- oder CT-Bericht.",
     "ctHelp": "Nehmen Sie CT-Beobachtungen auf oder fügen Sie sie ein. Wenn Sie das Diktat beenden, werden sie ausschließlich zum CT-Bericht hinzugefügt und automatisch überarbeitet.",
     "ctApply": "CT-Bericht ergänzen und überarbeiten",
     "target": "Ziel des Diktats",

@@ -10,6 +10,10 @@ export interface ClinicalDictationInput {
   transcript: string;
   language: AppLanguage;
   patientInfo: PatientInfo;
+  consultationEnabled?: boolean;
+  /** The chart launcher can route explicitly dictated findings to other enabled sections. */
+  routedGpExamEnabled?: boolean;
+  imagingFocus?: 'ctReport' | 'radiographicFindings';
 }
 
 /** Unreviewed complete field values. The caller must review and guard before applying. */
@@ -19,15 +23,18 @@ export interface ClinicalDictationProposal {
   evidence: string;
 }
 
-const CONSULTATION = ['complaint', 'consultationHistory', 'consultationAssessment', 'consultationPlan'] as const;
+const CONSULTATION_DETAILS = ['consultationHistory', 'consultationAssessment', 'consultationPlan'] as const;
+const CONSULTATION = ['complaint', ...CONSULTATION_DETAILS] as const;
 const EXAM = ['gpVitals', 'gpPhysicalExam', 'gpDiagnostics'] as const;
 const DISCHARGE = ['dischargeMedications', 'dischargeInstructions', 'dischargeFollowUp'] as const;
+const GP_VISIT_WITHOUT_CONSULTATION = Object.freeze(['complaint', ...EXAM, 'treatmentReport', ...DISCHARGE] as const);
 const ALL = [...CONSULTATION, ...EXAM, 'treatmentReport', ...DISCHARGE] as const;
 const FIELDS = {
   'gp-visit': Object.freeze(ALL),
   consultation: Object.freeze(CONSULTATION),
   'gp-exam': Object.freeze(EXAM),
   discharge: Object.freeze(DISCHARGE),
+  imaging: Object.freeze(['radiographicFindings', 'ctReport'] as const),
 } satisfies Record<Exclude<ClinicalDictationKind, 'ct'>, readonly ClinicalDictationField[]>;
 const LANGUAGE_NAMES: Record<AppLanguage, string> = { en: 'English', fr: 'French', de: 'German', it: 'Italian', es: 'Spanish', hu: 'Hungarian', ro: 'Romanian', zh: 'Simplified Chinese', ar: 'Arabic' };
 const MAX_TRANSCRIPT = 40000, MAX_FIELD = 20000, MAX_REQUEST = 110000;
@@ -40,8 +47,18 @@ function fail(language: AppLanguage, key: ErrorKey): never {
   throw new LocalizedError(i18n.getFixedT(isAppLanguage(language) ? language : 'en', 'voice')(`clinical.${key}`));
 }
 
-export function allowedClinicalFields(kind: Exclude<ClinicalDictationKind, 'ct'>): readonly ClinicalDictationField[] {
+export function allowedClinicalFields(kind: Exclude<ClinicalDictationKind, 'ct'>, consultationEnabled = true, routedGpExamEnabled?: boolean): readonly ClinicalDictationField[] {
   if (!own(FIELDS, kind)) fail('en', 'invalidResponse');
+  if (kind === 'imaging') return FIELDS.imaging;
+  if (!consultationEnabled && kind === 'consultation') return [];
+  if (routedGpExamEnabled !== undefined) {
+    if (!routedGpExamEnabled && (kind === 'gp-exam' || kind === 'gp-visit')) return [];
+    return ALL.filter(field => (consultationEnabled || !(CONSULTATION_DETAILS as readonly string[]).includes(field))
+      && (routedGpExamEnabled || !(EXAM as readonly string[]).includes(field)));
+  }
+  if (!consultationEnabled) {
+    if (kind === 'gp-visit') return GP_VISIT_WITHOUT_CONSULTATION;
+  }
   return FIELDS[kind];
 }
 
@@ -66,7 +83,8 @@ export function buildClinicalDictationRequest(input: ClinicalDictationInput): Au
   if (typeof input.transcript !== 'string' || !input.transcript.trim()) fail(language, 'emptyTranscript');
   if (input.transcript.length > MAX_TRANSCRIPT) fail(language, 'transcriptTooLong');
   if (CONTROLS.test(input.transcript)) fail(language, 'invalidResponse');
-  const fields = allowedClinicalFields(input.kind);
+  const fields = allowedClinicalFields(input.kind, input.consultationEnabled, input.routedGpExamEnabled);
+  if (!fields.length) fail(language, 'invalidResponse');
   const current: Partial<Record<ClinicalDictationField, string>> = {};
   for (const field of fields) {
     const value: unknown = input.patientInfo[field];
@@ -86,10 +104,15 @@ export function buildClinicalDictationRequest(input: ClinicalDictationInput): Au
       } } },
     },
   };
+  const imaging = input.kind === 'imaging';
+  const routing = imaging
+    ? '\nThis is imaging dictation. Route X-ray findings to radiographicFindings and CT findings to ctReport. Use explicit modality from the spoken wording first; translate abbreviations only when their meaning is clear. If the speaker does not specify the modality, use the focused report when supplied, or clearly modality-specific clinical terminology. When still ambiguous, omit the finding so the clinician can clarify it. Never combine or duplicate findings across modalities. Preserve the existing wording in each field unless explicitly corrected.'
+    : input.routedGpExamEnabled === undefined ? ''
+    : '\nUse the selected kind as the default context for ambiguous wording. Route explicitly identified findings to their matching allowed fields, even if those fields belong to another section.';
   const request: AutofillRequest = {
-    kind: 'review', mode: 'review', max_tokens: 8192,
-    system: [{ type: 'text', text: `${SYSTEM}\nThe explicit dictation and output language is ${LANGUAGE_NAMES[language]}. Write clinical prose in this language while preserving dictated names, numbers, units and medication details.` }],
-    tools: [tool], messages: [{ role: 'user', content: [{ type: 'text', text: JSON.stringify({ kind: input.kind, language, allowed_fields: fields, current_values: current, transcript: input.transcript }) }] }],
+    kind: input.kind === 'imaging' ? 'radiology_report' : input.kind, mode: 'review', max_tokens: 8192,
+    system: [{ type: 'text', text: `${SYSTEM}${routing}\nThe explicit dictation and output language is ${LANGUAGE_NAMES[language]}. Write clinical prose in this language while preserving dictated names, numbers, units and medication details.` }],
+    tools: [tool], messages: [{ role: 'user', content: [{ type: 'text', text: JSON.stringify({ kind: input.kind, language, allowed_fields: fields, current_values: current, ...(imaging && input.imagingFocus ? { focused_report: input.imagingFocus } : {}), transcript: input.transcript }) }] }],
   };
   if (JSON.stringify(request).length > MAX_REQUEST) fail(language, 'sourceTooLarge');
   return request;
@@ -103,7 +126,7 @@ export function parseClinicalDictationProposal(content: unknown, input: Clinical
   const calls = content.filter(block => block.type === 'tool_use');
   if (calls.length !== 1 || calls[0].name !== 'propose_clinical_sections' || !object(calls[0].input)) return invalid();
   const result = calls[0].input;
-  const fields = allowedClinicalFields(input.kind);
+  const fields = allowedClinicalFields(input.kind, input.consultationEnabled, input.routedGpExamEnabled);
   if (Object.keys(result).length !== 1 || !own(result, 'sections') || !Array.isArray(result.sections) || result.sections.length > fields.length) return invalid();
   const seen = new Set<ClinicalDictationField>();
   const proposals: ClinicalDictationProposal[] = [];

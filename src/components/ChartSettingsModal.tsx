@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './ChartCustomization.css';
 import { useTranslation } from 'react-i18next';
+import { APP_LANGUAGES, LANGUAGE_NAMES, isAppLanguage } from '../i18n/config';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
 import { AnesthesiaCustomEditor } from './AnesthesiaCustomEditor';
@@ -43,7 +44,7 @@ export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = (props) =>
 
 /** The app: an iOS sheet holding the settings list. */
 function ChartSettingsSheet({ onClose, prefs, followsAccount, onChange, section }: ChartSettingsModalProps) {
-  const { t } = useTranslation('settings');
+  const { t } = useTranslation(['settings', 'app']);
   const [only, setOnly] = React.useState<SettingsSection | null>(section ?? null);
   return (
     <Sheet
@@ -61,7 +62,7 @@ function ChartSettingsSheet({ onClose, prefs, followsAccount, onChange, section 
 
 /** The website's dialog. */
 const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs, followsAccount, onChange, section }) => {
-  const { t } = useTranslation('settings');
+  const { t } = useTranslation(['settings', 'app']);
   const [only, setOnly] = React.useState<SettingsSection>(section ?? 'charting');
   const categories: SettingsSection[] = ['patient', 'exam', 'anesthesia', 'charting', 'diagnosis', 'procedure', 'images'];
   const categoryLabel = (category: SettingsSection) => category === 'charting' || category === 'anesthesia'
@@ -379,6 +380,21 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
             </label>
           </section>
 
+          {show.pdfImages && (
+            <section className="chart-settings__group">
+              <label className="chart-settings__imaging-language">
+                {t('radiologyReport.editorLanguage', { ns: 'app' })}
+                <select className="patient-form__input" value={prefs.imagingReportLanguage ?? ''} onChange={event => {
+                  const value = event.target.value;
+                  onChange({ imagingReportLanguage: isAppLanguage(value) ? value : null });
+                }}>
+                  <option value="">{t('radiologyReport.automaticLanguage', { ns: 'app' })}</option>
+                  {APP_LANGUAGES.map(value => <option key={value} value={value}>{LANGUAGE_NAMES[value]}</option>)}
+                </select>
+              </label>
+            </section>
+          )}
+
           <section className="chart-settings__group" hidden={!(show.pdfGrid || show.pdfImages)}>
             <h3 className="ai-settings-subhead">{t('chart.pdf.title')}</h3>
             {show.pdfGrid && (
@@ -408,6 +424,12 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
             <label className="chart-settings__choice">
               <input type="checkbox" checked={prefs.pdfIncludeCtReport} onChange={(e) => onChange({ pdfIncludeCtReport: e.target.checked })} />
               {t('chart.pdf.ctReport')}
+            </label>
+            )}
+            {show.pdfImages && (
+            <label className="chart-settings__choice">
+              <input type="checkbox" checked={prefs.pdfIncludeCodesUsed} onChange={(e) => onChange({ pdfIncludeCodesUsed: e.target.checked })} />
+              {t('chart.pdf.codesUsed')}
             </label>
             )}
           </section>

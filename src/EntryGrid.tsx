@@ -1,4 +1,6 @@
-import { CodeField } from './components/CodeField';
+import { useTeam } from './hooks/useTeam';
+import { RefineTextContext } from './components/RefineTextAction';
+import type { HistoryVisit } from './components/PatientRecordHistory';
 import { ClinicalDictationButton } from './components/ClinicalDictationButton';
 import { appendClinicalDictationSource } from './utils/clinicalDictationSources';
 import { allowedClinicalFields } from './utils/clinicalDictationAi';
@@ -108,6 +110,9 @@ const MORE_SCOPE = 'more' as const;
 const HELP_SCOPE = 'help' as const;
 const ACCOUNT_SCOPE = 'account' as const;
 
+const PatientRecordHistory = lazyWithReload(() =>
+  import('./components/PatientRecordHistory').then(module => ({ default: module.PatientRecordHistory }))
+);
 const DocumentsModal = lazyWithReload(() =>
   import('./components/DocumentsModal').then((m) => ({ default: m.DocumentsModal }))
 );
@@ -147,8 +152,9 @@ const CHARTING_COMPANIONS: Record<string, string> = { charting: 'diagnosis' };
 // What toLocaleString() prints by default: the saved-at tooltip's old format.
 const FULL_DATE_TIME: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
 const OWNER_REPORT_SECTION = 'discharge';
+const MANAGE_OWNER_REPORT_TEMPLATES = 'manage';
 const CT_REPORT_KIND = 'ct';
-const CLINICAL_WORKFLOWS = { consultation: 'consultation', gpVisit: 'gp-visit', discharge: 'discharge', ct: 'ct' } as const;
+const CLINICAL_WORKFLOWS = { consultation: 'consultation', gpVisit: 'gp-visit', discharge: 'discharge', ct: 'ct', imaging: 'imaging' } as const;
 const WARNING_TONE = 'warning' as const;
 const CHARTING_VIEWS = ['grid', 'tooth'] as const;
 const CHARTING_VIEW_KEYS = { grid: 'chartingView.grid', tooth: 'chartingView.tooth' } as const;
@@ -208,7 +214,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   }, [chartSettings.update]); // eslint-disable-line react-hooks/exhaustive-deps
   // Chart settings dialog: closed, everything, or one section only.
   const [chartSettingsOpen, setChartSettingsOpen] = React.useState<false | 'all' | SettingsSection>(false);
-  const [reportCustomizeOpen, setReportCustomizeOpen] = React.useState(false);
+  const [reportCustomizeOpen, setReportCustomizeOpen] = React.useState<false | 'manage' | 'new'>(false);
+  const returnToOwnerPreview = React.useRef(false);
   // Chart history: which chart (the open one, or a visit picked in My charts).
   const [historyFor, setHistoryFor] = React.useState<{ id: string; label?: string; fromLibrary?: boolean } | null>(null);
   // Reopening is explicit; this flag only offers Undo for that editing session.
@@ -232,6 +239,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // Owner report is per-practice, admin-flagged, and off by default —
   // everything it touches (section, FAB, image tags, modal) gates here.
   const ownerReportOn = cloud.enabled && profile.ownerReportEnabled;
+  const gpExamOn = !trial && cloud.enabled && profile.gpExamEnabled;
+  const consultationOn = !trial && cloud.enabled && profile.consultationEnabled;
   const { route, navigate } = useHashRoute();
   // The iOS app renders the chart inside the app shell (tab bar / iPad
   // sidebar) instead of the website's topbar and section rail.
@@ -269,9 +278,13 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // Which chart section is showing (controlled so a blocked save can jump
   // the user to Patient). Mirrored into the hash (#/chart/:id/:section)
   // so a refresh or shared link lands on the same section.
-  const [activeSection, setActiveSection] = React.useState(
+  const [requestedSection, setActiveSection] = React.useState(
     () => (route.view === 'chart' && route.section) || 'patient'
   );
+  const sectionDisabled = (requestedSection === 'gp-exam' && !gpExamOn)
+    || (requestedSection === 'consultation' && !consultationOn);
+  const activeSection = sectionDisabled ? 'patient' : requestedSection;
+  const ownerReportTeam = useTeam(ownerReportOn && !trial && activeSection === OWNER_REPORT_SECTION);
   // Follow the hash when it names a different section (Back/Forward, a
   // hand-edited URL) — state-driven changes are already in sync.
   React.useEffect(() => {
@@ -404,33 +417,46 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   activeSectionRef.current = activeSection;
   const [dentalDictationBusy, setDentalDictationBusy] = React.useState(false);
   const [clinicalDictationActive, setClinicalDictationActive] = React.useState(false);
-  const hideDentalVoiceForClinical = ['consultation', 'gp-exam', OWNER_REPORT_SECTION].includes(activeSection) && !dentalDictationBusy;
+  type ImagingFocus = 'radiographicFindings' | 'ctReport';
+  const imagingFocus = React.useRef<ImagingFocus | undefined>(undefined);
+  React.useEffect(() => { imagingFocus.current = undefined; }, [activeSection, chart.chartSession]);
+  const [dictationRequest, setDictationRequest] = React.useState<{
+    kind: ClinicalDictationKind; id: number; session: number; imagingFocus?: ImagingFocus;
+  }>();
+  const requestSerial = React.useRef(0);
+  const requestFor = (kind: ClinicalDictationKind) => dictationRequest?.session === chart.chartSession
+    && dictationRequest.kind === kind ? dictationRequest.id : null;
   const clinicalSession = JSON.stringify([chart.cloudChartId, chart.chartSession]);
   const clinicalAuthEpoch = React.useRef(0);
   const renderedClinicalAuthEpoch = clinicalAuthEpoch.current;
-  const clinicalApplyContext = React.useRef({ chart, readOnly, enabled: profile.aiEnabled && !trial && cloud.enabled, session: clinicalSession });
-  clinicalApplyContext.current = { chart, readOnly, enabled: profile.aiEnabled && !trial && cloud.enabled, session: clinicalSession };
+  const clinicalApplyContext = React.useRef({ chart, readOnly, enabled: profile.aiEnabled && !trial && cloud.enabled, gpExamOn, consultationOn, session: clinicalSession });
+  clinicalApplyContext.current = { chart, readOnly, enabled: profile.aiEnabled && !trial && cloud.enabled, gpExamOn, consultationOn, session: clinicalSession };
   React.useEffect(() => {
     const subscription = supabase?.auth?.onAuthStateChange?.(event => {
       if (['SIGNED_OUT', 'SIGNED_IN', 'USER_UPDATED', 'PASSWORD_RECOVERY'].includes(event)) clinicalAuthEpoch.current++;
     });
     return () => subscription?.data.subscription.unsubscribe();
   }, []);
-  const applyClinicalDictation = (changes: Partial<PatientInfo>, source: ClinicalDictationSource) => {
+  const applyClinicalDictation = (changes: Partial<PatientInfo>, source: ClinicalDictationSource, routed = false) => {
     const live = clinicalApplyContext.current;
     if (live.readOnly || !live.enabled || live.session !== clinicalSession || clinicalAuthEpoch.current !== renderedClinicalAuthEpoch) throw new LocalizedError(i18n.t('voice:clinical.stale'));
-    const allowed: readonly string[] = source.kind === 'ct' ? ['ctReport', 'ctReportLanguage', 'ctReviewedBasis'] : allowedClinicalFields(source.kind);
-    if (!Object.keys(changes).length || Object.keys(changes).some(field => !allowed.includes(field))) throw new LocalizedError(i18n.t('voice:clinical.invalidSource'));
+    if (!live.gpExamOn && (source.kind === 'gp-exam' || source.kind === 'gp-visit')) throw new LocalizedError(i18n.t('voice:clinical.stale'));
+    if (!live.consultationOn && source.kind === 'consultation') throw new LocalizedError(i18n.t('voice:clinical.stale'));
+    const allowed: readonly string[] = source.kind === 'ct'
+      ? ['ctReport', 'ctReportLanguage', 'ctReviewedBasis']
+      : allowedClinicalFields(source.kind, live.consultationOn, routed ? live.gpExamOn : undefined);
+    if (!Object.keys(changes).length || [...Object.keys(changes), ...source.fields].some(field => !allowed.includes(field))) throw new LocalizedError(i18n.t('voice:clinical.invalidSource'));
     appendClinicalDictationSource(live.chart.clinicalDictations, source);
     // The source append validates synchronously before any clinical fields change.
     live.chart.appendClinicalDictation(source);
-    live.chart.setPatientInfo(previous => ({ ...previous, ...changes }));
+    live.chart.setPatientInfo(previous => ({
+      ...previous, ...changes,
+      ...(source.kind === 'imaging' && changes.radiographicFindings !== undefined
+        ? { radiologyReport: changes.radiographicFindings, radiologyReportLanguage: source.language, radiologyReviewedBasis: '' } : {}),
+      ...(source.kind === 'imaging' && changes.ctReport !== undefined
+        ? { ctReportLanguage: source.language, ctReviewedBasis: '' } : {}),
+    }));
   };
-  const clinicalDictationControl = (kind: ClinicalDictationKind) => profile.aiEnabled && !trial && cloud.enabled
-    ? <ClinicalDictationButton kind={kind} snapshot={chart.getSnapshot()} chartId={chart.cloudChartId}
-        chartSession={chart.chartSession} readOnly={readOnly} aiEnabled
-        disabled={dentalDictationBusy || clinicalDictationActive} onApply={applyClinicalDictation}
-        onOpenChange={setClinicalDictationActive} /> : undefined;
   const radiologyDictatedSession = React.useRef<string | null>(null);
   const radiologyRefineSerial = React.useRef(0);
   const [radiologyRefineRequest, setRadiologyRefineRequest] = React.useState<{ id: number; language: AppLanguage; session: string }>();
@@ -442,6 +468,22 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       setRadiologyRefineRequest({ id: ++radiologyRefineSerial.current, language: lng, session: radiologySession });
     }
   };
+  const [ctRefineRequest, setCtRefineRequest] = React.useState<typeof radiologyRefineRequest>();
+  const applyRoutedClinicalDictation = (changes: Partial<PatientInfo>, source: ClinicalDictationSource, routed?: boolean) => {
+    applyClinicalDictation(changes, source, routed);
+    if (source.kind !== 'imaging') return;
+    const request = { id: ++radiologyRefineSerial.current, language: source.language, session: radiologySession };
+    if (changes.radiographicFindings !== undefined) setRadiologyRefineRequest(request);
+    if (changes.ctReport !== undefined) setCtRefineRequest(request);
+  };
+  const clinicalDictationControl = (kind: ClinicalDictationKind) => profile.aiEnabled && !trial && cloud.enabled
+    ? <ClinicalDictationButton key={`${kind}:${gpExamOn}:${consultationOn}`} gpExamEnabled={gpExamOn} consultationEnabled={consultationOn} kind={kind} snapshot={kind === 'imaging' ? {
+          ...chart.getSnapshot(), patientInfo: { ...chart.patientInfo, radiographicFindings: radiologyRecordedText(chart.patientInfo) },
+        } : chart.getSnapshot()} chartId={chart.cloudChartId}
+        chartSession={chart.chartSession} readOnly={readOnly} aiEnabled
+        disabled={dentalDictationBusy || clinicalDictationActive} openRequest={requestFor(kind)}
+        imagingFocus={kind === 'imaging' ? dictationRequest?.imagingFocus : undefined} onApply={applyRoutedClinicalDictation}
+        onOpenChange={setClinicalDictationActive} /> : undefined;
   const handleAiActivity = React.useCallback((actions: AiAction[], lng: AppLanguage) => {
     // Never navigate: the vet stays on the page they chose, and the voice
     // panel says where anything else went ("→ Exam: …"). Just flash the
@@ -561,10 +603,22 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // hash themselves (goToSection), so this deliberately does NOT re-run
   // on activeSection — see goToSection for the loop that caused. Trial
   // mode has no meaningful chart id, so its hash carries the section alone.
+  const pendingSectionRef = React.useRef<string | null>(null);
+  pendingSectionRef.current = !trial && cloud.enabled && !profile.loaded && sectionDisabled ? requestedSection : null;
   React.useEffect(() => {
     if (route.view !== 'chart') return;
-    navigate(`${hashBaseRef.current}/${activeSectionRef.current}`, { replace: true });
+    const section = pendingSectionRef.current ?? activeSectionRef.current;
+    navigate(`${hashBaseRef.current}/${section}`, { replace: true });
   }, [cloud.enabled, route.view, chart.cloudChartId, navigate]);
+  // Resolve an unavailable section after the practice loads. Check the live
+  // address in case a browser navigation is still waiting for its hash event.
+  React.useEffect(() => {
+    if (!profile.loaded || !sectionDisabled || route.view !== 'chart' || route.section !== requestedSection) return;
+    const base = hashBaseRef.current;
+    if (window.location.hash === `${base}/${requestedSection}`) {
+      navigate(`${base}/patient`, { replace: true });
+    }
+  }, [profile.loaded, sectionDisabled, route, requestedSection, navigate]);
   // App: #/library (the arrival rule, an old link) shows the Patients tab;
   // the address goes back to naming the chart.
   React.useEffect(() => {
@@ -852,6 +906,29 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // PDF preview modal state.
   const [previewSnapshot, setPreviewSnapshot] = React.useState<ChartSnapshot | null>(null);
   const [previewOpen, setPreviewOpen] = React.useState(false);
+  const [ownerPreviewOnly, setOwnerPreviewOnly] = React.useState(false);
+  const ownerReportEditor = React.useRef<HTMLElement>(null);
+  const [jumpToOwnerReport, setJumpToOwnerReport] = React.useState(false);
+  React.useEffect(() => {
+    if (!jumpToOwnerReport || previewOpen || activeSection !== OWNER_REPORT_SECTION) return;
+    const frame = requestAnimationFrame(() => {
+      const editor = ownerReportEditor.current;
+      editor?.focus({ preventScroll: true });
+      editor?.scrollIntoView({ block: 'start' });
+      setJumpToOwnerReport(false);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [jumpToOwnerReport, previewOpen, activeSection]);
+
+  const documentChart = React.useMemo(() => previewSnapshot ? {
+    ...previewSnapshot,
+    includeGrid: !mirrorToDiagnosis || pdfIncludeGrid,
+    includeRadiographicReport: prefs.pdfIncludeRadiographicReport,
+    includeCtReport: prefs.pdfIncludeCtReport,
+    includeCodesUsed: prefs.pdfIncludeCodesUsed,
+    imagesChartId: pdfIncludeImages && cloud.enabled && !trial ? chart.cloudChartId : undefined,
+  } : null, [previewSnapshot, mirrorToDiagnosis, pdfIncludeGrid, prefs.pdfIncludeRadiographicReport,
+    prefs.pdfIncludeCtReport, prefs.pdfIncludeCodesUsed, pdfIncludeImages, cloud.enabled, trial, chart.cloudChartId]);
   // Owner report — the chart translated for the pet's owner.
   /** Which tab the Documents dialog opens on (undefined = last used). */
   const [docsTab, setDocsTab] = React.useState<'chart' | 'owner' | 'note' | undefined>(undefined);
@@ -984,8 +1061,41 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // (open the owner report → flash → nothing → click again).
   React.useEffect(() => whenIdle(() => DocumentsModal.preload()), []);
 
-  const openDocuments = (tab?: 'chart' | 'owner' | 'note') => {
+  const hasPriorVisits = cloud.enabled && visits.some(visit => visit.id !== chart.cloudChartId);
+  const recordHistoryScope = JSON.stringify([visitIdentity, chart.cloudChartId, chart.chartSession, profile.practiceId, cloud.enabled]);
+  const [recordHistory, setRecordHistory] = React.useState<{
+    scope: string;
+    snapshot: ReturnType<typeof chart.getSnapshot>;
+    listVisits?: () => Promise<HistoryVisit[]>;
+  }>();
+  const closeRecordHistory = React.useCallback(() => setRecordHistory(undefined), []);
+  React.useEffect(() => {
+    const subscription = supabase?.auth?.onAuthStateChange?.(event => {
+      if (event === 'SIGNED_OUT' || event === 'SIGNED_IN' || event === 'USER_UPDATED') closeRecordHistory();
+    });
+    return () => subscription?.data.subscription.unsubscribe();
+  }, [closeRecordHistory]);
+
+  const openRecordHistory = () => {
+    const snapshot = chart.getSnapshot();
+    const { patientNumber, patientName, patientId } = snapshot.patientInfo;
+    const listVisits = cloud.enabled && (patientId || patientNumber.trim() || patientName.trim())
+      ? async () => {
+        const rows = await cloud.listPatientVisits(patientNumber, patientName, patientId, true);
+        return visitsForPatient(rows, patientNumber, patientName, patientId).sort((a, b) =>
+          (b.chart_date || '').localeCompare(a.chart_date || '') || b.updated_at.localeCompare(a.updated_at));
+      }
+      : undefined;
+    setRecordHistory({ scope: recordHistoryScope, snapshot, listVisits });
+  };
+
+  const pdfBranding = trial
+    ? { doctorName: 'TRIAL', logoUrl: '', practiceName: 'TRIAL' }
+    : { doctorName: profile.doctorName, logoUrl: profile.logoUrl, practiceName: profile.practiceName };
+
+  const openDocuments = (tab?: 'chart' | 'owner' | 'note', ownerOnly = false) => {
     setDocsTab(tab);
+    setOwnerPreviewOnly(ownerOnly);
     try {
       const preHandle  = preDiagramRef.current;
       const postHandle = postDiagramRef.current;
@@ -1017,18 +1127,11 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         includeGrid: !mirrorToDiagnosis || pdfIncludeGrid,
         includeRadiographicReport: prefs.pdfIncludeRadiographicReport,
         includeCtReport: prefs.pdfIncludeCtReport,
+        includeCodesUsed: prefs.pdfIncludeCodesUsed,
         imagesChartId:
           pdfIncludeImages && cloud.enabled && !trial ? chart.cloudChartId : undefined,
         pdfExcludedImages: chart.pdfExcludedImages,
-        branding: trial
-          ? // Trial charts carry no practice identity — stamp the slots
-            // so the output is obviously not a finished clinical record.
-            { doctorName: 'TRIAL', logoUrl: '', practiceName: 'TRIAL' }
-          : {
-              doctorName: profile.doctorName,
-              logoUrl: profile.logoUrl,
-              practiceName: profile.practiceName,
-            },
+        branding: pdfBranding,
       });
       setPreviewOpen(true);
     } catch (error) {
@@ -1058,32 +1161,34 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     {
       id: 'patient',
       label: t('sections.patient'),
-      content: lock(
+      content: (
         <PatientForm
           patientInfo={chart.patientInfo}
           species={chart.species}
           onPatientInfoChange={chart.handlePatientInfoChange}
           onSpeciesChange={chart.handleSpeciesChange}
+          readOnly={readOnly}
+          onReviewHistory={hasPriorVisits ? openRecordHistory : undefined}
           hideRecheck={prefs.hideRecheck}
           hiddenFields={prefs.hiddenPatientFields}
           onCustomize={native ? undefined : () => setChartSettingsOpen('patient')}
         />
       ),
     },
-    {
+    ...(consultationOn ? [{
       id: 'consultation',
       label: i18n.t('visitDocumentation:consultation.title'),
       content: <VisitDocumentationSection dictation={clinicalDictationControl(CLINICAL_WORKFLOWS.consultation)} kind="consultation" patientInfo={chart.patientInfo} readOnly={readOnly}
         onChange={changes => { if (!readOnly) chart.setPatientInfo(previous => ({ ...previous, ...changes })); }}
-        onReview={() => openDocuments('note')} />,
-    },
-    {
+        />,
+    }] : []),
+    ...(gpExamOn ? [{
       id: 'gp-exam',
       label: i18n.t('visitDocumentation:gp-exam.title'),
       content: <VisitDocumentationSection kind="gp-exam" patientInfo={chart.patientInfo} readOnly={readOnly}
-        dictation={clinicalDictationControl(CLINICAL_WORKFLOWS.gpVisit)} onReview={() => openDocuments('note')}
+        dictation={clinicalDictationControl(CLINICAL_WORKFLOWS.gpVisit)}
         onChange={changes => { if (!readOnly) chart.setPatientInfo(previous => ({ ...previous, ...changes })); }} />,
-    },
+    }] : []),
     {
       id: 'exam',
       label: t('sections.exam'),
@@ -1266,54 +1371,37 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           species={chart.species}
           imageRoles={chart.imageRoles}
           onImageRoleChange={ownerReportOn ? chart.setImageRole : undefined}
+          ownerReportImageInclusion={chart.ownerReportImageInclusion}
+          onOwnerReportImageChange={ownerReportOn ? chart.setImageInOwnerReport : undefined}
           onReportContentChange={() => { if (chart.ownerReport.reviewedBasis && !readOnly) chart.setOwnerReportOverride('reviewedBasis', null); }}
           includeInPdf={pdfIncludeImages}
           onCustomize={native ? undefined : () => setChartSettingsOpen('images')}
           pdfExcludedImages={chart.pdfExcludedImages}
           onImageInPdfChange={chart.setImageInPdf}
         />
-        {lock(
-          <div className="patient-form radiographic-findings">
-            <label className="patient-form__label">
-              <span className="patient-form__section-title radiographic-findings__title">{t('radiographic.title')}</span>
-              <CodeField
-                multiline
-                className="patient-form__textarea radiographic-findings__text"
-                placeholder={t('radiographic.placeholder')} aria-label={t('radiographic.title')}
-                value={chart.patientInfo.radiographicFindings ?? chart.patientInfo.radiologyReport ?? ''}
-                onChange={(value) => chart.setPatientInfo(prev => ({ ...prev, radiographicFindings: value, radiologyReport: value, radiologyReviewedBasis: '' }))}
-              />
-              <span className="patient-form__hint">{t('radiographic.hint')}</span>
-            </label>
-            <RadiologyReportSection controlsOnly snapshot={{ ...chart.getSnapshot(), patientInfo: { ...chart.patientInfo,
-              radiologyReport: chart.patientInfo.radiographicFindings ?? chart.patientInfo.radiologyReport ?? '', radiographicFindings: '' } }}
-              chartId={chart.cloudChartId} chartSession={chart.chartSession} readOnly={readOnly}
-              aiEnabled={profile.aiEnabled && !trial && cloud.enabled} refineRequest={radiologyRefineRequest?.session === radiologySession ? radiologyRefineRequest : undefined}
-              onChange={changes => chart.setPatientInfo(prev => ({ ...prev, ...changes,
-                ...(Object.hasOwn(changes, 'radiologyReport') ? { radiographicFindings: changes.radiologyReport } : {}) }))} />
-          </div>
-        )}
-        {lock(
-          <div className="patient-form radiographic-findings ct-report">
-            <label className="patient-form__label">
-              <span className="patient-form__section-title radiographic-findings__title">{t('ct.title')}</span>
-              <CodeField
-                multiline
-                className="patient-form__textarea radiographic-findings__text"
-                placeholder={t('ct.placeholder')} aria-label={t('ct.title')}
-                value={chart.patientInfo.ctReport ?? ''}
-                onChange={(value) => chart.setPatientInfo(prev => ({ ...prev, ctReport: value, ctReviewedBasis: '' }))}
-              />
-              <span className="patient-form__hint">{t('ct.hint')}</span>
-            </label>
-            <RadiologyReportSection controlsOnly reportKind={CLINICAL_WORKFLOWS.ct} snapshot={chart.getSnapshot()}
-              chartId={chart.cloudChartId} chartSession={chart.chartSession} readOnly={readOnly}
-              aiEnabled={profile.aiEnabled && !trial && cloud.enabled} showAiNotice={false} onDictationApply={applyClinicalDictation}
-              dictationDisabled={dentalDictationBusy || clinicalDictationActive} onDictationOpenChange={setClinicalDictationActive}
-              onChange={changes => chart.setPatientInfo(prev => ({ ...prev, ...changes }))} />
-          </div>
-        )}
         <ImageHistory visits={imageHistoryVisits} onOpenVisit={switchVisit} toothLabel={imageToothLabel} />
+        {clinicalDictationControl(CLINICAL_WORKFLOWS.imaging)}
+        <div className="imaging-reports">
+          <div onFocusCapture={() => { imagingFocus.current = 'radiographicFindings'; }}>
+          {lock(<RadiologyReportSection chartEditor
+            snapshot={{ ...chart.getSnapshot(), patientInfo: { ...chart.patientInfo,
+              radiologyReport: chart.patientInfo.radiographicFindings ?? chart.patientInfo.radiologyReport ?? '', radiographicFindings: '' } }}
+            chartId={chart.cloudChartId} chartSession={chart.chartSession} readOnly={readOnly}
+            preferredLanguage={prefs.imagingReportLanguage} onCustomizeLanguage={() => setChartSettingsOpen('images')}
+            aiEnabled={profile.aiEnabled && !trial && cloud.enabled}
+            refineRequest={radiologyRefineRequest?.session === radiologySession ? radiologyRefineRequest : undefined}
+            onChange={changes => chart.setPatientInfo(prev => ({ ...prev, ...changes,
+              ...(Object.hasOwn(changes, 'radiologyReport') ? { radiographicFindings: changes.radiologyReport } : {}) }))} />)}
+          </div>
+          <div onFocusCapture={() => { imagingFocus.current = 'ctReport'; }}>
+          {lock(<RadiologyReportSection chartEditor reportKind={CLINICAL_WORKFLOWS.ct} snapshot={chart.getSnapshot()}
+            chartId={chart.cloudChartId} chartSession={chart.chartSession} readOnly={readOnly}
+            preferredLanguage={prefs.imagingReportLanguage} onCustomizeLanguage={() => setChartSettingsOpen('images')}
+            aiEnabled={profile.aiEnabled && !trial && cloud.enabled} showAiNotice={false}
+            refineRequest={ctRefineRequest?.session === radiologySession ? ctRefineRequest : undefined}
+            onChange={changes => chart.setPatientInfo(prev => ({ ...prev, ...changes }))} />)}
+          </div>
+        </div>
         </>
       ),
     },
@@ -1322,8 +1410,21 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       label: t('sections.treatment'),
       content: (
         <SurgeryReportForm
+          key={chart.chartSession}
           readOnly={readOnly}
           value={chart.patientInfo.treatmentReport}
+          templateId={chart.patientInfo.treatmentReportTemplateId}
+          chartFields={{
+            pet: chart.patientInfo.patientName,
+            owner: chart.patientInfo.ownerName,
+            species: t(`species.${chart.species === 'canine-deciduous' ? 'canine' : chart.species === 'feline-deciduous' ? 'feline' : chart.species}`),
+            date: chart.patientInfo.date,
+            practice: profile.practiceName,
+            doctor: chart.patientInfo.doctor || profile.doctorName,
+          }}
+          onApplyTemplate={(value, id) => {
+            if (!readOnly) chart.setPatientInfo(previous => ({ ...previous, treatmentReport: value, treatmentReportTemplateId: id }));
+          }}
           onChange={(value) => chart.handlePatientInfoChange('treatmentReport', value)}
           cloudActive={cloud.enabled}
           practiceId={profile.practiceId}
@@ -1334,19 +1435,21 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       id: OWNER_REPORT_SECTION,
       label: i18n.t('visitDocumentation:discharge.title'),
       content: <VisitDocumentationSection dictation={clinicalDictationControl(CLINICAL_WORKFLOWS.discharge)} kind="discharge" patientInfo={chart.patientInfo} readOnly={readOnly}
-        onReview={ownerReportOn ? undefined : () => openDocuments('note')}
-        reviewLabel={i18n.t('visitDocumentation:consultation.review')}
         onChange={changes => { if (!readOnly) chart.setPatientInfo(previous => ({ ...previous, ...changes })); }}>
         {ownerReportOn && <OwnerReportSection
+          key={chart.chartSession}
+          editorRef={ownerReportEditor}
           chartId={cloud.enabled ? chart.cloudChartId : null}
           readOnly={readOnly}
           snapshot={chart.getSnapshot()}
           overrides={chart.ownerReport}
           onOverrideChange={chart.setOwnerReportOverride}
-          onPreview={() => openDocuments('owner')}
+          onPreview={() => openDocuments('owner', true)}
           context={{ config: profile.ownerReportConfig, practiceName: profile.practiceName, doctorName: profile.doctorName }}
           aiEnabled={profile.aiEnabled && !trial && cloud.enabled}
-          onCustomize={cloud.enabled && !trial && !native ? () => setReportCustomizeOpen(true) : undefined}
+          onCustomize={cloud.enabled && !trial && !native ? () => setReportCustomizeOpen(MANAGE_OWNER_REPORT_TEMPLATES) : undefined}
+          onNewTemplate={!trial && ownerReportTeam.loaded && ownerReportTeam.role === 'owner' && !profile.ownerReportConfigLoadFailed
+            ? () => setReportCustomizeOpen('new') : undefined}
         />}
       </VisitDocumentationSection>,
     },
@@ -1355,9 +1458,21 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // An explicitly reopened record offers Undo and Finalize.
   const editingSavedVisit = cloud.enabled && editUnlocked && !readOnly;
   const patientTabSaveStatus = cloud.enabled && !workspacePage && !animalTabs.empty
-    ? cloud.status === 'saving' ? cloud.status
-      : !cloud.dirty && cloud.status === 'saved' && !!cloud.lastSavedAt ? cloud.status : undefined
+    ? cloud.status === 'saving' ? 'saving'
+      : !readOnly && (cloud.dirty || cloud.status === 'error') ? 'notSaved'
+      : cloud.status === 'saved' && !!cloud.lastSavedAt ? 'saved' : undefined
     : undefined;
+  const saveStatusTitle = patientTabSaveStatus === 'saved' && cloud.lastSavedAt
+    ? t('status.savedTitle', { when: formatDateTime(cloud.lastSavedAt, undefined, FULL_DATE_TIME) })
+    : patientTabSaveStatus === 'notSaved'
+      ? !cloud.online ? t('status.offlineTitle')
+        : !chart.patientInfo.patientName.trim() ? t('status.needsNameTitle')
+        : cloud.status === 'error' ? cloud.saveError || t('status.retryTitle')
+        : !prefs.autosave ? t('status.autosaveOff')
+        : cloud.awaitingClinical ? t('status.waitingToChart') : t('status.unsavedTitle')
+      : undefined;
+  const showManualSave = patientTabSaveStatus === 'notSaved' && cloud.status !== 'error' && cloud.online
+    && !!chart.patientInfo.patientName.trim() && (cloud.awaitingClinical || !prefs.autosave);
   const saveAction = React.useRef(attemptSave);
   saveAction.current = attemptSave;
   const saveFeedback = React.useMemo(() => {
@@ -1389,40 +1504,11 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         </span>
       );
     }
-    if (readOnly) {
-      // The viewing bar already says so.
-      return null;
-    }
-    if (cloud.dirty && !cloud.online) {
-      return <span className="save-status save-status--manual" title={t('status.offlineTitle')}>{t('status.offline')}</span>;
-    }
-    if (cloud.dirty && !chart.patientInfo.patientName.trim()) {
-      return <span className="save-status save-status--manual" title={t('status.needsNameTitle')}>{t('status.needsName')}</span>;
-    }
-    if (cloud.awaitingClinical || (cloud.dirty && !prefs.autosave)) {
-      // Filled in ahead of time: autosave starts with charting;
-      // Save puts it in the cloud now (e.g. to open elsewhere).
-      return (
-        <button
-          type="button"
-          className="save-status save-status--manual"
-          onClick={() => saveAction.current()}
-          title={t('status.saveTitle')}
-        >
-          {t('actions.save', { ns: 'common' })}
-        </button>
-      );
-    }
-    if (cloud.dirty) {
-      return <span className="save-status save-status--manual" title={t('status.unsavedTitle')}>{t('status.unsaved')}</span>;
-    }
     return null;
-  }, [prefs.autosave, native, cloud.enabled, cloud.status, cloud.saveError, cloud.dirty, cloud.online, cloud.awaitingClinical, cloud.lastSavedAt, saveHint, readOnly, chart.patientInfo.patientName, workspacePage, animalTabs.empty, t]);
+  }, [native, cloud.enabled, cloud.status, cloud.saveError, saveHint, workspacePage, animalTabs.empty, t]);
   React.useEffect(() => {
-    if (!saveFeedback) return;
-    const kind = cloud.status === 'error' || saveHint ? 'error' : cloud.status === 'saved' ? 'success' : cloud.dirty || cloud.awaitingClinical ? 'warning' : 'info';
-    return statusToast(saveFeedback, { kind, duration: cloud.status === 'saved' ? 2500 : 0 });
-  }, [saveFeedback, cloud.status, cloud.dirty, cloud.awaitingClinical, saveHint]);
+    if (saveFeedback) return statusToast(saveFeedback, { kind: 'error', duration: 0 });
+  }, [saveFeedback]);
 
   // Only explicitly finalized records require Edit chart.
   const viewingSavedVisit = cloud.enabled && !!chart.finalizedAt;
@@ -1615,7 +1701,15 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     <>
       {reportCustomizeOpen && (
         <OwnerReportCustomize
-          onClose={() => setReportCustomizeOpen(false)}
+          startNew={reportCustomizeOpen === 'new'}
+          aiEnabled={profile.aiEnabled}
+          onClose={() => {
+            setReportCustomizeOpen(false);
+            if (returnToOwnerPreview.current) {
+              returnToOwnerPreview.current = false;
+              openDocuments('owner');
+            }
+          }}
           config={profile.ownerReportConfig}
           onSave={profile.saveOwnerReportConfig}
           loadFailed={profile.ownerReportConfigLoadFailed}
@@ -1734,7 +1828,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       />
     </form>
   );
-  const pdfButton = activeSection === 'consultation' || activeSection === 'gp-exam' || activeSection === 'imaging' || activeSection === OWNER_REPORT_SECTION ? null : (
+  const pdfButton = activeSection === 'consultation' || activeSection === 'gp-exam' ? null : (
     <button
       type="submit"
       form="chart-form"
@@ -1750,15 +1844,32 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     setPreviewOpen(false);
     goToSection('patient');
   };
+  const setOwnerTemplate = (id: string | null) => chart.setOwnerReportOverride('templateId', id);
   const dialogsAfterForm = (
     <>
+      {recordHistory?.scope === recordHistoryScope && (
+        <React.Suspense fallback={null}>
+          <PatientRecordHistory current={recordHistory.snapshot}
+            currentId={cloud.enabled ? chart.cloudChartId : null}
+            listVisits={recordHistory.listVisits} fetchVisit={cloud.fetchChart}
+            branding={pdfBranding}
+            onClose={closeRecordHistory} />
+        </React.Suspense>
+      )}
       {previewSnapshot && (
         <React.Suspense fallback={null}>
           <DocumentsModal
             open={previewOpen}
             onClose={() => setPreviewOpen(false)}
             initialTab={docsTab}
-            chartSnapshot={previewSnapshot}
+            ownerPreviewOnly={ownerPreviewOnly}
+            chartSnapshot={documentChart}
+            chartOptions={{
+              gridRequired: !mirrorToDiagnosis,
+              imagesAvailable: cloud.enabled && !trial,
+              includeImages: pdfIncludeImages,
+              onChange: (field, value) => setPref({ [field]: value }),
+            }}
             chartLifecycle={{
               unsaved: !cloud.enabled || cloud.dirty || !cloud.lastSavedAt || cloud.status === 'saving' || cloud.status === 'error',
               unfinalized: !chart.finalizedAt,
@@ -1779,8 +1890,15 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               config: profile.ownerReportConfig,
               onEditWording: () => {
                 setPreviewOpen(false);
+                setJumpToOwnerReport(true);
                 goToSection(OWNER_REPORT_SECTION);
               },
+              onTemplateChange: readOnly ? undefined : setOwnerTemplate,
+              onCustomizeTemplate: cloud.enabled && !trial ? () => {
+                returnToOwnerPreview.current = true;
+                setPreviewOpen(false);
+                setReportCustomizeOpen(MANAGE_OWNER_REPORT_TEMPLATES);
+              } : undefined,
               ownerEmail: chart.patientInfo.ownerEmail,
               ensureSaved: ensureSavedForEmail,
               onEditPatient: editPatientFromDocuments,
@@ -1978,6 +2096,42 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     [sectionLinksKey]
   );
 
+  const clinicalTarget = !cloud.enabled ? undefined
+    : activeSection === 'imaging' ? CLINICAL_WORKFLOWS.imaging
+      : activeSection === OWNER_REPORT_SECTION ? CLINICAL_WORKFLOWS.discharge
+        : activeSection === 'consultation' && consultationOn ? CLINICAL_WORKFLOWS.consultation
+          : activeSection === 'gp-exam' && gpExamOn ? CLINICAL_WORKFLOWS.gpVisit : undefined;
+  const contextualDestination = {
+    label: chartSectionLinks.find(section => section.id === activeSection)?.label ?? t('sections.charting'),
+    onOpen: clinicalTarget ? () => {
+      setDictationRequest({
+        kind: clinicalTarget, id: ++requestSerial.current, session: chart.chartSession,
+        imagingFocus: clinicalTarget === 'imaging' ? imagingFocus.current : undefined,
+      });
+    } : undefined,
+  };
+  const dictate = (triggerHidden: boolean) => profile.aiEnabled && !trial && (
+    <VoiceInputButton
+      context={aiContext}
+      handlers={aiHandlers}
+      onActivity={handleAiActivity}
+      onShowAction={goToSection}
+      onDictationComplete={handleDictationComplete}
+      contextualDestination={contextualDestination}
+      triggerHidden={triggerHidden || readOnly || clinicalDictationActive}
+      onBusyChange={setDentalDictationBusy}
+      activeSection={activeSection}
+      sessionKey={String(chart.chartSession)}
+      locked={readOnly || clinicalDictationActive}
+      onOpenFeedback={canFeedback ? (transcript) => setFeedback({ transcript }) : undefined}
+    />
+  );
+
+  const refineContext = {
+    enabled: profile.aiEnabled && cloud.enabled && !trial && !readOnly && !workspacePage && (!native || appTab === 'chart'),
+    scope: JSON.stringify([chart.cloudChartId, chart.chartSession, activeSection, previewOpen]),
+  };
+
   if (native) {
     // ----- Chart tab (iOS): navigation bar, inline notices, dictation ----
     const status = chartStatus(
@@ -2014,7 +2168,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       charting: () => setChartSettingsOpen('charting'),
       diagnosis: () => setChartSettingsOpen('diagnosis'),
       imaging: () => setChartSettingsOpen('images'),
-      discharge: ownerReportOn && !trial ? () => setReportCustomizeOpen(true) : undefined,
+      discharge: ownerReportOn && !trial ? () => setReportCustomizeOpen(MANAGE_OWNER_REPORT_TEMPLATES) : undefined,
     };
     const hasSavedPatient = cloud.enabled && chart.openedExisting && !!chart.cloudChartId;
     const customize = customizeFor[activeSection];
@@ -2076,6 +2230,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       </div>
     );
     return (
+      <RefineTextContext.Provider value={refineContext}>
       <div className="entry-grid-app">
         {/* DEV only: ?iosPreview=1&iosFixtures=1 gives the trial sample patients. */}
         <AppDataProvider library={shellLibrary} settings={appSettings}>
@@ -2097,28 +2252,19 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         {/* Dictation floats above the tab bar, outside the shell's stacks
             (fixed position). Mounted on every tab so a recording keeps
             going; shown on the Chart tab only. */}
-        {profile.aiEnabled && !trial && (
-          <div className="ios-chart-dictate" hidden={appTab !== 'chart' || readOnly || clinicalDictationActive || hideDentalVoiceForClinical} role="region" aria-label={t('ios.form.dictate', { ns: 'chart' })}>
-            <VoiceInputButton
-              context={aiContext}
-              handlers={aiHandlers}
-              onActivity={handleAiActivity}
-              onDictationComplete={handleDictationComplete}
-              onBusyChange={setDentalDictationBusy}
-              activeSection={activeSection}
-              sessionKey={String(chart.chartSession)}
-              locked={readOnly || clinicalDictationActive}
-              onOpenFeedback={canFeedback ? (transcript) => setFeedback({ transcript }) : undefined}
-            />
-          </div>
-        )}
+        <div className="ios-chart-dictate" hidden={appTab !== 'chart' || readOnly || clinicalDictationActive}
+          role="region" aria-label={t('ios.form.dictate', { ns: 'chart' })}>
+          {dictate(appTab !== 'chart')}
+        </div>
         {dialogsBeforeForm}
         {dialogsAfterForm}
       </div>
+      </RefineTextContext.Provider>
     );
   }
 
   return (
+    <RefineTextContext.Provider value={refineContext}>
     <CodeSpeciesContext.Provider value={chart.species}>
     <div className="entry-grid-container" ref={containerRef} inert={animalTabs.busy}>
       {/* Keyboard users skip the topbar controls straight to the chart. */}
@@ -2156,7 +2302,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         <AnimalTabs tabs={animalTabs.tabs} showEmpty={false} activeId={animalTabs.empty || workspacePage ? '' : chart.cloudChartId}
           busy={animalTabs.busy} editing={editingSavedVisit}
           saveStatus={patientTabSaveStatus}
-          savedTitle={cloud.lastSavedAt ? t('status.savedTitle', { when: formatDateTime(cloud.lastSavedAt, undefined, FULL_DATE_TIME) }) : undefined}
+          saveStatusTitle={saveStatusTitle}
           visits={cloud.enabled ? Array.from(new Map([...visits.map(visit => ({ id: visit.id, date: visit.chart_date })), ...animalTabs.draftVisits].map(visit => [visit.id, visit])).values()).sort((a, b) => b.date.localeCompare(a.date)) : []}
           onVisit={switchVisit}
           onAdd={() => { void addAnimal(); }}
@@ -2232,20 +2378,11 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           {/* AI autofill (every signed-in plan during the beta); the keys live server-side
               behind JWT-gated edge functions, so trial (no account) and
               Basic practices don't get it. */}
-          {profile.aiEnabled && !trial && (
-            <span hidden={workspacePage || animalTabs.empty || readOnly || clinicalDictationActive || hideDentalVoiceForClinical}><VoiceInputButton
-              context={aiContext}
-              handlers={aiHandlers}
-              onActivity={handleAiActivity}
-              onDictationComplete={handleDictationComplete}
-              onBusyChange={setDentalDictationBusy}
-              activeSection={activeSection}
-              sessionKey={String(chart.chartSession)}
-              locked={readOnly || clinicalDictationActive}
-              onOpenFeedback={canFeedback ? (transcript) => setFeedback({ transcript }) : undefined}
-            /></span>
-          )}
+          {dictate(workspacePage || animalTabs.empty)}
+          {showManualSave && <button type="button" className="diagram-view__action topbar-desktop-save"
+            onClick={attemptSave} title={saveStatusTitle}>{t('ios.menu.saveNow', { ns: 'chart' })}</button>}
           <ChartMenu
+            onSave={showManualSave ? { onClick: attemptSave, hint: saveStatusTitle } : undefined}
             scope={MORE_SCOPE}
             onPreviewDocuments={!workspacePage ? () => (document.getElementById('chart-form') as HTMLFormElement | null)?.requestSubmit() : undefined}
             onOpenWalkthrough={() => { void guardPracticeLeave().then((leave) => { if (leave) { practiceLeaveGuard.current = null; setPracticeSettingsOpen(false); returnToVisit(); setWalkthroughFirstRun(false); setWalkthroughOpen(true); } }); }}
@@ -2289,7 +2426,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         </div>
       </header>
 
-      <div className="workspace-layout">
+      <div className={`workspace-layout${!workspacePage && animalTabs.empty ? ' workspace-layout--empty' : ''}`}>
       <aside className="workspace-sidebar">
       {!cloud.enabled && <nav className="workspace-nav" aria-label={t('workspace.navigation')}>
         <button type="button" onClick={() => setChartSettingsOpen('all')}>{t('menu.chartSettings.label')}</button>
@@ -2339,6 +2476,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       </footer>
     </div>
     </CodeSpeciesContext.Provider>
+    </RefineTextContext.Provider>
   );
 };
 

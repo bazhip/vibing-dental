@@ -1,5 +1,5 @@
 import type { Attachment } from '../hooks/useAttachments';
-import { ChartSnapshot, DentalField, EXAM_ITEMS } from '../types';
+import { ChartSnapshot, DentalField, EXAM_ITEMS, type ImageRole } from '../types';
 import { parseRootPockets, deepestPocket } from './pocket';
 import {
   BuiltInSectionId,
@@ -67,6 +67,8 @@ export interface OwnerReportModel {
   recallDate: string;
   /** Opening paragraph — generated, templated, or hand-edited. */
   intro: string;
+  /** Visit-specific opening that can be restored after editing. */
+  generatedOpening?: string;
   /** Home-care tips, one per bullet — defaults or edited. */
   homecareTips: string[];
   /** Optional extra note from the team ('' = omit the section). */
@@ -75,6 +77,9 @@ export interface OwnerReportModel {
   alreadyMissing: string[];
   /** Lay names of teeth extracted during this visit. */
   extracted: string[];
+  extractionsText?: string;
+  findingsText?: string;
+  examNotesText?: string;
   /** Mouth-wide findings, one line each ("Gum inflammation on most teeth
    *  (mild to moderate)"). Those fields are left out of `teeth` notes. */
   summaryLines: string[];
@@ -191,8 +196,22 @@ export function ownerReportReviewBasis(snapshot: ChartSnapshot, options: BuildOw
   return `v1:${(first >>> 0).toString(16).padStart(8, '0')}${(second >>> 0).toString(16).padStart(8, '0')}`;
 }
 
+/** A null label still counts as included. Existing tags imply inclusion
+ *  until the visit has an explicit checkbox choice for the image. */
+export function ownerReportPhotoRoles(
+  labels: Record<string, ImageRole>,
+  inclusion: ChartSnapshot['ownerReportImageInclusion'] = {},
+): Record<string, ImageRole | null> {
+  const included: Record<string, ImageRole | null> = { ...labels };
+  for (const [id, selected] of Object.entries(inclusion)) {
+    if (selected === true) included[id] = labels[id] ?? null;
+    else if (selected === false) delete included[id];
+  }
+  return included;
+}
+
 /** Signed URLs expire; only document content and membership affect review. */
-export function ownerReportAttachmentBasis(items: Pick<Attachment, 'id' | 'path' | 'caption' | 'kind' | 'toothTriadan'>[], roles: ChartSnapshot['imageRoles'] = {}): string {
+export function ownerReportAttachmentBasis(items: Pick<Attachment, 'id' | 'path' | 'caption' | 'kind' | 'toothTriadan'>[], roles: Record<string, ImageRole | null> = {}): string {
   return JSON.stringify(Object.entries(roles).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0).map(([id, role]) => {
     const item = items.find((entry) => entry.id === id);
     return item ? [id, role, item.path, item.caption, item.kind, item.toothTriadan] : [id, role, null];
@@ -268,6 +287,7 @@ export function buildOwnerReportModel(
   const presentCount = (snapshot.toothData ?? []).filter((tooth) => !gone.has(tooth.triadan)).length;
   const summarised = new Map<SummaryField, Set<number>>(); // field → outlier teeth that keep their note
   const summaryLines: string[] = [];
+  const teethWithRecordedFindings = new Set<number>();
   for (const field of SUMMARY_FIELDS) {
     // Teeth present only: a tooth removed today keeps its own grades on its line.
     const found = (snapshot.toothData ?? [])
@@ -276,6 +296,7 @@ export function buildOwnerReportModel(
       .filter((f) => f.value);
     const needed = presentCount < 12 ? Math.max(1, Math.ceil(presentCount / 2)) : 6;
     if (found.length < needed) continue;
+    for (const tooth of found) teethWithRecordedFindings.add(tooth.triadan);
     const share = presentCount ? found.length / presentCount : 1;
     const extent: SummaryExtent = share >= 0.75 ? 'most' : share >= 0.4 ? 'many' : 'some';
     const graded = field === 'gingivitis' || field === 'calculus';
@@ -346,11 +367,24 @@ export function buildOwnerReportModel(
     }
   }
 
-  // Hand-edited blocks win over the template; the template wins over
-  // the generated text; absent = generated.
+  // Use manual edits first, then the latest generated draft, then template defaults.
   const overrides = snapshot.ownerReport ?? {};
-  const homecareSource = overrides.homecare ?? templateHomecareTips(template, values, snapshot.species).join('\n');
+  const homecareSource = overrides.homecare ?? overrides.generatedHomecare ?? templateHomecareTips(template, values, snapshot.species).join('\n');
   const patientName = snapshot.patientInfo.patientName;
+  const visitT = i18n.getFixedT(locale, 'report');
+  for (const tooth of teeth) if (tooth.notes.length) teethWithRecordedFindings.add(tooth.triadan);
+  const includes = (id: BuiltInSectionId) => template.sections.some(section => section.id === id && section.enabled);
+  const visitHighlights = [
+    includes('extractions') && extractedSet.size ? visitT('visitIntro.extractions', { total: extractedSet.size }) : '',
+    includes('findings') && teethWithRecordedFindings.size ? visitT('visitIntro.findings', { total: teethWithRecordedFindings.size }) : '',
+    includes('examNotes') && examNotes.length ? visitT('visitIntro.exam') : '',
+  ].filter(Boolean);
+  if (!visitHighlights.length && snapshot.patientInfo.treatmentReport?.trim()) visitHighlights.push(visitT('visitIntro.treatment'));
+  const generatedOpening = overrides.generatedIntro ?? (
+    !template.introTemplate.trim() && visitHighlights.length
+      ? [visitT('visitIntro.lead', { pet: values.pet }), ...visitHighlights].join(' ')
+      : undefined
+  );
 
   const sections: OwnerReportRenderSection[] = [];
   for (const section of template.sections) {
@@ -382,15 +416,38 @@ export function buildOwnerReportModel(
     speciesLabel: t.species[snapshot.species] ?? snapshot.species,
     visitDate: formatReportDate(snapshot.patientInfo.date, locale, template.dateFormat),
     recallDate: formatReportDate(snapshot.patientInfo.recallDate ?? '', locale, template.dateFormat),
-    intro: (overrides.intro ?? templateIntro(snapshot, template, values)).trim(),
+    intro: (overrides.intro ?? generatedOpening ?? templateIntro(snapshot, template, values)).trim(),
+    generatedOpening,
     homecareTips: homecareSource.split('\n').map((tip) => tip.trim()).filter(Boolean),
     extraNotes: (overrides.extraNotes ?? recordedDischargeNotes(snapshot.patientInfo, locale)).trim(),
     alreadyMissing,
     extracted: [...extractedSet].sort((a, b) => a - b).map(layName),
+    extractionsText: reportWording(overrides.extractionsText),
+    findingsText: reportWording(overrides.findingsText),
+    examNotesText: reportWording(overrides.examNotesText),
     summaryLines,
     teeth,
     otherFindings,
     examNotes,
+  };
+}
+
+export const OWNER_REPORT_WORDING_LIMIT = 16000;
+const reportWording = (value: unknown) => typeof value === 'string' ? value.slice(0, OWNER_REPORT_WORDING_LIMIT) : undefined;
+
+/** The same structured defaults printed by the PDF, flattened for editing. */
+export function ownerReportChartWording(model: OwnerReportModel) {
+  const t = reportStrings(model.locale);
+  return {
+    extractions: model.extracted.join('\n'),
+    findings: [
+      ...model.summaryLines,
+      ...teethWithFindings(model).map(tooth =>
+        `${tooth.layName}${tooth.extracted ? ` — ${t.removedToday}` : ''}: ${tooth.notes.join('; ')}`),
+      ...(model.otherFindings.length ? [t.otherFindingsHeading, ...model.otherFindings] : []),
+    ].join('\n'),
+    examNotes: model.examNotes.map(note =>
+      `${note.area}${note.comment ? `: ${note.comment}` : ` — ${t.abnormalityNoted}`}`).join('\n'),
   };
 }
 

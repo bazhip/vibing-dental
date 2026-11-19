@@ -1,0 +1,404 @@
+{
+  "site": {
+    "title": "Centre d’aide ToothOps",
+    "intro": "Des guides pratiques pour chaque étape d’une consultation dentaire, de l’ouverture du dossier à l’envoi du compte rendu.",
+    "search": "Rechercher dans la documentation",
+    "searchHint": "Rechercher une rubrique, une tâche ou un réglage",
+    "topics": "Rubriques",
+    "onPage": "Sur cette page",
+    "openApp": "Ouvrir ToothOps",
+    "home": "Accueil de l’aide",
+    "skip": "Aller à l’article",
+    "results": "Résultats de la recherche",
+    "empty": "Aucun guide ne correspond. Essayez une recherche plus courte ou parcourez les rubriques.",
+    "clear": "Effacer la recherche",
+    "related": "Guides associés",
+    "language": "Langue de la documentation",
+    "contact": "Envoyer un commentaire",
+    "guide": "Lire le guide"
+  },
+  "groups": {
+    "start": "Commencer",
+    "clinical": "Parcours clinique",
+    "output": "Comptes rendus et suivi",
+    "practice": "Cabinet et assistance"
+  },
+  "images": {
+    "charting": "Exemple de schéma dentaire avec des dents numérotées et une grille de constatations.",
+    "imaging": "La section Imagerie avec des champs distincts pour les comptes rendus radiographique et de scanner.",
+    "dictation": "Un écran de vérification de la dictée avec des propositions distinctes pour la radiographie et le scanner, issues d’une même transcription.",
+    "owner": "Les commandes du compte rendu pour le propriétaire et un résumé d’ouverture propre à la consultation.",
+    "export": "Aperçu PDF du dossier clinique avec un exemple de schéma dentaire.",
+    "start": "Espace de travail d’un patient fictif avec l’onglet de consultation, la navigation et les informations du patient.",
+    "patients": "Consultations précédentes dans les dossiers historiques, avec une note clinique sélectionnée.",
+    "exam": "Grille d’examen oral avec les choix Normal et Anormal et un commentaire.",
+    "viewer": "Visionneuse d’images avec les réglages de fenêtre et de niveau et le téléchargement d’un DICOM fictif.",
+    "treatment": "Compte rendu de traitement avec les modèles enregistrés et la zone de texte modifiable.",
+    "preferences": "Paramètres du dossier avec la disposition, l’enregistrement automatique et les mesures des poches.",
+    "help-tools": "Menu Aide avec le centre d’aide, la visite guidée, les nouveautés et les commentaires.",
+    "by-number": "Vue « Par dent » avec la dent 108 sélectionnée sur le schéma numéroté et ses observations affichées.",
+    "imagingSettings": "Réglages « Imagerie et PDF » avec la langue des comptes rendus et le contenu inclus par défaut dans le PDF."
+  },
+  "articles": {
+    "start": {
+      "title": "Votre première consultation dentaire",
+      "intro": "Suivez les étapes de la consultation, de la création du dossier à sa finalisation.",
+      "sections": {
+        "first": {
+          "title": "Ouvrir ou créer un dossier patient",
+          "text": "Utilisez le bouton plus ou choisissez « Ouvrir un animal ». Avant de créer un dossier patient, recherchez l’animal par nom ou par numéro. Dans « Patient », vérifiez le nom, l’espèce, le numéro du patient et la date de la consultation."
+        },
+        "second": {
+          "title": "Documenter les soins au fil de la consultation",
+          "text": "Consignez les observations dans « Examen » et « Anesthésie », les mesures dentaires dans « Schéma dentaire », les constatations dans « Diagnostic » et les actes réalisés dans « Intervention ». Ajoutez les images et leur interprétation dans « Imagerie ». Renseignez le traitement et les consignes de sortie dans leurs sections respectives."
+        },
+        "third": {
+          "title": "Vérifier, enregistrer et partager",
+          "text": "Choisissez « Vérifier et exporter » pour contrôler le dossier clinique ou le compte rendu pour le propriétaire. Sélectionnez « Finaliser » lorsque le dossier peut être clôturé. Vérifiez l’état de l’enregistrement dans l’onglet du patient avant de quitter. Pour corriger une consultation enregistrée, rouvrez-la avec « Modifier le dossier »."
+        }
+      }
+    },
+    "patients": {
+      "title": "Patients et historique des consultations",
+      "intro": "Ouvrez la consultation à la bonne date et comparez les dossiers antérieurs.",
+      "sections": {
+        "first": {
+          "title": "Trouver un patient",
+          "text": "Sur le Web, ouvrez le sélecteur de patients avec le bouton plus. Si plusieurs animaux portent le même nom, vérifiez le numéro du patient. Sélectionnez une consultation existante pour la poursuivre ou créez-en une pour un nouveau rendez-vous."
+        },
+        "second": {
+          "title": "Changer de consultation ou d’onglet patient",
+          "text": "L’onglet affiche le patient et la date de la consultation. Si plusieurs consultations sont enregistrées, utilisez le sélecteur de l’onglet. Pour ouvrir un autre patient, utilisez le bouton plus. Le dossier du patient est conservé lorsque vous fermez un onglet."
+        },
+        "third": {
+          "title": "Consulter les dossiers antérieurs",
+          "text": "Dans « Patient », choisissez « Voir l’historique des consultations » si des consultations antérieures sont disponibles. Sélectionnez une date, puis consultez les PDF ou les notes cliniques. Pour corriger le dossier, ouvrez la consultation correspondante."
+        }
+      }
+    },
+    "charting": {
+      "title": "Schéma dentaire, diagnostic et interventions",
+      "intro": "Consignez les mesures et distinguez les constatations des actes réalisés.",
+      "sections": {
+        "first": {
+          "title": "Saisir les mesures dentaires",
+          "text": "Dans « Schéma dentaire », choisissez « Grille » ou « Par dent ». Renseignez les mesures parodontales pour les dents numérotées correspondantes. Utilisez « Personnaliser » pour choisir les colonnes affichées et le mode de saisie des mesures des poches parodontales.\n\nEn vue « Par dent », sélectionnez une dent numérotée sur le schéma pour afficher ses mesures et ses notes au même endroit. En vue « Grille », sélectionnez les numéros des dents pour travailler sur plusieurs dents à la fois. Utilisez Maj + clic pour sélectionner une plage. Les deux vues partagent les mêmes mesures."
+        },
+        "second": {
+          "title": "Consigner les constatations dans Diagnostic",
+          "text": "Sélectionnez la dent concernée et indiquez les constatations avant traitement ou les dents déjà absentes. Ajoutez des codes dentaires et de courtes notes si nécessaire. En cas de doute sur un code, consultez le référentiel."
+        },
+        "third": {
+          "title": "Consigner les actes dans Intervention",
+          "text": "Utilisez « Intervention » pour les actes réalisés lors de cette consultation, notamment les extractions effectuées. Ajoutez les précisions dans « Compte rendu de traitement ». Conservez les interventions prévues dans la documentation jusqu’à leur réalisation."
+        }
+      }
+    },
+    "exam": {
+      "title": "Examen et anesthésie",
+      "intro": "Consignez les observations et les informations d’anesthésie dans les sections prévues.",
+      "sections": {
+        "first": {
+          "title": "Documenter l’examen",
+          "text": "Ouvrez « Examen » et renseignez l’état des zones examinées ainsi que vos commentaires. Laissez les zones non examinées vides. Utilisez « Personnaliser » pour gérer les zones d’examen."
+        },
+        "second": {
+          "title": "Consigner les anesthésiques et les blocs",
+          "text": "Ouvrez « Anesthésie », renseignez les médicaments anesthésiques et notez le site et le volume de chaque bloc réalisé. Avant de finaliser, vérifiez le côté et les unités par rapport à la source."
+        },
+        "third": {
+          "title": "Utiliser les sections facultatives",
+          "text": "Si votre cabinet a activé « Consultation » ou « Examen général », ces sections figurent dans la navigation du dossier. Renseignez-y les antécédents, l’évaluation, le plan et les éléments pertinents de l’examen."
+        }
+      }
+    },
+    "imaging": {
+      "title": "Imagerie et comptes rendus",
+      "intro": "Gérez les images cliniques, les radiographies et les résultats du scanner pour la consultation en cours.",
+      "sections": {
+        "first": {
+          "title": "Ajouter des images et consulter l’historique",
+          "text": "Sur le Web, choisissez « Ajouter des images » pour parcourir les fichiers ou les déposer ou les coller dans la zone d’ajout. Pour les fichiers DICOM pris en charge, l’original reste téléchargeable. Dans « Historique des images », développez la ligne ou ouvrez la consultation antérieure pour examiner les images."
+        },
+        "second": {
+          "title": "Choisir les images à inclure",
+          "text": "Renseignez le type de chaque image et, au besoin, la dent et une description. Choisissez si elle doit figurer dans le PDF clinique ou dans le compte rendu pour le propriétaire. Utilisez la mention « Avant le traitement » ou « Après le traitement » lorsqu’elle aide à comprendre l’image."
+        },
+        "third": {
+          "title": "Rédiger les comptes rendus d’imagerie",
+          "text": "Saisissez vos constatations dans « Compte rendu radiographique » ou « Compte rendu de scanner ». Pour les dicter, ouvrez « Dicter » depuis « Imagerie » et précisez la modalité en cas d’ambiguïté. Vérifiez la répartition proposée avant d’appliquer les changements. L’action « Affiner » est disponible pour le texte saisi."
+        }
+      }
+    },
+    "dictation": {
+      "title": "Dictée et vérification des suggestions de l’IA",
+      "intro": "Dictez depuis la section en cours et vérifiez où les constatations seront ajoutées.",
+      "sections": {
+        "first": {
+          "title": "Démarrer depuis la section en cours",
+          "text": "Ouvrez la section pertinente du dossier, choisissez « Dicter », puis « Démarrer la dictée ». Autorisez l’accès au microphone si une demande s’affiche. Précisez la dent, le côté, les unités et la modalité chaque fois que ces détails comptent."
+        },
+        "second": {
+          "title": "Vérifier la transcription et les propositions",
+          "text": "La reconnaissance vocale produit la transcription. L’IA en tire des constatations pour le dossier ou des propositions de texte. La section active aide à interpréter les formulations ambiguës. Les constatations explicites peuvent être dirigées vers une autre section compatible."
+        },
+        "third": {
+          "title": "Vérifier les corrections avant de les appliquer",
+          "text": "Dans « À vérifier », comparez la valeur actuelle à la modification proposée. Appliquez une suggestion si la transcription la confirme. Dans le cas contraire, conservez la valeur actuelle. Pour les comptes rendus et les sections de consultation, relisez le texte proposé et sélectionnez les sections à appliquer."
+        }
+      }
+    },
+    "treatment": {
+      "title": "Comptes rendus de traitement et modèles",
+      "intro": "Réutilisez des formulations et consignez les actes réalisés pendant la consultation.",
+      "sections": {
+        "first": {
+          "title": "Rédiger le compte rendu de traitement",
+          "text": "Ouvrez « Compte rendu de traitement ». Renseignez les actes réalisés, les constatations pertinentes et les précisions nécessaires au dossier. La dictée tient compte de la section en cours."
+        },
+        "second": {
+          "title": "Utiliser un modèle enregistré",
+          "text": "Choisissez un modèle par son nom dans la liste des modèles enregistrés. Vérifiez le texte inséré avant d’enregistrer. Le compte rendu reste modifiable et l’action « Affiner » peut proposer une reformulation à vérifier."
+        },
+        "third": {
+          "title": "Créer un modèle réutilisable",
+          "text": "Choisissez « Nouveau modèle », donnez-lui un nom reconnaissable et rédigez le texte à réutiliser. Saisissez { dans l’éditeur pour afficher les codes de remplissage disponibles. Utilisez un champ comme {pet} pour le nom de l’animal. Lorsque vous sélectionnez le modèle enregistré, ToothOps renseigne les valeurs présentes dans le dossier et vous demande celles qui manquent."
+        }
+      }
+    },
+    "discharge": {
+      "title": "Sortie et comptes rendus pour le propriétaire",
+      "intro": "Préparez le document à remettre au propriétaire à partir des informations de la consultation.",
+      "sections": {
+        "first": {
+          "title": "Consigner les consignes de sortie",
+          "text": "Ouvrez « Sortie ». Renseignez les médicaments, les consignes et le suivi documentés. Avant de partager le document, vérifiez les noms des médicaments, les doses et les délais dans votre dossier."
+        },
+        "second": {
+          "title": "Préparer le compte rendu pour le propriétaire",
+          "text": "Dans « Compte rendu pour le propriétaire », sélectionnez le modèle. L’action « Rédiger avec l’IA » prépare un résumé d’ouverture et des conseils de soins à domicile à partir de la consultation. Vérifiez que les constatations importantes sont bien expliquées et adaptez le texte. Après une modification, choisissez « Rétablir le texte généré » pour retrouver le brouillon enregistré."
+        },
+        "third": {
+          "title": "Afficher l’aperçu et partager",
+          "text": "Choisissez « Aperçu » à côté de « Personnaliser » pour ouvrir le PDF destiné au propriétaire. Pour ajouter des images, sélectionnez-les dans « Imagerie ». Utilisez « Vérifier et exporter » pour télécharger le compte rendu ou, si l’option est disponible, l’envoyer par e-mail après avoir vérifié le destinataire et le document."
+        }
+      }
+    },
+    "export": {
+      "title": "Vérification, export et finalisation",
+      "intro": "Vérifiez le document avant de le partager et clôturez la consultation une fois celle-ci terminée.",
+      "sections": {
+        "first": {
+          "title": "Choisir un document",
+          "text": "Ouvrez « Vérifier et exporter ». « Dossier clinique » contient le PDF complet. « Compte rendu pour le propriétaire » propose le PDF à remettre au propriétaire lorsque la fonctionnalité est activée. « Note du dossier » fournit une version texte pour le dossier médical."
+        },
+        "second": {
+          "title": "Personnaliser le PDF clinique",
+          "text": "Dans « Dossier clinique », ouvrez « Personnaliser » pour choisir les couleurs et le contenu à inclure, comme les images, les comptes rendus d’imagerie et les codes utilisés. Vérifiez l’aperçu après chaque changement, puis téléchargez le document."
+        },
+        "third": {
+          "title": "Finaliser ou rouvrir une consultation",
+          "text": "« Finaliser » enregistre la consultation terminée et la fait repasser en lecture seule. Pour corriger une consultation enregistrée, ouvrez-la, choisissez « Modifier le dossier », apportez la correction, puis choisissez « Terminer la modification ». Vérifiez le patient et la date avant d’appliquer les changements."
+        }
+      }
+    },
+    "rechecks": {
+      "title": "Contrôles et rappels",
+      "intro": "Enregistrez le prochain contrôle et suivez les consultations à venir.",
+      "sections": {
+        "first": {
+          "title": "Enregistrer la date d’un contrôle",
+          "text": "Dans « Patient », renseignez « Contrôle prévu » lorsqu’une date a été convenue. Ajoutez au besoin les consignes dans « Sortie ». Vérifiez les coordonnées du propriétaire si des rappels doivent être envoyés."
+        },
+        "second": {
+          "title": "Parcourir la liste des contrôles",
+          "text": "Ouvrez « Contrôles » pour voir le suivi prévu. Ouvrez le patient ou une consultation antérieure si vous avez besoin du contexte clinique. Effacez les éléments terminés lorsqu’ils ne sont plus nécessaires."
+        },
+        "third": {
+          "title": "Configurer les rappels",
+          "text": "Ouvrez « Rappels de contrôle » dans les paramètres du cabinet ou de l’application pour consulter les options d’envoi. Vérifiez le destinataire et la date prévue avant d’envoyer un rappel."
+        }
+      }
+    },
+    "settings": {
+      "title": "Paramètres du compte et du cabinet",
+      "intro": "Configurez le dossier pour l’équipe et distinguez vos préférences personnelles des réglages partagés.",
+      "sections": {
+        "first": {
+          "title": "Définir vos préférences personnelles",
+          "text": "Dans « Compte », modifiez la langue de l’application ou votre profil. Utilisez « Réglages du schéma dentaire » ou « Personnaliser » dans une section du dossier pour les options de disposition, de mesure, d’imagerie et d’affichage PDF."
+        },
+        "second": {
+          "title": "Gérer les paramètres partagés",
+          "text": "Les responsables du cabinet peuvent gérer son identité visuelle, les accès de l’équipe et les modèles de compte rendu partagés. La langue des clients choisie par le cabinet détermine les textes destinés aux propriétaires, dont le libellé par défaut des comptes rendus."
+        },
+        "third": {
+          "title": "Vérifier les fonctionnalités disponibles",
+          "text": "Certaines sections cliniques, fonctions de l’IA et actions sur les comptes rendus dépendent des paramètres, des droits d’accès et de votre rôle. Si une fonction n’apparaît pas, vérifiez que vous êtes dans le bon cabinet et que la consultation est modifiable."
+        }
+      }
+    },
+    "troubleshooting": {
+      "title": "Dépannage",
+      "intro": "Résolvez les problèmes courants d’enregistrement, de dictée, d’image ou d’export.",
+      "sections": {
+        "first": {
+          "title": "Une consultation ne s’enregistre pas",
+          "text": "Vérifiez l’indicateur d’enregistrement et votre connexion. Assurez-vous que la consultation contient le nom du patient et des données cliniques. Si l’option est proposée, réessayez ou enregistrez manuellement. Gardez le dossier ouvert jusqu’à la confirmation de l’enregistrement."
+        },
+        "second": {
+          "title": "Le microphone ou l’IA est indisponible",
+          "text": "Autorisez le microphone dans les réglages du navigateur ou de l’appareil, fermez les autres sessions d’enregistrement et vérifiez la connexion. Ouvrez un dossier modifiable et choisissez « Démarrer la dictée ». Si un résultat semble erroné, conservez la valeur enregistrée et relisez la transcription."
+        },
+        "third": {
+          "title": "Un compte rendu est incomplet",
+          "text": "Vérifiez la consultation et l’onglet du document. Contrôlez le modèle, les options d’inclusion du PDF et celles de chaque image. Si le problème persiste, utilisez « Aide » pour envoyer un commentaire. Décrivez le résultat attendu et ce que vous avez constaté."
+        }
+      }
+    },
+    "account": {
+      "title": "Connexion et gestion de votre compte",
+      "intro": "Configurez votre accès, réinitialisez votre mot de passe ou mettez à jour votre profil.",
+      "sections": {
+        "first": {
+          "title": "Vous connecter ou accepter une invitation",
+          "text": "Connectez-vous avec l’adresse e-mail associée à votre compte. Si vous créez un compte, suivez le lien de confirmation reçu par e-mail. Si un cabinet vous a invité, utilisez l’invitation envoyée à l’adresse que vous utiliserez pour ToothOps."
+        },
+        "second": {
+          "title": "Récupérer votre accès",
+          "text": "Sur l’écran de connexion, choisissez « Mot de passe oublié ? » et suivez le lien reçu par e-mail. Si votre session expire pendant la saisie, reconnectez-vous pour reprendre l’enregistrement dans le cloud. Vérifiez que la bonne consultation est ouverte avant de continuer."
+        },
+        "third": {
+          "title": "Mettre à jour votre profil et vos identifiants",
+          "text": "Ouvrez « Compte » pour modifier votre nom affiché, votre adresse e-mail, votre mot de passe ou la langue de l’application. Suivez les étapes de confirmation indiquées dans chaque section."
+        }
+      }
+    },
+    "viewer": {
+      "title": "Consulter les images et les fichiers DICOM",
+      "intro": "Utilisez la visionneuse pour examiner une pièce jointe et récupérer le fichier original.",
+      "sections": {
+        "first": {
+          "title": "Ouvrir la visionneuse",
+          "text": "Sélectionnez une image dans « Imagerie » ou dans une consultation antérieure. Les commandes de la visionneuse permettent de zoomer, d’ajuster l’image à l’écran ou de la déplacer. Si nécessaire, vérifiez les détails par rapport à l’acquisition d’origine."
+        },
+        "second": {
+          "title": "Ajuster l’affichage",
+          "text": "Pour les fichiers DICOM originaux pris en charge, utilisez « Fenêtre / niveau » pour travailler à partir des données d’origine. Sur ordinateur, maintenez la touche Maj enfoncée et faites glisser horizontalement pour régler la fenêtre, ou verticalement pour régler le niveau. Si ces réglages sont indisponibles, utilisez la luminosité et le contraste."
+        },
+        "third": {
+          "title": "Télécharger l’original",
+          "text": "Dans les actions de l’image, choisissez « Télécharger le DICOM original » si l’original est disponible. Si le fichier ne peut pas être lu, essayez un DICOM non compressé ou un format d’image pris en charge, exporté depuis le logiciel d’imagerie d’origine."
+        }
+      }
+    },
+    "recovery": {
+      "title": "Consultations enregistrées, versions et importation de PDF",
+      "intro": "Restaurez une version enregistrée ou reprenez un dossier depuis un PDF ToothOps.",
+      "sections": {
+        "first": {
+          "title": "Comprendre l’état de l’enregistrement",
+          "text": "Vérifiez l’indicateur d’enregistrement dans l’onglet du patient actif. Les modifications hors ligne peuvent rester sur l’appareil jusqu’au retour de la connexion. Si ToothOps vous signale un enregistrement plus récent effectué depuis un autre appareil ou par un collègue, comparez le dossier actuel avant de confirmer le remplacement de ces modifications."
+        },
+        "second": {
+          "title": "Consulter ou restaurer une version antérieure",
+          "text": "Utilisez « Historique du dossier » pour comparer les versions enregistrées d’une même consultation. Sélectionnez une version pour voir les éléments consignés. Pour la restaurer, ouvrez la consultation en modification, sélectionnez « Restaurer cette version » et confirmez. La version qui précédait la restauration reste dans l’historique."
+        },
+        "third": {
+          "title": "Importer un PDF de dossier",
+          "text": "Dans le répertoire des patients, choisissez « Importer un PDF de dossier », puis sélectionnez un PDF précédemment exporté par ToothOps. Répondez à toute demande de confirmation concernant le dossier déjà ouvert. Vérifiez ensuite le patient et la date de la consultation avant de continuer. Un PDF d’une autre source peut ne pas contenir de dossier ToothOps modifiable."
+        }
+      }
+    },
+    "preferences": {
+      "title": "Personnaliser ToothOps",
+      "intro": "Trouvez le réglage adapté à la saisie du dossier, à l’affichage des schémas, aux modèles de compte rendu ou à l’export PDF.",
+      "sections": {
+        "first": {
+          "title": "Trouver les réglages adaptés à votre tâche",
+          "text": "Ouvrez « Patient », « Examen », « Anesthésie », « Schéma dentaire », « Diagnostic », « Intervention » ou « Imagerie », puis choisissez « Personnaliser » dans l’en-tête. Les « Réglages du schéma dentaire » s’ouvrent sur la catégorie correspondante. Dans la liste à gauche, choisissez une autre catégorie sans fermer la fenêtre. Vos préférences personnelles sont enregistrées automatiquement dans votre compte si la synchronisation est disponible, ou dans le navigateur en cours.\n\nLe bouton « Personnaliser » de « Compte rendu de traitement » ouvre les modèles de traitement. Dans « Compte rendu pour le propriétaire », le bouton « Personnaliser », à côté d’« Aperçu », ouvre les modèles destinés aux propriétaires. Ces éditeurs gèrent les textes réutilisables et leur présentation pour votre cabinet. Vérifiez le modèle sélectionné avant de le modifier."
+        },
+        "second": {
+          "title": "Comprendre les catégories de réglages",
+          "text": "La liste latérale des « Réglages du schéma dentaire » regroupe les options selon la partie de la consultation concernée. Dans « Schéma dentaire », par exemple, choisissez « Grille » ou « Par dent », le mode de mesure des profondeurs de poche, les mesures visibles et l’action qui suit la saisie d’un score. Configurez séparément les « Raccourcis de diagnostic » et les « Raccourcis d’intervention », car ils s’appliquent à des schémas distincts.\n\nLes réglages de visibilité des champs et d’affichage des schémas vous aident à vous concentrer sur la saisie. Relisez les observations saisies dans le dossier du patient avant l’export."
+        },
+        "third": {
+          "title": "Définir les options d’imagerie et personnaliser les exports",
+          "text": "Dans « Imagerie », choisissez « Personnaliser », puis « Imagerie et PDF » pour définir la langue des comptes rendus et leur contenu par défaut. Vous pouvez inclure les images, les comptes rendus radiographique et de scanner, ainsi que la section « Codes utilisés ». Lorsque les constatations ne sont pas affichées sur le schéma, la grille de mesures est obligatoire pour conserver les mesures consignées dans le document clinique.\n\nPour un export précis, ouvrez « Vérifier et exporter », choisissez « Dossier clinique », puis « Personnaliser ». Choisissez la couleur du PDF clinique et les sections à inclure, puis vérifiez l’aperçu. Pour le document à remettre au propriétaire, utilisez son modèle de compte rendu et sélectionnez les images à inclure dans « Imagerie ». La couleur du PDF clinique se règle indépendamment du modèle de compte rendu pour le propriétaire."
+        }
+      }
+    },
+    "team": {
+      "title": "Configuration du cabinet et accès de l’équipe",
+      "intro": "Gérez l’identité visuelle, les accès de vos collègues et les modèles de compte rendu partagés.",
+      "sections": {
+        "first": {
+          "title": "Configurer l’identité visuelle du cabinet",
+          "text": "Ouvrez « Paramètres du cabinet » pour modifier le nom et le logo du cabinet si votre rôle le permet. Vérifiez l’affichage des informations du cabinet dans un aperçu PDF. Définissez la langue des clients pour les textes affichés par défaut aux propriétaires."
+        },
+        "second": {
+          "title": "Inviter et gérer vos collègues",
+          "text": "Dans « Paramètres du cabinet », ouvrez « Équipe ». Invitez vos collègues en utilisant l’adresse e-mail avec laquelle ils se connecteront. Consultez les invitations en attente et utilisez les options disponibles pour les renvoyer ou les annuler. Un responsable du cabinet peut gérer les accès des membres et la propriété du cabinet."
+        },
+        "third": {
+          "title": "Gérer les modèles partagés",
+          "text": "Ouvrez « Modèles » dans « Paramètres du cabinet » ou choisissez « Personnaliser » à côté du compte rendu concerné. Les responsables du cabinet peuvent gérer la présentation et le texte des comptes rendus pour le propriétaire, ainsi que le modèle par défaut du cabinet. Après avoir modifié un modèle existant, affichez l’exemple avant d’enregistrer."
+        }
+      }
+    },
+    "billing": {
+      "title": "Abonnement et facturation",
+      "intro": "Retrouvez les commandes de gestion des abonnements et des paiements de votre cabinet.",
+      "sections": {
+        "first": {
+          "title": "Trouver votre abonnement",
+          "text": "Sur le site Web de ToothOps, ouvrez « Paramètres du cabinet », puis « Facturation ». Cette page affiche les informations disponibles sur l’abonnement du cabinet. Si vous n’avez pas accès à cette rubrique, demandez au responsable du cabinet d’effectuer les modifications de facturation."
+        },
+        "second": {
+          "title": "Gérer les paiements et les factures",
+          "text": "Lorsque « Gérer la facturation » est disponible, utilisez cette option pour ouvrir le portail Stripe. Depuis le portail, consultez les factures, changez de moyen de paiement ou gérez votre abonnement. Vérifiez que vous intervenez sur le bon cabinet."
+        },
+        "third": {
+          "title": "Résoudre un problème d’accès",
+          "text": "Si le cabinet voit un message relatif à la facturation ou à l’accès, suivez les instructions affichées sur le Web. Si l’état d’un paiement ou d’un abonnement semble incorrect, utilisez « Aide » pour contacter l’assistance."
+        }
+      }
+    },
+    "help-tools": {
+      "title": "Obtenir de l’aide et découvrir les nouveautés",
+      "intro": "Consultez la visite guidée et les notes de version, ou envoyez un commentaire.",
+      "sections": {
+        "first": {
+          "title": "Ouvrir la visite guidée",
+          "text": "Choisissez « Prise en main » dans « Aide ». La visite guidée présente les commandes et peut être relancée à tout moment."
+        },
+        "second": {
+          "title": "Consulter les changements récents",
+          "text": "Ouvrez « Nouveautés » dans « Aide » pour consulter les changements récents. Retrouvez les nouvelles procédures dans le centre d’aide."
+        },
+        "third": {
+          "title": "Envoyer un commentaire utile",
+          "text": "Choisissez « Envoyer un commentaire » dans « Aide » pour signaler un problème ou proposer une idée. Décrivez vos actions, le résultat constaté et celui que vous attendiez. Retirez les informations sur le patient ou le propriétaire avant de joindre une capture."
+        }
+      }
+    },
+    "by-number": {
+      "title": "Renseigner le schéma par numéro de dent",
+      "intro": "Utilisez le schéma numéroté pour consigner les mesures, le diagnostic et les notes d’intervention d’une dent à la fois.",
+      "sections": {
+        "first": {
+          "title": "Ouvrir la vue « Par dent » et choisir un numéro",
+          "text": "Dans « Schéma dentaire », choisissez « Par dent » à côté de « Grille ». Sélectionnez la dent numérotée sur le schéma. L’en-tête de la zone de saisie affiche son numéro Triadan et son nom, ce qui vous permet de vérifier la sélection avant de consigner une observation. Par exemple, sur le schéma d’un chien adulte, le numéro 108 correspond à la quatrième prémolaire supérieure droite. Les numéros dépendent de l’espèce et de la dentition choisies dans « Patient ».\n\nSi le schéma est replié dans une fenêtre de navigateur étroite, ouvrez « Carte dentaire », choisissez un quadrant, puis sélectionnez le numéro. Les boutons « Dent précédente » et « Dent suivante » permettent de parcourir la dentition sans rouvrir la carte."
+        },
+        "second": {
+          "title": "Consigner les observations, les notes et le statut d’extraction",
+          "text": "Saisissez les mesures dans « Observations ». Une profondeur de poche peut être saisie sous forme de mesure unique, d’une mesure par racine ou de six mesures par site. Dans « Schéma dentaire », choisissez « Personnaliser » pour sélectionner le mode de mesure et les mesures à afficher. Cochez « Absente (avant cette visite) » uniquement si la dent était déjà absente.\n\nUtilisez « Note de diagnostic » et les codes rapides configurés pour consigner vos observations, puis « Note d’intervention » pour les actes réalisés. Sélectionnez « Extraction prévue » pour un acte planifié, puis marquez la dent comme extraite une fois l’extraction réalisée. La légende distingue les dents renseignées, les extractions prévues, les dents extraites et les dents absentes."
+        },
+        "third": {
+          "title": "Changer de vue ou dicter une observation avec le numéro",
+          "text": "« Grille » et « Par dent » modifient le même dossier. Les mesures saisies dans la vue numérotée apparaissent aussi dans « Grille ». Les notes et les marques de diagnostic et d’intervention apparaissent sur leurs schémas respectifs. Vous pouvez changer de vue à tout moment pour vérifier votre saisie.\n\nPour dicter, restez dans « Schéma dentaire », choisissez « Dicter », puis lancez l’enregistrement. Énoncez le numéro complet et l’observation, par exemple « 108, poche distale de cinq millimètres ». Vérifiez que le résultat correspond à la dent voulue et aux champs de profondeur disponibles. Si une suggestion diffère d’une valeur enregistrée, vérifiez-la avant de l’appliquer."
+        }
+      }
+    }
+  }
+}

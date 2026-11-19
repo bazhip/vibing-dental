@@ -228,9 +228,12 @@ describe('SurgeryReportForm', () => {
 
   it('saving a template toasts a translated message', async () => {
     const { toast } = await import('./ui/dialogs');
-    templateStore.create.mockResolvedValueOnce(undefined);
+    templateStore.create.mockResolvedValueOnce({ id: 'new', name: 'Routine cleaning', body: 'Scaled' });
     render(<SurgeryReportForm value="Scaled" onChange={() => {}} />);
-    fireEvent.click(screen.getByText('⟦Save as template⟧'));
+    fireEvent.click(screen.getByRole('button', { name: '⟦New template⟧' }));
+    fireEvent.change(screen.getByRole('textbox', { name: '⟦Template name⟧' }), { target: { value: 'Routine cleaning' } });
+    fireEvent.change(screen.getByRole('textbox', { name: '⟦Report text⟧' }), { target: { value: 'Scaled' } });
+    fireEvent.click(screen.getByRole('button', { name: '⟦Save template⟧' }));
     await waitFor(() => expect(toast).toHaveBeenCalledWith('⟦Template “Routine cleaning” saved.⟧', { kind: 'success' }));
   });
 });
@@ -259,7 +262,7 @@ describe('ImagingSection', () => {
 
   it('with one image and with three, owner-report tags, PDF options, a DICOM original', () => {
     const three = [photo, { ...photo, id: 'a2', caption: '', kind: 'xray' as const, originalPath: 'o', originalUrl: 'https://x/o.dcm' }, { ...photo, id: 'a3', url: '', thumbUrl: '', originalPath: 'o2', kind: 'xray' as const }];
-    const props = { chartId: 'c', cloudActive: true, onImageRoleChange: noop, onIncludeInPdfChange: noop, onImageInPdfChange: noop, onCustomize: noop };
+    const props = { chartId: 'c', cloudActive: true, onImageRoleChange: noop, onOwnerReportImageChange: noop, onIncludeInPdfChange: noop, onImageInPdfChange: noop, onCustomize: noop };
     imaging.override = store();
     const { container, rerender } = render(<ImagingSection {...props} />);
     expect(findUntranslated(container, ALLOW)).toEqual([]);

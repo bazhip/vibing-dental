@@ -51,6 +51,21 @@
     "sessionStart": "Sesiunea Deepgram nu a putut fi pornită.",
     "unsupported": "Introducerea vocală necesită Chrome, Edge sau Safari."
   },
+  "destination": {
+    "general": "General"
+  },
+  "correction": {
+    "conflict": "Verificați această modificare în fișă.",
+    "apply": "Aplicați sugestia",
+    "keep": "Păstrați valoarea actuală"
+  },
+  "welcome": {
+    "ready": "Transcrierea va apărea aici când începeți înregistrarea.",
+    "title": "Dictare",
+    "start": "Selectați Începeți dictarea pentru a porni înregistrarea.",
+    "transcript": "Urmăriți transcrierea în timp ce vorbiți. Selectați Opriți când ați terminat.",
+    "review": "Verificați raportul sau modificările din fișă și corectați ce este necesar."
+  },
   "intro": {
     "ariaLabel": "Dictați",
     "cancel": "Anulați",
@@ -131,6 +146,7 @@
     "open_few": "{{count}} elemente de verificat."
   },
   "status": {
+    "idle": "Gata de pornire",
     "connecting": "Se conectează…",
     "finishing": "Se finalizează…",
     "interrupted": "Întreruptă",
@@ -166,6 +182,7 @@
       "ct": "raport CT"
     },
     "help": "Înregistrați sau lipiți observațiile medicului. Verificați secțiunile propuse înainte de a le aplica. Constatările nedocumentate rămân necompletate.",
+    "imagingHelp": "Înregistrați sau lipiți constatările imagistice. Precizați modalitatea dacă nu este clară. Verificați repartizarea constatărilor în raportul radiografic sau CT înainte de aplicare.",
     "ctHelp": "Înregistrați sau lipiți observațiile CT. Când opriți, acestea sunt adăugate doar în raportul CT și rafinate automat.",
     "ctApply": "Adăugați și rafinați raportul CT",
     "target": "Destinația dictării",

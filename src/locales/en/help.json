@@ -1,0 +1,404 @@
+{
+  "site": {
+    "title": "ToothOps Help Center",
+    "intro": "Practical guides for every step of a dental visit, from opening the patient to sending the report.",
+    "search": "Search documentation",
+    "searchHint": "Search topics, tasks, or settings",
+    "topics": "Topics",
+    "onPage": "On this page",
+    "openApp": "Open ToothOps",
+    "home": "Help home",
+    "skip": "Skip to article",
+    "results": "Search results",
+    "empty": "No matching guides. Try a shorter search or browse the topics.",
+    "clear": "Clear search",
+    "related": "Related guides",
+    "language": "Documentation language",
+    "contact": "Send feedback",
+    "guide": "Read the guide"
+  },
+  "groups": {
+    "start": "Get started",
+    "clinical": "Clinical workflow",
+    "output": "Reports and follow-up",
+    "practice": "Practice and support"
+  },
+  "images": {
+    "charting": "A sample dental chart with numbered teeth and a findings grid.",
+    "imaging": "The Imaging section with separate radiographic and CT report fields.",
+    "dictation": "A dictation review showing separate X-ray and CT proposals from one transcript.",
+    "owner": "The Owner report controls and a visit-specific opening summary.",
+    "export": "The clinical chart PDF preview with a sample dental chart.",
+    "start": "Sample patient workspace with the visit tab, section navigation, and Patient information.",
+    "patients": "Earlier visits in Historical patient records, with the text of one record selected.",
+    "exam": "Oral Exam findings grid with Normal and Abnormal choices and a comment.",
+    "viewer": "Image viewer showing window, level, and download controls on a synthetic DICOM file.",
+    "treatment": "Treatment report with saved templates and the editable report below.",
+    "preferences": "Chart settings showing layout, autosave, and pocket depth recording options.",
+    "help-tools": "The Help menu with the Help Center, walkthrough, release notes, and feedback.",
+    "by-number": "The By tooth chart with Triadan 108 selected on the numbered diagram and its findings open.",
+    "imagingSettings": "Imaging and PDF settings showing the report language and default PDF inclusion choices."
+  },
+  "articles": {
+    "start": {
+      "title": "Your first dental visit",
+      "intro": "Follow the visit from a new chart through the final record.",
+      "sections": {
+        "first": {
+          "title": "Open or create a patient",
+          "text": "Use the plus button or Open an animal. Search by name or patient number before creating a patient. Check the name, species, patient number, and visit date in Patient."
+        },
+        "second": {
+          "title": "Document care as you go",
+          "text": "Use Exam and Anesthesia for observations, Charting for tooth measurements, Diagnosis for findings, and Procedure for work performed. Add images and interpretation in Imaging. Record treatment and discharge instructions in their own sections."
+        },
+        "third": {
+          "title": "Review, save, and share",
+          "text": "Use Review and export to check the clinical chart or owner report. Use Finalize when the record is ready to close. Watch the save status in the patient tab before leaving and reopen a saved visit with Edit chart if you need to amend it."
+        }
+      }
+    },
+    "patients": {
+      "title": "Patients and visit history",
+      "intro": "Open the right dated visit and compare earlier records.",
+      "sections": {
+        "first": {
+          "title": "Find a patient",
+          "text": "On the web, open the patient picker with the plus button. Verify the patient number when names match. Pick an existing visit to continue it, or start a new visit for a new appointment."
+        },
+        "second": {
+          "title": "Switch visits and patient tabs",
+          "text": "The tab shows the patient and visit date. Use its visit switcher when there are multiple saved visits, or open another patient with the plus button. Closing a tab does not delete the patient."
+        },
+        "third": {
+          "title": "Review earlier records",
+          "text": "In Patient, choose View visit history when prior visits are available. Select a date and review the PDFs or text notes. Open the dated visit itself if you need to amend the historical chart."
+        }
+      }
+    },
+    "charting": {
+      "title": "Charting, diagnosis, and procedures",
+      "intro": "Record measured values and distinguish what you found from what you did.",
+      "sections": {
+        "first": {
+          "title": "Record tooth measurements",
+          "text": "Use Charting to choose Grid or By tooth. Enter recorded periodontal measurements against the numbered teeth. Use Customize to choose which columns appear and how pocket measurements are entered.\n\nSelect a numbered tooth on the diagram in By tooth to open its measurements and notes together. In Grid, select tooth numbers to work with several teeth. Shift-click selects a range. Both views share the same measurements."
+        },
+        "second": {
+          "title": "Document findings on Diagnosis",
+          "text": "Select the appropriate tooth and mark pre-treatment findings or teeth already missing. Add dental codes and short notes as needed. Use the code reference when you need to confirm a code."
+        },
+        "third": {
+          "title": "Document work on Procedure",
+          "text": "Use Procedure for work performed during this visit, including completed extractions. Record narrative details in Treatment report. Keep planned procedures in your documentation until they are performed."
+        }
+      }
+    },
+    "exam": {
+      "title": "Exam and anesthesia",
+      "intro": "Record observations and anesthetic details where they belong.",
+      "sections": {
+        "first": {
+          "title": "Document the exam",
+          "text": "Open Exam and record the status and comments for the areas you assessed. Leave an area blank when it was not assessed. Use Customize to manage exam areas."
+        },
+        "second": {
+          "title": "Record anesthetics and blocks",
+          "text": "Open Anesthesia, enter the anesthetic drugs, and record site and volume for the blocks performed. Check sides and units against your source before finalizing."
+        },
+        "third": {
+          "title": "Use optional visit sections",
+          "text": "If your practice has enabled Consultation or GP examination, those sections appear in the chart navigation. Use them for the relevant history, assessment, plan, and examination details."
+        }
+      }
+    },
+    "imaging": {
+      "title": "Imaging and reports",
+      "intro": "Manage clinical images, radiographs, and CT findings for the current visit.",
+      "sections": {
+        "first": {
+          "title": "Add images and review history",
+          "text": "Use Add images to browse, drop, or paste files on the web. Where supported, DICOM files keep the original for download. In Image history, expand the row or open the earlier visit to inspect past images."
+        },
+        "second": {
+          "title": "Choose report inclusion",
+          "text": "Set each image’s type and optional tooth and description. Choose whether it appears in the clinical PDF or owner report. Use the Before or After label when it helps explain the image."
+        },
+        "third": {
+          "title": "Write the imaging reports",
+          "text": "Enter findings in Radiographic report or CT report. To speak your findings, open Dictate from Imaging and name the modality if it is unclear. Review the proposed destinations before applying them. Refine is available for typed text."
+        }
+      }
+    },
+    "dictation": {
+      "title": "Dictation and AI review",
+      "intro": "Speak from the section you are working in and review where the findings go.",
+      "sections": {
+        "first": {
+          "title": "Start from the current section",
+          "text": "Open the relevant chart section, choose Dictate, then Start dictation. Allow microphone access if prompted. Name the tooth, side, units, and modality when those details matter."
+        },
+        "second": {
+          "title": "Check the transcript and proposals",
+          "text": "Speech recognition produces the transcript. AI organizes it into chart findings or draft wording. The active section gives context to ambiguous wording. Clear findings may go to another supported section."
+        },
+        "third": {
+          "title": "Review corrections before applying",
+          "text": "In Needs review, compare the current value and proposed change. Apply a suggestion only when the transcript supports it, or keep the current value. For report or visit sections, review the proposed wording and select the sections to apply."
+        }
+      }
+    },
+    "treatment": {
+      "title": "Treatment reports and templates",
+      "intro": "Use reusable wording and document what was performed at this visit.",
+      "sections": {
+        "first": {
+          "title": "Write the treatment report",
+          "text": "Open Treatment report and enter the procedures performed, any relevant findings, and details needed for the record. Dictation uses the current section as context."
+        },
+        "second": {
+          "title": "Use a saved template",
+          "text": "Choose a named template in Saved templates. Check the populated wording before saving. The report remains editable, and Refine can suggest cleaner wording for review."
+        },
+        "third": {
+          "title": "Create a reusable template",
+          "text": "Choose New template, give it a recognizable name, and write the reusable text. Type { in the template editor to see the supported fill-in codes. Use a field like {pet} for the patient name. When you select the saved template, ToothOps fills known chart values and asks you for any missing fields."
+        }
+      }
+    },
+    "discharge": {
+      "title": "Discharge and owner reports",
+      "intro": "Prepare the take-home document from the recorded visit.",
+      "sections": {
+        "first": {
+          "title": "Record discharge instructions",
+          "text": "Open Discharge. Enter documented medications, instructions, and follow-up. Verify medication names, doses, and timelines against your record before sharing."
+        },
+        "second": {
+          "title": "Draft the owner report",
+          "text": "In Owner report, choose the report template. Use Write with AI to draft the opening summary and home care advice from the visit. Check that key findings are explained clearly, edit the wording, and use Restore generated to return to the saved draft after edits."
+        },
+        "third": {
+          "title": "Preview and share",
+          "text": "Use Preview beside Customize to open the owner PDF. To include images, select them in Imaging. Use Review and export to download or, when available, email the report after checking the recipient and document."
+        }
+      }
+    },
+    "export": {
+      "title": "Review, export, and finalize",
+      "intro": "Check the right document before sharing and close the visit when it is complete.",
+      "sections": {
+        "first": {
+          "title": "Choose a document",
+          "text": "Open Review and export. Clinical chart is the complete chart PDF. Owner report is the take-home PDF where enabled. Record note provides the text version for the medical record."
+        },
+        "second": {
+          "title": "Customize the clinical PDF",
+          "text": "In Clinical chart, open Customize to choose colors and the sections to include, such as images, imaging reports, and Codes used. Check the preview after changing an option and download the document when ready."
+        },
+        "third": {
+          "title": "Finalize or reopen a visit",
+          "text": "Finalize saves the completed visit and returns it to view-only. To amend a saved visit, open it, choose Edit chart, make the change, then choose Done editing. Confirm the patient and date before applying edits."
+        }
+      }
+    },
+    "rechecks": {
+      "title": "Rechecks and reminders",
+      "intro": "Record the next follow-up and monitor due visits.",
+      "sections": {
+        "first": {
+          "title": "Record a recheck date",
+          "text": "In Patient, set Recheck due when a date has been agreed. Add instructions in Discharge when needed. Confirm the owner contact details if reminders will be sent."
+        },
+        "second": {
+          "title": "Work through the recheck list",
+          "text": "Open Rechecks to see scheduled follow-ups. Open the patient or earlier visit when you need the clinical context. Clear completed items when appropriate."
+        },
+        "third": {
+          "title": "Set up reminders",
+          "text": "Open Recheck reminders in practice or app settings to review the available sending options. Check the recipient and schedule before sending a reminder."
+        }
+      }
+    },
+    "settings": {
+      "title": "Account and practice settings",
+      "intro": "Set up the chart for the team and separate personal preferences from shared settings.",
+      "sections": {
+        "first": {
+          "title": "Set your own preferences",
+          "text": "Use Account to change your app language and profile. Use Chart settings, or Customize within a chart section, for chart layout, measurements, imaging, and PDF display options."
+        },
+        "second": {
+          "title": "Manage shared practice settings",
+          "text": "Practice owners can manage branding, team access, and shared owner report templates. The practice’s client language controls client-facing defaults, including report wording."
+        },
+        "third": {
+          "title": "Check which features are available",
+          "text": "Some clinical sections, AI tools, and report actions depend on the practice’s settings, access, and your role. If you cannot see a tool, check that the correct practice and an editable visit are open."
+        }
+      }
+    },
+    "troubleshooting": {
+      "title": "Troubleshooting",
+      "intro": "Resolve common problems with saving, recording, images, or export.",
+      "sections": {
+        "first": {
+          "title": "A visit is not saving",
+          "text": "Check the save indicator and your connection. Confirm the visit has a patient name and clinical content. Use the available retry or manual save action. Keep the chart open until its save status is confirmed."
+        },
+        "second": {
+          "title": "The microphone or AI is unavailable",
+          "text": "Allow microphone access in the browser or device settings, close other recording sessions, and check the connection. Open an editable chart and use Start dictation. If a result seems wrong, keep the saved value and review the transcript."
+        },
+        "third": {
+          "title": "A report is missing content",
+          "text": "Confirm the correct visit and document tab. Check the report template, PDF inclusion options, and individual image inclusion. Use Help to send feedback if the issue persists, and describe what you expected and what you saw."
+        }
+      }
+    },
+    "account": {
+      "title": "Sign in and manage your account",
+      "intro": "Set up access, recover a password, or update your profile.",
+      "sections": {
+        "first": {
+          "title": "Sign in or accept an invitation",
+          "text": "Sign in with your account email. If you are creating an account, follow the confirmation link sent to your inbox. If a practice invited you, use the invitation sent to the email address you will use for ToothOps."
+        },
+        "second": {
+          "title": "Recover access",
+          "text": "Use Forgot password on the sign-in screen and follow the link in the email. If a session expires while you are charting, sign in again to resume cloud saving. Check that the correct visit is open before you continue."
+        },
+        "third": {
+          "title": "Update your profile and credentials",
+          "text": "Open Account to update your display name, email, password, or app language. Follow the confirmation shown by each section."
+        }
+      }
+    },
+    "viewer": {
+      "title": "Review images and DICOM files",
+      "intro": "Use the image viewer to inspect an attachment and recover its original file.",
+      "sections": {
+        "first": {
+          "title": "Open the viewer",
+          "text": "Select an image in Imaging or in an earlier visit. Use the viewer controls to zoom, fit, or move around the image. Review details against the original acquisition when needed."
+        },
+        "second": {
+          "title": "Adjust the display",
+          "text": "For supported original DICOM files, use Window / level to work with the original data. On desktop, hold Shift and drag horizontally to adjust window or vertically to adjust level. Use brightness and contrast when window and level are unavailable."
+        },
+        "third": {
+          "title": "Download the original",
+          "text": "Use Download original DICOM from the image actions when the original is available. If the file cannot be read, try an uncompressed DICOM or a supported image format exported from the original imaging software."
+        }
+      }
+    },
+    "recovery": {
+      "title": "Saved visits, versions, and PDF import",
+      "intro": "Recover a saved version or continue from a ToothOps chart PDF.",
+      "sections": {
+        "first": {
+          "title": "Understand save status",
+          "text": "Check the save indicator on the active patient tab. Offline changes can stay on the device until the connection returns. If ToothOps reports a newer save from another device or teammate, compare the current chart before confirming that you want to replace those changes."
+        },
+        "second": {
+          "title": "Review or restore an earlier version",
+          "text": "Use Chart history to compare saves within the same dated visit. Select a version to see what was recorded. To restore, open the visit for editing, select Restore this version, and confirm. The pre-restore version remains in history."
+        },
+        "third": {
+          "title": "Import a chart PDF",
+          "text": "Choose Import chart PDF in the patient library and select a chart PDF previously exported by ToothOps. Confirm any prompt about the chart currently open, then verify the patient and visit date before continuing. A PDF from another source may not contain an editable ToothOps chart."
+        }
+      }
+    },
+    "preferences": {
+      "title": "Customize ToothOps",
+      "intro": "Find the right Customize control for chart entry, diagram defaults, report templates, or PDF output.",
+      "sections": {
+        "first": {
+          "title": "Find the right settings for your task",
+          "text": "Open Patient, Exam, Anesthesia, Charting, Diagnosis, Procedure, or Imaging and choose Customize in that section’s header. Chart settings opens at the matching category. In the left-hand category list, choose another area without leaving the dialog. Personal chart preferences save automatically to your account when account sync is available, or to the current browser otherwise.\n\nThe Customize button in Treatment report opens treatment templates. The Customize button beside Preview in Owner report opens owner report templates. These editors manage reusable wording and layout for your practice, so review the selected template before changing it."
+        },
+        "second": {
+          "title": "Understand each Chart settings category",
+          "text": "The Chart settings sidebar organizes the options by the part of the visit they affect. In Charting, for example, choose Grid or By tooth, your pocket depth mode, which measurements are visible, and what happens after you enter a score. Configure Diagnosis and Procedure shortcuts independently because they apply to different diagrams.\n\nChanges to field visibility or diagram display help you focus while charting. Review entered findings in the patient record before you export."
+        },
+        "third": {
+          "title": "Set imaging defaults and customize exports",
+          "text": "Open Imaging, choose Customize, and select Imaging and PDF for the imaging report language and default inclusion options. You can include images, radiographic and CT reports, and the Codes used section. The charting grid is required when diagram findings are turned off, so recorded measurements remain visible in the clinical document.\n\nFor a specific export, open Review and export, select Clinical chart, and open Customize. Choose the clinical PDF color and included sections, then inspect the preview. For an owner handout, use the Owner report template and choose which individual images to include from Imaging. Changing the clinical PDF color does not select an owner report template."
+        }
+      }
+    },
+    "team": {
+      "title": "Practice setup and team access",
+      "intro": "Manage shared branding, colleagues, and report templates.",
+      "sections": {
+        "first": {
+          "title": "Set up practice branding",
+          "text": "Open Practice settings to update the practice name and logo as allowed by your role. Preview a PDF to verify how the practice details appear. Set the client language for default text shown to owners."
+        },
+        "second": {
+          "title": "Invite and manage colleagues",
+          "text": "Open Team in Practice settings. Invite colleagues using the email address they will sign in with. Check pending invitations and use the available resend or cancel action. A practice owner can manage member access and ownership."
+        },
+        "third": {
+          "title": "Manage shared templates",
+          "text": "Open Templates in Practice settings, or Customize beside the relevant report. Practice owners can manage owner report layouts, wording, and the practice default. When editing an existing template, preview the sample before saving changes."
+        }
+      }
+    },
+    "billing": {
+      "title": "Subscription and billing",
+      "intro": "Find the subscription and payment controls for your practice.",
+      "sections": {
+        "first": {
+          "title": "Find your subscription",
+          "text": "In ToothOps on the web, open Practice settings, then Billing. The page shows the available subscription information for your practice. Ask the practice owner for billing changes if you do not have access."
+        },
+        "second": {
+          "title": "Manage payments and invoices",
+          "text": "When Manage billing is available, use it to open the Stripe portal. View invoices, change the payment method, or manage your subscription from the portal. Check that you are managing the intended practice."
+        },
+        "third": {
+          "title": "Resolve an access issue",
+          "text": "If the practice has a billing or access notice, follow the action shown on the web. Use Help to reach support when a payment or subscription status looks incorrect."
+        }
+      }
+    },
+    "help-tools": {
+      "title": "Get help and see what changed",
+      "intro": "Use the walkthrough, release notes, and feedback tools.",
+      "sections": {
+        "first": {
+          "title": "Open the walkthrough",
+          "text": "Choose Getting started from Help. The walkthrough points out the controls in the app and can be opened again as needed."
+        },
+        "second": {
+          "title": "Review recent changes",
+          "text": "Open What’s new from Help to review recent changes. For a new workflow, open its guide in the Help Center."
+        },
+        "third": {
+          "title": "Send useful feedback",
+          "text": "Use Send feedback from Help when you encounter a problem or have an idea. Describe what you were doing, what happened, and what you expected. Remove patient or owner information before attaching a screenshot."
+        }
+      }
+    },
+    "by-number": {
+      "title": "Chart by tooth number",
+      "intro": "Use the numbered diagram to document measurements, diagnosis, and procedure notes for one tooth at a time.",
+      "sections": {
+        "first": {
+          "title": "Open By tooth and select a number",
+          "text": "Open the Charting section and select By tooth beside Grid. Select the numbered tooth on the diagram. The editor heading shows the Triadan number and tooth name, so you can check your selection before entering a finding. For example, 108 is the upper right fourth premolar on the adult canine diagram. The numbers follow the species and dentition selected in Patient.\n\nIf the diagram is collapsed in a narrow browser window, select Tooth map, choose a quadrant, and then select the number. Use the previous or next tooth buttons to move through the mouth without reopening the map."
+        },
+        "second": {
+          "title": "Record findings, notes, and extraction status",
+          "text": "Enter the recorded measurements in Findings. A pocket depth can be a single reading, one reading per root, or six site-specific readings. Open Customize in Charting to choose the pocket depth mode and the measurements you want to see. Mark Missing (before this visit) only when the tooth was already missing.\n\nUse Diagnosis note and any configured quick codes for what you found, and Procedure note for what you did. Use Plan to extract for intended work. When the extraction has happened, mark it extracted. The diagram key distinguishes recorded findings, planned extraction, completed extraction, and missing teeth."
+        },
+        "third": {
+          "title": "Switch views or dictate a numbered finding",
+          "text": "Grid and By tooth edit the same chart. Measurements you enter in the numbered editor also appear in Grid. Diagnosis and Procedure notes and marks appear on their respective diagrams. You can switch views at any point to check your work.\n\nTo dictate, stay in Charting, choose Dictate, and start recording. Say the full number and the finding, for example, “108, distal pocket five millimetres.” Check the result against the intended tooth and the available pocket fields. If a suggested change conflicts with a recorded value, review it before applying."
+        }
+      }
+    }
+  }
+}

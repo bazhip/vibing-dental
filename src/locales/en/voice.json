@@ -50,6 +50,21 @@
     "sessionStart": "Couldn't start Deepgram session.",
     "unsupported": "Voice input needs Chrome, Edge, or Safari."
   },
+  "destination": {
+    "general": "General"
+  },
+  "correction": {
+    "conflict": "Review this change to the chart.",
+    "apply": "Apply suggestion",
+    "keep": "Keep current value"
+  },
+  "welcome": {
+    "ready": "Your transcript will appear here once you start recording.",
+    "title": "Dictation",
+    "start": "Choose Start dictation to begin recording.",
+    "transcript": "Follow the transcript as you speak. Select Stop when you finish.",
+    "review": "Review the report or chart changes and correct anything that needs attention."
+  },
   "intro": {
     "ariaLabel": "Dictate",
     "cancel": "Cancel",
@@ -126,6 +141,7 @@
     "open_other": "{{count}} items to review."
   },
   "status": {
+    "idle": "Ready to start",
     "connecting": "Connecting…",
     "finishing": "Finishing…",
     "interrupted": "Interrupted",
@@ -160,6 +176,7 @@
       "ct": "CT report"
     },
     "help": "Record or paste the clinician’s observations. Review the proposed sections before applying them. Undocumented findings stay blank.",
+    "imagingHelp": "Record or paste imaging findings. Name the modality if it is unclear. Review which findings go into the radiographic or CT report before applying them.",
     "ctHelp": "Record or paste CT observations. When you stop, they are added only to the CT report and refined automatically.",
     "ctApply": "Add and refine CT report",
     "target": "Dictation target",

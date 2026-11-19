@@ -10,8 +10,8 @@ interface Props {
   busy: boolean;
   showEmpty?: boolean;
   editing?: boolean;
-  saveStatus?: 'saving' | 'saved';
-  savedTitle?: string;
+  saveStatus?: 'saving' | 'saved' | 'notSaved';
+  saveStatusTitle?: string;
   visits?: { id: string; date: string }[];
   onVisit?: (id: string) => void;
   onSelect: (id: string) => void;
@@ -19,7 +19,7 @@ interface Props {
   onAdd: () => void;
 }
 
-export function AnimalTabs({ tabs, activeId, busy, onSelect, onClose, onAdd, showEmpty = true, editing = false, saveStatus, savedTitle, visits = [], onVisit }: Props) {
+export function AnimalTabs({ tabs, activeId, busy, onSelect, onClose, onAdd, showEmpty = true, editing = false, saveStatus, saveStatusTitle, visits = [], onVisit }: Props) {
   const { t } = useTranslation('app');
   const strip = useRef<HTMLDivElement>(null);
   const add = useRef<HTMLButtonElement>(null);
@@ -27,12 +27,17 @@ export function AnimalTabs({ tabs, activeId, busy, onSelect, onClose, onAdd, sho
   const updateOverflow = () => {
     const list = strip.current;
     if (!list) return;
-    const next = { before: list.scrollLeft > 1, after: list.scrollLeft + list.clientWidth < list.scrollWidth - 1 };
+    const offset = Math.abs(list.scrollLeft);
+    const next = { before: offset > 1, after: offset + list.clientWidth < list.scrollWidth - 1 };
     setOverflow(old => old.before === next.before && old.after === next.after ? old : next);
   };
   const scroll = (direction: number) => {
     const list = strip.current;
-    if (list) { list.scrollLeft += direction * Math.max(180, list.clientWidth - 44); updateOverflow(); }
+    if (!list) return;
+    const rtl = getComputedStyle(list).direction === 'rtl';
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const distance = Math.max(180, list.clientWidth - 44);
+    list.scrollBy({ left: (rtl ? -direction : direction) * distance, behavior: reducedMotion ? 'instant' : 'smooth' });
   };
   const restoreFocus = useRef(false);
   useEffect(() => {
@@ -63,9 +68,25 @@ export function AnimalTabs({ tabs, activeId, busy, onSelect, onClose, onAdd, sho
   useEffect(() => {
     const reveal = () => revealRef.current();
     const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(reveal);
-    if (strip.current) observer?.observe(strip.current);
+    const list = strip.current;
+    if (!list) return;
+    observer?.observe(list);
+    const scrollWithWheel = (event: WheelEvent) => {
+      if (event.ctrlKey || event.shiftKey || event.deltaX || !event.deltaY || list.scrollWidth <= list.clientWidth) return;
+      const before = list.scrollLeft;
+      const units = event.deltaMode === WheelEvent.DOM_DELTA_LINE ? 16
+        : event.deltaMode === WheelEvent.DOM_DELTA_PAGE ? list.clientWidth : 1;
+      const direction = getComputedStyle(list).direction === 'rtl' ? -1 : 1;
+      list.scrollLeft += event.deltaY * units * direction;
+      if (list.scrollLeft !== before) event.preventDefault();
+    };
+    list.addEventListener('wheel', scrollWithWheel, { passive: false });
     window.addEventListener('resize', reveal);
-    return () => { observer?.disconnect(); window.removeEventListener('resize', reveal); };
+    return () => {
+      observer?.disconnect();
+      list.removeEventListener('wheel', scrollWithWheel);
+      window.removeEventListener('resize', reveal);
+    };
   }, []);
   const move = (event: React.KeyboardEvent, index: number) => {
     const next = event.key === 'ArrowRight' ? (index + 1) % tabs.length
@@ -93,7 +114,7 @@ export function AnimalTabs({ tabs, activeId, busy, onSelect, onClose, onAdd, sho
               onClick={() => { restoreFocus.current = true; onSelect(tab.id); requestAnimationFrame(() => revealRef.current()); }} onKeyDown={event => move(event, index)}>
               <span className="animal-tabs__heading"><strong>{name}</strong>{tab.id === activeId && <span className="animal-tabs__indicators">
                 {editing && <span className="animal-tabs__editing" title={t('topbar.editingTitle')}>{t('topbar.editingShort')}</span>}
-                {saveStatus && <span className={`animal-tabs__save animal-tabs__save--${saveStatus}`} role="status" title={saveStatus === 'saved' ? savedTitle : undefined}>{t(saveStatus === 'saving' ? 'status.saving' : 'status.saved')}</span>}
+                {saveStatus && <span className={`animal-tabs__save animal-tabs__save--${saveStatus}`} role="status" title={saveStatusTitle}>{t(`status.${saveStatus}`)}</span>}
               </span>}</span><span className="animal-tabs__details">{pid && <span>{pid}</span>}<span>{date}</span></span>
             </button>
             {tab.id === activeId && visits.length > 1 && onVisit && <span className="animal-tabs__visit">

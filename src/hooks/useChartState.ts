@@ -132,6 +132,8 @@ export interface UseChartStateReturn {
   imageRoles: Record<string, ImageRole>;
   /** Tag (or untag, with null) an image for the owner report. */
   setImageRole: (attachmentId: string, role: ImageRole | null) => void;
+  ownerReportImageInclusion: Record<string, boolean>;
+  setImageInOwnerReport: (attachmentId: string, include: boolean | null) => void;
 
   /** Attachment ids left out of the chart PDF (everything else is in). */
   pdfExcludedImages: string[];
@@ -454,20 +456,31 @@ export function useChartState(): UseChartStateReturn {
     setChartSession((n) => n + 1);
   };
 
-  // Which attached images belong in the owner report's Before & After
-  // section. Keyed by attachment id; part of the chart, so it saves,
-  // restores, and clears with everything else.
   const [imageRoles, setImageRoles] = usePersistedState<Record<string, ImageRole>>('chart.imageRoles', 1, {});
-  const setImageRole = React.useCallback((attachmentId: string, role: ImageRole | null) => {
-    setImageRoles((prev) => {
-      const next = { ...prev };
+  const [ownerReportImageInclusion, setOwnerReportImageInclusion] = usePersistedState<Record<string, boolean>>(
+    'chart.ownerReportImageInclusion', 1, {}
+  );
+  const setImageRole = (attachmentId: string, role: ImageRole | null) => {
+    // A label edit never changes inclusion, even on a chart saved before
+    // the independent checkbox existed.
+    setOwnerReportImageInclusion(previous => Object.hasOwn(previous, attachmentId)
+      ? previous
+      : { ...previous, [attachmentId]: Boolean(imageRoles[attachmentId]) });
+    setImageRoles(previous => {
+      const next = { ...previous };
       if (role === null) delete next[attachmentId];
       else next[attachmentId] = role;
       return next;
     });
-    // setImageRoles identity is stable (usePersistedState).
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  };
+  const setImageInOwnerReport = (attachmentId: string, include: boolean | null) => {
+    setOwnerReportImageInclusion(previous => {
+      const next = { ...previous };
+      if (include === null) delete next[attachmentId];
+      else next[attachmentId] = include;
+      return next;
+    });
+  };
 
   // Images the user unticked for the chart PDF. Exclusions (not
   // inclusions) so a new upload lands in the PDF without extra clicks.
@@ -581,6 +594,7 @@ export function useChartState(): UseChartStateReturn {
     setOpenedExisting(false); // a new visit is a fresh chart → autosaves
     setFinalizedAt(null);
     setImageRoles({}); // image tags belong to the prior visit's images
+    setOwnerReportImageInclusion({});
     setPdfExcludedImages([]);
     setOwnerReport({}); // report edits are visit-specific
     setRecordNote(null);
@@ -617,6 +631,7 @@ export function useChartState(): UseChartStateReturn {
   const snapshot = React.useMemo<ChartSnapshot>(() => ({
     version: CHART_SNAPSHOT_VERSION,
     imageRoles,
+    ...(Object.keys(ownerReportImageInclusion).length ? { ownerReportImageInclusion } : {}),
     pdfExcludedImages,
     ownerReport,
     // Omitted when empty so charts that never use the plan keep the exact
@@ -637,7 +652,7 @@ export function useChartState(): UseChartStateReturn {
     postStrokes: postDiagramStrokes,
     ...(finalizedAt ? { finalizedAt } : {}),
   }), [
-    clinicalDictations, finalizedAt, imageRoles, pdfExcludedImages, ownerReport, recordNote, plannedExtractions, patientInfo, toothData, species, logo,
+    clinicalDictations, finalizedAt, imageRoles, ownerReportImageInclusion, pdfExcludedImages, ownerReport, recordNote, plannedExtractions, patientInfo, toothData, species, logo,
     preToothMarks, preDiagramComments, preDiagramStrokes,
     postToothMarks, postDiagramComments, postDiagramStrokes,
   ]);
@@ -679,6 +694,7 @@ export function useChartState(): UseChartStateReturn {
     writeJson('chart.postComments', 1, postDiagramComments);
     writeJson('chart.postStrokes', 1, postDiagramStrokes);
     writeJson('chart.imageRoles', 1, imageRoles);
+    writeJson('chart.ownerReportImageInclusion', 1, ownerReportImageInclusion);
     writeJson('chart.pdfExcludedImages', 1, pdfExcludedImages);
     writeJson('chart.plannedExtractions', 1, plannedExtractions);
     writeJson('chart.ownerReport', 1, ownerReport);
@@ -697,6 +713,7 @@ export function useChartState(): UseChartStateReturn {
     setOpenedExisting(true);
     setFinalizedAt(snapshot.finalizedAt || null);
     setImageRoles(snapshot.imageRoles ?? {});
+    setOwnerReportImageInclusion(snapshot.ownerReportImageInclusion ?? {});
     setPdfExcludedImages(Array.isArray(snapshot.pdfExcludedImages) ? snapshot.pdfExcludedImages : []);
     setOwnerReport(snapshot.ownerReport ?? {});
     setRecordNote(snapshot.recordNote ?? null);
@@ -755,6 +772,7 @@ export function useChartState(): UseChartStateReturn {
       setPreToothMarks({}); setPreDiagramComments([]); setPreDiagramStrokes([]);
       setPostToothMarksDirect({}); setPostDiagramComments([]); setPostDiagramStrokes([]);
       setImageRoles({}); // attachments (and their tags) don't travel in the PDF stash
+      setOwnerReportImageInclusion({});
       setPdfExcludedImages([]);
       setOwnerReport({}); // report edits don't either
       setRecordNote(null);
@@ -836,6 +854,8 @@ export function useChartState(): UseChartStateReturn {
 
     imageRoles,
     setImageRole,
+    ownerReportImageInclusion,
+    setImageInOwnerReport,
 
     pdfExcludedImages,
     setImageInPdf,

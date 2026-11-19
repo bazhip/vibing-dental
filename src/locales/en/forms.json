@@ -138,6 +138,14 @@
     "fieldType": "Field type"
   },
   "report": {
+    "replaceTemplateTitle": "Replace treatment report text?",
+    "replaceTemplateMessage": "The selected template will replace the current text in this visit’s treatment report.",
+    "replaceTemplate": "Use template",
+    "useSaved": "Use saved template",
+    "newTemplate": "New template",
+    "fillField": "Fill in template field",
+    "fieldRequired": "Enter a value to continue.",
+    "fieldContinue": "Continue",
     "title": "Treatment report",
     "insertAria": "Insert a report template",
     "loading": "Loading templates…",

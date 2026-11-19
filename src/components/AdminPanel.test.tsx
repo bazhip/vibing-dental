@@ -27,6 +27,8 @@ const user = (id: string, email: string, practiceName: string) => ({
   teamRole: '',
 });
 
+const emptyUsage = { totals: { calls: 0, inputTokens: 0, outputTokens: 0, cacheReadTokens: 0, estCostUsd: 0 }, users: [], breakdown: [], models: [] };
+
 const respond = (overrides: Record<string, unknown> = {}) => {
   invoke.mockImplementation(async (_fn: string, { body }: { body: { action: string } }) => {
     if (body.action in overrides) {
@@ -34,6 +36,8 @@ const respond = (overrides: Record<string, unknown> = {}) => {
       return v instanceof Error ? { data: null, error: v } : { data: v, error: null };
     }
     switch (body.action) {
+      case 'ai_usage_query':
+        return { data: emptyUsage, error: null };
       case 'stats':
         return { data: { users: 2, charts: 4, templates: 1 }, error: null };
       case 'list_users':
@@ -167,7 +171,7 @@ it('configures the translated radiology report model through the existing admin 
     get_ai_config: { configured: true, models: [], featureModels: {
       live: 'claude-haiku-5-5', review: 'claude-sonnet-5-5', owner_report: 'claude-sonnet-5-5', radiology_report: 'claude-sonnet-5-5',
     } },
-    ai_usage: { users: [], totalEstCostUsd: 0 },
+    ai_usage_query: emptyUsage,
     ai_balance: { deepgram: null, note: '' },
     set_ai_model: { featureModels: { radiology_report: 'claude-opus-4-8' } },
   });
@@ -178,4 +182,40 @@ it('configures the translated radiology report model through the existing admin 
   await userEvent.selectOptions(select, 'claude-opus-4-8');
   await waitFor(() => expect(invoke).toHaveBeenCalledWith('admin-api', { body: { action: 'set_ai_model', feature: 'radiology_report', model: 'claude-opus-4-8' } }));
   expect(await screen.findByText('Radiology report drafts now use Claude Opus 4.8 (previous default).')).toBeInTheDocument();
+});
+
+it('applies date, workflow, and model filters together and changes the grouping', async () => {
+  const amount = { calls: 12, inputTokens: 300, outputTokens: 100, cacheReadTokens: 20, estCostUsd: 0.15 };
+  respond({
+    ai_usage_query: { totals: amount, users: [{ ...amount, userId: 'a', email: 'alice@socal.vet' }],
+      breakdown: [{ ...amount, day: '2026-11-18', feature: 'ct_report', model: 'claude-retired-test', costPerCallUsd: 0.0125 }],
+      models: ['claude-retired-test'] },
+  });
+  renderPanel();
+  await userEvent.click(screen.getByRole('tab', { name: 'AI' }));
+  await screen.findByText('Usage by account');
+  await userEvent.selectOptions(screen.getByLabelText('Date range'), 'custom');
+  fireEvent.change(screen.getByLabelText('Start date'), { target: { value: '2026-11-18' } });
+  fireEvent.change(screen.getByLabelText('End date'), { target: { value: '2026-11-19' } });
+  await userEvent.selectOptions(screen.getByLabelText('Workflow'), 'ct_report');
+  await userEvent.selectOptions(screen.getByLabelText('Model', { exact: true }), 'claude-retired-test');
+  await userEvent.selectOptions(screen.getByLabelText('Group by'), 'day');
+  await userEvent.click(screen.getByRole('button', { name: 'Apply' }));
+  await waitFor(() => expect(invoke).toHaveBeenCalledWith('admin-api', {
+    body: { action: 'ai_usage_query', from: '2026-11-18', to: '2026-11-19', kind: 'ct_report', model: 'claude-retired-test', groupBy: 'day' },
+  }));
+  expect(await screen.findByRole('columnheader', { name: 'Date' })).toBeInTheDocument();
+});
+
+it('shows labeled legacy totals when the query is unavailable on the backend', async () => {
+  const amount = { calls: 8, inputTokens: 300, outputTokens: 100, cacheReadTokens: 20, estCostUsd: 0.12 };
+  respond({
+    ai_usage_query: new Error('unknown action: ai_usage_query'),
+    ai_usage: { totalEstCostUsd: 0.12, users: [{ ...amount, userId: 'a', email: 'alice@socal.vet' }], byFeature: [] },
+  });
+  renderPanel();
+  await userEvent.click(screen.getByRole('tab', { name: 'AI' }));
+  await screen.findByText(/Showing all-time totals/);
+  expect(screen.getByText('alice@socal.vet')).toBeVisible();
+  expect(screen.queryByRole('button', { name: 'Apply' })).toBeNull();
 });

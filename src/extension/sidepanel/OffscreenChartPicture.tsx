@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ToothDiagram, type ToothDiagramHandle } from '../../components/ToothDiagram';
 import { renderChartPicture } from '../../utils/pims/chartPicture';
+import type { ChartSnapshot as PdfSnapshot } from '../../components/PdfPreviewModal';
 import type { ChartSnapshot, ToothMarks } from '../../types';
 
 const noop = () => {};
@@ -28,6 +29,7 @@ export interface OffscreenChartPictureApi {
    * null for a chart row that targets a field.
    */
   hasDiagrams: boolean;
+  getDiagrams: () => Pick<PdfSnapshot, 'preSvg' | 'postSvg' | 'preComments' | 'postComments'> | null;
 }
 
 /** Same effective post-op marks as AdminChartViewer: pre-op missing teeth stay missing. */
@@ -47,22 +49,25 @@ export function useOffscreenChartPicture(snapshot: ChartSnapshot | null): Offscr
     setHasDiagrams(!!snapshot && !!preRef.current?.getSvgElement() && !!postRef.current?.getSvgElement());
   }, [snapshot]);
 
-  const render = React.useCallback(async (): Promise<string | null> => {
-    if (!snapshot) return null;
+  const getDiagrams = React.useCallback(() => {
     const preSvg = preRef.current?.getSvgElement();
     const postSvg = postRef.current?.getSvgElement();
     if (!preSvg || !postSvg) return null;
+    return {
+      preSvg, postSvg,
+      preComments: preRef.current?.getCommentExports() ?? [],
+      postComments: postRef.current?.getCommentExports() ?? [],
+    };
+  }, []);
+
+  const render = React.useCallback(async (): Promise<string | null> => {
+    const diagrams = getDiagrams();
+    if (!snapshot || !diagrams) return null;
     return renderChartPicture(
-      {
-        species: snapshot.species,
-        preSvg,
-        postSvg,
-        preComments: preRef.current?.getCommentExports() ?? [],
-        postComments: postRef.current?.getCommentExports() ?? [],
-      },
+      { species: snapshot.species, ...diagrams },
       { pre: t('picture.pre'), post: t('picture.post') },
     );
-  }, [snapshot, t]);
+  }, [snapshot, t, getDiagrams]);
 
   // showNumbers={false} below is belt and braces, not a requirement: the tooth-number labels are a
   // [data-export-skip] group, and diagramSvgToPng (via renderChartPicture) removes every
@@ -106,5 +111,5 @@ export function useOffscreenChartPicture(snapshot: ChartSnapshot | null): Offscr
     </div>
   );
 
-  return { element, render, hasDiagrams };
+  return { element, render, hasDiagrams, getDiagrams };
 }

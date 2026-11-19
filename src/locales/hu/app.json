@@ -1,4 +1,25 @@
 {
+  "refinement": {
+    "noChanges": "Nincs javasolt módosítás. A szöveg változatlan maradt.",
+    "applied": "A javítás alkalmazva.",
+    "kept": "Az eredeti megfogalmazás megmaradt.",
+    "consentRequired": "Engedélyezze az MI-feldolgozást a szöveg finomításához.",
+    "fieldChanged": "A szöveg módosult a finomítás közben. Újrapróbálkozáshoz válassza a Finomítás lehetőséget.",
+    "enterText": "Írjon be szöveget a finomításhoz.",
+    "tooLong": "Ez a szöveg túl hosszú az egy menetben történő finomításhoz.",
+    "action": "Finomítás",
+    "modes": {
+      "clean": "Megfogalmazás javítása",
+      "concise": "Tömörítés",
+      "organize": "Rendszerezés"
+    },
+    "review": "A javítás ellenőrzése",
+    "original": "Eredeti",
+    "proposed": "Javasolt szöveg",
+    "apply": "Javítás alkalmazása",
+    "failed": "A szöveget nem sikerült finomítani.",
+    "changedFacts": "A piszkozat módosított egy számot, mértékegységet vagy helyőrzőt. Az eredeti szöveg megmaradt."
+  },
   "brand": "ToothOps fogászati lap",
   "brandTrial": "ToothOps fogászati lap · Próba",
   "skipLink": "Ugrás a fő tartalomra",
@@ -76,6 +97,8 @@
     "addLogo": "Logó hozzáadása"
   },
   "status": {
+    "waitingToChart": "A vizit ezen az eszközön van mentve. Amikor elkezdi a dokumentálást, a rendszer szinkronizálja a felhőbe.",
+    "autosaveOff": "Az automatikus mentés ki van kapcsolva. Mentse a vizitet a felhőbe szinkronizáláshoz.",
     "srSaving": "Fogászati lap mentése",
     "srSaved": "Fogászati lap mentve",
     "srNotSaved": "Fogászati lap nincs mentve",
@@ -346,6 +369,9 @@
     "failed": "Nem sikerült módosítani a kórlap lezárási állapotát. {{error}}"
   },
   "radiologyReport": {
+    "automaticLanguage": "Automatikus",
+    "languageTip": "Az MI ezen a nyelven ír: {{language}}. A nyelvet a Testreszabás menüben módosíthatja.",
+    "dictate": "Röntgenlelet diktálása",
     "title": "Radiológiai jelentés",
     "description": "Szerkeszthető jelentés készítése a rögzített leletekből. A képeket nem elemezzük.",
     "context": "Opcionális vizsgálati körülmények",
@@ -419,5 +445,48 @@
     "copyPrompt": "Másolja ki az ellenőrzött CT-jelentést:",
     "headingTechnique": "CT-technika",
     "headingFindings": "CT-leletek"
+  },
+  "aiMetrics": {
+    "legacyNotice": "A teljes időszak összesítése látható. A szűrők a statisztikai kiszolgáló frissítése után lesznek elérhetők.",
+    "legacyBreakdown": "Elmúlt 30 nap munkafolyamat és modell szerint",
+    "title": "MI-használat",
+    "range": "Dátumtartomány",
+    "from": "Kezdő dátum",
+    "to": "Záró dátum",
+    "workflow": "Munkafolyamat",
+    "allWorkflows": "Minden munkafolyamat",
+    "model": "Modell",
+    "allModels": "Minden modell",
+    "groupBy": "Csoportosítás",
+    "apply": "Alkalmaz",
+    "dateHint": "A dátumok UTC szerint értendők, és mindkét határnap beleszámít.",
+    "loading": "MI-használat betöltése…",
+    "failed": "Az MI-használat nem tölthető be. Alkalmazza újra a szűrőket.",
+    "calls": "Hívások",
+    "input": "Bemeneti tokenek",
+    "output": "Kimeneti tokenek",
+    "cache": "Gyorsítótár-olvasások",
+    "cost": "Becsült költség",
+    "empty": "Nincs a szűrőknek megfelelő MI-hívás.",
+    "breakdown": "Bontás",
+    "date": "Dátum",
+    "perCall": "Hívásonkénti költség",
+    "byAccount": "Használat fiókonként",
+    "account": "Fiók",
+    "refineText": "Szöveg finomítása",
+    "warmup": "Gyorsítótár előkészítése",
+    "presets": {
+      "7": "Elmúlt 7 nap",
+      "30": "Elmúlt 30 nap",
+      "90": "Elmúlt 90 nap",
+      "all": "Teljes időszak",
+      "custom": "Egyéni dátumok"
+    },
+    "groups": {
+      "workflow_model": "Munkafolyamat és modell",
+      "workflow": "Munkafolyamat",
+      "model": "Modell",
+      "day": "Nap"
+    }
   }
 }

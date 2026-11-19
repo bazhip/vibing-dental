@@ -138,6 +138,14 @@
     "fieldType": "نوع الحقل"
   },
   "report": {
+    "replaceTemplateTitle": "هل تريد استبدال نص تقرير العلاج؟",
+    "replaceTemplateMessage": "سيستبدل القالب المحدد النص الحالي لتقرير العلاج لهذه الزيارة.",
+    "replaceTemplate": "استخدام القالب",
+    "useSaved": "استخدام قالب محفوظ",
+    "newTemplate": "قالب جديد",
+    "fillField": "ملء حقل القالب",
+    "fieldRequired": "أدخل قيمة للمتابعة.",
+    "fieldContinue": "متابعة",
     "title": "تقرير العلاج",
     "insertAria": "إدراج قالب تقرير",
     "loading": "جارٍ تحميل القوالب…",

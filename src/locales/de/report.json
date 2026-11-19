@@ -59,6 +59,14 @@
     "warningSigns": "Achten Sie auf herausfallendes Futter, Gewichtsverlust, langsames Fressen, Kopfschlagen oder Widerstand gegen das Gebiss, Mundgeruch oder Nasenausfluss – rufen Sie uns an, wenn Ihnen etwas auffällt."
   },
   "intro": "Dieser Bericht fasst die dokumentierten Informationen zum Zahnarztbesuch von {{pet}} zusammen. Bitte besprechen Sie Fragen mit Ihrem tierärztlichen Team.",
+  "visitIntro": {
+    "lead": "Das haben wir bei der Zahnbehandlung von {{pet}} dokumentiert.",
+    "extractions": "Bei diesem Besuch entfernte Zähne: {{total}}.",
+    "findings": "Zähne mit dokumentierten Befunden: {{total}}.",
+    "exam": "Bei der Mauluntersuchung haben wir weitere Befunde dokumentiert.",
+    "treatment": "Für diesen Besuch haben wir Behandlungsnotizen dokumentiert."
+  },
+  "visitImages": "Bilder des Besuchs",
   "legendFilled": "ausgefüllt = schon vorher fehlend",
   "legendNumbers": "Die Nummern entsprechen den Befunden unten",
   "legendRemoved": "rotes ✕ = heute entfernt",

@@ -52,3 +52,5 @@
 .visit-documentation__review { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
 
 .visit-documentation--gp-exam .visit-documentation__fields { grid-template-columns: minmax(0, 1fr); }
+
+.visit-documentation__field-head { display: flex; align-items: center; justify-content: space-between; gap: 6px; flex-wrap: wrap; }

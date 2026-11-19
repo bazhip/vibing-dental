@@ -59,7 +59,7 @@ const REVIEW_SETTINGS: Record<string, ModelSettings> = {
 const LIVE_MAX_CHARS = 120_000;
 // ai_usage rows that aren't AI calls (voice tokens, emails): left out of
 // the AI rate limits so sending reminders or reports never blocks AI.
-const NON_AI_USAGE = '("deepgram-token","reminder-email","owner-report-email")';
+const NON_AI_USAGE = '("deepgram-token","reminder-email","owner-report-email","feedback")';
 const REVIEW_MAX_CHARS = 400_000;
 
 Deno.serve(async (req: Request) => {
@@ -214,10 +214,12 @@ Deno.serve(async (req: Request) => {
   // cache_write_tokens comes from a later migration: if it isn't there
   // yet, record the row without it rather than losing the counts.
   // (No reservation — the log was down — means insert the row now.)
+  const newRow = { ...baseRow, user_id: caller.id, practice_id: practiceId, kind };
   const logged = (usageId
     ? admin.from('ai_usage').update({ ...baseRow, cache_write_tokens: u.cache_creation_input_tokens ?? 0 }).eq('id', usageId)
       .then(({ error }) => (error ? admin.from('ai_usage').update(baseRow).eq('id', usageId) : null))
-    : admin.from('ai_usage').insert({ ...baseRow, user_id: caller.id, practice_id: practiceId, kind })
+    : admin.from('ai_usage').insert({ ...newRow, cache_write_tokens: u.cache_creation_input_tokens ?? 0 })
+      .then(({ error }) => (error?.code === 'PGRST204' || error?.code === '42703') ? admin.from('ai_usage').insert(newRow) : null)
   ).then(() => {}, () => {});
   // Once the response is sent the function can be shut down, taking an
   // unfinished insert with it (the call is billed but never counted).

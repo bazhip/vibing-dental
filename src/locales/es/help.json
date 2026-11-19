@@ -1,0 +1,404 @@
+{
+  "site": {
+    "title": "Centro de ayuda de ToothOps",
+    "intro": "Guías prácticas para cada paso de la visita dental, desde que abre el historial del paciente hasta que envía el informe.",
+    "search": "Buscar en la documentación",
+    "searchHint": "Busque temas, tareas o ajustes",
+    "topics": "Temas",
+    "onPage": "En esta página",
+    "openApp": "Abrir ToothOps",
+    "home": "Inicio de la ayuda",
+    "skip": "Ir al artículo",
+    "results": "Resultados de búsqueda",
+    "empty": "No se encontraron guías. Pruebe una búsqueda más breve o explore los temas.",
+    "clear": "Borrar búsqueda",
+    "related": "Guías relacionadas",
+    "language": "Idioma de la documentación",
+    "contact": "Enviar comentarios",
+    "guide": "Leer la guía"
+  },
+  "groups": {
+    "start": "Empezar",
+    "clinical": "Flujo de trabajo clínico",
+    "output": "Informes y seguimiento",
+    "practice": "Clínica y asistencia"
+  },
+  "images": {
+    "charting": "Ejemplo de odontograma con dientes numerados y una cuadrícula de hallazgos.",
+    "imaging": "Sección Diagnóstico por imagen con campos separados para los informes radiográfico y de TC.",
+    "dictation": "Revisión del dictado con propuestas separadas para radiografías y TC a partir de una sola transcripción.",
+    "owner": "Controles del informe para el propietario y resumen inicial específico de la visita.",
+    "export": "Vista previa del PDF del historial clínico con un odontograma de ejemplo.",
+    "start": "Área de trabajo de ejemplo con la pestaña de la visita, la navegación y la información del paciente.",
+    "patients": "Visitas anteriores del historial del paciente con una nota clínica seleccionada.",
+    "exam": "Cuadrícula del examen oral con las opciones Normal y Anormal, y un comentario.",
+    "viewer": "Visor con controles de ventana, nivel y descarga para un DICOM sintético.",
+    "treatment": "Informe del tratamiento con las plantillas guardadas y el texto editable debajo.",
+    "preferences": "Ajustes del historial con opciones de diseño, guardado automático y anotación de la profundidad de las bolsas.",
+    "help-tools": "Menú Ayuda con el centro de ayuda, el recorrido, las novedades y los comentarios.",
+    "by-number": "Vista Por diente con el 108 Triadan seleccionado en el diagrama numerado y sus hallazgos abiertos.",
+    "imagingSettings": "Ajustes de diagnóstico por imagen y PDF que muestran el idioma de los informes y las opciones predeterminadas de inclusión en el PDF."
+  },
+  "articles": {
+    "start": {
+      "title": "Su primera visita dental",
+      "intro": "Siga la visita desde la creación del historial hasta su finalización.",
+      "sections": {
+        "first": {
+          "title": "Abrir o crear un paciente",
+          "text": "Use el botón con el signo más o «Abrir un animal». Busque por nombre o número de paciente antes de crear uno. Compruebe el nombre, la especie, el número de paciente y la fecha de la visita en «Paciente»."
+        },
+        "second": {
+          "title": "Documentar la atención durante la visita",
+          "text": "Use «Examen» y «Anestesia» para las observaciones, «Odontograma» para las mediciones dentales, «Diagnóstico» para los hallazgos y «Procedimiento» para el trabajo realizado. Añada las imágenes y su interpretación en «Diagnóstico por imagen». Registre el tratamiento y las instrucciones de alta en sus respectivas secciones."
+        },
+        "third": {
+          "title": "Revisar, guardar y compartir",
+          "text": "Use «Revisar y exportar» para comprobar el historial clínico o el informe para el propietario. Use «Finalizar» cuando el historial esté listo para cerrarse. Compruebe el estado de guardado en la pestaña del paciente antes de salir. Si tiene que corregir una visita guardada, vuelva a abrirla con «Editar historial»."
+        }
+      }
+    },
+    "patients": {
+      "title": "Pacientes e historial de visitas",
+      "intro": "Abra la visita con la fecha correcta y compare los registros anteriores.",
+      "sections": {
+        "first": {
+          "title": "Buscar un paciente",
+          "text": "En la web, abra el selector de pacientes con el botón con el signo más. Compruebe el número de paciente cuando coincidan los nombres. Elija una visita existente para continuarla o inicie una visita nueva para una nueva cita."
+        },
+        "second": {
+          "title": "Cambiar de visita o de pestaña de paciente",
+          "text": "La pestaña muestra el paciente y la fecha de la visita. Cuando haya varias visitas guardadas, use el selector de visitas de la pestaña. Para abrir otro paciente, use el botón con el signo más. Cerrar una pestaña no elimina al paciente."
+        },
+        "third": {
+          "title": "Consultar los registros anteriores",
+          "text": "En «Paciente», elija «Ver el historial de consultas» cuando haya visitas previas disponibles. Seleccione una fecha y revise los PDF o las notas clínicas. Abra la visita con esa fecha si necesita corregir el historial de aquella visita."
+        }
+      }
+    },
+    "charting": {
+      "title": "Odontograma, diagnóstico y procedimientos",
+      "intro": "Registre los valores medidos y distinga los hallazgos de los procedimientos realizados.",
+      "sections": {
+        "first": {
+          "title": "Registrar las mediciones dentales",
+          "text": "En «Odontograma», elija «Cuadrícula» o «Por diente». Introduzca las mediciones periodontales en los dientes numerados correspondientes. Use «Personalizar» para elegir qué columnas aparecen y cómo se introducen las medidas de las bolsas.\n\nEn «Por diente», seleccione un diente numerado en el diagrama para abrir sus mediciones y notas juntas. En «Cuadrícula», seleccione números para trabajar con varios dientes. Mantenga pulsada Mayús al hacer clic para seleccionar un intervalo. Ambas vistas comparten las mismas mediciones."
+        },
+        "second": {
+          "title": "Documentar hallazgos en Diagnóstico",
+          "text": "Seleccione el diente correspondiente y marque los hallazgos previos al tratamiento o los dientes que ya faltaban. Añada códigos dentales y notas breves cuando sea necesario. Consulte el catálogo de códigos si necesita comprobar alguno."
+        },
+        "third": {
+          "title": "Documentar el trabajo en Procedimiento",
+          "text": "Use «Procedimiento» para el trabajo realizado durante la visita, incluidas las extracciones completadas. Añada los detalles en texto libre en «Informe del tratamiento». Mantenga los procedimientos previstos identificados como tales en la documentación hasta que se realicen."
+        }
+      }
+    },
+    "exam": {
+      "title": "Examen y anestesia",
+      "intro": "Registre las observaciones y los detalles anestésicos en las secciones correspondientes.",
+      "sections": {
+        "first": {
+          "title": "Documentar el examen",
+          "text": "Abra «Examen» y registre el estado y los comentarios de las zonas evaluadas. Deje en blanco las zonas que no haya evaluado. Use «Personalizar» para gestionar las zonas del examen."
+        },
+        "second": {
+          "title": "Registrar anestésicos y bloqueos nerviosos",
+          "text": "Abra «Anestesia», introduzca los fármacos anestésicos y registre el sitio y el volumen de los bloqueos realizados. Compruebe la lateralidad y las unidades con los datos de origen antes de finalizar."
+        },
+        "third": {
+          "title": "Usar secciones opcionales de la visita",
+          "text": "Si su clínica ha habilitado «Consulta» o «Exploración general», esas secciones aparecerán en la navegación del historial. Úselas para registrar los antecedentes, la valoración, el plan y los detalles del examen que correspondan."
+        }
+      }
+    },
+    "imaging": {
+      "title": "Diagnóstico por imagen e informes",
+      "intro": "Gestione las imágenes clínicas, las radiografías y los hallazgos de TC de la visita actual.",
+      "sections": {
+        "first": {
+          "title": "Añadir imágenes y consultar el historial",
+          "text": "En la web, use «Añadir imágenes» para seleccionar, arrastrar o pegar archivos. Cuando se admite DICOM, se conserva el archivo original para descargarlo. En «Historial de imágenes», amplíe la fila o abra la visita anterior para consultar sus imágenes."
+        },
+        "second": {
+          "title": "Elegir qué imágenes incluir en los informes",
+          "text": "Indique el tipo de cada imagen y, si procede, el diente y la descripción. Elija si aparece en el PDF clínico o en el informe para el propietario. Use «Antes del tratamiento» o «Después del tratamiento» cuando la etiqueta ayude a interpretar la imagen."
+        },
+        "third": {
+          "title": "Redactar los informes de diagnóstico por imagen",
+          "text": "Introduzca los hallazgos en «Informe radiográfico» o «Informe de TC». Para dictarlos, seleccione «Dictar» en «Diagnóstico por imagen» e indique la modalidad si no está clara. Revise los informes de destino propuestos antes de aplicar el texto. Si escribe el texto, puede usar «Refinar»."
+        }
+      }
+    },
+    "dictation": {
+      "title": "Dictado y revisión de resultados de IA",
+      "intro": "Dicte desde la sección en la que está trabajando y compruebe dónde se incorporan los hallazgos.",
+      "sections": {
+        "first": {
+          "title": "Empezar desde la sección actual",
+          "text": "Abra la sección correspondiente del historial, elija «Dictar» y luego «Iniciar dictado». Autorice el acceso al micrófono si se le solicita. Indique el diente, el lado, las unidades y la modalidad cuando estos detalles sean relevantes."
+        },
+        "second": {
+          "title": "Comprobar la transcripción y las propuestas",
+          "text": "El reconocimiento de voz genera la transcripción. La IA la organiza en hallazgos para el historial o en un borrador de texto. La sección activa ayuda a interpretar las expresiones ambiguas. Los hallazgos claros pueden incorporarse a otra sección compatible."
+        },
+        "third": {
+          "title": "Revisar las correcciones antes de aplicarlas",
+          "text": "En «Por revisar», compare el valor actual y el cambio propuesto. Aplique una sugerencia solo si la transcripción la respalda. De lo contrario, conserve el valor actual. Para los informes o las secciones de la visita, revise el texto propuesto y seleccione las secciones que desea aplicar."
+        }
+      }
+    },
+    "treatment": {
+      "title": "Informes del tratamiento y plantillas",
+      "intro": "Use texto reutilizable y documente lo que se realizó durante la visita.",
+      "sections": {
+        "first": {
+          "title": "Redactar el informe del tratamiento",
+          "text": "Abra «Informe del tratamiento» e introduzca los procedimientos realizados, los hallazgos pertinentes y los detalles necesarios para el historial. El dictado toma la sección actual como contexto."
+        },
+        "second": {
+          "title": "Usar una plantilla guardada",
+          "text": "Elija una plantilla por su nombre entre las guardadas. Compruebe el texto completado antes de guardar. Puede seguir editando el informe y usar «Refinar» para obtener una propuesta de redacción que pueda revisar."
+        },
+        "third": {
+          "title": "Crear una plantilla reutilizable",
+          "text": "Elija «Nueva plantilla», póngale un nombre reconocible y escriba el texto que quiera reutilizar. Escriba «{» en el editor de plantillas para ver los códigos de campos admitidos. Use un campo como {pet} para el nombre del paciente. Cuando seleccione la plantilla guardada, ToothOps rellenará los valores disponibles en el historial y le solicitará los que falten."
+        }
+      }
+    },
+    "discharge": {
+      "title": "Alta e informes para el propietario",
+      "intro": "Prepare el documento para entregar al propietario a partir de la visita registrada.",
+      "sections": {
+        "first": {
+          "title": "Registrar las instrucciones de alta",
+          "text": "Abra «Alta». Introduzca los medicamentos, las instrucciones y el seguimiento documentados. Antes de compartir, compruebe en el historial los nombres de los medicamentos, las dosis y los plazos."
+        },
+        "second": {
+          "title": "Redactar el informe para el propietario",
+          "text": "En «Informe para el propietario», elija la plantilla del informe. Use «Redactar con IA» para crear un borrador del resumen inicial y de los consejos de cuidado en casa a partir de la visita. Compruebe que los hallazgos principales estén explicados con claridad y edite el texto. Use «Restaurar el texto generado» para volver al borrador guardado después de editar."
+        },
+        "third": {
+          "title": "Obtener una vista previa y compartir",
+          "text": "Seleccione «Vista previa» junto a «Personalizar» para abrir el PDF para el propietario. Para incluir imágenes, selecciónelas en «Diagnóstico por imagen». En «Revisar y exportar», compruebe el destinatario y el documento antes de descargar el informe o, cuando esté disponible, enviarlo por correo electrónico."
+        }
+      }
+    },
+    "export": {
+      "title": "Revisar, exportar y finalizar",
+      "intro": "Compruebe que el documento sea el correcto antes de compartirlo y cierre la visita cuando esté completa.",
+      "sections": {
+        "first": {
+          "title": "Elegir un documento",
+          "text": "Abra «Revisar y exportar». «Historial clínico» es el PDF completo del historial. «Informe para el propietario», cuando está habilitado, es el PDF para entregar al propietario. «Nota clínica» proporciona la versión en texto para el historial médico."
+        },
+        "second": {
+          "title": "Personalizar el PDF clínico",
+          "text": "En «Historial clínico», abra «Personalizar» para elegir los colores y el contenido que se incluirá, como imágenes, informes de diagnóstico por imagen y los códigos utilizados. Compruebe la vista previa después de cambiar una opción y descargue el documento cuando esté listo."
+        },
+        "third": {
+          "title": "Finalizar o reabrir una visita",
+          "text": "«Finalizar» guarda la visita completada y la devuelve al modo de solo lectura. Para corregir una visita guardada, ábrala, elija «Editar historial», haga la corrección y seleccione «Terminar edición». Compruebe el paciente y la fecha antes de aplicar los cambios."
+        }
+      }
+    },
+    "rechecks": {
+      "title": "Revisiones y recordatorios",
+      "intro": "Registre el próximo seguimiento y consulte las revisiones pendientes.",
+      "sections": {
+        "first": {
+          "title": "Registrar una fecha de revisión",
+          "text": "En «Paciente», indique la «Próxima revisión» cuando se haya acordado una fecha. Añada instrucciones en «Alta» cuando sea necesario. Si se van a enviar recordatorios, compruebe los datos de contacto del propietario."
+        },
+        "second": {
+          "title": "Repasar la lista de revisiones",
+          "text": "Abra «Controles» para ver los seguimientos programados. Abra el paciente o la visita anterior cuando necesite consultar el contexto clínico. Quite los seguimientos completados de la lista cuando corresponda."
+        },
+        "third": {
+          "title": "Configurar recordatorios",
+          "text": "Abra «Recordatorios de revisión» en los ajustes de la clínica o de la aplicación para revisar las opciones de envío disponibles. Compruebe el destinatario y la programación antes de enviar un recordatorio."
+        }
+      }
+    },
+    "settings": {
+      "title": "Ajustes de la cuenta y de la clínica",
+      "intro": "Configure el historial para el equipo y distinga las preferencias personales de los ajustes compartidos.",
+      "sections": {
+        "first": {
+          "title": "Establecer sus preferencias",
+          "text": "Use «Cuenta» para cambiar el idioma de la aplicación y su perfil. En los ajustes del historial, o con «Personalizar» dentro de una sección, puede configurar la distribución, las mediciones, el diagnóstico por imagen y las opciones de visualización del PDF."
+        },
+        "second": {
+          "title": "Gestionar los ajustes compartidos de la clínica",
+          "text": "Los propietarios de la clínica pueden gestionar la identidad visual, el acceso del equipo y las plantillas de informes compartidas. El idioma de cliente configurado por la clínica determina los valores predeterminados de los contenidos dirigidos al propietario, incluida la redacción de los informes."
+        },
+        "third": {
+          "title": "Comprobar las funciones disponibles",
+          "text": "Algunas secciones clínicas, herramientas de IA y acciones de los informes dependen de los ajustes de la clínica, de los permisos de acceso y de su función. Si no encuentra una herramienta, compruebe que estén abiertas la clínica correcta y una visita editable."
+        }
+      }
+    },
+    "troubleshooting": {
+      "title": "Solución de problemas",
+      "intro": "Resuelva los problemas habituales de guardado, grabación, imágenes o exportación.",
+      "sections": {
+        "first": {
+          "title": "Una visita no se guarda",
+          "text": "Compruebe el indicador de guardado y la conexión. Confirme que la visita incluye el nombre del paciente y datos clínicos. Use la opción disponible para reintentar o guardar manualmente. Mantenga abierto el historial hasta confirmar que se ha guardado."
+        },
+        "second": {
+          "title": "El micrófono o la IA no están disponibles",
+          "text": "Permita el acceso al micrófono en los ajustes del navegador o del dispositivo, cierre otras sesiones de grabación y compruebe la conexión. Abra un historial editable y use «Iniciar dictado». Si un resultado parece incorrecto, conserve el valor guardado y revise la transcripción."
+        },
+        "third": {
+          "title": "Falta contenido en un informe",
+          "text": "Compruebe que ha elegido la visita y la pestaña de documento correctas. Revise la plantilla del informe, las opciones de contenido del PDF y la inclusión de cada imagen. Si el problema persiste, envíe comentarios desde el menú de ayuda y describa qué esperaba y qué ocurrió."
+        }
+      }
+    },
+    "account": {
+      "title": "Inicio de sesión y gestión de la cuenta",
+      "intro": "Configure el acceso, recupere la contraseña o actualice su perfil.",
+      "sections": {
+        "first": {
+          "title": "Iniciar sesión o aceptar una invitación",
+          "text": "Inicie sesión con el correo de su cuenta. Si está creando una cuenta, siga el enlace de confirmación que recibió por correo. Si una clínica le ha invitado, use la invitación enviada a la dirección que utilizará para ToothOps."
+        },
+        "second": {
+          "title": "Recuperar el acceso",
+          "text": "En la pantalla de inicio de sesión, elija «¿Olvidó su contraseña?» y siga el enlace del correo. Si la sesión caduca mientras registra datos, vuelva a iniciar sesión para reanudar el guardado en la nube. Compruebe que la visita correcta esté abierta antes de continuar."
+        },
+        "third": {
+          "title": "Actualizar el perfil y las credenciales",
+          "text": "Abra «Cuenta» para actualizar su nombre visible, correo electrónico, contraseña o idioma de la aplicación. Siga las instrucciones de confirmación de cada sección."
+        }
+      }
+    },
+    "viewer": {
+      "title": "Revisión de imágenes y archivos DICOM",
+      "intro": "Use el visor para examinar un adjunto y recuperar su archivo original.",
+      "sections": {
+        "first": {
+          "title": "Abrir el visor",
+          "text": "Seleccione una imagen en «Diagnóstico por imagen» o en una visita anterior. Use los controles del visor para ampliar la imagen, ajustarla a la pantalla o desplazarse por ella. Si es necesario, compare los detalles con la adquisición original."
+        },
+        "second": {
+          "title": "Ajustar la visualización",
+          "text": "Para los archivos DICOM originales compatibles, use «Ventana / nivel» para trabajar con los datos originales. En el ordenador, mantenga pulsada Mayús y arrastre en horizontal para ajustar la ventana o en vertical para ajustar el nivel. Use el brillo y el contraste cuando la ventana y el nivel no estén disponibles."
+        },
+        "third": {
+          "title": "Descargar el original",
+          "text": "Si el original está disponible, elija «Descargar DICOM original» en las acciones de la imagen. Si el archivo no se puede leer, pruebe un DICOM sin compresión o un formato de imagen compatible exportado desde el software de imagen original."
+        }
+      }
+    },
+    "recovery": {
+      "title": "Visitas guardadas, versiones e importación de PDF",
+      "intro": "Recupere una versión guardada o continúe a partir de un PDF de historial de ToothOps.",
+      "sections": {
+        "first": {
+          "title": "Entender el estado de guardado",
+          "text": "Compruebe el indicador de guardado en la pestaña del paciente activo. Los cambios sin conexión pueden quedar en el dispositivo hasta que se restablezca la conexión. Si ToothOps indica que otro dispositivo o miembro del equipo ha guardado una versión más reciente, compare las versiones antes de confirmar que desea sustituir esos cambios."
+        },
+        "second": {
+          "title": "Consultar o restaurar una versión anterior",
+          "text": "Use «Versiones del historial» para comparar los guardados de la misma visita. Seleccione una versión para consultar los datos registrados. Para restaurarla, abra la visita para editarla, seleccione «Restaurar esta versión» y confirme. La versión previa a la restauración permanece en el historial de versiones."
+        },
+        "third": {
+          "title": "Importar un PDF del historial",
+          "text": "Elija «Importar PDF de historial» en el directorio de pacientes y seleccione un PDF del historial que ToothOps haya exportado anteriormente. Confirme cualquier aviso sobre el historial abierto y, antes de continuar, compruebe el paciente y la fecha de la visita. Es posible que un PDF de otro origen no contenga un historial editable de ToothOps."
+        }
+      }
+    },
+    "preferences": {
+      "title": "Personalizar ToothOps",
+      "intro": "Encuentre el control «Personalizar» adecuado para el registro en el historial, las opciones predeterminadas del diagrama, las plantillas de informes o la exportación a PDF.",
+      "sections": {
+        "first": {
+          "title": "Encontrar los ajustes para cada tarea",
+          "text": "Abra «Paciente», «Examen», «Anestesia», «Odontograma», «Diagnóstico», «Procedimiento» o «Diagnóstico por imagen» y elija «Personalizar» en el encabezado de la sección. Se abrirán los ajustes del odontograma en la categoría correspondiente. Elija otra sección en la lista de categorías de la izquierda sin cerrar el cuadro de diálogo. Las preferencias personales del historial se guardan automáticamente en su cuenta cuando hay sincronización o en el navegador actual si no la hay.\n\nEn «Informe del tratamiento», «Personalizar» abre las plantillas de informes del tratamiento. Junto a «Vista previa» en «Informe para el propietario», «Personalizar» abre las plantillas de informes para el propietario. Estos editores gestionan el texto reutilizable y el diseño de su clínica. Revise la plantilla seleccionada antes de modificarla."
+        },
+        "second": {
+          "title": "Entender cada categoría de ajustes del odontograma",
+          "text": "La barra lateral de los ajustes del odontograma agrupa las opciones según la parte de la visita a la que afectan. En «Odontograma», por ejemplo, elija «Cuadrícula» o «Por diente», el modo de registrar la profundidad de bolsa, qué mediciones se muestran y qué ocurre después de introducir una puntuación. Configure los accesos rápidos de «Diagnóstico» y «Procedimiento» por separado, ya que se aplican a diagramas distintos.\n\nPuede cambiar qué campos y elementos del diagrama se muestran para centrarse en los datos necesarios durante el registro. Antes de exportar, revise los hallazgos introducidos en el historial del paciente."
+        },
+        "third": {
+          "title": "Configurar las opciones de imagen y personalizar las exportaciones",
+          "text": "Abra «Diagnóstico por imagen», elija «Personalizar» y seleccione «Diagnóstico por imagen y PDF» para configurar el idioma de los informes y las opciones de inclusión predeterminadas. Puede incluir imágenes, informes radiográficos y de TC y la sección de códigos utilizados. Cuando se desactivan los hallazgos del diagrama, la cuadrícula de mediciones es obligatoria para mantener visibles las mediciones registradas en el documento clínico.\n\nPara una exportación concreta, abra «Revisar y exportar», seleccione «Historial clínico» y abra «Personalizar». Elija el color del PDF clínico y las secciones incluidas, y compruebe la vista previa. Para un documento para el propietario, use la plantilla de «Informe para el propietario» y elija en «Diagnóstico por imagen» qué imágenes individuales desea incluir. Cambiar el color del PDF clínico no cambia la plantilla del informe para el propietario."
+        }
+      }
+    },
+    "team": {
+      "title": "Configuración de la clínica y acceso del equipo",
+      "intro": "Gestione la identidad visual de la clínica, sus compañeros y las plantillas de informes compartidas.",
+      "sections": {
+        "first": {
+          "title": "Configurar la identidad visual de la clínica",
+          "text": "Abra «Ajustes de la clínica» para actualizar el nombre y el logotipo de la clínica si su función se lo permite. Vea la vista previa de un PDF para comprobar cómo aparecen los datos de la clínica. Configure el idioma de cliente para el texto predeterminado que verán los propietarios."
+        },
+        "second": {
+          "title": "Invitar y gestionar a sus compañeros",
+          "text": "En «Ajustes de la clínica», abra «Equipo». Invite a sus compañeros con la dirección de correo que usarán para iniciar sesión. Compruebe las invitaciones pendientes y use la opción disponible para reenviarlas o cancelarlas. El titular de la clínica puede gestionar el acceso de los miembros y la titularidad."
+        },
+        "third": {
+          "title": "Gestionar las plantillas compartidas",
+          "text": "Abra «Plantillas» en «Ajustes de la clínica» o seleccione «Personalizar» junto al informe correspondiente. Los titulares de la clínica pueden gestionar el diseño y el texto de los informes para el propietario y elegir la plantilla predeterminada de la clínica. Si edita una plantilla existente, compruebe la vista previa del informe de ejemplo antes de guardar."
+        }
+      }
+    },
+    "billing": {
+      "title": "Suscripción y facturación",
+      "intro": "Encuentre los controles de suscripción y pagos de su clínica.",
+      "sections": {
+        "first": {
+          "title": "Consultar su suscripción",
+          "text": "En ToothOps en la web, abra «Ajustes de la clínica» y luego «Facturación». La página muestra la información disponible de la suscripción de su clínica. Si no tiene acceso, pida al titular de la clínica que haga los cambios de facturación."
+        },
+        "second": {
+          "title": "Gestionar pagos y facturas",
+          "text": "Cuando esté disponible, use «Gestionar la facturación» para abrir el portal de Stripe. Desde el portal puede consultar las facturas, cambiar el método de pago o gestionar su suscripción. Compruebe que está gestionando la clínica correcta."
+        },
+        "third": {
+          "title": "Resolver un problema de acceso",
+          "text": "Si aparece un aviso de facturación o de acceso de la clínica, siga la acción indicada en la web. Use «Ayuda» para contactar con el equipo de asistencia si el estado de un pago o de una suscripción parece incorrecto."
+        }
+      }
+    },
+    "help-tools": {
+      "title": "Ayuda y novedades",
+      "intro": "Use el recorrido introductorio, las notas de la versión y las herramientas para enviar comentarios.",
+      "sections": {
+        "first": {
+          "title": "Abrir el recorrido introductorio",
+          "text": "Elija «Primeros pasos» en «Ayuda». El recorrido muestra los controles y puede volver a abrirse cuando lo necesite."
+        },
+        "second": {
+          "title": "Consultar los cambios recientes",
+          "text": "Abra «Novedades» desde «Ayuda» para ver los cambios recientes. Consulte las guías del centro de ayuda para conocer los flujos de trabajo nuevos."
+        },
+        "third": {
+          "title": "Enviar comentarios útiles",
+          "text": "Use «Enviar comentarios» en «Ayuda» si encuentra un problema o tiene una idea. Describa qué estaba haciendo, qué pasó y qué esperaba. Elimine la información del paciente o del propietario antes de adjuntar una captura."
+        }
+      }
+    },
+    "by-number": {
+      "title": "Registrar hallazgos por número de diente",
+      "intro": "Use el diagrama numerado para documentar las mediciones, el diagnóstico y las notas de procedimiento de un diente a la vez.",
+      "sections": {
+        "first": {
+          "title": "Abrir Por diente y seleccionar un número",
+          "text": "Abra «Odontograma» y seleccione «Por diente» junto a «Cuadrícula». Seleccione el diente numerado en el diagrama. El encabezado del editor muestra el número Triadan y el nombre del diente, así que puede comprobar la selección antes de introducir un hallazgo. Por ejemplo, en el diagrama de un perro adulto, el 108 es el cuarto premolar superior derecho. La numeración corresponde a la especie y la dentición seleccionadas en «Paciente».\n\nSi el diagrama está contraído en una ventana estrecha, seleccione «Mapa dental», elija un cuadrante y luego seleccione el número. Use «Diente anterior» o «Siguiente diente» para desplazarse sin volver a abrir el mapa."
+        },
+        "second": {
+          "title": "Registrar hallazgos, notas y estado de extracción",
+          "text": "Introduzca las mediciones registradas en «Hallazgos». Para la profundidad de la bolsa puede registrar una medición por diente, una por raíz o seis en sitios específicos. Abra «Personalizar» en «Odontograma» para elegir el modo de registro de profundidad de bolsa y las mediciones que desea ver. Marque «Ausente (antes de esta visita)» solo cuando el diente ya faltaba.\n\nUse «Nota de diagnóstico» y los códigos rápidos configurados para anotar los hallazgos. Use «Nota de procedimiento» para documentar el trabajo realizado. Elija «Planificar extracción» para una extracción prevista. Cuando la haya realizado, marque el diente como extraído. La leyenda distingue los hallazgos registrados, las extracciones planificadas, las extracciones realizadas y los dientes ausentes."
+        },
+        "third": {
+          "title": "Cambiar de vista o dictar un hallazgo indicando el número",
+          "text": "«Cuadrícula» y «Por diente» editan el mismo historial. Las mediciones introducidas en el editor numerado también aparecen en «Cuadrícula». Las notas y marcas de «Diagnóstico» y «Procedimiento» aparecen en sus respectivos diagramas. Puede cambiar de vista en cualquier momento para comprobar lo que ha registrado.\n\nPara dictar, permanezca en «Odontograma», elija «Dictar» e inicie la grabación. Diga el número completo y el hallazgo, por ejemplo, «108, bolsa distal de cinco milímetros». Compruebe que el resultado corresponda al diente y a los campos de bolsa disponibles. Si un cambio sugerido no coincide con un valor registrado, revíselo antes de aplicarlo."
+        }
+      }
+    }
+  }
+}

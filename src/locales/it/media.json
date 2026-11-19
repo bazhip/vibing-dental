@@ -1,5 +1,10 @@
 {
   "imaging": {
+    "inOwnerReport": "Nel report per il proprietario",
+    "beforeAfter": "Prima / dopo",
+    "noLabel": "Nessuna etichetta",
+    "details": "Dettagli dell’immagine",
+    "reportInclusion": "Inclusione nei report",
     "title": "Diagnostica per immagini",
     "signedOut": "Acceda con un account della struttura per allegare foto endorali e radiografie dentali — vengono archiviate in modo privato insieme alla cartella.",
     "usage": "{{used}} di {{max}} immagini",
@@ -67,7 +72,23 @@
     "toothLabel": "Dente",
     "ownerReportLabel": "Referto per il proprietario"
   },
+  "patientRecord": {
+    "open": "Visualizza lo storico delle visite",
+    "title": "Storico delle cartelle del paziente",
+    "visit": "Visita",
+    "currentVisit": "Visita corrente",
+    "undatedVisit": "Visita senza data",
+    "loadingVisits": "Caricamento delle visite precedenti…",
+    "visitsFailed": "Impossibile caricare le visite precedenti.",
+    "noVisits": "Non sono disponibili visite precedenti in ToothOps.",
+    "visitFailed": "Impossibile aprire questa visita.",
+    "pdfs": "PDF delle visite",
+    "notes": "Note cliniche"
+  },
   "documents": {
+    "customize": "Personalizza",
+    "color": "Colore",
+    "included": "Contenuto del PDF",
     "title": "Verifica ed esportazione",
     "chartTab": "Cartella clinica",
     "chartWho": "Per i Suoi archivi e per i rinvii — la cartella completa con i codici.",
@@ -163,6 +184,8 @@
     "missing": "Impossibile caricare questa immagine."
   },
   "history": {
+    "expand": "Espandi la cronologia delle immagini",
+    "collapse": "Comprimi la cronologia delle immagini",
     "show_one": "Cronologia immagini (1 altra visita)",
     "show_many": "Cronologia immagini ({{count}} altre visite)",
     "show_other": "Cronologia immagini ({{count}} altre visite)",

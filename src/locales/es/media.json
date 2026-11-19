@@ -1,5 +1,10 @@
 {
   "imaging": {
+    "inOwnerReport": "En el informe para el propietario",
+    "beforeAfter": "Antes / después",
+    "noLabel": "Sin etiqueta",
+    "details": "Detalles de la imagen",
+    "reportInclusion": "Inclusión en informes",
     "title": "Diagnóstico por imagen",
     "signedOut": "Inicie sesión con una cuenta de clínica para adjuntar fotos intraorales y radiografías dentales — se guardan de forma privada junto con el historial.",
     "usage": "{{used}} de {{max}} imágenes",
@@ -67,7 +72,23 @@
     "toothLabel": "Diente",
     "ownerReportLabel": "Informe para el propietario"
   },
+  "patientRecord": {
+    "open": "Ver el historial de consultas",
+    "title": "Historial clínico del paciente",
+    "visit": "Visita",
+    "currentVisit": "Visita actual",
+    "undatedVisit": "Visita sin fecha",
+    "loadingVisits": "Cargando consultas anteriores…",
+    "visitsFailed": "No se pudieron cargar las consultas anteriores.",
+    "noVisits": "No hay consultas anteriores disponibles en ToothOps.",
+    "visitFailed": "No se pudo abrir esa consulta.",
+    "pdfs": "PDF de las consultas",
+    "notes": "Notas clínicas"
+  },
   "documents": {
+    "customize": "Personalizar",
+    "color": "Color",
+    "included": "Contenido del PDF",
     "title": "Revisar y exportar",
     "chartTab": "Historial clínico",
     "chartWho": "Para sus registros y derivaciones — el historial completo con los códigos.",
@@ -163,6 +184,8 @@
     "missing": "No se pudo cargar esta imagen."
   },
   "history": {
+    "expand": "Ampliar el historial de imágenes",
+    "collapse": "Contraer el historial de imágenes",
     "show_one": "Historial de imágenes (1 visita más)",
     "show_many": "Historial de imágenes ({{count}} visitas más)",
     "show_other": "Historial de imágenes ({{count}} visitas más)",

@@ -262,10 +262,8 @@ it.each(['/', '/#/library'])('opens Patients as a modal over the saved chart on 
 
 it.each([false, true])('hides dictation on a read-only chart (native=%s)', async native => {
   flags.native = native;
-  const { container } = await renderApp();
-  const dictate = container.querySelector('.voice-input-wrap > button');
-  expect(dictate).not.toBeNull();
-  expect(dictate).not.toBeVisible();
+  await renderApp();
+  expect(screen.queryByRole('button', { name: 'Dictate' })).not.toBeInTheDocument();
 });
 
 it('reopens the last closed animal when choosing today’s visit from the library', async () => {

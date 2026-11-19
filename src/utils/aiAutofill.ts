@@ -1,3 +1,4 @@
+import type { AiRequestKind } from '../../supabase/functions/_shared/aiModels';
 import type Anthropic from '@anthropic-ai/sdk';
 import { supabase } from './supabaseClient';
 import i18n from '../i18n';
@@ -869,7 +870,7 @@ export interface AutofillRequest {
    *  model more thinking and output room for it. */
   mode?: 'review';
   /** Which feature the call is for — logged with usage (ai_usage.kind). */
-  kind?: 'live' | 'review' | 'owner_report' | 'warmup' | 'radiology_report';
+  kind?: AiRequestKind;
   system: Array<{ type: 'text'; text: string; cache_control?: { type: 'ephemeral' } }>;
   tools: Anthropic.Messages.Tool[];
   messages: Array<{ role: 'user'; content: Array<{ type: 'text'; text: string }> }>;
@@ -1282,6 +1283,43 @@ export function isNoopAction(action: AiAction, c: ChartContext): boolean {
     default:
       return false;
   }
+}
+
+/** The populated chart data a non-append action would replace. */
+export function overwrittenChartValue(action: AiAction, chart: ChartContext): string | undefined {
+  if (isNoopAction(action, chart)) return;
+  const read = (field: string) => String(action.input[field] ?? '').trim();
+  const tooth = Number(action.input.triadan);
+  const info = chart.patientInfo;
+  let existing: string | undefined;
+  switch (action.name) {
+    case 'set_tooth_field':
+      existing = chart.toothData.find(row => row.triadan === tooth)?.[read('field') as DentalField];
+      break;
+    case 'set_tooth_mark':
+    case 'unset_tooth_mark':
+      existing = (read('diagram') === 'post' ? chart.postMarks : chart.preMarks)[tooth];
+      break;
+    case 'set_exam_finding': {
+      const current = info.exam?.[read('area') as keyof ExamFindings];
+      if (current && ((current.status && current.status !== read('status')) || (read('comment') && current.comment))) {
+        existing = [current.status && i18n.t(`forms:exam.${current.status}`), current.comment].filter(Boolean).join(' · ');
+      }
+      break;
+    }
+    case 'set_nerve_block':
+      existing = String(info.nerveBlocks?.[read('site') as NerveBlockSite] ?? '');
+      break;
+    case 'set_anesthetic_drug':
+      if (read('concentration')) {
+        existing = info.nerveBlocks?.drugs?.find(drug => drug.name.trim().toLowerCase() === read('drug').toLowerCase())?.concentration;
+      }
+      break;
+    case 'set_patient_field':
+      existing = String(info[read('field') as keyof PatientInfo] ?? '');
+      break;
+  }
+  return typeof existing === 'string' && existing.trim() ? existing : undefined;
 }
 
 /** Drop no-op actions and exact repeats within one reply. */

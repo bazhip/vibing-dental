@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { APP_LANGUAGES, LANGUAGE_NAMES, isAppLanguage } from '../i18n/config';
 import { List, ListRow, ListSection, SwitchRow } from '../ios/List';
 import { AnesthesiaCustomEditor } from './AnesthesiaCustomEditor';
 import { QuickCodesEditor } from './QuickCodesEditor';
@@ -38,7 +39,7 @@ const STAY = 'stay' as const;
 
 
 export function ChartSettingsList({ prefs, followsAccount, onChange, only, onShowAll }: ChartSettingsListProps) {
-  const { t } = useTranslation('settings');
+  const { t } = useTranslation(['settings', 'app']);
   // Same rules as the web dialog; a pending usual-anesthetic edit is also
   // saved when the screen or sheet goes away without a blur (iOS Back).
   const {
@@ -292,6 +293,21 @@ export function ChartSettingsList({ prefs, followsAccount, onChange, only, onSho
         </ListSection>
       )}
 
+      {show.pdfImages && (
+        <ListSection>
+          <label className="chart-settings__imaging-language">
+            {t('radiologyReport.editorLanguage', { ns: 'app' })}
+            <select className="patient-form__input" value={prefs.imagingReportLanguage ?? ''} onChange={event => {
+              const value = event.target.value;
+              onChange({ imagingReportLanguage: isAppLanguage(value) ? value : null });
+            }}>
+              <option value="">{t('radiologyReport.automaticLanguage', { ns: 'app' })}</option>
+              {APP_LANGUAGES.map(value => <option key={value} value={value}>{LANGUAGE_NAMES[value]}</option>)}
+            </select>
+          </label>
+        </ListSection>
+      )}
+
       {(show.pdfGrid || show.pdfImages) && (
         <ListSection header={t('chart.pdf.title')}>
           {show.pdfGrid && (
@@ -323,6 +339,13 @@ export function ChartSettingsList({ prefs, followsAccount, onChange, only, onSho
               title={t('chart.pdf.ctReport')}
               checked={prefs.pdfIncludeCtReport}
               onChange={(on) => onChange({ pdfIncludeCtReport: on })}
+            />
+          )}
+          {show.pdfImages && (
+            <SwitchRow
+              title={t('chart.pdf.codesUsed')}
+              checked={prefs.pdfIncludeCodesUsed}
+              onChange={(on) => onChange({ pdfIncludeCodesUsed: on })}
             />
           )}
         </ListSection>

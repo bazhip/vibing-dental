@@ -51,6 +51,21 @@
     "sessionStart": "Impossible de démarrer la session Deepgram.",
     "unsupported": "La saisie vocale nécessite Chrome, Edge ou Safari."
   },
+  "destination": {
+    "general": "Général"
+  },
+  "correction": {
+    "conflict": "Vérifiez cette modification du dossier.",
+    "apply": "Appliquer la suggestion",
+    "keep": "Conserver la valeur actuelle"
+  },
+  "welcome": {
+    "ready": "Votre transcription s’affichera ici dès le début de l’enregistrement.",
+    "title": "Dictée",
+    "start": "Sélectionnez Démarrer la dictée pour commencer l’enregistrement.",
+    "transcript": "Suivez la transcription pendant que vous parlez. Sélectionnez Arrêter lorsque vous avez terminé.",
+    "review": "Vérifiez le rapport ou les modifications du dossier et apportez les corrections nécessaires."
+  },
   "intro": {
     "ariaLabel": "Dicter",
     "cancel": "Annuler",
@@ -131,6 +146,7 @@
     "open_other": "{{count}} éléments à vérifier."
   },
   "status": {
+    "idle": "Prêt à démarrer",
     "connecting": "Connexion…",
     "finishing": "Finalisation…",
     "interrupted": "Interrompu",
@@ -166,6 +182,7 @@
       "ct": "Compte rendu de scanner"
     },
     "help": "Enregistrez ou collez les observations du clinicien. Vérifiez les sections proposées avant de les appliquer. Les résultats non documentés restent vides.",
+    "imagingHelp": "Enregistrez ou collez les constatations d’imagerie. Précisez le type d’imagerie s’il est ambigu. Vérifiez la répartition entre les comptes rendus radiographique et tomodensitométrique avant de l’appliquer.",
     "ctHelp": "Enregistrez ou collez les observations du scanner. À l’arrêt de la dictée, elles sont ajoutées uniquement au compte rendu de scanner et reformulées automatiquement.",
     "ctApply": "Ajouter et reformuler le compte rendu de scanner",
     "target": "Destination de la dictée",

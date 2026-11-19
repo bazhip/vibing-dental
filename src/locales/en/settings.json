@@ -195,7 +195,8 @@
       "images": "Include images",
       "imagesHint": "(4 per page, after the chart)",
       "radiographicReport": "Include the radiographic report",
-      "ctReport": "Include the CT report"
+      "ctReport": "Include the CT report",
+      "codesUsed": "Include codes used"
     },
     "noteDevice": "Personal preferences saved automatically on this device.",
     "spaceMovesDownHint": "Fast for calling out a run of depths",

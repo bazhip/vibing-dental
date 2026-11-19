@@ -138,6 +138,14 @@
     "fieldType": "Tip de câmp"
   },
   "report": {
+    "replaceTemplateTitle": "Înlocuiți textul raportului de tratament?",
+    "replaceTemplateMessage": "Șablonul selectat va înlocui textul actual al raportului de tratament pentru această vizită.",
+    "replaceTemplate": "Folosește șablonul",
+    "useSaved": "Folosiți un șablon salvat",
+    "newTemplate": "Șablon nou",
+    "fillField": "Completați câmpul șablonului",
+    "fieldRequired": "Introduceți o valoare pentru a continua.",
+    "fieldContinue": "Continuați",
     "title": "Raport de tratament",
     "insertAria": "Introduceți un șablon de raport",
     "loading": "Se încarcă șabloanele…",

@@ -1,3 +1,4 @@
+import { RefineTextAction } from './RefineTextAction';
 import { isGeneratedPatientNumber, patientNumberOf } from '../utils/patientIds';
 import { SectionHeader } from './SectionHeader';
 import React from 'react';
@@ -20,6 +21,8 @@ interface PatientFormProps {
   hiddenFields?: OptionalPatientField[];
   /** Open this page's settings. */
   onCustomize?: () => void;
+  onReviewHistory?: () => void;
+  readOnly?: boolean;
 }
 
 /**
@@ -40,8 +43,15 @@ export const PatientForm: React.FC<PatientFormProps> = ({
   hideRecheck = false,
   hiddenFields = [],
   onCustomize,
+  onReviewHistory,
+  readOnly = false,
 }) => {
   const { t } = useTranslation('forms');
+  const historyAction = onReviewHistory && (
+    <button type="button" className="diagram-view__action patient-form__history" aria-haspopup="dialog" onClick={onReviewHistory}>
+      {t('patientRecord.open', { ns: 'media' })}
+    </button>
+  );
   const numberHintId = React.useId();
   const ownerHasInfo = !!(patientInfo.ownerName?.trim() || patientInfo.ownerPhone?.trim() || patientInfo.ownerEmail?.trim());
   const [ownerExpanded, setOwnerExpanded] = React.useState(ownerHasInfo);
@@ -128,6 +138,8 @@ export const PatientForm: React.FC<PatientFormProps> = ({
         <div className="patient-form__header">
           <h2 className="patient-form__section-title">{t('patient.title')}</h2>
         </div>
+        {historyAction}
+        <fieldset className="sidebar-layout__fieldset" disabled={readOnly}>
         <FormGroup header={t('ios.form.patient', { ns: 'chart' })}>
           <FormField label={<>{t('patient.name')} <span className="patient-form__req" aria-hidden="true">*</span></>}>
             <input dir="auto"
@@ -244,16 +256,21 @@ export const PatientForm: React.FC<PatientFormProps> = ({
               value={patientInfo.complaint}
               onChange={(value) => onPatientInfoChange('complaint', value)}
             />
+            <div className="clinical-text__actions">
+              <RefineTextAction value={patientInfo.complaint ?? ''} readOnly={readOnly} onApply={text => onPatientInfoChange('complaint', text)} />
+            </div>
           </div>
         </FormGroup>
+        </fieldset>
       </div>
     );
   }
 
   return (
     <div className="patient-form">
-      <SectionHeader title={t('patient.title')} onCustomize={onCustomize} customizeTitle={t('patient.customizeTitle')} />
+      <SectionHeader title={t('patient.title')} actions={historyAction} onCustomize={readOnly ? undefined : onCustomize} customizeTitle={t('patient.customizeTitle')} />
 
+      <fieldset className="sidebar-layout__fieldset" disabled={readOnly}>
       <section className="patient-form__group" aria-label={t('patient.identityGroup')}>
       {/* SoCal carries Patient Name + Number; VCA carries Doctor + Tech.
           Both pairs are kept on PatientInfo so values survive a logo flip. */}
@@ -442,20 +459,25 @@ export const PatientForm: React.FC<PatientFormProps> = ({
       </div>
 
       <div className="patient-form__row">
-        <label className="patient-form__label">
-          {t('patient.complaint')}
-          <CodeField
-            multiline
-            className="patient-form__textarea"
-            placeholder={t('patient.complaintPlaceholder')}
-            value={patientInfo.complaint}
-            onChange={(value) => onPatientInfoChange('complaint', value)}
-          />
-        </label>
+        <div className="patient-form__complaint">
+          <label className="patient-form__label">
+            {t('patient.complaint')}
+            <CodeField
+              multiline
+              className="patient-form__textarea"
+              placeholder={t('patient.complaintPlaceholder')}
+              value={patientInfo.complaint}
+              onChange={(value) => onPatientInfoChange('complaint', value)}
+            />
+          </label>
+          <div className="clinical-text__actions">
+            <RefineTextAction value={patientInfo.complaint ?? ''} readOnly={readOnly} onApply={text => onPatientInfoChange('complaint', text)} />
+          </div>
+        </div>
       </div>
 
       </section>
-
+      </fieldset>
     </div>
   );
 };

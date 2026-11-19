@@ -1,4 +1,25 @@
 {
+  "refinement": {
+    "noChanges": "Keine Änderungen vorgeschlagen. Ihr Text bleibt unverändert.",
+    "applied": "Überarbeitung übernommen.",
+    "kept": "Die ursprüngliche Formulierung wurde beibehalten.",
+    "consentRequired": "Erlauben Sie die KI-Verarbeitung, um diesen Text zu überarbeiten.",
+    "fieldChanged": "Der Text wurde während der Überarbeitung geändert. Wählen Sie Überarbeiten, um es erneut zu versuchen.",
+    "enterText": "Geben Sie Text zum Überarbeiten ein.",
+    "tooLong": "Dieser Text ist zu lang, um ihn auf einmal zu überarbeiten.",
+    "action": "Überarbeiten",
+    "modes": {
+      "clean": "Formulierung verbessern",
+      "concise": "Kürzer fassen",
+      "organize": "Gliedern"
+    },
+    "review": "Überarbeitung prüfen",
+    "original": "Original",
+    "proposed": "Vorgeschlagener Text",
+    "apply": "Überarbeitung übernehmen",
+    "failed": "Der Text konnte nicht überarbeitet werden.",
+    "changedFacts": "Der Entwurf hat eine Zahl, eine Einheit oder einen Platzhalter geändert. Ihr Text wurde beibehalten."
+  },
   "brand": "ToothOps Charting",
   "brandTrial": "ToothOps Charting · Testversion",
   "skipLink": "Zum Hauptinhalt springen",
@@ -76,6 +97,8 @@
     "addLogo": "Logo hinzufügen"
   },
   "status": {
+    "waitingToChart": "Dieser Besuch ist auf diesem Gerät gespeichert. Er wird online synchronisiert, sobald Sie mit der Dokumentation beginnen.",
+    "autosaveOff": "Automatisches Speichern ist deaktiviert. Speichern Sie diesen Besuch, um ihn online zu synchronisieren.",
     "srSaving": "Akte wird gespeichert",
     "srSaved": "Akte gespeichert",
     "srNotSaved": "Akte nicht gespeichert",
@@ -346,6 +369,9 @@
     "failed": "Der Abschlussstatus der Akte konnte nicht geändert werden. {{error}}"
   },
   "radiologyReport": {
+    "automaticLanguage": "Automatisch",
+    "languageTip": "Die KI schreibt auf {{language}}. Unter „Anpassen“ können Sie die Sprache ändern.",
+    "dictate": "Röntgenbefunde diktieren",
     "title": "Radiologischer Bericht",
     "description": "Erstellen Sie aus den dokumentierten Befunden einen bearbeitbaren Bericht. Bilder werden nicht analysiert.",
     "context": "Optionaler Untersuchungskontext",
@@ -419,5 +445,48 @@
     "copyPrompt": "Kopieren Sie den geprüften CT-Bericht:",
     "headingTechnique": "CT-Technik",
     "headingFindings": "CT-Befunde"
+  },
+  "aiMetrics": {
+    "legacyNotice": "Die Gesamtwerte umfassen den gesamten Zeitraum. Die Filter stehen nach der Aktualisierung des Statistikservers zur Verfügung.",
+    "legacyBreakdown": "Letzte 30 Tage nach Arbeitsablauf und Modell",
+    "title": "KI-Nutzung",
+    "range": "Zeitraum",
+    "from": "Startdatum",
+    "to": "Enddatum",
+    "workflow": "Arbeitsablauf",
+    "allWorkflows": "Alle Arbeitsabläufe",
+    "model": "Modell",
+    "allModels": "Alle Modelle",
+    "groupBy": "Gruppieren nach",
+    "apply": "Anwenden",
+    "dateHint": "Beide Datumsgrenzen sind inklusive und gelten in UTC.",
+    "loading": "KI-Nutzung wird geladen…",
+    "failed": "Die KI-Nutzung konnte nicht geladen werden. Wenden Sie die Filter erneut an.",
+    "calls": "Aufrufe",
+    "input": "Eingabetokens",
+    "output": "Ausgabetokens",
+    "cache": "Cache-Lesevorgänge",
+    "cost": "Geschätzte Kosten",
+    "empty": "Keine KI-Aufrufe entsprechen diesen Filtern.",
+    "breakdown": "Aufschlüsselung",
+    "date": "Datum",
+    "perCall": "Kosten pro Aufruf",
+    "byAccount": "Nutzung pro Konto",
+    "account": "Konto",
+    "refineText": "Text überarbeiten",
+    "warmup": "Cache aufwärmen",
+    "presets": {
+      "7": "Letzte 7 Tage",
+      "30": "Letzte 30 Tage",
+      "90": "Letzte 90 Tage",
+      "all": "Gesamter Zeitraum",
+      "custom": "Eigener Zeitraum"
+    },
+    "groups": {
+      "workflow_model": "Arbeitsablauf und Modell",
+      "workflow": "Arbeitsablauf",
+      "model": "Modell",
+      "day": "Tag"
+    }
   }
 }
