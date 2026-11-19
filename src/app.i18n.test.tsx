@@ -259,9 +259,9 @@ describe('chart frame', () => {
     unmount();
 
     seedChart();
-    sync.override = fakeCloud({ dirty: true, awaitingClinical: true, preclinical: true });
+    sync.override = fakeCloud({ dirty: true, preclinical: true });
     await frame();
-    expect(screen.getByText('⟦Not saved⟧')).toHaveAttribute('title', expect.stringMatching(/^⟦This visit is on this device/));
+    expect(screen.getByText('⟦Not saved⟧')).toHaveAttribute('title', '⟦Saving automatically…⟧');
     expect(document.querySelector('.ui-toast')).toBeNull();
     expect(untranslated()).toEqual([]);
   });
@@ -453,7 +453,7 @@ describe('sync dialogs', () => {
     async (action) => {
       render(<DialogHost />);
       const chart = fakeChart(snap());
-      const { result } = renderHook(() => useCloudSync(chart));
+      const { result } = renderHook(() => useCloudSync(chart, true, '', false, true, false));
       let answer: Promise<boolean> = Promise.resolve(false);
       act(() => { answer = result.current.confirmDiscardIfDirty(action); });
       const dialog = await screen.findByRole('alertdialog');

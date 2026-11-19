@@ -92,6 +92,28 @@ export function useAnimalTabs(chart: UseChartStateReturn, cloud: UseCloudSyncRet
     if (dismissed.current === chart.cloudChartId) latest.current.cloud.pauseWorkspace?.();
   }, [chart.cloudChartId]);
 
+  const backgroundWrites = useRef(new Map<string, Promise<void>>());
+  const syncWorkspace = cloud.syncWorkspace;
+  useEffect(() => {
+    if (!enabled || busy || !cloud.online || !cloud.autosaveEnabled || !syncWorkspace) return;
+    const syncDrafts = () => {
+      if (document.visibilityState === 'hidden' || locked.current || backgroundWrites.current.size) return;
+      for (const [id, draft] of drafts) {
+        if (id === latest.current.chart.cloudChartId || !draft.dirty || !draft.snapshot.patientInfo.patientName.trim()) continue;
+        const pending = syncWorkspace(draft).then(saved => {
+          if (!saved || drafts.get(id) !== draft) return;
+          drafts.set(id, saved);
+          writeJson('chart.workspaces', 1, Array.from(drafts.values()));
+        }).catch(() => { /* The durable copy will be retried on reconnect. */ })
+          .finally(() => backgroundWrites.current.delete(id));
+        backgroundWrites.current.set(id, pending);
+      }
+    };
+    syncDrafts();
+    const retry = window.setInterval(syncDrafts, 30_000);
+    return () => { window.clearInterval(retry); };
+  }, [enabled, busy, cloud.online, cloud.autosaveEnabled, chart.cloudChartId, drafts, syncWorkspace]);
+
   const prepareLeave = async (): Promise<boolean> => {
     const current = latest.current;
     if (dismissed.current === current.chart.cloudChartId) return true;
@@ -99,7 +121,7 @@ export function useAnimalTabs(chart: UseChartStateReturn, cloud: UseCloudSyncRet
     // A tab switch preserves the entire working copy and its cloud baseline.
     if (current.cloud.captureWorkspace) {
       const id = current.chart.cloudChartId;
-      const draft = await current.cloud.captureWorkspace();
+      const draft = await current.cloud.captureWorkspace({ flush: true });
       if (draft.id !== id) return false;
       drafts.set(id, draft);
       writeJson('chart.workspaces', 1, Array.from(drafts.values()));
@@ -124,6 +146,7 @@ export function useAnimalTabs(chart: UseChartStateReturn, cloud: UseCloudSyncRet
     const current = latest.current;
     let ok: boolean;
     if (current.cloud.enabled) {
+      await backgroundWrites.current.get(id);
       const draft = drafts.get(id);
       // Only unsaved work owns a local copy; saved caches may be older than the server.
       const unsaved = draft && (draft.dirty || (!draft.openedExisting && !draft.lastSaved.at));

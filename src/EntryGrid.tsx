@@ -62,6 +62,7 @@ import { useHashRoute, useHashRouteGuard } from './hooks/useHashRoute';
 import { useEzyvetHandover } from './hooks/useEzyvetHandover';
 import { takePendingPatient } from './utils/pims/extensionBridge';
 import { supabase } from './utils/supabaseClient';
+import { subscribeToChartChanges } from './utils/chartChangeNotifications';
 import { ChartLibrary } from './components/ChartLibrary';
 import { AnimalTabs } from './components/AnimalTabs';
 import { useAnimalTabs } from './hooks/useAnimalTabs';
@@ -1475,7 +1476,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const patientTabSaveStatus = cloud.enabled && !workspacePage && !animalTabs.empty
     ? cloud.status === 'saving' ? 'saving'
       : !readOnly && (cloud.dirty || cloud.status === 'error') ? 'notSaved'
-      : cloud.status === 'saved' && !!cloud.lastSavedAt ? 'saved' : undefined
+      : !cloud.dirty && !!cloud.lastSavedAt ? 'saved' : undefined
     : undefined;
   const saveStatusTitle = patientTabSaveStatus === 'saved' && cloud.lastSavedAt
     ? t('status.savedTitle', { when: formatDateTime(cloud.lastSavedAt, undefined, FULL_DATE_TIME) })
@@ -1484,10 +1485,10 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         : !chart.patientInfo.patientName.trim() ? t('status.needsNameTitle')
         : cloud.status === 'error' ? cloud.saveError || t('status.retryTitle')
         : !prefs.autosave ? t('status.autosaveOff')
-        : cloud.awaitingClinical ? t('status.waitingToChart') : t('status.unsavedTitle')
+        : t('status.unsavedTitle')
       : undefined;
   const showManualSave = !saveDraft && patientTabSaveStatus === 'notSaved' && cloud.status !== 'error' && cloud.online
-    && !!chart.patientInfo.patientName.trim() && (cloud.awaitingClinical || !prefs.autosave);
+    && !!chart.patientInfo.patientName.trim() && !prefs.autosave;
   const saveAction = React.useRef(attemptSave);
   saveAction.current = attemptSave;
   const saveFeedback = React.useMemo(() => {
@@ -1672,8 +1673,13 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     window.addEventListener('online', onForeground);
     window.addEventListener('pageshow', onPageShow);
     const resume = native ? CapacitorApp.addListener('resume', onForeground).catch(() => undefined) : undefined;
+    const live = supabase && typeof supabase.channel === 'function' ? supabase : null;
+    const unsubscribe = live ? subscribeToChartChanges(live, profile.practiceId, onForeground) : undefined;
+    const catchUp = live ? window.setInterval(onForeground, 30_000) : undefined;
     refreshChart();
     return () => {
+      unsubscribe?.();
+      window.clearInterval(catchUp);
       window.clearTimeout(timer);
       document.removeEventListener('visibilitychange', onForeground);
       window.removeEventListener('focus', onForeground);
@@ -1681,7 +1687,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       window.removeEventListener('pageshow', onPageShow);
       void resume?.then(handle => handle?.remove()).catch(() => undefined);
     };
-  }, [cloud.enabled, native, refreshOpenChart]);
+  }, [cloud.enabled, native, profile.practiceId, refreshOpenChart]);
   // App only: the website has no list that needs it (no extra renders there).
   const bumpLibrary = React.useCallback(() => {
     if (native) setLibraryVersion((v) => v + 1);
@@ -2213,7 +2219,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         dirty: cloud.dirty,
         online: cloud.online,
         hasName: !!chart.patientInfo.patientName.trim(),
-        awaitingClinical: !!cloud.awaitingClinical,
         autosaveEnabled: prefs.autosave,
         lastSavedAt: cloud.lastSavedAt || '',
         announceSaved,
@@ -2491,7 +2496,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 type="button"
                 className="entry-grid__button entry-grid__button--topbar topbar-lifecycle"
                 aria-label={lifecycleLabel}
-                title={saveDraft && cloud.awaitingClinical ? t('status.saveTitle') : lifecycleLabel}
+                title={lifecycleLabel}
                 onClick={viewingSavedVisit ? unlockForEditing : saveDraft ? attemptSave : confirmFinalizeRecord}
                 disabled={finalizationBusy || !cloud.online || cloud.status === 'saving' || (saveDraft && !cloud.dirty)}
               >

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { createPatientIdentity } from '../utils/patientIds';
-import { act, renderHook } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ChartSnapshot } from '../types';
 
@@ -13,6 +13,10 @@ const db = vi.hoisted(() => ({
   opened: [] as string[],
   readAt: '2026-11-12T09:00:00Z',
   readGate: null as Promise<void> | null,
+  guardVersions: [] as string[],
+  rejectGuardedWrite: false,
+  ignoreInitialInsert: false,
+  remoteSnapshot: undefined as ChartSnapshot | undefined,
   /** Error the next N chart upserts return (then they succeed). */
   refuseUpserts: 0,
   /** Whether a refused chart's row is still readable by this account. */
@@ -32,10 +36,11 @@ vi.mock('../utils/supabaseClient', () => {
     let singleId = '';
     const chain = () => q;
     Object.assign(q, {
-      select: (cols?: string) => { if (cols === 'id') q.__existCheck = true; if (cols === 'patient_name, patient_number') q.__identityCheck = true; return q; },
-      order: chain, limit: chain, ilike: chain, update: chain,
+      select: (cols?: string) => { if (cols === 'data, updated_at') q.__remoteSnapshot = true; if (cols === 'id') q.__existCheck = true; if (cols === 'patient_name, patient_number') q.__identityCheck = true; return q; },
+      order: chain, limit: chain, ilike: chain,
+      update: (row: Record<string, unknown>) => ('id' in row ? (q.upsert as (row: Record<string, unknown>) => typeof q)(row) : q),
       delete: () => { q.__delete = true; return q; },
-      eq: (col: string, v: string) => { if (col === 'id') singleId = v; return q; },
+      eq: (col: string, v: string) => { if (col === 'id') singleId = v; if (col === 'updated_at') { q.__guard = v; db.guardVersions.push(v); } return q; },
       gt: (_col: string, value: string) => { q.__newerThan = value; return q; },
       maybeSingle: async () => {
         if (typeof q.__newerThan === 'string') {
@@ -48,6 +53,8 @@ vi.mock('../utils/supabaseClient', () => {
           };
         }
         if (q.__upsert && db.gate && (!db.gateId || q.__upsertId === db.gateId)) await db.gate;
+        if (q.__remoteSnapshot && db.remoteSnapshot) return { data: { data: db.remoteSnapshot, updated_at: '2026-11-12T10:00:00Z' }, error: null };
+        if ((q.__guard && db.rejectGuardedWrite) || (q.__ignoreDuplicates && db.ignoreInitialInsert)) return { data: null, error: null };
         if (q.__netFail) return { data: null, error: { message: 'Failed to fetch' } };
         if (q.__refused) return { data: null, error: { code: '42501', message: 'new row violates row-level security policy' } };
         if (q.__identityCheck) return { data: db.identities[singleId] ?? null, error: db.identityReadFails ? { message: 'Failed to fetch' } : null };
@@ -59,7 +66,8 @@ vi.mock('../utils/supabaseClient', () => {
         return { data: { id: 'x', updated_at: '2026-11-12T10:00:00Z' }, error: null };
       },
       single: async () => { db.opened.push(singleId); return { data: { id: singleId, data: snap({}), updated_at: db.readAt }, error: null }; },
-      upsert: (row: Record<string, unknown>) => {
+      upsert: (row: Record<string, unknown>, options?: { ignoreDuplicates?: boolean }) => {
+        q.__ignoreDuplicates = options?.ignoreDuplicates;
         db.upserts.push(row);
         q.__upsert = true;
         q.__row = row;
@@ -133,7 +141,7 @@ beforeEach(() => {
   store.clear();
   db.identities = {}; db.identityReadFails = false;
   db.visits = []; db.upserts = []; db.opened = []; db.refuseUpserts = 0; db.rowVisible = true; db.failUpserts = 0; db.gate = null; db.gateId = ''; db.deletedRows = [{ id: 'x' }];
-  db.readAt = '2026-11-12T09:00:00Z'; db.readGate = null;
+  db.readAt = '2026-11-12T09:00:00Z'; db.readGate = null; db.guardVersions = []; db.rejectGuardedWrite = false; db.ignoreInitialInsert = false; db.remoteSnapshot = undefined;
   confirm.mockReset(); confirm.mockResolvedValue(false);
   choose.mockReset(); choose.mockResolvedValue('keep');
   vi.useFakeTimers();
@@ -155,6 +163,36 @@ it('refreshes a clean open chart only when the cloud has a newer version', async
   expect(apply).toHaveBeenCalledWith(expect.anything(), 'chart-1', { preserveSession: true });
   expect(result.current.lastSavedAt).toBe(db.readAt);
   expect(result.current.dirty).toBe(false);
+});
+
+it('preserves local changes when another device wins the versioned write', async () => {
+  const chart = fakeChart(snap({ exam: true }));
+  store.set('vibing-dental.chart.lastSaved.v1', JSON.stringify({
+    chartId: chart.cloudChartId, at: '2026-11-12T10:00:00Z',
+  }));
+  db.rejectGuardedWrite = true;
+  const { result } = renderHook(() => useCloudSync(chart));
+  await act(async () => { await expect(result.current.saveNow()).rejects.toThrow(); });
+  expect(db.guardVersions).toEqual(['2026-11-12T10:00:00Z']);
+  expect(result.current.dirty).toBe(true);
+  expect(result.current.status).toBe('error');
+});
+
+it('saves independent edits from two devices against the newer server version', async () => {
+  const base = snap({});
+  const ours = { ...base, patientInfo: { ...base.patientInfo, ownerPhone: '555' } };
+  db.remoteSnapshot = { ...base, patientInfo: { ...base.patientInfo, treatmentReport: 'Phone dictation' } };
+  const chart = fakeChart(ours);
+  store.set('vibing-dental.chart.lastSaved.v1', JSON.stringify({
+    chartId: chart.cloudChartId, at: '2026-11-12T09:00:00Z', snapshot: base,
+  }));
+  const { result } = renderHook(() => useCloudSync(chart));
+  await flush();
+  expect(db.guardVersions).toContain('2026-11-12T10:00:00Z');
+  expect(db.upserts[0]?.data).toMatchObject({ patientInfo: { ownerPhone: '555', treatmentReport: 'Phone dictation' } });
+  expect(chart.applySnapshot).toHaveBeenCalledWith(db.upserts[0]?.data, chart.cloudChartId, { preserveSession: true });
+  expect(result.current.status).toBe('saved');
+  expect(confirm).not.toHaveBeenCalled();
 });
 
 it('preserves local edits made while a foreground refresh is pending', async () => {
@@ -195,31 +233,57 @@ describe('hasClinicalContent', () => {
   });
 });
 
-describe('new visit started from a saved chart', () => {
-  it('does not autosave until charting starts', async () => {
-    const carried = { ...snap({}), preMarks: { 305: 'missing', 405: 'missing' } } as unknown as ChartSnapshot;
-    const { result } = renderHook(() => useCloudSync(fakeChart(carried)));
-    await flush();
-    expect(db.upserts).toHaveLength(0);
-    expect(result.current.awaitingClinical).toBe(true);
-  });
-});
-
 describe('autosave of new charts', () => {
-  it('waits for clinical content, offering a manual Save meanwhile', async () => {
+  it('uploads named patient and owner details before clinical charting starts', async () => {
     const { result } = renderHook(() => useCloudSync(fakeChart(snap({}))));
+    expect(result.current.preclinical).toBe(true);
     await flush();
-    expect(db.upserts).toHaveLength(0);
-    expect(result.current.awaitingClinical).toBe(true);
-
-    await act(async () => { await result.current.saveNow(); });
     expect(db.upserts).toHaveLength(1);
-    expect(result.current.awaitingClinical).toBe(false); // saved once → no Save button
+    expect(result.current.preclinical).toBe(true);
+    expect(result.current.dirty).toBe(false);
   });
 
-  it('autosaves as soon as charting starts', async () => {
+  it('recovers a successful first upload when its original response was lost', async () => {
+    const snapshot = snap({});
+    db.remoteSnapshot = snapshot;
+    db.ignoreInitialInsert = true;
+    const { result } = renderHook(() => useCloudSync(fakeChart(snapshot)));
+    await flush();
+    expect(result.current.status).toBe('saved');
+    expect(result.current.dirty).toBe(false);
+    expect(db.upserts).toHaveLength(1);
+  });
+
+  it('keeps owner-only details local until the patient has a name', async () => {
+    const snapshot = snap({ name: '' });
+    const { rerender } = renderHook(({ current }) => useCloudSync(fakeChart(current)), { initialProps: { current: snapshot } });
+    await flush();
+    expect(db.upserts).toHaveLength(0);
+    rerender({ current: { ...snapshot, patientInfo: { ...snapshot.patientInfo, patientName: 'Fluffy' } } });
+    await flush();
+    expect(db.upserts).toHaveLength(1);
+  });
+
+  it('flushes a pending named draft when switching charts before the timer fires', async () => {
+    vi.useRealTimers();
+    const { result } = renderHook(() => useCloudSync(fakeChart(snap({}))));
+    await act(async () => {
+      const draft = await result.current.captureWorkspace!({ flush: true });
+      expect(draft.lastSaved.chartId).toBe(draft.id);
+    });
+    expect(db.upserts).toHaveLength(1);
+  });
+
+  it('saves an eligible draft before leaving the chart without asking to discard it', async () => {
+    const { result } = renderHook(() => useCloudSync(fakeChart(snap({}))));
+    await act(async () => { expect(await result.current.confirmDiscardIfDirty('openOther')).toBe(true); });
+    expect(db.upserts).toHaveLength(1);
+    expect(confirm).not.toHaveBeenCalled();
+  });
+
+  it('autosaves clinical content too', async () => {
     const { result } = renderHook(() => useCloudSync(fakeChart(snap({ exam: true }))));
-    expect(result.current.awaitingClinical).toBe(false);
+    expect(result.current.preclinical).toBe(false);
     await flush();
     expect(db.upserts).toHaveLength(1);
   });
@@ -754,7 +818,7 @@ describe('tab workspace snapshots', () => {
 it('switches unsaved animals and dates through the tab controller without forcing a save', async () => {
   vi.useRealTimers();
   const { result } = renderHook(() => {
-    const chart = useChartState(); const cloud = useCloudSync(chart);
+    const chart = useChartState(); const cloud = useCloudSync(chart, true, '', false, true, false);
     return { chart, cloud, tabs: useAnimalTabs(chart, cloud, true) };
   });
   act(() => { result.current.chart.handlePatientInfoChange('patientName', 'Luna'); result.current.chart.handlePatientInfoChange('complaint', 'First visit draft'); });
@@ -769,6 +833,34 @@ it('switches unsaved animals and dates through the tab controller without forcin
   await act(async () => { expect(await result.current.tabs.openChart(secondId)).toBe(true); });
   expect(result.current.chart.patientInfo.complaint).toBe('Second visit draft');
   expect(db.upserts).toHaveLength(0);
+});
+
+it('syncs a locally parked draft after restarting on a different chart', async () => {
+  vi.useRealTimers();
+  store.set('vibing-dental.chart.owner.v1', JSON.stringify('u1'));
+  const mount = () => renderHook(() => {
+    const chart = useChartState();
+    const cloud = useCloudSync(chart);
+    return { chart, cloud, tabs: useAnimalTabs(chart, cloud, true) };
+  });
+  const offline = vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(false);
+  try {
+    const first = mount();
+    act(() => first.result.current.chart.handlePatientInfoChange('patientName', 'Drafted offline'));
+    const id = first.result.current.chart.cloudChartId;
+    await act(async () => { expect(await first.result.current.tabs.prepareLeave()).toBe(true); });
+    act(() => first.result.current.chart.startNewVisit());
+    first.unmount();
+    const second = mount();
+    expect(second.result.current.chart.cloudChartId).not.toBe(id);
+    expect(db.upserts).toHaveLength(0);
+    offline.mockReturnValue(true);
+    await act(async () => window.dispatchEvent(new Event('online')));
+    await waitFor(() => expect(db.upserts).toEqual([expect.objectContaining({ id, patient_name: 'Drafted offline' })]));
+    expect(second.result.current.chart.cloudChartId).not.toBe(id);
+  } finally {
+    offline.mockRestore();
+  }
 });
 
 it('keeps manual saving available while autosave is disabled and resumes when enabled', async () => {

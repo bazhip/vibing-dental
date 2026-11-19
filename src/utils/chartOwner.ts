@@ -4,6 +4,10 @@ import { readJson, writeJson } from './storage';
 // Lives under the chart prefix, so clearing the chart also clears its owner.
 const OWNER_KEY = 'chart.owner';
 
+export function ownsChartStorage(userId: string): boolean {
+  return readJson<string>(OWNER_KEY, 1, '') === userId;
+}
+
 /**
  * Claim the working chart in localStorage for the account that just got a
  * session (app launch or sign-in). If it belongs to a different account,

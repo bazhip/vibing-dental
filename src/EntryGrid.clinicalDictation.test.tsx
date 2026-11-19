@@ -250,9 +250,9 @@ it('hides clinical-record review without an earlier saved visit', async () => {
 });
 
 it.each([
-  [true, 'This visit is on this device. It saves to the cloud when you start charting.'],
+  [true, 'Saving automatically…'],
   [false, 'Autosave is off. Save this visit to sync it to the cloud.'],
-] as const)('explains manual saving when autosave is %s', async (autosave, message) => {
+] as const)('reflects the save preference when autosave is %s', async (autosave, message) => {
   localStorage.setItem('vibing-dental.chart.prefs.v1', JSON.stringify({ ...DEFAULT_CHART_PREFS, autosave }));
   cloud.dirty = true;
   cloud.awaitingClinical = true;
@@ -261,8 +261,12 @@ it.each([
   const tab = await screen.findByRole('tab', { selected: true });
   expect(within(tab).getByText('Not saved')).toHaveAttribute('title', message);
   expect(document.querySelector('.ui-toast')).toBeNull();
-  fireEvent.click(screen.getByRole('button', { name: 'Save now' }));
-  expect(cloud.saveNow).toHaveBeenCalledOnce();
+  if (autosave) {
+    expect(screen.queryByRole('button', { name: 'Save now' })).toBeNull();
+  } else {
+    fireEvent.click(screen.getByRole('button', { name: 'Save now' }));
+    expect(cloud.saveNow).toHaveBeenCalledOnce();
+  }
 });
 
 it('jumps from Edit the wording to the owner report itself', async () => {

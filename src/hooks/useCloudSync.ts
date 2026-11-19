@@ -6,6 +6,8 @@ import { reservePatientNumber } from '../utils/patientNumberAllocation';
 import { isGeneratedPatientNumber } from '../utils/patientIds';
 import { fieldLines, filledBlocks } from '../utils/customAnesthesia';
 import { answeredCustomExam } from '../utils/customExam';
+import { mergeChartSnapshots, sameChartSnapshot } from '../utils/chartSnapshotMerge';
+import { ownsChartStorage } from '../utils/chartOwner';
 import { hasChartImages, hasPendingImageUpload, findImageDrafts, discardImageDraft } from '../utils/imageDrafts';
 import { localDateISO } from '../utils/localDate';
 import { ChartSnapshot, hasNerveBlockEntries } from '../types';
@@ -15,7 +17,7 @@ import { formatDate, formatTime } from '../i18n/format';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import { usePersistedState } from './usePersistedState';
 import { writeJson } from '../utils/storage';
-import { CHART_STORAGE_REWRITE_EVENT, UseChartStateReturn, clearChartStorage } from './useChartState';
+import { CHART_STORAGE_REWRITE_EVENT, UseChartStateReturn, clearChartStorage, isChartSnapshot } from './useChartState';
 import { signOutAndSweep } from '../utils/signOutAndSweep';
 import { removeChartAttachments } from '../utils/chartAttachments';
 import { LocalizedError } from '../utils/apiErrors';
@@ -31,27 +33,23 @@ import { speciesBase, speciesDentition } from '../utils/species';
 import { changesPatientIdentity, identityKey, patientIdentityQuestion, type PatientIdentity } from '../utils/patientIdentity';
 
 /**
- * Cloud persistence on top of `useChartState`.
+ * Cloud persistence on top of useChartState.
  *
- * localStorage is always the working copy (survives reloads, offline
- * resilient). Saving to the practice's Supabase project is MANUAL: the
- * topbar shows a Save button whenever the chart has unsaved changes, and
- * that's the only thing that writes to the cloud — no autosave, so a
- * saved chart is never overwritten without an explicit action.
- *
- * Sync is last-write-wins per chart row — fine for a small practice
- * where a chart has one author at a time.
+ * The device keeps the working copy. Named drafts and editable visits
+ * autosave when enabled. Each successful cloud write records its version
+ * so other devices can refresh clean charts and preserve concurrent edits.
  */
 
 export type { CloudChartMeta, ChartListQuery, ChartListPage };
+
+interface ChartBaseline { chartId: string; at: string; snapshot?: ChartSnapshot }
 
 export interface ChartWorkspace {
   id: string;
   snapshot: ChartSnapshot;
   openedExisting: boolean;
   savedHash: string;
-  lastSaved: { chartId: string; at: string };
-  conflict: { chartId: string; mode: 'none' | 'force' | 'blocked' };
+  lastSaved: ChartBaseline;
   saveError: string;
   dirty: boolean;
   duplicateAnswered: string;
@@ -61,8 +59,9 @@ export interface ChartWorkspace {
 export interface UseCloudSyncReturn {
   enabled: boolean;
   /** Preserve a working chart without requiring a cloud save. */
-  captureWorkspace?: () => Promise<ChartWorkspace>;
+  captureWorkspace?: (options?: { flush?: boolean }) => Promise<ChartWorkspace>;
   restoreWorkspace?: (workspace: ChartWorkspace) => void;
+  syncWorkspace?: (workspace: ChartWorkspace) => Promise<ChartWorkspace | null>;
   resumeWorkspace?: () => void;
   pauseWorkspace?: () => void;
   discardImageDraft?: (id: string) => Promise<void>;
@@ -80,10 +79,6 @@ export interface UseCloudSyncReturn {
   /** Save the explicit lifecycle change; false when saving was cancelled. */
   setFinalized: (finalized: boolean) => Promise<boolean>;
   autosaveEnabled?: boolean;
-  /** A chart that has never reached the cloud and holds only patient/owner
-   *  details: autosave waits for clinical content, so the UI offers a
-   *  manual Save. False once the chart has been saved (by either route). */
-  awaitingClinical: boolean;
   /** A new chart before clinical charting starts. */
   preclinical: boolean;
   /** Skip the same-day duplicate question for the next new chart's first
@@ -146,17 +141,9 @@ function hasContent(s: ChartSnapshot): boolean {
   return false;
 }
 
-/** Clinical content: anything charted beyond who the patient is. Patient
- *  and owner details (and the presenting complaint) are what gets filled
- *  in ahead of a visit, so they don't start autosave on their own — a
- *  chart reaches the cloud by itself once charting begins, or when the
- *  user presses Save.
- *
- *  Pre-op "missing" marks don't count either: "+ New visit" pre-marks the
- *  teeth already gone at the last visit, and counting those autosaved an
- *  untouched visit the moment it was started. Started by mistake, that
- *  left an empty same-day duplicate beside the real chart, listed as the
- *  patient's latest visit. */
+/** Selects Save for an identity-only draft and Finalize once clinical
+ * charting begins. Previously missing teeth carried into a new visit
+ * are part of the starting snapshot, not observations from this visit. */
 export function hasClinicalContent(s: ChartSnapshot): boolean {
   if (!hasContent(s)) return false;
   const p = s.patientInfo;
@@ -208,6 +195,32 @@ function todayIso(): string {
   return localDateISO();
 }
 
+// Existing rows keep their original practice, even if the current profile changed.
+function chartRow(snapshot: ChartSnapshot, id: string, practiceId?: string | null) {
+  const patient = snapshot.patientInfo;
+  return {
+    id,
+    patient_name: patient.patientName,
+    patient_number: patient.patientNumber,
+    owner_name: patient.ownerName ?? '',
+    owner_phone: patient.ownerPhone ?? '',
+    owner_email: patient.ownerEmail ?? '',
+    species: speciesBase(snapshot.species),
+    dentition: speciesDentition(snapshot.species),
+    chart_date: patient.date,
+    recall_date: patient.recallDate ?? '',
+    data: snapshot,
+    ...(practiceId !== undefined ? { practice_id: practiceId } : {}),
+  };
+}
+
+// When one insert committed but its response was lost, an idempotent retry
+// returns no row. Only accept a cloud copy with the same saved content.
+async function recoverInsertVersion(client: NonNullable<typeof supabase>, id: string, snapshot: ChartSnapshot): Promise<string> {
+  const { data } = await client.from('charts').select('data, updated_at').eq('id', id).maybeSingle();
+  return isChartSnapshot(data?.data) && sameChartSnapshot(snapshot, data.data) ? data.updated_at ?? '' : '';
+}
+
 /** Cheap stable hash (djb2) — identifies the last-cloud-saved snapshot so
  *  "unsaved changes" survives a reload without storing a second full copy. */
 function hashStr(s: string): string {
@@ -240,7 +253,7 @@ export function useCloudSync(
   // changes are still flagged after a reload).
   const [savedHash, setSavedHash] = usePersistedState<string>('chart.savedHash', 1, '');
   // When this chart last reached the cloud (for "Saved · 2:41 pm").
-  const [lastSaved, setLastSaved] = usePersistedState<{ chartId: string; at: string }>('chart.lastSaved', 1, { chartId: '', at: '' });
+  const [lastSaved, setLastSaved] = usePersistedState<ChartBaseline>('chart.lastSaved', 1, { chartId: '', at: '' });
   const lastSavedAt = lastSaved.chartId === chart.cloudChartId ? lastSaved.at : '';
   const lastSavedRef = React.useRef(lastSaved);
   lastSavedRef.current = lastSaved;
@@ -256,9 +269,6 @@ export function useCloudSync(
     window.addEventListener(CHART_STORAGE_REWRITE_EVENT, rewrite);
     return () => window.removeEventListener(CHART_STORAGE_REWRITE_EVENT, rewrite);
   }, []);
-  // Per-chart answer to an edit conflict: force = user chose "Replace with
-  // mine"; blocked = "Keep theirs" (no more saves until reopened).
-  const conflictRef = React.useRef<{ chartId: string; mode: 'none' | 'force' | 'blocked' }>({ chartId: '', mode: 'none' });
   const [online, setOnline] = React.useState(() => typeof navigator === 'undefined' || navigator.onLine !== false);
   // Bumped on every 'online' event, even when we never saw 'offline' (a
   // save can fail on a flaky connection while navigator.onLine stays
@@ -290,7 +300,6 @@ export function useCloudSync(
   const clinical = React.useMemo(() => hasClinicalContent(snapshot), [snapshot]);
   // Reached the cloud before (or is a saved chart opened from My charts).
   const everSaved = chart.openedExisting || lastSaved.chartId === chartId;
-  const awaitingClinical = dirty && !everSaved && !clinical;
 
   const latest = React.useRef({ serialized, chartId, session: chart.chartSession, on });
   latest.current = { serialized, chartId, session: chart.chartSession, on };
@@ -355,13 +364,17 @@ export function useCloudSync(
       // Bookkeeping for a save that landed. Only for the chart it saved:
       // if another chart was opened meanwhile, crediting the save to it
       // marked a never-saved new visit "saved" (skipping the duplicate
-      // check and the wait for charting) and gave an opened chart the
+      // check) and gave an opened chart the
       // wrong baseline for conflict checks.
       const recordSaved = (savedJson: string, savedId: string, at: string) => {
         // (A forked save re-ids the chart on screen to savedId mid-save.)
         if (latest.current.chartId !== id && latest.current.chartId !== savedId) return;
-        setSavedHash(hashStr(savedJson));
-        setLastSaved({ chartId: savedId, at });
+        const saved = { chartId: savedId, at, snapshot: JSON.parse(savedJson) as ChartSnapshot };
+        const hash = hashStr(savedJson);
+        savedHashRef.current = hash;
+        lastSavedRef.current = saved;
+        setSavedHash(hash);
+        setLastSaved(saved);
       };
       // New to the cloud: never saved from here, and not opened from a
       // saved chart (a forked retry id is new too).
@@ -373,50 +386,18 @@ export function useCloudSync(
       if (isFirstSave(id) && !practiceReadyRef.current) {
         fail(saveFailure('sync.practiceUnknown', 'Practice not loaded yet; a new chart can\'t be saved to it.'));
       }
-      const row = (rowId: string) => ({
-        id: rowId,
-        patient_name: snap.patientInfo.patientName,
-        patient_number: snap.patientInfo.patientNumber,
-        owner_name: snap.patientInfo.ownerName ?? '',
-        owner_phone: snap.patientInfo.ownerPhone ?? '',
-        owner_email: snap.patientInfo.ownerEmail ?? '',
-        species: speciesBase(snap.species),
-        dentition: speciesDentition(snap.species),
-        chart_date: snap.patientInfo.date,
-        recall_date: snap.patientInfo.recallDate ?? '',
-        data: snap,
-        // Only a chart's first save sets its practice. Rewriting it on every
-        // save made a chart private when it saved before the profile
-        // loaded, and moved old charts into whatever practice the user is
-        // in now (sharing them against their choice). Practice moves are
-        // done deliberately on the server.
-        ...(isFirstSave(rowId) ? { practice_id: practiceIdRef.current || null } : {}),
-      });
-      // Edit conflict: a shared chart opened here may have been saved by
-      // someone else since. Compare server timestamps (never the local
-      // clock) and ask rather than silently overwrite their work.
-      if (openedExistingRef.current && conflictRef.current.chartId !== id) {
-        conflictRef.current = { chartId: '', mode: 'none' };
-      }
-      if (conflictRef.current.chartId === id && conflictRef.current.mode === 'blocked') {
-        fail(saveFailure('sync.changedByOther', 'This chart was changed by someone else — reopen it from My charts to see their version.'));
-      }
+      const row = (rowId: string, includePractice = isFirstSave(rowId)) =>
+        chartRow(snap, rowId, includePractice ? practiceIdRef.current || null : undefined);
+      // The server version we read here is also a predicate on the write.
+      // A second device can save even while a confirmation is open.
       const known = lastSavedRef.current;
-      if (openedExistingRef.current && known.chartId === id && known.at && conflictRef.current.mode !== 'force') {
-        const { data: remote } = await client.from('charts').select('updated_at').eq('id', id).maybeSingle();
-        const remoteAt = Date.parse((remote as { updated_at?: string } | null)?.updated_at ?? '');
-        if (Number.isFinite(remoteAt) && remoteAt - Date.parse(known.at) > 1000) {
-          const t = i18n.getFixedT(null, 'app');
-          const replace = await confirmDialog({
-            title: t('sync.conflict.title'),
-            message: t('sync.conflict.message', { when: formatTime(new Date(remoteAt)) }),
-            confirmLabel: t('sync.conflict.confirm'),
-            cancelLabel: t('sync.conflict.cancel'),
-            danger: true,
-          });
-          conflictRef.current = { chartId: id, mode: replace ? 'force' : 'blocked' };
-          if (!replace) fail(saveFailure('sync.notSavedConflict', 'Not saved — this chart was changed by someone else. Reopen it from My charts to see their version.'));
-        }
+      let expectedAt = '';
+      if (!isFirstSave(id) || opts.restore) {
+        const { data: remote, error: versionError } = await client.from('charts')
+          .select('updated_at').eq('id', id).maybeSingle();
+        if (versionError) fail(versionError);
+        if (!remote?.updated_at) fail(saveFailure('sync.noPermission', 'The chart is no longer available.'));
+        expectedAt = remote!.updated_at;
       }
       // Always read the server identity, including a working chart restored
       // from localStorage: openedExisting/lastSaved are not proof it is new.
@@ -462,6 +443,37 @@ export function useCloudSync(
           identityCheckingRef.current = false;
         }
       }
+      const submittedLocal = snap;
+      const submittedLocalJson = json;
+      let includedRemoteEdits = false;
+      let startsNewRevision = !!opts.restore;
+      if (!opts.restore && known.chartId === id && known.at && expectedAt && expectedAt !== known.at) {
+        let merged: ChartSnapshot | null = null;
+        if (isChartSnapshot(known.snapshot) && opts.finalized === undefined) {
+          const { data: remote, error: latestError } = await client.from('charts')
+            .select('data, updated_at').eq('id', id).eq('updated_at', expectedAt).maybeSingle();
+          if (latestError) fail(latestError);
+          if (isChartSnapshot(remote?.data)) merged = mergeChartSnapshots(known.snapshot, snap, remote.data);
+        }
+        if (merged) {
+          includedRemoteEdits = true;
+          snap = merged;
+          json = JSON.stringify(merged);
+        } else {
+          const conflictError = () => saveFailure('sync.notSavedConflict', 'Another device saved changes; this device still has your edits.');
+          if (opts.automatic) fail(conflictError());
+          const t = i18n.getFixedT(null, 'app');
+          const replace = await confirmDialog({
+            title: t('sync.conflict.title'),
+            message: t('sync.conflict.message', { when: formatTime(new Date(expectedAt)) }),
+            confirmLabel: t('sync.conflict.confirm'),
+            cancelLabel: t('sync.conflict.cancel'),
+            danger: true,
+          });
+          if (!replace || latest.current.chartId !== id || latest.current.serialized !== submittedLocalJson) fail(conflictError());
+          startsNewRevision = true;
+        }
+      }
       setStatus('saving');
       setSaveError('');
       if (opts.finalized !== undefined) {
@@ -469,15 +481,32 @@ export function useCloudSync(
         else delete snap.finalizedAt;
         json = JSON.stringify(snap);
       }
-      const restoreStamp = opts.restore ? { restored_at: new Date().toISOString() } : {};
-      let { data: savedRow, error } = await client.from('charts').upsert({ ...row(id), ...restoreStamp }).select('updated_at').maybeSingle();
+      const chartTable = () => client.from('charts');
+      const write = (restoreStamp: { restored_at?: string }) => {
+        const data = { ...row(id, !expectedAt && isFirstSave(id)), ...restoreStamp };
+        return (expectedAt
+          ? chartTable().update(data).eq('id', id).eq('updated_at', expectedAt)
+          : chartTable().upsert(data, { onConflict: 'id', ignoreDuplicates: true })
+        ).select('updated_at').maybeSingle();
+      };
+      let { data: savedRow, error } = await write(startsNewRevision ? { restored_at: new Date().toISOString() } : {});
       if (error && opts.restore && /restored_at/.test(error.message)) {
-        // Database without the column yet (migration 20261126): restore anyway.
-        ({ data: savedRow, error } = await client.from('charts').upsert(row(id)).select('updated_at').maybeSingle());
+        ({ data: savedRow, error } = await write({}));
       }
       if (!error) {
-        // Server time, so later conflict checks compare like with like.
-        recordSaved(json, id, (savedRow as { updated_at?: string } | null)?.updated_at ?? new Date().toISOString());
+        const savedAt = savedRow?.updated_at || (!expectedAt ? await recoverInsertVersion(client, id, snap) : '');
+        if (!savedAt) fail(saveFailure('sync.notSavedConflict', 'The chart changed before this save could finish.'));
+        if (includedRemoteEdits && latest.current.chartId === id) {
+          // More dictation may have landed while the write was in flight.
+          // Reapply it over the merged revision before advancing the baseline.
+          const sameLocal = latest.current.serialized === submittedLocalJson;
+          const working = sameLocal ? snap
+            : mergeChartSnapshots(submittedLocal, JSON.parse(latest.current.serialized) as ChartSnapshot, snap);
+          if (!working) fail(saveFailure('sync.notSavedConflict', 'New local edits overlap an edit from another device.'));
+          applyRef.current(working!, id, { preserveSession: true });
+          if (sameLocal) armBaseline();
+        }
+        recordSaved(json, id, savedAt);
         setStatus('saved');
         if (opts.finalized !== undefined && latest.current.chartId === id) {
           finalizedSetter.current(snap.finalizedAt ?? null);
@@ -512,9 +541,11 @@ export function useCloudSync(
           fail(error);
         }
         const freshId = resetIdRef.current();
-        const { error: retryError } = await client.from('charts').upsert(row(freshId));
+        const { data: retryRow, error: retryError } = await client.from('charts')
+          .upsert(row(freshId), { onConflict: 'id', ignoreDuplicates: true }).select('updated_at').maybeSingle();
         if (retryError) fail(retryError);
-        recordSaved(json, freshId, new Date().toISOString());
+        if (!retryRow?.updated_at) fail(saveFailure('sync.notSavedConflict', 'The new chart could not be confirmed saved.'));
+        recordSaved(json, freshId, retryRow!.updated_at);
         setStatus('saved');
         if (opts.finalized !== undefined && (latest.current.chartId === id || latest.current.chartId === freshId)) {
           finalizedSetter.current(snap.finalizedAt ?? null);
@@ -659,11 +690,25 @@ export function useCloudSync(
     workspacePaused.current = false;
     setWorkspaceResume(value => value + 1);
   };
+  const autosaveRequested = React.useRef(false);
   const saveNow = React.useCallback((automatic = false) => {
     if (lifecyclePending.current || (automatic && workspacePaused.current)) return Promise.resolve();
-    const pending = performSave(automatic).then(() => {});
+    if (pendingSaves.current.size) {
+      autosaveRequested.current ||= automatic;
+      return Promise.resolve();
+    }
+    const target = latest.current.chartId;
+    let saved = false;
+    const pending = performSave(automatic).then(ok => { saved = ok; });
     pendingSaves.current.add(pending);
-    void pending.finally(() => pendingSaves.current.delete(pending)).catch(() => {});
+    void pending.finally(() => {
+      pendingSaves.current.delete(pending);
+      const missed = autosaveRequested.current;
+      autosaveRequested.current = false;
+      if (missed && saved && !workspacePaused.current && target === latest.current.chartId) {
+        setWorkspaceResume(value => value + 1);
+      }
+    }).catch(() => {});
     return pending;
   }, [performSave]);
   const setFinalized = (finalized: boolean): Promise<boolean> => {
@@ -687,7 +732,15 @@ export function useCloudSync(
   };
   const workspaceState = React.useRef({ saveError, dirty });
   workspaceState.current = { saveError, dirty };
-  const captureWorkspace = async (): Promise<ChartWorkspace> => {
+  const canAutosave = on && autosaveEnabled && !snapshot.finalizedAt &&
+    (!chart.openedExisting || editingUnlocked) && dirty && online &&
+    (practiceReady || everSaved) && !!snapshot.patientInfo.patientName.trim();
+  const captureWorkspace = async (options?: { flush?: boolean }): Promise<ChartWorkspace> => {
+    // A quick switch can beat the debounce. Start that save while this
+    // chart still owns the save context; a failed upload remains a draft.
+    if (options?.flush && canAutosave && pendingSaves.current.size === 0) {
+      void saveNow(true).catch(() => undefined);
+    }
     workspacePaused.current = true;
     // An already-running save must settle before its baseline is captured.
     // Failure is still a valid local draft, never a reason to lose edits.
@@ -696,8 +749,10 @@ export function useCloudSync(
     return {
       id: latest.current.chartId, snapshot: JSON.parse(latest.current.serialized) as ChartSnapshot,
       openedExisting: openedExistingRef.current, savedHash: savedHashRef.current,
-      lastSaved: lastSavedRef.current, conflict: { ...conflictRef.current },
-      ...workspaceState.current, duplicateAnswered: dupAnsweredRef.current, skipDuplicate: skipDupForRef.current,
+      lastSaved: lastSavedRef.current,
+      ...workspaceState.current,
+      dirty: workspaceState.current.dirty && hashStr(latest.current.serialized) !== savedHashRef.current,
+      duplicateAnswered: dupAnsweredRef.current, skipDuplicate: skipDupForRef.current,
     };
   };
   const restoreWorkspace = (workspace: ChartWorkspace) => {
@@ -706,7 +761,6 @@ export function useCloudSync(
     lastSavedRef.current = workspace.lastSaved;
     setSavedHash(workspace.savedHash);
     setLastSaved(workspace.lastSaved);
-    conflictRef.current = { ...workspace.conflict };
     dupAnsweredRef.current = workspace.duplicateAnswered;
     skipDupForRef.current = workspace.skipDuplicate;
     applyRef.current(workspace.snapshot, workspace.id);
@@ -717,33 +771,33 @@ export function useCloudSync(
     setStatus(workspace.saveError ? 'error' : 'idle');
   };
 
-  // Autosave — for NEW charts only. Charts opened from a saved one
-  // (openedExisting) never autosave: they're read-only until the user
-  // unlocks and saves deliberately, so history isn't overwritten. A
-  // patient name is required first (that's how charts are found again).
+  // Named drafts are eligible before charting. Finalized visits require
+  // an explicit reopen. Retry a failed save when the connection returns.
   const saveNowRef = React.useRef(saveNow);
   saveNowRef.current = saveNow;
-  // Finalized records never autosave, including records created here
-  // that have not been reopened from the library yet.
-  // Offline, or a save failed: wait, and retry as soon as the connection
-  // is back ('online' event).
   React.useEffect(() => {
-    if (!on || !autosaveEnabled || snapshot.finalizedAt || (chart.openedExisting && !editingUnlocked)) return;
-    if (!dirty || !online) return;
-    // A new chart's first save waits until the practice is known.
-    if (!practiceReady && !everSaved) return;
-    if (!snapshot.patientInfo.patientName.trim()) return;
-    // Filled in ahead of time (patient/owner details only): wait for
-    // charting to start, or for an explicit Save.
-    if (awaitingClinical) return;
+    if (!canAutosave) return;
     const t = window.setTimeout(() => { saveNowRef.current(true).catch(() => {}); }, 1200);
     return () => window.clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autosaveEnabled, workspaceResume, on, chart.openedExisting, editingUnlocked, dirty, serialized, online, reconnects, awaitingClinical, practiceReady, everSaved]);
+  }, [workspaceResume, canAutosave, serialized, reconnects]);
+
+  const flushBeforeLeave = React.useRef(async () => false);
+  flushBeforeLeave.current = async () => {
+    if (!canAutosave && pendingSaves.current.size === 0) return false;
+    if (canAutosave && pendingSaves.current.size === 0) void saveNow(true).catch(() => undefined);
+    await Promise.allSettled([...pendingSaves.current]);
+    return hashStr(latest.current.serialized) === savedHashRef.current;
+  };
 
   // Guard leaving a chart with unsaved changes.
   const confirmDiscardIfDirty = async (action: DiscardAction): Promise<boolean> => {
     if (!dirtyRef.current) return true;
+    if (action !== 'restore' && action !== 'signOut') {
+      const id = latest.current.chartId;
+      const saved = await flushBeforeLeave.current();
+      if (latest.current.chartId !== id) return false;
+      if (saved) return true;
+    }
     const t = i18n.getFixedT(null, 'app');
     return confirmDialog({
       title: t('sync.discard.title'),
@@ -794,6 +848,53 @@ export function useCloudSync(
 
   listPatientVisitsRef.current = listPatientVisits;
 
+  // Inactive browser workspaces survive reconnect and restart. They can
+  // save in the background when they need no identity or duplicate review.
+  const syncWorkspace = React.useCallback(async (workspace: ChartWorkspace): Promise<ChartWorkspace | null> => {
+    if (!supabase || !on || !online || !autosaveEnabled || !practiceReady || !workspace.dirty) return null;
+    const id = workspace.id;
+    const saved = workspace.lastSaved.chartId === id ? workspace.lastSaved : undefined;
+    if (workspace.snapshot.finalizedAt || (workspace.openedExisting && !saved?.at)) return null;
+    const client = supabase;
+    const { data } = await client.auth.getSession();
+    const userId = data.session?.user.id;
+    const stillOwned = () => !!userId && ownsChartStorage(userId) && practiceReadyRef.current && practiceIdRef.current === practiceId;
+    if (!stillOwned()) return null;
+    let snapshot = workspace.snapshot;
+    let patient = snapshot.patientInfo;
+    if (!patient.patientName.trim()) return null;
+    if (saved?.at) {
+      const basePatient = saved.snapshot?.patientInfo;
+      if (!basePatient || changesPatientIdentity(
+        { patient_name: basePatient.patientName, patient_number: basePatient.patientNumber },
+        { patient_name: patient.patientName, patient_number: patient.patientNumber },
+      )) return null;
+    } else {
+      if (patient.patientId && !patient.patientNumber.trim() && !patient.generatedPatientNumber) {
+        const number = await reservePatientNumber(patient.patientId, practiceId);
+        patient = { ...patient, patientNumber: number, generatedPatientNumber: number };
+        snapshot = { ...snapshot, patientInfo: patient };
+      }
+      if (workspace.duplicateAnswered !== id && workspace.skipDuplicate !== id) {
+        const visits = await listPatientVisitsRef.current(patient.patientNumber, patient.patientName, patient.patientId);
+        if (visits.some(visit => visit.id !== id && visit.chart_date === patient.date && visit.species === speciesBase(snapshot.species))) return null;
+      }
+    }
+    if (!stillOwned()) return null;
+    const table = client.from('charts');
+    const { data: row, error } = await (saved?.at
+      ? table.update(chartRow(snapshot, id)).eq('id', id).eq('updated_at', saved.at)
+      : table.upsert(chartRow(snapshot, id, practiceId || null), { onConflict: 'id', ignoreDuplicates: true })
+    ).select('updated_at').maybeSingle();
+    if (error) return null;
+    const savedAt = row?.updated_at || (!saved?.at ? await recoverInsertVersion(client, id, snapshot) : '');
+    if (!savedAt || !stillOwned()) return null;
+    return {
+      ...workspace, snapshot, dirty: false, saveError: '', savedHash: hashStr(JSON.stringify(snapshot)),
+      lastSaved: { chartId: id, at: savedAt, snapshot },
+    };
+  }, [on, online, autosaveEnabled, practiceReady, practiceId]);
+
   const applyRef = React.useRef(chart.applySnapshot);
   applyRef.current = chart.applySnapshot;
 
@@ -814,8 +915,7 @@ export function useCloudSync(
         lastSavedRef.current !== saved) return;
     applyRef.current(data.data as ChartSnapshot, data.id, { preserveSession: true });
     armBaseline();
-    setLastSaved({ chartId: data.id, at: data.updated_at });
-    conflictRef.current = { chartId: '', mode: 'none' };
+    setLastSaved({ chartId: data.id, at: data.updated_at, snapshot: data.data as ChartSnapshot });
     setStatus('idle');
     setSaveError('');
     // armBaseline only closes over refs and a state setter.
@@ -844,8 +944,7 @@ export function useCloudSync(
     if (error) throw new Error(error.message);
     armBaseline(); // applied content is the saved baseline
     applyRef.current(data.data as ChartSnapshot, data.id);
-    setLastSaved({ chartId: data.id, at: (data as { updated_at?: string }).updated_at ?? '' });
-    conflictRef.current = { chartId: '', mode: 'none' };
+    setLastSaved({ chartId: data.id, at: data.updated_at ?? '', snapshot: data.data as ChartSnapshot });
     setStatus('idle');
     setSaveError('');
     return true;
@@ -858,20 +957,12 @@ export function useCloudSync(
     if (!supabase) return false;
     // Unsaved edits here would be replaced — ask, as opening a chart does.
     if (!(await confirmDiscardIfDirty('restore'))) return false;
-    // A deliberate restore: don't stop at the "changed elsewhere" check.
-    // Only for this save: if it fails, later saves must still be checked,
-    // or they'd silently overwrite a teammate's newer version.
-    conflictRef.current = { chartId: id, mode: 'force' };
-    try {
-      await upsertChart(JSON.stringify(snapshot), id, { restore: true });
-      const { data, error } = await supabase.from('charts').select('id, data, updated_at').eq('id', id).single();
-      if (error) throw new Error(error.message);
-      armBaseline(); // the restored content is the saved baseline
-      applyRef.current(data.data as ChartSnapshot, data.id);
-      setLastSaved({ chartId: data.id, at: (data as { updated_at?: string }).updated_at ?? '' });
-    } finally {
-      conflictRef.current = { chartId: '', mode: 'none' };
-    }
+    await upsertChart(JSON.stringify(snapshot), id, { restore: true });
+    const { data, error } = await supabase.from('charts').select('id, data, updated_at').eq('id', id).single();
+    if (error) throw new Error(error.message);
+    armBaseline();
+    applyRef.current(data.data as ChartSnapshot, data.id);
+    setLastSaved({ chartId: data.id, at: data.updated_at ?? '', snapshot: data.data as ChartSnapshot });
     setStatus('saved');
     return true;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -920,19 +1011,20 @@ export function useCloudSync(
       // is the clear's new server time "ours" (below); if a teammate saved
       // meanwhile, the next save must still catch that conflict.
       const known = lastSavedRef.current;
-      const readAt = Date.parse((data as { updated_at?: string }).updated_at ?? '');
-      const wasKnown = known.chartId === id && Number.isFinite(readAt) && Math.abs(readAt - Date.parse(known.at)) <= 1000;
+      const readAt = data.updated_at;
+      const wasKnown = known.chartId === id && !!readAt && readAt === known.at;
       const { data: updated, error: updateError } = await supabase
         .from('charts')
         .update({ recall_date: '', data: snap })
-        .eq('id', id)
+        .eq('id', id).eq('updated_at', readAt)
         .select('updated_at')
         .maybeSingle();
       if (updateError) throw new Error(updateError.message);
       // Our own change to the chart that's open: its new server time is the
       // one we know, or the next save calls it "changed by someone else".
       const at = (updated as { updated_at?: string } | null)?.updated_at;
-      if (at && wasKnown) setLastSaved({ chartId: id, at });
+      if (!at) throw saveFailure('sync.notSavedConflict', 'The chart changed before clearing the reminder.');
+      if (wasKnown) setLastSaved({ chartId: id, at, snapshot: snap });
     }
   }, [setLastSaved]);
 
@@ -948,6 +1040,7 @@ export function useCloudSync(
     autosaveEnabled,
     captureWorkspace,
     restoreWorkspace,
+    syncWorkspace,
     resumeWorkspace,
     pauseWorkspace: () => { workspacePaused.current = true; },
     discardImageDraft,
@@ -962,7 +1055,6 @@ export function useCloudSync(
     online,
     saveNow,
     setFinalized,
-    awaitingClinical,
     preclinical: !chart.openedExisting && !clinical,
     skipDuplicateCheckFor,
     listCharts,

@@ -15,7 +15,6 @@ const base: ChartStatusInput = {
   dirty: false,
   online: true,
   hasName: true,
-  awaitingClinical: false,
   lastSavedAt: '',
   visitDate: '2026-03-04',
 };
@@ -29,7 +28,6 @@ describe('chartStatus (the Chart navigation bar subtitle)', () => {
     expect(run({ saveHint: 'Add a patient name first' })).toMatchObject({ text: 'Not saved', tone: 'error', detail: 'Add a patient name first', retry: false });
     expect(run({ dirty: true, online: false }).text).toBe('Offline — saved on this device');
     expect(run({ dirty: true, hasName: false }).text).toBe('Add a patient name to save');
-    expect(run({ awaitingClinical: true })).toMatchObject({ text: 'Saves once you start charting', canSaveNow: true });
     expect(run({ dirty: true }).text).toBe('Unsaved changes');
     expect(run({ lastSavedAt: '2026-03-04T09:41:00Z' }).text).toBe('Saved · 9:41 AM');
     expect(run({}).text).toBe('');
