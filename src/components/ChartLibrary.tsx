@@ -57,7 +57,13 @@ function RowActions({ children }: { children: React.ReactNode }) {
       }
     }}>
       <summary>{t('actions.menu')}<svg width="12" height="12" viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.5" /></svg></summary>
-      <div className="chart-library__actions-panel" onClick={(event) => {
+      <div className="chart-library__actions-panel" onMouseDown={(event) => {
+        // Safari can blur the disclosure on a button press. The dialog then
+        // reclaims focus and dismisses the panel before the click arrives.
+        if (event.button === 0 && (event.target as HTMLElement).closest('button')) {
+          event.preventDefault();
+        }
+      }} onClick={(event) => {
         if ((event.target as HTMLElement).closest('button')) {
           close(event.currentTarget.parentElement as HTMLDetailsElement);
         }

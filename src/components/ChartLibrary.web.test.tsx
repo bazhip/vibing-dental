@@ -154,6 +154,30 @@ describe('ChartLibrary (website)', () => {
     await waitFor(() => expect(lastQuery(listCharts)).toMatchObject({ sortKey: 'patient', sortDir: 'desc' }));
   });
 
+  it.each(['Version history', 'Delete chart for Bella'])('keeps Actions open while pressing %s', async (name) => {
+    const { container, onOpenHistory } = setup();
+    const patient = (await screen.findByText('Bella')).closest<HTMLElement>('.chart-library__row')!;
+    const summary = within(patient).getByText('Actions');
+    fireEvent.click(summary);
+    act(() => summary.focus());
+    const action = within(patient).getByRole('button', { name });
+
+    // Safari does not focus buttons on mouse press. The dialog can reclaim
+    // focus before the click reaches the action if the press blurs the summary.
+    if (fireEvent.mouseDown(action, { button: 0 })) {
+      act(() => container.querySelector<HTMLElement>('.chart-library-modal')!.focus());
+    }
+    expect(summary.closest('details')).toHaveAttribute('open');
+
+    fireEvent.click(action);
+    expect(summary.closest('details')).not.toHaveAttribute('open');
+    if (name === 'Version history') {
+      expect(onOpenHistory).toHaveBeenCalledWith('a1', expect.stringContaining('Bella'));
+    } else {
+      await waitFor(() => expect(confirm.fn).toHaveBeenCalled());
+    }
+  });
+
   it('deletes a visit only after confirming, then refetches', async () => {
     const { onDelete, listCharts } = setup();
     const button = await screen.findByRole('button', { name: 'Delete chart for Bella' });
