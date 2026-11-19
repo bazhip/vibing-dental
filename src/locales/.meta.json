@@ -800,6 +800,14 @@
       "hash": "37c6a4315e58",
       "status": "machine"
     },
+    "app:finalization.confirmMessage": {
+      "hash": "7355ef3b9ab3",
+      "status": "machine"
+    },
+    "app:finalization.confirmTitle": {
+      "hash": "b156586f86c8",
+      "status": "machine"
+    },
     "app:finalization.description": {
       "hash": "9afb159ac035",
       "status": "machine"
@@ -3310,6 +3318,10 @@
     },
     "chart:diagramView.freeComment": {
       "hash": "a60563d39b0e",
+      "status": "machine"
+    },
+    "chart:diagramView.freeShort": {
+      "hash": "f411a1fb6275",
       "status": "machine"
     },
     "chart:diagramView.historyGroup": {
@@ -7213,7 +7225,7 @@
       "status": "machine"
     },
     "help:articles.charting.sections.second.text": {
-      "hash": "8645b8ebba7b",
+      "hash": "6b2e676757f4",
       "status": "machine"
     },
     "help:articles.charting.sections.second.title": {
@@ -7349,7 +7361,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.third.text": {
-      "hash": "84393d25ed35",
+      "hash": "7ac8fa3a4288",
       "status": "machine"
     },
     "help:articles.export.sections.third.title": {
@@ -7365,7 +7377,7 @@
       "status": "machine"
     },
     "help:articles.help-tools.sections.first.text": {
-      "hash": "2b361ea24338",
+      "hash": "bf0289ff9ec9",
       "status": "machine"
     },
     "help:articles.help-tools.sections.first.title": {
@@ -16774,6 +16786,14 @@
       "hash": "37c6a4315e58",
       "status": "machine"
     },
+    "app:finalization.confirmMessage": {
+      "hash": "7355ef3b9ab3",
+      "status": "machine"
+    },
+    "app:finalization.confirmTitle": {
+      "hash": "b156586f86c8",
+      "status": "machine"
+    },
     "app:finalization.description": {
       "hash": "9afb159ac035",
       "status": "machine"
@@ -19192,6 +19212,10 @@
     },
     "chart:diagramView.freeComment": {
       "hash": "a60563d39b0e",
+      "status": "machine"
+    },
+    "chart:diagramView.freeShort": {
+      "hash": "f411a1fb6275",
       "status": "machine"
     },
     "chart:diagramView.historyGroup": {
@@ -22971,7 +22995,7 @@
       "status": "machine"
     },
     "help:articles.charting.sections.second.text": {
-      "hash": "8645b8ebba7b",
+      "hash": "6b2e676757f4",
       "status": "machine"
     },
     "help:articles.charting.sections.second.title": {
@@ -23107,7 +23131,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.third.text": {
-      "hash": "84393d25ed35",
+      "hash": "7ac8fa3a4288",
       "status": "machine"
     },
     "help:articles.export.sections.third.title": {
@@ -23123,7 +23147,7 @@
       "status": "machine"
     },
     "help:articles.help-tools.sections.first.text": {
-      "hash": "2b361ea24338",
+      "hash": "bf0289ff9ec9",
       "status": "machine"
     },
     "help:articles.help-tools.sections.first.title": {
@@ -32376,6 +32400,14 @@
       "hash": "37c6a4315e58",
       "status": "machine"
     },
+    "app:finalization.confirmMessage": {
+      "hash": "7355ef3b9ab3",
+      "status": "machine"
+    },
+    "app:finalization.confirmTitle": {
+      "hash": "b156586f86c8",
+      "status": "machine"
+    },
     "app:finalization.description": {
       "hash": "9afb159ac035",
       "status": "machine"
@@ -34818,6 +34850,10 @@
     },
     "chart:diagramView.freeComment": {
       "hash": "a60563d39b0e",
+      "status": "machine"
+    },
+    "chart:diagramView.freeShort": {
+      "hash": "f411a1fb6275",
       "status": "machine"
     },
     "chart:diagramView.historyGroup": {
@@ -38629,7 +38665,7 @@
       "status": "machine"
     },
     "help:articles.charting.sections.second.text": {
-      "hash": "8645b8ebba7b",
+      "hash": "6b2e676757f4",
       "status": "machine"
     },
     "help:articles.charting.sections.second.title": {
@@ -38765,7 +38801,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.third.text": {
-      "hash": "84393d25ed35",
+      "hash": "7ac8fa3a4288",
       "status": "machine"
     },
     "help:articles.export.sections.third.title": {
@@ -38781,7 +38817,7 @@
       "status": "machine"
     },
     "help:articles.help-tools.sections.first.text": {
-      "hash": "2b361ea24338",
+      "hash": "bf0289ff9ec9",
       "status": "machine"
     },
     "help:articles.help-tools.sections.first.title": {
@@ -48090,6 +48126,14 @@
       "hash": "37c6a4315e58",
       "status": "machine"
     },
+    "app:finalization.confirmMessage": {
+      "hash": "7355ef3b9ab3",
+      "status": "machine"
+    },
+    "app:finalization.confirmTitle": {
+      "hash": "b156586f86c8",
+      "status": "machine"
+    },
     "app:finalization.description": {
       "hash": "9afb159ac035",
       "status": "machine"
@@ -50532,6 +50576,10 @@
     },
     "chart:diagramView.freeComment": {
       "hash": "a60563d39b0e",
+      "status": "machine"
+    },
+    "chart:diagramView.freeShort": {
+      "hash": "f411a1fb6275",
       "status": "machine"
     },
     "chart:diagramView.historyGroup": {
@@ -54343,7 +54391,7 @@
       "status": "machine"
     },
     "help:articles.charting.sections.second.text": {
-      "hash": "8645b8ebba7b",
+      "hash": "6b2e676757f4",
       "status": "machine"
     },
     "help:articles.charting.sections.second.title": {
@@ -54479,7 +54527,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.third.text": {
-      "hash": "84393d25ed35",
+      "hash": "7ac8fa3a4288",
       "status": "machine"
     },
     "help:articles.export.sections.third.title": {
@@ -54495,7 +54543,7 @@
       "status": "machine"
     },
     "help:articles.help-tools.sections.first.text": {
-      "hash": "2b361ea24338",
+      "hash": "bf0289ff9ec9",
       "status": "machine"
     },
     "help:articles.help-tools.sections.first.title": {
@@ -63800,6 +63848,14 @@
       "hash": "37c6a4315e58",
       "status": "machine"
     },
+    "app:finalization.confirmMessage": {
+      "hash": "7355ef3b9ab3",
+      "status": "machine"
+    },
+    "app:finalization.confirmTitle": {
+      "hash": "b156586f86c8",
+      "status": "machine"
+    },
     "app:finalization.description": {
       "hash": "9afb159ac035",
       "status": "machine"
@@ -66214,6 +66270,10 @@
     },
     "chart:diagramView.freeComment": {
       "hash": "a60563d39b0e",
+      "status": "machine"
+    },
+    "chart:diagramView.freeShort": {
+      "hash": "f411a1fb6275",
       "status": "machine"
     },
     "chart:diagramView.historyGroup": {
@@ -69989,7 +70049,7 @@
       "status": "machine"
     },
     "help:articles.charting.sections.second.text": {
-      "hash": "8645b8ebba7b",
+      "hash": "6b2e676757f4",
       "status": "machine"
     },
     "help:articles.charting.sections.second.title": {
@@ -70125,7 +70185,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.third.text": {
-      "hash": "84393d25ed35",
+      "hash": "7ac8fa3a4288",
       "status": "machine"
     },
     "help:articles.export.sections.third.title": {
@@ -70141,7 +70201,7 @@
       "status": "machine"
     },
     "help:articles.help-tools.sections.first.text": {
-      "hash": "2b361ea24338",
+      "hash": "bf0289ff9ec9",
       "status": "machine"
     },
     "help:articles.help-tools.sections.first.title": {
@@ -79330,6 +79390,14 @@
       "hash": "37c6a4315e58",
       "status": "machine"
     },
+    "app:finalization.confirmMessage": {
+      "hash": "7355ef3b9ab3",
+      "status": "machine"
+    },
+    "app:finalization.confirmTitle": {
+      "hash": "b156586f86c8",
+      "status": "machine"
+    },
     "app:finalization.description": {
       "hash": "9afb159ac035",
       "status": "machine"
@@ -81772,6 +81840,10 @@
     },
     "chart:diagramView.freeComment": {
       "hash": "a60563d39b0e",
+      "status": "machine"
+    },
+    "chart:diagramView.freeShort": {
+      "hash": "f411a1fb6275",
       "status": "machine"
     },
     "chart:diagramView.historyGroup": {
@@ -85583,7 +85655,7 @@
       "status": "machine"
     },
     "help:articles.charting.sections.second.text": {
-      "hash": "8645b8ebba7b",
+      "hash": "6b2e676757f4",
       "status": "machine"
     },
     "help:articles.charting.sections.second.title": {
@@ -85719,7 +85791,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.third.text": {
-      "hash": "84393d25ed35",
+      "hash": "7ac8fa3a4288",
       "status": "machine"
     },
     "help:articles.export.sections.third.title": {
@@ -85735,7 +85807,7 @@
       "status": "machine"
     },
     "help:articles.help-tools.sections.first.text": {
-      "hash": "2b361ea24338",
+      "hash": "bf0289ff9ec9",
       "status": "machine"
     },
     "help:articles.help-tools.sections.first.title": {
@@ -95638,6 +95710,14 @@
       "hash": "37c6a4315e58",
       "status": "machine"
     },
+    "app:finalization.confirmMessage": {
+      "hash": "7355ef3b9ab3",
+      "status": "machine"
+    },
+    "app:finalization.confirmTitle": {
+      "hash": "b156586f86c8",
+      "status": "machine"
+    },
     "app:finalization.description": {
       "hash": "9afb159ac035",
       "status": "machine"
@@ -98076,6 +98156,10 @@
     },
     "chart:diagramView.freeComment": {
       "hash": "a60563d39b0e",
+      "status": "machine"
+    },
+    "chart:diagramView.freeShort": {
+      "hash": "f411a1fb6275",
       "status": "machine"
     },
     "chart:diagramView.historyGroup": {
@@ -101883,7 +101967,7 @@
       "status": "machine"
     },
     "help:articles.charting.sections.second.text": {
-      "hash": "8645b8ebba7b",
+      "hash": "6b2e676757f4",
       "status": "machine"
     },
     "help:articles.charting.sections.second.title": {
@@ -102019,7 +102103,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.third.text": {
-      "hash": "84393d25ed35",
+      "hash": "7ac8fa3a4288",
       "status": "machine"
     },
     "help:articles.export.sections.third.title": {
@@ -102035,7 +102119,7 @@
       "status": "machine"
     },
     "help:articles.help-tools.sections.first.text": {
-      "hash": "2b361ea24338",
+      "hash": "bf0289ff9ec9",
       "status": "machine"
     },
     "help:articles.help-tools.sections.first.title": {
@@ -111276,6 +111360,14 @@
       "hash": "37c6a4315e58",
       "status": "machine"
     },
+    "app:finalization.confirmMessage": {
+      "hash": "7355ef3b9ab3",
+      "status": "machine"
+    },
+    "app:finalization.confirmTitle": {
+      "hash": "b156586f86c8",
+      "status": "machine"
+    },
     "app:finalization.description": {
       "hash": "9afb159ac035",
       "status": "machine"
@@ -113690,6 +113782,10 @@
     },
     "chart:diagramView.freeComment": {
       "hash": "a60563d39b0e",
+      "status": "machine"
+    },
+    "chart:diagramView.freeShort": {
+      "hash": "f411a1fb6275",
       "status": "machine"
     },
     "chart:diagramView.historyGroup": {
@@ -117465,7 +117561,7 @@
       "status": "machine"
     },
     "help:articles.charting.sections.second.text": {
-      "hash": "8645b8ebba7b",
+      "hash": "6b2e676757f4",
       "status": "machine"
     },
     "help:articles.charting.sections.second.title": {
@@ -117601,7 +117697,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.third.text": {
-      "hash": "84393d25ed35",
+      "hash": "7ac8fa3a4288",
       "status": "machine"
     },
     "help:articles.export.sections.third.title": {
@@ -117617,7 +117713,7 @@
       "status": "machine"
     },
     "help:articles.help-tools.sections.first.text": {
-      "hash": "2b361ea24338",
+      "hash": "bf0289ff9ec9",
       "status": "machine"
     },
     "help:articles.help-tools.sections.first.title": {

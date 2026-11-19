@@ -86,7 +86,7 @@
         },
         "second": {
           "title": "Documentați constatările în Diagnostic",
-          "text": "Selectați dintele corespunzător și marcați constatările dinaintea tratamentului sau dinții deja absenți. Adăugați coduri dentare și note scurte, după necesități. Consultați lista de referință pentru a verifica un cod. Etichetele din bara de instrumente se află sub pictograme. Folosiți „Comentariu” pentru a atașa o notă la un dinte sau „Comentariu liber” pentru a o plasa oriunde pe diagramă."
+          "text": "Selectați dintele corespunzător și marcați constatările dinaintea tratamentului sau dinții deja absenți. Adăugați coduri dentare și note scurte, după necesități. Consultați lista de referință pentru a verifica un cod. Etichetele din bara de instrumente se află sub pictograme. Folosiți „Comentariu” pentru a atașa o notă la un dinte sau „Comentariu liber” pentru a o plasa oriunde pe diagramă. Când spațiul este limitat, Comentariu liber apare ca Liber."
         },
         "third": {
           "title": "Documentați intervențiile în Procedură",
@@ -198,7 +198,7 @@
         },
         "third": {
           "title": "Finalizați sau redeschideți o vizită",
-          "text": "„Finalizați” salvează vizita completă și o trece în modul doar pentru vizualizare. Pentru a modifica o vizită salvată, deschideți-o, alegeți „Editați fișa”, faceți modificarea și apoi alegeți „Finalizați editarea”. Confirmați pacientul și data înainte de a aplica modificările."
+          "text": "Alegeți Finalizați și confirmați pentru a salva vizita încheiată în modul numai pentru citire. Pentru a modifica o vizită salvată, deschideți-o, alegeți „Editați fișa”, faceți modificarea și apoi alegeți „Finalizați editarea”. Confirmați pacientul și data înainte de a aplica modificările."
         }
       }
     },
@@ -370,7 +370,7 @@
       "sections": {
         "first": {
           "title": "Deschideți turul aplicației",
-          "text": "Alegeți „Primii pași” din „Ajutor”. Turul prezintă comenzile și poate fi reluat oricând aveți nevoie."
+          "text": "Alegeți „Primii pași” din „Ajutor”. Turul prezintă comenzile și poate fi reluat oricând aveți nevoie. Pe ecranele înguste, deschideți meniul de lângă numele sau sigla cabinetului pentru a găsi aceste instrumente."
         },
         "second": {
           "title": "Verificați modificările recente",

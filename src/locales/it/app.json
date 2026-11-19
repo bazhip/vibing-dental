@@ -365,6 +365,8 @@
     "closeImageChoiceMessage": "Salvi questa cartella prima di chiudere oppure chiuda senza salvare per scartare il contenuto ed eliminare definitivamente le immagini caricate."
   },
   "finalization": {
+    "confirmTitle": "Finalizzare questa visita?",
+    "confirmMessage": "La visita verrà salvata in sola lettura. Per modificarla in seguito, scelga {{edit}}.",
     "finalize": "Finalizza",
     "finalized": "Finalizzato",
     "description": "Questa cartella è finalizzata. Selezioni Modifica cartella per apportare modifiche.",

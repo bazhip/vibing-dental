@@ -86,7 +86,7 @@
         },
         "second": {
           "title": "Document findings on Diagnosis",
-          "text": "Select the appropriate tooth and mark pre-treatment findings or teeth already missing. Add dental codes and short notes as needed. Use the code reference when you need to confirm a code. The toolbar labels sit below their icons. Use Comment to attach a note to a tooth, or Free comment to place a note anywhere on the diagram."
+          "text": "Select the appropriate tooth and mark pre-treatment findings or teeth already missing. Add dental codes and short notes as needed. Use the code reference when you need to confirm a code. The toolbar labels sit below their icons. Use Comment to attach a note to a tooth, or Free comment to place a note anywhere on the diagram. The toolbar shortens Free comment to Free when space is limited."
         },
         "third": {
           "title": "Document work on Procedure",
@@ -198,7 +198,7 @@
         },
         "third": {
           "title": "Finalize or reopen a visit",
-          "text": "Finalize saves the completed visit and returns it to view-only. To amend a saved visit, open it, choose Edit chart, make the change, then choose Done editing. Confirm the patient and date before applying edits."
+          "text": "Choose Finalize and confirm to save the completed visit and make it view-only. To amend a saved visit, open it, choose Edit chart, make the change, then choose Done editing. Confirm the patient and date before applying edits."
         }
       }
     },
@@ -370,7 +370,7 @@
       "sections": {
         "first": {
           "title": "Open the walkthrough",
-          "text": "Choose Getting started from Help. The walkthrough points out the controls in the app and can be opened again as needed."
+          "text": "Choose Getting started from Help. The walkthrough points out the controls in the app and can be opened again as needed. On narrow screens, open the dropdown beside your practice name or logo to find these tools."
         },
         "second": {
           "title": "Review recent changes",

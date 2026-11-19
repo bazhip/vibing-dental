@@ -363,6 +363,8 @@
     "closeImageChoiceMessage": "Speichern Sie diese Akte vor dem Schließen oder schließen Sie ohne Speichern, um den Inhalt zu verwerfen und die hochgeladenen Bilder dauerhaft zu löschen."
   },
   "finalization": {
+    "confirmTitle": "Diesen Besuch abschließen?",
+    "confirmMessage": "Der Besuch wird gespeichert und schreibgeschützt. Wählen Sie „{{edit}}“, um später Änderungen vorzunehmen.",
     "finalize": "Abschließen",
     "finalized": "Abgeschlossen",
     "description": "Diese Akte ist abgeschlossen. Wählen Sie Akte bearbeiten, um Änderungen vorzunehmen.",

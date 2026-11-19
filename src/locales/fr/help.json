@@ -86,7 +86,7 @@
         },
         "second": {
           "title": "Consigner les constatations dans Diagnostic",
-          "text": "Sélectionnez la dent concernée et indiquez les constatations avant traitement ou les dents déjà absentes. Ajoutez des codes dentaires et de courtes notes si nécessaire. En cas de doute sur un code, consultez le référentiel. Les libellés de la barre d’outils se trouvent sous les icônes. Utilisez « Commentaire » pour associer une note à une dent ou « Commentaire libre » pour la placer où vous le souhaitez sur le schéma."
+          "text": "Sélectionnez la dent concernée et indiquez les constatations avant traitement ou les dents déjà absentes. Ajoutez des codes dentaires et de courtes notes si nécessaire. En cas de doute sur un code, consultez le référentiel. Les libellés de la barre d’outils se trouvent sous les icônes. Utilisez « Commentaire » pour associer une note à une dent ou « Commentaire libre » pour la placer où vous le souhaitez sur le schéma. Lorsque l’espace manque, Commentaire libre s’affiche sous la forme Libre."
         },
         "third": {
           "title": "Consigner les actes dans Intervention",
@@ -198,7 +198,7 @@
         },
         "third": {
           "title": "Finaliser ou rouvrir une consultation",
-          "text": "« Finaliser » enregistre la consultation terminée et la fait repasser en lecture seule. Pour corriger une consultation enregistrée, ouvrez-la, choisissez « Modifier le dossier », apportez la correction, puis choisissez « Terminer la modification ». Vérifiez le patient et la date avant d’appliquer les changements."
+          "text": "Choisissez Finaliser puis confirmez pour enregistrer la visite terminée en lecture seule. Pour corriger une consultation enregistrée, ouvrez-la, choisissez « Modifier le dossier », apportez la correction, puis choisissez « Terminer la modification ». Vérifiez le patient et la date avant d’appliquer les changements."
         }
       }
     },
@@ -370,7 +370,7 @@
       "sections": {
         "first": {
           "title": "Ouvrir la visite guidée",
-          "text": "Choisissez « Prise en main » dans « Aide ». La visite guidée présente les commandes et peut être relancée à tout moment."
+          "text": "Choisissez « Prise en main » dans « Aide ». La visite guidée présente les commandes et peut être relancée à tout moment. Sur un écran étroit, ouvrez le menu déroulant à côté du nom ou du logo de votre clinique pour accéder à ces outils."
         },
         "second": {
           "title": "Consulter les changements récents",

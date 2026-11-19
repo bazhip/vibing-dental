@@ -363,6 +363,8 @@
     "closeImageChoiceMessage": "请先保存此图表再关闭，或选择不保存直接关闭以放弃其内容，并永久删除已上传的影像。"
   },
   "finalization": {
+    "confirmTitle": "完成本次就诊？",
+    "confirmMessage": "此操作将保存就诊记录并设为只读。若需修改，请选择“{{edit}}”。",
     "finalize": "完成记录",
     "finalized": "已完成",
     "description": "此病历已完成。如需修改，请选择“编辑病历”。",

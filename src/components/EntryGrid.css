@@ -1928,7 +1928,7 @@
   top: calc(var(--topbar-height, 0px) + 0.5rem);
   z-index: 30;
 }
-/* Keep labels inside the tools when the toolbar wraps. */
+/* Keep the groups in one row until the available space runs out. */
 .diagram-view__toolbar-main {
   display: flex;
   flex-wrap: nowrap;
@@ -1993,6 +1993,14 @@
 /* Free comment is an action beside the modes, never a pressed mode. */
 .diagram-view__toolbar .diagram-view__tool-group .diagram-view__free-comment { color: var(--primary); font-weight: 600; }
 .diagram-view__toolbar .diagram-view__tool-group .diagram-view__free-comment:hover { background: var(--primary-tint, #e6f2ef); }
+.diagram-view__free-comment-label {
+  position: relative;
+  align-self: stretch;
+  min-width: 0;
+  white-space: nowrap;
+}
+.diagram-view__free-comment-label > span { display: block; overflow: hidden; }
+.diagram-view__free-comment-short { position: absolute; inset: 0; }
 .diagram-view__short { display: none; }
 /* Tooth numbers and zoom: always on the toolbar, after the history. */
 .diagram-view__view {
@@ -2018,7 +2026,8 @@
   align-items: center;
   gap: 2px;
   margin: 0;
-  padding: 0 0 0 8px;
+  padding: 0;
+  padding-inline-start: 8px;
   border: 0;
   border-inline-start: 1px solid var(--border);
   border-radius: 0;
@@ -2040,18 +2049,23 @@
   .diagram-view__toolbar .diagram-view__short { display: inline; }
 }
 @container diagram (max-width: 760px) {
-  .diagram-view__toolbar-main { flex-wrap: wrap; gap: 6px; }
-  .diagram-view__toolbar .diagram-view__tool-group { flex: 1 1 auto; min-width: 0; gap: 2px; }
+  .diagram-view__toolbar-main { gap: 4px; }
+  .diagram-view__toolbar .diagram-view__tool-group { flex: 1 1 0; min-width: 0; gap: 2px; }
   .diagram-view__toolbar .diagram-view__tool-group .diagram-view__tool {
-    flex: 1 1 0;
+    flex: 1 1 auto;
     padding-inline: 2px;
   }
+  .diagram-view__toolbar .diagram-view__tool-group .diagram-view__tool:not(.diagram-view__free-comment) { flex-shrink: 0; }
   .diagram-view__toolbar .diagram-view__history { gap: 2px; padding-inline-start: 6px; }
-  .diagram-view__toolbar .diagram-view__view { gap: 6px; }
-  .diagram-view__toolbar .diagram-view__view .diagram-view__zoom { padding-inline-start: 6px; }
+  .diagram-view__toolbar .diagram-view__view { gap: 4px; }
+  .diagram-view__toolbar .diagram-view__view .diagram-view__numbers { padding-inline: 4px; }
+  .diagram-view__toolbar .diagram-view__view .diagram-view__zoom { padding-inline-start: 4px; }
+  .diagram-view__toolbar .diagram-view__view .diagram-view__zoom .diagram-view__action { min-width: 28px; }
 }
-@container diagram (max-width: 620px) {
+@container diagram (max-width: 480px) {
+  .diagram-view__toolbar-main { flex-wrap: wrap; }
   .diagram-view__toolbar .diagram-view__tool-group { flex-basis: 100%; }
+  .diagram-view__toolbar .diagram-view__tool-group .diagram-view__tool:not(.diagram-view__free-comment) { flex-shrink: 1; }
   .diagram-view__toolbar .diagram-view__history { border-inline-start: 0; padding-inline-start: 0; }
   .diagram-view__toolbar .diagram-view__view .diagram-view__zoom :is(.diagram-view__action, .diagram-view__zoom-level) { min-width: 44px; min-height: 44px; }
 }

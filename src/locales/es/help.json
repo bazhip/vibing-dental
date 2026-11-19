@@ -86,7 +86,7 @@
         },
         "second": {
           "title": "Documentar hallazgos en Diagnóstico",
-          "text": "Seleccione el diente correspondiente y marque los hallazgos previos al tratamiento o los dientes que ya faltaban. Añada códigos dentales y notas breves cuando sea necesario. Consulte el catálogo de códigos si necesita comprobar alguno. Las etiquetas de la barra de herramientas están debajo de los iconos. Use «Comentario» para asociar una nota a un diente o «Comentario libre» para colocarla en cualquier parte del diagrama."
+          "text": "Seleccione el diente correspondiente y marque los hallazgos previos al tratamiento o los dientes que ya faltaban. Añada códigos dentales y notas breves cuando sea necesario. Consulte el catálogo de códigos si necesita comprobar alguno. Las etiquetas de la barra de herramientas están debajo de los iconos. Use «Comentario» para asociar una nota a un diente o «Comentario libre» para colocarla en cualquier parte del diagrama. Cuando hay poco espacio, Comentario libre se muestra como Libre."
         },
         "third": {
           "title": "Documentar el trabajo en Procedimiento",
@@ -198,7 +198,7 @@
         },
         "third": {
           "title": "Finalizar o reabrir una visita",
-          "text": "«Finalizar» guarda la visita completada y la devuelve al modo de solo lectura. Para corregir una visita guardada, ábrala, elija «Editar historial», haga la corrección y seleccione «Terminar edición». Compruebe el paciente y la fecha antes de aplicar los cambios."
+          "text": "Seleccione Finalizar y confirme para guardar la visita terminada en modo de solo lectura. Para corregir una visita guardada, ábrala, elija «Editar historial», haga la corrección y seleccione «Terminar edición». Compruebe el paciente y la fecha antes de aplicar los cambios."
         }
       }
     },
@@ -370,7 +370,7 @@
       "sections": {
         "first": {
           "title": "Abrir el recorrido introductorio",
-          "text": "Elija «Primeros pasos» en «Ayuda». El recorrido muestra los controles y puede volver a abrirse cuando lo necesite."
+          "text": "Elija «Primeros pasos» en «Ayuda». El recorrido muestra los controles y puede volver a abrirse cuando lo necesite. En pantallas estrechas, abra el menú desplegable junto al nombre o el logotipo de su clínica para encontrar estas herramientas."
         },
         "second": {
           "title": "Consultar los cambios recientes",

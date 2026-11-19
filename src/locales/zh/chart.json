@@ -243,6 +243,7 @@
     "redo": "重做",
     "undoTitle": "撤销（{{shortcut}}）",
     "redoTitle": "重做（{{shortcut}}）",
+    "freeShort": "自由",
     "freeComment": "+ 自由备注",
     "numbers": "# 编号",
     "numbersTitle": "在牙列图上显示每颗牙齿的 Triadan 编号，不会打印在 PDF 中",

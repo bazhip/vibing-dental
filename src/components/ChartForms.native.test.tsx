@@ -244,7 +244,9 @@ describe('DiagramView toolbar', () => {
   it('orders Draw, Mark, Comment, Free comment in one group and starts on Mark', () => {
     render(<DiagramView title="Diagnosis" species="canine" toothMarks={{}} onToothMarksChange={vi.fn()} comments={[]} onCommentsChange={vi.fn()} strokes={[]} onStrokesChange={vi.fn()} />);
     const group = screen.getByRole('group', { name: 'Diagram tool' });
-    expect(within(group).getAllByRole('button').map((b) => b.textContent)).toEqual(['Draw', 'MarkMark', 'Comment', 'Free comment']);
+    const buttons = within(group).getAllByRole('button');
+    expect(buttons.slice(0, 3).map(button => button.textContent)).toEqual(['Draw', 'MarkMark', 'Comment']);
+    expect(buttons[3]).toHaveAccessibleName('Free comment');
     expect(within(group).getAllByRole('button')[1]).toHaveAttribute('aria-pressed', 'true');
     expect(screen.queryByRole('group', { name: 'Draw settings' })).toBeNull();
   });

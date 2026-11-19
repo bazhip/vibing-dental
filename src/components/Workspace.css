@@ -73,6 +73,7 @@ html:not(.native-ios) .entry-grid__topbar-lead { flex: 1 1 620px; gap: 24px; min
 html:not(.native-ios) .entry-grid__practice-brand {
   display: flex; align-items: center; gap: 8px; flex: 0 0 208px; min-width: 0;
 }
+html:not(.native-ios) .entry-grid__practice-brand-desktop { display: contents; }
 html:not(.native-ios) .entry-grid__topbar-logo { height: 32px; max-width: 52px; }
 html:not(.native-ios) .entry-grid__doctor { font-size: 13px; font-weight: 600; letter-spacing: 0; }
 html:not(.native-ios) .entry-grid__title {
@@ -168,17 +169,22 @@ html:not(.native-ios) .chart-menu__item { padding-block: 12px; }
 html:not(.native-ios) .chart-menu--more .chart-menu__item-body { overflow-wrap: anywhere; }
 html:not(.native-ios) .chart-menu__section-head { text-transform: none; letter-spacing: 0; font-weight: 600; }
 @media (max-width: 1100px) {
-  html:not(.native-ios) .entry-grid__topbar { flex-wrap: wrap; }
-
-  html:not(.native-ios) .entry-grid__topbar-actions { flex: 0 1 auto; width: auto; flex-wrap: wrap; }
+  html:not(.native-ios) .entry-grid__topbar { flex-wrap: nowrap; gap: 8px; }
+  html:not(.native-ios) .entry-grid__topbar-lead { flex: 1 1 auto; gap: 8px; }
+  html:not(.native-ios) .entry-grid__topbar-actions { flex: 0 0 auto; width: auto; flex-wrap: nowrap; }
   html:not(.native-ios) .entry-grid__topbar-actions > :is(button,span,.chart-menu,.topbar-tour-anchor) { flex: 0 1 auto; width: auto; }
   html:not(.native-ios) .entry-grid__topbar-actions > [hidden] { display: none; }
 }
 @media (min-width: 601px) {
   html:not(.native-ios) .entry-grid__topbar .topbar-new-patient .topbar-label-long { display: inline; }
   html:not(.native-ios) .entry-grid__topbar .topbar-new-patient .topbar-label-short { display: none; }
+  html:not(.native-ios) .entry-grid__topbar-actions > .voice-input-wrap,
+  html:not(.native-ios) .entry-grid__topbar-actions .voice-input {
+    flex: 0 0 auto;
+    width: auto;
+  }
   html:not(.native-ios) .entry-grid__topbar .voice-input__label {
-    position: static; width: auto; height: auto; margin: 0; overflow: visible; clip: auto; white-space: normal;
+    position: static; width: auto; height: auto; margin: 0; overflow: visible; clip: auto; white-space: nowrap;
   }
 }
 @media (max-width: 900px) {
@@ -192,34 +198,46 @@ html:not(.native-ios) .chart-menu__section-head { text-transform: none; letter-s
   html:not(.native-ios) .sidebar-layout { grid-template-columns: minmax(0,1fr); gap: 16px; }
   html:not(.native-ios) .sidebar-layout__main { padding: 22px; }
 }
-/* Phones share one overflow menu; desktop keeps Help and Account separate. */
+/* On narrow windows the practice button owns the overflow menu. */
 html:not(.native-ios) .entry-grid__topbar .chart-menu--more { display: none; }
 html:not(.native-ios) .entry-grid__topbar .topbar-desktop-visit { display: inline-flex; }
+.topbar-lifecycle__icon { display: none; }
 @media (max-width: 900px) {
-  html:not(.native-ios) .entry-grid__topbar .chart-menu--more { display: block; }
-  html:not(.native-ios) .entry-grid__topbar .chart-menu--more .chart-menu__trigger-label { position: static; display: inline; width: auto; height: auto; margin: 0; overflow: visible; clip: auto; white-space: normal; }
+  html:not(.native-ios) .entry-grid__topbar .topbar-desktop-help,
+  html:not(.native-ios) .entry-grid__practice-brand-desktop { display: none; }
+  html:not(.native-ios) .entry-grid__practice-brand { flex: 0 1 clamp(52px, 28vw, 180px); }
+  html:not(.native-ios) .entry-grid__practice-brand .chart-menu--more { position: static; display: block; min-width: 0; max-width: 100%; }
+  html:not(.native-ios) .entry-grid__practice-brand .chart-menu__trigger {
+    box-sizing: border-box; min-height: 44px; min-width: 44px; max-width: 100%;
+    justify-content: start; padding: 4px 8px; gap: 6px; border-color: var(--border-strong); text-align: start;
+  }
+  html:not(.native-ios) .entry-grid__practice-brand .chart-menu__practice-label {
+    position: static; width: auto; height: auto; margin: 0; overflow: hidden; clip: auto;
+    display: flex; flex-direction: column; min-width: 0; text-align: start;
+  }
+  html:not(.native-ios) .entry-grid__practice-brand .chart-menu__practice-chevron { flex: none; color: var(--text-muted); }
+  html:not(.native-ios) .entry-grid__practice-brand .chart-menu--open .chart-menu__practice-chevron { transform: rotate(180deg); }
+  html:not(.native-ios) .entry-grid__practice-brand .entry-grid__topbar-logo { height: 28px; width: 28px; object-position: center; }
+}
+@media (min-width: 601px) and (max-width: 900px) {
+  html:not(.native-ios) .entry-grid__practice-brand .chart-menu__panel { inset-inline: var(--page-pad) auto; }
 }
 @media (max-width: 600px) {
   html:not(.native-ios) .entry-grid__topbar {
-    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
-    padding-block: 0; margin-bottom: 8px;
+    gap: 4px; padding-block: 0; margin-bottom: 8px;
   }
-  html:not(.native-ios) .entry-grid__topbar-lead { display: contents; }
-  html:not(.native-ios) .entry-grid__patient-workspace { order: 3; flex: 1 0 100%; }
-  html:not(.native-ios) .entry-grid__practice-brand { display: flex; flex: 1 1 90px; }
-  html:not(.native-ios) .entry-grid__topbar-lead:has(.entry-grid__patient[hidden]) .entry-grid__practice-brand { display: flex; }
-  html:not(.native-ios) .entry-grid__practice-brand .entry-grid__doctor { display: block; }
-  html:not(.native-ios) .entry-grid__practice-brand .entry-grid__topbar-identity > h1.entry-grid__title { display: block; }
-
+  html:not(.native-ios) .entry-grid__topbar-lead { gap: 4px; }
+  html:not(.native-ios) .entry-grid__practice-brand { flex-basis: clamp(52px, 25vw, 145px); }
+  html:not(.native-ios) .entry-grid__practice-brand .chart-menu__trigger { padding-inline: 4px; }
+  html:not(.native-ios) .entry-grid__topbar .topbar-lifecycle { min-width: 44px; }
+  html:not(.native-ios) .entry-grid__topbar .topbar-lifecycle__icon { display: block; }
+  html:not(.native-ios) .entry-grid__topbar .topbar-lifecycle__label { display: none; }
+  html:not(.native-ios) .entry-grid__topbar-actions .save-status { display: none; }
   html:not(.native-ios) .entry-grid__patient { padding: 0; border: 0; gap: 4px 6px; }
   html:not(.native-ios) .entry-grid__patient-empty { font-size: 13px; white-space: normal; }
   html:not(.native-ios) .entry-grid__patient-date { display: inline; white-space: normal; }
   html:not(.native-ios) .entry-grid__visit-select { min-height: 44px; }
   html:not(.native-ios) .entry-grid__topbar :is(.topbar-desktop-help, .topbar-desktop-save, .chart-menu--account, .topbar-desktop-visit, .topbar-new-patient, .topbar-desktop-revert) { display: none; }
-  html:not(.native-ios) .entry-grid__topbar .chart-menu--more { display: block; }
-  html:not(.native-ios) .entry-grid__topbar .chart-menu--more .chart-menu__trigger-label {
-    position: static; display: inline; width: auto; height: auto; margin: 0; overflow: visible; clip: auto; white-space: normal;
-  }
   html:not(.native-ios) .entry-grid__topbar-actions { display: flex; width: auto; flex-wrap: nowrap; gap: 4px; }
   html:not(.native-ios) .entry-grid__topbar-actions > :is(button,span,.chart-menu,.topbar-tour-anchor) { width: auto; }
   html:not(.native-ios) .entry-grid__topbar :is(.chart-menu__trigger,.entry-grid__button,.voice-input) { min-height: 44px; }
@@ -243,6 +261,12 @@ html:not(.native-ios) .entry-grid__topbar .topbar-desktop-visit { display: inlin
 .entry-grid__practice-link { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px; width: 100%; min-height: 44px; border: 0; background: transparent; padding: 0; color: inherit; font: inherit; text-align: start; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
 .entry-grid__practice-link:hover { color: var(--primary); }
 .entry-grid__practice-link:focus-visible, .entry-grid__add-logo:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: var(--radius-sm); }
-@media (max-width: 600px) { html:not(.native-ios) .entry-grid__practice-brand { flex-basis: 90px; } }
 
 .entry-grid__practice-link > span { display: block; max-width: 100%; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+@media (max-width: 480px) {
+  html:not(.native-ios) .entry-grid__practice-brand { flex: 0 0 auto; }
+  html:not(.native-ios) .entry-grid__practice-brand .chart-menu__practice-label { display: none; }
+  html:not(.native-ios) .entry-grid__practice-brand .chart-menu__trigger { justify-content: center; }
+  html:not(.native-ios) .entry-grid__practice-brand .entry-grid__topbar-logo { height: 24px; width: 24px; }
+}

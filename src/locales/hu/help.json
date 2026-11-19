@@ -86,7 +86,7 @@
         },
         "second": {
           "title": "Leletek dokumentálása a Diagnózis szakaszban",
-          "text": "Válassza ki az érintett fogat, és jelölje a kezelés előtti elváltozásokat vagy a már hiányzó fogakat. Szükség szerint adjon meg fogászati kódokat és rövid megjegyzéseket. A kódjegyzékben ellenőrizheti a kiválasztott kódot. Az eszköztár feliratai az ikonok alatt találhatók. A „Megjegyzés” eszközzel egy foghoz társíthat megjegyzést, a „Szabad megjegyzés” eszközzel pedig bárhol elhelyezheti az ábrán."
+          "text": "Válassza ki az érintett fogat, és jelölje a kezelés előtti elváltozásokat vagy a már hiányzó fogakat. Szükség szerint adjon meg fogászati kódokat és rövid megjegyzéseket. A kódjegyzékben ellenőrizheti a kiválasztott kódot. Az eszköztár feliratai az ikonok alatt találhatók. A „Megjegyzés” eszközzel egy foghoz társíthat megjegyzést, a „Szabad megjegyzés” eszközzel pedig bárhol elhelyezheti az ábrán. Ha kevés a hely, a Szabad megjegyzés felirata Szabad alakra rövidül."
         },
         "third": {
           "title": "Az elvégzett munka dokumentálása a Beavatkozás szakaszban",
@@ -198,7 +198,7 @@
         },
         "third": {
           "title": "Vizit lezárása vagy újbóli megnyitása",
-          "text": "A „Lezárás” menti az elkészült vizitet, és csak megtekinthető állapotba állítja. Mentett vizit módosításához nyissa meg, válassza a „Fogászati lap szerkesztése” lehetőséget, végezze el a módosítást, majd válassza a „Szerkesztés kész” lehetőséget. A szerkesztés előtt ellenőrizze a pácienst és a dátumot."
+          "text": "A befejezett vizit csak olvasható mentéséhez válassza a Lezárás lehetőséget, és erősítse meg. Mentett vizit módosításához nyissa meg, válassza a „Fogászati lap szerkesztése” lehetőséget, végezze el a módosítást, majd válassza a „Szerkesztés kész” lehetőséget. A szerkesztés előtt ellenőrizze a pácienst és a dátumot."
         }
       }
     },
@@ -370,7 +370,7 @@
       "sections": {
         "first": {
           "title": "A bemutató megnyitása",
-          "text": "A „Súgó” menüben válassza az „Első lépések” lehetőséget. A bemutató végigvezeti a kezelőelemeken, és szükség esetén újra megnyitható."
+          "text": "A „Súgó” menüben válassza az „Első lépések” lehetőséget. A bemutató végigvezeti a kezelőelemeken, és szükség esetén újra megnyitható. Keskeny képernyőn a rendelő neve vagy logója melletti lenyíló menüben találja ezeket az eszközöket."
         },
         "second": {
           "title": "A legutóbbi változások áttekintése",

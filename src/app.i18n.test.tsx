@@ -204,7 +204,7 @@ describe('chart frame', () => {
     sync.override = fakeCloud({ enabled: false });
     profile.doctorName = '';
     await frame({ trial: true });
-    expect(screen.getByText('⟦ToothOps Charting · Trial⟧')).toBeTruthy();
+    expect(screen.getByRole('heading', { name: '⟦ToothOps Charting · Trial⟧' })).toBeTruthy();
     expect(screen.getByText('⟦On this device only⟧')).toBeTruthy();
     expect(screen.getByText('⟦Sign in⟧')).toBeTruthy();
     expect(untranslated()).toEqual([]);
@@ -332,12 +332,15 @@ describe('chart frame', () => {
 // ---------------------------------------------------------------------------
 
 describe('menus and layout', () => {
-  it('the compact mobile More menu is translated', () => {
+  it('the compact practice menu is translated', () => {
     const noop = () => {};
-    render(<ChartMenu scope="more" onOpenWalkthrough={noop} onOpenFeedback={noop}
+    render(<ChartMenu scope="more" practice={{ name: 'Elm Vet' }} onOpenWalkthrough={noop} onOpenFeedback={noop}
       cloud={{ onPracticeSettings: noop, onOpenReminders: noop, onOpenAccount: noop, onSignOut: noop }} />);
-    fireEvent.click(screen.getByRole('button', { name: '⟦More⟧' }));
-    expect(findUntranslated(document.body)).toEqual([]);
+    const trigger = screen.getByRole('button', { name: 'Elm Vet' });
+    expect(trigger).toHaveAttribute('aria-expanded', 'false');
+    fireEvent.click(trigger);
+    expect(trigger).toHaveAttribute('aria-expanded', 'true');
+    expect(findUntranslated(document.body, ['Elm Vet'])).toEqual([]);
   });
   it('the settings menu, as a signed-in admin and as a trial user', async () => {
     const noop = () => {};

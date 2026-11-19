@@ -86,7 +86,7 @@
         },
         "second": {
           "title": "Documentare i reperti in Diagnosi",
-          "text": "Selezioni il dente e indichi i reperti rilevati prima del trattamento o i denti già mancanti. Aggiunga codici dentali e brevi note quando serve. Consulti il repertorio dei codici per verificarne uno. Le etichette della barra degli strumenti sono sotto le icone. Usi «Commento» per associare una nota a un dente oppure «Commento libero» per inserirla in un punto qualsiasi del diagramma."
+          "text": "Selezioni il dente e indichi i reperti rilevati prima del trattamento o i denti già mancanti. Aggiunga codici dentali e brevi note quando serve. Consulti il repertorio dei codici per verificarne uno. Le etichette della barra degli strumenti sono sotto le icone. Usi «Commento» per associare una nota a un dente oppure «Commento libero» per inserirla in un punto qualsiasi del diagramma. Quando lo spazio è limitato, Commento libero appare come Libero."
         },
         "third": {
           "title": "Documentare le prestazioni in Procedura",
@@ -198,7 +198,7 @@
         },
         "third": {
           "title": "Finalizzare o riaprire una visita",
-          "text": "«Finalizza» salva la visita completata e la riporta in sola lettura. Per correggere una visita salvata, la apra, scelga «Modifica cartella», apporti la correzione e selezioni «Fine modifica». Prima di applicare le modifiche verifichi il paziente e la data."
+          "text": "Scelga Finalizza e confermi per salvare la visita completata in sola lettura. Per correggere una visita salvata, la apra, scelga «Modifica cartella», apporti la correzione e selezioni «Fine modifica». Prima di applicare le modifiche verifichi il paziente e la data."
         }
       }
     },
@@ -370,7 +370,7 @@
       "sections": {
         "first": {
           "title": "Aprire la guida introduttiva",
-          "text": "Scelga «Per iniziare» da «Aiuto». La guida introduttiva mostra i comandi e può essere riaperta ogni volta che serve."
+          "text": "Scelga «Per iniziare» da «Aiuto». La guida introduttiva mostra i comandi e può essere riaperta ogni volta che serve. Sugli schermi stretti, apra il menu accanto al nome o al logo della Sua struttura per trovare questi strumenti."
         },
         "second": {
           "title": "Consultare le novità",

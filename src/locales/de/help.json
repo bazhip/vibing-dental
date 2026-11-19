@@ -86,7 +86,7 @@
         },
         "second": {
           "title": "Befunde unter Diagnose dokumentieren",
-          "text": "Wählen Sie den betreffenden Zahn aus und markieren Sie die Befunde vor der Behandlung oder bereits fehlende Zähne. Ergänzen Sie bei Bedarf Dentalcodes und kurze Notizen. Schlagen Sie den Code im Codeverzeichnis nach, wenn Sie unsicher sind. Die Beschriftungen in der Werkzeugleiste stehen unter den Symbolen. Mit „Kommentar“ fügen Sie einem Zahn eine Notiz hinzu. Mit „Freier Kommentar“ platzieren Sie eine Notiz an einer beliebigen Stelle im Diagramm."
+          "text": "Wählen Sie den betreffenden Zahn aus und markieren Sie die Befunde vor der Behandlung oder bereits fehlende Zähne. Ergänzen Sie bei Bedarf Dentalcodes und kurze Notizen. Schlagen Sie den Code im Codeverzeichnis nach, wenn Sie unsicher sind. Die Beschriftungen in der Werkzeugleiste stehen unter den Symbolen. Mit „Kommentar“ fügen Sie einem Zahn eine Notiz hinzu. Mit „Freier Kommentar“ platzieren Sie eine Notiz an einer beliebigen Stelle im Diagramm. Bei wenig Platz steht in der Werkzeugleiste „Frei“ für „Freier Kommentar“."
         },
         "third": {
           "title": "Maßnahmen unter Eingriff dokumentieren",
@@ -198,7 +198,7 @@
         },
         "third": {
           "title": "Besuch abschließen oder erneut öffnen",
-          "text": "Mit „Abschließen“ speichern Sie den abgeschlossenen Besuch und wechseln zurück zur schreibgeschützten Ansicht. Um einen gespeicherten Besuch zu korrigieren, öffnen Sie ihn, wählen Sie „Akte bearbeiten“ und nehmen Sie die Änderung vor. Wählen Sie anschließend „Bearbeitung beenden“. Prüfen Sie vor dem Übernehmen den Patienten und das Datum."
+          "text": "Wählen Sie „Abschließen“ und bestätigen Sie, um den abgeschlossenen Besuch schreibgeschützt zu speichern. Um einen gespeicherten Besuch zu korrigieren, öffnen Sie ihn, wählen Sie „Akte bearbeiten“ und nehmen Sie die Änderung vor. Wählen Sie anschließend „Bearbeitung beenden“. Prüfen Sie vor dem Übernehmen den Patienten und das Datum."
         }
       }
     },
@@ -370,7 +370,7 @@
       "sections": {
         "first": {
           "title": "Einführung öffnen",
-          "text": "Wählen Sie „Erste Schritte“ unter „Hilfe“. Die Einführung zeigt Ihnen die Bedienelemente und lässt sich jederzeit erneut öffnen."
+          "text": "Wählen Sie „Erste Schritte“ unter „Hilfe“. Die Einführung zeigt Ihnen die Bedienelemente und lässt sich jederzeit erneut öffnen. Öffnen Sie auf schmalen Bildschirmen das Menü neben dem Namen oder Logo Ihrer Praxis, um diese Funktionen zu finden."
         },
         "second": {
           "title": "Aktuelle Änderungen ansehen",

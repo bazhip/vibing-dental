@@ -365,6 +365,8 @@
     "closeImageChoiceMessage": "Enregistrez ce dossier avant de fermer, ou fermez sans enregistrer pour abandonner son contenu et supprimer définitivement les images téléversées."
   },
   "finalization": {
+    "confirmTitle": "Finaliser cette visite ?",
+    "confirmMessage": "La visite sera enregistrée en lecture seule. Pour la modifier plus tard, choisissez {{edit}}.",
     "finalize": "Finaliser",
     "finalized": "Finalisé",
     "description": "Ce dossier est finalisé. Sélectionnez Modifier le dossier pour le modifier.",

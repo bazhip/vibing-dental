@@ -1,3 +1,4 @@
+import { Icon } from './ios/icons';
 import { useTeam } from './hooks/useTeam';
 import { RefineTextContext } from './components/RefineTextAction';
 import type { HistoryVisit } from './components/PatientRecordHistory';
@@ -107,6 +108,8 @@ function formatSavedAt(iso: string): string {
 const PAGE_PRESENTATION = 'page' as const;
 const MODAL_PRESENTATION = 'modal' as const;
 const MORE_SCOPE = 'more' as const;
+const EDIT_ICON = 'pencil-tip';
+const FINALIZE_ICON = 'checkmark';
 const HELP_SCOPE = 'help' as const;
 const ACCOUNT_SCOPE = 'account' as const;
 
@@ -222,6 +225,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const [editUnlocked, setEditUnlocked] = React.useState(false);
   const [finalizationBusy, setFinalizationBusy] = React.useState(false);
   const lifecycleBusyRef = React.useRef(false);
+  const finalizeConfirmationRef = React.useRef(false);
+  const activeLifecycleSession = React.useRef(chart.chartSession);
+  activeLifecycleSession.current = chart.chartSession;
   const activeLifecycleChart = React.useRef(chart.cloudChartId);
   activeLifecycleChart.current = chart.cloudChartId;
   React.useEffect(() => { setEditUnlocked(false); }, [chart.cloudChartId]);
@@ -1618,6 +1624,26 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     return true;
   };
 
+  const confirmFinalizeRecord = async () => {
+    if (finalizeConfirmationRef.current || lifecycleBusyRef.current) return;
+    if (!chart.patientInfo.patientName.trim()) {
+      await finalizeRecord();
+      return;
+    }
+    const session = chart.chartSession;
+    finalizeConfirmationRef.current = true;
+    try {
+      const accepted = await confirmDialog({
+        title: t('finalization.confirmTitle'),
+        message: t('finalization.confirmMessage', { edit: t('topbar.editChart') }),
+        confirmLabel: t('finalization.finalize'),
+      });
+      if (accepted && activeLifecycleSession.current === session) await finalizeRecord();
+    } finally {
+      finalizeConfirmationRef.current = false;
+    }
+  };
+
   // ----- Saved-chart actions ---------------------------------------------
   // One copy for the web's My charts dialog and the app's tabs (the app
   // adds "land on the Chart tab" on top). Stable identities.
@@ -2211,7 +2237,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           shareLabel={ownerReportOn ? t('fab.downloadAria', { ns: 'app' }) : t('fab.previewAria', { ns: 'app' })}
           menu={moreMenu}
           onEdit={viewingSavedVisit ? unlockForEditing : undefined}
-          onFinalize={cloud.enabled && !chart.finalizedAt ? () => { void finalizeRecord(); } : undefined}
+          onFinalize={cloud.enabled && !chart.finalizedAt ? confirmFinalizeRecord : undefined}
           lifecycleBusy={finalizationBusy || !cloud.online || cloud.status === 'saving'}
         />
         {/* Stays mounted so screen readers hear every save. */}
@@ -2286,23 +2312,48 @@ const EntryGrid: React.FC<EntryGridProps> = ({
 
         <div className="entry-grid__topbar-lead">
           <div className="entry-grid__practice-brand">
-          {/* Uploaded practice logo leads the identity block (decorative —
-              the practice name is right beside it). */}
-          {profile.logoUrl ? (
-            <img src={profile.logoUrl} alt="" className="entry-grid__topbar-logo" />
-          ) : cloud.enabled && <button type="button" className="entry-grid__add-logo" disabled={logoUploading} aria-busy={logoUploading} onClick={() => logoInputRef.current?.click()}>
-            {t('topbar.addLogo')} <span aria-hidden="true">+</span>
-          </button>}
-          <input ref={logoInputRef} type="file" accept="image/png,image/jpeg,image/webp" hidden
-            aria-label={t('practice.logo.choose', { ns: 'settings' })} onChange={handleHeaderLogoPick} />
-          {cloud.enabled && !trial ? (
-            <button type="button" className="entry-grid__topbar-identity entry-grid__practice-link" onClick={openPracticeSettings} title={t('menu.practiceSettings.label')}>
-              <span className="entry-grid__doctor">{profile.practiceName.trim() || t('brand')}</span>
-              {profile.doctorName.trim() && <span className="entry-grid__title">{profile.doctorName}</span>}
-            </button>
-          ) : (
-            <div className="entry-grid__topbar-identity"><h1 className="entry-grid__title">{trial ? t('brandTrial') : profile.practiceName.trim() || t('brand')}</h1></div>
-          )}
+            <div className="entry-grid__practice-brand-desktop">
+              {/* Uploaded practice logo leads the identity block (decorative —
+                  the practice name is right beside it). */}
+              {profile.logoUrl ? (
+                <img src={profile.logoUrl} alt="" className="entry-grid__topbar-logo" />
+              ) : cloud.enabled && <button type="button" className="entry-grid__add-logo" disabled={logoUploading} aria-busy={logoUploading} onClick={() => logoInputRef.current?.click()}>
+                {t('topbar.addLogo')} <span aria-hidden="true">+</span>
+              </button>}
+              <input ref={logoInputRef} type="file" accept="image/png,image/jpeg,image/webp" hidden
+                aria-label={t('practice.logo.choose', { ns: 'settings' })} onChange={handleHeaderLogoPick} />
+              {cloud.enabled && !trial ? (
+                <button type="button" className="entry-grid__topbar-identity entry-grid__practice-link" onClick={openPracticeSettings} title={t('menu.practiceSettings.label')}>
+                  <span className="entry-grid__doctor">{profile.practiceName.trim() || t('brand')}</span>
+                  {profile.doctorName.trim() && <span className="entry-grid__title">{profile.doctorName}</span>}
+                </button>
+              ) : (
+                <div className="entry-grid__topbar-identity"><h1 className="entry-grid__title">{trial ? t('brandTrial') : profile.practiceName.trim() || t('brand')}</h1></div>
+              )}
+            </div>
+            <ChartMenu
+              onSave={showManualSave ? { onClick: attemptSave, hint: saveStatusTitle } : undefined}
+              scope={MORE_SCOPE}
+              practice={{
+                name: trial ? t('brandTrial') : profile.practiceName.trim() || t('brand'),
+                doctorName: cloud.enabled && !trial ? profile.doctorName.trim() : undefined,
+                logoUrl: profile.logoUrl,
+              }}
+              onPreviewDocuments={!workspacePage ? () => (document.getElementById('chart-form') as HTMLFormElement | null)?.requestSubmit() : undefined}
+              onOpenWalkthrough={() => { void guardPracticeLeave().then((leave) => { if (leave) { practiceLeaveGuard.current = null; setPracticeSettingsOpen(false); returnToVisit(); setWalkthroughFirstRun(false); setWalkthroughOpen(true); } }); }}
+              onGoHome={onGoHome}
+              onOpenAdmin={isAdmin && !trial ? () => setAdminOpen(true) : undefined}
+              onOpenFeedback={canFeedback ? () => setFeedback({}) : undefined}
+              onOpenChartSettings={() => setChartSettingsOpen('all')}
+              onOpenWhatsNew={() => setWhatsNewOpen(true)}
+              onRevert={editingSavedVisit && !workspacePage && unlockSnapshotChanged ? revertUnlockedChanges : undefined}
+              cloud={cloud.enabled ? {
+                onPracticeSettings: openPracticeSettings,
+                onOpenReminders: () => setRemindersOpen(true),
+                onOpenAccount: () => setAccountOpen(true),
+                onSignOut: () => { void guardPracticeLeave().then((leave) => { if (leave) return cloud.signOut(); }).catch((err) => toast(t('errors.signOut', { error: friendlyDetail(err) }), { kind: 'error' })); },
+              } : undefined}
+            />
           </div>
           <div className="entry-grid__patient-workspace">
         <AnimalTabs tabs={animalTabs.tabs} showEmpty={false} activeId={animalTabs.empty || workspacePage ? '' : chart.cloudChartId}
@@ -2387,24 +2438,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           {dictate(workspacePage || animalTabs.empty)}
           {showManualSave && <button type="button" className="diagram-view__action topbar-desktop-save"
             onClick={attemptSave} title={saveStatusTitle}>{t('ios.menu.saveNow', { ns: 'chart' })}</button>}
-          <ChartMenu
-            onSave={showManualSave ? { onClick: attemptSave, hint: saveStatusTitle } : undefined}
-            scope={MORE_SCOPE}
-            onPreviewDocuments={!workspacePage ? () => (document.getElementById('chart-form') as HTMLFormElement | null)?.requestSubmit() : undefined}
-            onOpenWalkthrough={() => { void guardPracticeLeave().then((leave) => { if (leave) { practiceLeaveGuard.current = null; setPracticeSettingsOpen(false); returnToVisit(); setWalkthroughFirstRun(false); setWalkthroughOpen(true); } }); }}
-            onGoHome={onGoHome}
-            onOpenAdmin={isAdmin && !trial ? () => setAdminOpen(true) : undefined}
-            onOpenFeedback={canFeedback ? () => setFeedback({}) : undefined}
-            onOpenChartSettings={() => setChartSettingsOpen('all')}
-            onOpenWhatsNew={() => setWhatsNewOpen(true)}
-            onRevert={editingSavedVisit && !workspacePage && unlockSnapshotChanged ? revertUnlockedChanges : undefined}
-            cloud={cloud.enabled ? {
-              onPracticeSettings: openPracticeSettings,
-              onOpenReminders: () => setRemindersOpen(true),
-              onOpenAccount: () => setAccountOpen(true),
-              onSignOut: () => { void guardPracticeLeave().then((leave) => { if (leave) return cloud.signOut(); }).catch((err) => toast(t('errors.signOut', { error: friendlyDetail(err) }), { kind: 'error' })); },
-            } : undefined}
-          />
           {cloud.enabled && !workspacePage && !animalTabs.empty && (
             <>
               {viewingSavedVisit && <span className="save-status save-status--saved">{t('finalization.finalized')}</span>}
@@ -2421,11 +2454,14 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               )}
               <button
                 type="button"
-                className="entry-grid__button entry-grid__button--topbar"
-                onClick={viewingSavedVisit ? unlockForEditing : finalizeRecord}
+                className="entry-grid__button entry-grid__button--topbar topbar-lifecycle"
+                aria-label={viewingSavedVisit ? t('topbar.editChart') : t('finalization.finalize')}
+                title={viewingSavedVisit ? t('topbar.editChart') : t('finalization.finalize')}
+                onClick={viewingSavedVisit ? unlockForEditing : confirmFinalizeRecord}
                 disabled={finalizationBusy || !cloud.online || cloud.status === 'saving'}
               >
-                {viewingSavedVisit ? t('topbar.editChart') : t('finalization.finalize')}
+                <Icon className="topbar-lifecycle__icon" name={viewingSavedVisit ? EDIT_ICON : FINALIZE_ICON} size={18} />
+                <span className="topbar-lifecycle__label">{viewingSavedVisit ? t('topbar.editChart') : t('finalization.finalize')}</span>
               </button>
             </>
           )}

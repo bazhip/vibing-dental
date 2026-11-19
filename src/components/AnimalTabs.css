@@ -44,7 +44,7 @@
 .animal-tabs__scroll { flex: 0 0 32px; height: 44px; font-size: 22px !important; border-radius: var(--radius-sm); }
 :dir(rtl) .animal-tabs__scroll { transform: scaleX(-1); }
 .animal-tabs .animal-tabs__scroll:disabled { color: var(--text-muted); cursor: default; }
-@media (max-width: 600px) { .animal-tabs__scroll { display: none; } }
+@media (max-width: 760px) { .animal-tabs__scroll { display: none; } }
 
 .animal-tabs__visit { position: relative; flex: 0 0 32px; height: 36px; align-self: center; }
 .animal-tabs__visit select { width: 100%; height: 100%; appearance: none; border: 0; background: transparent; color: transparent; cursor: pointer; border-radius: var(--radius-sm); }
@@ -72,3 +72,14 @@
 
 .animal-tabs__item--editing::before { background: var(--ios-warning-solid, #d97706); }
 .animal-tabs__editing { color: var(--ios-warning-label, #b45309); }
+
+@media (max-width: 600px) {
+  .entry-grid__topbar .animal-tabs__item { width: max(132px, min(240px, var(--animal-tab-available, 240px))); }
+  .entry-grid__topbar .animal-tabs__select { position: relative; padding-inline: 7px; }
+  .entry-grid__topbar .animal-tabs__indicators { position: absolute; inset-inline-start: 8px; inset-block-end: 4px; }
+  .entry-grid__topbar .animal-tabs__details,
+  .entry-grid__topbar .animal-tabs__editing { display: none; }
+  .entry-grid__topbar .animal-tabs__save {
+    width: 6px; height: 6px; border-radius: 50%; background: currentColor; font-size: 0;
+  }
+}
