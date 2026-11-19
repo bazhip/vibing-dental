@@ -19,6 +19,7 @@ import { useHashRoute } from './hooks/useHashRoute';
 import { lazyWithReload } from './utils/lazyWithReload';
 import { isNativeApp } from './native/platform';
 import { isIosPreview } from './ios/preview';
+import { clearPracticeLogoCache } from './utils/practiceLogoCache';
 import { clearBillingCache } from './native/billingCache';
 import { getSessionTolerant } from './native/offlineSession';
 import { AppLockOverlay } from './components/AppLockOverlay';
@@ -173,9 +174,15 @@ const App: React.FC = () => {
     void getSessionTolerant(supabase).then(({ session }) => {
       // In the app this check (not INITIAL_SESSION, ignored below) decides
       // signed-out at launch, so it clears the signed-out billing cache.
-      if (!session && native) clearBillingCache();
+      if (!session) {
+        if (native) clearBillingCache();
+        clearPracticeLogoCache();
+      }
       // Before the chart mounts: another account's working chart is wiped.
-      if (session && claimChartStorage(session.user.id)) clearBillingCache();
+      if (session && claimChartStorage(session.user.id)) {
+        clearBillingCache();
+        clearPracticeLogoCache();
+      }
       setIsAuthenticated(!!session);
       setLaunchedSignedIn(!!session);
       if (session) {
@@ -201,10 +208,14 @@ const App: React.FC = () => {
         // catches it even when nobody was signed in earlier in this page
         // load (expired session, closed tab, sign-in redirect).
         const wiped = claimChartStorage(session.user.id);
-        if (wiped) clearBillingCache();
+        if (wiped) {
+          clearBillingCache();
+          clearPracticeLogoCache();
+        }
         if ((lastUserIdRef.current && session.user.id !== lastUserIdRef.current) || (wiped && isAuthedRef.current)) {
           clearChartStorage();
           clearBillingCache();
+          clearPracticeLogoCache();
           // The previous user's chart, profile and practice are still in
           // memory — start clean so nothing of theirs is shown or saved.
           window.location.reload();
@@ -413,6 +424,7 @@ const App: React.FC = () => {
             markExplicitSignOut();
             clearChartStorage();
             clearBillingCache();
+            clearPracticeLogoCache();
             setSessionExpired(false);
             setIsAuthenticated(false);
           }}

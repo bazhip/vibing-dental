@@ -3,6 +3,7 @@ import { confirmDialog, promptDialog, friendlyError, toast } from '../components
 import i18n from '../i18n';
 import { supabase } from './supabaseClient';
 import { markExplicitSignOut } from './signOutIntent';
+import { clearPracticeLogoCache } from './practiceLogoCache';
 import { clearChartStorage } from '../hooks/useChartState';
 
 /**
@@ -47,6 +48,7 @@ export async function deleteMyAccount(
   markExplicitSignOut();
   await supabase?.auth.signOut().catch(() => undefined);
   clearChartStorage();
+  clearPracticeLogoCache();
   toast(t('done'), { kind: 'success' });
   reload();
   return true;
@@ -87,6 +89,7 @@ export async function deleteMyPractice(
   // drop it locally so autosave can't recreate it, then reload so the
   // profile, team and billing state all start fresh.
   clearChartStorage();
+  clearPracticeLogoCache();
   toast(t('done'), { kind: 'success' });
   reload();
   return true;

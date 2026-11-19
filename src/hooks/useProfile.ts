@@ -8,6 +8,8 @@ import { appReportLocale } from '../utils/ownerReportI18n';
 import { OwnerReportConfig, configByteSize, defaultConfig, normalizeConfig, MAX_CONFIG_BYTES } from '../utils/ownerReportConfig';
 import { LocalizedError } from '../utils/apiErrors';
 import { pimsSendAllowed } from '../utils/pims/sendFlag';
+import { cachePracticeLogo, clearPracticeLogoCache, logoDataUrl, readPracticeLogo } from '../utils/practiceLogoCache';
+import { getSessionTolerant } from '../native/offlineSession';
 
 /**
  * The signed-in user's practice profile (collected at signup, editable in
@@ -88,7 +90,7 @@ export interface UseProfileReturn extends PracticeProfile {
   /** The practice's saved templates couldn't be read; `ownerReportConfig`
    *  is only the built-in default, and saving is blocked. */
   ownerReportConfigLoadFailed: boolean;
-  /** Signed URL of the uploaded practice logo, or '' when none. */
+  /** Cached image or signed URL of the practice logo, or empty when absent. */
   logoUrl: string;
   update: (next: PracticeProfile) => Promise<void>;
   /** Normalize to PNG (downscaled) and upload as the practice logo. */
@@ -102,9 +104,8 @@ const LOGO_MAX_WIDTH = 600;
  *  input. The `logos` bucket enforces its own server-side cap too. */
 const LOGO_MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
 
-/** The `logos` bucket is private — reads go through short-lived signed
- *  URLs (storage RLS grants them to the practice's members). The signed
- *  token also acts as the cache-buster across re-uploads. */
+/** Large or legacy logos use a signed URL. Normal logos are read through
+ * authenticated Storage and cached as small images. */
 const LOGO_URL_TTL_SECONDS = 60 * 60 * 12;
 
 async function signedLogoUrl(path: string): Promise<string> {
@@ -113,6 +114,16 @@ async function signedLogoUrl(path: string): Promise<string> {
     .from('logos')
     .createSignedUrl(path, LOGO_URL_TTL_SECONDS);
   return data?.signedUrl ?? '';
+}
+
+async function uploadedLogoUrl(userId: string, path: string, blob: Blob): Promise<string> {
+  const dataUrl = await logoDataUrl(blob);
+  if (dataUrl) {
+    cachePracticeLogo(userId, path, dataUrl);
+    return dataUrl;
+  }
+  clearPracticeLogoCache(userId);
+  return signedLogoUrl(path);
 }
 
 /** Downscale + re-encode any image file to PNG so the PDF embedder only
@@ -173,7 +184,7 @@ export async function uploadPracticeLogo(file: File): Promise<string> {
     if (upError) throw new Error(upError.message);
     const { error } = await supabase.from('practices').update({ logo_path: path }).eq('id', practiceId);
     if (error) throw new Error(error.message);
-    return signedLogoUrl(path);
+    return uploadedLogoUrl(userId, path, png);
   }
   // Standalone fallback: per-user logo.
   const path = `${userId}/logo.png`;
@@ -183,7 +194,7 @@ export async function uploadPracticeLogo(file: File): Promise<string> {
   if (upError) throw new Error(upError.message);
   const { error } = await supabase.from('profiles').upsert({ id: userId, logo_path: path });
   if (error) throw new Error(error.message);
-  return signedLogoUrl(path);
+  return uploadedLogoUrl(userId, path, png);
 }
 
 export function useProfile(): UseProfileReturn {
@@ -192,6 +203,7 @@ export function useProfile(): UseProfileReturn {
     doctorName: '',
   });
   const [logoUrl, setLogoUrl] = React.useState('');
+  const logoRequest = React.useRef(0);
   const [practiceId, setPracticeId] = React.useState('');
   const [plan, setPlan] = React.useState<PracticePlan>('basic');
   // Plan state starts at 'basic' (no flash of a free-plan banner), so
@@ -215,13 +227,51 @@ export function useProfile(): UseProfileReturn {
   React.useEffect(() => {
     if (!supabase) return;
     let cancelled = false;
+    const request = logoRequest.current;
+    const isCurrentLogoRequest = () => !cancelled && logoRequest.current === request;
+    const controller = new AbortController();
+    const client = supabase;
     (async () => {
-      const { data: sessionData } = await supabase.auth.getSession();
-      const userId = sessionData.session?.user.id;
+      const { session, offline } = await getSessionTolerant(client);
+      const userId = session?.user.id;
+      if (cancelled) return;
       if (!userId) {
-        if (!cancelled) setLoaded(true);
+        setLoaded(true);
         return;
       }
+      const cached = readPracticeLogo(userId);
+      if (isCurrentLogoRequest() && cached) setLogoUrl(cached.dataUrl);
+      if (offline) {
+        setLoaded(true);
+        return;
+      }
+      const refreshLogo = async (path: string) => {
+        if (!isCurrentLogoRequest()) return;
+        if (!path || (cached && cached.path !== path)) {
+          clearPracticeLogoCache(userId);
+          setLogoUrl('');
+        }
+        if (!path) return;
+        const { data: image, error } = await client.storage.from('logos')
+          .download(path, {}, { cache: 'no-store', signal: controller.signal });
+        if (!isCurrentLogoRequest()) return;
+        if (error || !image) {
+          if (error && [401, 403, 404].includes(error.status ?? Number(error.statusCode))) {
+            clearPracticeLogoCache(userId);
+            setLogoUrl('');
+          }
+          return;
+        }
+        const dataUrl = await logoDataUrl(image);
+        const url = dataUrl || await signedLogoUrl(path);
+        if (!isCurrentLogoRequest()) return;
+        if (dataUrl) cachePracticeLogo(userId, path, dataUrl);
+        else if (url) clearPracticeLogoCache(userId);
+        if (url) setLogoUrl(url);
+      };
+      const loadLogo = (path: string) => {
+        void refreshLogo(path).catch(() => { /* Keep the cached logo during a transient storage failure. */ });
+      };
       const { data, error: profileError } = await supabase
         .from('profiles')
         .select('practice_name, doctor_name, logo_path, practice_id')
@@ -238,7 +288,7 @@ export function useProfile(): UseProfileReturn {
       // comped/grandfathered) — a lapsed or never-started one is free.
       let practicePlan: PracticePlan = 'free';
       // app_metadata is server-controlled; the database re-checks it.
-      const admin = sessionData.session?.user.app_metadata?.role === 'admin';
+      const admin = session?.user.app_metadata?.role === 'admin';
       let ownerReportOn = false;
       let pimsSendOn = false;
       let gpExamOn = false;
@@ -247,12 +297,13 @@ export function useProfile(): UseProfileReturn {
       let reportRev: number | null = null;
       let reportLoadFailed = false;
       if (pid) {
-        const { data: prac } = await supabase
+        const { data: prac, error: practiceError } = await supabase
           .from('practices')
           .select('logo_path, plan, name, subscription_status')
           .eq('id', pid)
           .maybeSingle();
         if (prac?.logo_path) effectiveLogoPath = prac.logo_path;
+        if (!profileError && !practiceError) loadLogo(effectiveLogoPath);
         if (prac?.name?.trim()) effectivePracticeName = prac.name.trim();
         const paidStatus = PAID_STATUSES.includes(prac?.subscription_status ?? '');
         if (paidStatus) practicePlan = prac?.plan === 'pro' ? 'pro' : 'basic';
@@ -326,7 +377,7 @@ export function useProfile(): UseProfileReturn {
           reportLoadFailed = true;
         }
       }
-      const signedUrl = await signedLogoUrl(effectiveLogoPath);
+      if (!pid && !profileError) loadLogo(effectiveLogoPath);
       if (!cancelled) {
         setIsAdmin(admin);
         setDicomReady(true);
@@ -335,7 +386,6 @@ export function useProfile(): UseProfileReturn {
             practiceName: effectivePracticeName,
             doctorName: data.doctor_name ?? '',
           });
-          setLogoUrl(signedUrl);
           setPracticeId(pid);
           setPlan(practicePlan);
           setOwnerReportEnabled(ownerReportOn);
@@ -353,6 +403,7 @@ export function useProfile(): UseProfileReturn {
     })();
     return () => {
       cancelled = true;
+      controller.abort();
     };
   }, []);
 
@@ -397,12 +448,14 @@ export function useProfile(): UseProfileReturn {
   }, []);
 
   const uploadLogo = React.useCallback(async (file: File): Promise<void> => {
+    const request = ++logoRequest.current;
     const url = await uploadPracticeLogo(file);
-    if (url) setLogoUrl(url);
+    if (url && logoRequest.current === request) setLogoUrl(url);
   }, []);
 
   const removeLogo = React.useCallback(async (): Promise<void> => {
     if (!supabase) return;
+    const request = ++logoRequest.current;
     const { data: sessionData } = await supabase.auth.getSession();
     const userId = sessionData.session?.user.id;
     if (!userId) return;
@@ -416,7 +469,10 @@ export function useProfile(): UseProfileReturn {
       const { error } = await supabase.from('profiles').upsert({ id: userId, logo_path: '' });
       if (error) throw new Error(error.message);
     }
-    setLogoUrl('');
+    if (logoRequest.current === request) {
+      clearPracticeLogoCache(userId);
+      setLogoUrl('');
+    }
   }, []);
 
   // Memoised so consumers (the app's settings context) only see a new
