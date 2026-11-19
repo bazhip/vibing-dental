@@ -1,3 +1,4 @@
+import { loadPracticeLogoBytes } from '../practiceLogoCache';
 import { VISIT_DOCUMENT_TEMPLATES } from '../visitDocumentation';
 import type { ClinicalContinuation } from './continuation';
 import { ctRecordedText } from '../ctReportState';
@@ -286,8 +287,7 @@ export async function drawLogoAndHeader(
     let logoBytes: ArrayBuffer | null = null;
     if (customLogoUrl) {
       try {
-        const customRes = await fetch(customLogoUrl);
-        if (customRes.ok) logoBytes = await customRes.arrayBuffer();
+        logoBytes = await loadPracticeLogoBytes(customLogoUrl);
       } catch {
         // fall through to the wordmark / template asset
       }

@@ -3,6 +3,7 @@ import { clearChartStorage } from '../hooks/useChartState';
 import { markExplicitSignOut, consumeExplicitSignOut } from './signOutIntent';
 import { isNativeApp } from '../native/platform';
 import { hasStoredSession, removeStoredSession } from '../native/offlineSession';
+import { clearPracticeLogoCache } from './practiceLogoCache';
 import { clearBillingCache } from '../native/billingCache';
 
 /** The non-interactive part of signing out, shared by the app menu, the
@@ -37,6 +38,7 @@ export async function signOutAndSweep(
   clearChartStorage();
   // The app's offline billing cache belongs to whoever signed out.
   clearBillingCache();
+  clearPracticeLogoCache();
   // Legacy BYOK era left API keys in localStorage; the app no longer
   // collects keys client-side, so sweep any stragglers with the session.
   for (const k of [

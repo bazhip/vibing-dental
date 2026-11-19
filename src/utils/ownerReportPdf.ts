@@ -1,3 +1,4 @@
+import { loadPracticeLogoBytes } from './practiceLogoCache';
 import i18n from '../i18n';
 import type { PDFFont, PDFPage } from 'pdf-lib';
 import { wrapToWidth } from './pdf/draw';
@@ -176,14 +177,17 @@ export async function buildOwnerReportPdfBytes(
   let headerX = MARGIN;
   if (branding.logoUrl) {
     try {
-      const logoBytes = new Uint8Array(await (await fetch(branding.logoUrl)).arrayBuffer());
-      // Uploaded logos are canvas-re-encoded to PNG; tolerate JPEG too.
-      const isPng = logoBytes[0] === 0x89 && logoBytes[1] === 0x50;
-      const logo = isPng ? await doc.embedPng(logoBytes) : await doc.embedJpg(logoBytes);
-      const h = 34;
-      const w = (logo.width / logo.height) * h;
-      page.drawImage(logo, { x: MARGIN, y: y - h, width: w, height: h });
-      headerX = MARGIN + w + 12;
+      const bytes = await loadPracticeLogoBytes(branding.logoUrl);
+      if (bytes) {
+        const logoBytes = new Uint8Array(bytes);
+        // Uploaded logos are canvas-re-encoded to PNG; tolerate JPEG too.
+        const isPng = logoBytes[0] === 0x89 && logoBytes[1] === 0x50;
+        const logo = isPng ? await doc.embedPng(logoBytes) : await doc.embedJpg(logoBytes);
+        const h = 34;
+        const w = (logo.width / logo.height) * h;
+        page.drawImage(logo, { x: MARGIN, y: y - h, width: w, height: h });
+        headerX = MARGIN + w + 12;
+      }
     } catch {
       // Logo fetch/decoding failed — header text alone is fine.
     }
