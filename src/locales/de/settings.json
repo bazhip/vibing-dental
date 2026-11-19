@@ -190,13 +190,13 @@
     },
     "pdf": {
       "title": "PDF",
-      "grid": "Befundraster einbeziehen",
+      "grid": "Befundraster",
       "gridHint": "Erforderlich bei ausgeblendeten Diagrammbefunden, damit Messwerte im PDF erhalten bleiben.",
-      "images": "Bilder einbeziehen",
+      "images": "Bilder",
       "imagesHint": "(4 pro Seite, nach der Akte)",
-      "radiographicReport": "Röntgenbericht einbeziehen",
-      "ctReport": "CT-Bericht einbeziehen",
-      "codesUsed": "Verwendete Codes einfügen"
+      "radiographicReport": "Röntgenbericht",
+      "ctReport": "CT-Bericht",
+      "codesUsed": "Verwendete Codes"
     },
     "noteDevice": "Persönliche Einstellungen werden automatisch auf diesem Gerät gespeichert.",
     "spaceMovesDownHint": "Schnell, um eine Reihe von Tiefen anzusagen",

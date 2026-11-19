@@ -190,13 +190,13 @@
     },
     "pdf": {
       "title": "PDF",
-      "grid": "Incluir la cuadrícula de mediciones",
+      "grid": "Cuadrícula de mediciones",
       "gridHint": "Obligatorio cuando los hallazgos del diagrama están desactivados, para conservar las mediciones en el PDF.",
-      "images": "Incluir las imágenes",
+      "images": "Imágenes",
       "imagesHint": "(4 por página, después del historial)",
-      "radiographicReport": "Incluir el informe radiográfico",
-      "ctReport": "Incluir el informe de TC",
-      "codesUsed": "Incluir los códigos utilizados"
+      "radiographicReport": "Informe radiográfico",
+      "ctReport": "Informe de TC",
+      "codesUsed": "Códigos utilizados"
     },
     "noteDevice": "Preferencias personales guardadas automáticamente en este dispositivo.",
     "spaceMovesDownHint": "Rápido para dictar una serie de profundidades",

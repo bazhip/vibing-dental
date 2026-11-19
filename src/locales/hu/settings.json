@@ -190,13 +190,13 @@
     },
     "pdf": {
       "title": "PDF",
-      "grid": "Kitöltési táblázat szerepeltetése",
+      "grid": "Kitöltési táblázat",
       "gridHint": "Kötelező, ha a diagramleletek ki vannak kapcsolva, hogy a rögzített mérések a PDF-ben maradjanak.",
-      "images": "Képek szerepeltetése",
+      "images": "Képek",
       "imagesHint": "(oldalanként 4, a fogászati lap után)",
-      "radiographicReport": "Röntgenlelet szerepeltetése",
-      "ctReport": "CT-lelet szerepeltetése",
-      "codesUsed": "A használt kódok hozzáadása"
+      "radiographicReport": "Röntgenlelet",
+      "ctReport": "CT-lelet",
+      "codesUsed": "Használt kódok"
     },
     "noteDevice": "Személyes beállítások automatikusan mentve ezen az eszközön.",
     "spaceMovesDownHint": "Gyors megoldás mélységsorozatok bemondásához",
