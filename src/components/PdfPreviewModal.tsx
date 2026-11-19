@@ -99,9 +99,10 @@ interface PdfPreviewModalProps {
   /** History displays pages without style or export controls. */
   viewOnly?: boolean;
   options?: ChartPdfOptions;
+  controlsHost?: HTMLElement | null;
 }
 
-export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose, snapshot, bare = false, viewOnly = false, lifecycle, options }) => {
+export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose, snapshot, bare = false, viewOnly = false, lifecycle, options, controlsHost }) => {
   const { t, i18n: i18nInstance } = useTranslation(['pdfui', 'media', 'settings']);
   // The document's labels print in the app language; the preview rebuilds
   // when it changes.
@@ -431,7 +432,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
   const body = (
     <>{warning}
         <div className={viewOnly ? 'pdf-preview-body pdf-preview-body--view-only' : toolbar ? 'pdf-preview-body pdf-preview-body--toolbar' : 'pdf-preview-body'}>
-          {toolbar && <DocumentToolbar actions={downloadButton} notice={notices}>
+          {toolbar && <DocumentToolbar actions={downloadButton} notice={notices} controlsHost={controlsHost}>
             <section className="document-toolbar__group">
               <h3>{t('documents.color', { ns: 'media' })}</h3>
               <PdfStylePicker styleId={styleId} onChange={setStyleId} compact inline />

@@ -180,7 +180,7 @@
         },
         "third": {
           "title": "Vorschau öffnen und Bericht weitergeben",
-          "text": "Wählen Sie „Vorschau“ neben „Anpassen“, um das PDF für den Besitzer zu öffnen. Wählen Sie gewünschte Bilder unter „Bildgebung“ aus. Laden Sie den Bericht unter „Prüfen und exportieren“ herunter oder versenden Sie ihn, falls verfügbar, per E-Mail. Prüfen Sie vorher den Empfänger und das Dokument."
+          "text": "Wählen Sie „Vorschau“ neben „Anpassen“, um das PDF für den Besitzer zu öffnen. Wählen Sie gewünschte Bilder unter „Bildgebung“ aus. Laden Sie den Bericht unter „Prüfen und exportieren“ herunter oder versenden Sie ihn, falls verfügbar, per E-Mail. Prüfen Sie vorher den Empfänger und das Dokument. Im Reiter für den Besitzerbericht stehen die Schaltflächen zum Anpassen, Herunterladen und, falls verfügbar, zum E-Mail-Versand in der Leiste über der Vorschau."
         }
       }
     },
@@ -194,7 +194,7 @@
         },
         "second": {
           "title": "Klinisches PDF anpassen",
-          "text": "Wählen Sie unter „Klinische Akte“ die Option „Anpassen“, um Farben und Inhalte auszuwählen, etwa Bilder, Befundberichte und verwendete Codes. Prüfen Sie nach einer Änderung die Vorschau und laden Sie das fertige Dokument herunter. Die Entlassungsabschnitte erscheinen standardmäßig unter den Bildgebungsberichten. Deaktivieren Sie die Option, um sie auf den gedruckten Seiten auszublenden."
+          "text": "Wählen Sie unter „Klinische Akte“ die Option „Anpassen“, um Farben und Inhalte auszuwählen, etwa Bilder, Befundberichte und verwendete Codes. Prüfen Sie nach einer Änderung die Vorschau und laden Sie das fertige Dokument herunter. Die Entlassungsabschnitte erscheinen standardmäßig unter den Bildgebungsberichten. Deaktivieren Sie die Option, um sie auf den gedruckten Seiten auszublenden. Die Schaltflächen „Anpassen“ und „PDF herunterladen“ finden Sie neben den Dokumentreitern."
         },
         "third": {
           "title": "Besuch abschließen oder erneut öffnen",

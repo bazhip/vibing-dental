@@ -180,7 +180,7 @@
         },
         "third": {
           "title": "Preview and share",
-          "text": "Use Preview beside Customize to open the owner PDF. To include images, select them in Imaging. Use Review and export to download or, when available, email the report after checking the recipient and document."
+          "text": "Use Preview beside Customize to open the owner PDF. To include images, select them in Imaging. Use Review and export to download or, when available, email the report after checking the recipient and document. The Owner report tab has Customize, Download PDF, and, when available, Email to owner in the bar above the preview."
         }
       }
     },
@@ -194,7 +194,7 @@
         },
         "second": {
           "title": "Customize the clinical PDF",
-          "text": "In Clinical chart, open Customize to choose colors and the sections to include, such as images, imaging reports, and Codes used. Check the preview after changing an option and download the document when ready. Discharge sections appear below the imaging reports by default. Clear the option to hide them from the printed pages."
+          "text": "In Clinical chart, open Customize to choose colors and the sections to include, such as images, imaging reports, and Codes used. Check the preview after changing an option and download the document when ready. Discharge sections appear below the imaging reports by default. Clear the option to hide them from the printed pages. Find Customize and Download PDF next to the document tabs."
         },
         "third": {
           "title": "Finalize or reopen a visit",

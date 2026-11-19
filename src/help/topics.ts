@@ -34,7 +34,7 @@ export const HELP_SCREENSHOTS: Partial<Record<HelpTopic, readonly HelpScreenshot
   imaging: [{ caption: 'imaging', src: '/help/screenshots/imaging.jpg', width: 942, height: 634, section: 'third' }],
   dictation: [{ caption: 'dictation', src: '/help/screenshots/dictation.jpg', width: 600, height: 952, section: 'second' }],
   discharge: [{ caption: 'owner', src: '/help/screenshots/owner-report.jpg', width: 982, height: 317, section: 'second' }],
-  export: [{ caption: 'export', src: '/screenshots/feat-pdf.jpg', width: 1400, height: 1081, section: 'first' }],
+  export: [{ caption: 'export', src: '/help/screenshots/review-export.jpg', width: 1232, height: 772, section: 'second' }],
   'by-number': [{ caption: 'by-number', src: '/help/screenshots/by-tooth.jpg', width: 942, height: 927, section: 'first' }],
 };
 

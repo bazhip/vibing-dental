@@ -88,6 +88,7 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
   // forth doesn't regenerate a PDF each time.
   const [visited, setVisited] = React.useState<Set<DocumentTab>>(() => new Set([initialTab ?? readSaved()]));
   const closeRef = React.useRef<HTMLButtonElement>(null);
+  const [controlsHost, setControlsHost] = React.useState<HTMLDivElement | null>(null);
   // iOS app: a kit sheet (grabber, swipe down, its own Escape and focus).
   const native = isNativeApp();
   const modalRef = useModalFocus(open && !native && !ownerPreviewOnly);
@@ -147,6 +148,8 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
   const patient = chartSnapshot?.patientInfo ?? ownerReport?.snapshot.patientInfo;
   const subtitle = [patient?.patientName, patient?.date].filter(Boolean).join(' · ');
   const who = t(TAB_WHO[active]);
+  const chartControlsHost = native ? undefined : active === 'chart' ? controlsHost : null;
+  const ownerControlsHost = native ? undefined : active === 'owner' ? controlsHost : null;
 
   const panels = (
     <>
@@ -157,7 +160,7 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
         aria-labelledby="documents-tab-chart"
         hidden={active !== 'chart'}
       >
-        {chartVisited && <PdfPreviewModal open={open} bare onClose={onClose} snapshot={chartSnapshot} lifecycle={chartLifecycle} options={chartOptions} />}
+        {chartVisited && <PdfPreviewModal open={open} bare onClose={onClose} snapshot={chartSnapshot} lifecycle={chartLifecycle} options={chartOptions} controlsHost={chartControlsHost} />}
       </div>
       {ownerReport && (
         <div
@@ -171,6 +174,7 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
             <OwnerReportModal
               open
               bare
+              controlsHost={ownerControlsHost}
               onClose={onClose}
               snapshot={ownerReport.snapshot}
               branding={ownerReport.branding}
@@ -259,26 +263,29 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
           </button>
         </header>
 
-        {tabs.length > 1 && (
-          <div className="documents-modal__tabs" role="tablist" aria-label={t('documents.tablist')}>
-            {tabs.map((id) => (
-              <button
-                key={id}
-                type="button"
-                role="tab"
-                id={`documents-tab-${id}`}
-                aria-selected={active === id}
-                aria-controls={`documents-panel-${id}`}
-                tabIndex={active === id ? 0 : -1}
-                onKeyDown={(event) => onTabKeyDown(event, id)}
-                className={`documents-modal__tab${active === id ? ' documents-modal__tab--on' : ''}`}
-                onClick={() => select(id)}
-              >
-                {t(TAB_LABEL[id])}
-              </button>
-            ))}
-          </div>
-        )}
+        <div className="documents-modal__bar">
+          {tabs.length > 1 && (
+            <div className="documents-modal__tabs" role="tablist" aria-label={t('documents.tablist')}>
+              {tabs.map((id) => (
+                <button
+                  key={id}
+                  type="button"
+                  role="tab"
+                  id={`documents-tab-${id}`}
+                  aria-selected={active === id}
+                  aria-controls={`documents-panel-${id}`}
+                  tabIndex={active === id ? 0 : -1}
+                  onKeyDown={(event) => onTabKeyDown(event, id)}
+                  className={`documents-modal__tab${active === id ? ' documents-modal__tab--on' : ''}`}
+                  onClick={() => select(id)}
+                >
+                  {t(TAB_LABEL[id])}
+                </button>
+              ))}
+            </div>
+          )}
+          <div className="documents-modal__controls" ref={setControlsHost} />
+        </div>
 
         {panels}
       </div>

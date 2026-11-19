@@ -180,7 +180,7 @@
         },
         "third": {
           "title": "Előnézet és megosztás",
-          "text": "A gazdinak szóló PDF megnyitásához válassza a „Testreszabás” melletti „Előnézet” lehetőséget. A mellékelni kívánt képeket a „Képalkotás” szakaszban jelölje ki. A címzett és a dokumentum ellenőrzése után az „Áttekintés és exportálás” alatt letöltheti a leletet, vagy ha a funkció elérhető, e-mailben elküldheti."
+          "text": "A gazdinak szóló PDF megnyitásához válassza a „Testreszabás” melletti „Előnézet” lehetőséget. A mellékelni kívánt képeket a „Képalkotás” szakaszban jelölje ki. A címzett és a dokumentum ellenőrzése után az „Áttekintés és exportálás” alatt letöltheti a leletet, vagy ha a funkció elérhető, e-mailben elküldheti. A gazdinak szóló lelet fülén az előnézet fölötti sávból testreszabhatja és letöltheti a PDF-et, illetve ha elérhető, e-mailben is elküldheti."
         }
       }
     },
@@ -194,7 +194,7 @@
         },
         "second": {
           "title": "A klinikai PDF testreszabása",
-          "text": "A „Klinikai fogászati lap” alatt nyissa meg a „Testreszabás” panelt a színek és a belefoglalt szakaszok beállításához. Ide tartoznak például a képek, a képalkotó leletek és a használt kódok. Módosítás után ellenőrizze az előnézetet, és ha megfelelő, töltse le a dokumentumot. A hazabocsátási szakaszok alapértelmezés szerint a képalkotó leletek alatt jelennek meg. Törölje a jelölést, ha el szeretné rejteni őket a nyomtatott oldalakon."
+          "text": "A „Klinikai fogászati lap” alatt nyissa meg a „Testreszabás” panelt a színek és a belefoglalt szakaszok beállításához. Ide tartoznak például a képek, a képalkotó leletek és a használt kódok. Módosítás után ellenőrizze az előnézetet, és ha megfelelő, töltse le a dokumentumot. A hazabocsátási szakaszok alapértelmezés szerint a képalkotó leletek alatt jelennek meg. Törölje a jelölést, ha el szeretné rejteni őket a nyomtatott oldalakon. A „Testreszabás” és a PDF letöltésére szolgáló gomb a dokumentumfülek mellett található."
         },
         "third": {
           "title": "Vizit lezárása vagy újbóli megnyitása",

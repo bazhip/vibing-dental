@@ -1260,6 +1260,20 @@
 
 /* ---------- Documents dialog: clinical chart / owner report tabs ---------- */
 .documents-modal__subtitle { font-weight: 500; color: var(--ios-label-muted, #64748b); }
+.documents-modal__bar {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border);
+}
+.documents-modal__bar > .documents-modal__tabs {
+  flex: 1 0 auto;
+  max-width: 100%;
+  box-sizing: border-box;
+  border-bottom: 0;
+}
+.documents-modal__controls { margin-inline-start: auto; max-width: 100%; align-self: center; }
+.documents-modal__controls:empty { display: none; }
 .documents-modal__tabs {
   display: flex; gap: 0.25rem;
   padding: 0 1.5rem;

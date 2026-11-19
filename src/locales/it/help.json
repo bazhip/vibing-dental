@@ -180,7 +180,7 @@
         },
         "third": {
           "title": "Visualizzare l’anteprima e condividere",
-          "text": "Scelga «Anteprima» accanto a «Personalizza» per aprire il PDF per il proprietario. Se desidera includere immagini, le selezioni in «Diagnostica per immagini». In «Verifica ed esportazione», controlli il destinatario e il documento prima di scaricarlo o, dove disponibile, inviarlo per e-mail."
+          "text": "Scelga «Anteprima» accanto a «Personalizza» per aprire il PDF per il proprietario. Se desidera includere immagini, le selezioni in «Diagnostica per immagini». In «Verifica ed esportazione», controlli il destinatario e il documento prima di scaricarlo o, dove disponibile, inviarlo per e-mail. Nella scheda del referto per il proprietario, i pulsanti per personalizzare, scaricare il PDF e, se disponibile, inviarlo per e-mail si trovano nella barra sopra l’anteprima."
         }
       }
     },
@@ -194,7 +194,7 @@
         },
         "second": {
           "title": "Personalizzare il PDF clinico",
-          "text": "In «Cartella clinica», apra «Personalizza» per scegliere i colori e i contenuti da includere, ad esempio le immagini, i referti della diagnostica per immagini e i codici utilizzati. Dopo ogni modifica controlli l’anteprima e scarichi il documento quando è pronto. Per impostazione predefinita, le sezioni di dimissione compaiono sotto i referti di diagnostica per immagini. Deselezioni l’opzione per nasconderle nelle pagine stampate."
+          "text": "In «Cartella clinica», apra «Personalizza» per scegliere i colori e i contenuti da includere, ad esempio le immagini, i referti della diagnostica per immagini e i codici utilizzati. Dopo ogni modifica controlli l’anteprima e scarichi il documento quando è pronto. Per impostazione predefinita, le sezioni di dimissione compaiono sotto i referti di diagnostica per immagini. Deselezioni l’opzione per nasconderle nelle pagine stampate. I pulsanti «Personalizza» e «Scarica PDF» si trovano nella barra dei documenti, sopra l’anteprima."
         },
         "third": {
           "title": "Finalizzare o riaprire una visita",

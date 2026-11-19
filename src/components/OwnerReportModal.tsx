@@ -36,6 +36,7 @@ interface OwnerReportModalProps {
   cloudActive: boolean;
   /** Render just the preview body inside the Documents dialog. */
   bare?: boolean;
+  controlsHost?: HTMLElement | null;
   viewOnly?: boolean;
   /** Jump to the Owner report section to edit the wording. */
   onEditWording?: () => void;
@@ -76,6 +77,7 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
   practiceId,
   cloudActive,
   bare = false,
+  controlsHost,
   viewOnly = false,
   onEditWording,
   onCustomizeTemplate,
@@ -311,7 +313,7 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
   }
   const body = (
         <div className={viewOnly ? 'pdf-preview-body pdf-preview-body--view-only' : bare ? 'pdf-preview-body pdf-preview-body--toolbar' : 'pdf-preview-body'}>
-          {!viewOnly && (bare ? <DocumentToolbar actions={actions} notice={notices}>
+          {!viewOnly && (bare ? <DocumentToolbar actions={actions} notice={notices} controlsHost={controlsHost}>
             <section className="document-toolbar__group">
               <h3>{t('section.templateLabel')}</h3>
               <div className="document-toolbar__options">

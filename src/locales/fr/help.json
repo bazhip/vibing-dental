@@ -180,7 +180,7 @@
         },
         "third": {
           "title": "Afficher l’aperçu et partager",
-          "text": "Choisissez « Aperçu » à côté de « Personnaliser » pour ouvrir le PDF destiné au propriétaire. Pour ajouter des images, sélectionnez-les dans « Imagerie ». Utilisez « Vérifier et exporter » pour télécharger le compte rendu ou, si l’option est disponible, l’envoyer par e-mail après avoir vérifié le destinataire et le document."
+          "text": "Choisissez « Aperçu » à côté de « Personnaliser » pour ouvrir le PDF destiné au propriétaire. Pour ajouter des images, sélectionnez-les dans « Imagerie ». Utilisez « Vérifier et exporter » pour télécharger le compte rendu ou, si l’option est disponible, l’envoyer par e-mail après avoir vérifié le destinataire et le document. Dans l’onglet du compte rendu destiné au propriétaire, la barre au-dessus de l’aperçu contient les boutons pour personnaliser, télécharger le PDF et, si disponible, l’envoyer par e-mail."
         }
       }
     },
@@ -194,7 +194,7 @@
         },
         "second": {
           "title": "Personnaliser le PDF clinique",
-          "text": "Dans « Dossier clinique », ouvrez « Personnaliser » pour choisir les couleurs et le contenu à inclure, comme les images, les comptes rendus d’imagerie et les codes utilisés. Vérifiez l’aperçu après chaque changement, puis téléchargez le document. Les sections de sortie figurent par défaut sous les comptes rendus d’imagerie. Décochez l’option pour les masquer sur les pages imprimées."
+          "text": "Dans « Dossier clinique », ouvrez « Personnaliser » pour choisir les couleurs et le contenu à inclure, comme les images, les comptes rendus d’imagerie et les codes utilisés. Vérifiez l’aperçu après chaque changement, puis téléchargez le document. Les sections de sortie figurent par défaut sous les comptes rendus d’imagerie. Décochez l’option pour les masquer sur les pages imprimées. Les boutons « Personnaliser » et « Télécharger le PDF » se trouvent à côté des onglets."
         },
         "third": {
           "title": "Finaliser ou rouvrir une consultation",
