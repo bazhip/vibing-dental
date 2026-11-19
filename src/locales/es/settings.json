@@ -196,6 +196,7 @@
       "imagesHint": "(4 por página, después del historial)",
       "radiographicReport": "Informe radiográfico",
       "ctReport": "Informe de TC",
+      "dischargeSections": "Secciones de alta",
       "codesUsed": "Códigos utilizados"
     },
     "noteDevice": "Preferencias personales guardadas automáticamente en este dispositivo.",

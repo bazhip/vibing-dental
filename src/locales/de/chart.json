@@ -243,6 +243,7 @@
     "redo": "Wiederholen",
     "undoTitle": "Rückgängig ({{shortcut}})",
     "redoTitle": "Wiederholen ({{shortcut}})",
+    "freeShort": "Frei",
     "freeComment": "+ Freier Kommentar",
     "numbers": "# Nummern",
     "numbersTitle": "Triadan-Nummer jedes Zahns im Schema anzeigen (wird nicht ins PDF gedruckt)",

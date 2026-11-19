@@ -150,6 +150,7 @@ describe('saved visit in the iOS Chart tab', () => {
     fireEvent.keyDown(document, { key: 'Escape' });
 
     await act(async () => fireEvent.click(within(chartPanel()).getByRole('button', { name: 'Finalize' })));
+    await act(async () => fireEvent.click(within(screen.getByRole('alertdialog', { name: 'Finalize this visit?' })).getByRole('button', { name: 'Finalize' })));
     expect(within(chartPanel()).getByRole('button', { name: 'Edit' })).toBeInTheDocument();
   });
 
@@ -292,6 +293,12 @@ it('keeps past visits editable until explicitly finalized and permits reopening'
   expect(container.querySelector('.sidebar-layout__fieldset')).not.toBeDisabled();
   expect(screen.queryByRole('note', { name: 'View only' })).toBeNull();
   await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Finalize' })));
+  expect(cloud.setFinalized).not.toHaveBeenCalled();
+  await act(async () => fireEvent.click(within(screen.getByRole('alertdialog', { name: 'Finalize this visit?' })).getByRole('button', { name: 'Cancel' })));
+  expect(cloud.setFinalized).not.toHaveBeenCalled();
+  expect(container.querySelector('.sidebar-layout__fieldset')).not.toBeDisabled();
+  await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Finalize' })));
+  await act(async () => fireEvent.click(within(screen.getByRole('alertdialog', { name: 'Finalize this visit?' })).getByRole('button', { name: 'Finalize' })));
   expect(cloud.setFinalized).toHaveBeenLastCalledWith(true);
   expect(container.querySelector('.sidebar-layout__fieldset')).toBeDisabled();
   const header = within(container.querySelector('.entry-grid__topbar') as HTMLElement);
@@ -308,6 +315,7 @@ it('keeps the record editable when finalization fails', async () => {
   cloud.setFinalized.mockRejectedValueOnce(new Error('Network down'));
   const { container } = await renderApp();
   await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Finalize' })));
+  await act(async () => fireEvent.click(within(screen.getByRole('alertdialog', { name: 'Finalize this visit?' })).getByRole('button', { name: 'Finalize' })));
   expect(container.querySelector('.sidebar-layout__fieldset')).not.toBeDisabled();
   expect(screen.getByRole('button', { name: 'Finalize' })).toBeEnabled();
 });

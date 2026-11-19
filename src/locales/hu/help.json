@@ -68,7 +68,7 @@
         },
         "second": {
           "title": "Váltás a vizitek és a pácienslapok között",
-          "text": "A lapfülön a páciens és a vizit dátuma látható. Több mentett vizit esetén használja a lapfül vizitválasztóját. Másik páciens megnyitásához nyomja meg a plusz gombot. A lapfül bezárása nem törli a pácienst."
+          "text": "A lapfülön a páciens és a vizit dátuma látható. Több mentett vizit esetén használja a lapfül vizitválasztóját. Másik páciens megnyitásához nyomja meg a plusz gombot. A lapfül bezárása nem törli a pácienst. Számítógépen ellenőrizze a név alatti páciensszámot, és a dátum melletti nyíllal váltson vizitet."
         },
         "third": {
           "title": "Korábbi bejegyzések áttekintése",
@@ -86,7 +86,7 @@
         },
         "second": {
           "title": "Leletek dokumentálása a Diagnózis szakaszban",
-          "text": "Válassza ki az érintett fogat, és jelölje a kezelés előtti elváltozásokat vagy a már hiányzó fogakat. Szükség szerint adjon meg fogászati kódokat és rövid megjegyzéseket. A kódjegyzékben ellenőrizheti a kiválasztott kódot."
+          "text": "Válassza ki az érintett fogat, és jelölje a kezelés előtti elváltozásokat vagy a már hiányzó fogakat. Szükség szerint adjon meg fogászati kódokat és rövid megjegyzéseket. A kódjegyzékben ellenőrizheti a kiválasztott kódot. Az eszköztár feliratai az ikonok alatt találhatók. A „Megjegyzés” eszközzel egy foghoz társíthat megjegyzést, a „Szabad megjegyzés” eszközzel pedig bárhol elhelyezheti az ábrán. Ha kevés a hely, a Szabad megjegyzés felirata Szabad alakra rövidül."
         },
         "third": {
           "title": "Az elvégzett munka dokumentálása a Beavatkozás szakaszban",
@@ -104,7 +104,7 @@
         },
         "second": {
           "title": "Érzéstelenítő szerek és idegblokádok rögzítése",
-          "text": "Nyissa meg az „Érzéstelenítés” szakaszt, adja meg az alkalmazott szereket, majd rögzítse az elvégzett idegblokádok helyét és térfogatát. Lezárás előtt ellenőrizze az oldalt és a mértékegységeket az eredeti adatok alapján."
+          "text": "Nyissa meg az „Érzéstelenítés” szakaszt, adja meg az alkalmazott szereket, majd rögzítse az elvégzett idegblokádok helyét és térfogatát. Lezárás előtt ellenőrizze az oldalt és a mértékegységeket az eredeti adatok alapján. Ha külön adott be másik érzéstelenítőt, válassza a „Második idegblokád-sorozat hozzáadása” lehetőséget. A második sorozatban rögzítse a nevét, koncentrációját és az egyes helyeken beadott térfogatot."
         },
         "third": {
           "title": "Választható vizitszakaszok használata",
@@ -122,7 +122,7 @@
         },
         "second": {
           "title": "A leletbe kerülő képek kiválasztása",
-          "text": "Adja meg a kép típusát, szükség esetén a kapcsolódó fogat és a leírást. Válassza ki, hogy a kép szerepeljen-e a klinikai PDF-ben vagy a gazdinak szóló leletben. A kép értelmezését segítheti a „Kezelés előtt” vagy a „Kezelés után” címke."
+          "text": "Adja meg a kép típusát, szükség esetén a kapcsolódó fogat és a leírást. Válassza ki, hogy a kép szerepeljen-e a klinikai PDF-ben vagy a gazdinak szóló leletben. A kép értelmezését segítheti a „Kezelés előtt” vagy a „Kezelés után” címke. A finomítás gombja a szövegdoboz alsó sarkában található."
         },
         "third": {
           "title": "Képalkotó leletek írása",
@@ -158,7 +158,7 @@
         },
         "second": {
           "title": "Mentett sablon használata",
-          "text": "Válasszon egy megnevezett sablont a mentett sablonok közül. Mentés előtt nézze át a kitöltött szöveget. A lelet szerkeszthető marad, a „Finomítás” pedig átnézhető szövegjavaslatokat adhat."
+          "text": "Válasszon egy megnevezett sablont a mentett sablonok közül. Mentés előtt nézze át a kitöltött szöveget. A lelet szerkeszthető marad, a „Finomítás” pedig átnézhető szövegjavaslatokat adhat. A finomítás gombja a szövegdoboz alsó sarkában található."
         },
         "third": {
           "title": "Újrafelhasználható sablon létrehozása",
@@ -172,7 +172,7 @@
       "sections": {
         "first": {
           "title": "Hazabocsátási utasítások rögzítése",
-          "text": "Nyissa meg a „Hazabocsátás” szakaszt. Rögzítse a dokumentált gyógyszereket, az utasításokat és az utánkövetést. Megosztás előtt vesse össze a gyógyszerneveket, adagokat és időpontokat a dokumentációval."
+          "text": "A hazabocsátásnál soronként egy gyógyszert tüntessen fel az adaggal, a beadás módjával és a kezelés időtartamával. Adja meg az otthoni teendőket és a következő lépéseket. Megosztás előtt ellenőrizze az adatokat."
         },
         "second": {
           "title": "A gazdinak szóló lelet piszkozatának elkészítése",
@@ -194,11 +194,11 @@
         },
         "second": {
           "title": "A klinikai PDF testreszabása",
-          "text": "A „Klinikai fogászati lap” alatt nyissa meg a „Testreszabás” panelt a színek és a belefoglalt szakaszok beállításához. Ide tartoznak például a képek, a képalkotó leletek és a használt kódok. Módosítás után ellenőrizze az előnézetet, és ha megfelelő, töltse le a dokumentumot."
+          "text": "A „Klinikai fogászati lap” alatt nyissa meg a „Testreszabás” panelt a színek és a belefoglalt szakaszok beállításához. Ide tartoznak például a képek, a képalkotó leletek és a használt kódok. Módosítás után ellenőrizze az előnézetet, és ha megfelelő, töltse le a dokumentumot. A hazabocsátási szakaszok alapértelmezés szerint a képalkotó leletek alatt jelennek meg. Törölje a jelölést, ha el szeretné rejteni őket a nyomtatott oldalakon."
         },
         "third": {
           "title": "Vizit lezárása vagy újbóli megnyitása",
-          "text": "A „Lezárás” menti az elkészült vizitet, és csak megtekinthető állapotba állítja. Mentett vizit módosításához nyissa meg, válassza a „Fogászati lap szerkesztése” lehetőséget, végezze el a módosítást, majd válassza a „Szerkesztés kész” lehetőséget. A szerkesztés előtt ellenőrizze a pácienst és a dátumot."
+          "text": "A befejezett vizit csak olvasható mentéséhez válassza a Lezárás lehetőséget, és erősítse meg. Mentett vizit módosításához nyissa meg, válassza a „Fogászati lap szerkesztése” lehetőséget, végezze el a módosítást, majd válassza a „Szerkesztés kész” lehetőséget. A szerkesztés előtt ellenőrizze a pácienst és a dátumot."
         }
       }
     },
@@ -370,7 +370,7 @@
       "sections": {
         "first": {
           "title": "A bemutató megnyitása",
-          "text": "A „Súgó” menüben válassza az „Első lépések” lehetőséget. A bemutató végigvezeti a kezelőelemeken, és szükség esetén újra megnyitható."
+          "text": "A „Súgó” menüben válassza az „Első lépések” lehetőséget. A bemutató végigvezeti a kezelőelemeken, és szükség esetén újra megnyitható. Keskeny képernyőn a rendelő neve vagy logója melletti lenyíló menüben találja ezeket az eszközöket."
         },
         "second": {
           "title": "A legutóbbi változások áttekintése",

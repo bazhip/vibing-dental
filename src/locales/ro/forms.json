@@ -79,6 +79,11 @@
     "duplicateArea": "Această zonă există deja în examen."
   },
   "anesthesia": {
+    "addSecond": "Adaugă un al doilea set de blocuri nervoase",
+    "secondTitle": "Al doilea set de blocuri nervoase",
+    "secondHint": "Indicați anestezicul și volumul administrat la fiecare loc pentru acest set.",
+    "removeSecondTitle": "Eliminați al doilea set de blocuri nervoase?",
+    "removeSecondMessage": "Anestezicul și dozele din acest set vor fi eliminate din vizită.",
     "title": "Anestezie",
     "customize": "Personalizați",
     "customizeTitle": "Alegeți blocurile nervoase afișate și anestezicul obișnuit",

@@ -79,6 +79,11 @@
     "duplicateArea": "Cette zone figure déjà dans votre examen."
   },
   "anesthesia": {
+    "addSecond": "Ajouter une deuxième série de blocs nerveux",
+    "secondTitle": "Deuxième série de blocs nerveux",
+    "secondHint": "Indiquez l’anesthésique et le volume administré à chaque site pour cette série.",
+    "removeSecondTitle": "Supprimer la deuxième série de blocs nerveux ?",
+    "removeSecondMessage": "Son anesthésique et ses doses seront supprimés de cette visite.",
     "title": "Anesthésie",
     "customize": "Personnaliser",
     "customizeTitle": "Choisir les blocs nerveux affichés et votre anesthésique habituel",

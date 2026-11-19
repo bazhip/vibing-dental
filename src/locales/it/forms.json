@@ -79,6 +79,11 @@
     "duplicateArea": "Questa area è già presente nel Suo esame."
   },
   "anesthesia": {
+    "addSecond": "Aggiungi una seconda serie di blocchi nervosi",
+    "secondTitle": "Seconda serie di blocchi nervosi",
+    "secondHint": "Indichi l’anestetico e il volume somministrato in ogni sede per questa serie.",
+    "removeSecondTitle": "Rimuovere la seconda serie di blocchi nervosi?",
+    "removeSecondMessage": "L’anestetico e le dosi di questa serie verranno rimossi dalla visita.",
     "title": "Anestesia",
     "customize": "Personalizza",
     "customizeTitle": "Scelga quali blocchi nervosi mostrare e il Suo anestetico abituale",

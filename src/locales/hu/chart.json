@@ -243,6 +243,7 @@
     "redo": "Ismétlés",
     "undoTitle": "Visszavonás ({{shortcut}})",
     "redoTitle": "Ismétlés ({{shortcut}})",
+    "freeShort": "Szabad",
     "freeComment": "+ Szabad megjegyzés",
     "numbers": "# Számok",
     "numbersTitle": "Minden fog Triadan-számának megjelenítése a diagramon (a PDF-re nem kerül rá)",

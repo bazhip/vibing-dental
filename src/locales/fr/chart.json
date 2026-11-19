@@ -247,6 +247,7 @@
     "redo": "Rétablir",
     "undoTitle": "Annuler ({{shortcut}})",
     "redoTitle": "Rétablir ({{shortcut}})",
+    "freeShort": "Libre",
     "freeComment": "+ Commentaire libre",
     "numbers": "# Numéros",
     "numbersTitle": "Afficher le numéro Triadan de chaque dent sur le schéma (non imprimé sur le PDF)",

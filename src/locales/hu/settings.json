@@ -196,6 +196,7 @@
       "imagesHint": "(oldalanként 4, a fogászati lap után)",
       "radiographicReport": "Röntgenlelet",
       "ctReport": "CT-lelet",
+      "dischargeSections": "Hazabocsátási szakaszok",
       "codesUsed": "Használt kódok"
     },
     "noteDevice": "Személyes beállítások automatikusan mentve ezen az eszközön.",

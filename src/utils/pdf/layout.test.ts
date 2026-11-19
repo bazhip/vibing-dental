@@ -94,6 +94,75 @@ describe('procedure diagram available region', () => {
 });
 
 
+describe('discharge sections in the clinical PDF', () => {
+  const discharge = { ...patient,
+    radiographicFindings: 'Radiographic findings',
+    ctReport: 'CT findings',
+    dischargeMedications: 'First recorded medication\nSecond recorded medication',
+    dischargeInstructions: 'Home care instructions',
+    dischargeFollowUp: 'Follow-up plan',
+  };
+
+  it.each([undefined, true, false])('includes recorded discharge sections with the option set to %s', async includeDischarge => {
+    const { allTexts, bytes } = await capture(discharge, 'canine', { includeDischarge });
+    const visible = allTexts.map(({ text }) => text);
+    for (const text of ['Discharge', 'Medications', 'First recorded medication', 'Second recorded medication',
+      'Instructions', 'Home care instructions', 'Follow-up', 'Follow-up plan']) {
+      if (includeDischarge === false) expect(visible).not.toContain(text);
+      else expect(visible).toContain(text);
+    }
+    const pdf = await PDFDocument.load(bytes);
+    expect(pdf.getPageCount()).toBe(2);
+    if (includeDischarge !== false) {
+      const radiograph = allTexts.find(line => line.text === 'Radiographic Report')!;
+      const ct = allTexts.find(line => line.text === 'CT Report')!;
+      const section = allTexts.find(line => line.text === 'Discharge')!;
+      expect(section.page).toBe(radiograph.page);
+      expect(section.y).toBeLessThan(radiograph.y);
+      expect(section.y).toBeLessThan(ct.y);
+    }
+    expect(JSON.parse(pdf.getForm().getTextField(DIAGRAM_STATE_FIELD).getText()!).patientInfo).toEqual(discharge);
+  });
+
+  it('continues long discharge instructions after the imaging reports without clipping them', async () => {
+    const instructions = 'Home care details as recorded. '.repeat(250) + '\nLAST INSTRUCTION';
+    const { allTexts, bytes } = await capture({ ...discharge, dischargeInstructions: instructions });
+    const radiograph = allTexts.find(line => line.text === 'Radiographic Report')!;
+    const section = allTexts.find(line => line.text === 'Discharge')!;
+    expect(section.page.doc.getPages().indexOf(section.page)).toBe(2);
+    expect(radiograph.page.doc.getPages().indexOf(radiograph.page)).toBe(1);
+    expect(allTexts.map(line => line.text)).toContain('LAST INSTRUCTION');
+    expect((await PDFDocument.load(bytes)).getPageCount()).toBeGreaterThan(2);
+  });
+
+  it('leaves out headings for empty discharge fields', async () => {
+    const { allTexts } = await capture({ ...patient, dischargeFollowUp: 'Follow-up plan' });
+    const visible = allTexts.map(({ text }) => text);
+    expect(visible).toContain('Follow-up plan');
+    expect(visible).not.toContain('Medications');
+    expect(visible).not.toContain('Instructions');
+  });
+});
+
+it('prints the second nerve-block set separately and restores its medication and doses on PDF import', async () => {
+  const primary = {
+    ...EMPTY_NERVE_BLOCKS, mentalRight: '0.2', drugs: [{ name: 'Mepivacaine', concentration: '2' }],
+  };
+  const second = {
+    ...EMPTY_NERVE_BLOCKS, mentalLeft: '0.1', drugs: [{ name: 'Lidocaine', concentration: '2' }],
+  };
+  const { texts, allTexts, bytes } = await capture({ ...patient, nerveBlocks: primary, secondNerveBlocks: second });
+  expect(texts.some(line => line.text.includes('Mepivacaine'))).toBe(true);
+  expect(texts.some(line => line.text.includes('Lidocaine'))).toBe(false);
+  const header = allTexts.find(line => line.text === 'Second nerve-block set')!;
+  const printed = allTexts.filter(line => line.page === header.page).map(line => line.text);
+  expect(printed).toContain('2% Lidocaine');
+  expect(printed).toContain('Mental: LEFT 0.1 mL');
+  expect(printed.join(' ')).not.toContain('Mepivacaine');
+  const parsed = await parseDentalChartPDF({ arrayBuffer: async () => bytes.slice().buffer } as File);
+  expect(parsed.patientInfo.secondNerveBlocks).toEqual(second);
+});
+
 describe('supported maximum custom chart settings', () => {
   it('prints every entered field and exam comment on readable continuation pages', async () => {
     const maximal: PatientInfo = { ...patient,

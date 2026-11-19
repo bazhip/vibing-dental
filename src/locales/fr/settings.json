@@ -196,6 +196,7 @@
       "imagesHint": "(4 par page, après le dossier)",
       "radiographicReport": "Compte rendu radiographique",
       "ctReport": "Compte rendu de scanner",
+      "dischargeSections": "Sections de sortie",
       "codesUsed": "Codes utilisés"
     },
     "noteDevice": "Préférences personnelles enregistrées automatiquement sur cet appareil.",

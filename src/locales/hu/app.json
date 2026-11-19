@@ -363,6 +363,8 @@
     "closeImageChoiceMessage": "Bezárás előtt mentse ezt a fogászati lapot, vagy zárja be mentés nélkül a tartalom elvetéséhez és a feltöltött képek végleges törléséhez."
   },
   "finalization": {
+    "confirmTitle": "Véglegesíti ezt a vizitet?",
+    "confirmMessage": "A vizit mentés után csak olvasható lesz. A későbbi módosításokhoz válassza {{edit}}.",
     "finalize": "Lezárás",
     "finalized": "Lezárva",
     "description": "Ez a kórlap le van zárva. A módosításhoz válassza a Kórlap szerkesztése lehetőséget.",

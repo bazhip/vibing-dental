@@ -31,15 +31,15 @@
     },
     "dischargeMedications": {
       "label": "Medicamentos",
-      "helper": "Introduzca solo los medicamentos y las dosis registrados, conservando cualquier incertidumbre."
+      "helper": "Indique un medicamento por línea. Incluya el nombre, la dosis, cómo y cuándo administrarlo y durante cuánto tiempo."
     },
     "dischargeInstructions": {
       "label": "Instrucciones",
-      "helper": "Registre las instrucciones de cuidado comentadas para esta visita."
+      "helper": "Describa los cuidados en casa, las restricciones de actividad o alimentación y cuándo llamar a la clínica."
     },
     "dischargeFollowUp": {
       "label": "Seguimiento",
-      "helper": "Registre el seguimiento comentado; utilice la fecha de recordatorio existente para una revisión programada."
+      "helper": "Indique los próximos pasos y sus plazos. Si ya hay una revisión programada, use «Próxima revisión» en Paciente."
     },
     "gpVitals": {
       "label": "Constantes vitales",

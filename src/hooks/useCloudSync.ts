@@ -6,7 +6,7 @@ import { reservePatientNumber } from '../utils/patientNumberAllocation';
 import { isGeneratedPatientNumber } from '../utils/patientIds';
 import { hasChartImages, hasPendingImageUpload, findImageDrafts, discardImageDraft } from '../utils/imageDrafts';
 import { localDateISO } from '../utils/localDate';
-import { ChartSnapshot } from '../types';
+import { ChartSnapshot, hasNerveBlockEntries } from '../types';
 import { chooseDialog, confirmDialog } from '../components/ui/dialogs';
 import i18n from '../i18n';
 import { formatDate, formatTime } from '../i18n/format';
@@ -121,6 +121,7 @@ function hasContent(s: ChartSnapshot): boolean {
   if ((p.patientName ?? '').trim() || ((p.patientNumber ?? '').trim() && !isGeneratedPatientNumber(p)) || (p.ownerName ?? '').trim() || (p.ownerPhone ?? '').trim() || (p.ownerEmail ?? '').trim() || (p.complaint ?? '').trim() || (p.treatmentReport ?? '').trim()) return true;
   if (s.clinicalDictations?.length) return true;
   if (hasVisitDocumentation(p) || radiologyRecordedText(p).trim() || ctRecordedText(p).trim()) return true;
+  if (p.secondNerveBlocks && hasNerveBlockEntries(p.secondNerveBlocks)) return true;
   // Values are strings, except the drug list (and legacy `drug`); only a
   // named drug counts as content.
   if (Object.values(p.nerveBlocks ?? {}).some((v) =>

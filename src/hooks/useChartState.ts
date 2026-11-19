@@ -243,6 +243,7 @@ export function normalizeSnapshot(s: ChartSnapshot): ChartSnapshot {
       ownerPhone: s.patientInfo.ownerPhone ?? '',
       ownerEmail: s.patientInfo.ownerEmail ?? '',
       nerveBlocks: normalizeNerveBlocks(s.patientInfo.nerveBlocks),
+      ...(s.patientInfo.secondNerveBlocks ? { secondNerveBlocks: normalizeNerveBlocks(s.patientInfo.secondNerveBlocks) } : {}),
       exam: { ...EMPTY_EXAM_FINDINGS, ...(s.patientInfo.exam ?? {}) },
     },
     preMarks: s.preMarks ?? {},
@@ -295,7 +296,11 @@ export function useChartState(): UseChartStateReturn {
       exam: { ...EMPTY_EXAM_FINDINGS },
     }),
     // Pre-multi-drug builds stored a single `drug` string.
-    (stored) => ({ ...normalizeVisitDocumentation(stored), nerveBlocks: normalizeNerveBlocks(stored.nerveBlocks) })
+    (stored) => ({
+      ...normalizeVisitDocumentation(stored),
+      nerveBlocks: normalizeNerveBlocks(stored.nerveBlocks),
+      ...(stored.secondNerveBlocks ? { secondNerveBlocks: normalizeNerveBlocks(stored.secondNerveBlocks) } : {}),
+    })
   );
 
   const [species, setSpecies] = usePersistedState<Species>('chart.species', 1, 'canine');

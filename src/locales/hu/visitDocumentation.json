@@ -31,15 +31,15 @@
     },
     "dischargeMedications": {
       "label": "Gyógyszerek",
-      "helper": "Csak a rögzített gyógyszereket és adagokat írja be, az esetleges bizonytalanság megtartásával."
+      "helper": "Soronként egy gyógyszert tüntessen fel, a nevével, az adagjával, a beadás módjával és idejével, valamint a kezelés időtartamával."
     },
     "dischargeInstructions": {
       "label": "Utasítások",
-      "helper": "Rögzítse a vizit során megbeszélt ápolási utasításokat."
+      "helper": "Írja le az otthoni teendőket, a mozgásra vagy etetésre vonatkozó korlátozásokat és azt, hogy mikor kell felhívni a rendelőt."
     },
     "dischargeFollowUp": {
       "label": "Utánkövetés",
-      "helper": "Rögzítse a megbeszélt utánkövetést; ütemezett kontrollhoz használja a meglévő visszahívási dátumot."
+      "helper": "Sorolja fel a következő teendőket és azok időpontját. Tervezett kontroll esetén használja a páciens adatainál található „Kontroll esedékessége” mezőt."
     },
     "gpVitals": {
       "label": "Életjelek",

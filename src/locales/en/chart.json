@@ -243,6 +243,7 @@
     "redo": "Redo",
     "undoTitle": "Undo ({{shortcut}})",
     "redoTitle": "Redo ({{shortcut}})",
+    "freeShort": "Free",
     "freeComment": "+ Free comment",
     "numbers": "# Numbers",
     "numbersTitle": "Show each tooth’s Triadan number on the diagram (not printed on the PDF)",

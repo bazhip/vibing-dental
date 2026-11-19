@@ -1,4 +1,3 @@
-import { RefineTextAction } from './RefineTextAction';
 import React from 'react';
 import './ToothChartView.css';
 import { Trans, useTranslation } from 'react-i18next';
@@ -445,9 +444,6 @@ export function ToothChartView({
                     }}
                   />
                 </label>
-                <div className="clinical-text__actions"><RefineTextAction
-                  value={findToothNote(preComments, tooth.triadan)?.text ?? ''} readOnly={readOnly}
-                  onApply={text => setPreComments(prev => setToothNote(prev, tooth.triadan, text))} /></div>
                 {/* Quick codes: tap to add to the diagnosis note, tap again to take out. */}
                 <QuickCodeChips
                   className="tooth-chart__quick-codes"
@@ -495,9 +491,6 @@ export function ToothChartView({
                     }}
                   />
                 </label>
-                <div className="clinical-text__actions"><RefineTextAction
-                  value={findToothNote(postComments, tooth.triadan)?.text ?? ''} readOnly={readOnly}
-                  onApply={text => setPostComments(prev => setToothNote(prev, tooth.triadan, text))} /></div>
               </fieldset>
             </>
           )}

@@ -167,6 +167,7 @@ describe('the Chart tab live region (VoiceOver)', () => {
     const { rerender } = await renderApp('2026-03-04');
     cloud.dirty = true;
     await act(async () => fireEvent.click(within(chartPanel()).getByRole('button', { name: 'Finalize' })));
+    await act(async () => fireEvent.click(within(screen.getByRole('alertdialog', { name: 'Finalize this visit?' })).getByRole('button', { name: 'Finalize' })));
     expect(cloud.setFinalized).toHaveBeenCalledWith(true);
     await act(async () => { cloud.status = 'saving'; rerender(ui()); });
     await act(async () => { cloud.dirty = false; cloud.status = 'saved'; cloud.lastSavedAt = '2026-11-13T10:00:00Z'; rerender(ui()); });

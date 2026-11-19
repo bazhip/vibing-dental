@@ -365,6 +365,8 @@
     "closeImageChoiceMessage": "Guarde este historial antes de cerrar o cierre sin guardar para descartar su contenido y eliminar permanentemente las imágenes subidas."
   },
   "finalization": {
+    "confirmTitle": "¿Finalizar esta visita?",
+    "confirmMessage": "La visita se guardará en modo de solo lectura. Para hacer cambios más adelante, seleccione {{edit}}.",
     "finalize": "Finalizar",
     "finalized": "Finalizado",
     "description": "Este historial está finalizado. Seleccione Editar historial para realizar cambios.",

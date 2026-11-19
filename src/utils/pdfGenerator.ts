@@ -1,8 +1,7 @@
 import { radiologyRecordedText } from './radiologyReportState';
-import { gpClinicalContinuations } from './pdf/sections';
 import { PDFDocument, PDFHexString } from 'pdf-lib';
 import { embedPdfFonts } from './pdf/fonts';
-import { optionalClinicalContinuations, drawClinicalContinuations, drawContinuationNotice } from './pdf/continuation';
+import { additionalNerveBlockContinuations, optionalClinicalContinuations, drawClinicalContinuations, drawContinuationNotice } from './pdf/continuation';
 import download from 'downloadjs';
 import i18n, { loadLanguage } from '../i18n';
 import { isAppLanguage, type AppLanguage } from '../i18n/config';
@@ -42,6 +41,8 @@ import {
   drawToothGrid,
   drawNerveBlockTable,
   drawTreatmentArea,
+  planTreatmentArea,
+  visitDocumentationContinuations,
   drawDiagramAt,
   drawFooter,
   drawCodesLegend,
@@ -119,6 +120,8 @@ export interface PdfLayoutOptions {
   includeRadiographicReport?: boolean;
   /** Same for the CT report. Default true. */
   includeCtReport?: boolean;
+  /** Include completed discharge fields on the printed pages. Default true. */
+  includeDischarge?: boolean;
   includeCodesUsed?: boolean;
   /** Chart images to append after page 2, IMAGES_PER_PAGE to a page.
    *  Empty / absent → no image pages. Not round-tripped through the
@@ -175,7 +178,19 @@ export async function buildDentalChartPDFBytes(
     measuredTableBottom > NERVE_BLOCK_BOX.yTopIn ? measuredTableBottom + 0.12 : TREATMENT_REPORT.headerYTopIn,
     NERVE_BLOCK_BOX.xIn, NERVE_BLOCK_BOX.labelColIn + 2 * NERVE_BLOCK_BOX.valueColIn,
     maxOptionalBottomIn, lng, measure);
-  const continuations = [...(measure.overflow ? optionalClinicalContinuations(patientInfo, logo, lng) : []), ...gpClinicalContinuations(patientInfo, lng)];
+  const discharge = layoutOptions.includeDischarge === false ? [] : visitDocumentationContinuations(patientInfo, lng, 'discharge');
+  const { layout: treatmentArea, needsDischargePage } = planTreatmentArea({
+    treatment: patientInfo.treatmentReport,
+    radiographic: printedRadiographic,
+    ct: printedCt,
+    discharge: discharge[0]?.paragraphs.join('\n\n'),
+  }, regular);
+  const continuations = [
+    ...(needsDischargePage ? discharge : []),
+    ...(measure.overflow ? optionalClinicalContinuations(patientInfo, logo, lng) : []),
+    ...additionalNerveBlockContinuations(patientInfo.secondNerveBlocks, lng),
+    ...visitDocumentationContinuations(patientInfo, lng, 'gp-exam'),
+  ];
   drawClinicalContinuations(pdfDoc, continuations, regular, bold);
   const continuationPages = pdfDoc.getPageCount() - 2;
   const totalPages = 2 + continuationPages + imagePageCount;
@@ -340,7 +355,7 @@ export async function buildDentalChartPDFBytes(
     pdfDoc, postSlot, postDiagram.png,
     diagramBottomIn(1, usedByPage.page2)
   );
-  drawTreatmentArea(page2, { treatment: patientInfo.treatmentReport, radiographic: printedRadiographic, ct: printedCt }, regular, bold, lng);
+  drawTreatmentArea(page2, treatmentArea, regular, bold, lng);
   drawFooter(page2, regular, bold, 2, totalPages, generatedAt, identityLine, lng);
 
   // ---- Page-2 codes-used legend (page 1 drew its own above) ------------

@@ -79,6 +79,11 @@
     "duplicateArea": "您的检查中已有此部位。"
   },
   "anesthesia": {
+    "addSecond": "添加第二组神经阻滞",
+    "secondTitle": "第二组神经阻滞",
+    "secondHint": "填写本组使用的麻醉药及各部位的给药体积。",
+    "removeSecondTitle": "移除第二组神经阻滞？",
+    "removeSecondMessage": "本次就诊将移除该组的药物和剂量。",
     "title": "麻醉",
     "customize": "自定义",
     "customizeTitle": "选择要显示的神经阻滞及常用麻醉药",

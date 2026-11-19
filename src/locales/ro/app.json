@@ -365,6 +365,8 @@
     "closeImageChoiceMessage": "Salvați această fișă înainte de închidere sau închideți fără salvare pentru a elimina conținutul și a șterge definitiv imaginile încărcate."
   },
   "finalization": {
+    "confirmTitle": "Finalizați această vizită?",
+    "confirmMessage": "Vizita se va salva în modul numai pentru citire. Alegeți {{edit}} dacă trebuie să faceți modificări ulterior.",
     "finalize": "Finalizați",
     "finalized": "Finalizat",
     "description": "Această fișă este finalizată. Selectați Editați fișa pentru a face modificări.",

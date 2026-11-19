@@ -1019,10 +1019,11 @@ export interface TreatmentAreaText {
   treatment: string;
   radiographic?: string;
   ct?: string;
+  discharge?: string;
 }
 
 export interface TreatmentAreaCard {
-  kind: 'treatment' | 'radiographic' | 'ct';
+  kind: 'treatment' | 'radiographic' | 'ct' | 'discharge';
   value: string;
   /** Card height, title band included. */
   heightPt: number;
@@ -1062,7 +1063,7 @@ function evenSplit(needs: number[], room: number): number[] {
 
 /**
  * Splits the right column into cards: the treatment report on top, then
- * the radiographic report and CT report (each only when it has text).
+ * the radiographic, CT, and discharge reports (each only when populated).
  * The cards share the column evenly; one whose text needs more than its
  * share grows and the others split what's left, so the column keeps its
  * size and a chart without either report prints one card as before. When the text doesn't fit at
@@ -1081,6 +1082,7 @@ export function layoutTreatmentArea(
     { kind: 'treatment', value: text.treatment },
     { kind: 'radiographic', value: (text.radiographic ?? '').trim() },
     { kind: 'ct', value: (text.ct ?? '').trim() },
+    { kind: 'discharge', value: (text.discharge ?? '').trim() },
   ].filter((c) => c.kind === 'treatment' || c.value) as { kind: TreatmentAreaCard['kind']; value: string }[];
   const gaps = AREA_GAP_PT * (parts.length - 1);
   const chrome = CARD_BAND_PT + BODY_PAD_TOP_PT + BODY_PAD_BOTTOM_PT;
@@ -1120,9 +1122,31 @@ export function layoutTreatmentArea(
   };
 }
 
+function treatmentCardCapacity(card: TreatmentAreaCard, layout: TreatmentAreaLayout): number {
+  // A card sized for exactly N lines must not floor to N − 1.
+  return Math.floor((card.heightPt - CARD_BAND_PT - BODY_PAD_TOP_PT - BODY_PAD_BOTTOM_PT) / layout.lineHeight + 1e-6);
+}
+
+export function planTreatmentArea(text: TreatmentAreaText, font: PDFFont) {
+  const heightPt = (TREATMENT_REPORT.fieldYTopIn + TREATMENT_REPORT.fieldHeightIn - TREATMENT_REPORT.headerYTopIn) * PT_PER_IN;
+  const widthPt = TREATMENT_REPORT.fieldWidthIn * PT_PER_IN;
+  const innerWidth = widthPt - 2 * BODY_INSET_PT;
+  const layout = layoutTreatmentArea(text, font, heightPt, widthPt);
+  // Keep the report order and full discharge text. If the extra card
+  // would cause clipping, put discharge on the next page instead.
+  const needsDischargePage = !!text.discharge && layout.cards.some(card =>
+    wrappedLineCount(card.value, font, layout.fontSize, innerWidth) > treatmentCardCapacity(card, layout)
+    || (card.kind === 'discharge' && card.value.split(/\s+/).some(word => font.widthOfTextAtSize(word, layout.fontSize) > innerWidth)),
+  );
+  return {
+    layout: needsDischargePage ? layoutTreatmentArea({ ...text, discharge: undefined }, font, heightPt, widthPt) : layout,
+    needsDischargePage,
+  };
+}
+
 export function drawTreatmentArea(
   page: PDFPage,
-  text: TreatmentAreaText,
+  layout: TreatmentAreaLayout,
   font: PDFFont,
   fontBold: PDFFont,
   lng = 'en'
@@ -1132,13 +1156,12 @@ export function drawTreatmentArea(
   const xPt = TREATMENT_REPORT.xIn * PT_PER_IN;
   const widthPt = TREATMENT_REPORT.fieldWidthIn * PT_PER_IN;
   const topPt = pageHeight - TREATMENT_REPORT.headerYTopIn * PT_PER_IN;
-  // The column's bottom edge stays at the old field bottom.
-  const bottomPt = pageHeight - (TREATMENT_REPORT.fieldYTopIn + TREATMENT_REPORT.fieldHeightIn) * PT_PER_IN;
-  const layout = layoutTreatmentArea(text, font, topPt - bottomPt, widthPt);
+  const innerWidth = widthPt - 2 * BODY_INSET_PT;
   const titles = {
     treatment: t('treatment.title'),
     radiographic: t('treatment.radiographicTitle'),
     ct: t('treatment.ctTitle'),
+    discharge: i18n.getFixedT(lng, 'visitDocumentation')('discharge.title'),
   };
 
   let cardTop = topPt;
@@ -1148,10 +1171,8 @@ export function drawTreatmentArea(
     if (card.value) {
       const innerX = xPt + BODY_INSET_PT;
       const innerYTop = bodyTop - BODY_PAD_TOP_PT;
-      const innerWidth = widthPt - 2 * BODY_INSET_PT;
       const { fontSize, lineHeight } = layout;
-      // Tolerance: a card sized for exactly N lines must not floor to N − 1.
-      const maxLines = Math.floor((innerYTop - (cardBottom + BODY_PAD_BOTTOM_PT)) / lineHeight + 1e-6);
+      const maxLines = treatmentCardCapacity(card, layout);
       if (wrappedLineCount(card.value, font, fontSize, innerWidth) > maxLines) {
         drawWrappedText(page, card.value, innerX, innerYTop, innerWidth,
           fontSize, lineHeight, font, PALETTE.ink, Math.max(1, maxLines - 1));
@@ -1612,12 +1633,12 @@ export async function drawImagePage(
   finishSectionCard(page, cardX, cardTop, cardW, cardH);
 }
 
-/** GP clinical values only; raw transcript provenance never enters PDF output. */
-export function gpClinicalContinuations(patient: PatientInfo, lng: string): ClinicalContinuation[] {
+/** Print recorded fields, without the underlying dictation transcript. */
+export function visitDocumentationContinuations(patient: PatientInfo, lng: string, kind: 'gp-exam' | 'discharge'): ClinicalContinuation[] {
   const t = i18n.getFixedT(lng, 'visitDocumentation');
-  const paragraphs = VISIT_DOCUMENT_TEMPLATES['gp-exam'].fields.flatMap(field => {
+  const paragraphs = VISIT_DOCUMENT_TEMPLATES[kind].fields.flatMap(field => {
     const value = patient[field.id];
     return value?.trim() ? [`${t(field.labelKey)}\n${value}`] : [];
   });
-  return paragraphs.length ? [{ title: t('gp-exam.title'), paragraphs }] : [];
+  return paragraphs.length ? [{ title: t(`${kind}.title`), paragraphs }] : [];
 }

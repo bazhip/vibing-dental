@@ -60,6 +60,7 @@ export interface ChartSnapshot {
   /** False leaves the radiographic / CT report off the treatment card. */
   includeRadiographicReport?: boolean;
   includeCtReport?: boolean;
+  includeDischarge?: boolean;
   includeCodesUsed?: boolean;
   /** Cloud chart id whose images get appended as extra pages (4 per
    *  page). Absent/empty → no image pages. */
@@ -83,7 +84,7 @@ export interface ChartPdfOptions {
   gridRequired: boolean;
   imagesAvailable: boolean;
   includeImages: boolean;
-  onChange: (field: 'pdfIncludeGrid' | 'pdfIncludeImages' | 'pdfIncludeRadiographicReport' | 'pdfIncludeCtReport' | 'pdfIncludeCodesUsed', value: boolean) => void;
+  onChange: (field: 'pdfIncludeGrid' | 'pdfIncludeImages' | 'pdfIncludeRadiographicReport' | 'pdfIncludeCtReport' | 'pdfIncludeDischarge' | 'pdfIncludeCodesUsed', value: boolean) => void;
 }
 
 interface PdfPreviewModalProps {
@@ -258,6 +259,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
             includeGrid: snapshot.includeGrid,
             includeRadiographicReport: snapshot.includeRadiographicReport,
             includeCtReport: snapshot.includeCtReport,
+            includeDischarge: snapshot.includeDischarge,
             includeCodesUsed: snapshot.includeCodesUsed,
             images,
             lng,
@@ -423,6 +425,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
     { key: 'pdfIncludeImages', label: 'chart.pdf.images', value: options?.includeImages, disabled: !options?.imagesAvailable, hint: undefined },
     { key: 'pdfIncludeRadiographicReport', label: 'chart.pdf.radiographicReport', value: snapshot?.includeRadiographicReport !== false, disabled: false, hint: undefined },
     { key: 'pdfIncludeCtReport', label: 'chart.pdf.ctReport', value: snapshot?.includeCtReport !== false, disabled: false, hint: undefined },
+    { key: 'pdfIncludeDischarge', label: 'chart.pdf.dischargeSections', value: snapshot?.includeDischarge !== false, disabled: false, hint: undefined },
     { key: 'pdfIncludeCodesUsed', label: 'chart.pdf.codesUsed', value: snapshot?.includeCodesUsed !== false, disabled: false, hint: undefined },
   ] as const;
   const body = (

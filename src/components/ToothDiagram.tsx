@@ -569,8 +569,14 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
     height?: number;
   } | null>(null);
 
+  const [viewFit, setViewFit] = React.useState<{ source: DiagramComment[]; notes: DiagramComment[] } | null>(null);
+  const fittedToViewport = viewFit?.source === comments;
+  const displayedComments = fittedToViewport ? viewFit.notes : comments;
   const positionedComments = React.useMemo(() => {
-    const laid = layoutComments(comments, diagram, bboxByTriadan);
+    const gutter = diagram.sidePad ?? diagram.width * SIDE_PAD_RATIO;
+    const laid = layoutComments(displayedComments, diagram, bboxByTriadan, { exactSizes: fittedToViewport }).map(note => ({
+      ...note, x: Math.max(-gutter, Math.min(note.x, diagram.width + gutter - note.w)),
+    }));
     if (!liveCommentPatch) return laid;
     return laid.map((p) =>
       p.comment.id === liveCommentPatch.id
@@ -583,7 +589,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
           }
         : p
     );
-  }, [comments, diagram, bboxByTriadan, liveCommentPatch]);
+  }, [displayedComments, diagram, bboxByTriadan, fittedToViewport, liveCommentPatch]);
 
   // Tooth-number label positions: outside each tooth, de-overlapped.
   const numberLabels = React.useMemo(() => {
@@ -703,28 +709,10 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
   };
 
   const handleCommentEdit = (id: string, text: string) => {
-    // Resize the box to fit as the user types, so all text stays visible.
-    // Text edit + dimension change go in ONE state write — measuring
-    // separately (e.g. on input) would race the text update and clobber it
-    // (onCommentsChange takes an array, not a functional updater).
-    let dims: { width: number; height: number } | null = null;
-    if (!commentInteractingRef.current) {
-      const ta = wrapperRef.current?.querySelector(`[data-comment-id="${id}"]`);
-      const boxEl = ta?.closest('.diagram-comment') as HTMLElement | null;
-      if (boxEl) {
-        const size = measureCommentSize(id, boxEl, text);
-        if (size) dims = { width: size.newW, height: size.newH };
-      }
-    }
-    onCommentsChange(
-      comments.map((c) => (c.id === id ? { ...c, text, ...dims } : c))
-    );
+    onCommentsChange(comments.map(comment => comment.id === id ? { ...comment, text } : comment));
   };
 
-  // True while the user is mid-drag or mid-resize on a comment. We use it
-  // to suppress auto-shrink in that window — the textarea loses focus
-  // when the user touches the resize handle, and we don't want to fight
-  // the resize they just performed.
+  // Prevent viewport fitting from competing with an active drag or resize.
   const commentInteractingRef = React.useRef(false);
 
   // Live view of the comments array for the drag/resize document-level
@@ -749,8 +737,8 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
    * Measure the box a comment's content wants to occupy.
    *   - Width: wraps long body text to a comfortable reading column (so it
    *     never stretches into one giant line), always tries to fit the
-   *     header, and is clamped to the room left before the overlay's right
-   *     edge (so right-gutter comments stay on-canvas).
+   *     header, and is clamped to the overlay width. The placement pass
+   *     keeps the fitted card within the horizontal edges.
    *   - Height: the wrapped body height measured AT THAT FINAL width — this
    *     is the fix for the clipping bug, where height used to be measured at
    *     the un-capped single-line width and then the box was capped narrower,
@@ -758,9 +746,9 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
    * Returns viewBox-unit width/height, or null if it can't measure yet.
    */
   const measureCommentSize = (
-    id: string,
     boxEl: HTMLElement,
-    text: string
+    text: string,
+    minWidthVb = 0,
   ): { newW: number; newH: number } | null => {
     if (!boxEl.isConnected) return null;
     const textarea = boxEl.querySelector('textarea') as HTMLTextAreaElement | null;
@@ -803,26 +791,19 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
 
     const header = boxEl.querySelector('.diagram-comment__header') as HTMLElement | null;
     const headerH = header ? header.offsetHeight : 0;
-    const labelEl  = header?.querySelector('.diagram-comment__label')  as HTMLElement | null;
-    const deleteEl = header?.querySelector('.diagram-comment__delete') as HTMLElement | null;
-    const labelW  = labelEl  ? labelEl.scrollWidth  : 0;
-    const deleteW = deleteEl ? deleteEl.offsetWidth : 0;
-    const headerNaturalPx = labelW + deleteW + (labelW > 0 ? 12 : 0);
+    const headerItems = [...(header?.children ?? [])].filter(child => child.getBoundingClientRect().width > 0);
+    const headerNaturalPx = headerItems.reduce((total, child) => total + child.getBoundingClientRect().width, 0)
+      + Math.max(0, headerItems.length - 1) * 4;
 
-    // Width budget: never past the overlay's right edge (room to the right
-    // of the box's laid-out left edge). Anchored comments have no stored x
-    // until dragged, so use the laid-out position.
-    const positioned = positionedComments.find((p) => p.comment.id === id);
-    const effectiveX = positioned ? positioned.x : viewBoxX;
-    const maxWVb = Math.max(70 * pxToVbX, diagram.width + sidePad - effectiveX);
-    const maxAvailInnerPx = Math.max(40, maxWVb / pxToVbX - padX - borderX);
+    const minBoxPx = Math.min(overlayRect.width, Math.max(70, headerNaturalPx + padX + borderX + 4));
+    const maxAvailInnerPx = Math.max(0, overlayRect.width - padX - borderX);
 
     // Keep the box within the side gutter (~30% of the diagram width) so it
     // wraps into a narrow column there instead of growing across the teeth.
     // Short text still stays compact at its natural width.
     const gutterInnerPx = Math.max(60, sidePad / pxToVbX - padX - borderX);
     let innerPx = Math.min(maxLinePx, gutterInnerPx, maxAvailInnerPx);
-    innerPx = Math.max(innerPx, Math.min(headerNaturalPx, gutterInnerPx, maxAvailInnerPx), 50);
+    innerPx = Math.max(innerPx, headerNaturalPx, minWidthVb / pxToVbX - padX - borderX - 4, 50);
     innerPx = Math.min(innerPx + 4, maxAvailInnerPx); // +4 caret room, re-clamp
 
     // Height at the FINAL inner width.
@@ -842,62 +823,45 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
     }
 
     const newBoxWidthPx = innerPx + padX + borderX;
-    const newBoxHeightPx = headerH + textHeightPx + padY + borderY + 2;
-    const newW = Math.max(70 * pxToVbX, Math.min(maxWVb, newBoxWidthPx * pxToVbX));
+    const newBoxHeightPx = headerH + textHeightPx + padY + borderY + 4;
+    const newW = Math.max(minBoxPx, Math.min(overlayRect.width, newBoxWidthPx)) * pxToVbX;
     const newH = Math.max(30 * pxToVbY, newBoxHeightPx * pxToVbY);
     return { newW, newH };
   };
 
-  // Final fit when focus leaves the comment (text already committed, so no
-  // race with edits). Pre-empted during a manual drag/resize.
-  const autosizeComment = (id: string, boxEl: HTMLElement) => {
-    if (commentInteractingRef.current) return;
-    const textarea = boxEl.querySelector('textarea') as HTMLTextAreaElement | null;
-    const size = measureCommentSize(id, boxEl, textarea ? textarea.value : '');
-    if (!size) return;
-    onCommentsChange(
-      comments.map((c) =>
-        c.id === id ? { ...c, width: size.newW, height: size.newH } : c
-      )
-    );
-  };
-
-  // Comments that arrive without being typed — mirrored from the Charting
-  // grid, or added by voice autofill — never get focus, so the on-blur fit
-  // never runs for them. Fit any without a size (new, or re-texted)
-  // once the diagram is visible; the side stacks then re-pack around the
-  // real heights. Measurement needs real layout, so a hidden section just
-  // waits for its next render. Skips the comment being typed in (that one
-  // fits as you type). Runs after every render but exits immediately when
-  // there's nothing to fit.
+  // A window resize and a text-size change affect the rendered notes only.
+  // Keep the chart's geometry independent of the window used to view it.
+  const lastFit = React.useRef<{ source: DiagramComment[]; geometry: string } | null>(null);
   React.useEffect(() => {
-    if (commentInteractingRef.current) return;
-    const focused = document.activeElement;
-    const pending = comments.filter((c) => {
-      if (c.width != null && c.height != null) return false;
-      if (isGridComment(c)) return true;
-      // A box just added by clicking a tooth is empty: fit it to its label
-      // and one line now, not on the first keystroke (no text to race).
-      if (!c.text.trim()) return true;
-      const el = wrapperRef.current?.querySelector(`.diagram-comment[data-comment-id="${c.id}"]`);
-      return !(el && focused && el.contains(focused));
-    });
-    if (pending.length === 0) return;
-    const sizes = new Map<string, { newW: number; newH: number }>();
-    for (const c of pending) {
-      const el = wrapperRef.current?.querySelector(
-        `.diagram-comment[data-comment-id="${c.id}"]`
-      ) as HTMLElement | null;
-      const size = el && measureCommentSize(c.id, el, c.text);
-      if (size) sizes.set(c.id, size);
-    }
-    if (sizes.size === 0) return;
-    onCommentsChange(
-      comments.map((c) => {
-        const size = sizes.get(c.id);
-        return size ? { ...c, width: size.newW, height: size.newH } : c;
-      })
-    );
+    const wrapper = wrapperRef.current;
+    if (!wrapper || !comments.length) return;
+    const fit = () => {
+      if (commentInteractingRef.current) return;
+      const bounds = wrapper.getBoundingClientRect();
+      if (!bounds.width || !bounds.height) return;
+      const fontSize = getComputedStyle(wrapper).getPropertyValue('--diagram-comment-font-size');
+      const geometry = JSON.stringify([bounds.width, bounds.height, viewBoxWidth, viewBoxHeight, fontSize, readOnly]);
+      if (lastFit.current?.source === comments && lastFit.current.geometry === geometry) return;
+      const notes = comments.map(comment => {
+        const el = wrapper.querySelector<HTMLElement>(`.diagram-comment[data-comment-id="${comment.id}"]`);
+        const fitted = el && measureCommentSize(el, comment.text, comment.manualSize ? comment.width : undefined);
+        if (!fitted) return comment;
+        return {
+          ...comment,
+          width: fitted.newW,
+          height: Math.max(fitted.newH, comment.manualSize ? comment.height ?? 0 : 0),
+        };
+      });
+      lastFit.current = { source: comments, geometry };
+      setViewFit({ source: comments, notes });
+    };
+    const frame = requestAnimationFrame(fit);
+    const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(fit);
+    observer?.observe(wrapper);
+    return () => {
+      cancelAnimationFrame(frame);
+      observer?.disconnect();
+    };
   });
 
   const handleCommentDelete = (id: string) => {
@@ -961,8 +925,8 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
     const positioned = positionedComments.find((p) => p.comment.id === id);
     const initialX = target.x ?? positioned?.x ?? 0;
     const initialY = target.y ?? positioned?.y ?? 0;
-    const w = target.width ?? positioned?.w ?? COMMENT_W;
-    const h = target.height ?? positioned?.h ?? COMMENT_H;
+    const w = positioned?.w ?? target.width ?? COMMENT_W;
+    const h = positioned?.h ?? target.height ?? COMMENT_H;
 
     const minX = -sidePad;
     const maxX = diagram.width + sidePad - w;
@@ -988,18 +952,13 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
       document.removeEventListener('pointermove', onMove);
       document.removeEventListener('pointerup', onUp);
       gestureCleanupRef.current = null;
+      commentInteractingRef.current = false;
       if (moved) {
         onCommentsChange(
           commentsRef.current.map((c) => (c.id === id ? { ...c, x: lastX, y: lastY } : c))
         );
       }
       setLiveCommentPatch(null);
-      // Clear after a frame so a focusout fired during the drag (e.g.
-      // because the textarea released focus) doesn't sneak in an
-      // autosize before we've reset the flag.
-      requestAnimationFrame(() => {
-        commentInteractingRef.current = false;
-      });
     };
     document.addEventListener('pointermove', onMove);
     document.addEventListener('pointerup', onUp);
@@ -1013,13 +972,17 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
   const handleCommentResizeStart = (id: string, e: React.PointerEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    commentInteractingRef.current = true;
     const startSvg = getSvgPointFromXY(e.clientX, e.clientY);
     const target = comments.find((c) => c.id === id);
     const positioned = positionedComments.find((p) => p.comment.id === id);
-    if (!startSvg || !target || !positioned) return;
-    const initialW = target.width ?? positioned.w;
-    const initialH = target.height ?? positioned.h;
+    const box = e.currentTarget.closest<HTMLElement>('.diagram-comment');
+    if (!startSvg || !target || !positioned || !box) return;
+    commentInteractingRef.current = true;
+    const fitted = measureCommentSize(box, target.text);
+    const minW = fitted?.newW ?? COMMENT_MIN_W;
+    const minH = fitted?.newH ?? COMMENT_MIN_H;
+    const initialW = positioned.w;
+    const initialH = positioned.h;
 
     // Same one-commit-on-pointerup buffering as the drag handler above.
     let lastW = initialW;
@@ -1028,8 +991,8 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
     const onMove = (ev: PointerEvent) => {
       const cur = getSvgPointFromXY(ev.clientX, ev.clientY);
       if (!cur) return;
-      lastW = Math.max(COMMENT_MIN_W, initialW + (cur.x - startSvg.x));
-      lastH = Math.max(COMMENT_MIN_H, initialH + (cur.y - startSvg.y));
+      lastW = Math.max(minW, initialW + (cur.x - startSvg.x));
+      lastH = Math.max(minH, initialH + (cur.y - startSvg.y));
       resized = true;
       setLiveCommentPatch({ id, width: lastW, height: lastH });
     };
@@ -1037,15 +1000,13 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
       document.removeEventListener('pointermove', onMove);
       document.removeEventListener('pointerup', onUp);
       gestureCleanupRef.current = null;
+      commentInteractingRef.current = false;
       if (resized) {
         onCommentsChange(
-          commentsRef.current.map((c) => (c.id === id ? { ...c, width: lastW, height: lastH } : c))
+          commentsRef.current.map((c) => (c.id === id ? { ...c, width: lastW, height: lastH, manualSize: true } : c))
         );
       }
       setLiveCommentPatch(null);
-      requestAnimationFrame(() => {
-        commentInteractingRef.current = false;
-      });
     };
     document.addEventListener('pointermove', onMove);
     document.addEventListener('pointerup', onUp);
@@ -1408,47 +1369,20 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
                   handleCommentDragStart(comment.id, e);
                 }
           }
-          // React onBlur on a container is a delegated `focusout` and
-          // gives us `relatedTarget` — when focus actually leaves the
-          // whole comment (and we're not mid drag/resize), auto-shrink
-          // to fit content.
-          onBlur={(e) => {
-            const next = e.relatedTarget as Node | null;
-            if (next && e.currentTarget.contains(next)) return;
-            const boxEl = e.currentTarget;
-            // Defer a tick so React commits any pending text edit first.
-            requestAnimationFrame(() => autosizeComment(comment.id, boxEl));
-          }}
         >
-          {anchor && (
-            <div
-              className="diagram-comment__header"
-              onPointerDown={(e) => handleCommentDragStart(comment.id, e)}
-            >
-              <span className="diagram-comment__label">{anchor.label}</span>
-              {isGridComment(comment) && <span className="diagram-comment__badge">{t('grid.title')}</span>}
-              <button
-                type="button"
-                className="diagram-comment__delete"
-                onPointerDown={(e) => e.stopPropagation()}
-                onClick={() => handleCommentDelete(comment.id)}
-                aria-label={t('diagram.comment.delete')}
-              >
-                {isNativeApp() ? <Icon name={XMARK_ICON} size={12} /> : '✕'}
-              </button>
-            </div>
-          )}
-          {!anchor && (
+          <div className="diagram-comment__header" onPointerDown={(e) => handleCommentDragStart(comment.id, e)}>
+            {anchor && <span className="diagram-comment__label">{anchor.label}</span>}
+            {isGridComment(comment) && <span className="diagram-comment__badge">{t('grid.title')}</span>}
             <button
               type="button"
-              className="diagram-comment__delete diagram-comment__delete--floating"
+              className="diagram-comment__delete"
               onPointerDown={(e) => e.stopPropagation()}
               onClick={() => handleCommentDelete(comment.id)}
               aria-label={t('diagram.comment.delete')}
             >
               {isNativeApp() ? <Icon name={XMARK_ICON} size={12} /> : '✕'}
             </button>
-          )}
+          </div>
           <CodeField
             multiline
             className="diagram-comment__text"

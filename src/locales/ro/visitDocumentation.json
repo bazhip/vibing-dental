@@ -31,15 +31,15 @@
     },
     "dischargeMedications": {
       "label": "Medicamente",
-      "helper": "Introduceți numai medicamentele și dozele înregistrate, păstrând eventualele incertitudini."
+      "helper": "Treceți câte un medicament pe rând. Includeți denumirea, doza, cum și când se administrează și pentru cât timp."
     },
     "dischargeInstructions": {
       "label": "Instrucțiuni",
-      "helper": "Înregistrați instrucțiunile de îngrijire discutate pentru această vizită."
+      "helper": "Descrieți îngrijirea la domiciliu, eventualele restricții de activitate sau de alimentație și când trebuie sunat la cabinet."
     },
     "dischargeFollowUp": {
       "label": "Monitorizare",
-      "helper": "Înregistrați monitorizarea discutată; pentru un recontrol programat, folosiți data de rechemare existentă."
+      "helper": "Menționați pașii următori și termenul pentru fiecare. Dacă recontrolul este programat, folosiți câmpul „Recontrol scadent” din secțiunea Pacient."
     },
     "gpVitals": {
       "label": "Semne vitale",

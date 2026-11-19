@@ -247,6 +247,7 @@
     "redo": "Rehacer",
     "undoTitle": "Deshacer ({{shortcut}})",
     "redoTitle": "Rehacer ({{shortcut}})",
+    "freeShort": "Libre",
     "freeComment": "+ Comentario libre",
     "numbers": "# Números",
     "numbersTitle": "Mostrar el número Triadan de cada diente en el esquema (no se imprime en el PDF)",

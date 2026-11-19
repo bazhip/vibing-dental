@@ -157,7 +157,11 @@ export async function parseDentalChartPDF(file: File): Promise<ParsedChart> {
   if (stash.patientInfo && stash.toothData && stash.species) {
     return {
       // Older PDFs stashed a single `drug` string — migrate to the list.
-      patientInfo: { ...stash.patientInfo, nerveBlocks: normalizeNerveBlocks(stash.patientInfo.nerveBlocks) },
+      patientInfo: {
+        ...stash.patientInfo,
+        nerveBlocks: normalizeNerveBlocks(stash.patientInfo.nerveBlocks),
+        ...(stash.patientInfo.secondNerveBlocks ? { secondNerveBlocks: normalizeNerveBlocks(stash.patientInfo.secondNerveBlocks) } : {}),
+      },
       toothData: stash.toothData,
       species: stash.species,
       logo: stash.logo ?? 'socal',

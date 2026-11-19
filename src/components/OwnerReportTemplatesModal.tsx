@@ -89,6 +89,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
 }) => {
   const refinement = React.useContext(RefineTextContext);
   const refineEnabled = (aiEnabled ?? refinement.enabled) && canEdit;
+  const closingId = React.useId();
   const { t } = useTranslation('reportui');
   const asScreen = presentation === 'screen';
   const asSheet = presentation === 'sheet';
@@ -658,17 +659,19 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
             <p className="patient-form__hint">
               {t('templates.insertHelp')}
             </p>
-            <textarea
-              className="patient-form__input report-templates__textarea"
-              rows={4}
-              aria-label={t('templates.summaryAria')}
-              value={selected.introTemplate}
-              placeholder={introPlaceholder}
-              onChange={(e) => updateTemplate({ introTemplate: e.target.value })}
-              {...track((v) => updateTemplate({ introTemplate: v }))}
-            />
-            {refineEnabled && <div className="clinical-text__actions"><RefineTextAction value={selected.introTemplate} enabled={aiEnabled}
-              scopeKey={selected.id} readOnly={!canEdit || busy} onApply={introTemplate => updateTemplate({ introTemplate })} /></div>}
+            <div className="refine-field">
+              <textarea
+                className="patient-form__input report-templates__textarea"
+                rows={4}
+                aria-label={t('templates.summaryAria')}
+                value={selected.introTemplate}
+                placeholder={introPlaceholder}
+                onChange={(e) => updateTemplate({ introTemplate: e.target.value })}
+                {...track((v) => updateTemplate({ introTemplate: v }))}
+              />
+              {refineEnabled && <RefineTextAction value={selected.introTemplate} enabled={aiEnabled}
+              scopeKey={selected.id} readOnly={!canEdit || busy} onApply={introTemplate => updateTemplate({ introTemplate })} />}
+            </div>
             <span className="patient-form__hint">{t('templates.summaryEmpty')}</span>
           </section>
 
@@ -736,20 +739,20 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
                       {...track((v) => updateSection(section.id, { title: v }))}
                     />
                     {custom && (
-                      <>
-                      <textarea
-                        className="patient-form__input report-templates__textarea"
-                        rows={3}
-                        aria-label={t('templates.sectionTextAria')}
-                        value={(section as CustomReportSection).body}
-                        placeholder={t('templates.sectionTextPlaceholder')}
-                        onChange={(e) => updateSection(section.id, { body: e.target.value })}
-                        {...track((v) => updateSection(section.id, { body: v }))}
-                      />
-                      {refineEnabled && <div className="clinical-text__actions"><RefineTextAction
-                        value={(section as CustomReportSection).body} enabled={aiEnabled}
-                        scopeKey={selected.id} readOnly={!canEdit || busy} onApply={body => updateSection(section.id, { body })} /></div>}
-                      </>
+                      <div className="refine-field">
+                        <textarea
+                          className="patient-form__input report-templates__textarea"
+                          rows={3}
+                          aria-label={t('templates.sectionTextAria')}
+                          value={(section as CustomReportSection).body}
+                          placeholder={t('templates.sectionTextPlaceholder')}
+                          onChange={(e) => updateSection(section.id, { body: e.target.value })}
+                          {...track((v) => updateSection(section.id, { body: v }))}
+                        />
+                        {refineEnabled && <RefineTextAction
+                          value={(section as CustomReportSection).body} enabled={aiEnabled}
+                          scopeKey={selected.id} readOnly={!canEdit || busy} onApply={body => updateSection(section.id, { body })} />}
+                      </div>
                     )}
                   </li>
                 );
@@ -781,23 +784,25 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
                 <ul className="report-templates__tips">
                   {selected.homecareTips.map((tip, i) => (
                     <li key={i} className="report-templates__tip">
-                      <input
-                        type="text"
-                        className="patient-form__input"
-                        aria-label={t('templates.tipAria', { n: i + 1 })}
-                        value={tip}
-                        onChange={(e) =>
-                          updateTemplate((tpl) => ({
-                            homecareTips: tpl.homecareTips.map((x, j) => (j === i ? e.target.value : x)),
-                          }))
-                        }
-                        {...track((v) =>
-                          updateTemplate((tpl) => ({ homecareTips: tpl.homecareTips.map((x, j) => (j === i ? v : x)) }))
-                        )}
-                      />
-                      <RefineTextAction value={tip} enabled={aiEnabled} singleLine
-                        scopeKey={JSON.stringify([selected.id, selected.homecareTips])} readOnly={!canEdit || busy}
-                        onApply={value => updateTemplate(tpl => ({ homecareTips: tpl.homecareTips.map((previous, index) => index === i ? value : previous) }))} />
+                      <div className="refine-field refine-field--single">
+                        <input
+                          type="text"
+                          className="patient-form__input"
+                          aria-label={t('templates.tipAria', { n: i + 1 })}
+                          value={tip}
+                          onChange={(e) =>
+                            updateTemplate((tpl) => ({
+                              homecareTips: tpl.homecareTips.map((x, j) => (j === i ? e.target.value : x)),
+                            }))
+                          }
+                          {...track((v) =>
+                            updateTemplate((tpl) => ({ homecareTips: tpl.homecareTips.map((x, j) => (j === i ? v : x)) }))
+                          )}
+                        />
+                        <RefineTextAction value={tip} enabled={aiEnabled} singleLine
+                          scopeKey={JSON.stringify([selected.id, selected.homecareTips])} readOnly={!canEdit || busy}
+                          onApply={value => updateTemplate(tpl => ({ homecareTips: tpl.homecareTips.map((previous, index) => index === i ? value : previous) }))} />
+                      </div>
                       <button
                         type="button"
                         className="diagram-view__action diagram-view__action--danger"
@@ -836,9 +841,11 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
 
           <section className="ai-settings-section" hidden={categorized && category !== 'closing'}>
             <h3 className="ai-settings-subhead">{t('templates.closingTitle')}</h3>
-            <label className="patient-form__label">
+            <label htmlFor={closingId} className="patient-form__label">
               {t('templates.closingLabel')}
-              <textarea
+            </label>
+            <div className="refine-field">
+              <textarea id={closingId}
                 className="patient-form__input report-templates__textarea"
                 rows={2}
                 value={selected.closingNote}
@@ -846,9 +853,9 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
                 onChange={(e) => updateTemplate({ closingNote: e.target.value })}
                 {...track((v) => updateTemplate({ closingNote: v }))}
               />
-            </label>
-            {refineEnabled && <div className="clinical-text__actions"><RefineTextAction value={selected.closingNote} enabled={aiEnabled}
-              scopeKey={selected.id} readOnly={!canEdit || busy} onApply={closingNote => updateTemplate({ closingNote })} /></div>}
+              {refineEnabled && <RefineTextAction value={selected.closingNote} enabled={aiEnabled}
+              scopeKey={selected.id} readOnly={!canEdit || busy} onApply={closingNote => updateTemplate({ closingNote })} />}
+            </div>
             <label className="patient-form__label">
               {t('templates.footerLabel')}
               <input

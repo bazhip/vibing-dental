@@ -196,6 +196,7 @@
       "imagesHint": "(4 per pagina, dopo la cartella)",
       "radiographicReport": "Referto radiografico",
       "ctReport": "Referto TC",
+      "dischargeSections": "Sezioni di dimissione",
       "codesUsed": "Codici utilizzati"
     },
     "noteDevice": "Preferenze personali salvate automaticamente su questo dispositivo.",

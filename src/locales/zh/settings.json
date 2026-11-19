@@ -196,6 +196,7 @@
       "imagesHint": "（每页4张，位于图表之后）",
       "radiographicReport": "X 线报告",
       "ctReport": "CT 报告",
+      "dischargeSections": "出院部分",
       "codesUsed": "使用的代码"
     },
     "noteDevice": "个人偏好会自动保存在此设备上。",

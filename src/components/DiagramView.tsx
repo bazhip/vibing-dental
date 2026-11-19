@@ -94,6 +94,20 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
   const native = isNativeApp();
   const { t } = useTranslation('chart');
   const rootRef = React.useRef<HTMLDivElement>(null);
+  const freeCommentLabel = t('ios.diagram.freeComment');
+  const fullFreeCommentRef = React.useRef<HTMLSpanElement>(null);
+  const [useShortFreeComment, setUseShortFreeComment] = React.useState(false);
+  React.useLayoutEffect(() => {
+    const label = fullFreeCommentRef.current;
+    if (!label) return;
+    const update = () => setUseShortFreeComment(label.scrollWidth > label.clientWidth);
+    update();
+    if (typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver(update);
+    observer.observe(label);
+    return () => observer.disconnect();
+  }, [freeCommentLabel, readOnly]);
+
   const [tool, setToolState] = React.useState<DiagramTool>(defaultTool);
   // The quick code the stamp tool adds; picking another tool drops it.
   const [stampCode, setStampCode] = React.useState<string | null>(null);
@@ -194,7 +208,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
         style={{ ['--diagram-comment-font-size' as string]: `${0.95 * commentTextScale * zoom}rem` }}
       >
         <div className={`diagram-view__toolbar${readOnly ? ' diagram-view__toolbar--readonly' : ''}`}>
-          {/* One line: modes + Free comment, history, then view controls. */}
+          {/* Modes + Free comment, history, then view controls. */}
           <div className="diagram-view__toolbar-main">
           <div
             className="diagram-view__tool-group"
@@ -245,10 +259,14 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
                 type="button"
                 className="diagram-view__tool diagram-view__free-comment"
                 onClick={addFreeComment}
-                title={t('ios.diagram.freeComment')}
+                title={freeCommentLabel}
+                aria-label={freeCommentLabel}
               >
                 <Icon name={FREE_COMMENT_ICON} size={18} />
-                <span className="diagram-view__tool-label">{native ? t('ios.diagram.freeComment') : t('diagramView.freeComment')}</span>
+                <span className="diagram-view__tool-label diagram-view__free-comment-label" aria-hidden="true">
+                  <span ref={fullFreeCommentRef} style={{ visibility: useShortFreeComment ? 'hidden' : undefined }}>{freeCommentLabel}</span>
+                  {useShortFreeComment && <span className="diagram-view__free-comment-short">{t('diagramView.freeShort')}</span>}
+                </span>
               </button>
             )}
           </div>
@@ -267,6 +285,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               title={t('diagramView.undoTitle', { shortcut: IS_MAC ? '⌘Z' : 'Ctrl+Z' })}
             >
               <Icon name={ARROW_UTURN_BACKWARD_ICON} size={18} />
+              <span className="diagram-view__tool-label">{t('diagramView.undo')}</span>
             </button>
             <button
               type="button"
@@ -277,6 +296,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               title={t('diagramView.redoTitle', { shortcut: IS_MAC ? '⌘⇧Z' : 'Ctrl+Y' })}
             >
               <Icon name={ARROW_UTURN_FORWARD_ICON} size={18} />
+              <span className="diagram-view__tool-label">{t('diagramView.redo')}</span>
             </button>
           </div>
 

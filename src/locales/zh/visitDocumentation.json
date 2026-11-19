@@ -31,15 +31,15 @@
     },
     "dischargeMedications": {
       "label": "用药",
-      "helper": "仅输入已记录的药物和剂量，并保留任何不确定之处。"
+      "helper": "每行填写一种药物，注明药名、剂量、给药方式、给药时间和疗程。"
     },
     "dischargeInstructions": {
       "label": "指导",
-      "helper": "记录本次就诊时讨论的护理指导。"
+      "helper": "说明居家护理、活动或饮食限制，以及何时应联系诊所。"
     },
     "dischargeFollowUp": {
       "label": "随访",
-      "helper": "记录已讨论的随访安排；已预约的复查请使用现有的复诊日期。"
+      "helper": "列出后续事项及其时间。如已安排复查，请在“患者”的“复查到期”字段中填写日期。"
     },
     "gpVitals": {
       "label": "生命体征",

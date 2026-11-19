@@ -363,6 +363,8 @@
     "closeImageChoiceMessage": "Save this chart before closing, or close without saving to discard its contents and permanently delete its uploaded images."
   },
   "finalization": {
+    "confirmTitle": "Finalize this visit?",
+    "confirmMessage": "This saves the visit and makes it view-only. Use {{edit}} if you need to make changes later.",
     "finalize": "Finalize",
     "finalized": "Finalized",
     "description": "This record is finalized. Choose Edit chart to make changes.",

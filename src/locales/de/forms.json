@@ -79,6 +79,11 @@
     "duplicateArea": "Dieser Bereich ist bereits in Ihrer Untersuchung enthalten."
   },
   "anesthesia": {
+    "addSecond": "Zweite Nervenblock-Serie hinzufügen",
+    "secondTitle": "Zweite Nervenblock-Serie",
+    "secondHint": "Geben Sie das Anästhetikum und das verabreichte Volumen pro Stelle für diese Serie an.",
+    "removeSecondTitle": "Zweite Nervenblock-Serie entfernen?",
+    "removeSecondMessage": "Das Anästhetikum und die Dosen dieser Serie werden aus diesem Besuch entfernt.",
     "title": "Narkose",
     "customize": "Anpassen",
     "customizeTitle": "Auswählen, welche Nervenblockaden angezeigt werden, und Ihr übliches Anästhetikum",

@@ -68,7 +68,7 @@
         },
         "second": {
           "title": "Changer de consultation ou d’onglet patient",
-          "text": "L’onglet affiche le patient et la date de la consultation. Si plusieurs consultations sont enregistrées, utilisez le sélecteur de l’onglet. Pour ouvrir un autre patient, utilisez le bouton plus. Le dossier du patient est conservé lorsque vous fermez un onglet."
+          "text": "L’onglet affiche le patient et la date de la consultation. Si plusieurs consultations sont enregistrées, utilisez le sélecteur de l’onglet. Pour ouvrir un autre patient, utilisez le bouton plus. Le dossier du patient est conservé lorsque vous fermez un onglet. Sur ordinateur, vérifiez le numéro du patient sous son nom et utilisez la flèche à côté de la date pour changer de visite."
         },
         "third": {
           "title": "Consulter les dossiers antérieurs",
@@ -86,7 +86,7 @@
         },
         "second": {
           "title": "Consigner les constatations dans Diagnostic",
-          "text": "Sélectionnez la dent concernée et indiquez les constatations avant traitement ou les dents déjà absentes. Ajoutez des codes dentaires et de courtes notes si nécessaire. En cas de doute sur un code, consultez le référentiel."
+          "text": "Sélectionnez la dent concernée et indiquez les constatations avant traitement ou les dents déjà absentes. Ajoutez des codes dentaires et de courtes notes si nécessaire. En cas de doute sur un code, consultez le référentiel. Les libellés de la barre d’outils se trouvent sous les icônes. Utilisez « Commentaire » pour associer une note à une dent ou « Commentaire libre » pour la placer où vous le souhaitez sur le schéma. Lorsque l’espace manque, Commentaire libre s’affiche sous la forme Libre."
         },
         "third": {
           "title": "Consigner les actes dans Intervention",
@@ -104,7 +104,7 @@
         },
         "second": {
           "title": "Consigner les anesthésiques et les blocs",
-          "text": "Ouvrez « Anesthésie », renseignez les médicaments anesthésiques et notez le site et le volume de chaque bloc réalisé. Avant de finaliser, vérifiez le côté et les unités par rapport à la source."
+          "text": "Ouvrez « Anesthésie », renseignez les médicaments anesthésiques et notez le site et le volume de chaque bloc réalisé. Avant de finaliser, vérifiez le côté et les unités par rapport à la source. Sélectionnez « Ajouter une deuxième série de blocs nerveux » si vous avez administré un autre anesthésique séparément. Notez son nom, sa concentration et les volumes par site dans la deuxième série."
         },
         "third": {
           "title": "Utiliser les sections facultatives",
@@ -122,7 +122,7 @@
         },
         "second": {
           "title": "Choisir les images à inclure",
-          "text": "Renseignez le type de chaque image et, au besoin, la dent et une description. Choisissez si elle doit figurer dans le PDF clinique ou dans le compte rendu pour le propriétaire. Utilisez la mention « Avant le traitement » ou « Après le traitement » lorsqu’elle aide à comprendre l’image."
+          "text": "Renseignez le type de chaque image et, au besoin, la dent et une description. Choisissez si elle doit figurer dans le PDF clinique ou dans le compte rendu pour le propriétaire. Utilisez la mention « Avant le traitement » ou « Après le traitement » lorsqu’elle aide à comprendre l’image. Le bouton Affiner se trouve dans le coin inférieur de la zone de texte."
         },
         "third": {
           "title": "Rédiger les comptes rendus d’imagerie",
@@ -158,7 +158,7 @@
         },
         "second": {
           "title": "Utiliser un modèle enregistré",
-          "text": "Choisissez un modèle par son nom dans la liste des modèles enregistrés. Vérifiez le texte inséré avant d’enregistrer. Le compte rendu reste modifiable et l’action « Affiner » peut proposer une reformulation à vérifier."
+          "text": "Choisissez un modèle par son nom dans la liste des modèles enregistrés. Vérifiez le texte inséré avant d’enregistrer. Le compte rendu reste modifiable et l’action « Affiner » peut proposer une reformulation à vérifier. Le bouton Affiner se trouve dans le coin inférieur de la zone de texte."
         },
         "third": {
           "title": "Créer un modèle réutilisable",
@@ -172,7 +172,7 @@
       "sections": {
         "first": {
           "title": "Consigner les consignes de sortie",
-          "text": "Ouvrez « Sortie ». Renseignez les médicaments, les consignes et le suivi documentés. Avant de partager le document, vérifiez les noms des médicaments, les doses et les délais dans votre dossier."
+          "text": "Dans Sortie, indiquez un médicament par ligne, avec la dose, le mode d’administration et la durée du traitement. Ajoutez les consignes de soins à domicile et de suivi. Vérifiez le tout avant de transmettre le document."
         },
         "second": {
           "title": "Préparer le compte rendu pour le propriétaire",
@@ -194,11 +194,11 @@
         },
         "second": {
           "title": "Personnaliser le PDF clinique",
-          "text": "Dans « Dossier clinique », ouvrez « Personnaliser » pour choisir les couleurs et le contenu à inclure, comme les images, les comptes rendus d’imagerie et les codes utilisés. Vérifiez l’aperçu après chaque changement, puis téléchargez le document."
+          "text": "Dans « Dossier clinique », ouvrez « Personnaliser » pour choisir les couleurs et le contenu à inclure, comme les images, les comptes rendus d’imagerie et les codes utilisés. Vérifiez l’aperçu après chaque changement, puis téléchargez le document. Les sections de sortie figurent par défaut sous les comptes rendus d’imagerie. Décochez l’option pour les masquer sur les pages imprimées."
         },
         "third": {
           "title": "Finaliser ou rouvrir une consultation",
-          "text": "« Finaliser » enregistre la consultation terminée et la fait repasser en lecture seule. Pour corriger une consultation enregistrée, ouvrez-la, choisissez « Modifier le dossier », apportez la correction, puis choisissez « Terminer la modification ». Vérifiez le patient et la date avant d’appliquer les changements."
+          "text": "Choisissez Finaliser puis confirmez pour enregistrer la visite terminée en lecture seule. Pour corriger une consultation enregistrée, ouvrez-la, choisissez « Modifier le dossier », apportez la correction, puis choisissez « Terminer la modification ». Vérifiez le patient et la date avant d’appliquer les changements."
         }
       }
     },
@@ -370,7 +370,7 @@
       "sections": {
         "first": {
           "title": "Ouvrir la visite guidée",
-          "text": "Choisissez « Prise en main » dans « Aide ». La visite guidée présente les commandes et peut être relancée à tout moment."
+          "text": "Choisissez « Prise en main » dans « Aide ». La visite guidée présente les commandes et peut être relancée à tout moment. Sur un écran étroit, ouvrez le menu déroulant à côté du nom ou du logo de votre clinique pour accéder à ces outils."
         },
         "second": {
           "title": "Consulter les changements récents",

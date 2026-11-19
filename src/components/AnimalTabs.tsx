@@ -4,6 +4,8 @@ import type { AnimalTab } from '../hooks/useAnimalTabs';
 import './AnimalTabs.css';
 import { formatDate } from '../i18n/format';
 
+const COMPACT_DATE_STYLE = 'short';
+
 interface Props {
   tabs: AnimalTab[];
   activeId: string;
@@ -51,16 +53,18 @@ export function AnimalTabs({ tabs, activeId, busy, onSelect, onClose, onAdd, sho
     const list = strip.current;
     const item = list?.querySelector<HTMLElement>('[aria-selected="true"]')?.closest<HTMLElement>('.animal-tabs__item');
     if (!list) return;
-    if (list.clientWidth > 0) list.style.setProperty('--animal-tab-available', `${list.clientWidth}px`);
     if (item) {
       const bounds = list.getBoundingClientRect();
       const tab = item.getBoundingClientRect();
-      if (tab.left < bounds.left) list.scrollLeft += tab.left - bounds.left;
+      if (tab.right - tab.left > bounds.right - bounds.left) {
+        const rtl = getComputedStyle(list).direction === 'rtl';
+        list.scrollLeft += rtl ? tab.right - bounds.right : tab.left - bounds.left;
+      } else if (tab.left < bounds.left) list.scrollLeft += tab.left - bounds.left;
       else if (tab.right > bounds.right) list.scrollLeft += tab.right - bounds.right;
     }
     updateOverflow();
   };
-  // Overflow controls change the available width after the first measurement.
+  // Overflow controls change the available width when they appear.
   const hasOverflow = overflow.before || overflow.after;
   useLayoutEffect(() => { revealSelected(); }, [activeId, tabs, hasOverflow, editing, saveStatus, visits.length]); // eslint-disable-line react-hooks/exhaustive-deps
   const revealRef = useRef(revealSelected);
@@ -106,6 +110,7 @@ export function AnimalTabs({ tabs, activeId, busy, onSelect, onClose, onAdd, sho
           const name = tab.name || t('animalTabs.unnamed');
           const pid = tab.patientNumber;
           const date = tab.date ? formatDate(tab.date) : t('topbar.undatedVisit');
+          const compactDate = tab.date ? formatDate(tab.date, COMPACT_DATE_STYLE) : date;
           return <div className={`animal-tabs__item${tab.id === activeId ? ` animal-tabs__item--active${editing ? ' animal-tabs__item--editing' : ''}` : ''}`} key={tab.id}>
             <button type="button" className="animal-tabs__select" role="tab" id={`animal-tab-${tab.id}`}
               aria-controls="animal-chart-panel" aria-selected={tab.id === activeId}
@@ -115,7 +120,14 @@ export function AnimalTabs({ tabs, activeId, busy, onSelect, onClose, onAdd, sho
               <span className="animal-tabs__heading"><strong>{name}</strong>{tab.id === activeId && <span className="animal-tabs__indicators">
                 {editing && <span className="animal-tabs__editing" title={t('topbar.editingTitle')}>{t('topbar.editingShort')}</span>}
                 {saveStatus && <span className={`animal-tabs__save animal-tabs__save--${saveStatus}`} role="status" title={saveStatusTitle}>{t(`status.${saveStatus}`)}</span>}
-              </span>}</span><span className="animal-tabs__details">{pid && <span>{pid}</span>}<span>{date}</span></span>
+              </span>}</span>
+              <span className="animal-tabs__details">
+                {pid && <span className="animal-tabs__number">{pid}</span>}
+                <span>
+                  <span className="animal-tabs__date">{date}</span>
+                  <span className="animal-tabs__date-compact">{compactDate}</span>
+                </span>
+              </span>
             </button>
             {tab.id === activeId && visits.length > 1 && onVisit && <span className="animal-tabs__visit">
               <select className="select--bare" value={activeId} onChange={event => onVisit(event.target.value)} disabled={busy}

@@ -1,6 +1,6 @@
 import type { PDFDocument, PDFFont, PDFPage } from 'pdf-lib';
 import i18n from '../../i18n';
-import { effectiveNerveBlockDrugs, formatAnestheticDrug, type PatientInfo, type Logo } from '../../types';
+import { effectiveNerveBlockDrugs, formatAnestheticDrug, type PatientInfo, type Logo, type NerveBlocks } from '../../types';
 import { fieldLines, filledBlocks } from '../customAnesthesia';
 import { answeredCustomExam } from '../customExam';
 import { drawSectionCard, finishSectionCard, CARD_BAND_PT } from './draw';
@@ -9,28 +9,43 @@ import { PALETTE } from './styles';
 
 export interface ClinicalContinuation { title: string; paragraphs: string[] }
 
-/** Full source values, independent of the compact cards' line limits. */
-export function optionalClinicalContinuations(patient: PatientInfo, logo: Logo, lng: string): ClinicalContinuation[] {
+function nerveBlockParagraphs(nb: NerveBlocks, lng: string, custom?: PatientInfo['customAnesthesia']): string[] {
   const t = i18n.getFixedT(lng, 'pdf');
-  const nb = patient.nerveBlocks;
   const blocks = [
     { label: t('anesthesia.blocks.infraorbital'), right: nb.infraorbitalRight, left: nb.infraorbitalLeft },
     { label: t('anesthesia.blocks.caudalMaxillary'), right: nb.caudalMaxillaryRight, left: nb.caudalMaxillaryLeft },
     { label: t('anesthesia.blocks.inferiorAlveolar'), right: nb.inferiorAlveolarRight, left: nb.inferiorAlveolarLeft },
     { label: t('anesthesia.blocks.mental'), right: nb.mentalRight, left: nb.mentalLeft },
-    ...filledBlocks(patient.customAnesthesia).map(block => ({ ...block, label: block.label || i18n.getFixedT(lng, 'chart')('customAnesthesia.block') })),
+    ...filledBlocks(custom).map(block => ({ ...block, label: block.label || i18n.getFixedT(lng, 'chart')('customAnesthesia.block') })),
   ].filter(block => block.right.trim() || block.left.trim());
-  const fields = fieldLines(patient.customAnesthesia, lng);
-  const anesthesia = blocks.length || fields.length || nb.other.trim() ? [{
+  const fields = fieldLines(custom, lng);
+  return [
+    ...blocks.map(block => `${block.label}: ${[
+      block.right.trim() && `${t('anesthesia.right')} ${t('anesthesia.dose', { value: block.right.trim() })}`,
+      block.left.trim() && `${t('anesthesia.left')} ${t('anesthesia.dose', { value: block.left.trim() })}`,
+    ].filter(Boolean).join('; ')}`),
+    ...fields,
+    ...(nb.other.trim() ? [`${t('anesthesia.other')}: ${nb.other}`] : []),
+  ];
+}
+
+export function additionalNerveBlockContinuations(nb: NerveBlocks | undefined, lng: string): ClinicalContinuation[] {
+  if (!nb) return [];
+  const paragraphs = nerveBlockParagraphs(nb, lng);
+  const drugs = nb.drugs.filter(drug => drug.name.trim()).map(formatAnestheticDrug);
+  if (drugs.length) paragraphs.unshift(drugs.join(' + '));
+  return paragraphs.length ? [{ title: i18n.getFixedT(lng, 'forms')('anesthesia.secondTitle'), paragraphs }] : [];
+}
+
+/** Full source values, independent of the compact cards' line limits. */
+export function optionalClinicalContinuations(patient: PatientInfo, logo: Logo, lng: string): ClinicalContinuation[] {
+  const t = i18n.getFixedT(lng, 'pdf');
+  const blockParagraphs = nerveBlockParagraphs(patient.nerveBlocks, lng, patient.customAnesthesia);
+  const anesthesia = blockParagraphs.length ? [{
     title: t('anesthesia.title'),
     paragraphs: [
-      `${t('anesthesia.anesthetics')}: ${effectiveNerveBlockDrugs(nb, logo).map(formatAnestheticDrug).join(' + ')}`,
-      ...blocks.map(block => `${block.label}: ${[
-        block.right.trim() && `${t('anesthesia.right')} ${t('anesthesia.dose', { value: block.right.trim() })}`,
-        block.left.trim() && `${t('anesthesia.left')} ${t('anesthesia.dose', { value: block.left.trim() })}`,
-      ].filter(Boolean).join('; ')}`),
-      ...fields,
-      ...(nb.other.trim() ? [`${t('anesthesia.other')}: ${nb.other}`] : []),
+      `${t('anesthesia.anesthetics')}: ${effectiveNerveBlockDrugs(patient.nerveBlocks, logo).map(formatAnestheticDrug).join(' + ')}`,
+      ...blockParagraphs,
     ],
   }] : [];
   const areas = answeredCustomExam(patient.customExam);

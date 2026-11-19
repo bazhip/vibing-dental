@@ -43,17 +43,17 @@ html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__
   font-weight: 400;
   line-height: 1.45;
   border-radius: var(--radius-sm);
-  border-color: var(--border-strong);
-  box-shadow: var(--shadow-xs);
+  border-color: var(--clinical-field-border, var(--border-strong));
+  box-shadow: var(--clinical-field-shadow, var(--shadow-xs));
 }
 html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__input, .surgery-report__template-select) {
   min-height: 40px;
   padding-block: 8px;
 }
 html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__input, .patient-form__textarea, .surgery-report__template-select):focus-visible {
-  outline: 2px solid var(--primary);
+  outline: var(--clinical-field-outline, 2px solid var(--primary));
   outline-offset: 2px;
-  border-color: var(--primary);
+  border-color: var(--clinical-field-border, var(--primary));
 }
 html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__input, .patient-form__textarea)::placeholder {
   color: var(--text-muted);

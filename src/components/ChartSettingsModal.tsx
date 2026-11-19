@@ -428,6 +428,12 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
             )}
             {show.pdfImages && (
             <label className="chart-settings__choice">
+              <input type="checkbox" checked={prefs.pdfIncludeDischarge} onChange={(e) => onChange({ pdfIncludeDischarge: e.target.checked })} />
+              {t('chart.pdf.dischargeSections')}
+            </label>
+            )}
+            {show.pdfImages && (
+            <label className="chart-settings__choice">
               <input type="checkbox" checked={prefs.pdfIncludeCodesUsed} onChange={(e) => onChange({ pdfIncludeCodesUsed: e.target.checked })} />
               {t('chart.pdf.codesUsed')}
             </label>

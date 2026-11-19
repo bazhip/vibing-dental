@@ -31,15 +31,15 @@
     },
     "dischargeMedications": {
       "label": "Medikamente",
-      "helper": "Geben Sie nur dokumentierte Medikamente und Dosierungen ein; behalten Sie Unsicherheiten bei."
+      "helper": "Geben Sie pro Zeile ein Medikament an. Nennen Sie den Namen, die Dosis, die Art und den Zeitpunkt der Gabe sowie die Dauer."
     },
     "dischargeInstructions": {
       "label": "Hinweise",
-      "helper": "Dokumentieren Sie die bei diesem Besuch besprochenen Pflegehinweise."
+      "helper": "Beschreiben Sie die Pflege zu Hause, Einschränkungen bei Bewegung oder Fütterung und wann die Praxis angerufen werden sollte."
     },
     "dischargeFollowUp": {
       "label": "Nachsorge",
-      "helper": "Dokumentieren Sie die besprochene Nachsorge; nutzen Sie das vorhandene Erinnerungsdatum für eine geplante Kontrolle."
+      "helper": "Nennen Sie die nächsten Schritte und ihren Zeitpunkt. Geben Sie einen geplanten Kontrolltermin unter „Kontrolle fällig“ im Bereich Patient ein."
     },
     "gpVitals": {
       "label": "Vitalparameter",

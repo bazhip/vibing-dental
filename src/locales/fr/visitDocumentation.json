@@ -31,15 +31,15 @@
     },
     "dischargeMedications": {
       "label": "Médicaments",
-      "helper": "Saisissez uniquement les médicaments et doses consignés, en conservant toute incertitude."
+      "helper": "Indiquez un médicament par ligne, avec son nom, sa dose, son mode d’administration, les horaires et la durée du traitement."
     },
     "dischargeInstructions": {
       "label": "Consignes",
-      "helper": "Consignez les consignes de soins discutées pour cette visite."
+      "helper": "Indiquez les soins à domicile, les restrictions d’activité ou d’alimentation et quand appeler la clinique."
     },
     "dischargeFollowUp": {
       "label": "Suivi",
-      "helper": "Consignez le suivi discuté ; utilisez la date de rappel existante pour un contrôle prévu."
+      "helper": "Indiquez les prochaines étapes et leurs délais. Si un contrôle est prévu, utilisez le champ « Contrôle prévu » dans Patient."
     },
     "gpVitals": {
       "label": "Paramètres vitaux",

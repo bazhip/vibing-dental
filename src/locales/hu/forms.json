@@ -79,6 +79,11 @@
     "duplicateArea": "Ez a terület már szerepel a vizsgálatban."
   },
   "anesthesia": {
+    "addSecond": "Második idegblokád-sorozat hozzáadása",
+    "secondTitle": "Második idegblokád-sorozat",
+    "secondHint": "Adja meg az érzéstelenítőt és az egyes helyeken beadott térfogatot ennél a sorozatnál.",
+    "removeSecondTitle": "Eltávolítja a második idegblokád-sorozatot?",
+    "removeSecondMessage": "A sorozat gyógyszere és adagjai törlődnek ebből a vizitből.",
     "title": "Érzéstelenítés",
     "customize": "Testreszabás",
     "customizeTitle": "Válassza ki a megjelenő idegblokádokat és a szokásos érzéstelenítőszert",

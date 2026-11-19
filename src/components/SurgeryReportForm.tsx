@@ -94,15 +94,14 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
   return (
     <div className="patient-form">
       <SectionHeader title={t('report.title')} onCustomize={templatesOn ? () => setTemplateEditor('manage') : undefined} customizeTitle={t('report.customizeTitle')} />
-      <div className="surgery-report__tools">
-        {templatesOn && <span className="patient-form__label surgery-report__templates-label">{t('library:templates.saved')}</span>}
+      {templatesOn && <div className="surgery-report__tools">
+        <span className="patient-form__label surgery-report__templates-label">{t('library:templates.saved')}</span>
         <div className="surgery-report__actions">
-          {templatesOn && <button type="button" className="diagram-view__action" onClick={() => setTemplateEditor('new')} disabled={readOnly || !store.loaded}>
+          <button type="button" className="diagram-view__action" onClick={() => setTemplateEditor('new')} disabled={readOnly || !store.loaded}>
             <span aria-hidden="true">+</span>{' '}{t('report.newTemplate')}
-          </button>}
-          <RefineTextAction value={value} onApply={onChange} readOnly={readOnly} />
+          </button>
         </div>
-        {templatesOn && (!store.loaded || !store.templates.length
+        {!store.loaded || !store.templates.length
           ? <p className="patient-form__hint surgery-report__templates-empty">{t(store.loaded ? 'report.none' : 'report.loading')}</p>
           : <ul className="surgery-report__templates" aria-label={t('library:templates.saved')}>
               {store.templates.map(template => (
@@ -113,16 +112,19 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
                   </button>
                 </li>
               ))}
-            </ul>)}
+            </ul>}
+      </div>}
+      <div className="refine-field">
+        <textarea
+          className="patient-form__textarea surgery-report__textarea"
+          aria-label={t('report.textareaAria')}
+          placeholder={t('report.placeholder')}
+          value={value}
+          disabled={readOnly}
+          onChange={(e) => { if (!readOnly) onChange(e.target.value); }}
+        />
+        <RefineTextAction value={value} onApply={onChange} readOnly={readOnly} />
       </div>
-      <textarea
-        className="patient-form__textarea surgery-report__textarea"
-        aria-label={t('report.textareaAria')}
-        placeholder={t('report.placeholder')}
-        value={value}
-        disabled={readOnly}
-        onChange={(e) => { if (!readOnly) onChange(e.target.value); }}
-      />
 
       {templatesOn && (
         <ReportTemplatesModal

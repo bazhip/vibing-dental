@@ -23,6 +23,12 @@ describe('chart settings (per person)', () => {
       .toMatchObject({ pdfIncludeRadiographicReport: false, pdfIncludeCtReport: true });
   });
 
+  it('includes discharge sections for new and existing PDF preferences until explicitly disabled', () => {
+    expect(DEFAULT_CHART_PREFS.pdfIncludeDischarge).toBe(true);
+    expect(normalizeChartPrefs({ pdfIncludeCtReport: false }).pdfIncludeDischarge).toBe(true);
+    expect(normalizeChartPrefs({ pdfIncludeDischarge: false }).pdfIncludeDischarge).toBe(false);
+  });
+
   it('score taps go to the next finding by default; junk falls back', () => {
     expect(DEFAULT_CHART_PREFS.scoreTapMoves).toBe('finding');
     expect(normalizeChartPrefs({ scoreTapMoves: 'tooth' }).scoreTapMoves).toBe('tooth');

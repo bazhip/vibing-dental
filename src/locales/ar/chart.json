@@ -259,6 +259,7 @@
     "redo": "إعادة",
     "undoTitle": "تراجع ({{shortcut}})",
     "redoTitle": "إعادة ({{shortcut}})",
+    "freeShort": "حر",
     "freeComment": "+ تعليق حر",
     "numbers": "# الأرقام",
     "numbersTitle": "عرض رقم Triadan لكل سن على الرسم (لا يُطبع في PDF)",

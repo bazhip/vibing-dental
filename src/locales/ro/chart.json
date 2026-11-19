@@ -247,6 +247,7 @@
     "redo": "Refaceți",
     "undoTitle": "Anulați ({{shortcut}})",
     "redoTitle": "Refaceți ({{shortcut}})",
+    "freeShort": "Liber",
     "freeComment": "+ Comentariu liber",
     "numbers": "# Numere",
     "numbersTitle": "Afișați numărul Triadan al fiecărui dinte pe diagramă (nu se tipărește în PDF)",

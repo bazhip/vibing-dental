@@ -4,6 +4,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { supabase } from '../utils/supabaseClient';
 import { openDocumentation } from '../help/openDocumentation';
 import { isNativeApp } from '../native/platform';
+import { Icon } from '../ios/icons';
 import './AccountSurfaces.css';
 
 interface ChartMenuCloud {
@@ -21,6 +22,7 @@ interface ChartMenuCloud {
 
 interface ChartMenuProps {
   scope?: 'all' | 'help' | 'account' | 'more';
+  practice?: { name: string; doctorName?: string; logoUrl?: string };
   visit?: { name: string; onNewVisit: () => void; onHistory: () => void };
   onNewPatient?: () => void;
   onPreviewDocuments?: () => void;
@@ -47,6 +49,8 @@ interface ChartMenuProps {
 }
 
 const ITEM_SELECTOR = '.chart-menu__item';
+const PRACTICE_ICON = 'tooth';
+const CHEVRON_ICON = 'chevron-down';
 
 /** Resolve personal identity before the account disclosure is opened. */
 function useSignedInIdentity(enabled: boolean) {
@@ -69,7 +73,7 @@ function useSignedInIdentity(enabled: boolean) {
  * admin (when applicable), and app-level bits (AI settings, homepage,
  * sign out). Lives in the topbar.
  */
-export const ChartMenu: React.FC<ChartMenuProps> = ({ scope = 'all', visit, onNewPatient, onPreviewDocuments, onSave, onRevert, onOpenWalkthrough, onGoHome, onOpenAdmin, onOpenFeedback, onOpenChartSettings, onOpenWhatsNew, cloud, email }) => {
+export const ChartMenu: React.FC<ChartMenuProps> = ({ scope = 'all', practice, visit, onNewPatient, onPreviewDocuments, onSave, onRevert, onOpenWalkthrough, onGoHome, onOpenAdmin, onOpenFeedback, onOpenChartSettings, onOpenWhatsNew, cloud, email }) => {
   const { t, i18n } = useTranslation(['app', 'help']);
   const showHelp = scope !== 'account';
   const showAccount = scope !== 'help';
@@ -195,21 +199,28 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ scope = 'all', visit, onNe
         onClick={() => setOpen((o) => !o)}
         onKeyDown={onTriggerKeyDown}
         aria-expanded={open}
-        title={scope === 'account' ? signedInAs || undefined : undefined}
+        title={practice?.name || (scope === 'account' ? signedInAs || undefined : undefined)}
         data-tour={scope === 'account' ? 'practice-settings' : undefined}
-        aria-label={scope === 'account' ? triggerLabel : t(scope === 'all' ? 'menu.open' : `workspace.${scope}`)}
+        aria-label={practice?.name ?? (scope === 'account' ? triggerLabel : t(scope === 'all' ? 'menu.open' : `workspace.${scope}`))}
       >
         {scope === 'all' && <svg className="topbar-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
           <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" fill="none" stroke="currentColor" strokeWidth="2" />
           <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
         </svg>}
-        <span className="chart-menu__trigger-label">{scope === 'more' ? <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="4" cy="10" r="1.5" fill="currentColor" /><circle cx="10" cy="10" r="1.5" fill="currentColor" /><circle cx="16" cy="10" r="1.5" fill="currentColor" /></svg> : triggerLabel}</span>
+        {practice ? <>
+          {practice.logoUrl ? <img src={practice.logoUrl} alt="" className="entry-grid__topbar-logo" /> : <Icon name={PRACTICE_ICON} size={20} />}
+          <span className="chart-menu__trigger-label chart-menu__practice-label">
+            <span className="entry-grid__doctor">{practice.name}</span>
+            {practice.doctorName && <span className="entry-grid__title">{practice.doctorName}</span>}
+          </span>
+          <Icon name={CHEVRON_ICON} size={14} className="chart-menu__practice-chevron" />
+        </> : <span className="chart-menu__trigger-label">{scope === 'more' ? <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="4" cy="10" r="1.5" fill="currentColor" /><circle cx="10" cy="10" r="1.5" fill="currentColor" /><circle cx="16" cy="10" r="1.5" fill="currentColor" /></svg> : triggerLabel}</span>}
         {scope === 'account' && <span aria-hidden="true">⌃</span>}
       </button>
 
       {open && (
         <div className="chart-menu__panel" ref={panelRef} onKeyDown={onPanelKeyDown}>
-          {showAccount && cloud && signedInAs && (
+          {showAccount && cloud && signedInAs && !practice && (
             <div className="chart-menu__account" title={signedInAs}>
               <Trans t={t} i18nKey="menu.signedInAs" values={{ email: signedInAs }} components={{ strong: <strong /> }} />
             </div>
