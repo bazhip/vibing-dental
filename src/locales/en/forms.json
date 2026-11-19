@@ -79,6 +79,11 @@
     "duplicateArea": "This area is already in your exam."
   },
   "anesthesia": {
+    "addSecond": "Add a second nerve-block set",
+    "secondTitle": "Second nerve-block set",
+    "secondHint": "Enter the anesthetic and the volume given at each site for this set.",
+    "removeSecondTitle": "Remove the second nerve-block set?",
+    "removeSecondMessage": "This removes its medication and doses from this visit.",
     "title": "Anesthesia",
     "customize": "Customize",
     "customizeTitle": "Choose which nerve blocks show and your usual anesthetic",

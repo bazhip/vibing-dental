@@ -73,6 +73,7 @@ export interface ChartPrefs {
   pdfIncludeRadiographicReport: boolean;
   /** PDF prints the CT report on the treatment card. */
   pdfIncludeCtReport: boolean;
+  pdfIncludeDischarge: boolean;
   pdfIncludeCodesUsed: boolean;
   /** Output language for AI-refined imaging reports. Null follows the report or dictation. */
   imagingReportLanguage: AppLanguage | null;
@@ -126,6 +127,7 @@ export const DEFAULT_CHART_PREFS: ChartPrefs = {
   pdfIncludeImages: true,
   pdfIncludeRadiographicReport: true,
   pdfIncludeCtReport: true,
+  pdfIncludeDischarge: true,
   pdfIncludeCodesUsed: true,
   imagingReportLanguage: null,
   hideRecheck: false,
@@ -174,6 +176,7 @@ export function normalizeChartPrefs(raw: unknown, fallback: ChartPrefs = DEFAULT
     pdfIncludeImages: bool(r.pdfIncludeImages, fallback.pdfIncludeImages),
     pdfIncludeRadiographicReport: bool(r.pdfIncludeRadiographicReport, fallback.pdfIncludeRadiographicReport),
     pdfIncludeCtReport: bool(r.pdfIncludeCtReport, fallback.pdfIncludeCtReport),
+    pdfIncludeDischarge: bool(r.pdfIncludeDischarge, fallback.pdfIncludeDischarge),
     pdfIncludeCodesUsed: bool(r.pdfIncludeCodesUsed, fallback.pdfIncludeCodesUsed),
     imagingReportLanguage: r.imagingReportLanguage === null || isAppLanguage(r.imagingReportLanguage)
       ? r.imagingReportLanguage : fallback.imagingReportLanguage,

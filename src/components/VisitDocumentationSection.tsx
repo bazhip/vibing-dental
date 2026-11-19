@@ -38,14 +38,16 @@ export function VisitDocumentationSection({ kind, patientInfo, onChange, readOnl
         {template.fields.map(field => <div className="visit-documentation__field" key={field.id}>
           <div className="visit-documentation__field-head">
             <label className="patient-form__label" htmlFor={`${id}-${field.id}`}>{t(field.labelKey)}</label>
-            <RefineTextAction value={patientInfo[field.id] ?? ''} readOnly={readOnly} maxLength={VISIT_DOCUMENT_MAX_LENGTH}
-              onApply={text => onChange({ [field.id]: text })} />
           </div>
           <p className="visit-documentation__helper" id={`${id}-${field.id}-help`}>{t(field.helperKey)}</p>
-          <textarea id={`${id}-${field.id}`} className="patient-form__textarea" rows={field.id === 'gpPhysicalExam' ? 6 : 3}
-            aria-describedby={`${id}-${field.id}-help`} maxLength={VISIT_DOCUMENT_MAX_LENGTH}
-            value={patientInfo[field.id] ?? ''} readOnly={readOnly}
-            onChange={event => { if (!readOnly) onChange({ [field.id]: event.target.value }); }} />
+          <div className="refine-field">
+            <textarea id={`${id}-${field.id}`} className="patient-form__textarea" rows={field.id === 'gpPhysicalExam' ? 6 : 3}
+              aria-describedby={`${id}-${field.id}-help`} maxLength={VISIT_DOCUMENT_MAX_LENGTH}
+              value={patientInfo[field.id] ?? ''} readOnly={readOnly}
+              onChange={event => { if (!readOnly) onChange({ [field.id]: event.target.value }); }} />
+              <RefineTextAction value={patientInfo[field.id] ?? ''} readOnly={readOnly} maxLength={VISIT_DOCUMENT_MAX_LENGTH}
+                onApply={text => onChange({ [field.id]: text })} />
+          </div>
         </div>)}
       </div>
       {kind === 'discharge' && <p className="visit-documentation__helper visit-documentation__notice">{t('sourceNotice')}</p>}

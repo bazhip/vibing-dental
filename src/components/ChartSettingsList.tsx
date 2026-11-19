@@ -343,6 +343,13 @@ export function ChartSettingsList({ prefs, followsAccount, onChange, only, onSho
           )}
           {show.pdfImages && (
             <SwitchRow
+              title={t('chart.pdf.dischargeSections')}
+              checked={prefs.pdfIncludeDischarge}
+              onChange={(on) => onChange({ pdfIncludeDischarge: on })}
+            />
+          )}
+          {show.pdfImages && (
+            <SwitchRow
               title={t('chart.pdf.codesUsed')}
               checked={prefs.pdfIncludeCodesUsed}
               onChange={(on) => onChange({ pdfIncludeCodesUsed: on })}

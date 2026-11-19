@@ -64,6 +64,12 @@ export const EMPTY_NERVE_BLOCKS: NerveBlocks = {
   drugs: [],
 };
 
+export function hasNerveBlockEntries(blocks: NerveBlocks): boolean {
+  return (Array.isArray(blocks.drugs) && blocks.drugs.some(drug => drug?.name?.trim() || drug?.concentration?.trim()))
+    || (Object.keys(EMPTY_NERVE_BLOCKS) as (keyof NerveBlocks)[])
+      .some(key => key !== 'drugs' && blocks[key]?.trim());
+}
+
 /** Default anesthetic per logo. Used when nerveBlocks.drugs is empty. */
 export const DEFAULT_NERVE_BLOCK_DRUG: Record<'socal' | 'vca', string> = {
   vca: 'Ropivacaine',
@@ -316,6 +322,8 @@ export interface PatientInfo {
    *  chart library as a recall reminder. */
   recallDate: string;
   nerveBlocks: NerveBlocks;
+  /** A separately administered anesthetic with its own site volumes. */
+  secondNerveBlocks?: NerveBlocks;
   exam: ExamFindings;
 }
 

@@ -160,9 +160,6 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
         <span className="owner-report__block-head">
           <label htmlFor={`${fieldPrefix}-${field}`}>{label}</label>
           <span className="owner-report__block-actions">
-            {showRefine && <RefineTextAction value={value} onApply={onChange} readOnly={readOnly} enabled={aiEnabled}
-              disabled={!edited}
-              maxLength={OWNER_REPORT_WORDING_LIMIT} />}
             {onDone && <button type="button" className="diagram-view__action" onClick={onDone}>{t('actions.done', { ns: 'common' })}</button>}
             {showRestore && (
               <button
@@ -192,15 +189,20 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
             )}
           </span>
         </span>
-        <textarea
-          id={`${fieldPrefix}-${field}`}
-          aria-describedby={hint ? `${fieldPrefix}-${field}-hint` : undefined}
-          className="patient-form__input owner-report__textarea"
-          rows={rows}
-          maxLength={OWNER_REPORT_WORDING_LIMIT}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-        />
+        <div className="refine-field">
+          <textarea
+            id={`${fieldPrefix}-${field}`}
+            aria-describedby={hint ? `${fieldPrefix}-${field}-hint` : undefined}
+            className="patient-form__input owner-report__textarea"
+            rows={rows}
+            maxLength={OWNER_REPORT_WORDING_LIMIT}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+          />
+              {showRefine && <RefineTextAction value={value} onApply={onChange} readOnly={readOnly} enabled={aiEnabled}
+                disabled={!edited}
+                maxLength={OWNER_REPORT_WORDING_LIMIT} />}
+        </div>
         {hint && <span className="patient-form__hint" id={`${fieldPrefix}-${field}-hint`}>{hint}</span>}
         {showMissingDraft && <span className="patient-form__hint" id={missingDraftId}>{t('section.noSavedDraft')}</span>}
       </div>
@@ -221,7 +223,6 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
       <div className="owner-report__block-head">
         <h4>{label}</h4>
         {!readOnly && <div className="owner-report__block-actions">
-          {custom !== undefined && <RefineTextAction value={text} onApply={change} enabled={aiEnabled} maxLength={OWNER_REPORT_WORDING_LIMIT} />}
           {custom !== undefined && <button type="button" className="diagram-view__action"
             onClick={() => onOverrideChange(field, null)}>{t('section.reset')}</button>}
           <button type="button" className="diagram-view__action"
@@ -233,7 +234,10 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
           </button>
         </div>}
       </div>
-      <div className="owner-report__generated-text">{text || t('section.noGeneratedText')}</div>
+      <div className="refine-field">
+        <div className="owner-report__generated-text">{text || t('section.noGeneratedText')}</div>
+          {custom !== undefined && <RefineTextAction value={text} onApply={change} enabled={aiEnabled} maxLength={OWNER_REPORT_WORDING_LIMIT} />}
+      </div>
     </div>;
   };
 

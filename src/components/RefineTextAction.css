@@ -31,11 +31,78 @@
 .refine-text__options button:hover { background: var(--surface-alt); }
 .refine-text__comparison { display: grid; gap: 12px; max-height: min(52dvh, 460px); overflow: auto; }
 .refine-text__comparison p { margin: 4px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
-.clinical-text__actions:empty { display: none; }
-.clinical-text__actions { display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap; margin-block: 4px; }
 @media (max-width: 600px) {
   .refine-text > summary, .refine-text__options button, .refine-text__disabled { min-height: 44px; }
 }
 .refine-text__control { display: inline-flex; flex-direction: column; align-items: flex-end; min-width: 0; max-width: 100%; }
 .refine-text__feedback { margin: 4px 0 0; max-width: 32ch; color: var(--text-muted); font-size: .8rem; text-align: end; }
 .refine-text__feedback--error { color: var(--danger); }
+
+
+/* Keep the action inside the field border without covering the text or resize handle. */
+.refine-field {
+  min-width: 0;
+}
+.refine-field:has(> :is(.refine-text__control, .refine-text__disabled)) {
+  --clinical-field-border: transparent;
+  --clinical-field-shadow: none;
+  --clinical-field-outline: none;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  border: 1px solid var(--border-strong, var(--border));
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+.refine-field:has(> :is(.refine-text__control, .refine-text__disabled)) > :is(textarea, input, .code-field, .owner-report__generated-text) {
+  min-width: 0;
+  margin: 0;
+}
+.refine-field:has(> :is(.refine-text__control, .refine-text__disabled)) :is(textarea, input, .owner-report__generated-text) {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+.refine-field:has(> :is(.refine-text__control, .refine-text__disabled)):has(:is(textarea, input):focus-visible) {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+.refine-field:has(> :is(.refine-text__control, .refine-text__disabled)):focus-within {
+  border-color: var(--primary);
+}
+.refine-field > :is(.refine-text__control, .refine-text__disabled) {
+  align-self: flex-end;
+  margin: 0 4px 3px;
+}
+.refine-field :is(.refine-text > summary, .refine-text__disabled) {
+  min-height: 25px;
+  font-size: .75rem;
+  gap: 3px;
+  padding: 2px 6px;
+  border-color: transparent;
+  box-shadow: none;
+}
+.refine-field .refine-text__feedback {
+  margin: 0;
+  padding: 0 4px 2px;
+}
+
+.refine-field--single { flex: 1; }
+.refine-field--single:has(> :is(.refine-text__control, .refine-text__disabled)) {
+  flex-direction: row;
+  align-items: center;
+}
+.refine-field--single > :is(.refine-text__control, .refine-text__disabled) {
+  flex: none;
+  align-self: center;
+  margin-block: 0;
+}
+.refine-field--single:has(.refine-text__feedback) { flex-wrap: wrap; }
+.refine-field--single:has(.refine-text__feedback) > .refine-text__control {
+  margin-inline-start: auto;
+}
+
+.record-note > .refine-field { flex: 1 1 auto; }
+@media (max-width: 600px) {
+  .refine-field :is(.refine-text > summary, .refine-text__disabled) { min-height: 44px; }
+}

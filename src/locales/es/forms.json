@@ -79,6 +79,11 @@
     "duplicateArea": "Esta zona ya figura en su examen."
   },
   "anesthesia": {
+    "addSecond": "Añadir una segunda serie de bloqueos nerviosos",
+    "secondTitle": "Segunda serie de bloqueos nerviosos",
+    "secondHint": "Indique el anestésico y el volumen administrado en cada sitio para esta serie.",
+    "removeSecondTitle": "¿Eliminar la segunda serie de bloqueos nerviosos?",
+    "removeSecondMessage": "El anestésico y las dosis de esta serie se eliminarán de la visita.",
     "title": "Anestesia",
     "customize": "Personalizar",
     "customizeTitle": "Elija qué bloqueos nerviosos se muestran y su anestésico habitual",

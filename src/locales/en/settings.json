@@ -196,6 +196,7 @@
       "imagesHint": "(4 per page, after the chart)",
       "radiographicReport": "Radiographic report",
       "ctReport": "CT report",
+      "dischargeSections": "Discharge sections",
       "codesUsed": "Codes used"
     },
     "noteDevice": "Personal preferences saved automatically on this device.",

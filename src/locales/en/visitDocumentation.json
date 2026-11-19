@@ -31,15 +31,15 @@
     },
     "dischargeMedications": {
       "label": "Medications",
-      "helper": "Enter only recorded medications and doses, keeping any uncertainty."
+      "helper": "Use one line per medication. Include the name, dose, how and when to give it, and for how long."
     },
     "dischargeInstructions": {
       "label": "Instructions",
-      "helper": "Record the care instructions discussed for this visit."
+      "helper": "Describe care at home, any activity or feeding restrictions, and when to call the clinic."
     },
     "dischargeFollowUp": {
       "label": "Follow-up",
-      "helper": "Record the follow-up discussed; use the existing recall date for a scheduled recheck."
+      "helper": "List any next steps and when they should happen. For a scheduled recheck, use Recheck due in Patient."
     },
     "gpVitals": {
       "label": "Vital signs",

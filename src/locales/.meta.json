@@ -6492,6 +6492,10 @@
       "hash": "58a85a149b26",
       "status": "machine"
     },
+    "forms:anesthesia.addSecond": {
+      "hash": "9892117f906b",
+      "status": "machine"
+    },
     "forms:anesthesia.anesthetic": {
       "hash": "93793d0984e7",
       "status": "machine"
@@ -6580,8 +6584,24 @@
       "hash": "43e1269ac88a",
       "status": "machine"
     },
+    "forms:anesthesia.removeSecondMessage": {
+      "hash": "bf0e5bc70744",
+      "status": "machine"
+    },
+    "forms:anesthesia.removeSecondTitle": {
+      "hash": "c3e7e05c838c",
+      "status": "machine"
+    },
     "forms:anesthesia.right": {
       "hash": "883361d5d682",
+      "status": "machine"
+    },
+    "forms:anesthesia.secondHint": {
+      "hash": "f3e39456bc42",
+      "status": "machine"
+    },
+    "forms:anesthesia.secondTitle": {
+      "hash": "5c2d3d782047",
       "status": "machine"
     },
     "forms:anesthesia.title": {
@@ -7193,7 +7213,7 @@
       "status": "machine"
     },
     "help:articles.charting.sections.second.text": {
-      "hash": "af03c88d2133",
+      "hash": "8645b8ebba7b",
       "status": "machine"
     },
     "help:articles.charting.sections.second.title": {
@@ -7249,7 +7269,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "c59c1f995137",
+      "hash": "6bf15f5e2493",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -7289,7 +7309,7 @@
       "status": "machine"
     },
     "help:articles.exam.sections.second.text": {
-      "hash": "e46d7499b6eb",
+      "hash": "015bce373a45",
       "status": "machine"
     },
     "help:articles.exam.sections.second.title": {
@@ -7321,7 +7341,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.second.text": {
-      "hash": "f5953eb16cce",
+      "hash": "25e034558064",
       "status": "machine"
     },
     "help:articles.export.sections.second.title": {
@@ -7385,7 +7405,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.second.text": {
-      "hash": "5ecaa575f6e7",
+      "hash": "201dc6ddc7a9",
       "status": "machine"
     },
     "help:articles.imaging.sections.second.title": {
@@ -7641,7 +7661,7 @@
       "status": "machine"
     },
     "help:articles.treatment.sections.second.text": {
-      "hash": "5a322b802323",
+      "hash": "942f64d20b80",
       "status": "machine"
     },
     "help:articles.treatment.sections.second.title": {
@@ -14216,6 +14236,10 @@
       "hash": "89cb8fb91c09",
       "status": "machine"
     },
+    "settings:chart.pdf.dischargeSections": {
+      "hash": "910428f82f50",
+      "status": "machine"
+    },
     "settings:chart.pdf.grid": {
       "hash": "87daacd34aa1",
       "status": "machine"
@@ -14953,7 +14977,7 @@
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeFollowUp.helper": {
-      "hash": "c857f7210ad8",
+      "hash": "f7dcedbb783d",
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeFollowUp.label": {
@@ -14961,7 +14985,7 @@
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeInstructions.helper": {
-      "hash": "c87f8a158486",
+      "hash": "79b9cb499d68",
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeInstructions.label": {
@@ -14969,7 +14993,7 @@
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeMedications.helper": {
-      "hash": "2bfab3153b18",
+      "hash": "2677cfd65a1a",
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeMedications.label": {
@@ -22226,6 +22250,10 @@
       "hash": "58a85a149b26",
       "status": "machine"
     },
+    "forms:anesthesia.addSecond": {
+      "hash": "9892117f906b",
+      "status": "machine"
+    },
     "forms:anesthesia.anesthetic": {
       "hash": "93793d0984e7",
       "status": "machine"
@@ -22314,8 +22342,24 @@
       "hash": "43e1269ac88a",
       "status": "machine"
     },
+    "forms:anesthesia.removeSecondMessage": {
+      "hash": "bf0e5bc70744",
+      "status": "machine"
+    },
+    "forms:anesthesia.removeSecondTitle": {
+      "hash": "c3e7e05c838c",
+      "status": "machine"
+    },
     "forms:anesthesia.right": {
       "hash": "883361d5d682",
+      "status": "machine"
+    },
+    "forms:anesthesia.secondHint": {
+      "hash": "f3e39456bc42",
+      "status": "machine"
+    },
+    "forms:anesthesia.secondTitle": {
+      "hash": "5c2d3d782047",
       "status": "machine"
     },
     "forms:anesthesia.title": {
@@ -22927,7 +22971,7 @@
       "status": "machine"
     },
     "help:articles.charting.sections.second.text": {
-      "hash": "af03c88d2133",
+      "hash": "8645b8ebba7b",
       "status": "machine"
     },
     "help:articles.charting.sections.second.title": {
@@ -22983,7 +23027,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "c59c1f995137",
+      "hash": "6bf15f5e2493",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -23023,7 +23067,7 @@
       "status": "machine"
     },
     "help:articles.exam.sections.second.text": {
-      "hash": "e46d7499b6eb",
+      "hash": "015bce373a45",
       "status": "machine"
     },
     "help:articles.exam.sections.second.title": {
@@ -23055,7 +23099,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.second.text": {
-      "hash": "f5953eb16cce",
+      "hash": "25e034558064",
       "status": "machine"
     },
     "help:articles.export.sections.second.title": {
@@ -23119,7 +23163,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.second.text": {
-      "hash": "5ecaa575f6e7",
+      "hash": "201dc6ddc7a9",
       "status": "machine"
     },
     "help:articles.imaging.sections.second.title": {
@@ -23375,7 +23419,7 @@
       "status": "machine"
     },
     "help:articles.treatment.sections.second.text": {
-      "hash": "5a322b802323",
+      "hash": "942f64d20b80",
       "status": "machine"
     },
     "help:articles.treatment.sections.second.title": {
@@ -29886,6 +29930,10 @@
       "hash": "89cb8fb91c09",
       "status": "machine"
     },
+    "settings:chart.pdf.dischargeSections": {
+      "hash": "910428f82f50",
+      "status": "machine"
+    },
     "settings:chart.pdf.grid": {
       "hash": "87daacd34aa1",
       "status": "machine"
@@ -30623,7 +30671,7 @@
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeFollowUp.helper": {
-      "hash": "c857f7210ad8",
+      "hash": "f7dcedbb783d",
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeFollowUp.label": {
@@ -30631,7 +30679,7 @@
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeInstructions.helper": {
-      "hash": "c87f8a158486",
+      "hash": "79b9cb499d68",
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeInstructions.label": {
@@ -30639,7 +30687,7 @@
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeMedications.helper": {
-      "hash": "2bfab3153b18",
+      "hash": "2677cfd65a1a",
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeMedications.label": {
@@ -37860,6 +37908,10 @@
       "hash": "58a85a149b26",
       "status": "machine"
     },
+    "forms:anesthesia.addSecond": {
+      "hash": "9892117f906b",
+      "status": "machine"
+    },
     "forms:anesthesia.anesthetic": {
       "hash": "93793d0984e7",
       "status": "machine"
@@ -37948,8 +38000,24 @@
       "hash": "43e1269ac88a",
       "status": "machine"
     },
+    "forms:anesthesia.removeSecondMessage": {
+      "hash": "bf0e5bc70744",
+      "status": "machine"
+    },
+    "forms:anesthesia.removeSecondTitle": {
+      "hash": "c3e7e05c838c",
+      "status": "machine"
+    },
     "forms:anesthesia.right": {
       "hash": "883361d5d682",
+      "status": "machine"
+    },
+    "forms:anesthesia.secondHint": {
+      "hash": "f3e39456bc42",
+      "status": "machine"
+    },
+    "forms:anesthesia.secondTitle": {
+      "hash": "5c2d3d782047",
       "status": "machine"
     },
     "forms:anesthesia.title": {
@@ -38561,7 +38629,7 @@
       "status": "machine"
     },
     "help:articles.charting.sections.second.text": {
-      "hash": "af03c88d2133",
+      "hash": "8645b8ebba7b",
       "status": "machine"
     },
     "help:articles.charting.sections.second.title": {
@@ -38617,7 +38685,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "c59c1f995137",
+      "hash": "6bf15f5e2493",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -38657,7 +38725,7 @@
       "status": "machine"
     },
     "help:articles.exam.sections.second.text": {
-      "hash": "e46d7499b6eb",
+      "hash": "015bce373a45",
       "status": "machine"
     },
     "help:articles.exam.sections.second.title": {
@@ -38689,7 +38757,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.second.text": {
-      "hash": "f5953eb16cce",
+      "hash": "25e034558064",
       "status": "machine"
     },
     "help:articles.export.sections.second.title": {
@@ -38753,7 +38821,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.second.text": {
-      "hash": "5ecaa575f6e7",
+      "hash": "201dc6ddc7a9",
       "status": "machine"
     },
     "help:articles.imaging.sections.second.title": {
@@ -39009,7 +39077,7 @@
       "status": "machine"
     },
     "help:articles.treatment.sections.second.text": {
-      "hash": "5a322b802323",
+      "hash": "942f64d20b80",
       "status": "machine"
     },
     "help:articles.treatment.sections.second.title": {
@@ -45552,6 +45620,10 @@
       "hash": "89cb8fb91c09",
       "status": "machine"
     },
+    "settings:chart.pdf.dischargeSections": {
+      "hash": "910428f82f50",
+      "status": "machine"
+    },
     "settings:chart.pdf.grid": {
       "hash": "87daacd34aa1",
       "status": "machine"
@@ -46289,7 +46361,7 @@
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeFollowUp.helper": {
-      "hash": "c857f7210ad8",
+      "hash": "f7dcedbb783d",
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeFollowUp.label": {
@@ -46297,7 +46369,7 @@
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeInstructions.helper": {
-      "hash": "c87f8a158486",
+      "hash": "79b9cb499d68",
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeInstructions.label": {
@@ -46305,7 +46377,7 @@
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeMedications.helper": {
-      "hash": "2bfab3153b18",
+      "hash": "2677cfd65a1a",
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeMedications.label": {
@@ -53550,6 +53622,10 @@
       "hash": "58a85a149b26",
       "status": "machine"
     },
+    "forms:anesthesia.addSecond": {
+      "hash": "9892117f906b",
+      "status": "machine"
+    },
     "forms:anesthesia.anesthetic": {
       "hash": "93793d0984e7",
       "status": "machine"
@@ -53638,8 +53714,24 @@
       "hash": "43e1269ac88a",
       "status": "machine"
     },
+    "forms:anesthesia.removeSecondMessage": {
+      "hash": "bf0e5bc70744",
+      "status": "machine"
+    },
+    "forms:anesthesia.removeSecondTitle": {
+      "hash": "c3e7e05c838c",
+      "status": "machine"
+    },
     "forms:anesthesia.right": {
       "hash": "883361d5d682",
+      "status": "machine"
+    },
+    "forms:anesthesia.secondHint": {
+      "hash": "f3e39456bc42",
+      "status": "machine"
+    },
+    "forms:anesthesia.secondTitle": {
+      "hash": "5c2d3d782047",
       "status": "machine"
     },
     "forms:anesthesia.title": {
@@ -54251,7 +54343,7 @@
       "status": "machine"
     },
     "help:articles.charting.sections.second.text": {
-      "hash": "af03c88d2133",
+      "hash": "8645b8ebba7b",
       "status": "machine"
     },
     "help:articles.charting.sections.second.title": {
@@ -54307,7 +54399,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "c59c1f995137",
+      "hash": "6bf15f5e2493",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -54347,7 +54439,7 @@
       "status": "machine"
     },
     "help:articles.exam.sections.second.text": {
-      "hash": "e46d7499b6eb",
+      "hash": "015bce373a45",
       "status": "machine"
     },
     "help:articles.exam.sections.second.title": {
@@ -54379,7 +54471,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.second.text": {
-      "hash": "f5953eb16cce",
+      "hash": "25e034558064",
       "status": "machine"
     },
     "help:articles.export.sections.second.title": {
@@ -54443,7 +54535,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.second.text": {
-      "hash": "5ecaa575f6e7",
+      "hash": "201dc6ddc7a9",
       "status": "machine"
     },
     "help:articles.imaging.sections.second.title": {
@@ -54699,7 +54791,7 @@
       "status": "machine"
     },
     "help:articles.treatment.sections.second.text": {
-      "hash": "5a322b802323",
+      "hash": "942f64d20b80",
       "status": "machine"
     },
     "help:articles.treatment.sections.second.title": {
@@ -61242,6 +61334,10 @@
       "hash": "89cb8fb91c09",
       "status": "machine"
     },
+    "settings:chart.pdf.dischargeSections": {
+      "hash": "910428f82f50",
+      "status": "machine"
+    },
     "settings:chart.pdf.grid": {
       "hash": "87daacd34aa1",
       "status": "machine"
@@ -61979,7 +62075,7 @@
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeFollowUp.helper": {
-      "hash": "c857f7210ad8",
+      "hash": "f7dcedbb783d",
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeFollowUp.label": {
@@ -61987,7 +62083,7 @@
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeInstructions.helper": {
-      "hash": "c87f8a158486",
+      "hash": "79b9cb499d68",
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeInstructions.label": {
@@ -61995,7 +62091,7 @@
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeMedications.helper": {
-      "hash": "2bfab3153b18",
+      "hash": "2677cfd65a1a",
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeMedications.label": {
@@ -69172,6 +69268,10 @@
       "hash": "58a85a149b26",
       "status": "machine"
     },
+    "forms:anesthesia.addSecond": {
+      "hash": "9892117f906b",
+      "status": "machine"
+    },
     "forms:anesthesia.anesthetic": {
       "hash": "93793d0984e7",
       "status": "machine"
@@ -69260,8 +69360,24 @@
       "hash": "43e1269ac88a",
       "status": "machine"
     },
+    "forms:anesthesia.removeSecondMessage": {
+      "hash": "bf0e5bc70744",
+      "status": "machine"
+    },
+    "forms:anesthesia.removeSecondTitle": {
+      "hash": "c3e7e05c838c",
+      "status": "machine"
+    },
     "forms:anesthesia.right": {
       "hash": "883361d5d682",
+      "status": "machine"
+    },
+    "forms:anesthesia.secondHint": {
+      "hash": "f3e39456bc42",
+      "status": "machine"
+    },
+    "forms:anesthesia.secondTitle": {
+      "hash": "5c2d3d782047",
       "status": "machine"
     },
     "forms:anesthesia.title": {
@@ -69873,7 +69989,7 @@
       "status": "machine"
     },
     "help:articles.charting.sections.second.text": {
-      "hash": "af03c88d2133",
+      "hash": "8645b8ebba7b",
       "status": "machine"
     },
     "help:articles.charting.sections.second.title": {
@@ -69929,7 +70045,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "c59c1f995137",
+      "hash": "6bf15f5e2493",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -69969,7 +70085,7 @@
       "status": "machine"
     },
     "help:articles.exam.sections.second.text": {
-      "hash": "e46d7499b6eb",
+      "hash": "015bce373a45",
       "status": "machine"
     },
     "help:articles.exam.sections.second.title": {
@@ -70001,7 +70117,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.second.text": {
-      "hash": "f5953eb16cce",
+      "hash": "25e034558064",
       "status": "machine"
     },
     "help:articles.export.sections.second.title": {
@@ -70065,7 +70181,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.second.text": {
-      "hash": "5ecaa575f6e7",
+      "hash": "201dc6ddc7a9",
       "status": "machine"
     },
     "help:articles.imaging.sections.second.title": {
@@ -70321,7 +70437,7 @@
       "status": "machine"
     },
     "help:articles.treatment.sections.second.text": {
-      "hash": "5a322b802323",
+      "hash": "942f64d20b80",
       "status": "machine"
     },
     "help:articles.treatment.sections.second.title": {
@@ -76768,6 +76884,10 @@
       "hash": "89cb8fb91c09",
       "status": "machine"
     },
+    "settings:chart.pdf.dischargeSections": {
+      "hash": "910428f82f50",
+      "status": "machine"
+    },
     "settings:chart.pdf.grid": {
       "hash": "87daacd34aa1",
       "status": "machine"
@@ -77505,7 +77625,7 @@
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeFollowUp.helper": {
-      "hash": "c857f7210ad8",
+      "hash": "f7dcedbb783d",
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeFollowUp.label": {
@@ -77513,7 +77633,7 @@
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeInstructions.helper": {
-      "hash": "c87f8a158486",
+      "hash": "79b9cb499d68",
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeInstructions.label": {
@@ -77521,7 +77641,7 @@
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeMedications.helper": {
-      "hash": "2bfab3153b18",
+      "hash": "2677cfd65a1a",
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeMedications.label": {
@@ -84742,6 +84862,10 @@
       "hash": "58a85a149b26",
       "status": "machine"
     },
+    "forms:anesthesia.addSecond": {
+      "hash": "9892117f906b",
+      "status": "machine"
+    },
     "forms:anesthesia.anesthetic": {
       "hash": "93793d0984e7",
       "status": "machine"
@@ -84830,8 +84954,24 @@
       "hash": "43e1269ac88a",
       "status": "machine"
     },
+    "forms:anesthesia.removeSecondMessage": {
+      "hash": "bf0e5bc70744",
+      "status": "machine"
+    },
+    "forms:anesthesia.removeSecondTitle": {
+      "hash": "c3e7e05c838c",
+      "status": "machine"
+    },
     "forms:anesthesia.right": {
       "hash": "883361d5d682",
+      "status": "machine"
+    },
+    "forms:anesthesia.secondHint": {
+      "hash": "f3e39456bc42",
+      "status": "machine"
+    },
+    "forms:anesthesia.secondTitle": {
+      "hash": "5c2d3d782047",
       "status": "machine"
     },
     "forms:anesthesia.title": {
@@ -85443,7 +85583,7 @@
       "status": "machine"
     },
     "help:articles.charting.sections.second.text": {
-      "hash": "af03c88d2133",
+      "hash": "8645b8ebba7b",
       "status": "machine"
     },
     "help:articles.charting.sections.second.title": {
@@ -85499,7 +85639,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "c59c1f995137",
+      "hash": "6bf15f5e2493",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -85539,7 +85679,7 @@
       "status": "machine"
     },
     "help:articles.exam.sections.second.text": {
-      "hash": "e46d7499b6eb",
+      "hash": "015bce373a45",
       "status": "machine"
     },
     "help:articles.exam.sections.second.title": {
@@ -85571,7 +85711,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.second.text": {
-      "hash": "f5953eb16cce",
+      "hash": "25e034558064",
       "status": "machine"
     },
     "help:articles.export.sections.second.title": {
@@ -85635,7 +85775,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.second.text": {
-      "hash": "5ecaa575f6e7",
+      "hash": "201dc6ddc7a9",
       "status": "machine"
     },
     "help:articles.imaging.sections.second.title": {
@@ -85891,7 +86031,7 @@
       "status": "machine"
     },
     "help:articles.treatment.sections.second.text": {
-      "hash": "5a322b802323",
+      "hash": "942f64d20b80",
       "status": "machine"
     },
     "help:articles.treatment.sections.second.title": {
@@ -92434,6 +92574,10 @@
       "hash": "89cb8fb91c09",
       "status": "machine"
     },
+    "settings:chart.pdf.dischargeSections": {
+      "hash": "910428f82f50",
+      "status": "machine"
+    },
     "settings:chart.pdf.grid": {
       "hash": "87daacd34aa1",
       "status": "machine"
@@ -93171,7 +93315,7 @@
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeFollowUp.helper": {
-      "hash": "c857f7210ad8",
+      "hash": "f7dcedbb783d",
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeFollowUp.label": {
@@ -93179,7 +93323,7 @@
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeInstructions.helper": {
-      "hash": "c87f8a158486",
+      "hash": "79b9cb499d68",
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeInstructions.label": {
@@ -93187,7 +93331,7 @@
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeMedications.helper": {
-      "hash": "2bfab3153b18",
+      "hash": "2677cfd65a1a",
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeMedications.label": {
@@ -101018,6 +101162,10 @@
       "hash": "58a85a149b26",
       "status": "machine"
     },
+    "forms:anesthesia.addSecond": {
+      "hash": "9892117f906b",
+      "status": "machine"
+    },
     "forms:anesthesia.anesthetic": {
       "hash": "93793d0984e7",
       "status": "machine"
@@ -101106,8 +101254,24 @@
       "hash": "43e1269ac88a",
       "status": "machine"
     },
+    "forms:anesthesia.removeSecondMessage": {
+      "hash": "bf0e5bc70744",
+      "status": "machine"
+    },
+    "forms:anesthesia.removeSecondTitle": {
+      "hash": "c3e7e05c838c",
+      "status": "machine"
+    },
     "forms:anesthesia.right": {
       "hash": "883361d5d682",
+      "status": "machine"
+    },
+    "forms:anesthesia.secondHint": {
+      "hash": "f3e39456bc42",
+      "status": "machine"
+    },
+    "forms:anesthesia.secondTitle": {
+      "hash": "5c2d3d782047",
       "status": "machine"
     },
     "forms:anesthesia.title": {
@@ -101719,7 +101883,7 @@
       "status": "machine"
     },
     "help:articles.charting.sections.second.text": {
-      "hash": "af03c88d2133",
+      "hash": "8645b8ebba7b",
       "status": "machine"
     },
     "help:articles.charting.sections.second.title": {
@@ -101775,7 +101939,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "c59c1f995137",
+      "hash": "6bf15f5e2493",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -101815,7 +101979,7 @@
       "status": "machine"
     },
     "help:articles.exam.sections.second.text": {
-      "hash": "e46d7499b6eb",
+      "hash": "015bce373a45",
       "status": "machine"
     },
     "help:articles.exam.sections.second.title": {
@@ -101847,7 +102011,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.second.text": {
-      "hash": "f5953eb16cce",
+      "hash": "25e034558064",
       "status": "machine"
     },
     "help:articles.export.sections.second.title": {
@@ -101911,7 +102075,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.second.text": {
-      "hash": "5ecaa575f6e7",
+      "hash": "201dc6ddc7a9",
       "status": "machine"
     },
     "help:articles.imaging.sections.second.title": {
@@ -102167,7 +102331,7 @@
       "status": "machine"
     },
     "help:articles.treatment.sections.second.text": {
-      "hash": "5a322b802323",
+      "hash": "942f64d20b80",
       "status": "machine"
     },
     "help:articles.treatment.sections.second.title": {
@@ -108646,6 +108810,10 @@
       "hash": "89cb8fb91c09",
       "status": "machine"
     },
+    "settings:chart.pdf.dischargeSections": {
+      "hash": "910428f82f50",
+      "status": "machine"
+    },
     "settings:chart.pdf.grid": {
       "hash": "87daacd34aa1",
       "status": "machine"
@@ -109383,7 +109551,7 @@
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeFollowUp.helper": {
-      "hash": "c857f7210ad8",
+      "hash": "f7dcedbb783d",
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeFollowUp.label": {
@@ -109391,7 +109559,7 @@
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeInstructions.helper": {
-      "hash": "c87f8a158486",
+      "hash": "79b9cb499d68",
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeInstructions.label": {
@@ -109399,7 +109567,7 @@
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeMedications.helper": {
-      "hash": "2bfab3153b18",
+      "hash": "2677cfd65a1a",
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeMedications.label": {
@@ -116576,6 +116744,10 @@
       "hash": "58a85a149b26",
       "status": "machine"
     },
+    "forms:anesthesia.addSecond": {
+      "hash": "9892117f906b",
+      "status": "machine"
+    },
     "forms:anesthesia.anesthetic": {
       "hash": "93793d0984e7",
       "status": "machine"
@@ -116664,8 +116836,24 @@
       "hash": "43e1269ac88a",
       "status": "machine"
     },
+    "forms:anesthesia.removeSecondMessage": {
+      "hash": "bf0e5bc70744",
+      "status": "machine"
+    },
+    "forms:anesthesia.removeSecondTitle": {
+      "hash": "c3e7e05c838c",
+      "status": "machine"
+    },
     "forms:anesthesia.right": {
       "hash": "883361d5d682",
+      "status": "machine"
+    },
+    "forms:anesthesia.secondHint": {
+      "hash": "f3e39456bc42",
+      "status": "machine"
+    },
+    "forms:anesthesia.secondTitle": {
+      "hash": "5c2d3d782047",
       "status": "machine"
     },
     "forms:anesthesia.title": {
@@ -117277,7 +117465,7 @@
       "status": "machine"
     },
     "help:articles.charting.sections.second.text": {
-      "hash": "af03c88d2133",
+      "hash": "8645b8ebba7b",
       "status": "machine"
     },
     "help:articles.charting.sections.second.title": {
@@ -117333,7 +117521,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "c59c1f995137",
+      "hash": "6bf15f5e2493",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -117373,7 +117561,7 @@
       "status": "machine"
     },
     "help:articles.exam.sections.second.text": {
-      "hash": "e46d7499b6eb",
+      "hash": "015bce373a45",
       "status": "machine"
     },
     "help:articles.exam.sections.second.title": {
@@ -117405,7 +117593,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.second.text": {
-      "hash": "f5953eb16cce",
+      "hash": "25e034558064",
       "status": "machine"
     },
     "help:articles.export.sections.second.title": {
@@ -117469,7 +117657,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.second.text": {
-      "hash": "5ecaa575f6e7",
+      "hash": "201dc6ddc7a9",
       "status": "machine"
     },
     "help:articles.imaging.sections.second.title": {
@@ -117725,7 +117913,7 @@
       "status": "machine"
     },
     "help:articles.treatment.sections.second.text": {
-      "hash": "5a322b802323",
+      "hash": "942f64d20b80",
       "status": "machine"
     },
     "help:articles.treatment.sections.second.title": {
@@ -124172,6 +124360,10 @@
       "hash": "89cb8fb91c09",
       "status": "machine"
     },
+    "settings:chart.pdf.dischargeSections": {
+      "hash": "910428f82f50",
+      "status": "machine"
+    },
     "settings:chart.pdf.grid": {
       "hash": "87daacd34aa1",
       "status": "machine"
@@ -124909,7 +125101,7 @@
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeFollowUp.helper": {
-      "hash": "c857f7210ad8",
+      "hash": "f7dcedbb783d",
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeFollowUp.label": {
@@ -124917,7 +125109,7 @@
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeInstructions.helper": {
-      "hash": "c87f8a158486",
+      "hash": "79b9cb499d68",
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeInstructions.label": {
@@ -124925,7 +125117,7 @@
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeMedications.helper": {
-      "hash": "2bfab3153b18",
+      "hash": "2677cfd65a1a",
       "status": "machine"
     },
     "visitDocumentation:fields.dischargeMedications.label": {

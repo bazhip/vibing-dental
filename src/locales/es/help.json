@@ -86,7 +86,7 @@
         },
         "second": {
           "title": "Documentar hallazgos en Diagnóstico",
-          "text": "Seleccione el diente correspondiente y marque los hallazgos previos al tratamiento o los dientes que ya faltaban. Añada códigos dentales y notas breves cuando sea necesario. Consulte el catálogo de códigos si necesita comprobar alguno."
+          "text": "Seleccione el diente correspondiente y marque los hallazgos previos al tratamiento o los dientes que ya faltaban. Añada códigos dentales y notas breves cuando sea necesario. Consulte el catálogo de códigos si necesita comprobar alguno. Las etiquetas de la barra de herramientas están debajo de los iconos. Use «Comentario» para asociar una nota a un diente o «Comentario libre» para colocarla en cualquier parte del diagrama."
         },
         "third": {
           "title": "Documentar el trabajo en Procedimiento",
@@ -104,7 +104,7 @@
         },
         "second": {
           "title": "Registrar anestésicos y bloqueos nerviosos",
-          "text": "Abra «Anestesia», introduzca los fármacos anestésicos y registre el sitio y el volumen de los bloqueos realizados. Compruebe la lateralidad y las unidades con los datos de origen antes de finalizar."
+          "text": "Abra «Anestesia», introduzca los fármacos anestésicos y registre el sitio y el volumen de los bloqueos realizados. Compruebe la lateralidad y las unidades con los datos de origen antes de finalizar. Si administró otro anestésico por separado, seleccione «Añadir una segunda serie de bloqueos nerviosos». Indique su nombre, concentración y volúmenes por sitio en la segunda serie."
         },
         "third": {
           "title": "Usar secciones opcionales de la visita",
@@ -122,7 +122,7 @@
         },
         "second": {
           "title": "Elegir qué imágenes incluir en los informes",
-          "text": "Indique el tipo de cada imagen y, si procede, el diente y la descripción. Elija si aparece en el PDF clínico o en el informe para el propietario. Use «Antes del tratamiento» o «Después del tratamiento» cuando la etiqueta ayude a interpretar la imagen."
+          "text": "Indique el tipo de cada imagen y, si procede, el diente y la descripción. Elija si aparece en el PDF clínico o en el informe para el propietario. Use «Antes del tratamiento» o «Después del tratamiento» cuando la etiqueta ayude a interpretar la imagen. El botón Refinar está en la esquina inferior del cuadro de texto."
         },
         "third": {
           "title": "Redactar los informes de diagnóstico por imagen",
@@ -158,7 +158,7 @@
         },
         "second": {
           "title": "Usar una plantilla guardada",
-          "text": "Elija una plantilla por su nombre entre las guardadas. Compruebe el texto completado antes de guardar. Puede seguir editando el informe y usar «Refinar» para obtener una propuesta de redacción que pueda revisar."
+          "text": "Elija una plantilla por su nombre entre las guardadas. Compruebe el texto completado antes de guardar. Puede seguir editando el informe y usar «Refinar» para obtener una propuesta de redacción que pueda revisar. El botón Refinar está en la esquina inferior del cuadro de texto."
         },
         "third": {
           "title": "Crear una plantilla reutilizable",
@@ -172,7 +172,7 @@
       "sections": {
         "first": {
           "title": "Registrar las instrucciones de alta",
-          "text": "Abra «Alta». Introduzca los medicamentos, las instrucciones y el seguimiento documentados. Antes de compartir, compruebe en el historial los nombres de los medicamentos, las dosis y los plazos."
+          "text": "En Alta, indique un medicamento por línea, con la dosis, cómo administrarlo y durante cuánto tiempo. Añada los cuidados en casa y el seguimiento. Compruebe los datos antes de compartir el informe."
         },
         "second": {
           "title": "Redactar el informe para el propietario",
@@ -194,7 +194,7 @@
         },
         "second": {
           "title": "Personalizar el PDF clínico",
-          "text": "En «Historial clínico», abra «Personalizar» para elegir los colores y el contenido que se incluirá, como imágenes, informes de diagnóstico por imagen y los códigos utilizados. Compruebe la vista previa después de cambiar una opción y descargue el documento cuando esté listo."
+          "text": "En «Historial clínico», abra «Personalizar» para elegir los colores y el contenido que se incluirá, como imágenes, informes de diagnóstico por imagen y los códigos utilizados. Compruebe la vista previa después de cambiar una opción y descargue el documento cuando esté listo. Las secciones de alta aparecen por defecto debajo de los informes de diagnóstico por imagen. Desmarque la opción para ocultarlas en las páginas impresas."
         },
         "third": {
           "title": "Finalizar o reabrir una visita",

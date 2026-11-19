@@ -86,7 +86,7 @@
         },
         "second": {
           "title": "Befunde unter Diagnose dokumentieren",
-          "text": "Wählen Sie den betreffenden Zahn aus und markieren Sie die Befunde vor der Behandlung oder bereits fehlende Zähne. Ergänzen Sie bei Bedarf Dentalcodes und kurze Notizen. Schlagen Sie den Code im Codeverzeichnis nach, wenn Sie unsicher sind."
+          "text": "Wählen Sie den betreffenden Zahn aus und markieren Sie die Befunde vor der Behandlung oder bereits fehlende Zähne. Ergänzen Sie bei Bedarf Dentalcodes und kurze Notizen. Schlagen Sie den Code im Codeverzeichnis nach, wenn Sie unsicher sind. Die Beschriftungen in der Werkzeugleiste stehen unter den Symbolen. Mit „Kommentar“ fügen Sie einem Zahn eine Notiz hinzu. Mit „Freier Kommentar“ platzieren Sie eine Notiz an einer beliebigen Stelle im Diagramm."
         },
         "third": {
           "title": "Maßnahmen unter Eingriff dokumentieren",
@@ -104,7 +104,7 @@
         },
         "second": {
           "title": "Anästhetika und Nervenblockaden erfassen",
-          "text": "Öffnen Sie „Narkose“, geben Sie die Anästhetika ein und erfassen Sie Ort und Volumen der durchgeführten Blockaden. Prüfen Sie vor dem Abschluss die Seitenangaben und Einheiten anhand der Quelle."
+          "text": "Öffnen Sie „Narkose“, geben Sie die Anästhetika ein und erfassen Sie Ort und Volumen der durchgeführten Blockaden. Prüfen Sie vor dem Abschluss die Seitenangaben und Einheiten anhand der Quelle. Wählen Sie „Zweite Nervenblock-Serie hinzufügen“, wenn Sie ein anderes Anästhetikum separat verabreicht haben. Geben Sie seinen Namen, seine Konzentration und die Volumina pro Stelle in der zweiten Serie an."
         },
         "third": {
           "title": "Optionale Abschnitte nutzen",
@@ -122,7 +122,7 @@
         },
         "second": {
           "title": "Bilder für Berichte auswählen",
-          "text": "Geben Sie für jedes Bild den Typ und bei Bedarf den Zahn und eine Beschreibung an. Wählen Sie, ob das Bild im klinischen PDF oder im Besitzerbericht erscheinen soll. Nutzen Sie „Vor der Behandlung“ oder „Nach der Behandlung“, wenn das die Einordnung erleichtert."
+          "text": "Geben Sie für jedes Bild den Typ und bei Bedarf den Zahn und eine Beschreibung an. Wählen Sie, ob das Bild im klinischen PDF oder im Besitzerbericht erscheinen soll. Nutzen Sie „Vor der Behandlung“ oder „Nach der Behandlung“, wenn das die Einordnung erleichtert. Die Schaltfläche zum Überarbeiten befindet sich unten im Textfeld."
         },
         "third": {
           "title": "Röntgen- und CT-Berichte verfassen",
@@ -158,7 +158,7 @@
         },
         "second": {
           "title": "Gespeicherte Vorlage verwenden",
-          "text": "Wählen Sie eine Vorlage anhand ihres Namens aus der Liste der gespeicherten Vorlagen. Prüfen Sie den eingefügten Text vor dem Speichern. Der Bericht bleibt bearbeitbar und unter „Überarbeiten“ können Sie Formulierungsvorschläge prüfen."
+          "text": "Wählen Sie eine Vorlage anhand ihres Namens aus der Liste der gespeicherten Vorlagen. Prüfen Sie den eingefügten Text vor dem Speichern. Der Bericht bleibt bearbeitbar und unter „Überarbeiten“ können Sie Formulierungsvorschläge prüfen. Die Schaltfläche zum Überarbeiten befindet sich unten im Textfeld."
         },
         "third": {
           "title": "Wiederverwendbare Vorlage erstellen",
@@ -172,7 +172,7 @@
       "sections": {
         "first": {
           "title": "Entlassungshinweise erfassen",
-          "text": "Öffnen Sie „Entlassung“. Erfassen Sie die dokumentierten Medikamente, Anweisungen und Angaben zur Nachsorge. Prüfen Sie vor der Weitergabe die Medikamentennamen, Dosierungen und Zeitangaben anhand Ihrer Akte."
+          "text": "Listen Sie unter Entlassung pro Zeile ein Medikament mit Dosis, Art der Gabe und Dauer auf. Ergänzen Sie die Pflege zu Hause und die nächsten Schritte. Prüfen Sie die Angaben vor der Weitergabe."
         },
         "second": {
           "title": "Besitzerbericht entwerfen",
@@ -194,7 +194,7 @@
         },
         "second": {
           "title": "Klinisches PDF anpassen",
-          "text": "Wählen Sie unter „Klinische Akte“ die Option „Anpassen“, um Farben und Inhalte auszuwählen, etwa Bilder, Befundberichte und verwendete Codes. Prüfen Sie nach einer Änderung die Vorschau und laden Sie das fertige Dokument herunter."
+          "text": "Wählen Sie unter „Klinische Akte“ die Option „Anpassen“, um Farben und Inhalte auszuwählen, etwa Bilder, Befundberichte und verwendete Codes. Prüfen Sie nach einer Änderung die Vorschau und laden Sie das fertige Dokument herunter. Die Entlassungsabschnitte erscheinen standardmäßig unter den Bildgebungsberichten. Deaktivieren Sie die Option, um sie auf den gedruckten Seiten auszublenden."
         },
         "third": {
           "title": "Besuch abschließen oder erneut öffnen",

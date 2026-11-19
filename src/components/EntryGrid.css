@@ -1472,6 +1472,34 @@
   color: var(--text-muted);
 }
 
+.anesthesia-second {
+  border-top: 1px solid var(--border);
+  margin-top: 1rem;
+  padding-top: 1rem;
+}
+.anesthesia-second__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: 12px;
+  row-gap: 6px;
+  margin-bottom: 12px;
+}
+.anesthesia-second__header h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+.anesthesia-second__add {
+  margin-top: 12px;
+}
+.anesthesia-second__header button,
+.anesthesia-second__add {
+  min-height: 44px;
+  max-width: 100%;
+  white-space: normal;
+}
+
 .anesthesia-table {
   width: 100%;
   border-collapse: collapse;
@@ -1900,7 +1928,7 @@
   top: calc(var(--topbar-height, 0px) + 0.5rem);
   z-index: 30;
 }
-/* The main row: labels give way to icons as it narrows. */
+/* Keep labels inside the tools when the toolbar wraps. */
 .diagram-view__toolbar-main {
   display: flex;
   flex-wrap: nowrap;
@@ -1927,12 +1955,11 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  white-space: nowrap;
-  min-height: 36px;
-  padding: 6px 12px;
-  font-size: 14px;
-  line-height: 1.25;
+  flex-direction: column;
+  gap: 3px;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 5px 8px;
   border: 1px solid transparent;
   border-radius: 6px;
 }
@@ -1946,16 +1973,23 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  min-width: 36px;
-  height: 36px;
-  min-height: 36px;
-  padding: 0;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 5px 6px;
   border: 0;
 }
 .diagram-view__toolbar .diagram-view__history .diagram-view__action:disabled { color: var(--text-muted); opacity: 0.45; }
 .diagram-view__toolbar button:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
-.diagram-view__toolbar .diagram-view__tool-group .diagram-view__tool > .ios-icon { display: none; flex: none; }
+.diagram-view__toolbar .diagram-view__tool-group .diagram-view__tool > .ios-icon { flex: none; }
+.diagram-view__tool-label,
+.image-viewer__tool-label {
+  font-size: 0.75rem;
+  line-height: 1.2;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
 /* Free comment is an action beside the modes, never a pressed mode. */
 .diagram-view__toolbar .diagram-view__tool-group .diagram-view__free-comment { color: var(--primary); font-weight: 600; }
 .diagram-view__toolbar .diagram-view__tool-group .diagram-view__free-comment:hover { background: var(--primary-tint, #e6f2ef); }
@@ -1971,11 +2005,12 @@
 .diagram-view__toolbar .diagram-view__view .diagram-view__numbers {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  min-height: 36px;
-  padding: 6px 10px;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 5px 8px;
   margin: 0;
-  white-space: nowrap;
 }
 .diagram-view__numbers-glyph { font-weight: 700; }
 .diagram-view__toolbar .diagram-view__view .diagram-view__zoom {
@@ -1999,42 +2034,29 @@
 .diagram-view__toolbar .diagram-view__view :is(.diagram-view__action, .diagram-view__numbers):hover:not(:disabled) { background: var(--surface-alt); }
 .diagram-view__toolbar .diagram-view__view .diagram-view__action:disabled { color: var(--text-muted); opacity: 0.45; }
 
-/* Labels step down as the diagram narrows; the row only wraps on phones. */
+/* Use the compact Mark label as the working area narrows. */
 @container diagram (max-width: 860px) {
   .diagram-view__toolbar .diagram-view__long { display: none; }
   .diagram-view__toolbar .diagram-view__short { display: inline; }
 }
 @container diagram (max-width: 760px) {
-  .diagram-view__toolbar .diagram-view__numbers .diagram-view__tool-label {
-    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden;
-    clip: rect(0 0 0 0); white-space: nowrap; border: 0;
-  }
-  .diagram-view__toolbar .diagram-view__view .diagram-view__numbers { justify-content: center; min-width: 36px; padding: 0; }
-}
-@container diagram (max-width: 700px) {
-  .diagram-view__toolbar-main { gap: 6px; }
+  .diagram-view__toolbar-main { flex-wrap: wrap; gap: 6px; }
   .diagram-view__toolbar .diagram-view__tool-group { flex: 1 1 auto; min-width: 0; gap: 2px; }
-  .diagram-view__toolbar .diagram-view__tool-group .diagram-view__tool { flex: 1 1 0; min-width: 40px; padding: 0; }
-  .diagram-view__toolbar .diagram-view__tool-group .diagram-view__tool > .ios-icon { display: block; }
-  .diagram-view__toolbar .diagram-view__tool-label {
-    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden;
-    clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  .diagram-view__toolbar .diagram-view__tool-group .diagram-view__tool {
+    flex: 1 1 0;
+    padding-inline: 2px;
   }
   .diagram-view__toolbar .diagram-view__history { gap: 2px; padding-inline-start: 6px; }
   .diagram-view__toolbar .diagram-view__view { gap: 6px; }
   .diagram-view__toolbar .diagram-view__view .diagram-view__zoom { padding-inline-start: 6px; }
 }
-/* Phones: 44px targets; view controls drop to a second line when needed. */
 @container diagram (max-width: 620px) {
-  .diagram-view__toolbar-main { flex-wrap: wrap; row-gap: 6px; }
-  .diagram-view__toolbar .diagram-view__tool-group .diagram-view__tool { min-height: 44px; }
-  .diagram-view__toolbar .diagram-view__history .diagram-view__action { width: 44px; min-width: 44px; height: 44px; min-height: 44px; }
-  .diagram-view__toolbar .diagram-view__view .diagram-view__numbers { min-width: 44px; min-height: 44px; }
+  .diagram-view__toolbar .diagram-view__tool-group { flex-basis: 100%; }
+  .diagram-view__toolbar .diagram-view__history { border-inline-start: 0; padding-inline-start: 0; }
   .diagram-view__toolbar .diagram-view__view .diagram-view__zoom :is(.diagram-view__action, .diagram-view__zoom-level) { min-width: 44px; min-height: 44px; }
 }
 @container diagram (max-width: 330px) {
   .diagram-view__toolbar .diagram-view__view .diagram-view__zoom-level { display: none; }
-  .diagram-view__toolbar .diagram-view__history { border-inline-start: 0; padding-inline-start: 0; }
   .diagram-view__clear-label {
     position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden;
     clip: rect(0 0 0 0); white-space: nowrap; border: 0;
@@ -2401,7 +2423,7 @@
   border: 1px solid var(--accent, #f6e05e);
   border-radius: 6px;
   /* Tight padding so auto-shrink leaves matching margins on all sides. */
-  padding: 4px 6px;
+  padding: 4px 6px 16px;
   box-sizing: border-box;
   /* `--diagram-comment-font-size` is set on the enclosing .diagram-view by
      the text-size picker in the toolbar. Fallback to 0.95rem. */
@@ -2419,7 +2441,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.15rem;
+  column-gap: 4px;
+  flex: none;
+  margin-bottom: 2px;
   cursor: move;
   touch-action: none;
 }
@@ -2429,10 +2453,8 @@
   color: var(--text);
   font-size: 0.85rem;
   line-height: 1.1;
-}
-
-.diagram-comment__header {
-  margin-bottom: 2px;
+  white-space: nowrap;
+  flex: none;
 }
 
 .diagram-comment__delete {
@@ -2443,31 +2465,29 @@
   font-size: 0.85rem;
   padding: 0;
   line-height: 1;
-  /* ≥24px hit target (WCAG 2.5.8) without growing the visible glyph —
-     the padding extends the hotspot, the negative margin keeps layout. */
-  min-width: 24px;
-  min-height: 24px;
-  margin: -5px;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  margin-inline-start: auto;
+  border-radius: 5px;
 }
 
 .diagram-comment__delete:hover {
   color: var(--primary);
 }
+.diagram-comment__delete:focus-visible {
+  outline-offset: -2px;
+}
+.diagram-comment .diagram-comment__delete:not(:disabled, [aria-disabled="true"]):not(:focus-visible):hover {
+  outline-offset: -1px;
+}
 
-/* Free (unanchored) comments have no header, so the textarea fills the
- * full box and text starts at the top. The delete button floats in the
- * top-right corner over the textarea. Drag is handled by the whole shell
- * (the comment div itself binds pointerdown). */
 .diagram-comment--unanchored {
   cursor: move;
   touch-action: none;
-}
-
-.diagram-comment__delete--floating {
-  position: absolute;
-  top: 2px;
-  right: 4px;
-  z-index: 2;
 }
 
 .diagram-comment__text {
@@ -2507,6 +2527,7 @@
   width: 24px;
   height: 24px;
   cursor: nwse-resize;
+  border-bottom-right-radius: 5px;
   background: linear-gradient(135deg, transparent 0 62%, var(--accent, #d69e2e) 62% 100%);
   touch-action: none;
 }
@@ -3633,6 +3654,14 @@ button.save-status--error {
   color: var(--text); font: inherit; font-size: 0.85rem; line-height: 1.3;
   padding: 6px 10px; border-radius: var(--radius-sm); cursor: pointer; text-decoration: none;
 }
+.image-viewer .image-viewer__icon-tool {
+  flex-direction: column;
+  gap: 2px;
+  min-height: 44px;
+  max-width: 100%;
+  padding-block: 4px;
+}
+.image-viewer__icon-tool > [aria-hidden="true"] { font-size: 1rem; line-height: 1; }
 .image-viewer button:hover, .image-viewer__download:hover { background: var(--surface-alt); }
 .image-viewer button:is([aria-pressed="true"], [aria-expanded="true"]) {
   background: var(--action-tint); border-color: var(--primary); color: var(--primary);
@@ -3653,6 +3682,8 @@ button.save-status--error {
 .image-viewer__tools, .image-viewer__secondary {
   display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 10px 20px;
 }
+.image-viewer__tools button,
+.image-viewer__secondary :is(button, .image-viewer__download) { min-height: 44px; }
 .image-viewer__secondary[hidden] { display: none; }
 .image-viewer__secondary { padding-top: 0; }
 .image-viewer__zoom { min-width: 3.5em; text-align: center; font-variant-numeric: tabular-nums; font-size: 0.85rem; }

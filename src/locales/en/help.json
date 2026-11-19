@@ -86,7 +86,7 @@
         },
         "second": {
           "title": "Document findings on Diagnosis",
-          "text": "Select the appropriate tooth and mark pre-treatment findings or teeth already missing. Add dental codes and short notes as needed. Use the code reference when you need to confirm a code."
+          "text": "Select the appropriate tooth and mark pre-treatment findings or teeth already missing. Add dental codes and short notes as needed. Use the code reference when you need to confirm a code. The toolbar labels sit below their icons. Use Comment to attach a note to a tooth, or Free comment to place a note anywhere on the diagram."
         },
         "third": {
           "title": "Document work on Procedure",
@@ -104,7 +104,7 @@
         },
         "second": {
           "title": "Record anesthetics and blocks",
-          "text": "Open Anesthesia, enter the anesthetic drugs, and record site and volume for the blocks performed. Check sides and units against your source before finalizing."
+          "text": "Open Anesthesia, enter the anesthetic drugs, and record site and volume for the blocks performed. Check sides and units against your source before finalizing. Use Add a second nerve-block set when you gave a different anesthetic separately. Record its name, strength, and site volumes in the second set."
         },
         "third": {
           "title": "Use optional visit sections",
@@ -122,7 +122,7 @@
         },
         "second": {
           "title": "Choose report inclusion",
-          "text": "Set each image’s type and optional tooth and description. Choose whether it appears in the clinical PDF or owner report. Use the Before or After label when it helps explain the image."
+          "text": "Set each image’s type and optional tooth and description. Choose whether it appears in the clinical PDF or owner report. Use the Before or After label when it helps explain the image. Refine is in the lower corner of the text box."
         },
         "third": {
           "title": "Write the imaging reports",
@@ -158,7 +158,7 @@
         },
         "second": {
           "title": "Use a saved template",
-          "text": "Choose a named template in Saved templates. Check the populated wording before saving. The report remains editable, and Refine can suggest cleaner wording for review."
+          "text": "Choose a named template in Saved templates. Check the populated wording before saving. The report remains editable, and Refine can suggest cleaner wording for review. Refine is in the lower corner of the text box."
         },
         "third": {
           "title": "Create a reusable template",
@@ -172,7 +172,7 @@
       "sections": {
         "first": {
           "title": "Record discharge instructions",
-          "text": "Open Discharge. Enter documented medications, instructions, and follow-up. Verify medication names, doses, and timelines against your record before sharing."
+          "text": "In Discharge, list one medication per line with the dose, how to give it, and for how long. Add home care and follow-up instructions. Check the details before sharing."
         },
         "second": {
           "title": "Draft the owner report",
@@ -194,7 +194,7 @@
         },
         "second": {
           "title": "Customize the clinical PDF",
-          "text": "In Clinical chart, open Customize to choose colors and the sections to include, such as images, imaging reports, and Codes used. Check the preview after changing an option and download the document when ready."
+          "text": "In Clinical chart, open Customize to choose colors and the sections to include, such as images, imaging reports, and Codes used. Check the preview after changing an option and download the document when ready. Discharge sections appear below the imaging reports by default. Clear the option to hide them from the printed pages."
         },
         "third": {
           "title": "Finalize or reopen a visit",

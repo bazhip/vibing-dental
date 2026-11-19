@@ -86,7 +86,7 @@
         },
         "second": {
           "title": "Documentare i reperti in Diagnosi",
-          "text": "Selezioni il dente e indichi i reperti rilevati prima del trattamento o i denti già mancanti. Aggiunga codici dentali e brevi note quando serve. Consulti il repertorio dei codici per verificarne uno."
+          "text": "Selezioni il dente e indichi i reperti rilevati prima del trattamento o i denti già mancanti. Aggiunga codici dentali e brevi note quando serve. Consulti il repertorio dei codici per verificarne uno. Le etichette della barra degli strumenti sono sotto le icone. Usi «Commento» per associare una nota a un dente oppure «Commento libero» per inserirla in un punto qualsiasi del diagramma."
         },
         "third": {
           "title": "Documentare le prestazioni in Procedura",
@@ -104,7 +104,7 @@
         },
         "second": {
           "title": "Registrare anestetici e blocchi nervosi",
-          "text": "Apra «Anestesia», inserisca i farmaci anestetici e registri il sito e il volume dei blocchi eseguiti. Prima di finalizzare, confronti i lati e le unità di misura con la documentazione di origine."
+          "text": "Apra «Anestesia», inserisca i farmaci anestetici e registri il sito e il volume dei blocchi eseguiti. Prima di finalizzare, confronti i lati e le unità di misura con la documentazione di origine. Se ha somministrato separatamente un altro anestetico, selezioni «Aggiungi una seconda serie di blocchi nervosi». Indichi nome, concentrazione e volumi per sede nella seconda serie."
         },
         "third": {
           "title": "Utilizzare le sezioni facoltative della visita",
@@ -122,7 +122,7 @@
         },
         "second": {
           "title": "Scegliere quali immagini includere nei referti",
-          "text": "Imposti il tipo di ogni immagine e, se utile, il dente e la descrizione. Scelga se includerla nel PDF clinico o nel referto per il proprietario. Usi «Prima del trattamento» o «Dopo il trattamento» quando l’etichetta aiuta a interpretare l’immagine."
+          "text": "Imposti il tipo di ogni immagine e, se utile, il dente e la descrizione. Scelga se includerla nel PDF clinico o nel referto per il proprietario. Usi «Prima del trattamento» o «Dopo il trattamento» quando l’etichetta aiuta a interpretare l’immagine. Il pulsante Rielabora si trova nell’angolo inferiore della casella di testo."
         },
         "third": {
           "title": "Redigere i referti di diagnostica per immagini",
@@ -158,7 +158,7 @@
         },
         "second": {
           "title": "Usare un modello salvato",
-          "text": "Scelga un modello per nome tra i modelli salvati. Controlli il testo compilato prima di salvare. Può continuare a modificare il referto e usare «Rifinisci» per ottenere una proposta di riformulazione da verificare."
+          "text": "Scelga un modello per nome tra i modelli salvati. Controlli il testo compilato prima di salvare. Può continuare a modificare il referto e usare «Rifinisci» per ottenere una proposta di riformulazione da verificare. Il pulsante Rielabora si trova nell’angolo inferiore della casella di testo."
         },
         "third": {
           "title": "Creare un modello riutilizzabile",
@@ -172,7 +172,7 @@
       "sections": {
         "first": {
           "title": "Registrare le istruzioni di dimissione",
-          "text": "Apra «Dimissione». Inserisca i farmaci, le istruzioni e i controlli documentati. Prima di condividere, verifichi nella cartella nomi dei farmaci, dosi e tempistiche."
+          "text": "In Dimissione, indichi un farmaco per riga, con dose, modalità e durata della somministrazione. Aggiunga le istruzioni per le cure a casa e il follow-up. Verifichi i dettagli prima della condivisione."
         },
         "second": {
           "title": "Preparare il referto per il proprietario",
@@ -194,7 +194,7 @@
         },
         "second": {
           "title": "Personalizzare il PDF clinico",
-          "text": "In «Cartella clinica», apra «Personalizza» per scegliere i colori e i contenuti da includere, ad esempio le immagini, i referti della diagnostica per immagini e i codici utilizzati. Dopo ogni modifica controlli l’anteprima e scarichi il documento quando è pronto."
+          "text": "In «Cartella clinica», apra «Personalizza» per scegliere i colori e i contenuti da includere, ad esempio le immagini, i referti della diagnostica per immagini e i codici utilizzati. Dopo ogni modifica controlli l’anteprima e scarichi il documento quando è pronto. Per impostazione predefinita, le sezioni di dimissione compaiono sotto i referti di diagnostica per immagini. Deselezioni l’opzione per nasconderle nelle pagine stampate."
         },
         "third": {
           "title": "Finalizzare o riaprire una visita",

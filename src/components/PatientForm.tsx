@@ -53,6 +53,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
     </button>
   );
   const numberHintId = React.useId();
+  const complaintId = React.useId();
   const ownerHasInfo = !!(patientInfo.ownerName?.trim() || patientInfo.ownerPhone?.trim() || patientInfo.ownerEmail?.trim());
   const [ownerExpanded, setOwnerExpanded] = React.useState(ownerHasInfo);
   React.useEffect(() => { if (ownerHasInfo) setOwnerExpanded(true); }, [ownerHasInfo]);
@@ -248,15 +249,15 @@ export const PatientForm: React.FC<PatientFormProps> = ({
 
         <FormGroup header={t('ios.form.complaint', { ns: 'chart' })}>
           <div className="ios-field ios-field--stacked ios-field--bare">
-            <CodeField
-              multiline
-              className="patient-form__textarea"
-              aria-label={t('patient.complaint')}
-              placeholder={t('patient.complaintPlaceholder')}
-              value={patientInfo.complaint}
-              onChange={(value) => onPatientInfoChange('complaint', value)}
-            />
-            <div className="clinical-text__actions">
+            <div className="refine-field">
+              <CodeField
+                multiline
+                className="patient-form__textarea"
+                aria-label={t('patient.complaint')}
+                placeholder={t('patient.complaintPlaceholder')}
+                value={patientInfo.complaint}
+                onChange={(value) => onPatientInfoChange('complaint', value)}
+              />
               <RefineTextAction value={patientInfo.complaint ?? ''} readOnly={readOnly} onApply={text => onPatientInfoChange('complaint', text)} />
             </div>
           </div>
@@ -460,17 +461,18 @@ export const PatientForm: React.FC<PatientFormProps> = ({
 
       <div className="patient-form__row">
         <div className="patient-form__complaint">
-          <label className="patient-form__label">
+          <label className="patient-form__label" htmlFor={complaintId}>
             {t('patient.complaint')}
+          </label>
+          <div className="refine-field">
             <CodeField
+              id={complaintId}
               multiline
               className="patient-form__textarea"
               placeholder={t('patient.complaintPlaceholder')}
               value={patientInfo.complaint}
               onChange={(value) => onPatientInfoChange('complaint', value)}
             />
-          </label>
-          <div className="clinical-text__actions">
             <RefineTextAction value={patientInfo.complaint ?? ''} readOnly={readOnly} onApply={text => onPatientInfoChange('complaint', text)} />
           </div>
         </div>

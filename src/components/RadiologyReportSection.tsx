@@ -171,10 +171,7 @@ export function RadiologyReportSection({ snapshot: originalSnapshot, chartEditor
             onDictationApply(changes, source);
             setLocalRefineRequest({ id: ++localRefineSerial.current, language: source.language });
           }} />}
-        {chartEditor
-          ? <RefineTextAction value={draft} enabled={aiEnabled} readOnly={readOnly} disabled={busy}
-              language={outputLanguage} scopeKey={source} onApply={text => applyDraft(text, outputLanguage)} />
-          : <button type="button" className={!reviewed ? 'entry-grid__button entry-grid__button--topbar radiology-report__primary' : 'diagram-view__action'}
+        {!chartEditor && <button type="button" className={!reviewed ? 'entry-grid__button entry-grid__button--topbar radiology-report__primary' : 'diagram-view__action'}
               disabled={readOnly || busy || !aiEnabled || !hasRadiologySource(snapshot)} onClick={() => void generate()}>
               {t(busy && !reviewed ? 'radiologyReport.refining' : 'radiologyReport.refine')}
             </button>}
@@ -182,7 +179,7 @@ export function RadiologyReportSection({ snapshot: originalSnapshot, chartEditor
       </div>
     </header>
     <div className="radiology-report__body">
-      <div className="radiographic-findings radiology-report__field">
+      <div className="radiographic-findings radiology-report__field refine-field">
         {chartEditor ? <CodeField multiline className="patient-form__textarea radiographic-findings__text radiology-report__editor"
           aria-label={title} aria-describedby={`${fieldId}-help`} placeholder={placeholder}
           value={draft} readOnly={readOnly} onChange={text => {
@@ -197,6 +194,8 @@ export function RadiologyReportSection({ snapshot: originalSnapshot, chartEditor
               value={draft} disabled={readOnly || busy} onChange={event => update({ radiologyReport: event.target.value,
                 radiologyReportBasis: source, radiologyReportLanguage: storedLanguage })} />
           </>}
+        {chartEditor && <RefineTextAction value={draft} enabled={aiEnabled} readOnly={readOnly} disabled={busy}
+              language={outputLanguage} scopeKey={source} onApply={text => applyDraft(text, outputLanguage)} />}
       </div>
       <div className="radiology-report__hints" id={`${fieldId}-help`}>
         <p className="patient-form__hint">{help}</p>

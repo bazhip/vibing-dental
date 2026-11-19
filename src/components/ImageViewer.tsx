@@ -252,15 +252,27 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({ items, index, onIndexC
         </div>
         <div className="image-viewer__controls">
           <div className="image-viewer__tools" role="toolbar" aria-label={t('viewer.tools')}>
-            <button type="button" onClick={() => zoomBy(1 / ZOOM_STEP)} title={t('viewer.zoomOut')} aria-label={t('viewer.zoomOut')}>−</button>
+            <button type="button" onClick={() => zoomBy(1 / ZOOM_STEP)} className="image-viewer__icon-tool" title={t('viewer.zoomOut')}>
+              <span aria-hidden="true">−</span>
+              <span className="image-viewer__tool-label">{t('viewer.zoomOut')}</span>
+            </button>
             <span className="image-viewer__zoom">{t('viewer.zoomLevel', { pct: Math.round(zoom * 100) })}</span>
-            <button type="button" onClick={() => zoomBy(ZOOM_STEP)} title={t('viewer.zoomIn')} aria-label={t('viewer.zoomIn')}>+</button>
+            <button type="button" onClick={() => zoomBy(ZOOM_STEP)} className="image-viewer__icon-tool" title={t('viewer.zoomIn')}>
+              <span aria-hidden="true">+</span>
+              <span className="image-viewer__tool-label">{t('viewer.zoomIn')}</span>
+            </button>
             <button type="button" onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }}>{t('viewer.fit')}</button>
             <button type="button" aria-expanded={moreOpen} aria-controls={moreId} onClick={() => setMoreOpen((v) => !v)}>{t('ios.moreActions', { ns: 'common' })}</button>
           </div>
           <div id={moreId} className="image-viewer__secondary" hidden={!moreOpen}>
-            <button type="button" onClick={() => setRotation((r) => (r + 270) % 360)} title={t('viewer.rotateLeft')} aria-label={t('viewer.rotateLeft')}>⟲</button>
-            <button type="button" onClick={() => setRotation((r) => (r + 90) % 360)} title={t('viewer.rotateRight')} aria-label={t('viewer.rotateRight')}>⟳</button>
+            <button type="button" onClick={() => setRotation((r) => (r + 270) % 360)} className="image-viewer__icon-tool" title={t('viewer.rotateLeft')}>
+              <span aria-hidden="true">⟲</span>
+              <span className="image-viewer__tool-label">{t('viewer.rotateLeft')}</span>
+            </button>
+            <button type="button" onClick={() => setRotation((r) => (r + 90) % 360)} className="image-viewer__icon-tool" title={t('viewer.rotateRight')}>
+              <span aria-hidden="true">⟳</span>
+              <span className="image-viewer__tool-label">{t('viewer.rotateRight')}</span>
+            </button>
             <button type="button" aria-pressed={flip} onClick={() => setFlip((v) => !v)}>{t('viewer.flip')}</button>
             <button type="button" aria-pressed={invert} onClick={() => setInvert((v) => !v)}>{t('viewer.invert')}</button>
             <button type="button" onClick={reset}>{t('viewer.reset')}</button>

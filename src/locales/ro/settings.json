@@ -196,6 +196,7 @@
       "imagesHint": "(4 pe pagină, după fișă)",
       "radiographicReport": "Raport radiografic",
       "ctReport": "Raport CT",
+      "dischargeSections": "Secțiuni de externare",
       "codesUsed": "Coduri utilizate"
     },
     "noteDevice": "Preferințele personale se salvează automat pe acest dispozitiv.",

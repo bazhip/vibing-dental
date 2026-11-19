@@ -97,7 +97,6 @@ export const RecordNotePanel: React.FC<RecordNotePanelProps> = ({
             {t('recordNote.rebuild')}
           </button>
         )}
-        <RefineTextAction value={text} onApply={edit} readOnly={readOnly} />
         <button type="button" className="pdf-preview-download" onClick={copy}>
           {t('recordNote.copy')}
         </button>
@@ -122,14 +121,17 @@ export const RecordNotePanel: React.FC<RecordNotePanelProps> = ({
           onSent={setSentAt}
         />
       )}
-      <textarea
-        className="record-note__text"
-        aria-label={t('recordNote.title')}
-        value={text}
-        readOnly={readOnly}
-        spellCheck
-        onChange={(e) => edit(e.target.value)}
-      />
+      <div className="refine-field">
+        <textarea
+          className="record-note__text"
+          aria-label={t('recordNote.title')}
+          value={text}
+          readOnly={readOnly}
+          spellCheck
+          onChange={(e) => edit(e.target.value)}
+        />
+          <RefineTextAction value={text} onApply={edit} readOnly={readOnly} />
+      </div>
     </div>
   );
 };

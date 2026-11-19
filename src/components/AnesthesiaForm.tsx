@@ -1,10 +1,12 @@
 import { SectionHeader } from './SectionHeader';
-import { RefineTextAction } from './RefineTextAction';
+import { confirmDialog } from './ui/dialogs';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   NerveBlocks,
   NerveBlockSite,
+  EMPTY_NERVE_BLOCKS,
+  hasNerveBlockEntries,
   AnestheticDrug,
   Logo,
   DEFAULT_NERVE_BLOCK_DRUG,
@@ -37,6 +39,8 @@ const ADD_ICON = 'plus';
 
 interface AnesthesiaFormProps {
   nerveBlocks: NerveBlocks;
+  secondNerveBlocks?: NerveBlocks;
+  onSecondNerveBlocksChange?: (update: (prev: NerveBlocks | undefined) => NerveBlocks | undefined) => void;
   onNerveBlockChange: (key: NerveBlockSite, value: string) => void;
   /** Functional update of the anesthetic list. */
   onDrugsChange: (update: (prev: AnestheticDrug[]) => AnestheticDrug[]) => void;
@@ -83,7 +87,12 @@ const BLOCK_ROWS: BlockRow[] = [
   { id: 'mental',           rightKey: 'mentalRight',           leftKey: 'mentalLeft' },
 ];
 
-export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
+type NerveBlockEditorProps = Pick<AnesthesiaFormProps,
+  'nerveBlocks' | 'onNerveBlockChange' | 'onDrugsChange' | 'logo' | 'hiddenBlocks' | 'usualDrug' | 'usualAdjunct'
+  | 'customBlockDefs' | 'customValues' | 'onCustomValuesChange'> & { second?: boolean };
+
+function NerveBlockEditor({
+  second = false,
   nerveBlocks,
   onNerveBlockChange,
   onDrugsChange,
@@ -91,19 +100,16 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
   hiddenBlocks = [],
   usualDrug = null,
   usualAdjunct = null,
-  onCustomize,
   customBlockDefs = [],
-  customFieldDefs = [],
   customValues,
   onCustomValuesChange,
-}) => {
+}: NerveBlockEditorProps) {
   // The iOS app: switches for yes/no fields, icons instead of text glyphs.
   const native = isNativeApp();
   const { t } = useTranslation('forms');
+  const id = React.useId();
   const customBlocks = blocksForForm(customBlockDefs, customValues);
-  const customFields = fieldsForForm(customFieldDefs, customValues);
   const setCustomBlock = (row: CustomBlockValue) => onCustomValuesChange?.(setBlockValue(customValues, row));
-  const setCustomField = (f: CustomFieldValue) => onCustomValuesChange?.(setFieldValue(customValues, f));
   // A hidden row still shows when it holds a dose — settings never hide data.
   const rowShown = (r: BlockRow) =>
     !hiddenBlocks.includes(r.id) || !!(nerveBlocks[r.rightKey] || '').trim() || !!(nerveBlocks[r.leftKey] || '').trim();
@@ -130,10 +136,7 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
     return () => window.removeEventListener('resize', fitOther);
   }, [fitOther]);
 
-  const defaultDrug = DEFAULT_NERVE_BLOCK_DRUG[logo];
-  const drugList = COMMON_DRUGS.includes(defaultDrug)
-    ? COMMON_DRUGS
-    : [defaultDrug, ...COMMON_DRUGS];
+  const defaultDrug = second ? null : DEFAULT_NERVE_BLOCK_DRUG[logo];
 
   // An empty list means "template default" — still show one blank row so
   // there's somewhere to type. Editing it materialises the list.
@@ -178,7 +181,7 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
         ? [...prev, { ...BLANK_DRUG }]
         // The blank first row stood for the default — make it explicit so
         // adding a second drug doesn't silently drop the first.
-        : [{ name: defaultDrug, concentration: DEFAULT_NERVE_BLOCK_CONCENTRATION }, { ...BLANK_DRUG }]
+        : [defaultDrug ? { name: defaultDrug, concentration: DEFAULT_NERVE_BLOCK_CONCENTRATION } : { ...BLANK_DRUG }, { ...BLANK_DRUG }]
     );
   };
 
@@ -186,27 +189,25 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
     onDrugsChange((prev) => prev.filter((_, i) => i !== index));
 
   return (
-    <div className="dental-grid-section">
-      <SectionHeader title={native ? t('ios.form.nerveBlocks', { ns: 'chart' }) : t('anesthesia.title')} onCustomize={onCustomize} customizeTitle={t('anesthesia.customizeTitle')} />
-
+    <>
       <div className="anesthesia-drug">
-        <span className="anesthesia-drug__label" id="anesthesia-drug-label">
+        <span className="anesthesia-drug__label" id={`${id}-label`}>
           {rows.length > 1 ? t('anesthesia.anesthetics') : t('anesthesia.anesthetic')}
         </span>
         <div className="anesthesia-drug__stack">
-          <ul className="anesthesia-drug__list" aria-labelledby="anesthesia-drug-label">
+          <ul className="anesthesia-drug__list" aria-labelledby={`${id}-label`}>
             {rows.map((d, i) => (
               <li key={i} className="anesthesia-drug__row">
                 <input
                   ref={(el) => { nameRefs.current[i] = el; }}
                   type="text"
-                  list="anesthesia-drug-options"
+                  list={`${id}-options`}
                   className="patient-form__input anesthesia-drug__input"
                   value={d.name}
-                  placeholder={usingDefault ? defaultDrug : t('anesthesia.drugPlaceholder')}
+                  placeholder={usingDefault && defaultDrug ? defaultDrug : t('anesthesia.drugPlaceholder')}
                   onChange={(e) => updateDrug(i, { name: e.target.value })}
                   aria-label={t('anesthesia.nameAria', { n: i + 1 })}
-                  aria-describedby="anesthesia-drug-hint"
+                  aria-describedby={`${id}-hint`}
                 />
                 {(() => {
                   // Local anesthetics in %, adjuncts in mg/mL; a strength
@@ -220,7 +221,7 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
                         inputMode="decimal"
                         className="patient-form__input"
                         value={shown}
-                        placeholder={usingDefault ? DEFAULT_NERVE_BLOCK_CONCENTRATION : ''}
+                        placeholder={usingDefault && defaultDrug ? DEFAULT_NERVE_BLOCK_CONCENTRATION : ''}
                         onChange={(e) => updateDrug(i, { concentration: withDrugUnit(d.name, e.target.value.replace(/%/g, '')) })}
                         aria-label={t('anesthesia.concentrationAria', { n: i + 1 })}
                       />
@@ -242,14 +243,14 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
               </li>
             ))}
           </ul>
-          <datalist id="anesthesia-drug-options">
-            {drugList.map((d) => (
+          <datalist id={`${id}-options`}>
+            {COMMON_DRUGS.map((d) => (
               <option key={d} value={d} />
             ))}
           </datalist>
-          <button type="button" className="anesthesia-drug__add" onClick={addDrug}>
+          {!second && <button type="button" className="anesthesia-drug__add" onClick={addDrug}>
             {native ? <Icon name={ADD_ICON} size={16} /> : <span aria-hidden="true">+</span>} {t('anesthesia.add')}
-          </button>
+          </button>}
           {usingDefault && usualMix.length > 0 && (
             <button
               type="button"
@@ -262,10 +263,10 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
         </div>
         {/* The grey placeholder alone reads ambiguously — is the drug set
             or not? Say what blank means. */}
-        <span id="anesthesia-drug-hint" className="anesthesia-drug__hint">
+        <span id={`${id}-hint`} className="anesthesia-drug__hint">
           {rows.length > 1
             ? t('anesthesia.hintMixed')
-            : t('anesthesia.hintDefault', { concentration: DEFAULT_NERVE_BLOCK_CONCENTRATION, drug: defaultDrug })}
+            : defaultDrug ? t('anesthesia.hintDefault', { concentration: DEFAULT_NERVE_BLOCK_CONCENTRATION, drug: defaultDrug }) : t('anesthesia.secondHint')}
         </span>
       </div>
 
@@ -337,8 +338,62 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
             value={nerveBlocks.other}
             onChange={handleChange('other')}
           />
-          <div className="clinical-text__actions"><RefineTextAction value={nerveBlocks.other ?? ''} onApply={text => onNerveBlockChange('other', text)} /></div>
         </div>
+      )}
+
+    </>
+  );
+}
+
+export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
+  secondNerveBlocks, onSecondNerveBlocksChange, onCustomize,
+  customFieldDefs = [], ...editor
+}) => {
+  const { t } = useTranslation('forms');
+  const native = isNativeApp();
+  const secondTitleId = React.useId();
+  const secondSection = React.useRef<HTMLElement>(null);
+  const addSecondButton = React.useRef<HTMLButtonElement>(null);
+  const customFields = fieldsForForm(customFieldDefs, editor.customValues);
+  const setCustomField = (field: CustomFieldValue) =>
+    editor.onCustomValuesChange?.(setFieldValue(editor.customValues, field));
+
+  const addSecond = () => {
+    onSecondNerveBlocksChange?.(prev => prev ?? { ...EMPTY_NERVE_BLOCKS });
+    requestAnimationFrame(() => secondSection.current?.querySelector('input')?.focus());
+  };
+  const removeSecond = async () => {
+    if (!secondNerveBlocks) return;
+    if (hasNerveBlockEntries(secondNerveBlocks) && !await confirmDialog({
+      title: t('anesthesia.removeSecondTitle'),
+      message: t('anesthesia.removeSecondMessage'),
+      confirmLabel: t('anesthesia.remove'),
+      danger: true,
+    })) return;
+    onSecondNerveBlocksChange?.(prev => prev === secondNerveBlocks ? undefined : prev);
+    requestAnimationFrame(() => addSecondButton.current?.focus());
+  };
+
+  return (
+    <div className="dental-grid-section">
+      <SectionHeader title={native ? t('ios.form.nerveBlocks', { ns: 'chart' }) : t('anesthesia.title')} onCustomize={onCustomize} customizeTitle={t('anesthesia.customizeTitle')} />
+      <NerveBlockEditor {...editor} />
+      {secondNerveBlocks ? (
+        <section className="anesthesia-second" aria-labelledby={secondTitleId} ref={secondSection}>
+          <div className="anesthesia-second__header">
+            <h3 id={secondTitleId}>{t('anesthesia.secondTitle')}</h3>
+            {onSecondNerveBlocksChange && <button type="button" className="ui-btn ui-btn--secondary" onClick={() => void removeSecond()}>
+              {t('anesthesia.remove')}
+            </button>}
+          </div>
+          <NerveBlockEditor second nerveBlocks={secondNerveBlocks} logo={editor.logo} hiddenBlocks={editor.hiddenBlocks}
+            onNerveBlockChange={(key, value) => onSecondNerveBlocksChange?.(prev => prev && { ...prev, [key]: value })}
+            onDrugsChange={update => onSecondNerveBlocksChange?.(prev => prev && { ...prev, drugs: update(prev.drugs) })} />
+        </section>
+      ) : onSecondNerveBlocksChange && (
+        <button type="button" className="ui-btn ui-btn--secondary anesthesia-second__add" ref={addSecondButton} onClick={addSecond}>
+          <Icon name={ADD_ICON} size={16} /> {t('anesthesia.addSecond')}
+        </button>
       )}
 
       {customFields.length > 0 && (

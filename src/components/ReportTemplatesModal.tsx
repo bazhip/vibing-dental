@@ -270,9 +270,12 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
             onChange={(e) => setName(e.target.value)}
           />
         </label>
-        <label className="patient-form__label" style={{ marginTop: '0.75rem' }}>
+        <label htmlFor={`${instructionsId}-editor`} className="patient-form__label" style={{ marginTop: '0.75rem' }}>
           {t('templates.bodyLabel')}
+        </label>
+        <div className="refine-field">
           <textarea
+            id={`${instructionsId}-editor`}
             ref={bodyRef}
             className="patient-form__textarea treatment-templates__body"
             aria-describedby={instructionsId}
@@ -310,7 +313,9 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
               }
             }}
           />
-        </label>
+          {refineEnabled && <RefineTextAction value={body} onApply={setBody} enabled={aiEnabled}
+          scopeKey={JSON.stringify([selectedId, name])} readOnly={busy} />}
+        </div>
         {suggestions && <ul id={codeMenuId} className="treatment-templates__code-menu" aria-label={t('templates.chartCodes')}
           onBlur={event => {
             if (event.relatedTarget !== bodyRef.current && !event.currentTarget.contains(event.relatedTarget)) setCaret(null);
@@ -358,8 +363,7 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
             </ul>
           </div>}
         </div>
-        {refineEnabled && <div className="clinical-text__actions"><RefineTextAction value={body} onApply={setBody} enabled={aiEnabled}
-          scopeKey={JSON.stringify([selectedId, name])} readOnly={busy} /></div>}
+
       </section>
 
       {error && <div className="login-error" role="alert">{error}</div>}

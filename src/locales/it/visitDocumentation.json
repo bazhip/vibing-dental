@@ -31,15 +31,15 @@
     },
     "dischargeMedications": {
       "label": "Farmaci",
-      "helper": "Inserisca solo i farmaci e le dosi registrati, mantenendo eventuali incertezze."
+      "helper": "Indichi un farmaco per riga, con nome, dose, modalità, orari e durata della somministrazione."
     },
     "dischargeInstructions": {
       "label": "Istruzioni",
-      "helper": "Registri le istruzioni di cura discusse per questa visita."
+      "helper": "Descriva le cure a casa, eventuali limitazioni all’attività o all’alimentazione e quando chiamare la clinica."
     },
     "dischargeFollowUp": {
       "label": "Controllo successivo",
-      "helper": "Registri il controllo discusso; utilizzi la data di richiamo esistente per un controllo programmato."
+      "helper": "Indichi i prossimi passi e quando sono previsti. Per una visita di controllo già programmata, usi «Controllo previsto» in Paziente."
     },
     "gpVitals": {
       "label": "Parametri vitali",

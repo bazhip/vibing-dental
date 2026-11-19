@@ -194,7 +194,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
         style={{ ['--diagram-comment-font-size' as string]: `${0.95 * commentTextScale * zoom}rem` }}
       >
         <div className={`diagram-view__toolbar${readOnly ? ' diagram-view__toolbar--readonly' : ''}`}>
-          {/* One line: modes + Free comment, history, then view controls. */}
+          {/* Modes + Free comment, history, then view controls. */}
           <div className="diagram-view__toolbar-main">
           <div
             className="diagram-view__tool-group"
@@ -248,7 +248,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
                 title={t('ios.diagram.freeComment')}
               >
                 <Icon name={FREE_COMMENT_ICON} size={18} />
-                <span className="diagram-view__tool-label">{native ? t('ios.diagram.freeComment') : t('diagramView.freeComment')}</span>
+                <span className="diagram-view__tool-label">{t('ios.diagram.freeComment')}</span>
               </button>
             )}
           </div>
@@ -267,6 +267,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               title={t('diagramView.undoTitle', { shortcut: IS_MAC ? '⌘Z' : 'Ctrl+Z' })}
             >
               <Icon name={ARROW_UTURN_BACKWARD_ICON} size={18} />
+              <span className="diagram-view__tool-label">{t('diagramView.undo')}</span>
             </button>
             <button
               type="button"
@@ -277,6 +278,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               title={t('diagramView.redoTitle', { shortcut: IS_MAC ? '⌘⇧Z' : 'Ctrl+Y' })}
             >
               <Icon name={ARROW_UTURN_FORWARD_ICON} size={18} />
+              <span className="diagram-view__tool-label">{t('diagramView.redo')}</span>
             </button>
           </div>
 

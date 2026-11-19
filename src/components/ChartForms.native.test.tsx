@@ -24,7 +24,7 @@ import { DiagramView } from './DiagramView';
 import { DentalGrid } from './DentalGrid';
 import { getInitialToothData } from '../constants';
 import { installScopeSelectorFallback } from '../utils/scopeSelector';
-import { EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS, type PatientInfo } from '../types';
+import { EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS, type NerveBlocks, type PatientInfo } from '../types';
 
 const patientInfo: PatientInfo = {
   patientName: 'Biscuit', patientNumber: '12', ownerName: '', ownerPhone: '', ownerEmail: '',
@@ -161,6 +161,26 @@ describe('AnesthesiaForm', () => {
     expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent(/^Nerve blocks$/);
   });
 
+  it('adds a separately recorded medication and does not change the primary block doses', () => {
+    function Editor() {
+      const [second, setSecond] = React.useState<NerveBlocks>();
+      return <AnesthesiaForm {...base} nerveBlocks={{ ...EMPTY_NERVE_BLOCKS, mentalRight: '0.2' }}
+        secondNerveBlocks={second} onSecondNerveBlocksChange={setSecond} />;
+    }
+    render(<Editor />);
+    fireEvent.click(screen.getByRole('button', { name: 'Add a second nerve-block set' }));
+    const second = screen.getByRole('region', { name: 'Second nerve-block set' });
+    const drug = within(second).getByRole('combobox', { name: 'Anesthetic 1 name' });
+    expect(drug).toHaveValue('');
+    expect(drug).toHaveAttribute('placeholder', 'Drug');
+    fireEvent.change(drug, { target: { value: 'Lidocaine' } });
+    const dose = within(second).getByRole('textbox', { name: 'Mental right (mL)' });
+    fireEvent.change(dose, { target: { value: '0.1' } });
+    expect(drug).toHaveValue('Lidocaine');
+    expect(dose).toHaveValue('0.1');
+    expect(screen.getAllByRole('textbox', { name: 'Mental right (mL)' })[0]).toHaveValue('0.2');
+  });
+
   it('website: checkbox and text glyphs as before', () => {
     render(<AnesthesiaForm {...base} customFieldDefs={fields} nerveBlocks={{ ...EMPTY_NERVE_BLOCKS, drugs: [{ name: 'A', concentration: '' }, { name: 'B', concentration: '' }] }} />);
     expect(screen.getByRole('checkbox', { name: 'IV catheter' })).not.toHaveClass('ios-switch');
@@ -216,7 +236,7 @@ describe('DiagramView toolbar', () => {
   it('offers Free comment on the toolbar', () => {
     const onCommentsChange = vi.fn();
     render(<DiagramView title="Diagnosis" species="canine" toothMarks={{}} onToothMarksChange={vi.fn()} comments={[]} onCommentsChange={onCommentsChange} strokes={[]} onStrokesChange={vi.fn()} />);
-    fireEvent.click(screen.getByRole('button', { name: '+ Free comment' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Free comment' }));
     expect(onCommentsChange).toHaveBeenCalledWith([
       expect.objectContaining({ text: '', anchorTriadan: null, x: expect.any(Number), y: expect.any(Number) }),
     ]);
@@ -224,7 +244,7 @@ describe('DiagramView toolbar', () => {
   it('orders Draw, Mark, Comment, Free comment in one group and starts on Mark', () => {
     render(<DiagramView title="Diagnosis" species="canine" toothMarks={{}} onToothMarksChange={vi.fn()} comments={[]} onCommentsChange={vi.fn()} strokes={[]} onStrokesChange={vi.fn()} />);
     const group = screen.getByRole('group', { name: 'Diagram tool' });
-    expect(within(group).getAllByRole('button').map((b) => b.textContent)).toEqual(['Draw', 'MarkMark', 'Comment', '+ Free comment']);
+    expect(within(group).getAllByRole('button').map((b) => b.textContent)).toEqual(['Draw', 'MarkMark', 'Comment', 'Free comment']);
     expect(within(group).getAllByRole('button')[1]).toHaveAttribute('aria-pressed', 'true');
     expect(screen.queryByRole('group', { name: 'Draw settings' })).toBeNull();
   });
@@ -242,19 +262,19 @@ describe('DiagramView toolbar', () => {
   });
   it('never exposes drawing mutations in a locked chart, but keeps the view controls', () => {
     renderIt(true);
-    expect(screen.queryByRole('button', { name: '+ Free comment' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Free comment' })).toBeNull();
     expect(screen.queryByRole('button', { name: 'Clear strokes' })).toBeNull();
     expect(screen.queryByRole('group', { name: 'Draw settings' })).toBeNull();
     expect(screen.getByRole('button', { name: 'Zoom in' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Numbers' })).toBeInTheDocument();
     expect(screen.getByRole('group', { name: 'Comment text size' })).toBeInTheDocument();
   });
-  it('app: Undo / Redo are icons', () => {
+  it('app: Undo / Redo include their icons and labels', () => {
     flags.native = true;
     renderIt();
     expect(within(screen.getByRole('group', { name: 'Undo / Redo' })).getByRole('button', { name: 'Undo' }).querySelector('[data-icon="arrow-uturn-backward"]')).not.toBeNull();
     expect(within(screen.getByRole('group', { name: 'Undo / Redo' })).getByRole('button', { name: 'Redo' }).querySelector('[data-icon="arrow-uturn-forward"]')).not.toBeNull();
-    expect(within(screen.getByRole('group', { name: 'Undo / Redo' })).getByRole('button', { name: 'Undo' }).textContent).toBe('');
+    expect(within(screen.getByRole('group', { name: 'Undo / Redo' })).getByRole('button', { name: 'Undo' }).textContent).toBe('Undo');
     expect(screen.getByRole('button', { name: 'Numbers' })).toBeInTheDocument();
   });
   it('keeps numbers and zoom on the toolbar, with no More menu', () => {

@@ -925,10 +925,11 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     includeGrid: !mirrorToDiagnosis || pdfIncludeGrid,
     includeRadiographicReport: prefs.pdfIncludeRadiographicReport,
     includeCtReport: prefs.pdfIncludeCtReport,
+    includeDischarge: prefs.pdfIncludeDischarge,
     includeCodesUsed: prefs.pdfIncludeCodesUsed,
     imagesChartId: pdfIncludeImages && cloud.enabled && !trial ? chart.cloudChartId : undefined,
   } : null, [previewSnapshot, mirrorToDiagnosis, pdfIncludeGrid, prefs.pdfIncludeRadiographicReport,
-    prefs.pdfIncludeCtReport, prefs.pdfIncludeCodesUsed, pdfIncludeImages, cloud.enabled, trial, chart.cloudChartId]);
+    prefs.pdfIncludeCtReport, prefs.pdfIncludeDischarge, prefs.pdfIncludeCodesUsed, pdfIncludeImages, cloud.enabled, trial, chart.cloudChartId]);
   // Owner report — the chart translated for the pet's owner.
   /** Which tab the Documents dialog opens on (undefined = last used). */
   const [docsTab, setDocsTab] = React.useState<'chart' | 'owner' | 'note' | undefined>(undefined);
@@ -1127,6 +1128,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         includeGrid: !mirrorToDiagnosis || pdfIncludeGrid,
         includeRadiographicReport: prefs.pdfIncludeRadiographicReport,
         includeCtReport: prefs.pdfIncludeCtReport,
+        includeDischarge: prefs.pdfIncludeDischarge,
         includeCodesUsed: prefs.pdfIncludeCodesUsed,
         imagesChartId:
           pdfIncludeImages && cloud.enabled && !trial ? chart.cloudChartId : undefined,
@@ -1218,6 +1220,10 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       content: lock(
         <AnesthesiaForm
           nerveBlocks={chart.patientInfo.nerveBlocks}
+          secondNerveBlocks={chart.patientInfo.secondNerveBlocks}
+          onSecondNerveBlocksChange={update => chart.setPatientInfo(prev => ({
+            ...prev, secondNerveBlocks: update(prev.secondNerveBlocks),
+          }))}
           onNerveBlockChange={chart.handleNerveBlockChange}
           onDrugsChange={chart.setNerveBlockDrugs}
           logo={chart.logo}

@@ -196,6 +196,7 @@
       "imagesHint": "(4 pro Seite, nach der Akte)",
       "radiographicReport": "Röntgenbericht",
       "ctReport": "CT-Bericht",
+      "dischargeSections": "Entlassungsabschnitte",
       "codesUsed": "Verwendete Codes"
     },
     "noteDevice": "Persönliche Einstellungen werden automatisch auf diesem Gerät gespeichert.",

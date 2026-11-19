@@ -9,6 +9,7 @@ import {
   EXAM_ITEMS,
   ExamItemValue,
   ToothData,
+  type NerveBlocks,
   effectiveNerveBlockDrugs,
   formatAnestheticDrug,
 } from '../types';
@@ -132,19 +133,26 @@ export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): Record
 
   // 2. Anesthesia
   const nb = info.nerveBlocks;
-  const blockLines = BLOCK_SITES.map(([site, r, l]) => {
+  const recordedBlockLines = (blocks?: NerveBlocks) => BLOCK_SITES.map(([site, r, l]) => {
     const parts = [
-      clean(nb?.[r]) && `${t('forms:anesthesia.right')} ${clean(nb?.[r])}`,
-      clean(nb?.[l]) && `${t('forms:anesthesia.left')} ${clean(nb?.[l])}`,
+      clean(blocks?.[r]) && `${t('forms:anesthesia.right')} ${clean(blocks?.[r])}`,
+      clean(blocks?.[l]) && `${t('forms:anesthesia.left')} ${clean(blocks?.[l])}`,
     ].filter(Boolean);
     return parts.length ? `${t(`forms:anesthesia.blocks.${site}`)}: ${parts.join(', ')}` : null;
   });
   // As on the chart PDF: blocks charted without a drug use the template's
   // default anesthetic (an empty drug list means "the default").
+  const blockLines = recordedBlockLines(nb);
   const anyBlock = blockLines.some(Boolean) || !!clean(nb?.other);
   const drugs = (anyBlock && nb ? effectiveNerveBlockDrugs(nb, snapshot.logo) : (nb?.drugs ?? []).filter((d) => clean(d.name)))
     .map(formatAnestheticDrug);
   const custom = info.customAnesthesia;
+  const second = info.secondNerveBlocks;
+  const secondLines = second ? [
+    second.drugs.filter(d => clean(d.name)).map(formatAnestheticDrug).join(' + '),
+    ...recordedBlockLines(second),
+    clean(second.other) && `${t('forms:anesthesia.other')}: ${clean(second.other)}`,
+  ].filter(Boolean) : [];
   add('anesthesia', [
     drugs.length > 0 && drugs.join(' + '),
     ...blockLines,
@@ -158,6 +166,7 @@ export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): Record
     }),
     ...(custom?.fields ?? []).map((f) =>
       clean(f.value) ? `${clean(f.label)}: ${clean(f.value)}${f.unit ? ` ${f.unit}` : ''}` : null),
+    ...(secondLines.length ? [t('forms:anesthesia.secondTitle'), ...secondLines] : []),
   ]);
 
   // 3. Oral exam
@@ -247,7 +256,7 @@ export function recordNoteBasis(snapshot: ChartSnapshot): string {
   return hashStr(JSON.stringify([
     snapshot.species, snapshot.logo,
     i.patientName, i.patientNumber, i.date, i.doctor, i.tech, i.complaint,
-    i.nerveBlocks, i.customAnesthesia ?? null, i.exam, i.customExam ?? null,
+    i.nerveBlocks, ...(i.secondNerveBlocks ? [i.secondNerveBlocks] : []), i.customAnesthesia ?? null, i.exam, i.customExam ?? null,
     radiologyRecordedText(i), i.ctReport ?? '', i.treatmentReport, i.recallDate,
     ...([i.consultationHistory, i.consultationAssessment, i.consultationPlan, i.dischargeMedications, i.dischargeInstructions, i.dischargeFollowUp, i.gpVitals, i.gpPhysicalExam, i.gpDiagnostics].some(value => value?.trim())
       ? [i.consultationHistory ?? '', i.consultationAssessment ?? '', i.consultationPlan ?? '', i.dischargeMedications ?? '', i.dischargeInstructions ?? '', i.dischargeFollowUp ?? '', i.gpVitals ?? '', i.gpPhysicalExam ?? '', i.gpDiagnostics ?? ''] : []),
