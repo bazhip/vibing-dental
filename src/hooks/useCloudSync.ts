@@ -4,6 +4,8 @@ import { hasVisitDocumentation } from '../utils/visitDocumentation';
 import React from 'react';
 import { reservePatientNumber } from '../utils/patientNumberAllocation';
 import { isGeneratedPatientNumber } from '../utils/patientIds';
+import { fieldLines, filledBlocks } from '../utils/customAnesthesia';
+import { answeredCustomExam } from '../utils/customExam';
 import { hasChartImages, hasPendingImageUpload, findImageDrafts, discardImageDraft } from '../utils/imageDrafts';
 import { localDateISO } from '../utils/localDate';
 import { ChartSnapshot, hasNerveBlockEntries } from '../types';
@@ -82,6 +84,8 @@ export interface UseCloudSyncReturn {
    *  details: autosave waits for clinical content, so the UI offers a
    *  manual Save. False once the chart has been saved (by either route). */
   awaitingClinical: boolean;
+  /** A new chart before clinical charting starts. */
+  preclinical: boolean;
   /** Skip the same-day duplicate question for the next new chart's first
    *  save (the user already answered it, e.g. when starting a new visit). */
   /** The same-day question was already answered for this new chart (it was
@@ -96,6 +100,8 @@ export interface UseCloudSyncReturn {
   /** `ifClean`: skip (no prompt) when the working chart has unsaved edits. */
   /** Resolves true when the chart was opened, false when the user cancelled. */
   openChart: (id: string, opts?: { ifClean?: boolean; action?: DiscardAction; force?: boolean; skipConfirm?: boolean }) => Promise<boolean>;
+  /** Bring a clean working copy up to date without disrupting its session. */
+  refreshOpenChart: () => Promise<void>;
   /** ISO time this chart last reached the cloud ('' = never). */
   lastSavedAt: string;
   /** Browser connectivity. */
@@ -122,12 +128,14 @@ function hasContent(s: ChartSnapshot): boolean {
   if (s.clinicalDictations?.length) return true;
   if (hasVisitDocumentation(p) || radiologyRecordedText(p).trim() || ctRecordedText(p).trim()) return true;
   if (p.secondNerveBlocks && hasNerveBlockEntries(p.secondNerveBlocks)) return true;
+  if (s.plannedExtractions?.length) return true;
   // Values are strings, except the drug list (and legacy `drug`); only a
   // named drug counts as content.
   if (Object.values(p.nerveBlocks ?? {}).some((v) =>
     Array.isArray(v) ? v.some((d) => (d?.name ?? '').trim()) : typeof v === 'string' && v.trim()
   )) return true;
   if (Object.values(p.exam ?? {}).some((e) => e?.status || (e?.comment ?? '').trim())) return true;
+  if (answeredCustomExam(p.customExam).length || filledBlocks(p.customAnesthesia).length || fieldLines(p.customAnesthesia).length) return true;
   if (s.toothData.some((t) =>
     [t.mobility, t.recession, t.pocket, t.furcation, t.hyperplasia, t.calculus, t.gingivitis, t.pdstate]
       .some((v) => (v ?? '').trim())
@@ -284,8 +292,8 @@ export function useCloudSync(
   const everSaved = chart.openedExisting || lastSaved.chartId === chartId;
   const awaitingClinical = dirty && !everSaved && !clinical;
 
-  const latest = React.useRef({ serialized, chartId });
-  latest.current = { serialized, chartId };
+  const latest = React.useRef({ serialized, chartId, session: chart.chartSession, on });
+  latest.current = { serialized, chartId, session: chart.chartSession, on };
   const dirtyRef = React.useRef(dirty);
   dirtyRef.current = dirty;
   const resetIdRef = React.useRef(chart.resetCloudChartId);
@@ -600,7 +608,7 @@ export function useCloudSync(
     const assigned = { ...current.patientInfo, patientNumber: number, generatedPatientNumber: number };
     // Explicit Save can be awaiting this promise while React batches the setter.
     // Its snapshot and saved baseline must already contain the reserved number.
-    latest.current = { chartId: id, serialized: JSON.stringify({ ...current, patientInfo: assigned }) };
+    latest.current = { ...latest.current, serialized: JSON.stringify({ ...current, patientInfo: assigned }) };
     patientSetter.current(previous => previous.patientId === info.patientId && !previous.patientNumber.trim() && !previous.generatedPatientNumber
       ? { ...previous, patientNumber: number, generatedPatientNumber: number } : previous);
   };
@@ -789,6 +797,31 @@ export function useCloudSync(
   const applyRef = React.useRef(chart.applySnapshot);
   applyRef.current = chart.applySnapshot;
 
+  const chartReads = React.useRef(0);
+  const refreshOpenChart = React.useCallback(async () => {
+    const start = latest.current;
+    const saved = lastSavedRef.current;
+    const canRefresh = () => latest.current.on && !dirtyRef.current && !workspacePaused.current &&
+      pendingSaves.current.size === 0 && !hasPendingImageUpload(start.chartId);
+    if (!supabase || !canRefresh() || saved.chartId !== start.chartId || !saved.at) return;
+    const request = ++chartReads.current;
+    const { data, error } = await supabase.from('charts').select('id, data, updated_at')
+      .eq('id', start.chartId).gt('updated_at', saved.at).maybeSingle();
+    if (error || !data) return;
+    const current = latest.current;
+    if (!canRefresh() || request !== chartReads.current || current.chartId !== start.chartId ||
+        current.session !== start.session || current.serialized !== start.serialized ||
+        lastSavedRef.current !== saved) return;
+    applyRef.current(data.data as ChartSnapshot, data.id, { preserveSession: true });
+    armBaseline();
+    setLastSaved({ chartId: data.id, at: data.updated_at });
+    conflictRef.current = { chartId: '', mode: 'none' };
+    setStatus('idle');
+    setSaveError('');
+    // armBaseline only closes over refs and a state setter.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const openChart = React.useCallback(async (id: string, opts: { ifClean?: boolean; action?: DiscardAction; force?: boolean; skipConfirm?: boolean } = {}): Promise<boolean> => {
     if (!supabase) return false;
     // Deep links on page load never prompt: a working chart with edits
@@ -798,10 +831,11 @@ export function useCloudSync(
     } else if (opts.ifClean) {
       if (dirtyRef.current) return false;
     } else if (!(await confirmDiscardIfDirty(opts.action ?? 'openOther'))) return false;
-    // Already on screen with nothing unsaved: nothing to do. (Re-applying
-    // identical content would leave the "saved baseline" armed and the
-    // next edit wrongly treated as saved.)
-    if (id === latest.current.chartId && !dirtyRef.current && !opts.force) return true;
+    if (id === latest.current.chartId && !dirtyRef.current && !opts.force) {
+      await refreshOpenChart();
+      return true;
+    }
+    ++chartReads.current;
     const { data, error } = await supabase
       .from('charts')
       .select('id, data, updated_at')
@@ -816,7 +850,7 @@ export function useCloudSync(
     setSaveError('');
     return true;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [refreshOpenChart]);
 
   openChartRef.current = openChart;
 
@@ -929,10 +963,12 @@ export function useCloudSync(
     saveNow,
     setFinalized,
     awaitingClinical,
+    preclinical: !chart.openedExisting && !clinical,
     skipDuplicateCheckFor,
     listCharts,
     listPatientVisits,
     openChart,
+    refreshOpenChart,
     fetchChart,
     restoreRevision,
     deleteChart,

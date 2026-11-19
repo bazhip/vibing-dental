@@ -259,7 +259,7 @@ describe('chart frame', () => {
     unmount();
 
     seedChart();
-    sync.override = fakeCloud({ dirty: true, awaitingClinical: true });
+    sync.override = fakeCloud({ dirty: true, awaitingClinical: true, preclinical: true });
     await frame();
     expect(screen.getByText('⟦Not saved⟧')).toHaveAttribute('title', expect.stringMatching(/^⟦This visit is on this device/));
     expect(document.querySelector('.ui-toast')).toBeNull();

@@ -255,7 +255,7 @@
 :where(html.native-ios) .ios-navbar--collapsed { box-shadow: 0 0.5px 0 var(--ios-separator); }
 :where(html.native-ios) .ios-navbar__bar {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  grid-template-columns: minmax(max-content, 1fr) minmax(0, auto) minmax(max-content, 1fr);
   align-items: center;
   gap: 8px;
   min-height: 52px;
@@ -278,8 +278,8 @@
   max-width: 56vw;
   transition: opacity 0.2s;
 }
-:where(html.native-ios) .ios-navbar--large .ios-navbar__title { opacity: 0; }
-:where(html.native-ios) .ios-navbar--large.ios-navbar--collapsed .ios-navbar__title { opacity: 1; }
+:where(html.native-ios) .ios-navbar--large .ios-navbar__title { opacity: 0; pointer-events: none; }
+:where(html.native-ios) .ios-navbar--large.ios-navbar--collapsed .ios-navbar__title { opacity: 1; pointer-events: auto; }
 :where(html.native-ios) .ios-navbar__heading {
   margin: 0;
   max-width: 100%;

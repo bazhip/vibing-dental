@@ -11,6 +11,8 @@ const db = vi.hoisted(() => ({
   visits: [] as Array<Record<string, string>>,
   upserts: [] as Array<Record<string, unknown>>,
   opened: [] as string[],
+  readAt: '2026-11-12T09:00:00Z',
+  readGate: null as Promise<void> | null,
   /** Error the next N chart upserts return (then they succeed). */
   refuseUpserts: 0,
   /** Whether a refused chart's row is still readable by this account. */
@@ -34,7 +36,17 @@ vi.mock('../utils/supabaseClient', () => {
       order: chain, limit: chain, ilike: chain, update: chain,
       delete: () => { q.__delete = true; return q; },
       eq: (col: string, v: string) => { if (col === 'id') singleId = v; return q; },
+      gt: (_col: string, value: string) => { q.__newerThan = value; return q; },
       maybeSingle: async () => {
+        if (typeof q.__newerThan === 'string') {
+          if (db.readGate) await db.readGate;
+          return {
+            data: Date.parse(db.readAt) > Date.parse(q.__newerThan)
+              ? { id: singleId, data: snap({}), updated_at: db.readAt }
+              : null,
+            error: null,
+          };
+        }
         if (q.__upsert && db.gate && (!db.gateId || q.__upsertId === db.gateId)) await db.gate;
         if (q.__netFail) return { data: null, error: { message: 'Failed to fetch' } };
         if (q.__refused) return { data: null, error: { code: '42501', message: 'new row violates row-level security policy' } };
@@ -46,7 +58,7 @@ vi.mock('../utils/supabaseClient', () => {
         if (q.__existCheck && !db.rowVisible) return { data: null, error: null };
         return { data: { id: 'x', updated_at: '2026-11-12T10:00:00Z' }, error: null };
       },
-      single: async () => { db.opened.push(singleId); return { data: { id: singleId, data: snap({}), updated_at: '2026-11-12T09:00:00Z' }, error: null }; },
+      single: async () => { db.opened.push(singleId); return { data: { id: singleId, data: snap({}), updated_at: db.readAt }, error: null }; },
       upsert: (row: Record<string, unknown>) => {
         db.upserts.push(row);
         q.__upsert = true;
@@ -121,6 +133,7 @@ beforeEach(() => {
   store.clear();
   db.identities = {}; db.identityReadFails = false;
   db.visits = []; db.upserts = []; db.opened = []; db.refuseUpserts = 0; db.rowVisible = true; db.failUpserts = 0; db.gate = null; db.gateId = ''; db.deletedRows = [{ id: 'x' }];
+  db.readAt = '2026-11-12T09:00:00Z'; db.readGate = null;
   confirm.mockReset(); confirm.mockResolvedValue(false);
   choose.mockReset(); choose.mockResolvedValue('keep');
   vi.useFakeTimers();
@@ -129,10 +142,47 @@ afterEach(() => vi.useRealTimers());
 
 const flush = async () => { await act(async () => { await vi.advanceTimersByTimeAsync(1500); }); };
 
+it('refreshes a clean open chart only when the cloud has a newer version', async () => {
+  const chart = fakeChart(snap({}));
+  const { result } = renderHook(() => useCloudSync(chart));
+  await act(async () => { await result.current.openChart('chart-1', { skipConfirm: true }); });
+  const apply = vi.mocked(chart.applySnapshot);
+  apply.mockClear();
+  await act(async () => { await result.current.refreshOpenChart(); });
+  expect(apply).not.toHaveBeenCalled();
+  db.readAt = '2026-11-12T10:00:00Z';
+  await act(async () => { await result.current.refreshOpenChart(); });
+  expect(apply).toHaveBeenCalledWith(expect.anything(), 'chart-1', { preserveSession: true });
+  expect(result.current.lastSavedAt).toBe(db.readAt);
+  expect(result.current.dirty).toBe(false);
+});
+
+it('preserves local edits made while a foreground refresh is pending', async () => {
+  const chart = fakeChart(snap({}));
+  const { result, rerender } = renderHook(({ current }) => useCloudSync(current), { initialProps: { current: chart } });
+  await act(async () => { await result.current.openChart('chart-1', { skipConfirm: true }); });
+  const apply = vi.mocked(chart.applySnapshot);
+  apply.mockClear();
+  db.readAt = '2026-11-12T10:00:00Z';
+  let release!: () => void;
+  db.readGate = new Promise<void>(resolve => { release = resolve; });
+  const refresh = result.current.refreshOpenChart();
+  rerender({ current: { ...chart, getSnapshot: () => snap({ exam: true }) } });
+  await act(async () => { release(); await refresh; });
+  expect(apply).not.toHaveBeenCalled();
+  expect(result.current.dirty).toBe(true);
+});
+
 describe('hasClinicalContent', () => {
   it('ignores patient and owner details; counts charting', () => {
     expect(hasClinicalContent(snap({}))).toBe(false);
     expect(hasClinicalContent(snap({ exam: true }))).toBe(true);
+  });
+
+  it('counts an imaging report or planned extraction as clinical charting', () => {
+    const snapshot = snap({});
+    expect(hasClinicalContent({ ...snapshot, patientInfo: { ...snapshot.patientInfo, ctReport: 'Fracture' } })).toBe(true);
+    expect(hasClinicalContent({ ...snapshot, plannedExtractions: [108] })).toBe(true);
   });
 
   it('ignores teeth carried forward as missing (a new visit nobody has charted yet)', () => {

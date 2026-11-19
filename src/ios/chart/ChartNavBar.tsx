@@ -9,7 +9,7 @@ import './chart.css';
 /**
  * The Chart tab's navigation bar: the patient's name as a large title
  * (tap it to jump between sections), the save status as the subtitle,
- * and the trailing items — Edit / Finalize for records, Share (opens
+ * and the trailing items — Edit / Save / Finalize for records, Share (opens
  * Documents through the chart form's submit) and a More menu.
  *
  * The leading slot stays empty: on iPad the Show-sidebar button floats
@@ -32,12 +32,14 @@ export interface ChartNavBarProps {
   menu: MenuItem[];
   /** View-only saved visit: Edit unlocks it (same as Edit chart). */
   onEdit?: () => void;
+  /** Save a prefilled chart for later. */
+  onSave?: () => void;
   /** Explicitly save and close an editable record. */
   onFinalize?: () => void;
   lifecycleBusy?: boolean;
 }
 
-export function ChartNavBar({ title, subtitle, sections, activeSection, onSection, shareLabel, menu, onEdit, onFinalize, lifecycleBusy }: ChartNavBarProps) {
+export function ChartNavBar({ title, subtitle, sections, activeSection, onSection, shareLabel, menu, onEdit, onSave, onFinalize, lifecycleBusy }: ChartNavBarProps) {
   const { t } = useTranslation(['chart', 'common', 'app']);
   const [moreAnchor, setMoreAnchor] = React.useState<MenuAnchor | null>(null);
   const scroller = React.useContext(ScrollContainerContext);
@@ -80,9 +82,9 @@ export function ChartNavBar({ title, subtitle, sections, activeSection, onSectio
           {t('common:actions.edit')}
         </button>
       )}
-      {onFinalize && (
-        <button type="button" className="ios-glass-button ios-glass-button--prominent" onClick={onFinalize} disabled={lifecycleBusy}>
-          {t('app:finalization.finalize')}
+      {(onSave || onFinalize) && (
+        <button type="button" className="ios-glass-button ios-glass-button--prominent" onClick={onSave ?? onFinalize} disabled={lifecycleBusy}>
+          {onSave ? t('common:actions.save') : t('app:finalization.finalize')}
         </button>
       )}
       <span className="ios-glass-group">
