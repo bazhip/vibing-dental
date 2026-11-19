@@ -1,4 +1,4 @@
-vi.mock('../../hooks/useProfile', () => ({ useProfile: () => ({ loaded: true, aiEnabled: false }) }));
+vi.mock('../../hooks/useProfile', () => ({ useProfile: () => ({ loaded: true, aiEnabled: false, consultationEnabled: true }) }));
 import { vi } from 'vitest';
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 
@@ -146,6 +146,9 @@ describe('side panel (pseudo-locale)', () => {
     await waitFor(() => expect(document.querySelector('.sp-primary')).not.toBeNull());
     const send = document.querySelector('.sp-primary') as HTMLButtonElement;
     expect(document.querySelector('textarea')).not.toBeNull();
+    expect(screen.getByRole('button', { name: /Open consultation/ })).toBeInTheDocument();
+    fireEvent.click(document.querySelector('.sp-note-preview summary') as HTMLElement);
+    expect(screen.getByRole('button', { name: /Reload saved note/ })).toBeInTheDocument();
     expect(findUntranslated(document.body, [/Bella/, /Scaled/, /Consult/, /Plan/, /Smith/])).toEqual([]);
     await waitFor(() => expect(send).toBeEnabled());
     // The mismatch-free path goes straight to the results.

@@ -425,6 +425,8 @@
       "back": "← Zurück zu den Akten",
       "loading": "Akte wird geöffnet…",
       "noteLabel": "Aktennotiz",
+      "openConsultation": "Konsultation öffnen",
+      "reloadSavedNote": "Gespeicherte Notiz neu laden",
       "flagLoading": "Es wird geprüft, ob das Senden für Ihre Praxis aktiviert ist…",
       "flagFailed": "Es konnte nicht geprüft werden, ob das Senden an die Praxissoftware für Ihre Praxis aktiviert ist.",
       "sendOff": "Das Senden an die Praxissoftware ist für Ihre Praxis nicht aktiviert.",

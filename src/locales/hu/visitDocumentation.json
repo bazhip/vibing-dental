@@ -2,7 +2,49 @@
   "consultation": {
     "title": "Konzultáció",
     "purpose": "Rögzítse a vizit okát, a kórelőzményt, az állapotértékelést és a tervet a közös vizsgálat és fogászati lap mellett.",
-    "review": "Klinikai dokumentáció áttekintése"
+    "review": "Klinikai dokumentáció áttekintése",
+    "guide": "Konzultációs útmutató",
+    "openExam": "Fogászati vizsgálat megnyitása",
+    "transcripts": "Mentett átiratok",
+    "templates": {
+      "label": "Jegyzetsablon",
+      "saved": "{{name}} (mentett változat)",
+      "manage": "Sablonok kezelése",
+      "title": "Konzultációs sablonok",
+      "intro": "Válassza ki a konzultációs jegyzet szakaszainak elrendezését.",
+      "help": "A sablonok működése",
+      "loading": "A praxis sablonjainak betöltése…",
+      "loadFailed": "A praxis sablonjai nem tölthetők be. Az alapsablonok elérhetők.",
+      "saveFailed": "A sablonok nem menthetők. Próbálja újra.",
+      "conflict": "A praxis sablonjait máshol módosították. Zárja be, majd nyissa meg újra a sablontárat.",
+      "untitled": "Névtelen sablon",
+      "discard": "Elveti a sablonmódosításokat?",
+      "default": "Praxis alapértelmezése",
+      "archived": "Archivált",
+      "showArchived": "Archivált sablonok megjelenítése",
+      "preview": "Minta előnézete",
+      "options": "További lehetőségek",
+      "setDefault": "Beállítás a praxis alapértelmezéseként",
+      "restore": "Sablon visszaállítása",
+      "archive": "Sablon archiválása",
+      "sampleNotice": "Kitalált eset az előnézethez.",
+      "moveUp": "{{field}} feljebb helyezése",
+      "moveDown": "{{field}} lejjebb helyezése",
+      "starters": {
+        "dental-v1": "Fogászati konzultáció",
+        "soap-v1": "Általános SOAP",
+        "recheck-v1": "Kontrollvizsgálat"
+      },
+      "samples": {
+        "complaint": "Kontrollvizsgálat evés közbeni kellemetlenség miatt.",
+        "consultationHistory": "A gazdi szerint az állat jobban eszik.",
+        "consultationAssessment": "Az állatorvos a rögzített leletek áttekintése után újraértékeli az esetet.",
+        "consultationPlan": "A további lépések megbeszélése a gazdival.",
+        "gpVitals": "Az alkalommal rögzített testtömeg.",
+        "gpPhysicalExam": "A vizsgálati leleteket rögzítették.",
+        "gpDiagnostics": "A korábbi felvételek áttekinthetők."
+      }
+    }
   },
   "discharge": {
     "title": "Hazabocsátás",

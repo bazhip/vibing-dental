@@ -37,7 +37,10 @@
     "preferences": "Akteneinstellungen mit Layout, automatischem Speichern und Optionen für die Taschentiefenmessung.",
     "help-tools": "Hilfemenü mit Hilfecenter, Einführung, Neuerungen und Feedback.",
     "by-number": "Die Ansicht „Pro Zahn“ mit ausgewähltem Zahn 108 im nummerierten Schema und den dazugehörigen Befunden.",
-    "imagingSettings": "Einstellungen „Bildgebung und PDF“ mit Berichtssprache und Standardoptionen für den PDF-Inhalt."
+    "imagingSettings": "Einstellungen „Bildgebung und PDF“ mit Berichtssprache und Standardoptionen für den PDF-Inhalt.",
+    "consultationReview": "Konsultationseditor mit markierter Vorlage und der Schaltfläche Klinische Dokumentation prüfen über den Besuchsfeldern.",
+    "consultationTemplatePreview": "Vorlagenbibliothek mit der Vorschau einer fiktiven Konsultation in der ausgewählten Abschnittsreihenfolge.",
+    "consultationRecordNote": "Aktennotiz zum Besuch mit bearbeitbarem klinischem Text und der Schaltfläche Kopieren."
   },
   "articles": {
     "start": {
@@ -397,6 +400,60 @@
         "third": {
           "title": "Ansicht wechseln oder einen Befund mit Zahnnummer diktieren",
           "text": "„Raster“ und „Pro Zahn“ bearbeiten dieselbe Akte. Messwerte aus der nummerierten Ansicht erscheinen auch im „Raster“. Diagnose- und Eingriffsnotizen und Markierungen erscheinen im jeweiligen Schema. Sie können jederzeit zwischen den Ansichten wechseln, um die Eingaben zu prüfen.\n\nBleiben Sie zum Diktieren im „Zahnschema“, wählen Sie „Diktieren“ und starten Sie die Aufnahme. Sprechen Sie die vollständige Nummer und den Befund, zum Beispiel „108, distale Tasche fünf Millimeter“. Prüfen Sie, ob das Ergebnis zum beabsichtigten Zahn und zu den verfügbaren Taschenfeldern passt. Prüfen Sie einen Änderungsvorschlag vor der Übernahme, wenn er von einem erfassten Wert abweicht."
+        }
+      }
+    },
+    "consultation": {
+      "title": "Eine Konsultation dokumentieren",
+      "intro": "Erfassen und prüfen Sie eine Notiz im Patientenbesuch.",
+      "sections": {
+        "first": {
+          "title": "Wählen Sie eine Vorlage",
+          "text": "Öffnen Sie den Besuch des Patienten und wählen Sie Konsultation. Wählen Sie unter Notizvorlage eine der angezeigten Vorlagen. Prüfen Sie die hervorgehobene Auswahl und die Reihenfolge der Abschnitte. Beim Vorlagenwechsel werden die Felder neu angeordnet und vorhandene Texte beibehalten."
+        },
+        "second": {
+          "title": "Besuch erfassen oder diktieren",
+          "text": "Dokumentieren Sie den Besuchsgrund, die Anamnese, die Beurteilung und den Plan. Wenn die Diktierfunktion verfügbar ist, vergleichen Sie jeden vorgeschlagenen Abschnitt vor der Übernahme mit der Quelle. Öffnen Sie zum erneuten Lesen eines Transkripts Gespeicherte Transkripte und wählen Sie das Aufnahmedatum. Mit Zahnuntersuchung öffnen gelangen Sie zur Zahnuntersuchung desselben Besuchs."
+        },
+        "third": {
+          "title": "Notiz prüfen",
+          "text": "Wählen Sie Klinische Dokumentation prüfen, um die Aktennotiz für diesen Besuch zu öffnen. Prüfen Sie vor der Übertragung, ob die dokumentierten Befunde vorhanden und in der erwarteten Reihenfolge angeordnet sind."
+        }
+      }
+    },
+    "consultation-templates": {
+      "title": "Konsultationsvorlagen anpassen",
+      "intro": "Legen Sie eine einheitliche Reihenfolge für Ihre Praxis fest.",
+      "sections": {
+        "first": {
+          "title": "Mit einer Vorlage beginnen",
+          "text": "Öffnen Sie Vorlagen verwalten in Konsultation. Praxisinhaber können eine Standardvorlage oder vorhandene Vorlage auswählen und mit Duplizieren eine bearbeitbare Kopie erstellen."
+        },
+        "second": {
+          "title": "Abschnitte anordnen und Vorschau ansehen",
+          "text": "Füllen Sie Vorlagenname aus. Ändern Sie die Reihenfolge mit den Pfeilen neben den Abschnitten. Wählen Sie Beispielvorschau, um die neue Reihenfolge anhand eines fiktiven Besuchs zu prüfen. Wählen Sie dieselbe Schaltfläche erneut, um zur Bearbeitung zurückzukehren."
+        },
+        "third": {
+          "title": "Speichern oder archivieren",
+          "text": "Öffnen Sie Weitere Optionen und wählen Sie Als Praxisstandard festlegen, um diese Vorlage für neue Konsultationen vorauszuwählen. Mit Vorlage archivieren blenden Sie eine benutzerdefinierte Vorlage in der Besuchsauswahl aus. Aktivieren Sie zur Wiederherstellung Archivierte Vorlagen anzeigen, wählen Sie die Vorlage und anschließend Vorlage wiederherstellen. Übernehmen Sie Ihre Änderungen mit Speichern. Gespeicherte Besuche behalten das gewählte Layout."
+        }
+      }
+    },
+    "consultation-transfer": {
+      "title": "Konsultationsnotiz prüfen und übertragen",
+      "intro": "Prüfen Sie die klinische Akte vor dem Kopieren oder Senden.",
+      "sections": {
+        "first": {
+          "title": "Klinische Notiz öffnen",
+          "text": "Wählen Sie in Konsultation die Schaltfläche Klinische Dokumentation prüfen. Die Aktennotiz zeigt die Befunde des Besuchs. Lesen Sie den Text und bearbeiten Sie die Formulierungen, wenn der Besuch zur Bearbeitung geöffnet ist."
+        },
+        "second": {
+          "title": "Neue Befunde prüfen",
+          "text": "Wenn ein Hinweis meldet, dass sich die Akte seit der Bearbeitung der Notiz geändert hat, vergleichen Sie die Notiz mit dem aktuellen Besuch. Sichern Sie benötigte eigene Formulierungen, bevor Sie Aus der Akte neu erstellen wählen. Dadurch wird die bearbeitete Notiz durch den aktuellen Akteninhalt ersetzt."
+        },
+        "third": {
+          "title": "Kopieren oder senden",
+          "text": "Wählen Sie Kopieren und fügen Sie die Notiz in die vorgesehene Patientenakte ein, oder verwenden Sie die integrierte Übertragung, falls verfügbar. Prüfen Sie den Patienten und Besuch am Ziel sowie den eingefügten oder übertragenen Text."
         }
       }
     }

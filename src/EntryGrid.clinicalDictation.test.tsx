@@ -81,7 +81,7 @@ it('applies all eleven GP clinical fields and persists transcript provenance wit
   act(() => live().onApply(changes, provenance));
   await waitFor(() => expect(live().snapshot.patientInfo).toMatchObject(changes));
   expect(persisted()).toMatchObject(changes); expect(live().snapshot.clinicalDictations).toEqual([provenance]); expect(storedSources()).toEqual([provenance]);
-  expect(screen.getByLabelText('Vital signs')).toHaveValue(changes.gpVitals);
+  expect(screen.getByRole('textbox', { name: 'Vital signs' })).toHaveValue(changes.gpVitals);
   expect(state.refine).not.toHaveBeenCalled();
 });
 it('opens clinical history from Patient information on a finalized chart', async () => {

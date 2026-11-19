@@ -2,7 +2,49 @@
   "consultation": {
     "title": "Consulta",
     "purpose": "Registre el motivo de consulta, los antecedentes, la valoración y el plan junto con la exploración y el historial compartidos.",
-    "review": "Revisar la historia clínica"
+    "review": "Revisar la historia clínica",
+    "guide": "Guía de consulta",
+    "openExam": "Abrir la exploración dental",
+    "transcripts": "Transcripciones guardadas",
+    "templates": {
+      "label": "Plantilla de nota",
+      "saved": "{{name}} (versión guardada)",
+      "manage": "Gestionar plantillas",
+      "title": "Plantillas de consulta",
+      "intro": "Elija cómo se organizan las secciones de la nota de consulta.",
+      "help": "Cómo funcionan las plantillas",
+      "loading": "Cargando las plantillas de la clínica…",
+      "loadFailed": "No se pudieron cargar las plantillas de la clínica. Las plantillas iniciales están disponibles.",
+      "saveFailed": "No se pudieron guardar las plantillas. Vuelva a intentarlo.",
+      "conflict": "Las plantillas de la clínica se han modificado en otro lugar. Cierre y vuelva a abrir la biblioteca para cargar la última versión.",
+      "untitled": "Plantilla sin nombre",
+      "discard": "¿Descartar los cambios en las plantillas?",
+      "default": "Predeterminada de la clínica",
+      "archived": "Archivadas",
+      "showArchived": "Mostrar plantillas archivadas",
+      "preview": "Vista previa de ejemplo",
+      "options": "Más opciones",
+      "setDefault": "Establecer como predeterminada de la clínica",
+      "restore": "Restaurar plantilla",
+      "archive": "Archivar plantilla",
+      "sampleNotice": "Ejemplo ficticio para la vista previa.",
+      "moveUp": "Subir {{field}}",
+      "moveDown": "Bajar {{field}}",
+      "starters": {
+        "dental-v1": "Consulta dental",
+        "soap-v1": "SOAP general",
+        "recheck-v1": "Revisión"
+      },
+      "samples": {
+        "complaint": "Revisión por molestias al comer.",
+        "consultationHistory": "El propietario indica que el animal come mejor.",
+        "consultationAssessment": "El veterinario reevaluará el caso tras revisar los hallazgos registrados.",
+        "consultationPlan": "Comentar los siguientes pasos con el propietario.",
+        "gpVitals": "Peso registrado en esta visita.",
+        "gpPhysicalExam": "Se registraron los hallazgos de la exploración.",
+        "gpDiagnostics": "Hay imágenes anteriores disponibles para revisar."
+      }
+    }
   },
   "discharge": {
     "title": "Alta",

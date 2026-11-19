@@ -1,3 +1,5 @@
+import { CONSULTATION_STARTERS, DENTAL_CONSULTATION } from './consultationTemplates';
+
 import i18n from '../i18n';
 import { ChartSnapshot, EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS, Species } from '../types';
 import { getInitialToothData } from '../constants';
@@ -156,4 +158,16 @@ it('includes GP clinical sections and basis but excludes raw dictation provenanc
   expect(text).not.toContain('PRIVATE RAW SOURCE');
   expect(recordNoteBasis(s)).not.toBe(recordNoteBasis(base));
   expect(recordNoteBasis({ ...base, clinicalDictations: s.clinicalDictations })).toBe(recordNoteBasis(base));
+});
+
+it('keeps stable clinical section keys and follows the pinned consultation order', () => {
+  const patientInfo = { consultationHistory: 'History', consultationAssessment: 'Assessment', gpVitals: 'Weight recorded' };
+  const legacy = snap({}, patientInfo);
+  const soap = snap({}, { ...patientInfo, consultationLayout: CONSULTATION_STARTERS['soap-v1'] });
+  expect(buildRecordNote(soap, en()).sections.map(section => section.key))
+    .toEqual(['header', 'consultationHistory', 'gpVitals', 'consultationAssessment']);
+  expect(buildRecordNote(legacy, en()).sections.map(section => section.key))
+    .toEqual(['header', 'consultationHistory', 'consultationAssessment', 'gpVitals']);
+  expect(recordNoteBasis(soap)).not.toBe(recordNoteBasis(legacy));
+  expect(recordNoteBasis(snap({}, { ...patientInfo, consultationLayout: DENTAL_CONSULTATION }))).toBe(recordNoteBasis(legacy));
 });

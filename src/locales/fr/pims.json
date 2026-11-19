@@ -425,6 +425,8 @@
       "back": "← Retour aux dossiers",
       "loading": "Ouverture du dossier…",
       "noteLabel": "Note du dossier",
+      "openConsultation": "Ouvrir la consultation",
+      "reloadSavedNote": "Recharger la note enregistrée",
       "flagLoading": "Vérification de l’activation de l’envoi pour votre cabinet…",
       "flagFailed": "Impossible de vérifier si l’envoi vers le logiciel du cabinet est activé pour votre cabinet.",
       "sendOff": "L’envoi vers le logiciel du cabinet n’est pas activé pour votre cabinet.",

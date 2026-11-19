@@ -2,7 +2,49 @@
   "consultation": {
     "title": "Visita",
     "purpose": "Registri il motivo della visita, l’anamnesi, la valutazione e il piano insieme all’esame e alla cartella condivisi.",
-    "review": "Verifichi la cartella clinica"
+    "review": "Verifichi la cartella clinica",
+    "guide": "Guida alla visita",
+    "openExam": "Apri l’esame dentale",
+    "transcripts": "Trascrizioni salvate",
+    "templates": {
+      "label": "Modello della nota",
+      "saved": "{{name}} (versione salvata)",
+      "manage": "Gestisci i modelli",
+      "title": "Modelli di visita",
+      "intro": "Scelga come disporre le sezioni nella nota di visita.",
+      "help": "Come funzionano i modelli",
+      "loading": "Caricamento dei modelli della struttura…",
+      "loadFailed": "Impossibile caricare i modelli della struttura. I modelli iniziali sono disponibili.",
+      "saveFailed": "Impossibile salvare i modelli. Riprovi.",
+      "conflict": "I modelli della struttura sono stati modificati altrove. Chiuda e riapra la raccolta per caricare l’ultima versione.",
+      "untitled": "Modello senza nome",
+      "discard": "Scartare le modifiche ai modelli?",
+      "default": "Predefinito della struttura",
+      "archived": "Archiviati",
+      "showArchived": "Mostra i modelli archiviati",
+      "preview": "Anteprima di esempio",
+      "options": "Altre opzioni",
+      "setDefault": "Imposta come predefinito della struttura",
+      "restore": "Ripristina il modello",
+      "archive": "Archivia il modello",
+      "sampleNotice": "Esempio fittizio per l’anteprima.",
+      "moveUp": "Sposta {{field}} verso l’alto",
+      "moveDown": "Sposta {{field}} verso il basso",
+      "starters": {
+        "dental-v1": "Visita odontoiatrica",
+        "soap-v1": "SOAP generale",
+        "recheck-v1": "Controllo"
+      },
+      "samples": {
+        "complaint": "Controllo per fastidio durante i pasti.",
+        "consultationHistory": "Il proprietario riferisce che l’animale mangia meglio.",
+        "consultationAssessment": "Il veterinario rivaluterà il caso dopo aver esaminato i rilievi registrati.",
+        "consultationPlan": "Discutere i passaggi successivi con il proprietario.",
+        "gpVitals": "Peso registrato durante la visita.",
+        "gpPhysicalExam": "I rilievi dell’esame sono stati registrati.",
+        "gpDiagnostics": "Le immagini precedenti sono disponibili per la revisione."
+      }
+    }
   },
   "discharge": {
     "title": "Dimissione",

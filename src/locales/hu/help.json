@@ -37,7 +37,10 @@
     "preferences": "Kórlapbeállítások az elrendezéssel, az automatikus mentéssel és a tasakmélység rögzítésével.",
     "help-tools": "A Súgó menü a súgóközponttal, a bemutatóval, az újdonságokkal és a visszajelzéssel.",
     "by-number": "A Foganként nézet számozott diagramján a 108-as Triadan-számú fog van kijelölve, mellette az adott foghoz tartozó leletek láthatók.",
-    "imagingSettings": "A Képalkotás és PDF beállításai a lelet nyelvével és a PDF-be kerülő elemek alapbeállításaival."
+    "imagingSettings": "A Képalkotás és PDF beállításai a lelet nyelvével és a PDF-be kerülő elemek alapbeállításaival.",
+    "consultationReview": "Konzultációs szerkesztő a kijelölt sablonnal és a vizitmezők fölötti Klinikai dokumentáció áttekintése gombbal.",
+    "consultationTemplatePreview": "Sablontár egy fiktív konzultáció előnézetével, a választott szakaszsorrendben.",
+    "consultationRecordNote": "A vizit kórlapi feljegyzése a szerkeszthető klinikai szöveggel és a(z) Másolás gombbal."
   },
   "articles": {
     "start": {
@@ -397,6 +400,60 @@
         "third": {
           "title": "Váltás a nézetek között vagy lelet diktálása a fog számával",
           "text": "A „Táblázat” és a „Foganként” nézet ugyanazt a fogászati lapot szerkeszti. A számozott szerkesztőben bevitt mérések a táblázatban is megjelennek. A diagnosztikai és beavatkozási megjegyzések és jelölések a megfelelő diagramokon jelennek meg. Az adatok ellenőrzéséhez bármikor válthat nézetet.\n\nDiktáláshoz maradjon a „Fogászati lap kitöltése” szakaszban, válassza a „Diktálás” lehetőséget, majd indítsa el a felvételt. Mondja ki a teljes fogszámot és a leletet, például „száznyolc, disztális tasak öt milliméter”. Ellenőrizze, hogy az adat a megfelelő foghoz és a megfelelő tasakmezőbe került-e. Ha a javasolt módosítás eltér egy már rögzített értéktől, alkalmazás előtt ellenőrizze."
+        }
+      }
+    },
+    "consultation": {
+      "title": "Konzultáció dokumentálása",
+      "intro": "Készítsen és ellenőrizzen jegyzetet a páciens vizitjén belül.",
+      "sections": {
+        "first": {
+          "title": "Válasszon sablont",
+          "text": "Nyissa meg a páciens vizitjét, és válassza a következő részt: Konzultáció. A(z) Jegyzetsablon alatt válasszon a megjelenített sablonok közül. Ellenőrizze a kiemelt választást és a szakaszok sorrendjét. A sablonváltás átrendezi a mezőket, és megőrzi a beírt szöveget."
+        },
+        "second": {
+          "title": "A vizit rögzítése vagy diktálása",
+          "text": "Rögzítse a vizit okát, az előzményeket, az értékelést és a tervet. Ha elérhető a diktálás, alkalmazás előtt hasonlítsa össze a javasolt szakaszokat a forrásukkal. Az átirat újbóli megtekintéséhez nyissa meg a(z) Mentett átiratok részt, és válassza ki a felvétel dátumát. Ugyanezen a viziten belül a fogászati vizsgálat megnyitásához válassza a(z) Fogászati vizsgálat megnyitása gombot."
+        },
+        "third": {
+          "title": "A jegyzet ellenőrzése",
+          "text": "Válassza a(z) Klinikai dokumentáció áttekintése gombot a vizit kórlapi feljegyzésének megnyitásához. Továbbítás előtt ellenőrizze, hogy a dokumentált leletek szerepelnek-e benne, a várt sorrendben."
+        }
+      }
+    },
+    "consultation-templates": {
+      "title": "Konzultációs sablonok testreszabása",
+      "intro": "Állítson be egységes sorrendet a praxisban.",
+      "sections": {
+        "first": {
+          "title": "Kezdés meglévő sablonnal",
+          "text": "A(z) Konzultáció részből nyissa meg a(z) Sablonok kezelése ablakot. A praxis tulajdonosai kiválaszthatnak egy kiinduló vagy egy meglévő sablont, majd a(z) Másolat készítése gombbal szerkeszthető másolatot készíthetnek."
+        },
+        "second": {
+          "title": "Szakaszok rendezése és előnézete",
+          "text": "Töltse ki a(z) Sablon neve mezőt. A szakaszok melletti nyilakkal módosítsa a sorrendet. Válassza a(z) Minta előnézete gombot az új sorrend ellenőrzéséhez egy fiktív viziten. A szerkesztéshez válassza ismét ugyanezt a gombot."
+        },
+        "third": {
+          "title": "Mentés vagy archiválás",
+          "text": "Nyissa meg a(z) További lehetőségek menüt, és válassza a(z) Beállítás a praxis alapértelmezéseként lehetőséget, hogy az új konzultációk ezzel a sablonnal induljanak. A saját sablon elrejtéséhez válassza a(z) Sablon archiválása lehetőséget. Visszaállításhoz kapcsolja be a(z) Archivált sablonok megjelenítése beállítást, válassza ki a sablont, majd válassza a(z) Sablon visszaállítása lehetőséget. A változtatások alkalmazásához válassza a(z) Mentés gombot. A mentett vizitek megőrzik a kiválasztott elrendezést."
+        }
+      }
+    },
+    "consultation-transfer": {
+      "title": "Konzultációs jegyzet ellenőrzése és továbbítása",
+      "intro": "Másolás vagy küldés előtt ellenőrizze a klinikai dokumentációt.",
+      "sections": {
+        "first": {
+          "title": "A klinikai jegyzet megnyitása",
+          "text": "A(z) Konzultáció részen válassza a(z) Klinikai dokumentáció áttekintése gombot. Megnyílik a vizit leleteit tartalmazó kórlapi feljegyzés. Tekintse át, és szerkesztésre megnyitott vizitnél módosítsa a megfogalmazást."
+        },
+        "second": {
+          "title": "Friss leletek ellenőrzése",
+          "text": "Ha figyelmeztetés jelzi, hogy a fogászati lap módosult a feljegyzés szerkesztése óta, hasonlítsa össze a feljegyzést az aktuális vizittel. Mentse a szükséges kézi megfogalmazásokat, mielőtt a(z) Újraépítés a fogászati lapból műveletet választja. Ez az aktuális laptartalomra cseréli a szerkesztett feljegyzést."
+        },
+        "third": {
+          "title": "Másolás vagy küldés",
+          "text": "Válassza a(z) Másolás gombot, és illessze be a feljegyzést a megfelelő páciens dokumentációjába, vagy használja a beépített továbbítást, ha elérhető. Ellenőrizze a célpácienst, a vizitet és a beillesztett vagy továbbított szöveget."
         }
       }
     }

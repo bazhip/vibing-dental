@@ -61,5 +61,12 @@ body { margin: 0; background: var(--bg-page); }
 .sp-destination .sp-subtitle { margin: 0 0 6px; color: var(--sp-muted); }
 .sp-note-preview summary { cursor: pointer; color: var(--sp-accent); font-weight: 600; }
 .sp-note-preview .sp-note { box-sizing: border-box; width: 100%; margin-top: 8px; }
+.sp-chartview__summary { display: flex; align-items: center; flex-wrap: wrap; gap: 2px 12px; overflow-wrap: anywhere; }
+.sp-consultation-action { align-self: flex-start; min-height: 44px; overflow-wrap: anywhere; text-align: start; }
+.sp-consultation-action:disabled { opacity: 0.6; cursor: default; }
+@media (max-width: 600px) {
+  .sp-chartview :is(.sp-primary, .sp-secondary, .pims-dialog__row select, .pims-copy__actions > button) { min-height: 44px; }
+  .sp-note-preview summary { box-sizing: border-box; min-height: 44px; padding-block: 12px; }
+}
 .sp-actions { flex-wrap: wrap; }
 .sp-chartview .pims-dialog__results li { display: grid; gap: 4px; }

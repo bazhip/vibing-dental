@@ -2,7 +2,49 @@
   "consultation": {
     "title": "Consultație",
     "purpose": "Înregistrați motivul vizitei, anamneza, evaluarea și planul alături de examinarea și fișa comune.",
-    "review": "Verificați dosarul clinic"
+    "review": "Verificați dosarul clinic",
+    "guide": "Ghid de consultație",
+    "openExam": "Deschideți examinarea dentară",
+    "transcripts": "Transcrieri salvate",
+    "templates": {
+      "label": "Șablonul notei",
+      "saved": "{{name}} (versiune salvată)",
+      "manage": "Gestionați șabloanele",
+      "title": "Șabloane de consultație",
+      "intro": "Alegeți ordinea secțiunilor din nota de consultație.",
+      "help": "Cum funcționează șabloanele",
+      "loading": "Se încarcă șabloanele cabinetului…",
+      "loadFailed": "Șabloanele cabinetului nu au putut fi încărcate. Șabloanele de bază sunt disponibile.",
+      "saveFailed": "Șabloanele nu au putut fi salvate. Încercați din nou.",
+      "conflict": "Șabloanele cabinetului au fost modificate în altă parte. Închideți și redeschideți biblioteca pentru a încărca ultima versiune.",
+      "untitled": "Șablon fără titlu",
+      "discard": "Renunțați la modificările șabloanelor?",
+      "default": "Implicit pentru cabinet",
+      "archived": "Arhivate",
+      "showArchived": "Afișați șabloanele arhivate",
+      "preview": "Previzualizați exemplul",
+      "options": "Mai multe opțiuni",
+      "setDefault": "Setați ca implicit pentru cabinet",
+      "restore": "Restaurați șablonul",
+      "archive": "Arhivați șablonul",
+      "sampleNotice": "Exemplu fictiv pentru previzualizare.",
+      "moveUp": "Mutați {{field}} mai sus",
+      "moveDown": "Mutați {{field}} mai jos",
+      "starters": {
+        "dental-v1": "Consultație dentară",
+        "soap-v1": "SOAP general",
+        "recheck-v1": "Control"
+      },
+      "samples": {
+        "complaint": "Control pentru disconfort la hrănire.",
+        "consultationHistory": "Proprietarul spune că animalul mănâncă mai bine.",
+        "consultationAssessment": "Medicul va reevalua cazul după ce verifică constatările consemnate.",
+        "consultationPlan": "Discutați pașii următori cu proprietarul.",
+        "gpVitals": "Greutatea a fost consemnată la această vizită.",
+        "gpPhysicalExam": "Constatările examinării au fost consemnate.",
+        "gpDiagnostics": "Imaginile anterioare sunt disponibile pentru verificare."
+      }
+    }
   },
   "discharge": {
     "title": "Externare",

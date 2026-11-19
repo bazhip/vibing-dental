@@ -2,7 +2,49 @@
   "consultation": {
     "title": "Konsultation",
     "purpose": "Dokumentieren Sie Vorstellungsgrund, Anamnese, Beurteilung und Plan zusammen mit der gemeinsamen Untersuchung und Patientenakte.",
-    "review": "Klinische Dokumentation prüfen"
+    "review": "Klinische Dokumentation prüfen",
+    "guide": "Leitfaden zur Konsultation",
+    "openExam": "Zahnuntersuchung öffnen",
+    "transcripts": "Gespeicherte Transkripte",
+    "templates": {
+      "label": "Notizvorlage",
+      "saved": "{{name}} (gespeicherte Version)",
+      "manage": "Vorlagen verwalten",
+      "title": "Konsultationsvorlagen",
+      "intro": "Legen Sie fest, wie die Abschnitte in der Konsultationsnotiz erscheinen.",
+      "help": "So funktionieren Vorlagen",
+      "loading": "Praxisvorlagen werden geladen…",
+      "loadFailed": "Die Praxisvorlagen konnten nicht geladen werden. Die Standardvorlagen sind verfügbar.",
+      "saveFailed": "Die Vorlagen konnten nicht gespeichert werden. Bitte versuchen Sie es erneut.",
+      "conflict": "Die Praxisvorlagen wurden an anderer Stelle geändert. Schließen und öffnen Sie die Bibliothek, um die aktuelle Version zu laden.",
+      "untitled": "Unbenannte Vorlage",
+      "discard": "Vorlagenänderungen verwerfen?",
+      "default": "Praxisstandard",
+      "archived": "Archiviert",
+      "showArchived": "Archivierte Vorlagen anzeigen",
+      "preview": "Beispielvorschau",
+      "options": "Weitere Optionen",
+      "setDefault": "Als Praxisstandard festlegen",
+      "restore": "Vorlage wiederherstellen",
+      "archive": "Vorlage archivieren",
+      "sampleNotice": "Fiktives Beispiel für die Vorschau.",
+      "moveUp": "{{field}} nach oben verschieben",
+      "moveDown": "{{field}} nach unten verschieben",
+      "starters": {
+        "dental-v1": "Zahnkonsultation",
+        "soap-v1": "Allgemeines SOAP",
+        "recheck-v1": "Nachkontrolle"
+      },
+      "samples": {
+        "complaint": "Nachkontrolle wegen Beschwerden beim Fressen.",
+        "consultationHistory": "Der Tierhalter berichtet, dass das Tier besser frisst.",
+        "consultationAssessment": "Der Tierarzt beurteilt den Fall nach Durchsicht der dokumentierten Befunde erneut.",
+        "consultationPlan": "Weitere Schritte mit dem Tierhalter besprechen.",
+        "gpVitals": "Gewicht bei diesem Besuch erfasst.",
+        "gpPhysicalExam": "Untersuchungsbefunde wurden dokumentiert.",
+        "gpDiagnostics": "Frühere Aufnahmen stehen zur Prüfung bereit."
+      }
+    }
   },
   "discharge": {
     "title": "Entlassung",

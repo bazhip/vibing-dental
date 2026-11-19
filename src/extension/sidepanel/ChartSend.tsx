@@ -1,3 +1,4 @@
+/// <reference types="chrome" />
 import { useProfile } from '../../hooks/useProfile';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -16,7 +17,8 @@ import { PimsNoteAutofill } from '../../components/pims/PimsNoteAutofill';
 import type { SelectedImageTransfer } from '../../utils/pims/images';
 import { PimsUploadReview } from '../../components/pims/PimsUploadReview';
 import { DiagnosticLink, SendResults } from '../../components/pims/SendResults';
-import { friendlyError } from '../../components/ui/dialogs';
+import { friendlyError, toast } from '../../components/ui/dialogs';
+import { WEB_APP_ORIGIN } from '../protocol';
 import { internalTransport } from './internalTransport';
 import { useOffscreenChartPicture } from './OffscreenChartPicture';
 import { useActiveTabChange } from './useActiveTabChange';
@@ -48,6 +50,7 @@ type Loaded =
   | { kind: 'loading' }
   | { kind: 'error'; message: string }
   | { kind: 'ready'; snapshot: ChartSnapshot; pimsSentAt: string | null };
+type NoteReload = { kind: 'idle' } | { kind: 'loading' } | { kind: 'error'; message: string };
 
 /** The picked chart: its record note (read only) and the send to the open ezyVet consult. */
 export const ChartSend: React.FC<ChartSendProps> = ({
@@ -55,17 +58,36 @@ export const ChartSend: React.FC<ChartSendProps> = ({
 }) => {
   const { t } = useTranslation(['pims', 'common']);
   const [loaded, setLoaded] = React.useState<Loaded>({ kind: 'loading' });
-  const [attempt, setAttempt] = React.useState(0);
+  const [request, setRequest] = React.useState<{ chartId: string; reloadNote: boolean }>();
+  const [noteReload, setNoteReload] = React.useState<NoteReload>({ kind: 'idle' });
+  const requestChart = (reloadNote: boolean) => {
+    if (reloadNote) setNoteReload({ kind: 'loading' });
+    else setLoaded({ kind: 'loading' });
+    setRequest({ chartId: chart.id, reloadNote });
+  };
 
   React.useEffect(() => {
     let cancelled = false;
-    setLoaded({ kind: 'loading' });
+    const reloadNote = request?.chartId === chart.id && request.reloadNote;
+    if (!reloadNote) {
+      setLoaded({ kind: 'loading' });
+      setNoteReload({ kind: 'idle' });
+    }
     loadChartSnapshot(chart.id).then(
-      ({ snapshot, pimsSentAt }) => { if (!cancelled) setLoaded({ kind: 'ready', snapshot, pimsSentAt }); },
-      (err) => { if (!cancelled) setLoaded({ kind: 'error', message: friendlyError(err) }); },
+      ({ snapshot, pimsSentAt }) => {
+        if (cancelled) return;
+        setLoaded({ kind: 'ready', snapshot, pimsSentAt });
+        if (reloadNote) setNoteReload({ kind: 'idle' });
+      },
+      (err) => {
+        if (cancelled) return;
+        const error = { kind: 'error', message: friendlyError(err) } as const;
+        if (reloadNote) setNoteReload(error);
+        else setLoaded(error);
+      },
     );
     return () => { cancelled = true; };
-  }, [chart.id, attempt]);
+  }, [chart.id, request]);
 
   // Not while a send is running: the next screen couldn't show what it did.
   const back = (disabled = false) => (
@@ -79,6 +101,8 @@ export const ChartSend: React.FC<ChartSendProps> = ({
         snapshot={loaded.snapshot}
         initialSentAt={later(knownSentAt, loaded.pimsSentAt)}
         back={back}
+        onReloadChart={() => requestChart(true)}
+        noteReload={noteReload}
         sendFlag={sendFlag}
         onRetrySendFlag={onRetrySendFlag}
         onSent={onSent}
@@ -95,7 +119,7 @@ export const ChartSend: React.FC<ChartSendProps> = ({
       ) : (
         <>
           <p className="sp-error" role="alert">{loaded.message}</p>
-          <button type="button" className="sp-secondary" onClick={() => setAttempt((n) => n + 1)}>
+          <button type="button" className="sp-secondary" onClick={() => requestChart(false)}>
             {t('pims:dialog.retry')}
           </button>
         </>
@@ -109,6 +133,8 @@ interface ReadyProps {
   snapshot: ChartSnapshot;
   initialSentAt: string | null;
   back: (disabled?: boolean) => React.ReactNode;
+  onReloadChart: () => void;
+  noteReload: NoteReload;
   sendFlag: PimsSendFlag;
   onRetrySendFlag?: () => void;
   onSent?: (sentAt: string) => void;
@@ -116,10 +142,18 @@ interface ReadyProps {
 }
 
 const ChartSendReady: React.FC<ReadyProps> = ({
-  chart, snapshot, initialSentAt, back, sendFlag, onRetrySendFlag, onSent, onBusyChange,
+  chart, snapshot, initialSentAt, back, onReloadChart, noteReload, sendFlag, onRetrySendFlag, onSent, onBusyChange,
 }) => {
   const { t, i18n } = useTranslation(['pims', 'media', 'common']);
-  const aiProfile = useProfile();
+  const profile = useProfile();
+  const reloadControl = React.useRef<HTMLButtonElement>(null);
+  const restoreReloadFocus = React.useRef(false);
+  const refreshing = noteReload.kind === 'loading';
+  React.useEffect(() => {
+    if (refreshing || !restoreReloadFocus.current) return;
+    restoreReloadFocus.current = false;
+    if (document.activeElement === document.body || document.activeElement === reloadControl.current) reloadControl.current?.focus();
+  }, [refreshing]);
   const lng = i18n.language as AppLanguage;
   const stored = snapshot.recordNote ?? null;
   // The stored note is split on its headings in the language it was written in.
@@ -162,7 +196,7 @@ const ChartSendReady: React.FC<ReadyProps> = ({
     chartId: chart.id,
     patientName,
     patientNumber,
-    sentAt,
+    sentAt: later(sentAt, initialSentAt),
     onSent: handleSent,
     open: canSend,
     patientMatcher,
@@ -171,6 +205,22 @@ const ChartSendReady: React.FC<ReadyProps> = ({
   const busy = React.useRef(onBusyChange);
   busy.current = onBusyChange;
   const actionsBusy = sending || examBusy || noteBusy;
+  const noteUnavailable = noteReload.kind !== 'idle';
+  const disableTransfer = actionsBusy || noteUnavailable;
+  // Match the chart route's permitted ID segment before offering navigation.
+  const consultationAvailable = profile.loaded && profile.consultationEnabled && /^[A-Za-z0-9-]+$/.test(chart.id);
+  const openingConsultation = React.useRef(false);
+  const openConsultation = async () => {
+    if (!consultationAvailable || actionsBusy || openingConsultation.current) return;
+    openingConsultation.current = true;
+    try {
+      await chrome.tabs.create({ url: `${WEB_APP_ORIGIN}/#/chart/${chart.id}/consultation` });
+    } catch (error) {
+      toast(friendlyError(error, t('common:errors.generic')), { kind: 'error' });
+    } finally {
+      openingConsultation.current = false;
+    }
+  };
   React.useEffect(() => { busy.current?.(actionsBusy); }, [actionsBusy]);
   React.useEffect(() => () => busy.current?.(false), []);
 
@@ -188,7 +238,7 @@ const ChartSendReady: React.FC<ReadyProps> = ({
 
   const destination = phase.kind === 'ready' || phase.kind === 'results' ? phase.info : null;
   const notePreview = (
-    <details className="sp-note-preview">
+    <details className="sp-note-preview" aria-busy={refreshing}>
       <summary>{t('pims:panel.chart.noteLabel')}</summary>
       <textarea
         className="sp-note"
@@ -196,6 +246,15 @@ const ChartSendReady: React.FC<ReadyProps> = ({
         aria-label={t('pims:panel.chart.noteLabel')}
         value={stored?.text ?? recordNoteText(note)}
       />
+      {consultationAvailable && (
+        <button ref={reloadControl} type="button" className="sp-link sp-consultation-action" disabled={actionsBusy || refreshing} onClick={() => {
+          restoreReloadFocus.current = document.activeElement === reloadControl.current;
+          onReloadChart();
+        }}>
+          {t('pims:panel.chart.reloadSavedNote')}
+        </button>
+      )}
+      {noteReload.kind === 'error' && <p className="sp-error" role="alert">{noteReload.message}</p>}
     </details>
   );
 
@@ -260,20 +319,20 @@ const ChartSendReady: React.FC<ReadyProps> = ({
       <>
         {!split && <p className="sp-hint" role="status">{t('pims:editedNotice')}</p>}
         <h3 className="sp-subtitle">{t('pims:rows.heading')}</h3>
-        <MappingRows rows={rows} disabled={actionsBusy} onChoose={choose} />
+        <MappingRows rows={rows} disabled={disableTransfer} onChoose={choose} />
           {mappingStatus !== 'ready' && <p className="patient-form__hint" role={mappingStatus === 'error' ? 'alert' : 'status'}>{t(`pims:noteAutofill.mappingStatus.${mappingStatus}`)}</p>}
           {mappingStatus === 'error' && <button type="button" className="diagram-view__action" onClick={() => void load()}>{t('pims:noteAutofill.reloadMapping')}</button>}
         {changedTarget && <p className="sp-hint" role="status">{t('pims:send.targetChanged')}</p>}
         {notePreview}
         <div className="sp-actions">
-          <button type="button" className="sp-secondary" onClick={() => void resetToDefaults()} disabled={actionsBusy}>
+          <button type="button" className="sp-secondary" onClick={() => void resetToDefaults()} disabled={disableTransfer}>
             {t('pims:rows.reset')}
           </button>
           <button
             type="button"
             className="sp-primary"
             onClick={() => void doSend()}
-            disabled={actionsBusy || nothingToSend || !sentAtSettled}
+            disabled={disableTransfer || nothingToSend || !sentAtSettled}
           >
             {sending ? t('pims:actions.sending') : t('pims:actions.send')}
           </button>
@@ -285,7 +344,14 @@ const ChartSendReady: React.FC<ReadyProps> = ({
   return (
     <section className="sp-chartview">
       {back(actionsBusy)}
-      <h2 className="sp-section">{patientName}</h2>
+      <div className="sp-chartview__summary">
+        <h2 className="sp-section">{patientName}</h2>
+        {consultationAvailable && (
+          <button type="button" className="sp-link sp-consultation-action" disabled={actionsBusy} onClick={() => void openConsultation()}>
+            {t('pims:panel.chart.openConsultation')}
+          </button>
+        )}
+      </div>
       {lastSentAt && <p className="sp-hint">{t('pims:dialog.sentOn', { date: formatDate(lastSentAt) })}</p>}
       {destination?.tab && (
         <aside className="sp-destination" aria-label={t('pims:panel.chart.destination')}>
@@ -303,10 +369,10 @@ const ChartSendReady: React.FC<ReadyProps> = ({
       {canSend && destination && <PimsExam inspection={destination} transport={internalTransport} chartKey={chart.id}
         disabled={sending || noteBusy} onBusyChange={setExamBusy} onOpened={() => void load()} />}
       {canSend && <PimsNoteAutofill note={note} stored={stored} chartKey={chart.id} patientName={patientName}
-        transport={internalTransport} disabled={sending || examBusy} onBusyChange={setNoteBusy} />}
+        transport={internalTransport} disabled={sending || examBusy || noteUnavailable} onBusyChange={setNoteBusy} />}
       {canSend && <CopyActions note={note} storedText={stored?.text ?? null}
-        renderImage={picture.hasDiagrams ? picture.render : undefined} disabled={actionsBusy} />}
-      {canSend && <PimsDrafts key={chart.id} chartId={chart.id} aiEnabled={aiProfile.loaded && aiProfile.aiEnabled} radiologyTransport={internalTransport} disabled={actionsBusy}
+        renderImage={picture.hasDiagrams ? picture.render : undefined} disabled={disableTransfer} />}
+      {canSend && <PimsDrafts key={chart.id} chartId={chart.id} aiEnabled={profile.loaded && profile.aiEnabled} radiologyTransport={internalTransport} disabled={actionsBusy}
         instinctUpload={destination?.tab && destination.status?.provider === 'instinct'
           ? { tabId: destination.tab.id, transport: internalTransport } : undefined} />}
       {canSend && <PimsImages editorTransfer chartId={chart.id} disabled={actionsBusy} onTransferSelect={setSavedImage}

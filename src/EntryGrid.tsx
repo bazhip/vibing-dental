@@ -1,3 +1,6 @@
+import { useConsultationLibrary } from './hooks/useConsultationLibrary';
+import { consultationLayoutFor, CONSULTATION_FIELDS } from './utils/consultationTemplates';
+import { ConsultationTemplatesDialog } from './components/ConsultationTemplatesDialog';
 import { Icon } from './ios/icons';
 import { useTeam } from './hooks/useTeam';
 import { RefineTextContext } from './components/RefineTextAction';
@@ -294,7 +297,14 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const sectionDisabled = (requestedSection === 'gp-exam' && !gpExamOn)
     || (requestedSection === 'consultation' && !consultationOn);
   const activeSection = sectionDisabled ? 'patient' : requestedSection;
-  const ownerReportTeam = useTeam(ownerReportOn && !trial && activeSection === OWNER_REPORT_SECTION);
+  const consultationLibrary = useConsultationLibrary(consultationOn ? profile.practiceId : '');
+  const [consultationTemplatesPractice, setConsultationTemplatesPractice] = React.useState<string | null>(null);
+  const consultationTemplatesOpen = consultationOn && consultationTemplatesPractice === profile.practiceId;
+  const practiceTeam = useTeam(!trial && ((ownerReportOn && activeSection === OWNER_REPORT_SECTION) || consultationTemplatesOpen));
+  const openConsultationTemplates = () => {
+    consultationLibrary.reload();
+    setConsultationTemplatesPractice(profile.practiceId);
+  };
   // Follow the hash when it names a different section (Back/Forward, a
   // hand-edited URL) — state-driven changes are already in sync.
   React.useEffect(() => {
@@ -323,6 +333,24 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // Inline reason a save was blocked (e.g. missing patient name).
   const [saveHint, setSaveHint] = React.useState('');
   const readOnly = cloud.enabled && !editable;
+  const consultationVisitScope = JSON.stringify([profile.practiceId, chart.chartSession]);
+  const pendingConsultationLayout = React.useRef<string | null>(null);
+  const waitForConsultationDefault = () => {
+    if (!consultationLibrary.resolved && !chart.openedExisting && !chart.patientInfo.consultationLayout) {
+      pendingConsultationLayout.current = consultationVisitScope;
+    }
+  };
+  const pinInitialConsultationLayout = consultationOn && consultationLibrary.resolved && !readOnly
+    && !chart.openedExisting && !chart.patientInfo.consultationLayout
+    && pendingConsultationLayout.current === consultationVisitScope;
+  React.useEffect(() => {
+    if (!pinInitialConsultationLayout) return;
+    pendingConsultationLayout.current = null;
+    chart.setPatientInfo(previous => previous.consultationLayout ? previous : {
+      ...previous,
+      consultationLayout: consultationLayoutFor(previous, consultationLibrary.config),
+    });
+  }, [pinInitialConsultationLayout, chart.chartSession, chart.setPatientInfo, consultationLibrary.config]);
   // Has the chart changed since the user chose Edit chart? (Offers Undo changes.)
   const unlockSnapshotChanged = React.useMemo(() => {
     if (!editUnlocked || !chart.openedExisting) return false;
@@ -459,8 +487,12 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     appendClinicalDictationSource(live.chart.clinicalDictations, source);
     // The source append validates synchronously before any clinical fields change.
     live.chart.appendClinicalDictation(source);
+    const touchesConsultation = live.consultationOn && CONSULTATION_FIELDS.some(field => changes[field] !== undefined);
+    if (touchesConsultation) waitForConsultationDefault();
     live.chart.setPatientInfo(previous => ({
       ...previous, ...changes,
+      ...(touchesConsultation && consultationLibrary.resolved && !previous.consultationLayout
+        ? { consultationLayout: consultationLayoutFor(previous, consultationLibrary.config, live.chart.openedExisting) } : {}),
       ...(source.kind === 'imaging' && changes.radiographicFindings !== undefined
         ? { radiologyReport: changes.radiographicFindings, radiologyReportLanguage: source.language, radiologyReviewedBasis: '' } : {}),
       ...(source.kind === 'imaging' && changes.ctReport !== undefined
@@ -1169,6 +1201,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   );
 
   // Section list — rendered by whichever layout the active board picks.
+  const openDentalExam = () => native ? showChartSection('exam') : goToSection('exam');
   const sections: ChartSection[] = [
     {
       id: 'patient',
@@ -1190,9 +1223,25 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     ...(consultationOn ? [{
       id: 'consultation',
       label: i18n.t('visitDocumentation:consultation.title'),
-      content: <VisitDocumentationSection dictation={clinicalDictationControl(CLINICAL_WORKFLOWS.consultation)} kind="consultation" patientInfo={chart.patientInfo} readOnly={readOnly}
-        onChange={changes => { if (!readOnly) chart.setPatientInfo(previous => ({ ...previous, ...changes })); }}
-        />,
+      content: <VisitDocumentationSection key={chart.chartSession} dictation={clinicalDictationControl(CLINICAL_WORKFLOWS.consultation)}
+        kind="consultation" patientInfo={chart.patientInfo} readOnly={readOnly} onReview={() => openDocuments('note')}
+        consultation={{
+          library: consultationLibrary.config, historical: chart.openedExisting, gpExamEnabled: gpExamOn,
+          onExam: openDentalExam,
+          onTemplates: openConsultationTemplates,
+          sources: chart.clinicalDictations?.filter(source => source.kind === 'consultation'
+            || source.fields.some(field => (CONSULTATION_FIELDS as readonly string[]).includes(field))),
+        }}
+        onChange={changes => {
+          if (readOnly) return;
+          if (!changes.consultationLayout) waitForConsultationDefault();
+          chart.setPatientInfo(previous => ({
+            ...previous,
+            ...(consultationLibrary.resolved
+              ? { consultationLayout: consultationLayoutFor(previous, consultationLibrary.config, chart.openedExisting) } : {}),
+            ...changes,
+          }));
+        }} />,
     }] : []),
     ...(gpExamOn ? [{
       id: 'gp-exam',
@@ -1464,7 +1513,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           context={{ config: profile.ownerReportConfig, practiceName: profile.practiceName, doctorName: profile.doctorName }}
           aiEnabled={profile.aiEnabled && !trial && cloud.enabled}
           onCustomize={cloud.enabled && !trial && !native ? () => setReportCustomizeOpen(MANAGE_OWNER_REPORT_TEMPLATES) : undefined}
-          onNewTemplate={!trial && ownerReportTeam.loaded && ownerReportTeam.role === 'owner' && !profile.ownerReportConfigLoadFailed
+          onNewTemplate={!trial && practiceTeam.loaded && practiceTeam.role === 'owner' && !profile.ownerReportConfigLoadFailed
             ? () => setReportCustomizeOpen('new') : undefined}
         />}
       </VisitDocumentationSection>,
@@ -1928,6 +1977,13 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             onClose={closeRecordHistory} />
         </React.Suspense>
       )}
+      {consultationTemplatesOpen && (
+        <ConsultationTemplatesDialog
+          initial={consultationLibrary.config} status={consultationLibrary.status}
+          canEdit={practiceTeam.practice?.id === profile.practiceId && practiceTeam.role === 'owner'}
+          onSave={consultationLibrary.save} onReload={consultationLibrary.reload}
+          onClose={() => setConsultationTemplatesPractice(null)} />
+      )}
       {previewSnapshot && (
         <React.Suspense fallback={null}>
           <DocumentsModal
@@ -1978,6 +2034,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             recordNote={{
               snapshot: chart.getSnapshot(),
               stored: chart.recordNote,
+              showConsultationGuide: activeSection === 'consultation',
               onChange: chart.setRecordNote,
               readOnly,
               pims: {

@@ -37,7 +37,10 @@
     "preferences": "Ajustes del historial con opciones de diseño, guardado automático y anotación de la profundidad de las bolsas.",
     "help-tools": "Menú Ayuda con el centro de ayuda, el recorrido, las novedades y los comentarios.",
     "by-number": "Vista Por diente con el 108 Triadan seleccionado en el diagrama numerado y sus hallazgos abiertos.",
-    "imagingSettings": "Ajustes de diagnóstico por imagen y PDF que muestran el idioma de los informes y las opciones predeterminadas de inclusión en el PDF."
+    "imagingSettings": "Ajustes de diagnóstico por imagen y PDF que muestran el idioma de los informes y las opciones predeterminadas de inclusión en el PDF.",
+    "consultationReview": "Editor de consulta con la plantilla seleccionada resaltada y el botón Revisar la historia clínica encima de los campos de la visita.",
+    "consultationTemplatePreview": "Biblioteca de plantillas con la vista previa de una consulta ficticia y las secciones en el orden elegido.",
+    "consultationRecordNote": "Nota clínica de la visita con el texto clínico editable y el botón Copiar."
   },
   "articles": {
     "start": {
@@ -397,6 +400,60 @@
         "third": {
           "title": "Cambiar de vista o dictar un hallazgo indicando el número",
           "text": "«Cuadrícula» y «Por diente» editan el mismo historial. Las mediciones introducidas en el editor numerado también aparecen en «Cuadrícula». Las notas y marcas de «Diagnóstico» y «Procedimiento» aparecen en sus respectivos diagramas. Puede cambiar de vista en cualquier momento para comprobar lo que ha registrado.\n\nPara dictar, permanezca en «Odontograma», elija «Dictar» e inicie la grabación. Diga el número completo y el hallazgo, por ejemplo, «108, bolsa distal de cinco milímetros». Compruebe que el resultado corresponda al diente y a los campos de bolsa disponibles. Si un cambio sugerido no coincide con un valor registrado, revíselo antes de aplicarlo."
+        }
+      }
+    },
+    "consultation": {
+      "title": "Documentar una consulta",
+      "intro": "Registre y revise una nota dentro de la visita del paciente.",
+      "sections": {
+        "first": {
+          "title": "Seleccione una plantilla",
+          "text": "Abra la visita del paciente y seleccione Consulta. En Plantilla de nota, elija una de las plantillas visibles. Compruebe cuál está resaltada y el orden de las secciones. Cambiar de plantilla reordena los campos y conserva el texto introducido."
+        },
+        "second": {
+          "title": "Registrar o dictar la visita",
+          "text": "Registre el motivo de la visita, los antecedentes, la evaluación y el plan. Si el dictado está disponible, compare cada sección propuesta con su fuente antes de aplicarla. Para volver a consultar una transcripción, abra Transcripciones guardadas y seleccione la fecha de grabación. Seleccione Abrir la exploración dental para ir a la exploración dental de la misma visita."
+        },
+        "third": {
+          "title": "Revisar la nota",
+          "text": "Elija Revisar la historia clínica para abrir la nota clínica de esta visita. Antes de transferirla, verifique que incluya los hallazgos documentados en el orden esperado."
+        }
+      }
+    },
+    "consultation-templates": {
+      "title": "Personalizar las plantillas de consulta",
+      "intro": "Establezca un orden uniforme para su clínica.",
+      "sections": {
+        "first": {
+          "title": "Partir de una plantilla existente",
+          "text": "Abra Gestionar plantillas desde Consulta. Los propietarios de la clínica pueden elegir una plantilla inicial o existente y seleccionar Duplicar para crear una copia editable."
+        },
+        "second": {
+          "title": "Ordenar y previsualizar las secciones",
+          "text": "Rellene Nombre de la plantilla. Use las flechas que aparecen junto a cada sección para cambiar el orden. Seleccione Vista previa de ejemplo para comprobar el resultado con una visita ficticia. Vuelva a seleccionar el botón para seguir editando."
+        },
+        "third": {
+          "title": "Guardar o archivar",
+          "text": "Abra Más opciones y elija Establecer como predeterminada de la clínica para que la plantilla se preseleccione en las consultas nuevas. Para ocultar una plantilla personalizada de las opciones de la visita, elija Archivar plantilla. Para recuperarla, active Mostrar plantillas archivadas, seleccione la plantilla y elija Restaurar plantilla. Seleccione Guardar para aplicar los cambios. Las visitas guardadas conservan la estructura elegida."
+        }
+      }
+    },
+    "consultation-transfer": {
+      "title": "Revisar y transferir una nota de consulta",
+      "intro": "Compruebe el registro clínico antes de copiarlo o enviarlo.",
+      "sections": {
+        "first": {
+          "title": "Abrir la nota clínica",
+          "text": "En Consulta, seleccione Revisar la historia clínica. La nota clínica muestra los hallazgos de la visita. Revise el texto y modifique la redacción si la visita admite cambios."
+        },
+        "second": {
+          "title": "Comprobar los nuevos hallazgos",
+          "text": "Si un aviso indica que el historial ha cambiado desde que editó la nota, compare la nota con la visita actual. Conserve las anotaciones manuales que necesite antes de seleccionar Regenerar desde el historial. Esta acción sustituye la nota modificada por el contenido actual del historial."
+        },
+        "third": {
+          "title": "Copiar o enviar",
+          "text": "Seleccione Copiar y pegue la nota en el historial del paciente correspondiente, o use la transferencia integrada si está disponible. Confirme el paciente y la visita de destino y compruebe el texto pegado o transferido."
         }
       }
     }

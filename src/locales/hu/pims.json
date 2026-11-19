@@ -118,6 +118,8 @@
       "back": "← Vissza a fogászati lapokhoz",
       "loading": "Fogászati lap megnyitása…",
       "noteLabel": "Kórlapi feljegyzés",
+      "openConsultation": "Konzultáció megnyitása",
+      "reloadSavedNote": "Mentett jegyzet újratöltése",
       "flagLoading": "Az ezyVet-küldés engedélyezésének ellenőrzése a rendelőnél…",
       "flagFailed": "Nem sikerült ellenőrizni, hogy a PIMS-küldés be van-e kapcsolva a rendelőjében.",
       "sendOff": "A PIMS-küldés nincs bekapcsolva a rendelőjében.",

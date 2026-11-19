@@ -2,7 +2,49 @@
   "consultation": {
     "title": "Consultation",
     "purpose": "Consignez le motif de consultation, les antécédents, l’évaluation et le plan avec l’examen et le dossier partagés.",
-    "review": "Vérifier le dossier clinique"
+    "review": "Vérifier le dossier clinique",
+    "guide": "Guide de consultation",
+    "openExam": "Ouvrir l’examen dentaire",
+    "transcripts": "Transcriptions enregistrées",
+    "templates": {
+      "label": "Modèle de note",
+      "saved": "{{name}} (version enregistrée)",
+      "manage": "Gérer les modèles",
+      "title": "Modèles de consultation",
+      "intro": "Choisissez l’ordre des rubriques dans la note de consultation.",
+      "help": "Fonctionnement des modèles",
+      "loading": "Chargement des modèles du cabinet…",
+      "loadFailed": "Impossible de charger les modèles du cabinet. Les modèles de base sont disponibles.",
+      "saveFailed": "Impossible d’enregistrer les modèles. Veuillez réessayer.",
+      "conflict": "Les modèles du cabinet ont été modifiés ailleurs. Fermez et rouvrez la bibliothèque pour charger la dernière version.",
+      "untitled": "Modèle sans nom",
+      "discard": "Abandonner les modifications des modèles ?",
+      "default": "Modèle par défaut du cabinet",
+      "archived": "Archivés",
+      "showArchived": "Afficher les modèles archivés",
+      "preview": "Aperçu d’un exemple",
+      "options": "Plus d’options",
+      "setDefault": "Définir comme modèle par défaut du cabinet",
+      "restore": "Restaurer le modèle",
+      "archive": "Archiver le modèle",
+      "sampleNotice": "Exemple fictif pour l’aperçu.",
+      "moveUp": "Monter {{field}}",
+      "moveDown": "Descendre {{field}}",
+      "starters": {
+        "dental-v1": "Consultation dentaire",
+        "soap-v1": "SOAP général",
+        "recheck-v1": "Contrôle"
+      },
+      "samples": {
+        "complaint": "Contrôle pour une gêne pendant les repas.",
+        "consultationHistory": "Le propriétaire signale que l’animal mange mieux.",
+        "consultationAssessment": "Le vétérinaire réévaluera la situation après avoir relu les constatations.",
+        "consultationPlan": "Discuter des prochaines étapes avec le propriétaire.",
+        "gpVitals": "Poids relevé lors de la visite.",
+        "gpPhysicalExam": "Les constatations de l’examen ont été consignées.",
+        "gpDiagnostics": "Des images antérieures sont disponibles pour examen."
+      }
+    }
   },
   "discharge": {
     "title": "Sortie",

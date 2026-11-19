@@ -19,7 +19,7 @@ html:not(.native-ios) .ai-settings-modal:not(.chart-library-modal):not(.chart-hi
 }
 html:not(.native-ios) .ai-settings-modal.feedback-modal { max-width: 560px; }
 html:not(.native-ios) .ai-settings-modal.chart-settings:not(.chart-customization) { max-width: 600px; }
-html:not(.native-ios) .ui-dialog { max-width: 460px; padding: 24px; }
+html:not(.native-ios) .ui-dialog { max-width: var(--ui-dialog-max-width, 460px); padding: 24px; }
 html:not(.native-ios) .ui-dialog--choices { max-width: 640px; }
 html:not(.native-ios) .ui-dialog--choices .ui-btn--danger { background: transparent; color: var(--danger); border-color: var(--border-strong); }
 html:not(.native-ios) .ui-dialog--choices .ui-btn--danger:hover { background: var(--surface-alt); }

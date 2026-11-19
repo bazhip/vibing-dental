@@ -37,7 +37,10 @@
     "preferences": "Setările fișei cu aspectul, salvarea automată și înregistrarea adâncimii pungilor.",
     "help-tools": "Meniul Ajutor cu centrul de ajutor, turul, noutățile și trimiterea feedbackului.",
     "by-number": "Vizualizarea Pe dinte, cu dintele 108 în sistemul Triadan selectat în diagrama numerotată și constatările sale deschise.",
-    "imagingSettings": "Setările Imagini și PDF, cu limba raportului și opțiunile implicite de includere în PDF."
+    "imagingSettings": "Setările Imagini și PDF, cu limba raportului și opțiunile implicite de includere în PDF.",
+    "consultationReview": "Editorul consultației cu șablonul ales evidențiat și butonul Verificați dosarul clinic deasupra câmpurilor vizitei.",
+    "consultationTemplatePreview": "Biblioteca de șabloane cu previzualizarea unei consultații fictive și secțiunile în ordinea aleasă.",
+    "consultationRecordNote": "Nota vizitei cu textul clinic editabil și butonul Copiați."
   },
   "articles": {
     "start": {
@@ -397,6 +400,60 @@
         "third": {
           "title": "Comutați între vizualizări sau dictați o constatare cu numărul dintelui",
           "text": "„Grilă” și „Pe dinte” editează aceeași fișă. Măsurătorile introduse în editorul numerotat apar și în grilă. Notele și marcajele de diagnostic și de procedură apar în diagramele respective. Puteți comuta între vizualizări oricând pentru a verifica datele.\n\nPentru a dicta, rămâneți în „Fișă dentară”, alegeți „Dictați” și porniți înregistrarea. Spuneți numărul complet și constatarea, de exemplu „o sută opt, pungă distală de cinci milimetri”. Verificați că rezultatul este asociat dintelui vizat și câmpului potrivit pentru măsurătorile pungilor. Dacă modificarea propusă diferă de o valoare consemnată, verificați-o înainte de a o aplica."
+        }
+      }
+    },
+    "consultation": {
+      "title": "Documentați o consultație",
+      "intro": "Notați și verificați consultația în cadrul vizitei pacientului.",
+      "sections": {
+        "first": {
+          "title": "Alegeți un șablon",
+          "text": "Deschideți vizita pacientului și selectați Consultație. La Șablonul notei, alegeți unul dintre șabloanele afișate. Verificați opțiunea evidențiată și ordinea secțiunilor. Schimbarea șablonului rearanjează câmpurile și păstrează textul introdus."
+        },
+        "second": {
+          "title": "Completați sau dictați vizita",
+          "text": "Consemnați motivul vizitei, istoricul, evaluarea și planul. Dacă dictarea este disponibilă, comparați fiecare secțiune propusă cu sursa înainte de a o aplica. Pentru a reciti o transcriere, deschideți Transcrieri salvate și alegeți data înregistrării. Folosiți Deschideți examinarea dentară pentru a ajunge la examinarea dentară din aceeași vizită."
+        },
+        "third": {
+          "title": "Verificați nota",
+          "text": "Alegeți Verificați dosarul clinic pentru a deschide nota vizitei. Înainte de transfer, verificați dacă sunt prezente constatările consemnate și dacă apar în ordinea așteptată."
+        }
+      }
+    },
+    "consultation-templates": {
+      "title": "Personalizați șabloanele de consultație",
+      "intro": "Stabiliți o ordine consecventă pentru cabinetul dumneavoastră.",
+      "sections": {
+        "first": {
+          "title": "Porniți de la un șablon existent",
+          "text": "Deschideți Gestionați șabloanele din Consultație. Proprietarii cabinetului pot alege un șablon de bază sau existent, apoi selecta Duplicați pentru a crea o copie editabilă."
+        },
+        "second": {
+          "title": "Ordonați și previzualizați secțiunile",
+          "text": "Completați Numele șablonului. Folosiți săgețile de lângă secțiuni pentru a le schimba ordinea. Selectați Previzualizați exemplul pentru a verifica noua ordine pe baza unei vizite fictive. Selectați din nou același buton pentru a reveni la editare."
+        },
+        "third": {
+          "title": "Salvați sau arhivați",
+          "text": "Deschideți Mai multe opțiuni și alegeți Setați ca implicit pentru cabinet pentru a preselecta șablonul în consultațiile noi. Pentru a ascunde un șablon personalizat din opțiunile vizitei, alegeți Arhivați șablonul. Pentru a-l recupera, activați Afișați șabloanele arhivate, selectați șablonul și alegeți Restaurați șablonul. Selectați Salvați pentru a aplica modificările. Vizitele salvate păstrează structura aleasă."
+        }
+      }
+    },
+    "consultation-transfer": {
+      "title": "Verificați și transferați nota de consultație",
+      "intro": "Verificați fișa clinică înainte de a o copia sau trimite.",
+      "sections": {
+        "first": {
+          "title": "Deschideți nota clinică",
+          "text": "În Consultație, alegeți Verificați dosarul clinic. Nota din dosar se deschide cu constatările vizitei. Recitiți textul și modificați formularea dacă vizita este deschisă pentru editare."
+        },
+        "second": {
+          "title": "Verificați constatările actualizate",
+          "text": "Dacă un mesaj indică faptul că fișa s-a schimbat de la editarea notei, comparați nota cu vizita curentă. Păstrați formulările manuale necesare înainte de a selecta Regenerați din fișă. Această acțiune înlocuiește nota editată cu informațiile actuale din fișă."
+        },
+        "third": {
+          "title": "Copiați sau trimiteți",
+          "text": "Selectați Copiați și lipiți nota în dosarul pacientului corespunzător sau folosiți transferul integrat, dacă este disponibil. Verificați pacientul și vizita de destinație, precum și textul lipit sau transferat."
         }
       }
     }

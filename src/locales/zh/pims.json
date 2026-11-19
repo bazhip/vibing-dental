@@ -118,6 +118,8 @@
       "back": "← 返回图表",
       "loading": "正在打开图表…",
       "noteLabel": "病历摘要",
+      "openConsultation": "打开就诊记录",
+      "reloadSavedNote": "重新加载已保存的记录",
       "flagLoading": "正在检查您的诊所是否已开启发送功能…",
       "flagFailed": "无法检查您的诊所是否已开启发送至 PIMS 的功能。",
       "sendOff": "您的诊所尚未开启发送至 PIMS 的功能。",

@@ -37,7 +37,10 @@
     "preferences": "Impostazioni della cartella con disposizione, salvataggio automatico e registrazione della profondità delle tasche.",
     "help-tools": "Menu Aiuto con il centro assistenza, la guida introduttiva, le novità e il feedback.",
     "by-number": "Vista Per dente con il 108 Triadan selezionato sul diagramma numerato e i relativi reperti aperti.",
-    "imagingSettings": "Impostazioni di diagnostica per immagini e PDF con la lingua dei referti e le opzioni di inclusione predefinite nel PDF."
+    "imagingSettings": "Impostazioni di diagnostica per immagini e PDF con la lingua dei referti e le opzioni di inclusione predefinite nel PDF.",
+    "consultationReview": "Editor della visita con il modello selezionato evidenziato e il pulsante Verifichi la cartella clinica sopra i campi.",
+    "consultationTemplatePreview": "Raccolta dei modelli con l’anteprima di una visita fittizia e le sezioni nell’ordine scelto.",
+    "consultationRecordNote": "Nota di cartella della visita con il testo clinico modificabile e il pulsante Copia."
   },
   "articles": {
     "start": {
@@ -397,6 +400,60 @@
         "third": {
           "title": "Cambiare vista o dettare un reperto indicando il numero",
           "text": "«Griglia» e «Per dente» modificano la stessa cartella. Le misurazioni inserite nel diagramma numerato compaiono anche in «Griglia». Le note e i contrassegni di «Diagnosi» e «Procedura» compaiono nei rispettivi diagrammi. Può cambiare vista in qualsiasi momento per controllare i dati inseriti.\n\nPer dettare, resti in «Odontogramma», scelga «Detta» e avvii la registrazione. Pronunci il numero completo e il reperto, ad esempio «108, tasca distale di cinque millimetri». Verifichi che il risultato corrisponda al dente e ai campi disponibili per le tasche. Se una modifica suggerita contraddice un valore registrato, la verifichi prima di applicarla."
+        }
+      }
+    },
+    "consultation": {
+      "title": "Documentare una visita",
+      "intro": "Compili e riveda una nota nella visita del paziente.",
+      "sections": {
+        "first": {
+          "title": "Selezioni un modello",
+          "text": "Apra la visita del paziente e selezioni Visita. Sotto Modello della nota, scelga uno dei modelli visibili. Controlli il modello evidenziato e l’ordine delle sezioni. Quando cambia modello, l’ordine dei campi cambia e il testo già inserito viene conservato."
+        },
+        "second": {
+          "title": "Compilare o dettare la visita",
+          "text": "Registri il motivo della visita, l’anamnesi, la valutazione e il piano. Se la dettatura è disponibile, confronti ogni sezione proposta con la relativa fonte prima di applicarla. Per rivedere una trascrizione, apra Trascrizioni salvate e selezioni la data della registrazione. Usi Apri l’esame dentale per passare all’esame dentale nella stessa visita."
+        },
+        "third": {
+          "title": "Rivedere la nota",
+          "text": "Selezioni Verifichi la cartella clinica per aprire la nota della visita. Prima di trasferirla, verifichi che i rilievi documentati siano presenti e nell’ordine previsto."
+        }
+      }
+    },
+    "consultation-templates": {
+      "title": "Personalizzare i modelli di visita",
+      "intro": "Imposti un ordine uniforme per la Sua struttura.",
+      "sections": {
+        "first": {
+          "title": "Partire da un modello esistente",
+          "text": "Apra Gestisci i modelli da Visita. I titolari della struttura possono scegliere un modello iniziale o esistente e selezionare Duplica per creare una copia modificabile."
+        },
+        "second": {
+          "title": "Ordinare e visualizzare le sezioni",
+          "text": "Compili Nome del modello. Usi le frecce accanto alle sezioni per cambiarne l’ordine. Selezioni Anteprima di esempio per controllare il nuovo ordine con una visita fittizia. Selezioni nuovamente lo stesso pulsante per tornare alla modifica."
+        },
+        "third": {
+          "title": "Salvare o archiviare",
+          "text": "Apra Altre opzioni e scelga Imposta come predefinito della struttura per preselezionare questo modello per le nuove visite. Per nascondere un modello personalizzato dalle opzioni della visita, scelga Archivia il modello. Per recuperarlo, attivi Mostra i modelli archiviati, selezioni il modello e scelga Ripristina il modello. Selezioni Salva per applicare le modifiche. Le visite salvate conservano la disposizione scelta."
+        }
+      }
+    },
+    "consultation-transfer": {
+      "title": "Rivedere e trasferire una nota di visita",
+      "intro": "Verifichi la cartella clinica prima di copiarla o inviarla.",
+      "sections": {
+        "first": {
+          "title": "Aprire la nota clinica",
+          "text": "In Visita, selezioni Verifichi la cartella clinica. La nota di cartella mostra i rilievi della visita. La rilegga e modifichi la formulazione se la visita è aperta alle modifiche."
+        },
+        "second": {
+          "title": "Controllare i nuovi rilievi",
+          "text": "Se un avviso segnala che la cartella è cambiata dopo la modifica della nota, confronti la nota con la visita attuale. Conservi le formulazioni manuali che Le servono prima di selezionare Rigenera dalla cartella. Questa azione sostituisce la nota modificata con i contenuti attuali della cartella."
+        },
+        "third": {
+          "title": "Copiare o inviare",
+          "text": "Selezioni Copia e incolli la nota nella cartella del paziente interessato, oppure usi il trasferimento integrato, se disponibile. Verifichi il paziente e la visita di destinazione e controlli il testo incollato o trasferito."
         }
       }
     }

@@ -54,3 +54,25 @@ it('features numbered charting and links to the settings reference', () => {
   expect(within(main).getByText('Imaging and PDF', { selector: 'dt' })).toBeInTheDocument();
   expect(within(main).getByRole('img', { name: /report language and default PDF/ })).toBeInTheDocument();
 });
+
+it('finds the template guide by task and follows a link to the consultation transfer guide', () => {
+  render(<HelpSite />);
+  const main = screen.getByRole('main');
+  fireEvent.change(screen.getByRole('searchbox', { name: 'Search documentation' }), { target: { value: 'archive template' } });
+  fireEvent.click(within(main).getByRole('link', { name: 'Customize consultation templates' }));
+  expect(location.hash).toBe('#consultation-templates');
+  expect(within(main).getByRole('img', { name: /fictional consultation preview/ })).toBeInTheDocument();
+
+  fireEvent.click(within(main).getByRole('link', { name: 'Review and transfer a consultation note' }));
+  expect(location.hash).toBe('#consultation-transfer');
+  expect(within(main).getByRole('img', { name: /Copy button/ })).toBeInTheDocument();
+});
+
+it('localizes the consultation review step and its screenshot at the direct link', async () => {
+  await act(() => installPseudoLocale());
+  window.history.replaceState(null, '', '/help/#consultation/third');
+  const { container } = render(<HelpSite />);
+  const image = screen.getByRole('img', { name: /Review clinical record/ });
+  expect(image).toHaveAttribute('src', '/help/screenshots/consultation-review.jpg');
+  expect(findUntranslated(container, Object.values(LANGUAGE_NAMES))).toEqual([]);
+});

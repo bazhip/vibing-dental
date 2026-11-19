@@ -1,3 +1,4 @@
+import { CONSULTATION_FIELDS } from './consultationTemplates';
 import { ctRecordedText } from './ctReportState';
 import { radiologyRecordedText } from './radiologyReportState';
 import type { TFunction } from 'i18next';
@@ -123,13 +124,9 @@ export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): Record
     clean(info.tech) && `${t('forms:patient.tech')}: ${clean(info.tech)}`,
   ]);
 
-  add('complaint', textLines(info.complaint));
-  add('consultationHistory', textLines(info.consultationHistory));
-  add('consultationAssessment', textLines(info.consultationAssessment));
-  add('consultationPlan', textLines(info.consultationPlan));
-  add('gpVitals', textLines(info.gpVitals));
-  add('gpPhysicalExam', textLines(info.gpPhysicalExam));
-  add('gpDiagnostics', textLines(info.gpDiagnostics));
+  for (const field of info.consultationLayout?.fields ?? CONSULTATION_FIELDS) {
+    add(field, textLines(info[field]));
+  }
 
   // 2. Anesthesia
   const nb = info.nerveBlocks;
@@ -253,6 +250,9 @@ function hashStr(s: string): string {
  *  language), so a stored note can tell when the chart moved on. */
 export function recordNoteBasis(snapshot: ChartSnapshot): string {
   const i = snapshot.patientInfo;
+  const recordedFields = CONSULTATION_FIELDS.filter(field => textLines(i[field]).length);
+  const templateOrder = i.consultationLayout?.fields.filter(field => recordedFields.includes(field));
+  const reordered = templateOrder?.some((field, index) => field !== recordedFields[index]);
   return hashStr(JSON.stringify([
     snapshot.species, snapshot.logo,
     i.patientName, i.patientNumber, i.date, i.doctor, i.tech, i.complaint,
@@ -260,6 +260,7 @@ export function recordNoteBasis(snapshot: ChartSnapshot): string {
     radiologyRecordedText(i), i.ctReport ?? '', i.treatmentReport, i.recallDate,
     ...([i.consultationHistory, i.consultationAssessment, i.consultationPlan, i.dischargeMedications, i.dischargeInstructions, i.dischargeFollowUp, i.gpVitals, i.gpPhysicalExam, i.gpDiagnostics].some(value => value?.trim())
       ? [i.consultationHistory ?? '', i.consultationAssessment ?? '', i.consultationPlan ?? '', i.dischargeMedications ?? '', i.dischargeInstructions ?? '', i.dischargeFollowUp ?? '', i.gpVitals ?? '', i.gpPhysicalExam ?? '', i.gpDiagnostics ?? ''] : []),
+    ...(reordered ? [templateOrder] : []),
     snapshot.toothData.map((td) => GRID_FIELDS.map((f) => td[f] ?? '')),
     snapshot.preMarks, snapshot.postMarks,
     (snapshot.preComments ?? []).map((c) => [c.id, c.text, c.anchorTriadan]),

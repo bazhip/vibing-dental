@@ -20,6 +20,11 @@ const open = async () => {
   await screen.findByLabelText('Review and edit the notes');
   await waitFor(() => expect(screen.getByRole('button', { name: 'Close drafts' })).toBeEnabled());
 };
+const prepareInstinctSubmission = async () => {
+  const button = await screen.findByRole('button', { name: 'Prepare Instinct submission' });
+  await waitFor(() => expect(button).toBeEnabled());
+  fireEvent.click(button);
+};
 beforeEach(() => vi.stubEnv('VITE_PIMS_ROLLOUT_ENABLED', 'true'));
 afterEach(() => { cleanup(); vi.unstubAllEnvs(); });
 describe('clinical draft workflow', () => {
@@ -45,7 +50,7 @@ describe('clinical draft workflow', () => {
     await open();
     fireEvent.click(screen.getByRole('checkbox'));
     fireEvent.click(screen.getByRole('button', { name: 'Approve reviewed draft' }));
-    fireEvent.click(await screen.findByRole('button', { name: 'Prepare Instinct submission' }));
+    await prepareInstinctSubmission();
     expect(await screen.findByText(/patient-7/)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Submit PDF' })).toBeDisabled();
     fireEvent.click(screen.getByLabelText('I checked the Instinct patient and compatibility location.'));
@@ -65,7 +70,7 @@ describe('clinical draft workflow', () => {
     render(<PimsDrafts chartId="chart" backend={api} instinctUpload={{ tabId: 12, transport: { instinctSubmission: submit } as unknown as PimsTransport }} />);
     await open(); fireEvent.click(screen.getByRole('checkbox'));
     fireEvent.click(screen.getByRole('button', { name: 'Approve reviewed draft' }));
-    fireEvent.click(await screen.findByRole('button', { name: 'Prepare Instinct submission' }));
+    await prepareInstinctSubmission();
     fireEvent.click(await screen.findByLabelText('I checked the Instinct patient and compatibility location.'));
     fireEvent.click(screen.getByRole('button', { name: 'Submit PDF' }));
     await screen.findByText(outcome === 'submitted' ? /Submitted to Instinct/ : /Outcome unknown/);
@@ -83,7 +88,7 @@ describe('clinical draft workflow', () => {
     const view = render(<PimsDrafts chartId="chart" backend={api} instinctUpload={{ tabId: 12, transport }} />);
     await open(); fireEvent.click(screen.getByRole('checkbox'));
     fireEvent.click(screen.getByRole('button', { name: 'Approve reviewed draft' }));
-    fireEvent.click(await screen.findByRole('button', { name: 'Prepare Instinct submission' }));
+    await prepareInstinctSubmission();
     fireEvent.click(await screen.findByLabelText('I checked the Instinct patient and compatibility location.'));
     fireEvent.click(screen.getByRole('button', { name: 'Submit PDF' }));
     await waitFor(() => expect(renderPdf).toHaveBeenCalled());

@@ -37,7 +37,10 @@
     "preferences": "Chart settings showing layout, autosave, and pocket depth recording options.",
     "help-tools": "The Help menu with the Help Center, walkthrough, release notes, and feedback.",
     "by-number": "The By tooth chart with Triadan 108 selected on the numbered diagram and its findings open.",
-    "imagingSettings": "Imaging and PDF settings showing the report language and default PDF inclusion choices."
+    "imagingSettings": "Imaging and PDF settings showing the report language and default PDF inclusion choices.",
+    "consultationReview": "Consultation editor with the selected template marked and the Review clinical record button above the visit fields.",
+    "consultationTemplatePreview": "Template library with a fictional consultation preview showing the sections in the selected order.",
+    "consultationRecordNote": "Visit record note with the editable clinical text and the Copy button."
   },
   "articles": {
     "start": {
@@ -397,6 +400,60 @@
         "third": {
           "title": "Switch views or dictate a numbered finding",
           "text": "Grid and By tooth edit the same chart. Measurements you enter in the numbered editor also appear in Grid. Diagnosis and Procedure notes and marks appear on their respective diagrams. You can switch views at any point to check your work.\n\nTo dictate, stay in Charting, choose Dictate, and start recording. Say the full number and the finding, for example, “108, distal pocket five millimetres.” Check the result against the intended tooth and the available pocket fields. If a suggested change conflicts with a recorded value, review it before applying."
+        }
+      }
+    },
+    "consultation": {
+      "title": "Document a consultation",
+      "intro": "Capture and review a note inside the patient’s visit.",
+      "sections": {
+        "first": {
+          "title": "Choose a template",
+          "text": "Open the patient’s visit and select Consultation. Under Note template, choose one of the visible templates. Check the highlighted choice and section order. Choosing a different template rearranges fields and keeps the text you entered."
+        },
+        "second": {
+          "title": "Enter or dictate the visit",
+          "text": "Record the reason for the visit, history, assessment and plan. If dictation is available, compare each proposed section with its source before applying it. To revisit a transcript, open Saved transcripts and select the recording date. Use Open dental exam to jump to the dental exam in the same visit."
+        },
+        "third": {
+          "title": "Review the note",
+          "text": "Choose Review clinical record to open the record note for this visit. Confirm that the documented findings are present and in the expected order before transferring the note."
+        }
+      }
+    },
+    "consultation-templates": {
+      "title": "Customize consultation templates",
+      "intro": "Set a consistent note order for your practice.",
+      "sections": {
+        "first": {
+          "title": "Start from an existing template",
+          "text": "Open Manage templates from Consultation. Practice owners can choose a starter or an existing template and select Duplicate to make an editable copy."
+        },
+        "second": {
+          "title": "Arrange and preview sections",
+          "text": "Enter a Template name. Use the up and down arrows beside each section to change its order. Select Sample preview to check the new order with fictional visit details. Select it again to return to editing."
+        },
+        "third": {
+          "title": "Save or archive",
+          "text": "Open More options and choose Set as practice default to preselect this template for new consultations. To hide a custom template from the visit choices, choose Archive template. To bring it back, turn on Show archived templates, select the template and choose Restore template. Select Save to apply your changes. Saved visits keep their selected layout."
+        }
+      }
+    },
+    "consultation-transfer": {
+      "title": "Review and transfer a consultation note",
+      "intro": "Check the clinical record before copying or sending it.",
+      "sections": {
+        "first": {
+          "title": "Open the record note",
+          "text": "In Consultation, choose Review clinical record. The record note opens with the visit findings. Review the text and edit the wording if the visit is open for editing."
+        },
+        "second": {
+          "title": "Check for updated findings",
+          "text": "If a notice says the chart changed after the note was edited, compare the note with the current visit. Keep any manual wording you need before selecting Rebuild from chart, which replaces the edited note with the current chart content."
+        },
+        "third": {
+          "title": "Copy or send",
+          "text": "Select Copy and paste into the intended patient record, or use the built-in transfer if it is available. Confirm the patient and visit at the destination and check the pasted or transferred text."
         }
       }
     }

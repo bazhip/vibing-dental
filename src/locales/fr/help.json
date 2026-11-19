@@ -37,7 +37,10 @@
     "preferences": "Paramètres du dossier avec la disposition, l’enregistrement automatique et les mesures des poches.",
     "help-tools": "Menu Aide avec le centre d’aide, la visite guidée, les nouveautés et les commentaires.",
     "by-number": "Vue « Par dent » avec la dent 108 sélectionnée sur le schéma numéroté et ses observations affichées.",
-    "imagingSettings": "Réglages « Imagerie et PDF » avec la langue des comptes rendus et le contenu inclus par défaut dans le PDF."
+    "imagingSettings": "Réglages « Imagerie et PDF » avec la langue des comptes rendus et le contenu inclus par défaut dans le PDF.",
+    "consultationReview": "Éditeur de consultation avec le modèle sélectionné mis en évidence et le bouton Vérifier le dossier clinique au-dessus des champs de la visite.",
+    "consultationTemplatePreview": "Bibliothèque de modèles avec un aperçu de consultation fictive présentant les rubriques dans l’ordre choisi.",
+    "consultationRecordNote": "Note du dossier de la visite avec le texte clinique modifiable et le bouton Copier."
   },
   "articles": {
     "start": {
@@ -397,6 +400,60 @@
         "third": {
           "title": "Changer de vue ou dicter une observation avec le numéro",
           "text": "« Grille » et « Par dent » modifient le même dossier. Les mesures saisies dans la vue numérotée apparaissent aussi dans « Grille ». Les notes et les marques de diagnostic et d’intervention apparaissent sur leurs schémas respectifs. Vous pouvez changer de vue à tout moment pour vérifier votre saisie.\n\nPour dicter, restez dans « Schéma dentaire », choisissez « Dicter », puis lancez l’enregistrement. Énoncez le numéro complet et l’observation, par exemple « 108, poche distale de cinq millimètres ». Vérifiez que le résultat correspond à la dent voulue et aux champs de profondeur disponibles. Si une suggestion diffère d’une valeur enregistrée, vérifiez-la avant de l’appliquer."
+        }
+      }
+    },
+    "consultation": {
+      "title": "Documenter une consultation",
+      "intro": "Saisissez et relisez une note dans la visite du patient.",
+      "sections": {
+        "first": {
+          "title": "Choisissez un modèle",
+          "text": "Ouvrez la visite du patient et sélectionnez Consultation. Sous Modèle de note, choisissez l’un des modèles affichés. Vérifiez le choix mis en évidence et l’ordre des rubriques. Changer de modèle réorganise les champs et conserve le texte déjà saisi."
+        },
+        "second": {
+          "title": "Saisir ou dicter la visite",
+          "text": "Consignez le motif de la visite, les antécédents, l’évaluation et le plan. Si la dictée est disponible, comparez chaque rubrique proposée à sa source avant de l’appliquer. Pour relire une transcription, ouvrez Transcriptions enregistrées et sélectionnez la date de l’enregistrement. Utilisez Ouvrir l’examen dentaire pour accéder à l’examen dentaire de cette même visite."
+        },
+        "third": {
+          "title": "Relire la note",
+          "text": "Choisissez Vérifier le dossier clinique pour ouvrir la note de la visite. Avant de transférer la note, vérifiez que les constatations documentées sont présentes et dans l’ordre attendu."
+        }
+      }
+    },
+    "consultation-templates": {
+      "title": "Personnaliser les modèles de consultation",
+      "intro": "Uniformisez l’ordre des rubriques dans votre cabinet.",
+      "sections": {
+        "first": {
+          "title": "Partir d’un modèle existant",
+          "text": "Ouvrez Gérer les modèles depuis Consultation. Les responsables du cabinet peuvent sélectionner un modèle de départ ou un modèle existant et choisir Dupliquer pour créer une copie modifiable."
+        },
+        "second": {
+          "title": "Organiser et prévisualiser les rubriques",
+          "text": "Renseignez le champ Nom du modèle. Utilisez les flèches vers le haut et le bas à côté de chaque rubrique pour modifier son emplacement. Sélectionnez Aperçu d’un exemple pour vérifier le nouvel ordre à partir d’une visite fictive. Sélectionnez de nouveau ce bouton pour reprendre la modification."
+        },
+        "third": {
+          "title": "Enregistrer ou archiver",
+          "text": "Ouvrez Plus d’options et choisissez Définir comme modèle par défaut du cabinet pour présélectionner ce modèle lors des nouvelles consultations. Pour masquer un modèle personnalisé dans les choix d’une visite, choisissez Archiver le modèle. Pour le rétablir, activez Afficher les modèles archivés, sélectionnez le modèle et choisissez Restaurer le modèle. Sélectionnez Enregistrer pour appliquer vos modifications. Les visites enregistrées conservent la disposition choisie."
+        }
+      }
+    },
+    "consultation-transfer": {
+      "title": "Relire et transférer une note de consultation",
+      "intro": "Vérifiez le dossier clinique avant de le copier ou de l’envoyer.",
+      "sections": {
+        "first": {
+          "title": "Ouvrir la note clinique",
+          "text": "Dans Consultation, sélectionnez Vérifier le dossier clinique. La note du dossier affiche les constatations de la visite. Relisez-la et modifiez la formulation si la visite est modifiable."
+        },
+        "second": {
+          "title": "Vérifier les nouvelles constatations",
+          "text": "Si un message indique que le dossier a changé depuis la modification de la note, comparez la note à la visite actuelle. Conservez les formulations manuelles utiles avant de choisir Régénérer depuis le dossier. Cette action remplace la note modifiée par le contenu actuel du dossier."
+        },
+        "third": {
+          "title": "Copier ou envoyer",
+          "text": "Sélectionnez Copier et collez la note dans le dossier du patient concerné, ou utilisez le transfert intégré s’il est disponible. Vérifiez le patient et la visite de destination, puis relisez le texte collé ou transféré."
         }
       }
     }

@@ -1,6 +1,7 @@
 import { RefineTextAction } from './RefineTextAction';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { documentationUrl } from '../help/openDocumentation';
 import type { AppLanguage } from '../i18n/config';
 import type { ChartSnapshot, StoredRecordNote } from '../types';
 import {
@@ -36,6 +37,7 @@ interface RecordNotePanelProps {
   snapshot: ChartSnapshot;
   /** The edited / AI note on the chart (null = generated live). */
   stored: StoredRecordNote | null;
+  showConsultationGuide?: boolean;
   onChange: (note: StoredRecordNote | null) => void;
   /** Saved chart not unlocked: copy only. */
   readOnly: boolean;
@@ -51,9 +53,9 @@ interface RecordNotePanelProps {
  * the chart has changed since.
  */
 export const RecordNotePanel: React.FC<RecordNotePanelProps> = ({
-  snapshot, stored, onChange, readOnly, pims, chartSnapshot = null,
+  snapshot, stored, onChange, readOnly, pims, showConsultationGuide, chartSnapshot = null,
 }) => {
-  const { t, i18n } = useTranslation('media');
+  const { t, i18n } = useTranslation(['media', 'help']);
   const lng = i18n.language as AppLanguage;
 
   const note = React.useMemo(() => buildRecordNote(snapshot, recordNoteT(lng)), [snapshot, lng]);
@@ -87,6 +89,10 @@ export const RecordNotePanel: React.FC<RecordNotePanelProps> = ({
       <aside className="pdf-preview-styles">
         <ul className="pdf-preview-notes">
           <li>{t('recordNote.hint')}</li>
+          {showConsultationGuide && <li><a className="visit-documentation__guide"
+            href={documentationUrl(lng, 'consultation-transfer')} target="_blank" rel="noopener noreferrer">
+            {t('help:articles.consultation-transfer.title')}
+          </a></li>}
         </ul>
         {readOnly && <p className="pdf-preview-hint" role="note">{t('recordNote.unlockHint')}</p>}
         {stale && (

@@ -2,8 +2,8 @@ import type help from '../locales/en/help.json';
 
 export const HELP_GROUPS = {
   start: ['start', 'account', 'patients'],
-  clinical: ['charting', 'by-number', 'exam', 'imaging', 'viewer', 'dictation', 'treatment'],
-  output: ['discharge', 'export', 'rechecks', 'recovery'],
+  clinical: ['charting', 'by-number', 'exam', 'consultation', 'consultation-templates', 'imaging', 'viewer', 'dictation', 'treatment'],
+  output: ['consultation-transfer', 'discharge', 'export', 'rechecks', 'recovery'],
   practice: ['settings', 'preferences', 'team', 'billing', 'troubleshooting', 'help-tools'],
 } as const;
 
@@ -23,6 +23,9 @@ export const HELP_SCREENSHOTS: Partial<Record<HelpTopic, readonly HelpScreenshot
   start: [{ caption: 'start', src: '/help/screenshots/chart-overview.jpg', width: 1280, height: 605, section: 'first' }],
   patients: [{ caption: 'patients', src: '/help/screenshots/patient-history.jpg', width: 1132, height: 772, section: 'third' }],
   exam: [{ caption: 'exam', src: '/help/screenshots/exam.jpg', width: 976, height: 508, section: 'first' }],
+  consultation: [{ caption: 'consultationReview', src: '/help/screenshots/consultation-review.jpg', width: 1200, height: 780, section: 'third' }],
+  'consultation-templates': [{ caption: 'consultationTemplatePreview', src: '/help/screenshots/consultation-template-preview.jpg', width: 1000, height: 780, section: 'second' }],
+  'consultation-transfer': [{ caption: 'consultationRecordNote', src: '/help/screenshots/consultation-record-note.jpg', width: 1100, height: 780, section: 'first' }],
   viewer: [{ caption: 'viewer', src: '/help/screenshots/viewer.jpg', width: 1200, height: 772, section: 'second' }],
   treatment: [{ caption: 'treatment', src: '/help/screenshots/treatment.jpg', width: 976, height: 418, section: 'second' }],
   preferences: [
@@ -46,13 +49,16 @@ export const RELATED_HELP: Record<HelpTopic, readonly HelpTopic[]> = {
   patients: ['start', 'export', 'rechecks'],
   charting: ['by-number', 'preferences', 'dictation'],
   'by-number': ['charting', 'preferences', 'dictation'],
-  exam: ['charting', 'dictation', 'treatment'],
+  exam: ['charting', 'dictation', 'treatment', 'consultation'],
+  consultation: ['consultation-templates', 'consultation-transfer', 'dictation'],
+  'consultation-templates': ['consultation', 'consultation-transfer', 'team'],
+  'consultation-transfer': ['consultation', 'consultation-templates', 'export'],
   imaging: ['viewer', 'dictation', 'export'],
   viewer: ['imaging', 'dictation', 'export'],
   dictation: ['charting', 'imaging', 'troubleshooting'],
   treatment: ['charting', 'discharge', 'export'],
   discharge: ['treatment', 'imaging', 'export'],
-  export: ['discharge', 'recovery', 'troubleshooting'],
+  export: ['discharge', 'recovery', 'troubleshooting', 'consultation-transfer'],
   recovery: ['patients', 'export', 'troubleshooting'],
   rechecks: ['patients', 'discharge', 'settings'],
   settings: ['account', 'preferences', 'team'],

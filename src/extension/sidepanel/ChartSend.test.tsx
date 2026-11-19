@@ -1,13 +1,15 @@
-vi.mock('../../hooks/useProfile', () => ({ useProfile: () => ({ loaded: true, aiEnabled: false }) }));
+vi.mock('../../hooks/useProfile', () => ({ useProfile: () => ({ loaded: true, aiEnabled: false, consultationEnabled: mocks.consultationEnabled }) }));
 import { vi } from 'vitest';
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS } from '../../types';
-import type { InspectResult } from '../protocol';
+import { WEB_APP_ORIGIN, type InspectResult } from '../protocol';
 import type { CloudChartMeta } from '../../utils/chartQueries';
 import { effectiveMap } from '../../utils/pims/mapping';
 
 const mocks = vi.hoisted(() => ({
   load: vi.fn(),
+  consultationEnabled: false,
+  independentPanel: vi.fn(),
   confirm: vi.fn(async (_o: unknown) => true),
   transport: { ping: vi.fn(), inspect: vi.fn(), send: vi.fn(), diagnose: vi.fn(), appointments: vi.fn(), startChart: vi.fn(), takePendingPatient: vi.fn(), noteAutofill: vi.fn(), physicalExam: vi.fn() },
   supabase: null as unknown,
@@ -29,6 +31,34 @@ vi.mock('../../components/ui/dialogs', async (orig) => ({
   toast: vi.fn(),
 }));
 vi.mock('../../utils/clipboard', () => ({ copyRichText: vi.fn(async () => 'rich') }));
+vi.mock('../../components/pims/PimsDrafts', async (original) => {
+  const { PimsDrafts } = await original<typeof import('../../components/pims/PimsDrafts')>();
+  return { PimsDrafts: (props: Parameters<typeof PimsDrafts>[0]) => {
+    mocks.independentPanel('drafts', props.disabled);
+    return <PimsDrafts {...props} />;
+  } };
+});
+vi.mock('../../components/pims/PimsImages', async (original) => {
+  const { PimsImages } = await original<typeof import('../../components/pims/PimsImages')>();
+  return { PimsImages: (props: Parameters<typeof PimsImages>[0]) => {
+    mocks.independentPanel('images', props.disabled);
+    return <PimsImages {...props} />;
+  } };
+});
+vi.mock('../../components/pims/PimsUploadReview', async (original) => {
+  const { PimsUploadReview } = await original<typeof import('../../components/pims/PimsUploadReview')>();
+  return { PimsUploadReview: (props: Parameters<typeof PimsUploadReview>[0]) => {
+    mocks.independentPanel('uploads', props.disabled);
+    return <PimsUploadReview {...props} />;
+  } };
+});
+vi.mock('../../components/pims/PimsExam', async (original) => {
+  const { PimsExam } = await original<typeof import('../../components/pims/PimsExam')>();
+  return { PimsExam: (props: Parameters<typeof PimsExam>[0]) => {
+    mocks.independentPanel('exam', props.disabled);
+    return <PimsExam {...props} />;
+  } };
+});
 vi.mock('./useActiveTabChange', () => ({
   useActiveTabChange: (cb: () => void) => { mocks.tab.activated = cb; },
 }));
@@ -79,6 +109,7 @@ function open({ stored, fresh, ezyvet, ezyvetNumber = null, chartName, ownerName
 beforeEach(() => {
   vi.clearAllMocks();
   mocks.supabase = null;
+  mocks.consultationEnabled = false;
   mocks.confirm.mockResolvedValue(true);
 });
 afterEach(cleanup);
@@ -157,6 +188,139 @@ describe('ChartSend', () => {
     const note = await screen.findByLabelText('Record note');
     expect(note).toHaveAttribute('readonly');
     expect((note as HTMLTextAreaElement).value).toContain('Bella');
+  });
+
+  it('uses the saved consultation layout for the record note, copy, mapped paste, and grouped transfer', async () => {
+    const { loadChartSnapshot } = await vi.importActual<typeof import('../../utils/chartQueries')>('../../utils/chartQueries');
+    const patient = rawData('Bella');
+    const readChart = vi.fn(async () => ({ data: {
+      data: {
+        ...patient,
+        patientInfo: {
+          ...patient.patientInfo,
+          consultationLayout: {
+            id: '11111111-1111-4111-8111-111111111111', name: 'Previous SOAP layout',
+            fields: ['complaint', 'consultationHistory', 'gpPhysicalExam', 'gpVitals', 'gpDiagnostics', 'consultationAssessment', 'consultationPlan'],
+          },
+          consultationHistory: 'History from the visit.', gpPhysicalExam: 'Exam findings.', gpVitals: 'Vitals recorded.',
+          consultationAssessment: 'Clinical assessment.', consultationPlan: 'Follow-up plan.',
+        },
+      },
+      pims_sent_at: null,
+    }, error: null }));
+    const matchChart = vi.fn(() => ({ single: readChart, maybeSingle: async () => ({ data: null, error: null }) }));
+    const destination = { tabId: 8, provider: 'pulse', origin: 'https://clinic.evetpractice.com', title: 'Open notes' };
+    const rpc = vi.fn(async () => ({ data: {
+      provider: destination.provider, origin: destination.origin, template_id: 'record-note-v1', version: 1,
+      mapping: { gpPhysicalExam: 'Visit notes', gpVitals: 'Visit notes' },
+    }, error: null }));
+    mocks.supabase = {
+      from: () => ({ select: () => ({ eq: matchChart }) }), rpc,
+      auth: { onAuthStateChange: (callback: (event: string, session: unknown) => void) => {
+        callback('INITIAL_SESSION', { user: { id: 'user' } });
+        return { data: { subscription: { unsubscribe: vi.fn() } } };
+      } },
+    };
+    mocks.load.mockImplementationOnce(loadChartSnapshot);
+    mocks.transport.ping.mockResolvedValue({ version: '1' });
+    const target = info('Bella');
+    target.fields = ['History', 'Physical Exam', 'Assessment', 'Plan'].map(title => ({ title, kind: 'note', acceptsImage: false }));
+    mocks.transport.inspect.mockResolvedValue(target);
+    mocks.transport.send.mockResolvedValue({ ok: true, results: [{ fieldTitle: 'Plan', result: { ok: true } }] });
+    mocks.transport.noteAutofill.mockImplementation(async (request: { operation: string; field?: string }) => request.operation === 'list'
+      ? { state: 'targets', targets: [destination] }
+      : request.operation === 'inspect'
+        ? { state: 'fields', ...destination, fields: ['History', 'Visit notes', 'Assessment', 'Plan'] }
+        : request.operation === 'prepare'
+          ? { state: 'prepared', ...destination, field: request.field, ticket: `ticket-${request.field}`, existing_characters: 0, expires_at: new Date(Date.now() + 60_000).toISOString() }
+          : { state: 'filled' });
+    render(<ChartSend chart={chart} onBack={vi.fn()} sendFlag="on" />);
+    const note = await screen.findByLabelText<HTMLTextAreaElement>('Record note');
+    expect(matchChart).toHaveBeenCalledWith('id', chart.id);
+    expect(note.value).toMatch(/History from the visit\.[\s\S]+Exam findings\.[\s\S]+Vitals recorded\.[\s\S]+Clinical assessment\.[\s\S]+Follow-up plan\./);
+    fireEvent.click(screen.getByRole('button', { name: 'Copy all' }));
+    await waitFor(() => expect(copyRichText).toHaveBeenCalledWith(expect.any(String), note.value, expect.any(String)));
+
+    fireEvent.click(screen.getByRole('button', { name: 'Fill an open PIMS note' }));
+    fireEvent.change(await screen.findByLabelText('Destination tab'), { target: { value: '8' } });
+    fireEvent.click(await screen.findByRole('button', { name: 'Map sections to fields' }));
+    const prepare = screen.getByRole('button', { name: 'Prepare autofill' });
+    await waitFor(() => expect(prepare).toBeEnabled());
+    expect(rpc).toHaveBeenCalledWith('pims_note_mapping_get', { payload: { provider: 'pulse', origin: destination.origin, template_id: 'record-note-v1' } });
+    fireEvent.click(prepare);
+    fireEvent.click(await screen.findByRole('checkbox'));
+    fireEvent.click(screen.getByRole('button', { name: 'Paste all' }));
+    await screen.findByText('Filled. Verify the notes and save them in PIMS.');
+    const fills = mocks.transport.noteAutofill.mock.calls.map(([item]) => item).filter(item => item.operation === 'fill');
+    expect(fills.map(item => item.ticket)).toEqual(['ticket-History', 'ticket-Visit notes', 'ticket-Assessment', 'ticket-Plan']);
+    expect(fills[1].text).toMatch(/Exam findings\.[\s\S]+Vitals recorded\./);
+
+    await send();
+    const request = mocks.transport.send.mock.calls[0][0];
+    expect(request.items.map((item: { fieldTitle: string }) => item.fieldTitle)).toEqual(['History', 'Physical Exam', 'Assessment', 'Plan']);
+    expect(request.items[1].text).toMatch(/Exam findings\.[\s\S]+Vitals recorded\./);
+  });
+
+  it('opens the exact consultation and reloads the saved visit after a web edit', async () => {
+    mocks.consultationEnabled = true;
+    const createTab = vi.fn(async () => undefined);
+    vi.stubGlobal('chrome', { tabs: { create: createTab } });
+    try {
+      open({ sendFlag: 'off' });
+      fireEvent.click(await screen.findByRole('button', { name: 'Open consultation' }));
+      expect(createTab).toHaveBeenCalledWith({ url: `${WEB_APP_ORIGIN}/#/chart/${chart.id}/consultation` });
+      expect(mocks.transport.inspect).not.toHaveBeenCalled();
+
+      const changed = rawData('Bella');
+      changed.patientInfo.treatmentReport = 'Updated in the web visit.';
+      mocks.load.mockResolvedValueOnce({ snapshot: normalizeSnapshot(changed as never), pimsSentAt: null });
+      fireEvent.click(screen.getByText('Record note', { selector: 'summary' }));
+      const reload = screen.getByRole('button', { name: 'Reload saved note' });
+      reload.focus();
+      fireEvent.click(reload);
+      await waitFor(() => expect(screen.getByLabelText<HTMLTextAreaElement>('Record note').value).toContain('Updated in the web visit.'));
+      expect(reload).toHaveFocus();
+      expect(screen.getByRole('button', { name: 'Reload saved note' })).toBe(reload);
+      expect(mocks.load.mock.calls).toEqual([[chart.id], [chart.id]]);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('keeps consultation actions hidden when the practice has not enabled Consultation', async () => {
+    open({ sendFlag: 'off' });
+    await screen.findByLabelText('Record note');
+    expect(screen.queryByRole('button', { name: 'Open consultation' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Reload saved note', hidden: true })).not.toBeInTheDocument();
+  });
+
+  it('blocks note transfer during a failed reload without disabling unrelated review panels', async () => {
+    mocks.consultationEnabled = true;
+    open();
+    const send = await screen.findByRole('button', { name: 'Send' });
+    await waitFor(() => expect(send).toBeEnabled());
+    fireEvent.click(screen.getByText('Record note', { selector: 'summary' }));
+    const reload = screen.getByRole('button', { name: 'Reload saved note' });
+    let fail!: (error: Error) => void;
+    mocks.load.mockImplementationOnce(() => new Promise((_resolve, reject) => { fail = reject; }));
+    mocks.independentPanel.mockClear();
+    reload.focus();
+    fireEvent.click(reload);
+    expect(send).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Copy all' })).toBeDisabled();
+    const otherControl = screen.getByRole('button', { name: 'Open consultation' });
+    otherControl.focus();
+    await act(async () => fail(new Error('Failed to fetch')));
+    expect(screen.getByRole('alert')).toBeInTheDocument();
+    expect(otherControl).toHaveFocus();
+    expect(send).toBeDisabled();
+    expect(reload).toBeEnabled();
+    for (const panel of ['drafts', 'images', 'uploads', 'exam']) {
+      expect(mocks.independentPanel).toHaveBeenCalledWith(panel, false);
+      expect(mocks.independentPanel).not.toHaveBeenCalledWith(panel, true);
+    }
+    fireEvent.click(reload);
+    await waitFor(() => expect(send).toBeEnabled());
   });
 
   it('sends the stored note when present', async () => {
@@ -345,7 +509,8 @@ describe('ChartSend', () => {
 });
 
 
-it('offers note autofill without a strict encounter and locks Back during dispatch', async () => {
+it.each(['filled', 'unknown'])('handles a %s note autofill outcome and keeps navigation locked during dispatch', async (outcome) => {
+  mocks.consultationEnabled = true;
   mocks.supabase = { auth: { onAuthStateChange: (callback: (event: string, session: unknown) => void) => {
     callback('INITIAL_SESSION', { user: { id: 'user' } });
     return { data: { subscription: { unsubscribe: vi.fn() } } };
@@ -368,9 +533,22 @@ it('offers note autofill without a strict encounter and locks Back during dispat
   fireEvent.click(await screen.findByRole('checkbox'));
   fireEvent.click(screen.getByRole('button', { name: 'Fill selected field' }));
   expect(screen.getByRole('button', { name: /Back to charts/ })).toBeDisabled();
+  expect(screen.getByRole('button', { name: 'Open consultation' })).toBeDisabled();
+  fireEvent.click(screen.getByText('Record note', { selector: 'summary' }));
+  expect(screen.getByRole('button', { name: 'Reload saved note' })).toBeDisabled();
   expect(onBusyChange).toHaveBeenLastCalledWith(true);
-  await act(async () => finish({ state: 'filled' }));
-  await screen.findByText('Filled. Verify the notes and save them in PIMS.');
+  await act(async () => finish({ state: outcome }));
+  if (outcome === 'filled') await screen.findByText('Filled. Verify the notes and save them in PIMS.');
+  else {
+    const warning = 'The outcome is unknown. Check PIMS before preparing another attempt.';
+    await screen.findByText(warning);
+    const changed = rawData('Bella');
+    changed.patientInfo.treatmentReport = 'Web edits after an uncertain transfer.';
+    mocks.load.mockResolvedValueOnce({ snapshot: normalizeSnapshot(changed as never), pimsSentAt: null });
+    fireEvent.click(screen.getByRole('button', { name: 'Reload saved note' }));
+    await waitFor(() => expect(screen.getByLabelText<HTMLTextAreaElement>('Record note').value).toContain('Web edits'));
+    expect(screen.getByText(warning)).toBeInTheDocument();
+  }
   expect(onSent).not.toHaveBeenCalled();
   expect(onBusyChange).toHaveBeenLastCalledWith(false);
 });

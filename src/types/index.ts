@@ -1,3 +1,4 @@
+import type { ConsultationLayout } from '../utils/consultationTemplates';
 import type { AppLanguage } from '../i18n/config';
 /**
  * Type definitions for the Dental Charting Application
@@ -286,6 +287,7 @@ export interface PatientInfo {
   gpVitals?: string;
   gpPhysicalExam?: string;
   gpDiagnostics?: string;
+  consultationLayout?: ConsultationLayout;
   consultationHistory?: string;
   consultationAssessment?: string;
   consultationPlan?: string;

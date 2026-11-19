@@ -425,6 +425,8 @@
       "back": "← Back to charts",
       "loading": "Opening the chart…",
       "noteLabel": "Record note",
+      "openConsultation": "Open consultation",
+      "reloadSavedNote": "Reload saved note",
       "flagLoading": "Checking whether sending is on for your practice…",
       "flagFailed": "Couldn’t check whether sending to PIMS is turned on for your practice.",
       "sendOff": "Sending to PIMS isn’t turned on for your practice.",

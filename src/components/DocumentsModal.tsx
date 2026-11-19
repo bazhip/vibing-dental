@@ -47,6 +47,7 @@ interface DocumentsModalProps {
   recordNote?: {
     snapshot: ChartSnapshot;
     stored: StoredRecordNote | null;
+    showConsultationGuide?: boolean;
     onChange: (note: StoredRecordNote | null) => void;
     readOnly: boolean;
     /** Send to ezyVet (omitted = no button). */
@@ -207,6 +208,7 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
             <RecordNotePanel
               snapshot={recordNote.snapshot}
               stored={recordNote.stored}
+              showConsultationGuide={recordNote.showConsultationGuide}
               onChange={recordNote.onChange}
               readOnly={recordNote.readOnly}
               pims={recordNote.pims}
