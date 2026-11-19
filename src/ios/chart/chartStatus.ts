@@ -19,7 +19,6 @@ export interface ChartStatusInput {
   dirty: boolean;
   online: boolean;
   hasName: boolean;
-  awaitingClinical: boolean;
   autosaveEnabled?: boolean;
   /** ISO time of the last cloud save ('' = never). */
   lastSavedAt: string;
@@ -38,7 +37,7 @@ export interface ChartStatus {
   detail?: string;
   /** A failed save the user can retry. */
   retry?: boolean;
-  /** Kept on this device until charting starts; Save now puts it in the cloud. */
+  /** A manual save is available when autosave is disabled. */
   canSaveNow?: boolean;
   /** For the polite live region: failures, going offline, and an
    *  explicit save — never the autosave's Saving…/Saved. */
@@ -73,7 +72,6 @@ export function chartStatus(i: ChartStatusInput, t: TFunction<'chart'>, fmt: Cha
     }
     if (i.dirty && !i.online) return { text: t('status.offline', { ns: 'app' }), tone: 'normal' };
     if (i.dirty && !i.hasName) return { text: t('status.needsName', { ns: 'app' }), tone: 'normal' };
-    if (i.awaitingClinical) return { text: t('ios.status.keptOnDevice'), tone: 'normal', canSaveNow: true };
     if (i.dirty) return { text: t('ios.status.unsaved'), tone: 'normal', ...(i.autosaveEnabled === false ? { canSaveNow: true } : {}) };
     if (i.lastSavedAt) return { text: t('ios.status.saved', { time: fmt.time(i.lastSavedAt) }), tone: 'normal' };
     return { text: '', tone: 'normal' };

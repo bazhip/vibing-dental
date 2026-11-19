@@ -42,7 +42,7 @@ export async function findImageDrafts(): Promise<Array<{ id: string; date: strin
 export function imageDraftWorkspace(id: string, date: string): ChartWorkspace {
   return {
     id, openedExisting: false, savedHash: '', lastSaved: { chartId: '', at: '' },
-    conflict: { chartId: id, mode: 'none' }, saveError: '', dirty: true, duplicateAnswered: '', skipDuplicate: '',
+    saveError: '', dirty: true, duplicateAnswered: '', skipDuplicate: '',
     snapshot: {
       species: 'canine', logo: 'vca', toothData: getInitialToothData('canine'),
       patientInfo: { patientName: '', patientNumber: '', ownerName: '', ownerPhone: '', ownerEmail: '', doctor: '', tech: '', date,

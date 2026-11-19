@@ -386,11 +386,11 @@ it('keeps the record editable when finalization fails', async () => {
   expect(screen.getByRole('button', { name: 'Finalize' })).toBeEnabled();
 });
 
-it.each(['saving', 'saved'] as const)('shows %s inside the active patient tab without a save toast', async status => {
+it.each(['saving', 'saved', 'idle'] as const)('shows the current cloud save state inside the patient tab when status is %s', async status => {
   flags.native = false;
   seedSavedVisit('2020-01-01', false);
   cloud.status = status;
-  cloud.lastSavedAt = status === 'saved' ? '2026-11-18T12:00:00Z' : '';
+  cloud.lastSavedAt = status === 'saving' ? '' : '2026-11-18T12:00:00Z';
   const { container } = await renderApp();
   const tab = screen.getByRole('tab', { name: /Rex/ });
   expect(within(tab).getByText(status === 'saving' ? 'Saving…' : 'Saved')).toBeVisible();
