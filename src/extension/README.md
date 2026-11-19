@@ -10,7 +10,7 @@ Permissions: `scripting`, `sidePanel`, `identity`, `storage` and host access to 
 ## Build and load
 
 ```
-npm run build:extension      # dev build: writes build-extension/ (git-ignored)
+VITE_PIMS_ROLLOUT_ENABLED=true npm run build:extension  # opt-in QA build into build-extension/
 ```
 
 The dev build also accepts messages from `http://localhost:5173` (manifest
@@ -20,20 +20,38 @@ localhost origin out of both, so the published extension answers `https://tootho
 
 1. Open `chrome://extensions`, switch on Developer mode, choose Load unpacked, pick `build-extension/`.
 2. The id shown must equal `DEV_EXTENSION_ID` in `src/extension/extensionId.ts`.
-3. Run the web app on `http://localhost:5173` (or production) and use Send to ezyVet.
+3. Run `VITE_PIMS_ROLLOUT_ENABLED=true npm start` on `http://localhost:5173` and use Send to ezyVet.
 
 PR previews cannot reach the extension: `externally_connectable` needs exact hosts.
 
-The Send to ezyVet button only shows when Chrome exposes `chrome.runtime.sendMessage` to the
-page, which it does only when an installed extension lists the site in `externally_connectable`.
-So a vet without the extension never sees the button, and the dialog's "not responding"
-explainer is reached only when the extension is installed but doesn't answer (disabled,
-crashed, or a cold service worker slower than the 500 ms + 1.5 s pings).
+The web Send button requires the rollout opt-in, practice eligibility, a non-native Chrome
+bridge and a successful handshake from the configured extension ID. Chrome messaging alone
+does not establish that ToothOps is installed. A compatible reply has a nonblank `version`,
+`protocol: 1`, and `inspect`, `send`, `diagnose` capabilities. Missing, legacy, malformed or
+incompatible replies leave Send hidden. A failed transport retries once (500 ms then 1.5 s)
+for a cold worker. Focus and visibility changes recheck availability; stale replies are ignored.
 The build stamps `package.json` `version` into the manifest and into the code
 (`VITE_EXTENSION_VERSION`, see `src/extension/version.ts`).
 
 Name and description come from `src/locales/<lng>/pims.json` (`extension.name`,
 `extension.description`), generated into `_locales/<lng>/messages.json`.
+
+### Release isolation
+
+`VITE_PIMS_ROLLOUT_ENABLED` is **off by default** in both builds; only the exact string `true`
+enables it. Free beta, practice flags and browser storage cannot bypass it. Default web builds
+hide Send, review/archive and history/radiology preparation, and do not consume extension patient
+handovers. The review/draft components do not mount their effects when disabled.
+
+Release in order: deploy and verify the backend migrations; release the compatible extension;
+then explicitly opt the web build in with `VITE_PIMS_ROLLOUT_ENABLED=true` and the released
+`VITE_EXTENSION_ID`. The matching extension build must also opt in to enable sending and the
+new review/draft UI. Leave deployment variables unset until that release is ready.
+
+After opt-in, manual preparation and backend review are rollout-gated, not installation-gated;
+extension-dependent web Send remains handshake-gated. This is a UI rollout boundary, not backend
+authorization or proof of migration deployment. Membership, patient identity, review and stale-source
+checks remain enforced separately. No new browser permissions are needed.
 
 ## Side panel
 
@@ -50,7 +68,7 @@ same mapping editor and send flow as the web dialog. It is read-only: edit chart
   already loaded, not the whole account.
 - **Patient check.** The panel's Send asks "Different patient?" unless the strict rule matches, so a
   possible match always asks. The web dialog keeps the §6 whole-word rule.
-- **Practice flag.** Send follows the same rule as the web app (`FREE_BETA || practices.pims_send_enabled`,
+- **Practice flag.** After rollout opt-in, Send follows the same rule as the web app (`FREE_BETA || practices.pims_send_enabled`,
   `src/utils/pims/sendFlag.ts`). When it is off, the chart view says sending isn't turned on for the
   practice and has no Send. If the flag can't be read, sending stays off and the view offers Retry.
 - **Already sent.** The panel remembers, per account and chart, when it sent (or may have sent) a chart
@@ -142,8 +160,8 @@ Listing text, permission justifications, privacy answers and the screenshot shot
 
 ## Manual checklist on real ezyVet
 
-jsdom cannot prove that ezyVet saved. During the free beta the Send to ezyVet button is on for
-every practice (`FREE_BETA || practices.pims_send_enabled`, owner decision), so the writable-consult
+jsdom cannot prove that ezyVet saved. After explicit rollout opt-in and a compatible handshake,
+the free beta allows sending for every practice (`FREE_BETA || practices.pims_send_enabled`, owner decision), so the writable-consult
 check, the patient and consult check and the diagnostic report are what protect vets until this
 checklist has passed on a real consult. The page fixtures are synthetic (built from reference
 selectors), so every selector is unverified.

@@ -69,7 +69,7 @@ export const WHATS_NEW: { id: string; readonly title: string; readonly intro: st
     group('dictation', ['dictateAnywhere', 'finalCheck', 'phones', 'understandsMore']),
     group('charting', ['pocketPerRoot', 'severalTeeth', 'makeItYours']),
     group('records', ['radiographicFindings', 'anesthesia', 'skipRecheck']),
-    group('ownerReport', ['writeWithAi', 'customizeReport']),
+    group('ownerReport', ['customizeReport']),
     group('everyday', ['startsWhereLeft', 'sendFeedback']),
   ],
 };

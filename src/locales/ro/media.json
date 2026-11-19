@@ -1,5 +1,10 @@
 {
   "imaging": {
+    "inOwnerReport": "În raportul proprietarului",
+    "beforeAfter": "Înainte / după",
+    "noLabel": "Fără etichetă",
+    "details": "Detaliile imaginii",
+    "reportInclusion": "Includere în rapoarte",
     "title": "Imagistică",
     "signedOut": "Autentificați-vă cu un cont de cabinet pentru a atașa fotografii intraorale și radiografii dentare — sunt stocate privat împreună cu fișa.",
     "usage": "{{used}} din {{max}} imagini",
@@ -67,7 +72,23 @@
     "toothLabel": "Dinte",
     "ownerReportLabel": "Raport pentru proprietar"
   },
+  "patientRecord": {
+    "open": "Vizualizați istoricul consultațiilor",
+    "title": "Istoricul fișei pacientului",
+    "visit": "Consultație",
+    "currentVisit": "Consultația curentă",
+    "undatedVisit": "Consultație fără dată",
+    "loadingVisits": "Se încarcă consultațiile anterioare…",
+    "visitsFailed": "Consultațiile anterioare nu au putut fi încărcate.",
+    "noVisits": "Nu există consultații anterioare disponibile în ToothOps.",
+    "visitFailed": "Această consultație nu a putut fi deschisă.",
+    "pdfs": "PDF-uri ale consultațiilor",
+    "notes": "Note clinice"
+  },
   "documents": {
+    "customize": "Personalizare",
+    "color": "Culoare",
+    "included": "Conținutul PDF-ului",
     "title": "Verificați și exportați",
     "chartTab": "Fișă clinică",
     "chartWho": "Pentru arhiva dumneavoastră și trimiteri — fișa completă cu coduri.",
@@ -107,7 +128,16 @@
       "procedures": "Proceduri",
       "radiographs": "Raport radiografic",
       "ct": "Raport CT",
-      "recheck": "Recontrol"
+      "recheck": "Recontrol",
+      "consultationHistory": "Anamneza consultației",
+      "consultationAssessment": "Evaluarea consultației",
+      "consultationPlan": "Planul consultației",
+      "dischargeMedications": "Medicamente la externare",
+      "dischargeInstructions": "Instrucțiuni la externare",
+      "dischargeFollowUp": "Monitorizare după externare",
+      "gpVitals": "Semne vitale",
+      "gpPhysicalExam": "Examen fizic",
+      "gpDiagnostics": "Diagnostic"
     },
     "alreadyMissing": "Deja absenți: {{teeth}}",
     "extracted": "Extrași: {{teeth}}",
@@ -154,6 +184,8 @@
     "missing": "Această imagine nu a putut fi încărcată."
   },
   "history": {
+    "expand": "Extindeți istoricul imaginilor",
+    "collapse": "Restrângeți istoricul imaginilor",
     "show_one": "Istoricul imaginilor (1 altă vizită)",
     "show_other": "Istoricul imaginilor ({{count}} de alte vizite)",
     "hide": "Ascundeți istoricul imaginilor",

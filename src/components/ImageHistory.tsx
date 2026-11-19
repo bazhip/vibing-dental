@@ -39,6 +39,8 @@ export const ImageHistory: React.FC<ImageHistoryProps> = ({ visits, onOpenVisit,
   const [result, setResult] = React.useState<{ key: string; items: Attachment[] | null; failed: boolean } | null>(null);
   const [viewing, setViewing] = React.useState<number | null>(null);
   const [attempt, setAttempt] = React.useState(0);
+  const [expandedVisitKey, setExpandedVisitKey] = React.useState<string | null>(null);
+  const bodyId = React.useId();
   const visitKey = JSON.stringify(visits.map(({ id, date }) => ({ id, date })).sort((a, b) => a.id.localeCompare(b.id)));
   // Key the rendered result as well as cancelling the request: a new patient
   // must never show the previous patient's thumbnails, even before effects run.
@@ -70,11 +72,21 @@ export const ImageHistory: React.FC<ImageHistoryProps> = ({ visits, onOpenVisit,
   }, [groups]);
 
   if (visits.length === 0 || (!failed && groups.length === 0)) return null;
+  const expanded = expandedVisitKey === visitKey;
 
   return (
-    <section className="image-history">
-      <h2 className="patient-form__section-title">{t('history.title')}</h2>
-      <div className="image-history__body">
+    <section className="image-history" aria-labelledby={`${bodyId}-title`}>
+      <header className="image-history__header">
+        <h2 id={`${bodyId}-title`} className="patient-form__section-title">{t('history.title')}</h2>
+        {flat.length > 1 && (
+          <button type="button" className="diagram-view__action" aria-expanded={expanded} aria-controls={bodyId}
+            onClick={() => setExpandedVisitKey(expanded ? null : visitKey)}>
+            {t(expanded ? 'history.collapse' : 'history.expand')}
+          </button>
+        )}
+      </header>
+      <div id={bodyId} className={flat.length > 0 && !expanded ? 'image-history__body image-history__body--strip' : 'image-history__body'}
+        tabIndex={!expanded && flat.length > 1 ? 0 : undefined}>
           {failed ? (
             <p className="login-error" role="alert">
               {t('history.failed')}{' '}

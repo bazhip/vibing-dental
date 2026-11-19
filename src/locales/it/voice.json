@@ -51,6 +51,21 @@
     "sessionStart": "Impossibile avviare la sessione Deepgram.",
     "unsupported": "L’input vocale richiede Chrome, Edge o Safari."
   },
+  "destination": {
+    "general": "Generale"
+  },
+  "correction": {
+    "conflict": "Verifichi questa modifica alla cartella.",
+    "apply": "Applica suggerimento",
+    "keep": "Mantieni il valore attuale"
+  },
+  "welcome": {
+    "ready": "La trascrizione verrà visualizzata qui quando avvierà la registrazione.",
+    "title": "Dettatura",
+    "start": "Scelga Avvia dettatura per iniziare la registrazione.",
+    "transcript": "Segua la trascrizione mentre parla. Al termine scelga Interrompi.",
+    "review": "Verifichi il referto o le modifiche alla cartella e apporti le correzioni necessarie."
+  },
   "intro": {
     "ariaLabel": "Detta",
     "cancel": "Annulla",
@@ -131,6 +146,7 @@
     "open_other": "{{count}} elementi da verificare."
   },
   "status": {
+    "idle": "Pronto per iniziare",
     "connecting": "Connessione…",
     "finishing": "Completamento…",
     "interrupted": "Interrotto",
@@ -154,5 +170,50 @@
   "transcript": {
     "activity": "Attività",
     "header": "Trascrizione — registrazione iniziata {{date}}"
+  },
+  "clinical": {
+    "dictate": "Dettare: {{target}}",
+    "title": "Dettatura: {{target}}",
+    "kinds": {
+      "gp-visit": "visita generale",
+      "consultation": "visita",
+      "gp-exam": "Visita generale",
+      "discharge": "istruzioni di dimissione",
+      "ct": "Referto TC"
+    },
+    "help": "Registri o incolli le osservazioni del clinico. Riveda le sezioni proposte prima di applicarle. I risultati non documentati restano vuoti.",
+    "imagingHelp": "Registri o incolli i reperti di diagnostica per immagini. Indichi la metodica se non è chiara. Verifichi a quale referto, radiografico o TC, appartengono i reperti prima di applicarli.",
+    "ctHelp": "Registri o incolli le osservazioni della TC. Quando interrompe la dettatura, vengono aggiunte solo al referto TC e rielaborate automaticamente.",
+    "ctApply": "Aggiungere e rielaborare il referto TC",
+    "target": "Destinazione della dettatura",
+    "transcript": "Trascrizione",
+    "start": "Avvia la dettatura",
+    "stop": "Interrompere la dettatura",
+    "prepare": "Preparare le sezioni",
+    "preparing": "Preparazione delle sezioni…",
+    "apply": "Applicare le sezioni selezionate",
+    "noSections": "Non sono state trovate sezioni cliniche. La Sua trascrizione è disponibile per la revisione.",
+    "includeField": "Includere {{field}}",
+    "current": "Testo attuale",
+    "evidence": "Estratto della fonte",
+    "stale": "Questa visita o il testo di origine è cambiato. Prepari nuovamente le sezioni prima di applicarle.",
+    "applied": "Le sezioni selezionate sono state applicate a questa visita.",
+    "savedWithVisit": "La trascrizione viene conservata con questa visita dopo l’applicazione. Non è inclusa nei referti stampati.",
+    "sources": "Trascrizioni salvate",
+    "savedTranscript": "Trascrizione registrata il {{date}}",
+    "copyTranscript": "Copiare la trascrizione",
+    "copyPrompt": "Copi la trascrizione registrata:",
+    "copied": "Trascrizione copiata.",
+    "copyPromptShown": "La trascrizione è pronta per essere copiata dalla finestra di dialogo.",
+    "storageLimit": "Questa visita ha raggiunto il limite di archiviazione delle trascrizioni. Copi la trascrizione prima di chiudere.",
+    "invalidSource": "La fonte della trascrizione non è valida. Riveda la trascrizione e riprovi.",
+    "emptyTranscript": "Registri o incolli prima una trascrizione.",
+    "transcriptTooLong": "La trascrizione è troppo lunga. La suddivida in dettature più brevi e riprovi.",
+    "sourceTooLarge": "Il testo di origine è troppo lungo per una sola richiesta. Scelga una destinazione di dettatura più specifica o accorci la trascrizione.",
+    "invalidResponse": "Non è stato possibile convalidare le sezioni proposte. Riveda la trascrizione e riprovi.",
+    "extractionFailed": "Impossibile preparare le sezioni. La Sua trascrizione è stata conservata.",
+    "failed": "Impossibile completare la dettatura. La Sua trascrizione è stata conservata.",
+    "cancelled": "La dettatura è stata annullata.",
+    "consentRequired": "Per registrare o preparare questa dettatura è necessario il consenso all’uso dell’IA."
   }
 }

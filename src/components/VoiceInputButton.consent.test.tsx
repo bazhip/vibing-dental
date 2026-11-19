@@ -42,6 +42,42 @@ beforeEach(() => {
 const renderButton = () =>
   render(<VoiceInputButton context={context} handlers={{} as never} activeSection="charting" sessionKey="a" />);
 
+it('opens the current section directly and waits for the clinician to start', async () => {
+  consent.needs = false;
+  render(<VoiceInputButton context={context} handlers={{} as never} activeSection="charting" sessionKey="a"
+    contextualDestination={{ label: 'Charting' }} />);
+  fireEvent.click(screen.getByRole('button', { name: 'Dictate' }));
+  expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+  expect(FakeRecognition.started).toBe(0);
+  expect(await screen.findByRole('complementary', { name: 'Charting' })).toBeVisible();
+  fireEvent.click(screen.getByRole('button', { name: 'Start dictation' }));
+  await waitFor(() => expect(FakeRecognition.started).toBe(1));
+});
+
+it('shows the introduction once on this device and opens the current report without recording', () => {
+  const device = new Map<string, string>();
+  vi.stubGlobal('localStorage', { getItem: (key: string) => device.get(key) ?? null, setItem: (key: string, value: string) => device.set(key, value) });
+  window.sessionStorage.removeItem('ai.introSeen');
+  const openImaging = vi.fn();
+  const view = () => <VoiceInputButton context={context} handlers={{} as never} sessionKey="a"
+    contextualDestination={{ label: 'Imaging', onOpen: openImaging }} />;
+  const first = render(view());
+  const dictate = () => fireEvent.click(screen.getByRole('button', { name: 'Dictate' }));
+  dictate();
+  expect(screen.getByRole('dialog', { name: 'Dictation' })).toBeVisible();
+  fireEvent.click(screen.getByRole('button', { name: 'Got it' }));
+  expect(openImaging).toHaveBeenCalledTimes(1);
+  expect(FakeRecognition.started).toBe(0);
+  first.unmount();
+  window.sessionStorage.removeItem('ai.introSeen');
+
+  render(view());
+  dictate();
+  expect(screen.queryByRole('dialog', { name: 'Dictation' })).not.toBeInTheDocument();
+  expect(openImaging).toHaveBeenCalledTimes(2);
+  vi.unstubAllGlobals();
+});
+
 describe('dictation consent (app)', () => {
   it('Not now: asks, then does not start listening', async () => {
     consent.ensure.mockResolvedValue(false);

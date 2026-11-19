@@ -1,5 +1,9 @@
+import { isAppLanguage } from '../i18n/config';
 import React from 'react';
+import type { ClinicalDictationSource } from '../types';
+import { normalizeClinicalDictations, appendClinicalDictationSource } from '../utils/clinicalDictationSources';
 import { createPatientIdentity, patientNumberOf } from '../utils/patientIds';
+import { normalizeVisitDocumentation } from '../utils/visitDocumentation';
 import { normalizeCustomAnesthesia } from '../utils/customAnesthesia';
 import { normalizeCustomExam } from '../utils/customExam';
 import { localDateISO } from '../utils/localDate';
@@ -128,6 +132,8 @@ export interface UseChartStateReturn {
   imageRoles: Record<string, ImageRole>;
   /** Tag (or untag, with null) an image for the owner report. */
   setImageRole: (attachmentId: string, role: ImageRole | null) => void;
+  ownerReportImageInclusion: Record<string, boolean>;
+  setImageInOwnerReport: (attachmentId: string, include: boolean | null) => void;
 
   /** Attachment ids left out of the chart PDF (everything else is in). */
   pdfExcludedImages: string[];
@@ -144,6 +150,9 @@ export interface UseChartStateReturn {
   /** Set an owner-report block; null restores the generated text. */
   setOwnerReportOverride: (field: keyof OwnerReportOverrides, value: string | null) => void;
 
+  /** Raw dictation provenance, stored separately from generated reports. */
+  clinicalDictations: ClinicalDictationSource[];
+  appendClinicalDictation: (source: ClinicalDictationSource) => void;
   /** Hand-edited record note (null = generated from the chart). */
   recordNote: StoredRecordNote | null;
   setRecordNote: (note: StoredRecordNote | null) => void;
@@ -193,15 +202,40 @@ export function isChartSnapshot(s: unknown): s is ChartSnapshot {
 
 /** Fill any holes a snapshot from an older schema might have, so
  *  downstream code can dereference nested fields without guards. */
+function normalizeRadiologyInfo(info: PatientInfo): PatientInfo {
+  const result = { ...info };
+  const limits = { radiologyHistory: 20000, radiologyTechnique: 20000, radiologyQuestion: 20000,
+    radiologyReport: 60000, radiologyReportBasis: 1000000, radiologyReviewedBasis: 1000000, radiologyReportGeneratedAt: 100,
+    ctReport: 60000, ctReportBasis: 1000000, ctReviewedBasis: 1000000, ctReportGeneratedAt: 100 } as const;
+  for (const [field, limit] of Object.entries(limits)) {
+    const key = field as keyof typeof limits;
+    const value: unknown = result[key];
+    if (value !== undefined && (typeof value !== 'string' || value.length > limit)) delete result[key];
+  }
+  if (!isAppLanguage(result.radiologyReportLanguage ?? '')) delete result.radiologyReportLanguage;
+  if (!result.radiologyReport?.trim() || !result.radiologyReportLanguage) {
+    delete result.radiologyReportBasis; delete result.radiologyReviewedBasis; delete result.radiologyReportGeneratedAt;
+  }
+  if (!isAppLanguage(result.ctReportLanguage ?? '')) delete result.ctReportLanguage;
+  if (!result.ctReport?.trim() || !result.ctReportLanguage) {
+    delete result.ctReportBasis; delete result.ctReviewedBasis; delete result.ctReportGeneratedAt;
+  }
+  return result;
+}
+
 export function normalizeSnapshot(s: ChartSnapshot): ChartSnapshot {
+  const { clinicalDictations: rawDictations, ...chart } = s;
+  const clinicalDictations = normalizeClinicalDictations(rawDictations);
+  const patient = normalizeVisitDocumentation(normalizeRadiologyInfo(s.patientInfo));
   return {
-    ...s,
+    ...chart,
+    ...(clinicalDictations.length ? { clinicalDictations } : {}),
     patientInfo: {
-      ...s.patientInfo,
+      ...patient,
       complaint: s.patientInfo.complaint ?? '',
       treatmentReport: s.patientInfo.treatmentReport ?? '',
-      radiographicFindings: s.patientInfo.radiographicFindings ?? '',
-      ctReport: s.patientInfo.ctReport ?? '',
+      radiographicFindings: patient.radiographicFindings ?? patient.radiologyReport ?? '',
+      ctReport: patient.ctReport ?? '',
       ...(s.patientInfo.customAnesthesia ? { customAnesthesia: normalizeCustomAnesthesia(s.patientInfo.customAnesthesia) } : {}),
       ...(s.patientInfo.customExam ? { customExam: normalizeCustomExam(s.patientInfo.customExam) } : {}),
       recallDate: s.patientInfo.recallDate ?? '',
@@ -261,7 +295,7 @@ export function useChartState(): UseChartStateReturn {
       exam: { ...EMPTY_EXAM_FINDINGS },
     }),
     // Pre-multi-drug builds stored a single `drug` string.
-    (stored) => ({ ...stored, nerveBlocks: normalizeNerveBlocks(stored.nerveBlocks) })
+    (stored) => ({ ...normalizeVisitDocumentation(stored), nerveBlocks: normalizeNerveBlocks(stored.nerveBlocks) })
   );
 
   const [species, setSpecies] = usePersistedState<Species>('chart.species', 1, 'canine');
@@ -422,20 +456,31 @@ export function useChartState(): UseChartStateReturn {
     setChartSession((n) => n + 1);
   };
 
-  // Which attached images belong in the owner report's Before & After
-  // section. Keyed by attachment id; part of the chart, so it saves,
-  // restores, and clears with everything else.
   const [imageRoles, setImageRoles] = usePersistedState<Record<string, ImageRole>>('chart.imageRoles', 1, {});
-  const setImageRole = React.useCallback((attachmentId: string, role: ImageRole | null) => {
-    setImageRoles((prev) => {
-      const next = { ...prev };
+  const [ownerReportImageInclusion, setOwnerReportImageInclusion] = usePersistedState<Record<string, boolean>>(
+    'chart.ownerReportImageInclusion', 1, {}
+  );
+  const setImageRole = (attachmentId: string, role: ImageRole | null) => {
+    // A label edit never changes inclusion, even on a chart saved before
+    // the independent checkbox existed.
+    setOwnerReportImageInclusion(previous => Object.hasOwn(previous, attachmentId)
+      ? previous
+      : { ...previous, [attachmentId]: Boolean(imageRoles[attachmentId]) });
+    setImageRoles(previous => {
+      const next = { ...previous };
       if (role === null) delete next[attachmentId];
       else next[attachmentId] = role;
       return next;
     });
-    // setImageRoles identity is stable (usePersistedState).
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  };
+  const setImageInOwnerReport = (attachmentId: string, include: boolean | null) => {
+    setOwnerReportImageInclusion(previous => {
+      const next = { ...previous };
+      if (include === null) delete next[attachmentId];
+      else next[attachmentId] = include;
+      return next;
+    });
+  };
 
   // Images the user unticked for the chart PDF. Exclusions (not
   // inclusions) so a new upload lands in the PDF without extra clicks.
@@ -467,6 +512,17 @@ export function useChartState(): UseChartStateReturn {
   // Hand-edited owner-report blocks. A field exists only when customized
   // — the report generator falls back to generated text otherwise.
   const [ownerReport, setOwnerReport] = usePersistedState<OwnerReportOverrides>('chart.ownerReport', 1, {});
+  const [clinicalDictations, persistClinicalDictations] = usePersistedState<ClinicalDictationSource[]>('chart.clinicalDictations', 1, [], normalizeClinicalDictations);
+  const clinicalDictationsRef = React.useRef(clinicalDictations);
+  clinicalDictationsRef.current = clinicalDictations;
+  const setClinicalDictations = (sources: ClinicalDictationSource[]) => {
+    clinicalDictationsRef.current = sources;
+    persistClinicalDictations(sources);
+  };
+  const appendClinicalDictation = (source: ClinicalDictationSource) => {
+    const next = appendClinicalDictationSource(clinicalDictationsRef.current, source);
+    setClinicalDictations(next);
+  };
   const [recordNote, setRecordNote] = usePersistedState<StoredRecordNote | null>('chart.recordNote', 1, null);
   const setOwnerReportOverride = React.useCallback(
     (field: keyof OwnerReportOverrides, value: string | null) => {
@@ -538,9 +594,11 @@ export function useChartState(): UseChartStateReturn {
     setOpenedExisting(false); // a new visit is a fresh chart → autosaves
     setFinalizedAt(null);
     setImageRoles({}); // image tags belong to the prior visit's images
+    setOwnerReportImageInclusion({});
     setPdfExcludedImages([]);
     setOwnerReport({}); // report edits are visit-specific
     setRecordNote(null);
+    setClinicalDictations([]);
     setPlannedExtractions([]);
     setPatientInfo(blankPatientInfo(keep.patientName.trim() || keep.patientNumber.trim() || keep.patientId ? keep : undefined));
     if (identity) {
@@ -573,6 +631,7 @@ export function useChartState(): UseChartStateReturn {
   const snapshot = React.useMemo<ChartSnapshot>(() => ({
     version: CHART_SNAPSHOT_VERSION,
     imageRoles,
+    ...(Object.keys(ownerReportImageInclusion).length ? { ownerReportImageInclusion } : {}),
     pdfExcludedImages,
     ownerReport,
     // Omitted when empty so charts that never use the plan keep the exact
@@ -580,6 +639,7 @@ export function useChartState(): UseChartStateReturn {
     ...(plannedExtractions.length ? { plannedExtractions } : {}),
     // Same: absent unless the note was edited, so existing hashes hold.
     ...(recordNote ? { recordNote } : {}),
+    ...(clinicalDictations.length ? { clinicalDictations } : {}),
     patientInfo: patientInfo.generatedPatientNumber && !patientInfo.patientNumber.trim() ? { ...patientInfo, patientNumber: patientNumberOf(patientInfo) } : patientInfo,
     toothData,
     species,
@@ -592,7 +652,7 @@ export function useChartState(): UseChartStateReturn {
     postStrokes: postDiagramStrokes,
     ...(finalizedAt ? { finalizedAt } : {}),
   }), [
-    finalizedAt, imageRoles, pdfExcludedImages, ownerReport, recordNote, plannedExtractions, patientInfo, toothData, species, logo,
+    clinicalDictations, finalizedAt, imageRoles, ownerReportImageInclusion, pdfExcludedImages, ownerReport, recordNote, plannedExtractions, patientInfo, toothData, species, logo,
     preToothMarks, preDiagramComments, preDiagramStrokes,
     postToothMarks, postDiagramComments, postDiagramStrokes,
   ]);
@@ -634,10 +694,12 @@ export function useChartState(): UseChartStateReturn {
     writeJson('chart.postComments', 1, postDiagramComments);
     writeJson('chart.postStrokes', 1, postDiagramStrokes);
     writeJson('chart.imageRoles', 1, imageRoles);
+    writeJson('chart.ownerReportImageInclusion', 1, ownerReportImageInclusion);
     writeJson('chart.pdfExcludedImages', 1, pdfExcludedImages);
     writeJson('chart.plannedExtractions', 1, plannedExtractions);
     writeJson('chart.ownerReport', 1, ownerReport);
     writeJson('chart.recordNote', 1, recordNote);
+    writeJson('chart.clinicalDictations', 1, clinicalDictations);
     window.dispatchEvent(new Event(CHART_STORAGE_REWRITE_EVENT));
     // Runs after this tab changes anything; the values are read fresh.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -651,9 +713,11 @@ export function useChartState(): UseChartStateReturn {
     setOpenedExisting(true);
     setFinalizedAt(snapshot.finalizedAt || null);
     setImageRoles(snapshot.imageRoles ?? {});
+    setOwnerReportImageInclusion(snapshot.ownerReportImageInclusion ?? {});
     setPdfExcludedImages(Array.isArray(snapshot.pdfExcludedImages) ? snapshot.pdfExcludedImages : []);
     setOwnerReport(snapshot.ownerReport ?? {});
     setRecordNote(snapshot.recordNote ?? null);
+    setClinicalDictations(snapshot.clinicalDictations ?? []);
     setPlannedExtractions(
       Array.isArray(snapshot.plannedExtractions)
         ? snapshot.plannedExtractions.filter((t): t is number => typeof t === 'number')
@@ -708,9 +772,11 @@ export function useChartState(): UseChartStateReturn {
       setPreToothMarks({}); setPreDiagramComments([]); setPreDiagramStrokes([]);
       setPostToothMarksDirect({}); setPostDiagramComments([]); setPostDiagramStrokes([]);
       setImageRoles({}); // attachments (and their tags) don't travel in the PDF stash
+      setOwnerReportImageInclusion({});
       setPdfExcludedImages([]);
       setOwnerReport({}); // report edits don't either
       setRecordNote(null);
+      setClinicalDictations([]);
       setPlannedExtractions([]); // nor the extraction plan
       setPatientInfo(normalizeSnapshot({ patientInfo: parsed.patientInfo } as ChartSnapshot).patientInfo);
       setSpecies(parsed.species);
@@ -788,6 +854,8 @@ export function useChartState(): UseChartStateReturn {
 
     imageRoles,
     setImageRole,
+    ownerReportImageInclusion,
+    setImageInOwnerReport,
 
     pdfExcludedImages,
     setImageInPdf,
@@ -798,6 +866,8 @@ export function useChartState(): UseChartStateReturn {
     ownerReport,
     setOwnerReportOverride,
 
+    clinicalDictations,
+    appendClinicalDictation,
     recordNote,
     setRecordNote,
   };

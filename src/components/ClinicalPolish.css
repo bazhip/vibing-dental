@@ -138,15 +138,19 @@ html:not(.native-ios) .entry-grid-container .entry-grid-form .dental-grid .rdg-h
   letter-spacing: 0;
 }
 
-html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__header, .dental-grid__section-header, .surgery-report__template-bar, .owner-report__actions) .diagram-view__action {
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__header, .dental-grid__section-header, .surgery-report__actions, .owner-report__actions) .diagram-view__action {
   min-height: var(--clinical-action-height);
   font-size: var(--clinical-label-size);
 }
 
 /* Report and imaging tools remain part of the record, with clear editable areas. */
-html:not(.native-ios) .entry-grid-container .entry-grid-form .surgery-report__template-bar {
-  gap: 8px;
-  flex-wrap: wrap;
+.owner-report__template-bar { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 8px 12px; }
+.owner-report__template-picker { flex: 1 1 12rem; max-width: 20rem; min-width: 0; margin: 0; }
+.owner-report__template-picker select { width: 100%; text-overflow: ellipsis; }
+.owner-report__draft { display: inline-flex; align-items: center; gap: .4rem; min-height: 40px; }
+.owner-report__draft:disabled { cursor: progress; }
+@media (max-width: 600px) {
+  .owner-report__template-picker select, .owner-report__draft { min-height: 44px; }
 }
 html:not(.native-ios) .entry-grid-container .entry-grid-form .owner-report__block {
   margin-bottom: 24px;
@@ -168,15 +172,6 @@ html:not(.native-ios) .entry-grid-container .entry-grid-form .imaging__uploader 
   gap: 12px;
   padding-block: 12px;
 }
-html:not(.native-ios) .entry-grid-container .entry-grid-form .imaging__card {
-  border-radius: var(--radius-sm);
-  box-shadow: none;
-}
-html:not(.native-ios) .entry-grid-container .entry-grid-form .imaging__meta {
-  padding: 12px;
-  gap: 10px;
-}
-
 @media (max-width: 640px) {
   html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__header, .dental-grid__section-header) {
     gap: 12px;
@@ -218,9 +213,13 @@ html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__
 html:not(.native-ios) .entry-grid-container .entry-grid-form .charting-header-actions { display: contents; }
 html:not(.native-ios) .entry-grid-container .entry-grid-form .charting-header-actions > .diagram-view__action { grid-column: 2; grid-row: 1; justify-self: end; }
 html:not(.native-ios) .entry-grid-container .entry-grid-form .charting-view-switch { grid-column: 1 / -1; grid-row: 2; justify-self: start; }
-html:not(.native-ios) .entry-grid-container .entry-grid-form .surgery-report__template-bar { margin-bottom: 16px; }
 
-.section-header__actions, .section-header__description { grid-column: 1 / -1; min-width: 0; }
+.section-header__actions, .section-header__description, .section-header__title-action { grid-column: 1 / -1; min-width: 0; }
+.section-header__title-action { margin-inline-start: auto; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.section-header__title-action > button { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+@media (min-width: 641px) {
+  .section-header__title-action { grid-column: 2; grid-row: 1; }
+}
 .section-header__actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .section-header__description { color: var(--text-muted); font-size: 0.875rem; }
 .section-header__description .patient-form__hint { margin: 0; }
@@ -266,4 +265,9 @@ html:not(.native-ios) .sidebar-layout__main[data-active-section="treatment"] { m
 .exam-add-area__message { flex-basis: 100%; }
 @media (max-width: 600px) {
   .exam-add-area :is(button, input) { min-height: 44px; }
+}
+
+.patient-form__history { min-height: var(--clinical-action-height, 40px); }
+@media (max-width: 600px) {
+  .patient-form__history { min-height: 44px; }
 }

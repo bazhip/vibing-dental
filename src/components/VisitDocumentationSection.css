@@ -1,0 +1,56 @@
+.visit-documentation {
+  min-width: 0;
+}
+.visit-documentation__fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.visit-documentation__field {
+  min-width: 0;
+}
+.visit-documentation__field .patient-form__textarea {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 88px;
+  resize: vertical;
+}
+.visit-documentation__helper {
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  margin: 4px 0 8px;
+}
+.visit-documentation__notice {
+  margin-top: 16px;
+}
+.visit-documentation__recap {
+  margin-bottom: 20px;
+}
+.visit-documentation__recap h3 {
+  color: var(--text);
+  font-size: 0.875rem;
+  margin: 0 0 4px;
+}
+.visit-documentation__recap p {
+  color: var(--text-muted);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin: 0;
+}
+@media (max-width: 640px) {
+  .visit-documentation__fields {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  .visit-documentation .visit-documentation__review {
+    min-height: 44px;
+  }
+}
+
+.visit-documentation__review { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+
+.visit-documentation--gp-exam .visit-documentation__fields { grid-template-columns: minmax(0, 1fr); }
+
+.visit-documentation__field-head { display: flex; align-items: center; justify-content: space-between; gap: 6px; flex-wrap: wrap; }

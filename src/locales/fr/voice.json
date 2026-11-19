@@ -51,6 +51,21 @@
     "sessionStart": "Impossible de démarrer la session Deepgram.",
     "unsupported": "La saisie vocale nécessite Chrome, Edge ou Safari."
   },
+  "destination": {
+    "general": "Général"
+  },
+  "correction": {
+    "conflict": "Vérifiez cette modification du dossier.",
+    "apply": "Appliquer la suggestion",
+    "keep": "Conserver la valeur actuelle"
+  },
+  "welcome": {
+    "ready": "Votre transcription s’affichera ici dès le début de l’enregistrement.",
+    "title": "Dictée",
+    "start": "Sélectionnez Démarrer la dictée pour commencer l’enregistrement.",
+    "transcript": "Suivez la transcription pendant que vous parlez. Sélectionnez Arrêter lorsque vous avez terminé.",
+    "review": "Vérifiez le rapport ou les modifications du dossier et apportez les corrections nécessaires."
+  },
   "intro": {
     "ariaLabel": "Dicter",
     "cancel": "Annuler",
@@ -131,6 +146,7 @@
     "open_other": "{{count}} éléments à vérifier."
   },
   "status": {
+    "idle": "Prêt à démarrer",
     "connecting": "Connexion…",
     "finishing": "Finalisation…",
     "interrupted": "Interrompu",
@@ -154,5 +170,50 @@
   "transcript": {
     "activity": "Activité",
     "header": "Transcription — enregistrement commencé le {{date}}"
+  },
+  "clinical": {
+    "dictate": "Dicter : {{target}}",
+    "title": "Dictée : {{target}}",
+    "kinds": {
+      "gp-visit": "visite générale",
+      "consultation": "consultation",
+      "gp-exam": "Examen général",
+      "discharge": "consignes de sortie",
+      "ct": "Compte rendu de scanner"
+    },
+    "help": "Enregistrez ou collez les observations du clinicien. Vérifiez les sections proposées avant de les appliquer. Les résultats non documentés restent vides.",
+    "imagingHelp": "Enregistrez ou collez les constatations d’imagerie. Précisez le type d’imagerie s’il est ambigu. Vérifiez la répartition entre les comptes rendus radiographique et tomodensitométrique avant de l’appliquer.",
+    "ctHelp": "Enregistrez ou collez les observations du scanner. À l’arrêt de la dictée, elles sont ajoutées uniquement au compte rendu de scanner et reformulées automatiquement.",
+    "ctApply": "Ajouter et reformuler le compte rendu de scanner",
+    "target": "Destination de la dictée",
+    "transcript": "Transcription",
+    "start": "Démarrer la dictée",
+    "stop": "Arrêter la dictée",
+    "prepare": "Préparer les sections",
+    "preparing": "Préparation des sections…",
+    "apply": "Appliquer les sections sélectionnées",
+    "noSections": "Aucune section clinique n’a été trouvée. Votre transcription reste disponible pour vérification.",
+    "includeField": "Inclure {{field}}",
+    "current": "Texte actuel",
+    "evidence": "Extrait source",
+    "stale": "Cette visite ou son texte source a changé. Préparez à nouveau les sections avant de les appliquer.",
+    "applied": "Les sections sélectionnées ont été appliquées à cette visite.",
+    "savedWithVisit": "La transcription est conservée avec cette visite après son application. Elle n’est pas incluse dans les comptes rendus imprimés.",
+    "sources": "Transcriptions enregistrées",
+    "savedTranscript": "Transcription enregistrée le {{date}}",
+    "copyTranscript": "Copier la transcription",
+    "copyPrompt": "Copiez la transcription enregistrée :",
+    "copied": "Transcription copiée.",
+    "copyPromptShown": "La transcription peut être copiée depuis la boîte de dialogue.",
+    "storageLimit": "Cette visite a atteint sa limite de stockage des transcriptions. Copiez la transcription avant de fermer.",
+    "invalidSource": "La source de la transcription est invalide. Vérifiez la transcription et réessayez.",
+    "emptyTranscript": "Enregistrez ou collez d’abord une transcription.",
+    "transcriptTooLong": "La transcription est trop longue. Divisez-la en dictées plus courtes et réessayez.",
+    "sourceTooLarge": "Le texte source est trop volumineux pour une seule demande. Choisissez une destination de dictée plus ciblée ou raccourcissez la transcription.",
+    "invalidResponse": "Les sections proposées n’ont pas pu être validées. Vérifiez la transcription et réessayez.",
+    "extractionFailed": "Impossible de préparer les sections. Votre transcription a été conservée.",
+    "failed": "Impossible de terminer la dictée. Votre transcription a été conservée.",
+    "cancelled": "La dictée a été annulée.",
+    "consentRequired": "Le consentement à l’utilisation de l’IA est nécessaire pour enregistrer ou préparer cette dictée."
   }
 }

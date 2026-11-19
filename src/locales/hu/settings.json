@@ -195,7 +195,8 @@
       "images": "Képek szerepeltetése",
       "imagesHint": "(oldalanként 4, a fogászati lap után)",
       "radiographicReport": "Röntgenlelet szerepeltetése",
-      "ctReport": "CT-lelet szerepeltetése"
+      "ctReport": "CT-lelet szerepeltetése",
+      "codesUsed": "A használt kódok hozzáadása"
     },
     "noteDevice": "Személyes beállítások automatikusan mentve ezen az eszközön.",
     "spaceMovesDownHint": "Gyors megoldás mélységsorozatok bemondásához",

@@ -50,6 +50,21 @@
     "sessionStart": "Couldn't start Deepgram session.",
     "unsupported": "Voice input needs Chrome, Edge, or Safari."
   },
+  "destination": {
+    "general": "General"
+  },
+  "correction": {
+    "conflict": "Review this change to the chart.",
+    "apply": "Apply suggestion",
+    "keep": "Keep current value"
+  },
+  "welcome": {
+    "ready": "Your transcript will appear here once you start recording.",
+    "title": "Dictation",
+    "start": "Choose Start dictation to begin recording.",
+    "transcript": "Follow the transcript as you speak. Select Stop when you finish.",
+    "review": "Review the report or chart changes and correct anything that needs attention."
+  },
   "intro": {
     "ariaLabel": "Dictate",
     "cancel": "Cancel",
@@ -126,6 +141,7 @@
     "open_other": "{{count}} items to review."
   },
   "status": {
+    "idle": "Ready to start",
     "connecting": "Connecting…",
     "finishing": "Finishing…",
     "interrupted": "Interrupted",
@@ -148,5 +164,50 @@
   "transcript": {
     "activity": "Activity",
     "header": "Transcript — recording started {{date}}"
+  },
+  "clinical": {
+    "dictate": "Dictate {{target}}",
+    "title": "{{target}} dictation",
+    "kinds": {
+      "gp-visit": "GP visit",
+      "consultation": "consultation",
+      "gp-exam": "GP examination",
+      "discharge": "discharge instructions",
+      "ct": "CT report"
+    },
+    "help": "Record or paste the clinician’s observations. Review the proposed sections before applying them. Undocumented findings stay blank.",
+    "imagingHelp": "Record or paste imaging findings. Name the modality if it is unclear. Review which findings go into the radiographic or CT report before applying them.",
+    "ctHelp": "Record or paste CT observations. When you stop, they are added only to the CT report and refined automatically.",
+    "ctApply": "Add and refine CT report",
+    "target": "Dictation target",
+    "transcript": "Transcript",
+    "start": "Start dictation",
+    "stop": "Stop dictation",
+    "prepare": "Prepare sections",
+    "preparing": "Preparing sections…",
+    "apply": "Apply selected sections",
+    "noSections": "No clinical sections were found. Your transcript is available for review.",
+    "includeField": "Include {{field}}",
+    "current": "Current text",
+    "evidence": "Source excerpt",
+    "stale": "This visit or its source text changed. Prepare the sections again before applying.",
+    "applied": "Selected sections applied to this visit.",
+    "savedWithVisit": "The transcript is kept with this visit after you apply it. It is not included in printed reports.",
+    "sources": "Saved transcripts",
+    "savedTranscript": "Transcript recorded {{date}}",
+    "copyTranscript": "Copy transcript",
+    "copyPrompt": "Copy the recorded transcript:",
+    "copied": "Transcript copied.",
+    "copyPromptShown": "The transcript is ready to copy from the dialog.",
+    "storageLimit": "This visit has reached its transcript storage limit. Copy the transcript before closing.",
+    "invalidSource": "The transcript source is invalid. Review the transcript and try again.",
+    "emptyTranscript": "Record or paste a transcript first.",
+    "transcriptTooLong": "The transcript is too long. Split it into smaller dictations and try again.",
+    "sourceTooLarge": "There is too much source text for one request. Choose a narrower dictation target or shorten the transcript.",
+    "invalidResponse": "The proposed sections could not be validated. Review the transcript and try again.",
+    "extractionFailed": "Could not prepare the sections. Your transcript has been kept.",
+    "failed": "Could not complete dictation. Your transcript has been kept.",
+    "cancelled": "Dictation was cancelled.",
+    "consentRequired": "AI consent is needed to record or prepare this dictation."
   }
 }

@@ -50,6 +50,21 @@
     "sessionStart": "Nem sikerült elindítani a Deepgram-munkamenetet.",
     "unsupported": "A hangbevitelhez Chrome, Edge vagy Safari szükséges."
   },
+  "destination": {
+    "general": "Általános"
+  },
+  "correction": {
+    "conflict": "Ellenőrizze ezt a módosítást a kórlapon.",
+    "apply": "Javaslat alkalmazása",
+    "keep": "Jelenlegi érték megtartása"
+  },
+  "welcome": {
+    "ready": "A felvétel indítása után itt jelenik meg az átirat.",
+    "title": "Diktálás",
+    "start": "A felvételhez válassza a Diktálás indítása lehetőséget.",
+    "transcript": "Beszéd közben kövesse az átiratot. Ha végzett, válassza a Leállítás lehetőséget.",
+    "review": "Ellenőrizze a leletet vagy a kórlap módosításait, és végezze el a szükséges javításokat."
+  },
   "intro": {
     "ariaLabel": "Diktálás",
     "cancel": "Mégse",
@@ -126,6 +141,7 @@
     "open_other": "{{count}} ellenőrizendő elem."
   },
   "status": {
+    "idle": "Indításra kész",
     "connecting": "Kapcsolódás…",
     "finishing": "Befejezés…",
     "interrupted": "Megszakítva",
@@ -148,5 +164,50 @@
   "transcript": {
     "activity": "Tevékenység",
     "header": "Átirat – rögzítés kezdete: {{date}}"
+  },
+  "clinical": {
+    "dictate": "{{target}} diktálása",
+    "title": "{{target}} diktálása",
+    "kinds": {
+      "gp-visit": "általános állatorvosi vizit",
+      "consultation": "konzultáció",
+      "gp-exam": "általános állatorvosi vizsgálat",
+      "discharge": "hazabocsátási utasítások",
+      "ct": "CT-jelentés"
+    },
+    "help": "Rögzítse vagy illessze be az orvos megfigyeléseit. Alkalmazás előtt ellenőrizze a javasolt szakaszokat. A nem dokumentált leletek üresen maradnak.",
+    "imagingHelp": "Rögzítse vagy illessze be a képalkotó leleteket. Ha nem egyértelmű, nevezze meg a vizsgálat típusát. Alkalmazás előtt ellenőrizze a röntgen- és CT-leletbe kerülő megállapításokat.",
+    "ctHelp": "Rögzítse vagy illessze be a CT-megfigyeléseket. Leállításkor csak a CT-jelentéshez adjuk hozzá őket, és automatikusan finomítjuk a szöveget.",
+    "ctApply": "CT-jelentés hozzáadása és finomítása",
+    "target": "Diktálás célja",
+    "transcript": "Átirat",
+    "start": "Diktálás indítása",
+    "stop": "Diktálás leállítása",
+    "prepare": "Szakaszok előkészítése",
+    "preparing": "Szakaszok előkészítése…",
+    "apply": "Kiválasztott szakaszok alkalmazása",
+    "noSections": "Nem találhatók klinikai szakaszok. Az átirat áttekinthető.",
+    "includeField": "{{field}} felvétele",
+    "current": "Jelenlegi szöveg",
+    "evidence": "Forrásrészlet",
+    "stale": "Ez a vizit vagy a forrásszövege megváltozott. Alkalmazás előtt készítse elő újra a szakaszokat.",
+    "applied": "A kiválasztott szakaszokat alkalmaztuk ehhez a vizithez.",
+    "savedWithVisit": "Az átirat az alkalmazása után ezzel a vizittel együtt megmarad. A nyomtatott jelentésekbe nem kerül bele.",
+    "sources": "Mentett átiratok",
+    "savedTranscript": "Átirat rögzítve: {{date}}",
+    "copyTranscript": "Átirat másolása",
+    "copyPrompt": "Másolja ki a rögzített átiratot:",
+    "copied": "Átirat másolva.",
+    "copyPromptShown": "Az átirat készen áll a párbeszédablakból történő másolásra.",
+    "storageLimit": "Ez a vizit elérte az átiratok tárolási korlátját. Bezárás előtt másolja ki az átiratot.",
+    "invalidSource": "Az átirat forrása érvénytelen. Ellenőrizze az átiratot, és próbálja újra.",
+    "emptyTranscript": "Először rögzítsen vagy illesszen be egy átiratot.",
+    "transcriptTooLong": "Az átirat túl hosszú. Ossza rövidebb diktálásokra, és próbálja újra.",
+    "sourceTooLarge": "Túl sok a forrásszöveg egyetlen kéréshez. Válasszon szűkebb diktálási célt, vagy rövidítse az átiratot.",
+    "invalidResponse": "A javasolt szakaszokat nem sikerült érvényesíteni. Ellenőrizze az átiratot, és próbálja újra.",
+    "extractionFailed": "Nem sikerült előkészíteni a szakaszokat. Az átirat megmaradt.",
+    "failed": "Nem sikerült befejezni a diktálást. Az átirat megmaradt.",
+    "cancelled": "A diktálás megszakítva.",
+    "consentRequired": "A diktálás rögzítéséhez vagy előkészítéséhez MI-hozzájárulás szükséges."
   }
 }

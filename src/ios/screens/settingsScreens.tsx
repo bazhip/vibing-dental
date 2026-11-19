@@ -53,6 +53,7 @@ export function OwnerReportTemplatesScreen() {
   );
   return (
     <OwnerReportTemplatesModal
+      aiEnabled={profile.aiEnabled}
       open
       onClose={pop}
       config={profile.ownerReportConfig}

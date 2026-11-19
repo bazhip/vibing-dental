@@ -1,4 +1,5 @@
 /// <reference types="vitest/config" />
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import { configDefaults } from 'vitest/config';
 import react from '@vitejs/plugin-react';
@@ -9,6 +10,12 @@ export default defineConfig({
     // Vercel's project settings predate the Vite migration and serve the
     // CRA-era directory; keep emitting there rather than `dist`.
     outDir: 'build',
+    rolldownOptions: {
+      input: {
+        app: fileURLToPath(new URL('./index.html', import.meta.url)),
+        help: fileURLToPath(new URL('./help/index.html', import.meta.url)),
+      },
+    },
   },
   test: {
     globals: true,

@@ -161,3 +161,15 @@ it('keeps report review reachable from the compact More menu', async () => {
   render(<ChartMenu scope="account" cloud={cloud} onOpenWalkthrough={vi.fn()} />);
   expect(screen.getByRole('button', { name: 'Account' })).toHaveAttribute('aria-expanded', 'false');
  });
+
+it('opens the Help Center from Help in a separate tab', () => {
+  const open = vi.spyOn(window, 'open').mockReturnValue(null);
+  try {
+    render(<ChartMenu scope="help" onOpenWalkthrough={vi.fn()} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Help' }));
+    fireEvent.click(screen.getByRole('button', { name: /ToothOps Help Center/ }));
+    expect(open).toHaveBeenCalledWith(expect.stringContaining('/help/?lang=en'), '_blank', 'noopener,noreferrer');
+  } finally {
+    open.mockRestore();
+  }
+});

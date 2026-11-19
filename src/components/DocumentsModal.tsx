@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { isNativeApp } from '../native/platform';
 import { Sheet } from '../ios/Sheet';
 import { useModalFocus } from '../hooks/useModalFocus';
-import { PdfPreviewModal, type ChartSnapshot as PreviewSnapshot, type PdfExportLifecycle } from './PdfPreviewModal';
+import { PdfPreviewModal, type ChartSnapshot as PreviewSnapshot, type PdfExportLifecycle, type ChartPdfOptions } from './PdfPreviewModal';
 import { OwnerReportModal } from './OwnerReportModal';
 import { RecordNotePanel, type RecordNotePims } from './RecordNotePanel';
 import type { ChartSnapshot, ImageRole, StoredRecordNote } from '../types';
@@ -19,9 +19,11 @@ interface DocumentsModalProps {
   onClose: () => void;
   /** Tab to show when opened; falls back to the last one used. */
   initialTab?: DocumentTab;
+  ownerPreviewOnly?: boolean;
   /** Clinical chart snapshot (with the live diagram SVGs). */
   chartSnapshot: PreviewSnapshot | null;
   chartLifecycle?: PdfExportLifecycle;
+  chartOptions?: ChartPdfOptions;
   /** Owner report: off for practices without the feature. */
   ownerReport?: {
     snapshot: ChartSnapshot;
@@ -31,6 +33,8 @@ interface DocumentsModalProps {
     practiceId: string;
     cloudActive: boolean;
     onEditWording: () => void;
+    onCustomizeTemplate?: () => void;
+    onTemplateChange?: (id: string | null) => void;
     /** Practice owner report templates (omitted = built-in report). */
     config?: OwnerReportConfig;
     /** Email to owner (see OwnerReportModal). */
@@ -68,7 +72,7 @@ const TAB_WHO: Record<DocumentTab, 'documents.chartWho' | 'documents.ownerWho' |
  * just the clinical chart.
  */
 export const DocumentsModal: React.FC<DocumentsModalProps> = ({
-  open, onClose, initialTab, chartSnapshot, chartLifecycle, ownerReport, recordNote,
+  open, onClose, initialTab, ownerPreviewOnly, chartSnapshot, chartLifecycle, chartOptions, ownerReport, recordNote,
 }) => {
   const { t } = useTranslation('media');
   const readSaved = (): DocumentTab => {
@@ -86,7 +90,7 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
   const closeRef = React.useRef<HTMLButtonElement>(null);
   // iOS app: a kit sheet (grabber, swipe down, its own Escape and focus).
   const native = isNativeApp();
-  const modalRef = useModalFocus(open && !native);
+  const modalRef = useModalFocus(open && !native && !ownerPreviewOnly);
 
   React.useEffect(() => {
     if (!open) return;
@@ -99,13 +103,24 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
   }, [open, initialTab]);
 
   React.useEffect(() => {
-    if (!open || native) return;
+    if (!open || native || ownerPreviewOnly) return;
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [open, onClose, native]);
+  }, [open, onClose, native, ownerPreviewOnly]);
 
   if (!open && !native) return null;
+
+  if (ownerPreviewOnly && ownerReport) {
+    if (!open) return null;
+    const preview = <OwnerReportModal {...ownerReport} open viewOnly bare={native} onClose={onClose}
+      diagramSvg={chartSnapshot?.postSvg} species={chartSnapshot?.species} />;
+    return native ? (
+      <Sheet open={open} onClose={onClose} title={t('documents.ownerTab')} className="ios-sheet--page documents-sheet">
+        {preview}
+      </Sheet>
+    ) : preview;
+  }
 
   const active = available(tab) ? tab : 'chart';
   const select = (id: DocumentTab) => {
@@ -142,7 +157,7 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
         aria-labelledby="documents-tab-chart"
         hidden={active !== 'chart'}
       >
-        {chartVisited && <PdfPreviewModal open={open} bare onClose={onClose} snapshot={chartSnapshot} lifecycle={chartLifecycle} />}
+        {chartVisited && <PdfPreviewModal open={open} bare onClose={onClose} snapshot={chartSnapshot} lifecycle={chartLifecycle} options={chartOptions} />}
       </div>
       {ownerReport && (
         <div
@@ -164,6 +179,8 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
               practiceId={ownerReport.practiceId}
               cloudActive={ownerReport.cloudActive}
               onEditWording={ownerReport.onEditWording}
+              onCustomizeTemplate={ownerReport.onCustomizeTemplate}
+              onTemplateChange={ownerReport.onTemplateChange}
               diagramSvg={chartSnapshot?.postSvg}
               species={chartSnapshot?.species}
               config={ownerReport.config}

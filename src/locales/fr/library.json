@@ -118,11 +118,16 @@
     "confirmButton": "Restaurer"
   },
   "templates": {
+    "chartCodes": "Codes du dossier",
+    "chartCodeHelp": "Saisissez { pour afficher les suggestions ou sélectionnez un code ci-dessous. Les codes utilisent les valeurs du dossier et vous invitent à compléter les valeurs manquantes. Les autres noms entre accolades créent des champs personnalisés.",
+    "fieldExamples": "Exemples de champs à remplir : {Numéros de dents}, {Détails de l’intervention} et {Date du suivi}.",
+    "fieldsInTemplate": "Champs de ce modèle",
+    "fieldHelp": "Placez une courte consigne entre accolades pour créer un champ à renseigner, par exemple {Saisissez les numéros des dents}. La valeur vous sera demandée à l’utilisation du modèle.",
     "aria": "Modèles de compte rendu",
     "title": "Modèles de compte rendu",
     "saved": "Modèles enregistrés",
     "new": "Nouveau modèle",
-    "empty": "Aucun modèle pour l’instant — rédigez-en un ci-dessous et enregistrez-le, ou utilisez « Enregistrer comme modèle » dans la section Compte rendu de traitement.",
+    "empty": "Aucun modèle pour le moment. Créez-en un ci-dessous ou choisissez Nouveau modèle dans le compte rendu de traitement.",
     "untitled": "Sans titre",
     "nameLabel": "Nom du modèle",
     "namePlaceholder": "p. ex. Détartrage de routine (félin)",

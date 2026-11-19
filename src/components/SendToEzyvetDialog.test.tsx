@@ -13,6 +13,8 @@ const mocks = vi.hoisted(() => ({
   inspect: vi.fn(),
   send: vi.fn(),
   diagnose: vi.fn(),
+  physicalExam: vi.fn(),
+  noteAutofill: vi.fn(),
   available: vi.fn(() => true),
   save: vi.fn(async () => {}),
   reset: vi.fn(async () => {}),
@@ -30,6 +32,10 @@ vi.mock('../utils/pims/extensionBridge', () => ({
   inspect: mocks.inspect,
   send: mocks.send,
   diagnose: mocks.diagnose,
+  physicalExam: mocks.physicalExam,
+  instinctSubmission: vi.fn(),
+  radiologyAutofill: vi.fn(),
+  noteAutofill: mocks.noteAutofill,
   appointments: vi.fn(),
   startChart: vi.fn(),
   takePendingPatient: vi.fn(),
@@ -49,6 +55,18 @@ vi.mock('../utils/supabaseClient', () => ({
 
 import { SendToEzyvetDialog } from './SendToEzyvetDialog';
 import { RecordNotePanel } from './RecordNotePanel';
+
+it('allows manual copy without a verified encounter and never stamps a send', async () => {
+  mocks.inspect.mockResolvedValue(writableWith({ state: 'notConsult' }));
+  const onSent = vi.fn();
+  render(dlg({ onSent, stored: { text: 'Preserved edit', source: 'edited', lng: 'en', basedOn: 'old' } }).el);
+  await screen.findByText(i18n.t('pims:state.notConsult'));
+  fireEvent.click(screen.getByRole('button', { name: 'Copy all' }));
+  await waitFor(() => expect(mocks.copy).toHaveBeenCalledWith('<p>Preserved edit</p>', 'Preserved edit', expect.any(String)));
+  expect(mocks.send).not.toHaveBeenCalled();
+  expect(mocks.markPimsSent).not.toHaveBeenCalled();
+  expect(onSent).not.toHaveBeenCalled();
+});
 
 const t = i18n.t.bind(i18n);
 
@@ -105,11 +123,12 @@ const sendButton = () => screen.getByRole('button', { name: t('pims:actions.send
 const select = (label: string) => screen.getByLabelText(label) as HTMLSelectElement;
 
 beforeEach(() => {
+  vi.stubEnv('VITE_PIMS_ROLLOUT_ENABLED', 'true');
   vi.clearAllMocks();
   mocks.saved = null;
   mocks.supabase = null;
   mocks.available.mockReturnValue(true);
-  mocks.ping.mockResolvedValue({ version: '1.0.0' });
+  mocks.ping.mockResolvedValue({ version: '1.0.0', protocol: 1, capabilities: ['inspect', 'send', 'diagnose'] });
   mocks.inspect.mockResolvedValue(writableWith());
   mocks.send.mockResolvedValue({ ok: true, results: [{ fieldTitle: 'Plan', result: { ok: true } }] } satisfies SendResult);
   mocks.markPimsSent.mockResolvedValue({ sentAt: '2026-11-15T10:00:00Z' });
@@ -119,9 +138,48 @@ beforeEach(() => {
     lastCodes: ['save_not_confirmed'],
   });
 });
-afterEach(cleanup);
+afterEach(() => { cleanup(); vi.unstubAllEnvs(); });
 
 describe('SendToEzyvetDialog', () => {
+  it('opens Shepherd exams only explicitly and locks closing during creation without marking a send', async () => {
+    mocks.supabase = { auth: { onAuthStateChange: (callback: (event: string, session: unknown) => void) => {
+      callback('INITIAL_SESSION', { user: { id: 'user' } });
+      return { data: { subscription: { unsubscribe: vi.fn() } } };
+    } } };
+    const recordId = '12345678-1234-1234-1234-123456789abc';
+    mocks.ping.mockResolvedValue({ version: '1', protocol: 1, capabilities: ['inspect', 'send', 'diagnose', 'physicalExam'] });
+    mocks.inspect.mockResolvedValue({ tab: { id: 7, title: 'Shepherd' }, candidates: 1, fields: [], status: {
+      provider: 'shepherd', state: 'locked', patientName: 'Bella', patientNumber: null,
+      consult: { recordId, viewId: `https://app.shepherd.vet/soap/${recordId}/objective|` },
+    } });
+    let resolveOpen!: (value: unknown) => void;
+    mocks.physicalExam.mockImplementation(async (_tabId, request) => request.operation === 'inspect'
+      ? { ok: true, state: 'available', pageId: 'page' }
+      : request.operation === 'prepare'
+        ? { ok: true, state: 'prepared', pageId: 'page', ticket: 'ticket', doctor: 'Dr Rivera', templates: [{ id: 'dental', label: 'Dental' }] }
+        : new Promise(resolve => { resolveOpen = resolve; }));
+    const { el, props } = dlg();
+    render(el);
+    fireEvent.click(await screen.findByRole('button', { name: t('pims:exam.setup') }));
+    await screen.findByLabelText(t('pims:exam.template'));
+    fireEvent.change(screen.getByLabelText(t('pims:exam.template')), { target: { value: 'dental' } });
+    expect(mocks.physicalExam.mock.calls.some(([, request]) => request.operation === 'open')).toBe(false);
+    fireEvent.click(screen.getByRole('button', { name: t('pims:exam.open') }));
+    await waitFor(() => expect(resolveOpen).toBeDefined());
+    for (const button of screen.getAllByRole('button', { name: t('common:actions.close') })) expect(button).toBeDisabled();
+    fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
+    expect(props.onClose).not.toHaveBeenCalled();
+    await act(async () => resolveOpen({ ok: true, state: 'opened', recordId, examId: 'aaaaaaaa-1234-1234-1234-123456789abc' }));
+    expect(mocks.send).not.toHaveBeenCalled();
+    expect(mocks.markPimsSent).not.toHaveBeenCalled();
+    expect(props.onSent).not.toHaveBeenCalled();
+  });
+  it('does not mount or probe when invoked directly before rollout', () => {
+    vi.stubEnv('VITE_PIMS_ROLLOUT_ENABLED', undefined);
+    render(dlg().el);
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(mocks.ping).not.toHaveBeenCalled();
+  });
   it('not installed shows the explainer without an install link', async () => {
     mocks.ping.mockResolvedValue(null);
     render(dlg().el);
@@ -249,13 +307,14 @@ describe('SendToEzyvetDialog', () => {
     expect(mocks.send).not.toHaveBeenCalled();
   });
 
-  it('equal patient numbers send without asking, even when the names differ', async () => {
+  it('equal unscoped patient numbers still ask when the names differ', async () => {
+    mocks.confirm.mockResolvedValue(false);
     mocks.inspect.mockResolvedValue(writableWith({ patientName: 'Max', patientNumber: '123' }));
     render(dlg({ patientNumber: '0123' }).el);
     await screen.findByText(t('pims:rows.heading'));
     fireEvent.click(sendButton());
-    await waitFor(() => expect(mocks.send).toHaveBeenCalledTimes(1));
-    expect(mocks.confirm).not.toHaveBeenCalled();
+    await waitFor(() => expect(mocks.confirm).toHaveBeenCalledTimes(1));
+    expect(mocks.send).not.toHaveBeenCalled();
   });
 
   it('a consult switched in ezyVet before Send: shows the new target and the notice, and sends nothing', async () => {
@@ -377,7 +436,7 @@ describe('SendToEzyvetDialog', () => {
     await screen.findByText(t('pims:results.title'));
     const list = screen.getByRole('list');
     expect(within(list).getByText('Plan').closest('li')).toHaveTextContent(t('pims:results.saved'));
-    expect(screen.getByRole('heading', { name: t('pims:results.title') })).toHaveFocus();
+    await waitFor(() => expect(screen.getByRole('heading', { name: t('pims:results.title') })).toHaveFocus());
     expect(screen.getByText(t('pims:results.summary', { saved: 1, attention: 1 }))).toHaveAttribute('role', 'status');
     expect(within(list).getByText('Physical Exam').closest('li')).toHaveTextContent(t('pims:errors.editor_not_found'));
     expect(mocks.markPimsSent).toHaveBeenCalledTimes(1);
@@ -398,7 +457,7 @@ describe('SendToEzyvetDialog', () => {
       expect(props.onSent).toHaveBeenCalledTimes(1);
       expect(mocks.markPimsSent).not.toHaveBeenCalled();
       // The results page shows the remembered send date.
-      expect(screen.getByText((_, el) => el?.tagName === 'P' && /ezyVet/.test(el.textContent ?? '') && el.className === 'patient-form__hint')).toBeInTheDocument();
+      expect(screen.getByText((_, el) => el?.tagName === 'P' && /PIMS/.test(el.textContent ?? '') && el.className === 'patient-form__hint')).toBeInTheDocument();
     },
   );
 
@@ -590,16 +649,40 @@ describe('RecordNotePanel Send to ezyVet button', () => {
   );
   const button = () => screen.queryByRole('button', { name: t('pims:dialog.open') });
 
+  it('rollout off hides Send without probing Chrome', () => {
+    vi.stubEnv('VITE_PIMS_ROLLOUT_ENABLED', undefined);
+    render(panel({ pims }));
+    expect(button()).toBeNull();
+    expect(mocks.ping).not.toHaveBeenCalled();
+  });
+
+  it.each([null, { version: 'old' }, { version: 'new', protocol: 2, capabilities: ['inspect', 'send', 'diagnose'] }])('hides Send when the extension is absent or incompatible: %j', async (reply) => {
+    mocks.ping.mockResolvedValue(reply);
+    render(panel({ pims }));
+    await act(async () => {});
+    expect(button()).toBeNull();
+    expect(mocks.inspect).not.toHaveBeenCalled();
+  });
+
+  it('does not expose Send while the handshake is pending', async () => {
+    let resolve!: (reply: unknown) => void;
+    mocks.ping.mockReturnValue(new Promise((done) => { resolve = done; }));
+    render(panel({ pims }));
+    expect(button()).toBeNull();
+    await act(async () => resolve({ version: '1', protocol: 1, capabilities: ['inspect', 'send', 'diagnose'] }));
+    expect(button()).toBeInTheDocument();
+  });
+
   it('opens the dialog when the practice has it on and the extension can be reached', async () => {
     render(panel({ pims }));
-    fireEvent.click(button()!);
+    fireEvent.click(await screen.findByRole('button', { name: t('pims:dialog.open') }));
     expect(await screen.findByRole('dialog', { name: t('pims:dialog.title') })).toBeInTheDocument();
   });
 
   it('remembers a send without a cloud chart, so reopening asks first', async () => {
     mocks.inspect.mockResolvedValue(writableWith({ patientName: 'Rex' }));
     render(panel({ pims: { ...pims, chartId: null } }));
-    fireEvent.click(button()!);
+    fireEvent.click(await screen.findByRole('button', { name: t('pims:dialog.open') }));
     fireEvent.click(await screen.findByRole('button', { name: t('pims:actions.send') }));
     await screen.findByText(t('pims:results.title'));
     expect(mocks.markPimsSent).not.toHaveBeenCalled();
@@ -619,7 +702,7 @@ describe('RecordNotePanel Send to ezyVet button', () => {
     mocks.inspect.mockResolvedValue(writableWith({ patientName: 'Rex', patientNumber: '9' }));
     mocks.confirm.mockResolvedValueOnce(false);
     render(panel({ pims: { ...pims, patientNumber: '7' } }));
-    fireEvent.click(button()!);
+    fireEvent.click(await screen.findByRole('button', { name: t('pims:dialog.open') }));
     fireEvent.click(await screen.findByRole('button', { name: t('pims:actions.send') }));
     await waitFor(() => expect(mocks.confirm).toHaveBeenCalledTimes(1));
     expect(mocks.confirm.mock.calls[0][0]).toMatchObject({ title: t('pims:mismatch.title') });
@@ -638,4 +721,36 @@ describe('RecordNotePanel Send to ezyVet button', () => {
     render(panel({ pims }));
     expect(button()).toBeNull();
   });
+});
+
+
+it('offers note autofill without a strict encounter and locks dialog close during fill', async () => {
+  mocks.supabase = { auth: { onAuthStateChange: (callback: (event: string, session: unknown) => void) => {
+    callback('INITIAL_SESSION', { user: { id: 'user' } });
+    return { data: { subscription: { unsubscribe: vi.fn() } } };
+  } } };
+  mocks.inspect.mockResolvedValue(writableWith({ state: 'notConsult' }));
+  const destination = { provider: 'pulse', origin: 'https://pulse.example', title: 'Open encounter' };
+  let finish: (value: { state: string }) => void = () => {};
+  mocks.noteAutofill.mockImplementation(async (request: { operation: string }) => request.operation === 'list'
+    ? { state: 'targets', targets: [{ ...destination, tabId: 7 }] } : request.operation === 'inspect'
+      ? { state: 'fields', ...destination, fields: ['Notes'] } : request.operation === 'prepare'
+        ? { state: 'prepared', ...destination, field: 'Notes', ticket: 'ticket', existing_characters: 0, expires_at: new Date(Date.now() + 60_000).toISOString() }
+        : new Promise(resolve => { finish = resolve; }));
+  const { el, props } = dlg(); render(el);
+  fireEvent.click(await screen.findByRole('button', { name: 'Fill an open PIMS note' }));
+  await screen.findByRole('option', { name: /Open encounter/ });
+  fireEvent.change(screen.getByLabelText('Destination tab'), { target: { value: '7' } });
+  await screen.findByRole('option', { name: 'Notes' });
+  fireEvent.change(screen.getByLabelText('Open field'), { target: { value: 'Notes' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Prepare autofill' }));
+  fireEvent.click(await screen.findByRole('checkbox'));
+  fireEvent.click(screen.getByRole('button', { name: 'Fill selected field' }));
+  expect(screen.getAllByRole('button', { name: 'Close' }).every(button => (button as HTMLButtonElement).disabled)).toBe(true);
+  fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
+  expect(props.onClose).not.toHaveBeenCalled();
+  await act(async () => finish({ state: 'filled' }));
+  await screen.findByText('Filled. Verify the notes and save them in PIMS.');
+  expect(props.onSent).not.toHaveBeenCalled();
+  expect(mocks.markPimsSent).not.toHaveBeenCalled();
 });

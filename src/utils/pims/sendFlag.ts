@@ -1,10 +1,11 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { FREE_BETA } from '../../constants/plans';
+import { pimsRolloutEnabled } from './rollout';
 
 /** The Send to ezyVet rule, shared by the web app (useProfile) and the side panel: the practice's
  *  admin-set flag (practices.pims_send_enabled), on for everyone during the free beta. */
 export function pimsSendAllowed(practiceFlag: boolean): boolean {
-  return FREE_BETA || practiceFlag;
+  return pimsRolloutEnabled() && (FREE_BETA || practiceFlag);
 }
 
 /**
@@ -13,6 +14,7 @@ export function pimsSendAllowed(practiceFlag: boolean): boolean {
  * retry. During the free beta nothing is read.
  */
 export async function loadPimsSendAllowed(client: SupabaseClient, userId: string): Promise<boolean | null> {
+  if (!pimsRolloutEnabled()) return false;
   if (pimsSendAllowed(false)) return true;
   try {
     const { data: profile, error } = await client.from('profiles').select('practice_id').eq('id', userId).maybeSingle();

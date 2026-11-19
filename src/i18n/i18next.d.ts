@@ -24,6 +24,8 @@ import type email from '../locales/en/email.json';
 import type authEmail from '../locales/en/authEmail.json';
 import type patients from '../locales/en/patients.json';
 import type pims from '../locales/en/pims.json';
+import type help from '../locales/en/help.json';
+import type visitDocumentation from '../locales/en/visitDocumentation.json';
 
 // Adding a namespace: one import above + one entry in `resources` below.
 declare module 'i18next' {
@@ -55,6 +57,8 @@ declare module 'i18next' {
       authEmail: typeof authEmail;
       patients: typeof patients;
       pims: typeof pims;
+      visitDocumentation: typeof visitDocumentation;
+      help: typeof help;
     };
   }
 }

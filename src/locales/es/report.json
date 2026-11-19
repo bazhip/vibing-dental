@@ -59,6 +59,14 @@
     "warningSigns": "Esté atento a la comida que se le cae de la boca, la pérdida de peso, si come despacio, sacude la cabeza o se resiste al bocado, el mal aliento o la secreción nasal; llámenos si nota algo."
   },
   "intro": "Este informe resume la información documentada de la visita dental de {{pet}}. Consulte cualquier duda con su equipo veterinario.",
+  "visitIntro": {
+    "lead": "Esto es lo que documentamos durante la visita dental de {{pet}}.",
+    "extractions": "Dientes extraídos durante esta visita: {{total}}.",
+    "findings": "Dientes con hallazgos documentados: {{total}}.",
+    "exam": "Registramos otros hallazgos durante el examen oral.",
+    "treatment": "Registramos notas del tratamiento de esta visita."
+  },
+  "visitImages": "Imágenes de la visita",
   "legendFilled": "relleno = ausente antes de esta visita",
   "legendNumbers": "Los números corresponden a los hallazgos de abajo",
   "legendRemoved": "✕ rojo = extraído hoy",
@@ -157,6 +165,11 @@
     "range": " (grado {{from}} a {{to}})"
   },
   "otherFindings": "Otros hallazgos",
+  "dischargeSource": {
+    "dischargeMedications": "Medicamentos al alta",
+    "dischargeInstructions": "Instrucciones al alta",
+    "dischargeFollowUp": "Seguimiento tras el alta"
+  },
   "homecareTipsRabbit": {
     "hay": "Ofrezca heno de gramíneas sin límite para favorecer el desgaste dental normal y siga las instrucciones de alimentación de su equipo veterinario después del tratamiento.",
     "checkups": "Acuda a las revisiones dentales recomendadas por su equipo veterinario; los dientes del conejo crecen continuamente.",

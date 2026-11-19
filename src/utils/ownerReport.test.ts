@@ -42,7 +42,7 @@ function baseSnapshot(): ChartSnapshot {
       nerveBlocks: { ...EMPTY_NERVE_BLOCKS },
       exam: { ...EMPTY_EXAM_FINDINGS },
     },
-    toothData: getInitialToothData('feline'),
+    toothData: getInitialToothData('feline').map(tooth => ({ ...tooth })),
     species: 'feline',
     logo: 'socal',
     preMarks: {},
@@ -149,9 +149,8 @@ describe('templates', () => {
       'Caring for Biscuit’s teeth at home',
       'Recommended recheck',
     ]);
-    expect(model.intro).toBe(
-      'This report summarizes the information documented for Biscuit’s dental visit. Please discuss any questions with your veterinary team.'
-    );
+    expect(model.intro).toContain('Biscuit’s dental visit');
+    expect(model.intro).toContain('Teeth removed during this visit: 1.');
     expect(model.homecareTips).toEqual(DEFAULT_HOMECARE_TIPS);
     expect(model.visitDate).toBe('2026-07-19');
     expect(model.closingNote).toBe('');
@@ -241,7 +240,7 @@ describe('templates', () => {
     expect(es.extracted).toEqual(['Cuarto premolar superior derecho (108)']);
     expect(es.examNotes).toEqual([{ area: 'Lengua', comment: '' }]);
     expect(es.sections.find((s) => s.id === 'diagram')!.heading).toBe('La boca de Biscuit');
-    expect(es.intro).toMatch(/^Este informe resume la información documentada/);
+    expect(es.intro).toMatch(/^Esto es lo que documentamos durante la visita dental de Biscuit/);
     expect(es.visitDate).toMatch(/2026/);
     expect(es.visitDate).toMatch(/julio/);
 
@@ -588,6 +587,24 @@ test('photo review tracks caption, path and deletion while review metadata does 
   expect(ownerReportReviewBasis({ ...snapshot, ownerReport: { reviewedAttachments: basis } })).toBe(ownerReportReviewBasis(snapshot));
 });
 
+test('includes recorded discharge wording in the client-language fallback and preserves a manual override', () => {
+  const snapshot = baseSnapshot();
+  snapshot.patientInfo.dischargeMedications = 'Drug 2 mg? confirm';
+  snapshot.patientInfo.dischargeInstructions = 'Recorded wording';
+  snapshot.patientInfo.dischargeFollowUp = 'Call if concerned';
+  const model = buildOwnerReportModel(snapshot, { template: defaultTemplate('fr') });
+  expect(model.extraNotes).toContain('Médicaments');
+  expect(model.extraNotes).toContain('Drug 2 mg? confirm');
+  expect(model.extraNotes).toContain('Recorded wording');
+  expect(model.extraNotes).toContain('Call if concerned');
+  const basis = ownerReportReviewBasis(snapshot);
+  snapshot.patientInfo.dischargeInstructions = 'Updated wording';
+  expect(ownerReportReviewBasis(snapshot)).not.toBe(basis);
+  snapshot.ownerReport = { extraNotes: 'Manually reviewed note' };
+  expect(buildOwnerReportModel(snapshot).extraNotes).toBe('Manually reviewed note');
+  snapshot.ownerReport.extraNotes = '';
+  expect(buildOwnerReportModel(snapshot).extraNotes).toBe('');
+});
 
 it('a rabbit report uses rabbit care defaults and identifies the species', () => {
   const snap = { ...baseSnapshot(), species: 'rabbit' as const, toothData: getInitialToothData('rabbit') };
@@ -596,4 +613,39 @@ it('a rabbit report uses rabbit care defaults and identifies the species', () =>
   expect(model.homecareTips).toEqual(reportStrings('en').homecareTipsRabbit);
   expect(model.homecareTips.join(' ')).toMatch(/hay/);
   expect(model.homecareTips.join(' ')).not.toMatch(/brush|VOHC|chews|bit,/i);
+});
+
+it('prints the edited report wording and retains the original structured findings', async () => {
+  const { PDFPage } = await import('pdf-lib');
+  const draw = vi.spyOn(PDFPage.prototype, 'drawText');
+  try {
+    const snapshot = baseSnapshot();
+    snapshot.toothData = snapshot.toothData.map(tooth => tooth.triadan === 108 ? { ...tooth, mobility: '2' } : tooth);
+    const original = buildOwnerReportModel(snapshot);
+    snapshot.ownerReport = {
+      findingsText: 'Edited findings for the owner.',
+      extractionsText: 'Edited removals for the owner.',
+      examNotesText: 'Edited exam notes for the owner.',
+    };
+    const edited = buildOwnerReportModel(snapshot);
+    expect(edited.teeth).toEqual(original.teeth);
+    expect(edited.extracted).toEqual(original.extracted);
+    await buildOwnerReportPdfBytes(edited, { practiceName: 'Clinic', doctorName: '', logoUrl: '' }, []);
+    const printed = draw.mock.calls.map(([text]) => text).join(' ');
+    expect(printed).toContain('Edited findings for the owner.');
+    expect(printed).toContain('Edited removals for the owner.');
+    expect(printed).toContain('Edited exam notes for the owner.');
+  } finally {
+    draw.mockRestore();
+  }
+});
+
+it('builds the opening from documented visit data without treating missing teeth as extractions', () => {
+  const snapshot = baseSnapshot();
+  snapshot.preMarks = { 101: 'missing' };
+  snapshot.postMarks = { 103: 'extracted', 104: 'extracted' };
+  const model = buildOwnerReportModel(snapshot);
+  expect(model.intro).toContain('Teeth removed during this visit: 2.');
+  expect(model.generatedOpening).toBe(model.intro);
+  expect(buildOwnerReportModel(baseSnapshot()).generatedOpening).toBeUndefined();
 });

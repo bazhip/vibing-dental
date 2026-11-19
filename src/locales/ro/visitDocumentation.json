@@ -1,0 +1,62 @@
+{
+  "consultation": {
+    "title": "Consultație",
+    "purpose": "Înregistrați motivul vizitei, anamneza, evaluarea și planul alături de examinarea și fișa comune.",
+    "review": "Verificați dosarul clinic"
+  },
+  "discharge": {
+    "title": "Externare",
+    "purpose": "Înregistrați medicamentele, instrucțiunile de îngrijire și monitorizarea discutate pentru această vizită.",
+    "review": "Verificați raportul pentru proprietar"
+  },
+  "sourceNotice": "Formularea înregistrată rămâne așa cum a fost introdusă. Verificați limba clientului înainte de partajare.",
+  "treatmentRecap": "Raport de tratament",
+  "noTreatment": "Nu există niciun raport de tratament înregistrat.",
+  "fields": {
+    "complaint": {
+      "label": "Motivul vizitei",
+      "helper": "Partajat cu datele pacientului pentru această vizită."
+    },
+    "consultationHistory": {
+      "label": "Anamneză",
+      "helper": "Înregistrați anamneza furnizată și contextul relevant."
+    },
+    "consultationAssessment": {
+      "label": "Evaluare",
+      "helper": "Înregistrați evaluarea dumneavoastră, inclusiv eventualele incertitudini."
+    },
+    "consultationPlan": {
+      "label": "Plan",
+      "helper": "Înregistrați planul discutat; nu sugerați că îngrijirea planificată a fost efectuată."
+    },
+    "dischargeMedications": {
+      "label": "Medicamente",
+      "helper": "Introduceți numai medicamentele și dozele înregistrate, păstrând eventualele incertitudini."
+    },
+    "dischargeInstructions": {
+      "label": "Instrucțiuni",
+      "helper": "Înregistrați instrucțiunile de îngrijire discutate pentru această vizită."
+    },
+    "dischargeFollowUp": {
+      "label": "Monitorizare",
+      "helper": "Înregistrați monitorizarea discutată; pentru un recontrol programat, folosiți data de rechemare existentă."
+    },
+    "gpVitals": {
+      "label": "Semne vitale",
+      "helper": "Înregistrați valorile măsurate cu unitățile lor și eventualele incertitudini."
+    },
+    "gpPhysicalExam": {
+      "label": "Examen fizic",
+      "helper": "Înregistrați numai constatările examinării observate sau raportate."
+    },
+    "gpDiagnostics": {
+      "label": "Diagnostic",
+      "helper": "Înregistrați constatările diagnostice și testele în așteptare, păstrând incertitudinile."
+    }
+  },
+  "gp-exam": {
+    "title": "Examinare de medicină generală",
+    "purpose": "Înregistrați semnele vitale, examenul fizic și constatările diagnostice pentru această vizită.",
+    "review": "Verificați dosarul clinic"
+  }
+}

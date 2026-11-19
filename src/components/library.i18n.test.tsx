@@ -1,3 +1,4 @@
+import { PLACEHOLDERS } from '../utils/ownerReportConfig';
 import React from 'react';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { vi } from 'vitest';
@@ -272,14 +273,14 @@ describe('ReportTemplatesModal', () => {
 
   it('empty list, a name error, then templates with one picked', async () => {
     const { container, rerender } = render(<ReportTemplatesModal open onClose={() => {}} store={store([])} />);
-    expect(findUntranslated(container, ALLOW)).toEqual([]);
+    expect(findUntranslated(container, [...ALLOW, ...PLACEHOLDERS.map(code => `{${code}}`)])).toEqual([]);
     fireEvent.click(screen.getByRole('button', { name: '⟦Save template⟧' }));
     expect(await screen.findByRole('alert')).toHaveTextContent('⟦Give the template a name — it labels it in the insert menu.⟧');
-    expect(findUntranslated(container, ALLOW)).toEqual([]);
+    expect(findUntranslated(container, [...ALLOW, ...PLACEHOLDERS.map(code => `{${code}}`)])).toEqual([]);
     rerender(<ReportTemplatesModal open onClose={() => {}} store={store([{ id: 't1', name: 'Routine cleaning', body: 'x' }, { id: 't2', name: ' ', body: 'Quarterly note' }])} />);
     fireEvent.click(screen.getByText('⟦Untitled⟧'));
     expect(await screen.findByRole('button', { name: '⟦Save changes⟧' })).toBeInTheDocument();
-    expect(findUntranslated(container, ALLOW)).toEqual([]);
+    expect(findUntranslated(container, [...ALLOW, ...PLACEHOLDERS.map(code => `{${code}}`)])).toEqual([]);
   });
 
   it('deleting asks in the active language', async () => {

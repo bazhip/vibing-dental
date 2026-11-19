@@ -25,9 +25,19 @@ function client(rows: Record<string, Row | 'throw'>): SupabaseClient {
 
 const profile = { data: { practice_id: 'p1' }, error: null };
 
-beforeEach(() => { plans.freeBeta = false; });
+beforeEach(() => { plans.freeBeta = false; vi.stubEnv('VITE_PIMS_ROLLOUT_ENABLED', 'true'); });
+afterEach(() => vi.unstubAllEnvs());
 
 describe('pims send flag', () => {
+  it.each([undefined, '', 'false', 'TRUE', '1'])('rollout=%s overrides practice and free beta without reading data', async (value) => {
+    vi.stubEnv('VITE_PIMS_ROLLOUT_ENABLED', value);
+    plans.freeBeta = true;
+    const from = vi.fn();
+    expect(pimsSendAllowed(true)).toBe(false);
+    expect(pimsSendAllowed(false)).toBe(false);
+    expect(await loadPimsSendAllowed({ from } as unknown as SupabaseClient, 'u1')).toBe(false);
+    expect(from).not.toHaveBeenCalled();
+  });
   it('the rule: the practice flag, or the free beta', () => {
     expect(pimsSendAllowed(false)).toBe(false);
     expect(pimsSendAllowed(true)).toBe(true);

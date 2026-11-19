@@ -1,4 +1,6 @@
+import { clinicalMappingDefaults, compatibleClinicalMapping, EZYVET_CLINICAL_DEFAULTS } from './clinicalMappings';
 import { matchField } from '../../extension/ezyvet/matchField';
+import type { PimsId } from '../../extension/pims/types';
 import {
   recordNoteSectionHtml,
   recordNoteSectionText,
@@ -8,7 +10,7 @@ import {
   type RecordNoteSection,
 } from '../recordNote';
 
-export type SourceKey = RecordNoteKey | 'chart';
+export type SourceKey = RecordNoteKey | 'chart' | 'attachment';
 /** `null` = don't send. `editedNote` is where a note that can't be split goes (unset = the
  *  treatment field's choice). */
 export type PimsFieldMap = Partial<Record<SourceKey, string | null>> & { editedNote?: string | null };
@@ -18,6 +20,8 @@ export type EffectiveFieldMap = Record<SourceKey, string | null> & { editedNote?
 
 export const DEFAULT_EZYVET_MAP: Record<SourceKey, string | null> = {
   header: null,
+  ...EZYVET_CLINICAL_DEFAULTS,
+
   anesthesia: 'Plan',
   exam: 'Physical Exam',
   findings: 'Physical Exam',
@@ -27,10 +31,14 @@ export const DEFAULT_EZYVET_MAP: Record<SourceKey, string | null> = {
   treatment: 'Plan',
   recheck: 'Plan',
   chart: 'Discharge Summary',
+  attachment: null,
 };
 
-export function effectiveMap(saved: PimsFieldMap | null): EffectiveFieldMap {
-  return { ...DEFAULT_EZYVET_MAP, ...(saved ?? {}) };
+export function effectiveMap(saved: PimsFieldMap | null, provider: PimsId = 'ezyvet', fields?: readonly FieldInfo[]): EffectiveFieldMap {
+  const defaults = provider === 'ezyvet' ? DEFAULT_EZYVET_MAP : Object.fromEntries(
+    Object.keys(DEFAULT_EZYVET_MAP).map((key) => [key, null]),
+  ) as Record<SourceKey, null>;
+  return { ...defaults, ...clinicalMappingDefaults(provider, fields), ...compatibleClinicalMapping(saved ?? {}) };
 }
 
 export type FieldInfo = {
@@ -51,6 +59,26 @@ export function splitStoredNote(text: string, generated: RecordNote): RecordNote
   // No headings to split on: the edited text would be lost, so the caller sends it whole.
   if (generated.sections.length === 0) return text.trim() === '' ? { sections: [] } : null;
   const lines = text.split(/\r?\n/);
+  const complaint = generated.sections.find(section => section.key === 'complaint');
+  // Older notes kept complaint as the final header item. Split the stored wording,
+  // including clinician edits/removals, rather than restoring the current chart value.
+  if (complaint && !lines.includes(complaint.heading.toLocaleUpperCase())) {
+    const legacy = splitStoredNote(text, { sections: generated.sections.filter(section => section.key !== 'complaint') });
+    if (!legacy) return null;
+    const headerIndex = legacy.sections.findIndex(section => section.key === 'header');
+    const header = legacy.sections[headerIndex];
+    if (!header) return legacy;
+    const prefix = `${complaint.heading}:`;
+    const at = header.lines.findIndex(line => line.startsWith(prefix));
+    if (at < 0) {
+      const expectedHeader = generated.sections.find(section => section.key === 'header');
+      return expectedHeader && header.lines.join('\n') === expectedHeader.lines.join('\n') ? legacy : null;
+    }
+    const body = [header.lines[at].slice(prefix.length).trimStart(), ...header.lines.slice(at + 1)];
+    header.lines = header.lines.slice(0, at);
+    if (body.some(line => line.trim())) legacy.sections.splice(headerIndex + 1, 0, { ...complaint, lines: body });
+    return legacy;
+  }
   const sections: RecordNoteSection[] = [];
   let from = 0;
   const starts: number[] = [];

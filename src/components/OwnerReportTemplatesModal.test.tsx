@@ -36,13 +36,12 @@ describe('OwnerReportTemplatesModal', () => {
     };
     renderModal({ config });
 
-    const list = screen.getByRole('navigation', { name: 'Templates' });
+    const list = screen.getByRole('combobox', { name: 'Report template' });
     expect(list).toHaveTextContent('Standard');
     expect(list).toHaveTextContent('Español');
     // The default badge lands on template b, and the non-English one
     // shows its language.
-    expect(screen.getByText('Default')).toBeInTheDocument();
-    expect(screen.getByText('ES')).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: 'Español · ES · Default', selected: true })).toBeInTheDocument();
   });
 
   it('owners can disable a section and save', async () => {
@@ -71,13 +70,12 @@ describe('OwnerReportTemplatesModal', () => {
     const user = userEvent.setup();
     const config = { defaultTemplateId: 'a', templates: [{ ...defaultTemplate(), id: 'a', name: 'First' }, { ...defaultTemplate(), id: 'b', name: 'Second' }] };
     renderModal({ config, onSave });
-    await user.click(screen.getByRole('button', { name: /Second/ }));
+    await user.selectOptions(screen.getByRole('combobox', { name: 'Report template' }), 'b');
     await user.type(screen.getByLabelText('Template name'), '!');
     await user.click(screen.getByRole('button', { name: 'Save templates' }));
-    expect(screen.getByRole('button', { name: 'New' })).toBeDisabled();
-    expect(screen.getByRole('button', { name: 'Duplicate' })).toBeDisabled();
-    expect(screen.getByRole('button', { name: 'Set as default' })).toBeDisabled();
-    expect(screen.getByRole('button', { name: 'Delete' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'New template' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Template actions' })).toBeDisabled();
+    expect(screen.getByRole('combobox', { name: 'Report template' })).toBeDisabled();
     await act(async () => finish());
   });
 
@@ -168,10 +166,12 @@ describe('OwnerReportTemplatesModal', () => {
     const config = { defaultTemplateId: 'a', templates: [{ ...defaultTemplate(), id: 'a', name: 'First' }, { ...defaultTemplate(), id: 'b', name: 'Second' }] };
     render(<DialogHost />);
     renderModal({ config });
+    await user.click(screen.getByRole('button', { name: 'Template actions' }));
     await user.click(screen.getByRole('button', { name: 'Delete' }));
     const cancel = within(await screen.findByRole('alertdialog')).getByRole('button', { name: 'Cancel' });
     await user.click(cancel);
     expect(screen.getByLabelText('Template name')).toHaveValue('First');
+    await user.click(screen.getByRole('button', { name: 'Template actions' }));
     await user.click(screen.getByRole('button', { name: 'Delete' }));
     await user.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: 'Delete' }));
     await waitFor(() => expect(screen.getByLabelText('Template name')).toHaveValue('Second'));
@@ -183,7 +183,9 @@ describe('OwnerReportTemplatesModal', () => {
     const config = defaultConfig();
     renderModal({ config, onSave });
 
+    await user.click(screen.getByRole('button', { name: 'Template actions' }));
     await user.click(screen.getByRole('button', { name: 'Duplicate' }));
+    await user.click(screen.getByRole('button', { name: 'Template actions' }));
     await user.click(screen.getByRole('button', { name: 'Set as default' }));
 
     await user.click(screen.getByRole('button', { name: 'Save templates' }));
@@ -208,11 +210,6 @@ describe('OwnerReportTemplatesModal', () => {
     await waitFor(() => expect(onSave).toHaveBeenCalled());
     const saved = onSave.mock.calls[0][0] as OwnerReportConfig;
     expect(saved.templates[0].language).toBe('es');
-  });
-
-  it('deleting the last remaining template is not offered', () => {
-    renderModal();
-    expect(screen.getByRole('button', { name: 'Delete' })).toBeDisabled();
   });
 
   it('placeholder chips insert into the focused field', async () => {
@@ -304,11 +301,23 @@ it('template management disclosure exposes its state without changing the draft'
   const toggle = screen.getByRole('button', { name: 'Template actions' });
   expect(toggle).toHaveAttribute('aria-expanded', 'false');
   const actions = document.getElementById(toggle.getAttribute('aria-controls')!);
-  expect(actions).not.toHaveClass('report-templates__list-actions--open');
+  expect(actions).toHaveAttribute('hidden');
   await user.click(toggle);
   expect(toggle).toHaveAttribute('aria-expanded', 'true');
-  expect(actions).toHaveClass('report-templates__list-actions--open');
+  expect(actions).not.toHaveAttribute('hidden');
+  expect(screen.getByRole('button', { name: 'Duplicate' })).toBeEnabled();
+  expect(screen.getByRole('button', { name: 'Delete' })).toBeDisabled();
   expect(screen.getByRole('button', { name: 'Save templates' })).toBeDisabled();
-  await user.click(toggle);
+  screen.getByRole('button', { name: 'Duplicate' }).focus();
+  await user.keyboard('{Escape}');
   expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  expect(toggle).toHaveFocus();
+  expect(screen.getByRole('dialog')).toBeInTheDocument();
+});
+
+it('opens a new template draft in the practice client language', () => {
+  renderModal({ startNew: true, clientLanguage: 'fr' });
+  expect(screen.getByRole('textbox', { name: 'Template name' })).toHaveValue('New template');
+  expect(screen.getByRole('combobox', { name: 'Report language' })).toHaveValue('fr');
+  expect(screen.getByRole('button', { name: 'Save templates' })).toBeEnabled();
 });

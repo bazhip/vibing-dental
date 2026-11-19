@@ -7,6 +7,7 @@ import { matchField } from './matchField';
 import { withTemplateGuard } from './templateGuard';
 
 export type WriteCode =
+  | 'patient_changed'
   | 'not_writable'
   | 'field_not_found'
   | 'editor_not_found'
@@ -127,7 +128,7 @@ function pointerdown(el: Element) {
   el.dispatchEvent(new Ctor('pointerdown', { bubbles: true, cancelable: true }));
 }
 
-async function writeNote(doc: Document, section: Element, item: SendItem) {
+async function writeNote(doc: Document, section: Element, item: SendItem, guard: () => void) {
   let entry: EditableEl | undefined = emptyEditors(section)[0];
   if (!entry) {
     const add = section.querySelector(S.ADD_NOTE_BUTTON);
@@ -136,6 +137,8 @@ async function writeNote(doc: Document, section: Element, item: SendItem) {
     entry = (await waitFor(doc, () => emptyEditors(section).find((e) => e.__lexicalEditor))) ?? undefined;
   }
   const editor = entry?.__lexicalEditor;
+  guard();
+  if (!section.isConnected || !entry?.isConnected) throw new Fail('patient_changed');
   if (!entry || !editor) throw new Fail('editor_not_found');
   const paragraph = editor._nodes?.get('paragraph')?.klass;
   const text = editor._nodes?.get('text')?.klass;
@@ -146,6 +149,7 @@ async function writeNote(doc: Document, section: Element, item: SendItem) {
   try {
     editor.update(
       () => {
+        guard();
         const root = (editor._pendingEditorState ?? editor.getEditorState())._nodeMap.get('root');
         if (!root) {
           failed = true;
@@ -167,7 +171,8 @@ async function writeNote(doc: Document, section: Element, item: SendItem) {
       },
       { discrete: true },
     );
-  } catch {
+  } catch (error) {
+    if (error instanceof Fail) throw error;
     failed = true;
   }
   // Lexical may route errors inside update to onError and carry on, so confirm the lines landed
@@ -176,11 +181,13 @@ async function writeNote(doc: Document, section: Element, item: SendItem) {
   if (failed || !landed) throw new Fail('editor_not_found');
 
   // ezyVet saves an entry on a pointerdown outside it, once armed by one inside it.
+  guard();
   pointerdown(entry);
   const away = doc.createElement('button');
   away.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:1px;height:1px';
   doc.body.appendChild(away);
   try {
+    guard();
     pointerdown(away);
   } finally {
     away.remove();
@@ -189,12 +196,15 @@ async function writeNote(doc: Document, section: Element, item: SendItem) {
 
 // ---------- popups ----------
 
-function setTextarea(el: HTMLTextAreaElement, value: string) {
+function setTextarea(el: HTMLTextAreaElement, value: string, guard: () => void) {
+  guard();
   const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value')?.set;
   if (setter) setter.call(el, value);
   else el.value = value;
   el.dispatchEvent(new Event('input', { bubbles: true }));
+  guard();
   el.dispatchEvent(new Event('change', { bubbles: true }));
+  guard();
 }
 
 function visibleFormboxes(doc: Document): Element[] {
@@ -209,12 +219,15 @@ function addTarget(titleNode: Element): Element | null {
   return add.querySelector('button, [role="button"]') ?? add;
 }
 
-async function openPopup(doc: Document, titleNode: Element): Promise<Element> {
+async function openPopup(doc: Document, titleNode: Element, guard: () => void): Promise<Element> {
+  guard();
+  if (!titleNode.isConnected) throw new Fail('patient_changed');
   const target = addTarget(titleNode);
   if (!target) throw new Fail('popup_not_found');
   const before = new Set(visibleFormboxes(doc));
   click(target);
   const box = await waitFor(doc, () => visibleFormboxes(doc).find((f) => !before.has(f)));
+  guard();
   if (!box) throw new Fail('popup_not_found');
   return box;
 }
@@ -224,31 +237,37 @@ function closePopup(box: Element) {
   if (close) click(close);
 }
 
-async function saveAndConfirm(doc: Document, box: Element, saveSelector: string, notConfirmed: WriteCode) {
+async function saveAndConfirm(doc: Document, box: Element, saveSelector: string, notConfirmed: WriteCode, guard: () => void) {
+  guard();
+  if (!box.isConnected) throw new Fail('patient_changed');
   const save = box.querySelector(saveSelector);
   if (!save) throw new Fail('save_button_not_found');
   click(save);
   const closed = await waitFor(doc, () => !box.isConnected || !isVisible(box));
+  guard();
   if (!closed) throw new Fail(notConfirmed);
 }
 
-async function writePlainPopup(doc: Document, titleNode: Element, text: string) {
-  const box = await openPopup(doc, titleNode);
+async function writePlainPopup(doc: Document, titleNode: Element, text: string, guard: () => void) {
+  const box = await openPopup(doc, titleNode, guard);
+  guard();
   const area = box.querySelector<HTMLTextAreaElement>(S.POPUP_TEXTAREA);
   if (!area) throw new Fail('editor_not_found');
-  setTextarea(area, text);
-  await saveAndConfirm(doc, box, S.POPUP_SAVE_BUTTON, 'popup_not_closed');
+  setTextarea(area, text, guard);
+  await saveAndConfirm(doc, box, S.POPUP_SAVE_BUTTON, 'popup_not_closed', guard);
 }
 
-async function writeInPerson(doc: Document, titleNode: Element, text: string) {
-  const box = await openPopup(doc, titleNode);
+async function writeInPerson(doc: Document, titleNode: Element, text: string, guard: () => void) {
+  const box = await openPopup(doc, titleNode, guard);
+  guard();
   const method = box.querySelector(S.CONTACT_IN_PERSON);
   if (!method) throw new Fail('popup_not_found');
   click(method);
   const area = await waitFor(doc, () => box.querySelector<HTMLTextAreaElement>(S.IN_PERSON_TEXTAREA));
+  guard();
   if (!area) throw new Fail('editor_not_found');
-  setTextarea(area, text);
-  await saveAndConfirm(doc, box, S.IN_PERSON_ADD, 'popup_not_closed');
+  setTextarea(area, text, guard);
+  await saveAndConfirm(doc, box, S.IN_PERSON_ADD, 'popup_not_closed', guard);
 }
 
 // ---------- HugeRTE ----------
@@ -284,22 +303,30 @@ function newHugeRte(win: Window, before: Set<HugeRteEditor>, scope: (el: Element
   return null;
 }
 
-function fillHugeRte(ed: HugeRteEditor, html: string) {
+function fillHugeRte(ed: HugeRteEditor, html: string, guard: () => void) {
+  guard();
   ed.focus?.();
+  guard();
   ed.setContent(html);
+  guard();
   ed.fire?.('input');
+  guard();
   ed.fire?.('change');
+  guard();
   ed.save?.();
+  guard();
   ed.setDirty?.(true);
 }
 
-async function writeEmail(doc: Document, win: Window, titleNode: Element, item: SendItem) {
+async function writeEmail(doc: Document, win: Window, titleNode: Element, item: SendItem, guard: () => void) {
   const before = new Set(allHugeRte(win));
-  const box = await openPopup(doc, titleNode);
+  const box = await openPopup(doc, titleNode, guard);
+  guard();
   const method = box.querySelector(S.CONTACT_EMAIL);
   if (!method) throw new Fail('popup_not_found');
   click(method);
   const to = await waitFor(doc, () => box.querySelector<HTMLInputElement>(S.EMAIL_TO_INPUT));
+  guard();
   if (!to) throw new Fail('popup_not_found');
   // Only the client's preferred address, never another one: the address field must end up
   // holding exactly that address.
@@ -316,18 +343,22 @@ async function writeEmail(doc: Document, win: Window, titleNode: Element, item: 
     return address !== '' && to.value.trim().toLowerCase() === address;
   };
   if (!(await waitFor(doc, matches))) {
+    guard();
     closePopup(box);
     throw new Fail('no_preferred_email');
   }
+  guard();
   const pending = box.querySelector(S.EMAIL_STATUS_PENDING);
   if (pending) click(pending);
   const ed = await waitFor(doc, () => newHugeRte(win, before, (c) => box.contains(c)));
+  guard();
   if (!ed) throw new Fail('editor_not_found');
-  fillHugeRte(ed, richContent(item));
-  await saveAndConfirm(doc, box, S.POPUP_SAVE_BUTTON, 'popup_not_closed');
+  fillHugeRte(ed, richContent(item), guard);
+  await saveAndConfirm(doc, box, S.POPUP_SAVE_BUTTON, 'popup_not_closed', guard);
 }
 
-async function writeDischargeSummary(doc: Document, win: Window, titleNode: Element, item: SendItem) {
+async function writeDischargeSummary(doc: Document, win: Window, titleNode: Element, item: SendItem, guard: () => void) {
+  guard();
   const target = addTarget(titleNode);
   if (!target) throw new Fail('popup_not_found');
   const before = new Set(allHugeRte(win));
@@ -340,6 +371,7 @@ async function writeDischargeSummary(doc: Document, win: Window, titleNode: Elem
   // A template chooser may come first. Cancel only one that appeared after our click, once.
   let cancelled = false;
   const ed = await waitFor(doc, () => {
+    guard();
     if (!cancelled) {
       const cancel = Array.from(doc.querySelectorAll(S.TEMPLATE_CHOOSER_CANCEL)).find((c) => !oldCancels.has(c) && isVisible(c));
       if (cancel) {
@@ -349,8 +381,9 @@ async function writeDischargeSummary(doc: Document, win: Window, titleNode: Elem
     }
     return newHugeRte(win, before, inScope);
   });
+  guard();
   if (!ed) throw new Fail('editor_not_found');
-  fillHugeRte(ed, richContent(item));
+  fillHugeRte(ed, richContent(item), guard);
   // Save & Close of the NEW document only: a visible button that did not exist before our click
   // and sits in the pane or the new formbox. Exactly one, else we don't guess.
   const fresh = Array.from(new Set(S.DISCHARGE_SAVE_CLOSE.flatMap((sel) => Array.from(doc.querySelectorAll(sel))))).filter(
@@ -359,19 +392,28 @@ async function writeDischargeSummary(doc: Document, win: Window, titleNode: Elem
   const save = fresh.length === 1 ? fresh[0] : undefined;
   if (!save) throw new Fail('save_button_not_found');
   const button = save;
+  guard();
   click(button);
   const closed = await waitFor(doc, () => !button.isConnected || !isVisible(button));
+  guard();
   if (!closed) throw new Fail('save_not_confirmed');
 }
 
 // ---------- entry ----------
 
-export async function write(item: SendItem, doc: Document = document): Promise<WriteResult> {
+export async function write(item: SendItem, doc: Document = document, current: () => boolean = () => true): Promise<WriteResult> {
   if (item.text === undefined && item.html === undefined && item.pngDataUrl === undefined) {
     // eslint-disable-next-line no-restricted-syntax -- dev-only: callers never build an item with no content
     throw new Error('write() needs text, html or pngDataUrl');
   }
-  if (status(doc).state !== 'writable') return { ok: false, code: 'not_writable' };
+  const initial = status(doc);
+  if (initial.state !== 'writable') return { ok: false, code: 'not_writable' };
+  const guard = () => {
+    const now = status(doc);
+    if (!current() || now.state !== 'writable' || !initial.consult || !now.consult ||
+        now.consult.viewId !== initial.consult.viewId || now.consult.recordId !== initial.consult.recordId ||
+        now.patientName !== initial.patientName) throw new Fail('patient_changed');
+  };
 
   const fields = listFieldElements(doc);
   const title = matchField(item.fieldTitle, fields.map((f) => f.title));
@@ -387,17 +429,18 @@ export async function write(item: SendItem, doc: Document = document): Promise<W
   const text = item.text ?? '';
   try {
     const { guardSkipped } = await withTemplateGuard(win, async () => {
+      guard();
       switch (field.kind) {
         case 'note':
-          return writeNote(doc, field.node, item);
+          return writeNote(doc, field.node, item, guard);
         case 'popup':
-          return writePlainPopup(doc, field.node, text);
+          return writePlainPopup(doc, field.node, text, guard);
         case 'inPerson':
-          return writeInPerson(doc, field.node, text);
+          return writeInPerson(doc, field.node, text, guard);
         case 'email':
-          return writeEmail(doc, win, field.node, item);
+          return writeEmail(doc, win, field.node, item, guard);
         case 'dischargeSummary':
-          return writeDischargeSummary(doc, win, field.node, item);
+          return writeDischargeSummary(doc, win, field.node, item, guard);
       }
     });
     return guardSkipped ? { ok: true, guardSkipped: true } : { ok: true };

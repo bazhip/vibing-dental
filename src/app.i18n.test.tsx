@@ -4,6 +4,8 @@ import i18n, { loadLanguage } from './i18n';
 import { installPseudoLocale, restoreLocale, findUntranslated } from './i18n/testing/pseudo';
 import type { ChartSnapshot } from './types';
 
+vi.mock('./components/RadiologyReportSection', () => ({ RadiologyReportSection: () => null }));
+
 // ---------------------------------------------------------------------------
 // Mocks. The chart frame (topbar, menus, status pill, banners, dialogs) is what this
 // area owns, so every section's content and every modal is stubbed out: those belong
@@ -225,8 +227,8 @@ describe('chart frame', () => {
   it('a new chart: offline, unsaved, saving, saved and failed states', async () => {
     seedChart();
     const states: Array<[string, Record<string, unknown>]> = [
-      ['⟦Offline — saved on this device⟧', { dirty: true, online: false }],
-      ['⟦Unsaved changes⟧', { dirty: true }],
+      ['⟦Not saved⟧', { dirty: true, online: false }],
+      ['⟦Not saved⟧', { dirty: true }],
       ['⟦Saving…⟧', { status: 'saving' }],
       ['⟦Not saved — retry⟧', { status: 'error', saveError: i18n.t('sync.offline', { ns: 'app' }) }],
     ];
@@ -249,17 +251,18 @@ describe('chart frame', () => {
     sync.override = fakeCloud({ dirty: true });
     seedChart({ name: '' });
     const { unmount } = await frame();
-    expect(screen.getByText('⟦Add a patient name to save⟧')).toBeTruthy();
+    expect(screen.getByText('⟦Not saved⟧')).toHaveAttribute('title', '⟦Charts save once the patient has a name⟧');
     // ⌘S with no patient name blocks the save and says why.
     fireEvent.keyDown(document, { key: 's', metaKey: true });
-    expect(await screen.findByText('⟦Not saved⟧')).toBeTruthy();
+    expect(await screen.findByText(/⟦Add a patient name before saving/)).toBeTruthy();
     expect(untranslated()).toEqual([]);
     unmount();
 
     seedChart();
     sync.override = fakeCloud({ dirty: true, awaitingClinical: true });
     await frame();
-    expect(screen.getByRole('button', { name: /Save/ }).getAttribute('title')).toMatch(/^⟦Kept on this device/);
+    expect(screen.getByText('⟦Not saved⟧')).toHaveAttribute('title', expect.stringMatching(/^⟦This visit is on this device/));
+    expect(document.querySelector('.ui-toast')).toBeNull();
     expect(untranslated()).toEqual([]);
   });
 

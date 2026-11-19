@@ -50,6 +50,21 @@
     "sessionStart": "无法启动 Deepgram 会话。",
     "unsupported": "语音输入需要 Chrome、Edge 或 Safari。"
   },
+  "destination": {
+    "general": "通用"
+  },
+  "correction": {
+    "conflict": "请审核这项病历更改。",
+    "apply": "应用建议",
+    "keep": "保留当前值"
+  },
+  "welcome": {
+    "ready": "开始录音后，转录内容将显示在这里。",
+    "title": "听写",
+    "start": "点击开始听写以开始录音。",
+    "transcript": "说话时可查看转录内容。完成后点击停止。",
+    "review": "检查报告或病历的更改，并更正需要调整的内容。"
+  },
   "intro": {
     "ariaLabel": "口述",
     "cancel": "取消",
@@ -126,6 +141,7 @@
     "open_other": "有{{count}}项需要审核。"
   },
   "status": {
+    "idle": "准备就绪",
     "connecting": "正在连接…",
     "finishing": "正在完成…",
     "interrupted": "已中断",
@@ -148,5 +164,50 @@
   "transcript": {
     "activity": "活动",
     "header": "转录文本，录音开始于 {{date}}"
+  },
+  "clinical": {
+    "dictate": "口述{{target}}",
+    "title": "{{target}}口述",
+    "kinds": {
+      "gp-visit": "全科就诊",
+      "consultation": "诊疗",
+      "gp-exam": "全科检查",
+      "discharge": "出院指导",
+      "ct": "CT 报告"
+    },
+    "help": "录制或粘贴临床医生的观察记录。应用前，请审核建议的章节。未记录的检查所见将保持空白。",
+    "imagingHelp": "录制或粘贴影像学所见。如果影像类型不明确，请注明。应用前请核对哪些所见应归入 X 光报告或 CT 报告。",
+    "ctHelp": "录制或粘贴 CT 观察记录。停止后，内容仅会添加至 CT 报告，并自动润色。",
+    "ctApply": "添加并润色 CT 报告",
+    "target": "口述目标",
+    "transcript": "转录文本",
+    "start": "开始口述",
+    "stop": "停止口述",
+    "prepare": "准备章节",
+    "preparing": "正在准备章节…",
+    "apply": "应用所选章节",
+    "noSections": "未找到临床章节。您仍可审核转录文本。",
+    "includeField": "包含{{field}}",
+    "current": "当前文本",
+    "evidence": "来源摘录",
+    "stale": "本次就诊或其源文本已更改。应用前，请重新准备章节。",
+    "applied": "所选章节已应用至本次就诊。",
+    "savedWithVisit": "应用后，转录文本会随本次就诊一同保存，不会包含在打印报告中。",
+    "sources": "已保存的转录文本",
+    "savedTranscript": "转录文本录制于 {{date}}",
+    "copyTranscript": "复制转录文本",
+    "copyPrompt": "复制录制的转录文本：",
+    "copied": "转录文本已复制。",
+    "copyPromptShown": "您可以从对话框中复制转录文本。",
+    "storageLimit": "本次就诊的转录文本存储空间已满。关闭前，请复制转录文本。",
+    "invalidSource": "转录文本来源无效。请审核转录文本后重试。",
+    "emptyTranscript": "请先录制或粘贴转录文本。",
+    "transcriptTooLong": "转录文本过长。请将其拆分为较短的口述后重试。",
+    "sourceTooLarge": "源文本过多，无法在一次请求中处理。请选择范围更小的口述目标，或缩短转录文本。",
+    "invalidResponse": "无法验证建议的章节。请审核转录文本后重试。",
+    "extractionFailed": "无法准备章节。您的转录文本已保留。",
+    "failed": "无法完成口述。您的转录文本已保留。",
+    "cancelled": "口述已取消。",
+    "consentRequired": "录制或准备此口述需要您同意使用 AI。"
   }
 }

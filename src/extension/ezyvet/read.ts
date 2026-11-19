@@ -3,10 +3,12 @@
 import type { FieldInfo } from '../../utils/pims/mapping';
 import { EXTENSION_VERSION } from '../version';
 import * as S from './selectors';
+import type { PimsId } from '../pims/types';
 
 export type EzyvetState = 'writable' | 'notConsult' | 'notMedicalTab' | 'locked' | 'combined';
 
 export type Diagnostics = {
+  provider?: PimsId;
   version: string;
   state: EzyvetState;
   selectorHits: Record<string, number>;
@@ -79,6 +81,7 @@ function consultPane(doc: Document): { pane: Element; id: string; recordId: stri
 
 /** `patientNumber` is filled in by the background (from the consult tooltip); `status()` leaves it null. */
 export type Status = {
+  provider?: PimsId;
   state: EzyvetState;
   patientName: string | null;
   patientNumber: string | null;

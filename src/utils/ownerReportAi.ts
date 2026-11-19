@@ -1,3 +1,5 @@
+import { ctRecordedText } from './ctReportState';
+import { radiologyRecordedText } from './radiologyReportState';
 import type Anthropic from '@anthropic-ai/sdk';
 import i18n from '../i18n';
 import { ChartSnapshot } from '../types';
@@ -92,9 +94,16 @@ export function ownerReportFacts(snapshot: ChartSnapshot, context?: OwnerReportC
     model.examNotes.length
       ? `Oral exam — abnormal areas: ${model.examNotes.map((n) => `${n.area}${n.comment ? ` (${n.comment})` : ''}`).join('; ')}`
       : 'Oral exam: nothing abnormal recorded',
-    info.radiographicFindings?.trim() ? `Radiographic findings (written by the vet):\n${info.radiographicFindings.trim()}` : '',
+    radiologyRecordedText(info).trim() ? `Radiographic findings (written by the vet):\n${radiologyRecordedText(info).trim()}` : '',
     info.ctReport?.trim() ? `CT report (written by the vet):\n${info.ctReport.trim()}` : '',
     info.treatmentReport?.trim() ? `Treatment report (written by the vet):\n${info.treatmentReport.trim()}` : '',
+    ...(['gpVitals', 'gpPhysicalExam', 'gpDiagnostics'] as const).map(field => info[field]?.trim() ? `${field} (recorded source, preserve doses and uncertainty):\n${info[field]}` : ''),
+    info.consultationHistory?.trim() ? `consultationHistory (recorded source, preserve doses and uncertainty):\n${info.consultationHistory}` : '',
+    info.consultationAssessment?.trim() ? `consultationAssessment (recorded source, preserve doses and uncertainty):\n${info.consultationAssessment}` : '',
+    info.consultationPlan?.trim() ? `consultationPlan (recorded source, preserve doses and uncertainty):\n${info.consultationPlan}` : '',
+    info.dischargeMedications?.trim() ? `dischargeMedications (recorded source, preserve doses and uncertainty):\n${info.dischargeMedications}` : '',
+    info.dischargeInstructions?.trim() ? `dischargeInstructions (recorded source, preserve doses and uncertainty):\n${info.dischargeInstructions}` : '',
+    info.dischargeFollowUp?.trim() ? `dischargeFollowUp (recorded source, preserve doses and uncertainty):\n${info.dischargeFollowUp}` : '',
     model.recallDate ? `Recommended recheck: ${model.recallDate}` : 'Recommended recheck: none set',
     model.extraNotes ? `Note from the veterinary team (already printed separately): ${model.extraNotes}` : '',
   ];

@@ -9,7 +9,7 @@ import { useTodaysAppointments, type TodayRow } from './useTodaysAppointments';
 /** After a hand-over opens ToothOps, the start buttons stay off this long (no second tab on a double click). */
 export const START_LOCK_MS = 3000;
 
-const KNOWN_ERRORS = new Set(['no_dashboard', 'no_date_input', 'no_calendar_refresh']);
+const KNOWN_ERRORS = new Set(['no_dashboard', 'no_date_input', 'no_calendar_refresh', 'read_failed']);
 
 function formatTime(iso: string, lng: string): string {
   const d = new Date(iso);
@@ -64,7 +64,7 @@ export const TodaysPatients: React.FC<{ userId: string }> = ({ userId }) => {
   const open = (chartId: string) => void chrome.tabs.create({ url: `${WEB_APP_ORIGIN}/#/chart/${chartId}` });
 
   const row = ({ appt, action }: TodayRow) => (
-    <li key={appt.appointmentId} className="sp-chart sp-appt" data-testid="today-row">
+    <li key={JSON.stringify([appt.provider, appt.sourceKind ?? 'appointment', appt.appointmentId])} className="sp-chart sp-appt" data-testid="today-row">
       <span className="sp-chart__name">
         <span className="sp-appt__time">{formatTime(appt.start, i18n.language)}</span> {appt.patientName}
       </span>

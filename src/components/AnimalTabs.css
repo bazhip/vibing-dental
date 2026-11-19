@@ -1,11 +1,11 @@
 .animal-tabs { display: flex; align-items: center; gap: 4px; height: 100%; margin-bottom: 0; min-width: 0; }
-.animal-tabs__list { display: flex; align-self: stretch; flex: 0 1 auto; gap: 4px; overflow-x: auto; min-width: 0; scrollbar-width: thin; position: relative; }
+.animal-tabs__list { display: flex; align-self: stretch; flex: 0 1 auto; gap: 4px; overflow-x: auto; min-width: 0; padding-top: 5px; scrollbar-width: thin; position: relative; }
 .animal-tabs__item { position: relative; display: flex; flex: 0 0 auto; width: min(250px, var(--animal-tab-available, 250px)); box-sizing: border-box; min-width: 0; background: var(--surface-sunken); border: 1px solid transparent; border-bottom: 0; border-radius: var(--radius) var(--radius) 0 0; }
 .animal-tabs__item--active { background: var(--surface); border-color: var(--border-strong); box-shadow: none; }
 .animal-tabs button { font: inherit; cursor: pointer; color: var(--text); border: 0; background: transparent; }
 .animal-tabs button:disabled { cursor: wait; opacity: 1; }
 .animal-tabs button:focus-visible { outline: 2px solid var(--primary); outline-offset: -3px; }
-.animal-tabs__select { overflow: hidden; min-width: 0; flex: 1; padding: 10px 10px; text-align: left; border-radius: var(--radius) 0 0 0; }
+.animal-tabs__select { overflow: hidden; min-width: 0; flex: 1; padding: 7px 10px 8px; text-align: left; border-radius: var(--radius) 0 0 0; }
 .animal-tabs__select strong, .animal-tabs__details > span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .animal-tabs__select strong { font-size: 14px; font-weight: 650; }
 .animal-tabs__details { display: flex; gap: 6px; font-size: 12px; color: var(--text-muted); margin-top: 5px; }
@@ -17,9 +17,22 @@
 .animal-tabs .animal-tabs__close { color: var(--text-muted); }
 .animal-tabs__add { flex: 0 0 44px; height: 44px; margin-bottom: 0; border-radius: var(--radius-sm); font-size: 24px !important; }
 .animal-tabs button:hover { background: var(--action-tint); }
-.animal-tabs__empty { padding: 72px 24px; text-align: center; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
-.animal-tabs__empty h2 { font-size: 20px; }
-.animal-tabs__empty p { color: var(--text-muted); }
+.animal-tabs__empty {
+  box-sizing: border-box;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  width: min(100%, 36rem);
+  margin-inline: auto;
+  padding: clamp(32px, 6vw, 56px) 20px;
+  text-align: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.animal-tabs__empty h2 { margin: 0; font-size: 20px; }
+.animal-tabs__empty p { margin: 0; color: var(--text-muted); }
+.animal-tabs__empty .animal-tabs__open { margin-top: 12px; }
 .animal-tabs__open { min-height: 44px; padding: 10px 16px; background: var(--primary); color: var(--on-primary); border: 0; border-radius: var(--radius-sm); font: inherit; cursor: pointer; }
 .animal-tabs__open:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
 @media (max-width: 600px) {
@@ -29,6 +42,7 @@
 }
 
 .animal-tabs__scroll { flex: 0 0 32px; height: 44px; font-size: 22px !important; border-radius: var(--radius-sm); }
+:dir(rtl) .animal-tabs__scroll { transform: scaleX(-1); }
 .animal-tabs .animal-tabs__scroll:disabled { color: var(--text-muted); cursor: default; }
 @media (max-width: 600px) { .animal-tabs__scroll { display: none; } }
 
@@ -42,6 +56,10 @@
 
 .animal-tabs__item--active::before { content: ""; position: absolute; inset: 0 0 auto; height: 3px; background: var(--primary); border-radius: var(--radius) var(--radius) 0 0; pointer-events: none; z-index: 1; }
 .animal-tabs .animal-tabs__select:hover { background: transparent; }
+/* The tab shell carries pointer feedback. The label shares that shell with its controls. */
+@media (hover: hover) and (pointer: fine) {
+  html:not(.native-ios) .animal-tabs .animal-tabs__select:not(:focus-visible):hover { outline: none; }
+}
 .animal-tabs__item:not(.animal-tabs__item--active):hover { background: var(--surface-alt); }
 
 .animal-tabs__heading { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
@@ -49,6 +67,7 @@
 .animal-tabs__indicators { display: inline-flex; align-items: baseline; gap: 6px; flex-shrink: 0; }
 .animal-tabs__save { font-size: 11px; font-weight: 500; color: var(--text-muted); white-space: nowrap; }
 .animal-tabs__save--saved { color: var(--primary); }
+.animal-tabs__save--notSaved { color: var(--ios-warning-label); }
 .animal-tabs__editing { flex-shrink: 0; font-size: 11px; font-weight: 500; color: var(--text-muted); }
 
 .animal-tabs__item--editing::before { background: var(--ios-warning-solid, #d97706); }

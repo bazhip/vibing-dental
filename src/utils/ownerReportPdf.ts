@@ -1,3 +1,4 @@
+import i18n from '../i18n';
 import type { PDFFont, PDFPage } from 'pdf-lib';
 import { wrapToWidth } from './pdf/draw';
 import { embedPdfFonts } from './pdf/fonts';
@@ -27,8 +28,8 @@ export function findingsLayout(model: OwnerReportModel, numbered: boolean): Find
 
 /** Nothing at all to report: prints the "no findings recorded" note. */
 export function nothingFound(model: OwnerReportModel): boolean {
-  return model.extracted.length === 0 && teethWithFindings(model).length === 0 && model.examNotes.length === 0
-    && model.summaryLines.length === 0 && model.otherFindings.length === 0;
+  return !model.extractionsText?.trim() && !model.findingsText?.trim() && !model.examNotesText?.trim()
+    && model.extracted.length === 0 && model.examNotes.length === 0 && !findingsLayout(model, false).print;
 }
 import type { BuiltInSectionId } from './ownerReportConfig';
 import { reportStrings } from './ownerReportI18n';
@@ -52,7 +53,7 @@ export interface OwnerReportBranding {
 }
 
 export interface OwnerReportPhoto {
-  role: 'before' | 'after';
+  role: 'before' | 'after' | null;
   caption: string;
   /** Pre-downscaled JPEG bytes (the modal re-encodes before handing off). */
   jpegBytes: Uint8Array;
@@ -253,7 +254,7 @@ export async function buildOwnerReportPdfBytes(
   const builtins = new Map<BuiltInSectionId, BuiltinSection>();
   for (const section of model.sections) if (section.kind === 'builtin') builtins.set(section.id, section);
   const findingsOn = builtins.has('findings');
-  const numbered = !!diagram && builtins.has('diagram') && findingsOn && findingsTeeth.length > 0;
+  const numbered = model.findingsText === undefined && !!diagram && builtins.has('diagram') && findingsOn && findingsTeeth.length > 0;
   // The "nothing found" note prints where the last of the three finding
   // sections would have (by default: after the exam notes).
   const emptyChart = nothingFound(model);
@@ -265,6 +266,13 @@ export async function buildOwnerReportPdfBytes(
   const renderBuiltin = async (section: BuiltinSection) => {
     switch (section.id) {
       case 'extractions': {
+        if (model.extractionsText !== undefined) {
+          if (model.extractionsText.trim()) {
+            heading(section.heading);
+            drawText(model.extractionsText, { gapAfter: 4 });
+          }
+          return;
+        }
         if (model.extracted.length === 0) return;
         heading(section.heading);
         drawText(t.extractionsLead, { gapAfter: 2 });
@@ -303,6 +311,13 @@ export async function buildOwnerReportPdfBytes(
         return;
       }
       case 'findings': {
+        if (model.findingsText !== undefined) {
+          if (model.findingsText.trim()) {
+            heading(section.heading);
+            drawText(model.findingsText, { gapAfter: 4 });
+          }
+          return;
+        }
         const layout = findingsLayout(model, numbered);
         if (!layout.print) return;
         heading(section.heading);
@@ -332,6 +347,13 @@ export async function buildOwnerReportPdfBytes(
         return;
       }
       case 'examNotes': {
+        if (model.examNotesText !== undefined) {
+          if (model.examNotesText.trim()) {
+            heading(section.heading);
+            drawText(model.examNotesText, { gapAfter: 4 });
+          }
+          return;
+        }
         if (model.examNotes.length === 0) return;
         heading(section.heading);
         for (const note of model.examNotes) {
@@ -341,13 +363,16 @@ export async function buildOwnerReportPdfBytes(
       }
       case 'photos': {
         if (photos.length === 0) return;
-        heading(section.heading);
+        const unlabelled = photos.filter(photo => photo.role === null);
+        const defaultHeading = t.headings.photos(model.patientName);
+        heading(unlabelled.length && section.heading === defaultHeading
+          ? i18n.getFixedT(model.locale, 'report')('visitImages') : section.heading);
         const colW = (CONTENT_W - 16) / 2;
-        const befores = photos.filter((p) => p.role === 'before');
-        const afters = photos.filter((p) => p.role === 'after');
-        const rows = Math.max(befores.length, afters.length);
-        for (let i = 0; i < rows; i++) {
-          const pair = [befores[i], afters[i]];
+        const befores = photos.filter(photo => photo.role === 'before');
+        const afters = photos.filter(photo => photo.role === 'after');
+        const rows = Array.from({ length: Math.max(befores.length, afters.length) }, (_, i) => [befores[i], afters[i]]);
+        for (let i = 0; i < unlabelled.length; i += 2) rows.push([unlabelled[i], unlabelled[i + 1]]);
+        for (const pair of rows) {
           // Tallest image in the row decides the row height.
           const embedded = await Promise.all(
             pair.map(async (photo) => (photo ? doc.embedJpg(photo.jpegBytes) : null))
@@ -362,9 +387,12 @@ export async function buildOwnerReportPdfBytes(
             const h = heights[col];
             const w = Math.min(colW, (img.width / img.height) * h);
             page.drawImage(img, { x, y: y - h, width: w, height: h });
-            const label = pdfSafe(`${col === 0 ? t.before : t.after}${photo.caption ? ` — ${photo.caption}` : ''}`);
-            const labelLine = wrap(label, regular, 8.5, colW)[0];
-            page.drawText(labelLine, { x, y: y - h - 12, size: 8.5, font: regular, color: muted });
+            const roleLabel = photo.role === 'before' ? t.before : photo.role === 'after' ? t.after : '';
+            const label = pdfSafe([roleLabel, photo.caption].filter(Boolean).join(' — '));
+            if (label) {
+              const labelLine = wrap(label, regular, 8.5, colW)[0];
+              page.drawText(labelLine, { x, y: y - h - 12, size: 8.5, font: regular, color: muted });
+            }
           });
           y -= rowH + 26;
         }

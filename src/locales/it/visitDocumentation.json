@@ -1,0 +1,62 @@
+{
+  "consultation": {
+    "title": "Visita",
+    "purpose": "Registri il motivo della visita, l’anamnesi, la valutazione e il piano insieme all’esame e alla cartella condivisi.",
+    "review": "Verifichi la cartella clinica"
+  },
+  "discharge": {
+    "title": "Dimissione",
+    "purpose": "Registri i farmaci, le istruzioni di cura e il controllo successivo discussi per questa visita.",
+    "review": "Verifichi il resoconto per il cliente"
+  },
+  "sourceNotice": "Il testo registrato rimane come inserito. Verifichi la lingua del cliente prima della condivisione.",
+  "treatmentRecap": "Referto del trattamento",
+  "noTreatment": "Nessun referto del trattamento registrato.",
+  "fields": {
+    "complaint": {
+      "label": "Motivo della visita",
+      "helper": "Condiviso con i dati del paziente per questa visita."
+    },
+    "consultationHistory": {
+      "label": "Anamnesi",
+      "helper": "Registri l’anamnesi riferita e il contesto pertinente."
+    },
+    "consultationAssessment": {
+      "label": "Valutazione",
+      "helper": "Registri la Sua valutazione, comprese eventuali incertezze."
+    },
+    "consultationPlan": {
+      "label": "Piano",
+      "helper": "Registri il piano discusso senza presentare come concluse le cure programmate."
+    },
+    "dischargeMedications": {
+      "label": "Farmaci",
+      "helper": "Inserisca solo i farmaci e le dosi registrati, mantenendo eventuali incertezze."
+    },
+    "dischargeInstructions": {
+      "label": "Istruzioni",
+      "helper": "Registri le istruzioni di cura discusse per questa visita."
+    },
+    "dischargeFollowUp": {
+      "label": "Controllo successivo",
+      "helper": "Registri il controllo discusso; utilizzi la data di richiamo esistente per un controllo programmato."
+    },
+    "gpVitals": {
+      "label": "Parametri vitali",
+      "helper": "Registri i valori misurati con le relative unità e le eventuali incertezze."
+    },
+    "gpPhysicalExam": {
+      "label": "Esame obiettivo",
+      "helper": "Registri solo i reperti osservati o riferiti durante l’esame."
+    },
+    "gpDiagnostics": {
+      "label": "Diagnostica",
+      "helper": "Registri i risultati diagnostici e gli esami in attesa, mantenendo le eventuali incertezze."
+    }
+  },
+  "gp-exam": {
+    "title": "Visita generale",
+    "purpose": "Registri i parametri vitali, l’esame obiettivo e i risultati diagnostici di questa visita.",
+    "review": "Verifichi la cartella clinica"
+  }
+}

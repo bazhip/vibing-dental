@@ -4,14 +4,23 @@ import { useTranslation } from 'react-i18next';
 import type { ChartSnapshot as PreviewSnapshot } from './PdfPreviewModal';
 import type { StoredRecordNote } from '../types';
 import type { RecordNote } from '../utils/recordNote';
-import { appointments, diagnose, inspect, ping, send, startChart, takePendingPatient, type PimsTransport } from '../utils/pims/extensionBridge';
+import { appointments, diagnose, inspect, instinctSubmission, radiologyAutofill, noteAutofill, physicalExam, ping, send, startChart, takePendingPatient, type PimsTransport } from '../utils/pims/extensionBridge';
 import { renderChartPicture } from '../utils/pims/chartPicture';
 import { usePimsSend } from '../hooks/usePimsSend';
 import { useModalFocus } from '../hooks/useModalFocus';
+import { pimsRolloutEnabled } from '../utils/pims/rollout';
 import { MappingRows } from './pims/MappingRows';
+import { CopyActions } from './pims/CopyActions';
+import { PimsDrafts } from './pims/PimsDrafts';
+import { PimsImages } from './pims/PimsImages';
+import { PimsExam } from './pims/PimsExam';
+import { PimsNoteAutofill } from './pims/PimsNoteAutofill';
+import type { SelectedImageTransfer } from '../utils/pims/images';
+import { PimsUploadReview } from './pims/PimsUploadReview';
 import { DiagnosticLink, SendResults } from './pims/SendResults';
 
 export interface SendToEzyvetDialogProps {
+  aiEnabled?: boolean;
   open: boolean;
   onClose: () => void;
   /** The generated note (in `stored.lng` when there is a stored note, so it can be split). */
@@ -31,19 +40,25 @@ export interface SendToEzyvetDialogProps {
 }
 
 // Built here (not imported as `externalTransport`) from the bridge's own functions.
-const transport: PimsTransport = { ping, inspect, send, diagnose, appointments, startChart, takePendingPatient };
+const transport: PimsTransport = { ping, inspect, send, diagnose, appointments, startChart, takePendingPatient, physicalExam, instinctSubmission, radiologyAutofill, noteAutofill };
 
 /**
  * Documents → Record note → Send to ezyVet. The send flow lives in `usePimsSend`; this is the
  * dialog around it.
  */
-export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
-  open, onClose, note, stored, chartSnapshot, chartId, patientName, patientNumber, sentAt, onSent,
+export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = (props) =>
+  pimsRolloutEnabled() ? <EnabledSendToEzyvetDialog {...props} /> : null;
+
+const EnabledSendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
+  open, onClose, note, stored, chartSnapshot, chartId, patientName, patientNumber, sentAt, onSent, aiEnabled = false,
 }) => {
   const { t } = useTranslation(['pims', 'media', 'app', 'forms', 'common']);
   const modalRef = useModalFocus(open);
+  const [savedImage, setSavedImage] = React.useState<SelectedImageTransfer | null>(null);
+  const [examBusy, setExamBusy] = React.useState(false);
+  const [noteBusy, setNoteBusy] = React.useState(false);
   const {
-    phase, rows, split, sending, changedTarget, sentAtSettled, lastSentAt, nothingToSend,
+    phase, rows, split, sending, changedTarget, sentAtSettled, lastSentAt, nothingToSend, mappingStatus,
     load, choose, resetToDefaults, doSend, copyDiagnostic, formatDate,
   } = usePimsSend({
     transport,
@@ -52,6 +67,7 @@ export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
     chartSnapshotPicture: async () =>
       chartSnapshot ? renderChartPicture(chartSnapshot, { pre: t('pims:picture.pre'), post: t('pims:picture.post') }) : null,
     hasChartPicture: !!chartSnapshot,
+    savedImage,
     chartId,
     patientName,
     patientNumber,
@@ -60,27 +76,28 @@ export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
     open,
   });
 
+  const busy = sending || examBusy || noteBusy;
   if (!open) return null;
 
   const header = (
     <header className="ai-settings-header">
       <h2>{t('pims:dialog.title')}</h2>
       {/* Not while sending: a reopened dialog wouldn't know a write is still running. */}
-      <button type="button" className="pdf-preview-close" onClick={onClose} disabled={sending} aria-label={t('common:actions.close')}>×</button>
+      <button type="button" className="pdf-preview-close" onClick={onClose} disabled={busy} aria-label={t('common:actions.close')}>×</button>
     </header>
   );
 
   const diagnosticLink = (tabId?: number) => <DiagnosticLink onCopy={() => void copyDiagnostic(tabId)} />;
 
   const retryButton = (
-    <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={() => void load()}>
+    <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={() => void load()} disabled={busy}>
       {t('pims:dialog.retry')}
     </button>
   );
 
   let body: React.ReactNode;
   let footer: React.ReactNode = (
-    <button type="button" className="diagram-view__action" onClick={onClose}>{t('common:actions.close')}</button>
+    <button type="button" className="diagram-view__action" onClick={onClose} disabled={busy}>{t('common:actions.close')}</button>
   );
 
   if (phase.kind === 'loading') {
@@ -148,23 +165,25 @@ export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
           {lastSentAt && <p className="patient-form__hint">{t('pims:dialog.sentOn', { date: formatDate(lastSentAt) })}</p>}
           {!split && <p className="record-note__stale" role="status">{t('pims:editedNotice')}</p>}
           <h3 className="pims-dialog__subtitle">{t('pims:rows.heading')}</h3>
-          <MappingRows rows={rows} disabled={sending} onChoose={choose} />
+          <MappingRows rows={rows} disabled={busy} onChoose={choose} />
+          {mappingStatus !== 'ready' && <p className="patient-form__hint" role={mappingStatus === 'error' ? 'alert' : 'status'}>{t(`pims:noteAutofill.mappingStatus.${mappingStatus}`)}</p>}
+          {mappingStatus === 'error' && <button type="button" className="diagram-view__action" onClick={() => void load()}>{t('pims:noteAutofill.reloadMapping')}</button>}
           {changedTarget && <p className="record-note__stale" role="status">{t('pims:send.targetChanged')}</p>}
         </>
       );
       footer = (
         <>
-          <button type="button" className="diagram-view__action" onClick={() => void resetToDefaults()} disabled={sending}>
+          <button type="button" className="diagram-view__action" onClick={() => void resetToDefaults()} disabled={busy || mappingStatus !== 'ready'}>
             {t('pims:rows.reset')}
           </button>
-          <button type="button" className="diagram-view__action" onClick={onClose} disabled={sending}>
+          <button type="button" className="diagram-view__action" onClick={onClose} disabled={busy}>
             {t('common:actions.cancel')}
           </button>
           <button
             type="button"
             className="entry-grid__button entry-grid__button--topbar"
             onClick={() => void doSend()}
-            disabled={sending || nothingToSend || !sentAtSettled}
+            disabled={busy || nothingToSend || !sentAtSettled}
           >
             {sending ? t('pims:actions.sending') : t('pims:actions.send')}
           </button>
@@ -176,12 +195,12 @@ export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
   return ReactDOM.createPortal(
     <div
       className="ai-settings-overlay"
-      onClick={() => { if (!sending) onClose(); }}
+      onClick={() => { if (!busy) onClose(); }}
       onKeyDown={(e) => {
         if (e.key !== 'Escape') return;
         // Close this dialog only, not the Documents window behind it.
         e.stopPropagation();
-        if (!sending) onClose();
+        if (!busy) onClose();
       }}
       role="dialog"
       aria-modal="true"
@@ -189,7 +208,22 @@ export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
     >
       <div className="ai-settings-modal pims-dialog" ref={modalRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
         {header}
-        <div className="ai-settings-body">{body}</div>
+        <div className="ai-settings-body">
+          {body}
+          {(phase.kind === 'ready' || phase.kind === 'results') && <PimsExam inspection={phase.info} transport={transport}
+            chartKey={chartId ?? ''} disabled={sending || noteBusy} onBusyChange={setExamBusy} onOpened={() => void load()} />}
+          <PimsNoteAutofill note={note} stored={stored} chartKey={chartId ?? ''} patientName={patientName}
+            transport={transport} disabled={sending || examBusy} onBusyChange={setNoteBusy} />
+          <CopyActions note={note} storedText={stored?.text ?? null} disabled={busy}
+            renderImage={chartSnapshot ? () => renderChartPicture(chartSnapshot, { pre: t('pims:picture.pre'), post: t('pims:picture.post') }) : undefined} />
+          <PimsDrafts key={chartId} chartId={chartId} aiEnabled={aiEnabled} radiologyTransport={transport} disabled={busy}
+            instinctUpload={(phase.kind === 'ready' || phase.kind === 'results') && phase.info.tab && phase.info.status?.provider === 'instinct'
+              ? { tabId: phase.info.tab.id, transport } : undefined} />
+          <PimsImages editorTransfer chartId={chartId} disabled={busy} onTransferSelect={setSavedImage}
+            canTransfer={phase.kind === 'ready' && phase.info.status?.state === 'writable'
+              && (phase.info.status.provider ?? 'ezyvet') === 'ezyvet' && phase.info.fields.some(field => field.acceptsImage && field.kind !== 'email')} />
+          <PimsUploadReview chartId={chartId} disabled={busy} />
+        </div>
         <footer className="ai-settings-footer">{footer}</footer>
       </div>
     </div>,

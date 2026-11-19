@@ -119,3 +119,41 @@ describe('record note builder', () => {
     expect(buildRecordNote(s, en())).toEqual(buildRecordNote(s, en()));
   });
 });
+
+it('adds only explicit consultation/discharge source sections and invalidates the note basis', () => {
+  const original = snap();
+  const info = { consultationHistory: 'History verbatim?', consultationAssessment: 'Possible disease', consultationPlan: 'Discuss options', dischargeMedications: 'Drug 2 mg? confirm', dischargeInstructions: 'Recorded care', dischargeFollowUp: 'Call if concerned' };
+  const updated = snap({}, info);
+  expect(buildRecordNote(updated, en()).sections.filter(s => s.key !== 'header').map(s => s.lines.join('\n'))).toEqual(Object.values(info));
+  expect(recordNoteBasis(updated)).not.toBe(recordNoteBasis(original));
+});
+it('uses the visible radiology report in records/PIMS, tracks edits, and respects an explicit clear', () => {
+  const value = snap({}, { radiographicFindings: '409: corrected possible resorption', radiologyReport: 'Old hidden 108 finding' });
+  const basis = recordNoteBasis(value);
+  const note = buildRecordNote(value, en());
+  expect(note.sections.find(item => item.key === 'radiographs')).toMatchObject({ heading: en()('media:recordNote.h.radiographs'), lines: ['409: corrected possible resorption'] });
+  expect(recordNoteText(note)).not.toContain('Old hidden');
+  value.patientInfo.radiographicFindings = '';
+  expect(recordNoteBasis(value)).not.toBe(basis);
+  expect(buildRecordNote(value, en()).sections.some(item => item.key === 'radiographs')).toBe(false);
+});
+it('includes CT as a separate record/PIMS section and invalidates on CT edits', () => {
+  const value = snap({}, { radiologyReport: 'X-ray report unchanged.', ctReport: 'CT: 409 lesion, extent uncertain.' });
+  const before = recordNoteBasis(value), note = buildRecordNote(value, en());
+  expect(note.sections.find(item => item.key === 'ct')).toMatchObject({ heading: 'CT report', lines: ['CT: 409 lesion, extent uncertain.'] });
+  expect(recordNoteText(note)).toContain('X-ray report unchanged.');
+  value.patientInfo.ctReport = ''; expect(recordNoteBasis(value)).not.toBe(before);
+  expect(buildRecordNote(value, en()).sections.some(item => item.key === 'ct')).toBe(false);
+});
+
+it('includes GP clinical sections and basis but excludes raw dictation provenance', () => {
+  const base = snap();
+  const s = snap({ clinicalDictations: [{ id: 'source', kind: 'gp-exam', language: 'en', transcript: 'PRIVATE RAW SOURCE', recordedAt: '2026-11-18T12:00:00Z', fields: ['gpVitals'] }] }, { gpVitals: '4 kg?', gpPhysicalExam: 'Painful left ear', gpDiagnostics: 'CBC pending' });
+  const text = recordNoteText(buildRecordNote(s, en()));
+  expect(text).toContain('VITAL SIGNS\n4 kg?');
+  expect(text).toContain('PHYSICAL EXAMINATION\nPainful left ear');
+  expect(text).toContain('DIAGNOSTICS\nCBC pending');
+  expect(text).not.toContain('PRIVATE RAW SOURCE');
+  expect(recordNoteBasis(s)).not.toBe(recordNoteBasis(base));
+  expect(recordNoteBasis({ ...base, clinicalDictations: s.clinicalDictations })).toBe(recordNoteBasis(base));
+});

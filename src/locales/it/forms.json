@@ -138,6 +138,14 @@
     "fieldType": "Tipo di campo"
   },
   "report": {
+    "replaceTemplateTitle": "Sostituire il testo del rapporto terapeutico?",
+    "replaceTemplateMessage": "Il modello selezionato sostituirà il testo attuale del rapporto terapeutico di questa visita.",
+    "replaceTemplate": "Usa modello",
+    "useSaved": "Usa un modello salvato",
+    "newTemplate": "Nuovo modello",
+    "fillField": "Compila il campo del modello",
+    "fieldRequired": "Inserisca un valore per continuare.",
+    "fieldContinue": "Continua",
     "title": "Referto del trattamento",
     "insertAria": "Inserisci un modello di referto",
     "loading": "Caricamento dei modelli…",

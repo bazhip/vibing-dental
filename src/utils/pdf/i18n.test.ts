@@ -409,3 +409,13 @@ describe('species titles', () => {
     expect(en.map((r) => r.t)).toContain('Feline Dental Chart');
   });
 });
+
+it('round-trips visit documentation sources in the PDF stash without translating clinician wording', async () => {
+  const [p, teeth, species, logo, pre, post, styleId, layout] = SCENARIOS.vcaGrid;
+  const sources = { consultationHistory: 'Recorded history?', consultationAssessment: 'Possible disease', consultationPlan: 'Discuss options', dischargeMedications: 'Drug 2 mg? confirm', dischargeInstructions: 'Recorded wording', dischargeFollowUp: 'As discussed' };
+  const { bytes } = await buildCapturing({ ...p, ...sources }, teeth, species, logo, pre, post, styleId, { ...layout, lng: 'de' } as PdfLayoutOptions);
+  const file = new File([bytes as BlobPart], 'visit.pdf', { type: 'application/pdf' });
+  Object.defineProperty(file, 'arrayBuffer', { value: () => Promise.resolve(bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength)) });
+  const parsed = await parseDentalChartPDF(file);
+  expect(parsed.patientInfo).toMatchObject(sources);
+});

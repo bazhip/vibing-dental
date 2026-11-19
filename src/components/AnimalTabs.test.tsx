@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { vi, it, expect } from 'vitest';
 import { AnimalTabs } from './AnimalTabs';
 import type { AnimalTab } from '../hooks/useAnimalTabs';
@@ -26,4 +26,17 @@ it('keeps saving feedback on the active patient tab when multiple animals are op
   rerender(<AnimalTabs {...props} saveStatus="saved" />);
   expect(screen.getByRole('tab', { name: /Luna/ })).toHaveTextContent('Saved');
   expect(screen.queryByText('Saving…')).toBeNull();
+});
+
+it.each([false, true])('scrolls the overflow arrows with the motion preference (%s)', (reducedMotion) => {
+  vi.stubGlobal('matchMedia', () => ({ matches: reducedMotion }));
+  const props = { tabs, activeId: 'a', busy: false, onSelect: vi.fn(), onClose: vi.fn(), onAdd: vi.fn() };
+  render(<AnimalTabs {...props} />);
+  const list = screen.getByRole('tablist');
+  const scrollBy = vi.fn();
+  Object.defineProperties(list, { clientWidth: { value: 280 }, scrollWidth: { value: 600 }, scrollBy: { value: scrollBy } });
+  fireEvent.scroll(list);
+  fireEvent.click(screen.getByRole('button', { name: /next/i }));
+  expect(scrollBy).toHaveBeenCalledWith({ left: 236, behavior: reducedMotion ? 'instant' : 'smooth' });
+  vi.unstubAllGlobals();
 });

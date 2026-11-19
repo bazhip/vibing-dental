@@ -1,3 +1,9 @@
+import { identifyNoteProvider, type NoteAutofillRequest, type NoteAutofillResult } from './pims/noteAutofill';
+import { isNoteRequest, isNoteResponse, type NoteResponse, type NoteTarget } from './noteProtocol';
+import { CONFIGURED_SYNC_IDS } from './pims/configuredSync';
+import { identifyRadiology, RADIOLOGY_HOST_PERMISSIONS, type RadiologyAutofillRequest, type RadiologyAutofillResult } from './pims/radiologyAutofill';
+import { isRadiologyRequest, isRadiologyResponse, type RadiologyResponse, type RadiologyTarget } from './radiologyProtocol';
+import { isInstinctSubmissionRequest, isInstinctSubmissionResult, type InstinctSubmissionRequest, type InstinctSubmissionResult } from './pims/instinctSubmission';
 /// <reference types="chrome" />
 // MV3 service worker. Logic lives in exported functions that take their `chrome` access as `deps`,
 // so it is testable. Chrome may stop and restart the worker at any time: nothing here needs
@@ -23,15 +29,27 @@ import {
   type TakePendingResult,
 } from './protocol';
 import { EXTENSION_VERSION } from './version';
+import { BRIDGE_PROTOCOL, SEND_CAPABILITIES } from './protocol';
+import { identifyPims, PIMS_HOST_PERMISSIONS } from './pims/hosts';
+import type { WriteTarget } from './pims/types';
+import { isPhysicalExamRequest, isPhysicalExamResult, shepherdObjectiveRecord, type PhysicalExamRequest, type PhysicalExamResult } from './pims/types';
+import { examAttemptKey, openExamOnce, type ExamAttemptStore } from './pims/examAttempts';
+import type { ProviderSyncRequest, ProviderSyncResponse } from './pims/syncBridge';
+import type {} from './pims/page';
 
 /** A tab plus whether it is the active tab of the last-focused window. */
 export type EzyvetTab = chrome.tabs.Tab & { focusedWindow?: boolean };
 
 /** Calls into `window.__toothopsEzyvet` of one tab (injecting it first). Reject = tab unreachable. */
 export type PageApi = {
+  noteAutofill?(tabId: number, request: NoteAutofillRequest): Promise<NoteAutofillResult>;
+  radiologyAutofill?(tabId: number, request: RadiologyAutofillRequest): Promise<RadiologyAutofillResult>;
+  instinctSubmission?(tabId: number, request: InstinctSubmissionRequest): Promise<InstinctSubmissionResult>;
+  physicalExam?(tabId: number, request: PhysicalExamRequest): Promise<PhysicalExamResult>;
+  providerSync?(tabId: number, request: ProviderSyncRequest): Promise<ProviderSyncResponse>;
   status(tabId: number): Promise<Status>;
   listFields(tabId: number): Promise<FieldInfo[]>;
-  write(tabId: number, item: SendItem): Promise<WriteResult>;
+  write(tabId: number, item: SendItem, target: WriteTarget): Promise<WriteResult>;
   diagnostics(tabId: number): Promise<Diagnostics>;
   listAppointments(tabId: number, date: string, navigate: boolean): Promise<AppointmentsResult>;
   consultPatientNumber(tabId: number, recordId: string): Promise<string | null>;
@@ -48,13 +66,16 @@ export type SessionStore = {
 export type Deps = {
   version: string;
   queryEzyvetTabs(): Promise<EzyvetTab[]>;
+  queryRadiologyTabs?(): Promise<EzyvetTab[]>;
   focusTab(tabId: number): Promise<void>;
   page: PageApi;
   /** Failure codes of the last send in this worker's lifetime. Diagnostic only. */
   lastCodes: WriteCode[];
   /** Opens a tab; resolves to its id (undefined when Chrome gave none). */
   openTab(url: string): Promise<number | undefined>;
+  navigateTab(tabId: number, url: string): Promise<void>;
   session: SessionStore;
+  examAttempts?: ExamAttemptStore;
   now(): number;
 };
 
@@ -95,6 +116,7 @@ async function inspect(deps: Deps): Promise<InspectResult> {
 
 /** The open consult's patient number, or null when it can't be read (inspect still succeeds). */
 async function readPatientNumber(tabId: number, status: Status, deps: Deps): Promise<string | null> {
+  if (status.patientNumber) return status.patientNumber;
   if (!status.consult?.recordId) return null;
   try {
     return (await deps.page.consultPatientNumber(tabId, status.consult.recordId)) ?? null;
@@ -136,12 +158,19 @@ async function sweepExpired(deps: Deps): Promise<void> {
 /** Opens ToothOps and holds the hand-over for that tab only, so two quick clicks can't swap
  *  patients. The URL carries no patient data. */
 async function startChart(handover: Handover, deps: Deps): Promise<StartChartResult> {
-  await sweepExpired(deps);
-  const tabId = await deps.openTab(`${WEB_APP_ORIGIN}/#/chart/patient?from=ezyvet`);
-  if (tabId === undefined) return { ok: false };
-  const entry: PendingEntry = { handover, at: deps.now() };
-  await deps.session.set(pendingKey(tabId), entry);
-  return { ok: true };
+  let tabId: number | undefined;
+  try {
+    await sweepExpired(deps);
+    tabId = await deps.openTab('about:blank');
+    if (tabId === undefined) return { ok: false };
+    const entry: PendingEntry = { handover, at: deps.now() };
+    await deps.session.set(pendingKey(tabId), entry);
+    await deps.navigateTab(tabId, `${WEB_APP_ORIGIN}/#/chart/patient?from=ezyvet`);
+    return { ok: true };
+  } catch {
+    if (tabId !== undefined) await deps.session.remove(pendingKey(tabId)).catch(() => undefined);
+    return { ok: false };
+  }
 }
 
 /** The hand-over for the sender's own tab: one use, and only within HANDOVER_TTL_MS. */
@@ -168,6 +197,7 @@ const sameConsult = (a: ConsultId | null | undefined, b: ConsultId | null): bool
 async function refusal(msg: SendRequest, deps: Deps): Promise<Refusal | null> {
   const status = await deps.page.status(msg.tabId);
   if (status.state !== 'writable') return 'not_writable';
+  if ((status.provider ?? 'ezyvet') !== (msg.expectedPims ?? 'ezyvet')) return 'patient_changed';
   // A consult without a readable record id can't be identified: never write to it.
   if (!status.consult || status.consult.recordId === '') return 'patient_changed';
   if (!sameConsult(msg.expectedConsult, status.consult)) return 'patient_changed';
@@ -208,7 +238,9 @@ async function send(msg: SendRequest, deps: Deps): Promise<SendResult> {
         stopped = await refusal(msg, deps);
         result = stopped
           ? { ok: false, code: stopped }
-          : ((await deps.page.write(tabId, item)) ?? { ok: false, code: 'extension_error' });
+          : ((await deps.page.write(tabId, item, {
+            provider: msg.expectedPims ?? 'ezyvet', consult: msg.expectedConsult, patientName: msg.confirmedEzyvetPatient,
+          })) ?? { ok: false, code: 'extension_error' });
       } catch {
         result = { ok: false, code: 'extension_error' };
       }
@@ -231,7 +263,180 @@ async function diagnose(tabId: number | undefined, deps: Deps): Promise<Diagnose
   }
 }
 
+async function providerSync(message: Extract<Request, { type: 'providerSync' }>, deps: Deps): Promise<ProviderSyncResponse> {
+  try {
+    if (!Number.isSafeInteger(message.tabId) || !deps.page.providerSync) return { ok: false, code: 'unavailable' };
+    const tab = (await deps.queryEzyvetTabs()).find((entry) => entry.id === message.tabId);
+    if (!tab?.url || ![...CONFIGURED_SYNC_IDS, 'rhapsody', 'vetspire'].includes(identifyPims(tab.url) ?? '')) return { ok: false, code: 'unavailable' };
+    if (message.request.operation === 'open' && CONFIGURED_SYNC_IDS.some(provider => provider === identifyPims(tab.url!))
+      && message.request.userConfirmed !== true) return { ok: false, code: 'unavailable' };
+    if (message.request.operation === 'open' && (new URL(tab.url).origin !== message.request.identity.origin
+      || identifyPims(tab.url) !== message.request.identity.provider)) return { ok: false, code: 'unavailable' };
+    return await deps.page.providerSync(message.tabId, message.request);
+  } catch { return { ok: false, code: 'unavailable' }; }
+}
+
+async function noteAutofill(message: Extract<Request, { type: 'noteAutofill' }>, deps: Deps): Promise<NoteResponse> {
+  if (!isNoteRequest(message.request)) return { state: 'blocked' };
+  const request = message.request;
+  let dispatched = false;
+  const failure = (): NoteResponse => dispatched ? { state: 'unknown' } : { state: 'blocked' };
+  try {
+    const tabs = await deps.queryEzyvetTabs();
+    if (request.operation === 'list') {
+      const targets: NoteTarget[] = [];
+      const ids = new Set<number>();
+      for (const tab of tabs) {
+        const provider = tab.url && identifyNoteProvider(tab.url);
+        if (!provider || !tab.url || new URL(tab.url).port || tab.id === undefined || !Number.isSafeInteger(tab.id) || tab.id < 0 || ids.has(tab.id)) continue;
+        ids.add(tab.id);
+        targets.push({ tabId: tab.id, provider, origin: new URL(tab.url).origin, title: (tab.title ?? '').slice(0, 500) });
+        if (targets.length >= 100) break;
+      }
+      return { state: 'targets', targets };
+    }
+    const matches = tabs.filter(entry => entry.id === request.tabId);
+    const selected = matches[0];
+    const href = selected?.url;
+    const provider = href && identifyNoteProvider(href);
+    if (matches.length !== 1 || !href || !provider || new URL(href).port || !deps.page.noteAutofill) return { state: 'blocked' };
+    const origin = new URL(href).origin;
+    const same = (tab: EzyvetTab) => tab.id === request.tabId && tab.url === href && identifyNoteProvider(tab.url) === provider
+      && new URL(tab.url).origin === origin;
+    const current = (await deps.queryEzyvetTabs()).filter(entry => entry.id === request.tabId);
+    if (current.length !== 1 || !same(current[0])) return { state: 'blocked' };
+    const pageRequest: NoteAutofillRequest = request.operation === 'inspect' ? { operation: 'inspect' }
+      : request.operation === 'prepare' ? { operation: 'prepare', field: request.field }
+      : { operation: 'fill', ticket: request.ticket, text: request.text };
+    dispatched = request.operation === 'fill';
+    const result: unknown = await deps.page.noteAutofill(request.tabId, pageRequest);
+    const after = (await deps.queryEzyvetTabs()).filter(entry => entry.id === request.tabId);
+    if (after.length !== 1 || !same(after[0]) || !isNoteResponse(result) || result.state === 'targets') return failure();
+    if (result.state === 'blocked') return result;
+    if (request.operation === 'inspect') return result.state === 'fields' && result.provider === provider && result.origin === origin ? result : failure();
+    if (request.operation === 'prepare') return result.state === 'prepared' && result.provider === provider && result.origin === origin
+      && result.field === request.field ? result : failure();
+    return result.state === 'filled' || result.state === 'unknown' ? result : failure();
+  } catch { return failure(); }
+}
+
+async function radiologyAutofill(message: Extract<Request, { type: 'radiologyAutofill' }>, deps: Deps): Promise<RadiologyResponse> {
+  if (!isRadiologyRequest(message.request)) return { state: 'blocked' };
+  const request = message.request;
+  let dispatched = false;
+  try {
+    const tabs = await deps.queryRadiologyTabs?.() ?? [];
+    if (request.operation === 'list') {
+      const targets: RadiologyTarget[] = [];
+      const ids = new Set<number>();
+      for (const tab of tabs) {
+        const provider = tab.url && identifyRadiology(tab.url);
+        if (!provider || !tab.url || tab.id === undefined || !Number.isSafeInteger(tab.id) || tab.id < 0 || ids.has(tab.id)) continue;
+        ids.add(tab.id);
+        targets.push({ tabId: tab.id, provider, origin: new URL(tab.url).origin, title: (tab.title ?? '').slice(0, 500) });
+        if (targets.length >= 100) break;
+      }
+      return { state: 'targets', targets };
+    }
+    const tab = tabs.find(entry => entry.id === request.tabId);
+    const provider = tab?.url && identifyRadiology(tab.url);
+    if (!tab?.url || !provider || !deps.page.radiologyAutofill) return { state: 'blocked' };
+    const pageRequest: RadiologyAutofillRequest = request.operation === 'prepare' ? { operation: 'prepare' }
+      : { operation: 'fill', ticket: request.ticket, text: request.text };
+    dispatched = request.operation === 'fill';
+    const result: unknown = await deps.page.radiologyAutofill(request.tabId, pageRequest);
+    const failure = (): RadiologyResponse => dispatched ? { state: 'unknown' } : { state: 'blocked' };
+    if (!isRadiologyResponse(result) || result.state === 'targets') return failure();
+    const current = (await deps.queryRadiologyTabs?.() ?? []).find(entry => entry.id === request.tabId);
+    if (current?.url !== tab.url) return failure();
+    if (result.state === 'blocked') return result;
+    if (request.operation === 'prepare') return result.state === 'prepared' && result.provider === provider
+      && result.origin === new URL(tab.url).origin ? result : failure();
+    return result.state === 'filled' || result.state === 'unknown' ? result : failure();
+  } catch { return dispatched ? { state: 'unknown' } : { state: 'blocked' }; }
+}
+
+const submissionQueues = new Map<string, Promise<void>>();
+async function instinctSubmission(message: Extract<Request, { type: 'instinctSubmission' }>, deps: Deps): Promise<InstinctSubmissionResult> {
+  if (!Number.isSafeInteger(message.tabId) || message.tabId < 0 || !isInstinctSubmissionRequest(message.request)) return { state: 'blocked' };
+  const request = message.request;
+  let release: (() => void) | undefined, key: string | undefined;
+  let claimed = false;
+  let ownQueue: Promise<void> | undefined;
+  try {
+    if (!deps.page.instinctSubmission) return { state: 'blocked' };
+    const tab = (await deps.queryEzyvetTabs()).find(entry => entry.id === message.tabId);
+    if (!tab?.url || identifyPims(tab.url) !== 'instinct' || new URL(tab.url).port) return { state: 'blocked' };
+    if (request.operation === 'prepare') {
+      const result = await deps.page.instinctSubmission(message.tabId, request);
+      return isInstinctSubmissionResult(result) && (result.state === 'prepared' || result.state === 'blocked') ? result : { state: 'blocked' };
+    }
+    if (!deps.examAttempts) return { state: 'blocked' };
+    // Hash clinical identifiers before storing the browser-profile duplicate claim.
+    const route = /^#\/patient\/([^/?#\s]+)\/charts(?:[/?]|$)/.exec(new URL(tab.url).hash);
+    const patientId = route && decodeURIComponent(route[1]);
+    if (!patientId || !/^[A-Za-z0-9_-]+$/.test(patientId)) return { state: 'blocked' };
+    const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify([
+      new URL(tab.url).origin, patientId, request.source.chartId, request.source.draftId, request.source.version,
+    ])));
+    key = `pims:instinct-submission:v1:${Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('')}`;
+    const previous = submissionQueues.get(key) ?? Promise.resolve();
+    const queued = new Promise<void>(resolve => { release = resolve; });
+    submissionQueues.set(key, queued);
+    ownQueue = queued;
+    await previous;
+    if (await deps.examAttempts.get(key) !== undefined) return { state: 'unknown', id: request.id };
+    claimed = true;
+    const claim = { version: 1, nonce: crypto.randomUUID() };
+    await deps.examAttempts.set(key, claim);
+    const saved = await deps.examAttempts.get(key);
+    if (!saved || typeof saved !== 'object' || !('nonce' in saved) || saved.nonce !== claim.nonce) return { state: 'unknown', id: request.id };
+    const current = (await deps.queryEzyvetTabs()).find(entry => entry.id === message.tabId);
+    if (current?.url !== tab.url) return { state: 'blocked' };
+    const result = await deps.page.instinctSubmission(message.tabId, request);
+    if (!isInstinctSubmissionResult(result) || result.state === 'prepared'
+      || result.state !== 'blocked' && result.id !== request.id) return { state: 'unknown', id: request.id };
+    return result;
+  } catch { return request.operation === 'submit' && claimed ? { state: 'unknown', id: request.id } : { state: 'blocked' }; }
+  finally {
+    if (release) {
+      release();
+      if (key && submissionQueues.get(key) === ownQueue) submissionQueues.delete(key);
+    }
+  }
+}
+
+async function physicalExam(message: Extract<Request, { type: 'physicalExam' }>, deps: Deps): Promise<PhysicalExamResult> {
+  if (!Number.isSafeInteger(message.tabId) || message.tabId < 0 || !isPhysicalExamRequest(message.request)) return { ok: false, code: 'invalid_request' };
+  let dispatched = false;
+  try {
+    if (!deps.page.physicalExam) return { ok: false, code: 'unavailable' };
+    const tab = (await deps.queryEzyvetTabs()).find(entry => entry.id === message.tabId);
+    if (!tab?.url || identifyPims(tab.url) !== 'shepherd') return { ok: false, code: 'patient_changed' };
+    const url = new URL(tab.url);
+    if (url.port || shepherdObjectiveRecord(url) !== message.request.target.consult.recordId
+      || message.request.target.consult.viewId !== `${url.href}|`) return { ok: false, code: 'patient_changed' };
+    if (!deps.examAttempts) return { ok: false, code: 'unavailable' };
+    const key = await examAttemptKey(url.origin, message.request.target.consult.recordId);
+    const execute = async (): Promise<PhysicalExamResult> => {
+      const current = (await deps.queryEzyvetTabs()).find(entry => entry.id === message.tabId);
+      if (current?.url !== tab.url) return { ok: false, code: 'patient_changed' };
+      dispatched = true;
+      const result = await deps.page.physicalExam!(message.tabId, message.request);
+      return isPhysicalExamResult(result, message.request) ? result : { ok: false, code: message.request.operation === 'open' ? 'physical_exam_outcome_unknown' : 'unavailable' };
+    };
+    if (message.request.operation === 'open') return await openExamOnce(deps.examAttempts, key, execute);
+    if (await deps.examAttempts.get(key) !== undefined) return { ok: false, code: 'physical_exam_outcome_unknown' };
+    return await execute();
+  } catch { return { ok: false, code: dispatched && message.request.operation === 'open' ? 'physical_exam_outcome_unknown' : 'unavailable' }; }
+}
+
 type Response =
+  | NoteResponse
+  | RadiologyResponse
+  | InstinctSubmissionResult
+  | PhysicalExamResult
+  | ProviderSyncResponse
   | PingResult
   | InspectResult
   | SendResult
@@ -262,8 +467,18 @@ export async function handleInternal(msg: Request, sender: InternalSender, runti
 /** Requests both the web app and the side panel may send. */
 function dispatchShared(msg: Request, deps: Deps): Promise<Response> | Response {
   switch (msg?.type) {
+    case 'noteAutofill':
+      return noteAutofill(msg, deps);
+    case 'radiologyAutofill':
+      return radiologyAutofill(msg, deps);
+    case 'instinctSubmission':
+      return instinctSubmission(msg, deps);
+    case 'physicalExam':
+      return physicalExam(msg, deps);
+    case 'providerSync':
+      return providerSync(msg, deps);
     case 'ping':
-      return { version: deps.version };
+      return { version: deps.version, protocol: BRIDGE_PROTOCOL, capabilities: [...SEND_CAPABILITIES, 'physicalExam', 'instinctSubmission', 'radiologyAutofill', 'noteAutofill'] };
     case 'inspect':
       return inspect(deps);
     case 'send':
@@ -311,22 +526,23 @@ function resultOf<T>(res: { result?: unknown } | undefined): T {
 export function createChromeDeps(api: ChromeApi, lastCodes: WriteCode[] = []): Deps {
   // Inject (idempotent: the page script reinstalls only when the version differs), then call in.
   const call = async <T>(tabId: number, func: () => unknown): Promise<T> => {
-    await api.scripting.executeScript({ target: { tabId }, world: 'MAIN', files: ['ezyvet-page.js'] });
+    await api.scripting.executeScript({ target: { tabId }, world: 'MAIN', files: ['pims-page.js'] });
     const [res] = await api.scripting.executeScript({ target: { tabId }, world: 'MAIN', func });
     return resultOf<T>(res);
   };
   const callWith = async <T, A>(tabId: number, func: (a: A) => unknown, arg: A): Promise<T> => {
-    await api.scripting.executeScript({ target: { tabId }, world: 'MAIN', files: ['ezyvet-page.js'] });
+    await api.scripting.executeScript({ target: { tabId }, world: 'MAIN', files: ['pims-page.js'] });
     const [res] = await api.scripting.executeScript({ target: { tabId }, world: 'MAIN', func, args: [arg] });
     return resultOf<T>(res);
   };
   return {
     version: EXTENSION_VERSION,
     lastCodes,
+    queryRadiologyTabs: () => api.tabs.query({ url: [...RADIOLOGY_HOST_PERMISSIONS] }),
     async queryEzyvetTabs() {
       const [all, active] = await Promise.all([
-        api.tabs.query({ url: 'https://*.ezyvet.com/*' }),
-        api.tabs.query({ url: 'https://*.ezyvet.com/*', active: true, lastFocusedWindow: true }),
+        api.tabs.query({ url: PIMS_HOST_PERMISSIONS }),
+        api.tabs.query({ url: PIMS_HOST_PERMISSIONS, active: true, lastFocusedWindow: true }),
       ]);
       const focused = new Set(active.map((t) => t.id));
       return all.map((t) => ({ ...t, focusedWindow: focused.has(t.id) }));
@@ -336,21 +552,35 @@ export function createChromeDeps(api: ChromeApi, lastCodes: WriteCode[] = []): D
       if (tab?.windowId !== undefined) await api.windows.update(tab.windowId, { focused: true });
     },
     page: {
-      status: (tabId) => call(tabId, () => window.__toothopsEzyvet!.status()),
-      listFields: (tabId) => call(tabId, () => window.__toothopsEzyvet!.listFields()),
-      write: (tabId, item) => callWith(tabId, (i: SendItem) => window.__toothopsEzyvet!.write(i), item),
-      diagnostics: (tabId) => call(tabId, () => window.__toothopsEzyvet!.diagnostics()),
+      noteAutofill: (tabId, request) => callWith(tabId,
+        (args: NoteAutofillRequest) => window.__toothopsPims!.noteAutofill(args), request),
+      radiologyAutofill: (tabId, request) => callWith(tabId,
+        (args: RadiologyAutofillRequest) => window.__toothopsPims!.radiologyAutofill(args), request),
+      instinctSubmission: (tabId, request) => callWith(tabId,
+        (args: InstinctSubmissionRequest) => window.__toothopsPims!.instinctSubmission(args), request),
+      physicalExam: (tabId, request) => callWith(tabId,
+        (args: PhysicalExamRequest) => window.__toothopsPims!.physicalExam(args), request),
+      providerSync: (tabId, request) => callWith(tabId,
+        (args: ProviderSyncRequest) => window.__toothopsPims!.providerSync(args), request),
+      status: (tabId) => call(tabId, () => window.__toothopsPims!.status()),
+      listFields: (tabId) => call(tabId, () => window.__toothopsPims!.listFields()),
+      write: (tabId, item, target) => callWith(tabId,
+        (args: { item: SendItem; target: WriteTarget }) => window.__toothopsPims!.write(args.item, args.target), { item, target }),
+      diagnostics: (tabId) => call(tabId, () => window.__toothopsPims!.diagnostics()),
       listAppointments: (tabId, date, navigate) =>
         callWith(
           tabId,
-          (a: { date: string; navigate: boolean }) => window.__toothopsEzyvet!.listAppointments(a.date, { navigate: a.navigate }),
+          (a: { date: string; navigate: boolean }) => window.__toothopsPims!.listAppointments(a.date, { navigate: a.navigate }),
           { date, navigate },
         ),
       consultPatientNumber: (tabId, recordId) =>
-        callWith(tabId, (id: string) => window.__toothopsEzyvet!.consultPatientNumber(id), recordId),
+        callWith(tabId, (id: string) => window.__toothopsPims!.consultPatientNumber(id), recordId),
     },
     async openTab(url) {
       return (await api.tabs.create({ url })).id;
+    },
+    async navigateTab(tabId, url) {
+      await api.tabs.update(tabId, { url });
     },
     session: {
       get: async (key) => (await api.storage.session.get(key))[key],
@@ -358,11 +588,16 @@ export function createChromeDeps(api: ChromeApi, lastCodes: WriteCode[] = []): D
       remove: (key) => api.storage.session.remove(key),
       getAll: () => api.storage.session.get(null),
     },
+    examAttempts: {
+      get: async (key) => (await api.storage.local.get(key))[key],
+      set: (key, value) => api.storage.local.set({ [key]: value }),
+      remove: (key) => api.storage.local.remove(key),
+    },
     now: () => Date.now(),
   };
 }
 
-const SHARED_TYPES = ['ping', 'inspect', 'send', 'diagnose'];
+const SHARED_TYPES = ['ping', 'inspect', 'send', 'diagnose', 'physicalExam', 'instinctSubmission', 'radiologyAutofill', 'noteAutofill', 'providerSync'];
 /** Per side, so a request for the other side is never even answered. */
 const INTERNAL_TYPES = [...SHARED_TYPES, 'appointments', 'startChart'];
 const EXTERNAL_TYPES = [...SHARED_TYPES, 'takePendingPatient'];

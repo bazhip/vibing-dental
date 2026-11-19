@@ -27,6 +27,8 @@ interface ImagingSectionProps {
   imageRoles?: Record<string, ImageRole>;
   /** Tag (or untag, with null) an image for the owner report. */
   onImageRoleChange?: (attachmentId: string, role: ImageRole | null) => void;
+  ownerReportImageInclusion?: Record<string, boolean>;
+  onOwnerReportImageChange?: (attachmentId: string, include: boolean | null) => void;
   /** Append this chart's images to the PDF as extra pages (4 per page). */
   includeInPdf?: boolean;
   onIncludeInPdfChange?: (include: boolean) => void;
@@ -68,6 +70,8 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
   dicomEnabled = false,
   imageRoles = {},
   onImageRoleChange,
+  ownerReportImageInclusion = {},
+  onOwnerReportImageChange,
   includeInPdf = true,
   onIncludeInPdfChange,
   onCustomize, onReportContentChange,
@@ -232,6 +236,10 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
     setError('');
     try {
       await store.remove(id);
+      if (chartIdRef.current === chartId) {
+        onImageRoleChange?.(id, null);
+        onOwnerReportImageChange?.(id, null);
+      }
     } catch (err) {
       setError(errorText(err, t('imaging.removeFailed')));
     } finally {
@@ -372,123 +380,158 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                 )}
               </a>
               <div className="imaging__meta">
+                <div className="imaging__card-header">
+                  <h3>{t('imaging.details')}</h3>
+                  <div className="imaging__card-tools">
+                    {a.originalPath && !a.originalUrl && (
+                      <span className="imaging__dicom-status" title={t('imaging.dicomStoredTitle')}>{t('imaging.dicom')}</span>
+                    )}
+                    {(!readOnly || (a.originalPath && a.originalUrl)) && (
+                      <details className="imaging__menu" name={uploadHelpId}
+                        onBlur={(event) => {
+                          if (!event.currentTarget.contains(event.relatedTarget)) event.currentTarget.open = false;
+                        }}
+                        onKeyDown={(event) => {
+                          if (event.key !== 'Escape' || !event.currentTarget.open) return;
+                          event.stopPropagation();
+                          event.preventDefault();
+                          event.currentTarget.open = false;
+                          event.currentTarget.querySelector('summary')?.focus();
+                        }}>
+                        <summary role="button" className="diagram-view__action" aria-label={t('imaging.actions')} title={t('imaging.actions')}>
+                          <span aria-hidden="true">⋯</span>
+                        </summary>
+                        <div className="imaging__menu-panel">
+                          {a.originalPath && a.originalUrl && (
+                            <a href={a.originalUrl} title={t('imaging.dicomDownloadTitle')}>{t('imaging.dicomDownload')}</a>
+                          )}
+                          {!readOnly && <button
+                            type="button"
+                            className="imaging__menu-delete"
+                            onClick={(event) => {
+                              const disclosure = event.currentTarget.closest('details');
+                              if (disclosure) {
+                                disclosure.open = false;
+                                disclosure.querySelector('summary')?.focus();
+                              }
+                              void onDelete(a.id, a.caption);
+                            }}
+                            disabled={busy}
+                          >
+                            {t('imaging.remove')}
+                          </button>}
+                        </div>
+                      </details>
+                    )}
+                  </div>
+                </div>
                 <div className="imaging__classification">
-                  <label className="imaging__field"><span>{t('imaging.typeAria')}</span>
-                <select
-                  disabled={readOnly}
-                  className="imaging__kind-select"
-                  value={a.kind}
-                  onChange={(e) => {
-                    onReportContentChange?.();
-                    store.updateKind(a.id, e.target.value as AttachmentKind).catch((err) =>
-                      setError(errorText(err, t('imaging.kindFailed')))
-                    );
-                  }}
-                  aria-label={t('imaging.typeAria')}
-                  title={t('imaging.kindTitle')}
-                >
-                  {KINDS.map((k) => <option key={k} value={k}>{t(`imaging.${k === 'photo' ? 'photo' : 'radiograph'}`)}</option>)}
-                </select>
-                  </label>
-                  <label className="imaging__field"><span>{t('imaging.toothLabel')}</span>
-                <select
-                  disabled={readOnly}
-                  className="imaging__tooth-select"
-                  value={a.toothTriadan ?? ''}
-                  onChange={(e) => {
-                    const v = e.target.value ? Number(e.target.value) : null;
-                    onReportContentChange?.();
-                    store.updateTooth(a.id, v).catch((err) => setError(errorText(err, t('imaging.toothFailed'))));
-                  }}
-                  aria-label={t('imaging.toothAria')}
-                  title={t('imaging.toothTitle')}
-                >
-                  <option value="">{t('imaging.toothNone')}</option>
-                  {a.toothTriadan !== null && !teeth.includes(a.toothTriadan) && (
-                    <option value={a.toothTriadan}>{toothLabel(a.toothTriadan)}</option>
-                  )}
-                  {teeth.map((n) => <option key={n} value={n}>{toothLabel(n)}</option>)}
-                </select>
-                  </label>
-                </div>
-                <label className="imaging__field"><span>{t('imaging.captionAria')}</span>
-                <textarea
-                  rows={2}
-                  className="patient-form__textarea imaging__caption"
-                  placeholder={t('imaging.captionPlaceholder')}
-                  defaultValue={a.caption}
-                  readOnly={readOnly}
-                  aria-label={t('imaging.captionAria')}
-                  onBlur={(e) => {
-                    const input = e.target;
-                    if (input.value !== a.caption) {
-                      onReportContentChange?.();
-                      store.updateCaption(a.id, input.value).catch(() => {
-                        // Put the saved caption back so the field never
-                        // shows text that isn't actually stored.
-                        input.value = a.caption;
-                        setError(t('imaging.captionFailed'));
-                      });
-                    }
-                  }}
-                />
-                </label>
-                <div className="imaging__outputs">
-                {onImageInPdfChange && includeInPdf && (
-                  <label className="imaging__in-pdf" title={t('imaging.inPdfTitle')}>
-                    <input
-                      type="checkbox"
-                      {...switchProps}
-            disabled={readOnly}
-                      checked={!pdfExcludedImages.includes(a.id)}
-                      onChange={(e) => onImageInPdfChange(a.id, e.target.checked)}
-                    />
-                    {t('imaging.inPdf')}
-                  </label>
-                )}
-                {onImageRoleChange && (
-                  <label className="imaging__field"><span>{t('imaging.ownerReportLabel')}</span>
-                  <select
-                  disabled={readOnly}
-                    className="imaging__role"
-                    value={imageRoles[a.id] ?? ''}
-                    onChange={(e) =>
-                      onImageRoleChange(a.id, (e.target.value || null) as ImageRole | null)
-                    }
-                    aria-label={t('imaging.roleAria')}
-                    title={t('imaging.roleTitle')}
-                  >
-                    <option value="">{t('imaging.roleNone')}</option>
-                    {ROLES.map((r) => <option key={r} value={r}>{t(`imaging.${r}`)}</option>)}
-                  </select>
-                  </label>
-                )}
-                </div>
-                <div className="imaging__actions">
-                {a.originalPath && (
-                  a.originalUrl ? (
-                    <a
-                      href={a.originalUrl}
-                      className="imaging__dicom"
-                      title={t('imaging.dicomDownloadTitle')}
+                  <label className="imaging__field">
+                    <span>{t('imaging.typeAria')}</span>
+                    <select
+                      disabled={readOnly}
+                      className="patient-form__input"
+                      value={a.kind}
+                      onChange={(e) => {
+                        onReportContentChange?.();
+                        store.updateKind(a.id, e.target.value as AttachmentKind).catch((err) =>
+                          setError(errorText(err, t('imaging.kindFailed')))
+                        );
+                      }}
+                      title={t('imaging.kindTitle')}
                     >
-                      {t('imaging.dicomDownload')}
-                    </a>
-                  ) : (
-                    <span className="imaging__dicom" title={t('imaging.dicomStoredTitle')}>
-                      {t('imaging.dicom')}
-                    </span>
-                  )
-                )}
-                {!readOnly && <button
-                  type="button"
-                  className="diagram-view__action diagram-view__action--danger imaging__delete"
-                  onClick={() => onDelete(a.id, a.caption)}
-                  disabled={busy}
-                >
-                  {t('imaging.remove')}
-                </button>}
+                      {KINDS.map((k) => <option key={k} value={k}>{t(`imaging.${k === 'photo' ? 'photo' : 'radiograph'}`)}</option>)}
+                    </select>
+                  </label>
+                  <label className="imaging__field">
+                    <span>{t('imaging.toothLabel')}</span>
+                    <select
+                      disabled={readOnly}
+                      className="patient-form__input"
+                      value={a.toothTriadan ?? ''}
+                      onChange={(e) => {
+                        const v = e.target.value ? Number(e.target.value) : null;
+                        onReportContentChange?.();
+                        store.updateTooth(a.id, v).catch((err) => setError(errorText(err, t('imaging.toothFailed'))));
+                      }}
+                      aria-label={t('imaging.toothAria')}
+                      title={t('imaging.toothTitle')}
+                    >
+                      <option value="">{t('imaging.toothNone')}</option>
+                      {a.toothTriadan !== null && !teeth.includes(a.toothTriadan) && (
+                        <option value={a.toothTriadan}>{toothLabel(a.toothTriadan)}</option>
+                      )}
+                      {teeth.map((n) => <option key={n} value={n}>{toothLabel(n)}</option>)}
+                    </select>
+                  </label>
                 </div>
+                <label className="imaging__field">
+                  <span>{t('imaging.captionAria')}</span>
+                  <textarea
+                    rows={2}
+                    className="patient-form__textarea imaging__caption"
+                    placeholder={t('imaging.captionPlaceholder')}
+                    defaultValue={a.caption}
+                    readOnly={readOnly}
+                    onBlur={(e) => {
+                      const input = e.target;
+                      if (input.value !== a.caption) {
+                        onReportContentChange?.();
+                        store.updateCaption(a.id, input.value).catch(() => {
+                          input.value = a.caption;
+                          setError(t('imaging.captionFailed'));
+                        });
+                      }
+                    }}
+                  />
+                </label>
+                {(onImageRoleChange || onOwnerReportImageChange || (onImageInPdfChange && includeInPdf)) && (
+                  <fieldset className="imaging__outputs">
+                    <legend>{t('imaging.reportInclusion')}</legend>
+                    <div className="imaging__output-fields">
+                      {onImageInPdfChange && includeInPdf && (
+                        <label className="imaging__in-pdf" title={t('imaging.inPdfTitle')}>
+                          <input
+                            type="checkbox"
+                            {...switchProps}
+                            disabled={readOnly}
+                            checked={!pdfExcludedImages.includes(a.id)}
+                            onChange={(e) => onImageInPdfChange(a.id, e.target.checked)}
+                          />
+                          {t('imaging.inPdf')}
+                        </label>
+                      )}
+                      {onOwnerReportImageChange && (
+                        <label className="imaging__in-pdf">
+                          <input
+                            type="checkbox"
+                            {...switchProps}
+                            disabled={readOnly}
+                            checked={ownerReportImageInclusion[a.id] ?? Boolean(imageRoles[a.id])}
+                            onChange={(e) => onOwnerReportImageChange(a.id, e.target.checked)}
+                          />
+                          {t('imaging.inOwnerReport')}
+                        </label>
+                      )}
+                      {onImageRoleChange && (
+                        <label className="imaging__field">
+                          <span>{t('imaging.beforeAfter')}</span>
+                          <select
+                            disabled={readOnly}
+                            className="patient-form__input"
+                            value={imageRoles[a.id] ?? ''}
+                            onChange={(e) => onImageRoleChange(a.id, (e.target.value || null) as ImageRole | null)}
+                            aria-label={t('imaging.roleAria')}
+                            title={t('imaging.beforeAfter')}
+                          >
+                            <option value="">{t('imaging.noLabel')}</option>
+                            {ROLES.map((r) => <option key={r} value={r}>{t(`imaging.${r}`)}</option>)}
+                          </select>
+                        </label>
+                      )}
+                    </div>
+                  </fieldset>
+                )}
               </div>
             </li>
           ))}

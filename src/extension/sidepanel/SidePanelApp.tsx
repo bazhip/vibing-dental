@@ -7,6 +7,7 @@ import { usePanelLanguage } from './panelLanguage';
 import { ChartList } from './ChartList';
 import { ChartSend } from './ChartSend';
 import { TodaysPatients } from './TodaysPatients';
+import { PimsReview } from '../../components/pims/PimsReview';
 import { useConsultInspect } from './useConsultInspect';
 import { usePimsSendFlag } from './usePimsSendFlag';
 import { DialogHost } from '../../components/ui/dialogs';
@@ -110,6 +111,7 @@ export function SidePanelApp(): React.ReactElement {
         ) : (
           <>
             <TodaysPatients key={session.user.id} userId={session.user.id} />
+            <PimsReview key={`review-${session.user.id}`} />
             <ChartList inspect={inspect} onPick={(chart) => setPicked({ userId: session.user.id, chart })} />
           </>
         )}

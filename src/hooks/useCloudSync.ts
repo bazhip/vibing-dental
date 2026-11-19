@@ -1,3 +1,6 @@
+import { ctRecordedText } from '../utils/ctReportState';
+import { radiologyRecordedText } from '../utils/radiologyReportState';
+import { hasVisitDocumentation } from '../utils/visitDocumentation';
 import React from 'react';
 import { reservePatientNumber } from '../utils/patientNumberAllocation';
 import { isGeneratedPatientNumber } from '../utils/patientIds';
@@ -87,7 +90,7 @@ export interface UseCloudSyncReturn {
   listCharts: (query?: ChartListQuery) => Promise<ChartListPage>;
   /** All visits for one patient (matched by number when present, else
    *  by name) — powers the topbar visit switcher. */
-  listPatientVisits: (patientNumber: string, patientName: string, patientId?: string) => Promise<CloudChartMeta[]>;
+  listPatientVisits: (patientNumber: string, patientName: string, patientId?: string, allPages?: boolean) => Promise<CloudChartMeta[]>;
   /** Ask before replacing a chart that has unsaved changes; true = go ahead. */
   confirmDiscardIfDirty: (action: DiscardAction) => Promise<boolean>;
   /** `ifClean`: skip (no prompt) when the working chart has unsaved edits. */
@@ -116,6 +119,8 @@ function hasContent(s: ChartSnapshot): boolean {
   const p = s?.patientInfo;
   if (!p || typeof p !== 'object' || !Array.isArray(s.toothData)) return false;
   if ((p.patientName ?? '').trim() || ((p.patientNumber ?? '').trim() && !isGeneratedPatientNumber(p)) || (p.ownerName ?? '').trim() || (p.ownerPhone ?? '').trim() || (p.ownerEmail ?? '').trim() || (p.complaint ?? '').trim() || (p.treatmentReport ?? '').trim()) return true;
+  if (s.clinicalDictations?.length) return true;
+  if (hasVisitDocumentation(p) || radiologyRecordedText(p).trim() || ctRecordedText(p).trim()) return true;
   // Values are strings, except the drug list (and legacy `drug`); only a
   // named drug counts as content.
   if (Object.values(p.nerveBlocks ?? {}).some((v) =>
@@ -744,7 +749,8 @@ export function useCloudSync(
   const listPatientVisits = React.useCallback(async (
     patientNumber: string,
     patientName: string,
-    patientId?: string
+    patientId?: string,
+    allPages = false,
   ): Promise<CloudChartMeta[]> => {
     if (!supabase) return [];
     const num = patientNumber.trim();
@@ -752,18 +758,29 @@ export function useCloudSync(
     if (!num && !name && !patientId) return [];
     let query = supabase
       .from('charts')
-      .select(CHART_META_COLUMNS)
-      .order('updated_at', { ascending: false })
-      .limit(200);
+      .select(CHART_META_COLUMNS);
     // Same identity rule the library's grouping uses: the patient number
     // is the key when present; name-keyed only for number-less charts.
     // ilike without wildcards = case-insensitive equality.
     if (patientId) query = query.eq('data->patientInfo->>patientId', patientId);
     else if (num) query = query.ilike('patient_number', escapeLike(num));
     else query = query.ilike('patient_name', escapeLike(name)).eq('patient_number', '');
-    const { data, error } = await query;
-    if (error) throw new Error(error.message);
-    return (data ?? []) as CloudChartMeta[];
+    const pageSize = 200;
+    if (!allPages) {
+      const { data, error } = await query.order('updated_at', { ascending: false }).limit(pageSize);
+      if (error) throw new Error(error.message);
+      return (data ?? []) as CloudChartMeta[];
+    }
+
+    const visits: CloudChartMeta[] = [];
+    query = query.order('id');
+    for (let offset = 0; ; offset += pageSize) {
+      const { data, error } = await query.range(offset, offset + pageSize - 1);
+      if (error) throw new Error(error.message);
+      const page = (data ?? []) as CloudChartMeta[];
+      visits.push(...page);
+      if (page.length < pageSize) return visits;
+    }
   }, []);
 
   listPatientVisitsRef.current = listPatientVisits;

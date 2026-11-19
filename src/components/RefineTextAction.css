@@ -1,0 +1,41 @@
+.refine-text { position: relative; display: inline-block; }
+.refine-text > summary { display: inline-flex; align-items: center; gap: 5px; list-style: none; cursor: pointer; }
+.refine-text > summary::-webkit-details-marker { display: none; }
+.refine-text > summary::after { content: "⌄"; }
+.refine-text[open] { z-index: 15; }
+.refine-text__options {
+  display: grid;
+  position: absolute;
+  inset-inline-end: 0;
+  inset-block-start: calc(100% + 4px);
+  z-index: 1;
+  min-width: 11rem;
+  max-width: calc(100vw - 30px);
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+}
+.refine-text__options button {
+  padding: 8px 10px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  text-align: start;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.refine-text__options button:hover { background: var(--surface-alt); }
+.refine-text__comparison { display: grid; gap: 12px; max-height: min(52dvh, 460px); overflow: auto; }
+.refine-text__comparison p { margin: 4px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.clinical-text__actions:empty { display: none; }
+.clinical-text__actions { display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap; margin-block: 4px; }
+@media (max-width: 600px) {
+  .refine-text > summary, .refine-text__options button, .refine-text__disabled { min-height: 44px; }
+}
+.refine-text__control { display: inline-flex; flex-direction: column; align-items: flex-end; min-width: 0; max-width: 100%; }
+.refine-text__feedback { margin: 4px 0 0; max-width: 32ch; color: var(--text-muted); font-size: .8rem; text-align: end; }
+.refine-text__feedback--error { color: var(--danger); }

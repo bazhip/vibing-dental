@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 import type { Attachment } from '../hooks/useAttachments';
 import { ImageHistory } from './ImageHistory';
@@ -35,4 +35,19 @@ it('clears previous patient thumbnails immediately and ignores a stale response'
   rerender(<ImageHistory visits={[{ id: 'third', date: '2026-02-01' }]} />);
   expect(screen.queryByRole('img')).toBeNull();
   expect(screen.queryByRole('heading', { name: 'Image history' })).toBeNull();
+});
+
+it('keeps earlier images in a single strip until expanded', async () => {
+  load.mockResolvedValue([attachment('first', 'a'), attachment('second', 'b')]);
+  render(<ImageHistory visits={[{ id: 'a', date: '2026-01-01' }, { id: 'b', date: '2026-02-01' }]} />);
+  const toggle = await screen.findByRole('button', { name: 'Expand image history' });
+  const body = document.getElementById(toggle.getAttribute('aria-controls')!);
+  expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  expect(body).toHaveClass('image-history__body--strip');
+  fireEvent.click(toggle);
+  expect(toggle).toHaveAccessibleName('Collapse image history');
+  expect(toggle).toHaveAttribute('aria-expanded', 'true');
+  expect(body).not.toHaveClass('image-history__body--strip');
+  fireEvent.click(toggle);
+  expect(body).toHaveClass('image-history__body--strip');
 });

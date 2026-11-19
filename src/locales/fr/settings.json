@@ -195,7 +195,8 @@
       "images": "Inclure les images",
       "imagesHint": "(4 par page, après le dossier)",
       "radiographicReport": "Inclure le compte rendu radiographique",
-      "ctReport": "Inclure le compte rendu de scanner"
+      "ctReport": "Inclure le compte rendu de scanner",
+      "codesUsed": "Inclure les codes utilisés"
     },
     "noteDevice": "Préférences personnelles enregistrées automatiquement sur cet appareil.",
     "spaceMovesDownHint": "Rapide pour dicter une série de profondeurs",

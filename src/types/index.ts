@@ -274,12 +274,37 @@ export interface PatientInfo {
   date: string;
   complaint: string;
   treatmentReport: string;
+  /** Saved template selected for this visit's treatment report. */
+  treatmentReportTemplateId?: string;
+  /** Explicit visit sources; absent on older charts. Each is bounded to 20,000 characters. */
+  gpVitals?: string;
+  gpPhysicalExam?: string;
+  gpDiagnostics?: string;
+  consultationHistory?: string;
+  consultationAssessment?: string;
+  consultationPlan?: string;
+  dischargeMedications?: string;
+  dischargeInstructions?: string;
+  dischargeFollowUp?: string;
   /** Radiographic findings (free text). Optional: absent on charts saved
    *  before the field existed. */
   radiographicFindings?: string;
   /** CT report (free text). Optional: absent on charts saved before the
    *  field existed. */
   ctReport?: string;
+  /** Optional authoring/review metadata retained for existing dictated reports. */
+  radiologyHistory?: string;
+  radiologyTechnique?: string;
+  radiologyQuestion?: string;
+  radiologyReport?: string;
+  radiologyReportLanguage?: AppLanguage;
+  radiologyReportBasis?: string;
+  radiologyReviewedBasis?: string;
+  radiologyReportGeneratedAt?: string;
+  ctReportLanguage?: AppLanguage;
+  ctReportBasis?: string;
+  ctReviewedBasis?: string;
+  ctReportGeneratedAt?: string;
   /** Custom anesthesia entries (see utils/customAnesthesia). Each value
    *  carries its own label/type so the chart reads correctly for anyone,
    *  whatever fields they've defined. Optional: absent on older charts. */
@@ -391,14 +416,36 @@ export interface OwnerReportOverrides {
   intro?: string;
   /** Home-care advice, one tip per line. */
   homecare?: string;
+  /** Latest generated wording, retained independently of manual edits. */
+  generatedIntro?: string;
+  generatedHomecare?: string;
   /** Optional extra note from the team, printed as its own section. */
   extraNotes?: string;
+  /** Owner-facing wording for the chart-generated report sections. */
+  extractionsText?: string;
+  findingsText?: string;
+  examNotesText?: string;
   /** Practice owner-report template chosen for this chart (absent = the
    *  practice default). Unknown ids fall back to the default too. */
   templateId?: string;
 }
 
+export type ClinicalDictationKind = 'gp-visit' | 'consultation' | 'gp-exam' | 'discharge' | 'ct' | 'imaging';
+export type ClinicalDictationField =
+  | 'complaint' | 'consultationHistory' | 'consultationAssessment' | 'consultationPlan'
+  | 'gpVitals' | 'gpPhysicalExam' | 'gpDiagnostics' | 'treatmentReport' | 'ctReport' | 'radiographicFindings'
+  | 'dischargeMedications' | 'dischargeInstructions' | 'dischargeFollowUp';
+export interface ClinicalDictationSource {
+  id: string;
+  kind: ClinicalDictationKind;
+  language: AppLanguage;
+  transcript: string;
+  recordedAt: string;
+  fields: ClinicalDictationField[];
+}
+
 export interface ChartSnapshot {
+  clinicalDictations?: ClinicalDictationSource[];
   /** Explicitly closed for editing; absent on unfinalized records. */
   finalizedAt?: string;
   /** Snapshot schema version — absent on charts saved before the field
@@ -408,6 +455,8 @@ export interface ChartSnapshot {
   /** Before/after tags for attached images (by attachment id), used by
    *  the owner report's photo section. */
   imageRoles?: Record<string, ImageRole>;
+  /** Explicit owner-report image choices override the legacy before/after tags. */
+  ownerReportImageInclusion?: Record<string, boolean>;
   /** Attachment ids left OUT of the chart PDF's image pages. Stored as
    *  exclusions so a newly added image is in the PDF by default. */
   pdfExcludedImages?: string[];

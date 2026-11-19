@@ -4,7 +4,7 @@
 // MODEL_SETTINGS in ai-autofill and AI_MODEL_CHOICES in
 // src/constants/aiModels.ts.
 
-export const AI_FEATURES = ['live', 'review', 'owner_report'] as const;
+export const AI_FEATURES = ['live', 'review', 'owner_report', 'radiology_report'] as const;
 export type AiFeature = typeof AI_FEATURES[number];
 
 export const DEFAULT_AI_MODELS: Record<AiFeature, string> = {
@@ -14,6 +14,7 @@ export const DEFAULT_AI_MODELS: Record<AiFeature, string> = {
   // Once per dictation / per report: accuracy over cost.
   review: 'claude-sonnet-5-5',
   owner_report: 'claude-sonnet-5-5',
+  radiology_report: 'claude-sonnet-5-5',
 };
 
 export const ALLOWED_AI_MODELS = ['claude-haiku-5-5', 'claude-sonnet-5-5', 'claude-opus-5-5', 'claude-opus-4-8'];
@@ -37,7 +38,20 @@ export function resolveAiModels(stored: unknown): Record<AiFeature, string> {
 /** The feature an ai-autofill request belongs to. Warm-ups prime the
  *  live prompt cache (caches are per model), so they use the live model. */
 export function featureForRequest(mode: unknown, kind: string): AiFeature {
+  if (kind === 'radiology_report' || kind === 'ct_report') return 'radiology_report';
   if (mode === 'review') return 'review';
   if (kind === 'owner_report') return 'owner_report';
   return 'live';
+}
+
+/** Request kinds retained by the shared authenticated usage log. */
+export const AI_REQUEST_KINDS = [
+  'live', 'review', 'owner_report', 'warmup', 'radiology_report', 'ct_report',
+  'refine_text', 'gp-visit', 'gp-exam', 'consultation', 'discharge',
+] as const;
+export type AiRequestKind = typeof AI_REQUEST_KINDS[number];
+
+/** Structured radiology drafts need the same response room as a final review. */
+export function usesReviewSettings(mode: unknown, kind: unknown): boolean {
+  return mode === 'review' || kind === 'radiology_report' || kind === 'ct_report';
 }

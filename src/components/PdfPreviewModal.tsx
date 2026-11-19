@@ -1,3 +1,4 @@
+import { DocumentToolbar } from './DocumentToolbar';
 import React from 'react';
 import { createPortal } from 'react-dom';
 import { useModalFocus } from '../hooks/useModalFocus';
@@ -59,6 +60,7 @@ export interface ChartSnapshot {
   /** False leaves the radiographic / CT report off the treatment card. */
   includeRadiographicReport?: boolean;
   includeCtReport?: boolean;
+  includeCodesUsed?: boolean;
   /** Cloud chart id whose images get appended as extra pages (4 per
    *  page). Absent/empty → no image pages. */
   imagesChartId?: string;
@@ -77,6 +79,13 @@ export interface PdfExportLifecycle {
   finalize: () => Promise<boolean>;
 }
 
+export interface ChartPdfOptions {
+  gridRequired: boolean;
+  imagesAvailable: boolean;
+  includeImages: boolean;
+  onChange: (field: 'pdfIncludeGrid' | 'pdfIncludeImages' | 'pdfIncludeRadiographicReport' | 'pdfIncludeCtReport' | 'pdfIncludeCodesUsed', value: boolean) => void;
+}
+
 interface PdfPreviewModalProps {
   lifecycle?: PdfExportLifecycle;
   open: boolean;
@@ -86,16 +95,19 @@ interface PdfPreviewModalProps {
   /** Render just the preview body (style rail + PDF) inside another
    *  dialog — the Documents dialog supplies header, tabs and Escape. */
   bare?: boolean;
+  /** History displays pages without style or export controls. */
+  viewOnly?: boolean;
+  options?: ChartPdfOptions;
 }
 
-export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose, snapshot, bare = false, lifecycle }) => {
-  const { t, i18n: i18nInstance } = useTranslation('pdfui');
+export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose, snapshot, bare = false, viewOnly = false, lifecycle, options }) => {
+  const { t, i18n: i18nInstance } = useTranslation(['pdfui', 'media', 'settings']);
   // The document's labels print in the app language; the preview rebuilds
   // when it changes.
   const lng = isAppLanguage(i18nInstance.language) ? i18nInstance.language : 'en';
   // The document style is independent of the app UI. The last pick
   // (preset or custom color) is remembered on this device.
-  const [styleId, setStyleIdState] = React.useState<string>(readSavedPdfStyle);
+  const [styleId, setStyleIdState] = React.useState<string>(() => viewOnly ? 'clinic' : readSavedPdfStyle());
   const setStyleId = (id: string) => { setStyleIdState(id); savePdfStyle(id); };
   // In the app the preview always gets the width; the style list is a
   // button that opens a picker sheet.
@@ -246,6 +258,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
             includeGrid: snapshot.includeGrid,
             includeRadiographicReport: snapshot.includeRadiographicReport,
             includeCtReport: snapshot.includeCtReport,
+            includeCodesUsed: snapshot.includeCodesUsed,
             images,
             lng,
           }
@@ -325,10 +338,11 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
 
   if (!open) return null;
 
+  const toolbar = bare && !viewOnly;
   const downloadButton = (
     <button
       type="button"
-      className="pdf-preview-download"
+      className={toolbar ? "ui-btn ui-btn--primary" : "pdf-preview-download"}
       onClick={() => handleDownload()}
       disabled={!pdfUrl || generating || images === null || !!imageWarning || !!error}
     >
@@ -395,10 +409,42 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
     </div>, document.body,
   );
 
+  const notices = <>
+    {!isNativeApp() && !inAppLink.state && downloadHint() && <p className="pdf-preview-hint" role="note">{downloadHint()}</p>}
+    <PdfLinkPanel state={inAppLink.state} />
+    {imageWarning && <div className="pdf-preview-warning">
+      <p role="status">{imageWarning}</p>
+      <button type="button" className="pdf-preview-secondary" onClick={() => setImageAttempt(attempt => attempt + 1)}>{t('preview.retryImages')}</button>
+      <button type="button" className="pdf-preview-secondary" disabled={!pdfUrl || generating || images === null || !!error} onClick={() => handleDownload(true)}>{t('preview.withoutImages')}</button>
+    </div>}
+  </>;
+  const included = [
+    { key: 'pdfIncludeGrid', label: 'chart.pdf.grid', value: snapshot?.includeGrid !== false, disabled: options?.gridRequired, hint: options?.gridRequired ? t('chart.pdf.gridHint', { ns: 'settings' }) : undefined },
+    { key: 'pdfIncludeImages', label: 'chart.pdf.images', value: options?.includeImages, disabled: !options?.imagesAvailable, hint: undefined },
+    { key: 'pdfIncludeRadiographicReport', label: 'chart.pdf.radiographicReport', value: snapshot?.includeRadiographicReport !== false, disabled: false, hint: undefined },
+    { key: 'pdfIncludeCtReport', label: 'chart.pdf.ctReport', value: snapshot?.includeCtReport !== false, disabled: false, hint: undefined },
+    { key: 'pdfIncludeCodesUsed', label: 'chart.pdf.codesUsed', value: snapshot?.includeCodesUsed !== false, disabled: false, hint: undefined },
+  ] as const;
   const body = (
     <>{warning}
-        <div className="pdf-preview-body">
-          <aside className="pdf-preview-styles">
+        <div className={viewOnly ? 'pdf-preview-body pdf-preview-body--view-only' : toolbar ? 'pdf-preview-body pdf-preview-body--toolbar' : 'pdf-preview-body'}>
+          {toolbar && <DocumentToolbar actions={downloadButton} notice={notices}>
+            <section className="document-toolbar__group">
+              <h3>{t('documents.color', { ns: 'media' })}</h3>
+              <PdfStylePicker styleId={styleId} onChange={setStyleId} compact inline />
+            </section>
+            {options && <section className="document-toolbar__group">
+              <h3>{t('documents.included', { ns: 'media' })}</h3>
+              <div className="document-toolbar__options">
+                {included.map(({ key, label, value, disabled, hint }) => <label key={key} title={hint}>
+                  <input type="checkbox" checked={!!value} disabled={disabled}
+                    onChange={event => options.onChange(key, event.target.checked)} />
+                  {t(label, { ns: 'settings' })}
+                </label>)}
+              </div>
+            </section>}
+          </DocumentToolbar>}
+          {!viewOnly && !toolbar && <aside className="pdf-preview-styles">
             {compact ? (
               <div className="pdf-preview-toolbar">
                 <PdfStylePicker styleId={styleId} onChange={setStyleId} compact />
@@ -410,16 +456,12 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
                 {downloadButton}
               </>
             )}
-            {!isNativeApp() && !inAppLink.state && downloadHint() && <p className="pdf-preview-hint" role="note">{downloadHint()}</p>}
-            <PdfLinkPanel state={inAppLink.state} />
-            {imageWarning && (
-              <div className="pdf-preview-warning">
-                <p role="status">{imageWarning}</p>
-                <button type="button" className="pdf-preview-secondary" onClick={() => setImageAttempt((attempt) => attempt + 1)}>{t('preview.retryImages')}</button>
-                <button type="button" className="pdf-preview-secondary" disabled={!pdfUrl || generating || images === null || !!error} onClick={() => handleDownload(true)}>{t('preview.withoutImages')}</button>
-              </div>
-            )}
-          </aside>
+            {notices}
+          </aside>}
+          {viewOnly && imageWarning && <div className="pdf-preview-warning">
+            <p role="status">{imageWarning}</p>
+            <button type="button" className="pdf-preview-secondary" onClick={() => setImageAttempt(attempt => attempt + 1)}>{t('preview.retryImages')}</button>
+          </div>}
           <div className="pdf-preview-iframe-wrap">
             {(generating || (images === null && !error)) && (
               <div className="pdf-preview-status">
@@ -429,7 +471,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
             {error && !generating && (
               <div className="pdf-preview-status pdf-preview-status--error">{error}</div>
             )}
-            {pdfUrl && !error && (canShowPdfInline() ? (
+            {pdfUrl && !error && (!viewOnly && canShowPdfInline() ? (
               <iframe
                 key={styleId}
                 src={pdfUrl}

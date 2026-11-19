@@ -70,6 +70,12 @@ describe('procedure diagram available region', () => {
     expect(post.height).toBeGreaterThan(0);
   });
 
+  it('omits the codes legend when the export option is off', async () => {
+    const { texts } = await capture({ ...patient, treatmentReport: 'PD3, X, TR' }, 'canine', { includeCodesUsed: false });
+    expect(texts.some(line => line.text.toLowerCase() === 'codes used')).toBe(false);
+    expect(texts.some(line => line.text.includes('PD3, X, TR'))).toBe(true);
+  });
+
   it.each([true, false])('keeps populated cards above the diagram with grid=%s and appended imaging', async includeGrid => {
     const { post, texts, bytes } = await capture({ ...patient,
       treatmentReport: 'Extraction completed. '.repeat(200), radiographicFindings: 'Root resorption.',
@@ -121,7 +127,36 @@ describe('supported maximum custom chart settings', () => {
     }
   });
 });
+it('prints the visible radiology report, not superseded hidden findings, and respects a clear', async () => {
+  const p = { ...patient, radiographicFindings: 'Visible corrected radiology text.', radiologyReport: 'Hidden superseded finding.' };
+  const output = await capture(p);
+  expect(output.allTexts.map(item => item.text).join('\n')).toContain('Visible corrected radiology text.');
+  expect(output.allTexts.map(item => item.text).join('\n')).not.toContain('Hidden superseded');
+  vi.restoreAllMocks();
+  const empty = await capture({ ...p, radiographicFindings: '' });
+  expect(empty.allTexts.map(item => item.text).join('\n')).not.toContain('Hidden superseded');
+});
+it('prints an independent CT report alongside the x-ray report and preserves CT in the PDF stash', async () => {
+  const p = { ...patient, ctReport: 'CT recorded finding at 409.', radiologyReport: 'X-ray recorded finding at 108.' };
+  const output = await capture(p), text = output.allTexts.map(item => item.text).join('\n');
+  expect(text.toLowerCase()).toContain('ct report'); expect(text).toContain(p.ctReport); expect(text).toContain(p.radiologyReport);
+  const { parseDentalChartPDF } = await import('../pdfGenerator');
+  expect((await parseDentalChartPDF({ arrayBuffer: async () => output.bytes.slice().buffer } as File)).patientInfo.ctReport).toBe(p.ctReport);
+});
 
+it('prints full GP sources on continuation pages and stashes their clinical fields only', async () => {
+  const p = { ...patient, gpVitals: '4 kg?', gpPhysicalExam: 'Left ear sore', gpDiagnostics: 'CBC pending' };
+  const result = await capture(p);
+  const text = result.allTexts.map(row => row.text).join('\n');
+  expect(text).toContain('4 kg?');
+  expect(text).toContain('Left ear sore');
+  expect(text).toContain('CBC pending');
+  const doc = await PDFDocument.load(result.bytes);
+  expect(doc.getPageCount()).toBe(3);
+  const stash = JSON.parse(doc.getForm().getTextField(DIAGRAM_STATE_FIELD).getText()!);
+  expect(stash.patientInfo).toMatchObject(p);
+  expect(stash).not.toHaveProperty('clinicalDictations');
+});
 
 it('exports all 28 rabbit teeth and reopens the complete chart without changing species', async () => {
   const printed: string[] = [];

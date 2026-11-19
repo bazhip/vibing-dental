@@ -1,5 +1,10 @@
 {
   "imaging": {
+    "inOwnerReport": "纳入宠主报告",
+    "beforeAfter": "治疗前 / 治疗后",
+    "noLabel": "无标签",
+    "details": "图像详情",
+    "reportInclusion": "纳入报告",
     "title": "影像",
     "signedOut": "使用诊所账户登录，即可附加口内照片和牙科X光片，文件会与图表一起私密存储。",
     "usage": "{{used}}张，共可存{{max}}张影像",
@@ -67,7 +72,23 @@
     "toothLabel": "牙位",
     "ownerReportLabel": "宠物主人报告"
   },
+  "patientRecord": {
+    "open": "查看就诊历史",
+    "title": "患者历史病历",
+    "visit": "就诊",
+    "currentVisit": "本次就诊",
+    "undatedVisit": "无日期的就诊",
+    "loadingVisits": "正在加载既往就诊记录…",
+    "visitsFailed": "无法加载既往就诊记录。",
+    "noVisits": "ToothOps 中没有既往就诊记录。",
+    "visitFailed": "无法打开该就诊记录。",
+    "pdfs": "就诊 PDF",
+    "notes": "临床记录"
+  },
   "documents": {
+    "customize": "自定义",
+    "color": "颜色",
+    "included": "PDF 内容",
     "title": "审核并导出",
     "chartTab": "临床牙科图表",
     "chartWho": "用于病历存档和转诊，包含代码的完整图表。",
@@ -107,7 +128,16 @@
       "procedures": "操作",
       "radiographs": "X 线报告",
       "ct": "CT 报告",
-      "recheck": "复查"
+      "recheck": "复查",
+      "consultationHistory": "诊疗病史",
+      "consultationAssessment": "诊疗评估",
+      "consultationPlan": "诊疗计划",
+      "dischargeMedications": "出院用药",
+      "dischargeInstructions": "出院指导",
+      "dischargeFollowUp": "出院随访",
+      "gpVitals": "生命体征",
+      "gpPhysicalExam": "体格检查",
+      "gpDiagnostics": "诊断检查"
     },
     "alreadyMissing": "原已缺失：{{teeth}}",
     "extracted": "已拔除：{{teeth}}",
@@ -154,6 +184,8 @@
     "missing": "无法加载此影像。"
   },
   "history": {
+    "expand": "展开影像历史",
+    "collapse": "收起影像历史",
     "show_one": "影像历史（另1次就诊）",
     "show_other": "影像历史（另{{count}}次就诊）",
     "hide": "隐藏影像历史",

@@ -59,6 +59,14 @@
     "warningSigns": "请留意掉落饲料、体重减轻、进食缓慢、甩头或抗拒衔铁、口臭或鼻分泌物等情况，如有发现，请致电我们。"
   },
   "intro": "此报告汇总了{{pet}}本次牙科就诊所记录的信息。如有疑问，请与您的兽医团队讨论。",
+  "visitIntro": {
+    "lead": "以下是 {{pet}} 此次牙科就诊的记录。",
+    "extractions": "本次就诊拔除的牙齿数：{{total}}。",
+    "findings": "有检查发现记录的牙齿数：{{total}}。",
+    "exam": "我们记录了口腔检查中的其他发现。",
+    "treatment": "我们记录了本次就诊的治疗情况。"
+  },
+  "visitImages": "就诊图像",
   "legendFilled": "实心填充＝本次就诊前已缺失",
   "legendNumbers": "编号对应下方检查结果",
   "legendRemoved": "红色 ✕＝今日拔除",
@@ -157,6 +165,11 @@
     "range": "（{{from}}至{{to}}）"
   },
   "otherFindings": "其他检查结果",
+  "dischargeSource": {
+    "dischargeMedications": "出院用药",
+    "dischargeInstructions": "出院指导",
+    "dischargeFollowUp": "出院随访"
+  },
   "homecareTipsRabbit": {
     "hay": "无限量提供禾本科干草，帮助牙齿正常磨耗；治疗后请遵循兽医团队的喂食指导。",
     "checkups": "请按兽医团队建议按时进行牙科复查；兔的牙齿会持续生长。",

@@ -77,3 +77,31 @@ it('blank AI facts distinguish missing documentation from health and include dra
   expect(facts).not.toContain('healthy');
   expect(buildOwnerReportAiRequest(blank).system[0].text).toContain('Missing or blank entries mean not recorded');
 });
+
+it('keeps explicit visit sources available to AI even with a manual report override', () => {
+  const sources = { consultationHistory: 'History uncertain?', consultationAssessment: 'Possible disease?', consultationPlan: 'Discuss options', dischargeMedications: 'Drug 2 mg? verify', dischargeInstructions: 'Recorded instructions', dischargeFollowUp: 'As discussed' };
+  const facts = ownerReportFacts({ ...snap, patientInfo: { ...snap.patientInfo, ...sources }, ownerReport: { extraNotes: 'Manual note' } });
+  for (const text of Object.values(sources)) expect(facts).toContain(text);
+  expect(facts).toContain('Manual note');
+});
+it('uses visible radiology report text instead of superseded legacy findings', () => {
+  const value = { ...snap, patientInfo: { ...snap.patientInfo, radiographicFindings: '409: corrected possible resorption', radiologyReport: 'Old hidden 108 finding' } };
+  expect(ownerReportFacts(value)).toContain('409: corrected possible resorption');
+  expect(ownerReportFacts(value)).not.toContain('Old hidden');
+  value.patientInfo.radiographicFindings = '';
+  expect(ownerReportFacts(value)).not.toContain('Old hidden');
+});
+it('includes recorded CT text separately from x-ray observations', () => {
+  const value = { ...snap, patientInfo: { ...snap.patientInfo, ctReport: 'CT: 409 lesion; extent uncertain.', radiologyReport: 'Separate x-ray report.' } };
+  expect(ownerReportFacts(value)).toContain('CT: 409 lesion; extent uncertain.');
+  expect(ownerReportFacts(value)).toContain('Separate x-ray report.');
+});
+
+it('includes GP facts with units and uncertainty, excluding raw provenance from the AI request', () => {
+  const s: ChartSnapshot = { ...snap, patientInfo: { ...snap.patientInfo, gpVitals: '4 kg?', gpPhysicalExam: 'Painful left ear', gpDiagnostics: 'CBC pending' }, clinicalDictations: [{ id: 'source', kind: 'gp-exam', language: 'en', transcript: 'PRIVATE RAW SOURCE', recordedAt: '2026-11-18T12:00:00Z', fields: ['gpVitals'] }] };
+  const facts = ownerReportFacts(s);
+  expect(facts).toContain('4 kg?');
+  expect(facts).toContain('Painful left ear');
+  expect(facts).toContain('CBC pending');
+  expect(JSON.stringify(buildOwnerReportAiRequest(s))).not.toContain('PRIVATE RAW SOURCE');
+});

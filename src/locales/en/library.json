@@ -116,11 +116,16 @@
     "confirmButton": "Restore"
   },
   "templates": {
+    "chartCodes": "Chart codes",
+    "chartCodeHelp": "Type { to see suggestions or select a code below. Codes use recorded chart values and ask you to fill in any missing values. Other names in braces become custom prompts.",
+    "fieldExamples": "Examples of fill-in fields include {Tooth numbers}, {Procedure details}, and {Follow-up date}.",
+    "fieldsInTemplate": "Fields in this template",
+    "fieldHelp": "Put a short instruction in braces to make a fill-in field, for example {Enter tooth numbers}. You’ll be asked for the value when you use the template.",
     "aria": "Report templates",
     "title": "Report templates",
     "saved": "Saved templates",
     "new": "New template",
-    "empty": "No templates yet — write one below and save it, or use \"Save as template\" on the Treatment Report section.",
+    "empty": "No templates yet. Create one below or choose New template in Treatment report.",
     "untitled": "Untitled",
     "nameLabel": "Template name",
     "namePlaceholder": "e.g. Routine cleaning (feline)",

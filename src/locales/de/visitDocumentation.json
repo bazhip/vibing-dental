@@ -1,0 +1,62 @@
+{
+  "consultation": {
+    "title": "Konsultation",
+    "purpose": "Dokumentieren Sie Vorstellungsgrund, Anamnese, Beurteilung und Plan zusammen mit der gemeinsamen Untersuchung und Patientenakte.",
+    "review": "Klinische Dokumentation prüfen"
+  },
+  "discharge": {
+    "title": "Entlassung",
+    "purpose": "Dokumentieren Sie die für diesen Besuch besprochenen Medikamente, Pflegehinweise und Nachsorge.",
+    "review": "Bericht für Tierhalter prüfen"
+  },
+  "sourceNotice": "Die eingegebene Formulierung bleibt erhalten. Prüfen Sie vor dem Teilen die Sprache des Tierhalters.",
+  "treatmentRecap": "Behandlungsbericht",
+  "noTreatment": "Kein Behandlungsbericht dokumentiert.",
+  "fields": {
+    "complaint": {
+      "label": "Vorstellungsgrund",
+      "helper": "Wird mit den Patientendaten dieses Besuchs gemeinsam verwendet."
+    },
+    "consultationHistory": {
+      "label": "Anamnese",
+      "helper": "Dokumentieren Sie die mitgeteilte Vorgeschichte und den relevanten Kontext."
+    },
+    "consultationAssessment": {
+      "label": "Beurteilung",
+      "helper": "Dokumentieren Sie Ihre Beurteilung einschließlich etwaiger Unsicherheiten."
+    },
+    "consultationPlan": {
+      "label": "Plan",
+      "helper": "Dokumentieren Sie den besprochenen Plan, ohne geplante Maßnahmen als abgeschlossen darzustellen."
+    },
+    "dischargeMedications": {
+      "label": "Medikamente",
+      "helper": "Geben Sie nur dokumentierte Medikamente und Dosierungen ein; behalten Sie Unsicherheiten bei."
+    },
+    "dischargeInstructions": {
+      "label": "Hinweise",
+      "helper": "Dokumentieren Sie die bei diesem Besuch besprochenen Pflegehinweise."
+    },
+    "dischargeFollowUp": {
+      "label": "Nachsorge",
+      "helper": "Dokumentieren Sie die besprochene Nachsorge; nutzen Sie das vorhandene Erinnerungsdatum für eine geplante Kontrolle."
+    },
+    "gpVitals": {
+      "label": "Vitalparameter",
+      "helper": "Dokumentieren Sie die Messwerte mit Einheiten und etwaigen Unsicherheiten."
+    },
+    "gpPhysicalExam": {
+      "label": "Körperliche Untersuchung",
+      "helper": "Dokumentieren Sie nur beobachtete oder berichtete Untersuchungsbefunde."
+    },
+    "gpDiagnostics": {
+      "label": "Diagnostik",
+      "helper": "Dokumentieren Sie diagnostische Befunde und ausstehende Tests unter Beibehaltung etwaiger Unsicherheiten."
+    }
+  },
+  "gp-exam": {
+    "title": "Allgemeinuntersuchung",
+    "purpose": "Dokumentieren Sie die Vitalparameter, die körperliche Untersuchung und die diagnostischen Befunde dieses Besuchs.",
+    "review": "Klinische Dokumentation prüfen"
+  }
+}

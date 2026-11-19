@@ -118,11 +118,16 @@
     "confirmButton": "Ripristina"
   },
   "templates": {
+    "chartCodes": "Codici della cartella",
+    "chartCodeHelp": "Digiti { per visualizzare i suggerimenti o selezioni un codice qui sotto. I codici utilizzano i dati della cartella e Le chiedono di inserire quelli mancanti. Gli altri nomi tra parentesi graffe creano richieste personalizzate.",
+    "fieldExamples": "Esempi di campi da compilare: {Numeri dei denti}, {Dettagli della procedura} e {Data del controllo}.",
+    "fieldsInTemplate": "Campi di questo modello",
+    "fieldHelp": "Inserisca una breve istruzione tra parentesi graffe per creare un campo da compilare, ad esempio {Inserisca i numeri dei denti}. Il valore verrà chiesto quando userà il modello.",
     "aria": "Modelli di referto",
     "title": "Modelli di referto",
     "saved": "Modelli salvati",
     "new": "Nuovo modello",
-    "empty": "Nessun modello per ora: ne scriva uno qui sotto e lo salvi, oppure usi «Salva come modello» nella sezione Referto del trattamento.",
+    "empty": "Nessun modello. Ne crei uno qui sotto oppure scelga Nuovo modello nel resoconto del trattamento.",
     "untitled": "Senza titolo",
     "nameLabel": "Nome del modello",
     "namePlaceholder": "ad es. Pulizia di routine (felino)",

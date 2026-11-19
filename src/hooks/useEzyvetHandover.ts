@@ -2,6 +2,7 @@ import React from 'react';
 import i18n from '../i18n';
 import { toastWhenReady as toast } from '../components/ui/dialogs';
 import type { TakePendingResult } from '../extension/protocol';
+import { pimsRolloutEnabled } from '../utils/pims/rollout';
 import {
   consumeFromEzyvet,
   stashPatient,
@@ -38,7 +39,7 @@ export function useEzyvetHandover(opts: EzyvetHandoverOptions): void {
   const ranRef = React.useRef(false);
 
   React.useEffect(() => {
-    if (!opts.enabled || ranRef.current) return;
+    if (!pimsRolloutEnabled() || !opts.enabled || ranRef.current) return;
     ranRef.current = true;
     // Callbacks are read from optsRef.current after each await: they close
     // over the chart as rendered, and an earlier copy would be stale.

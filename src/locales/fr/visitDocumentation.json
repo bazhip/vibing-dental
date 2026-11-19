@@ -1,0 +1,62 @@
+{
+  "consultation": {
+    "title": "Consultation",
+    "purpose": "Consignez le motif de consultation, les antécédents, l’évaluation et le plan avec l’examen et le dossier partagés.",
+    "review": "Vérifier le dossier clinique"
+  },
+  "discharge": {
+    "title": "Sortie",
+    "purpose": "Consignez les médicaments, les consignes de soins et le suivi discutés pour cette visite.",
+    "review": "Vérifier le compte rendu client"
+  },
+  "sourceNotice": "Le texte saisi est conservé tel quel. Vérifiez la langue du client avant le partage.",
+  "treatmentRecap": "Compte rendu de traitement",
+  "noTreatment": "Aucun compte rendu de traitement consigné.",
+  "fields": {
+    "complaint": {
+      "label": "Motif de consultation",
+      "helper": "Partagé avec les informations du patient pour cette visite."
+    },
+    "consultationHistory": {
+      "label": "Anamnèse",
+      "helper": "Consignez les antécédents rapportés et le contexte pertinent."
+    },
+    "consultationAssessment": {
+      "label": "Évaluation",
+      "helper": "Consignez votre évaluation, y compris toute incertitude."
+    },
+    "consultationPlan": {
+      "label": "Plan",
+      "helper": "Consignez le plan discuté sans laisser entendre que les soins prévus ont été réalisés."
+    },
+    "dischargeMedications": {
+      "label": "Médicaments",
+      "helper": "Saisissez uniquement les médicaments et doses consignés, en conservant toute incertitude."
+    },
+    "dischargeInstructions": {
+      "label": "Consignes",
+      "helper": "Consignez les consignes de soins discutées pour cette visite."
+    },
+    "dischargeFollowUp": {
+      "label": "Suivi",
+      "helper": "Consignez le suivi discuté ; utilisez la date de rappel existante pour un contrôle prévu."
+    },
+    "gpVitals": {
+      "label": "Paramètres vitaux",
+      "helper": "Consignez les valeurs mesurées avec leurs unités et toute incertitude."
+    },
+    "gpPhysicalExam": {
+      "label": "Examen clinique",
+      "helper": "Consignez uniquement les constatations observées ou rapportées lors de l’examen."
+    },
+    "gpDiagnostics": {
+      "label": "Examens diagnostiques",
+      "helper": "Consignez les résultats diagnostiques et les examens en attente, en conservant toute incertitude."
+    }
+  },
+  "gp-exam": {
+    "title": "Examen général",
+    "purpose": "Consignez les paramètres vitaux, l’examen clinique et les résultats diagnostiques pour cette visite.",
+    "review": "Vérifier le dossier clinique"
+  }
+}

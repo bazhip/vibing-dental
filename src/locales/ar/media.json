@@ -1,5 +1,10 @@
 {
   "imaging": {
+    "inOwnerReport": "في تقرير المالك",
+    "beforeAfter": "قبل / بعد",
+    "noLabel": "بلا وسم",
+    "details": "تفاصيل الصورة",
+    "reportInclusion": "إدراج الصورة في التقارير",
     "title": "التصوير",
     "signedOut": "سجّلوا الدخول بحساب عيادة لإرفاق صور داخل الفم وصور شعاعية للأسنان — تُخزّن بخصوصية مع المخطط.",
     "usage": "الصور: {{used}} من {{max}}",
@@ -67,7 +72,23 @@
     "toothLabel": "السن",
     "ownerReportLabel": "تقرير المالك"
   },
+  "patientRecord": {
+    "open": "عرض سجل الزيارات",
+    "title": "السجلات السابقة للمريض",
+    "visit": "الزيارة",
+    "currentVisit": "الزيارة الحالية",
+    "undatedVisit": "زيارة بلا تاريخ",
+    "loadingVisits": "جارٍ تحميل الزيارات السابقة…",
+    "visitsFailed": "تعذّر تحميل الزيارات السابقة.",
+    "noVisits": "لا تتوفر زيارات سابقة في ToothOps.",
+    "visitFailed": "تعذّر فتح هذه الزيارة.",
+    "pdfs": "ملفات PDF للزيارات",
+    "notes": "الملاحظات السريرية"
+  },
   "documents": {
+    "customize": "تخصيص",
+    "color": "اللون",
+    "included": "محتويات ملف PDF",
     "title": "المراجعة والتصدير",
     "chartTab": "المخطط السريري",
     "chartWho": "لسجلاتكم وإحالاتكم — المخطط الكامل مع الرموز.",
@@ -107,7 +128,16 @@
       "procedures": "الإجراءات",
       "radiographs": "تقرير التصوير الشعاعي",
       "ct": "تقرير التصوير المقطعي المحوسب",
-      "recheck": "إعادة الفحص"
+      "recheck": "إعادة الفحص",
+      "consultationHistory": "التاريخ المرضي للاستشارة",
+      "consultationAssessment": "تقييم الاستشارة",
+      "consultationPlan": "خطة الاستشارة",
+      "dischargeMedications": "أدوية الخروج",
+      "dischargeInstructions": "تعليمات الخروج",
+      "dischargeFollowUp": "المتابعة بعد الخروج",
+      "gpVitals": "العلامات الحيوية",
+      "gpPhysicalExam": "الفحص البدني",
+      "gpDiagnostics": "الفحوص التشخيصية"
     },
     "alreadyMissing": "مفقودة سابقًا: {{teeth}}",
     "extracted": "مخلوعة: {{teeth}}",
@@ -154,6 +184,8 @@
     "missing": "تعذّر تحميل هذه الصورة."
   },
   "history": {
+    "expand": "توسيع سجل الصور",
+    "collapse": "طي سجل الصور",
     "show_one": "سجل الصور (زيارة أخرى واحدة)",
     "show_other": "سجل الصور (عدد الزيارات الأخرى: {{count}})",
     "hide": "إخفاء سجل الصور",

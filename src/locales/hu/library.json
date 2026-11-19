@@ -116,11 +116,16 @@
     "confirmButton": "Visszaállítás"
   },
   "templates": {
+    "chartCodes": "Betegkartonkódok",
+    "chartCodeHelp": "A javaslatokhoz írjon be egy { jelet, vagy válasszon egy kódot alább. A kódok a betegkarton adatait használják, és a hiányzó értékekre rákérdeznek. A kapcsos zárójelben lévő más nevek egyéni mezőket hoznak létre.",
+    "fieldExamples": "Kitölthető mezők például: {Fogszámok}, {A beavatkozás részletei} és {Kontroll dátuma}.",
+    "fieldsInTemplate": "A sablon mezői",
+    "fieldHelp": "Kitölthető mezőhöz írjon rövid utasítást kapcsos zárójelbe, például {Adja meg a fogszámokat}. A sablon használatakor meg kell adnia az értéket.",
     "aria": "Leletsablonok",
     "title": "Leletsablonok",
     "saved": "Mentett sablonok",
     "new": "Új sablon",
-    "empty": "Még nincsenek sablonok – írjon egyet alább és mentse el, vagy használja a „Mentés sablonként” lehetőséget a Kezelési leírás résznél.",
+    "empty": "Még nincs sablon. Hozzon létre egyet alább, vagy válassza az Új sablon lehetőséget a kezelési jelentésben.",
     "untitled": "Névtelen",
     "nameLabel": "Sablon neve",
     "namePlaceholder": "pl. Rutinszerű fogtisztítás (macska)",

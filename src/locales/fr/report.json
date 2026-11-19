@@ -59,6 +59,14 @@
     "warningSigns": "Surveillez la nourriture qui tombe de la bouche, la perte de poids, une mastication lente, les mouvements de tête ou la résistance au mors, la mauvaise haleine ou un jetage nasal — appelez-nous si vous remarquez quelque chose."
   },
   "intro": "Ce rapport résume les informations consignées pour la visite dentaire de {{pet}}. Pour toute question, veuillez consulter votre équipe vétérinaire.",
+  "visitIntro": {
+    "lead": "Voici ce que nous avons consigné lors de la consultation dentaire de {{pet}}.",
+    "extractions": "Dents extraites lors de cette consultation : {{total}}.",
+    "findings": "Dents présentant des constatations consignées : {{total}}.",
+    "exam": "Nous avons relevé d’autres éléments lors de l’examen buccal.",
+    "treatment": "Nous avons consigné des notes de traitement pour cette consultation."
+  },
+  "visitImages": "Images de la consultation",
   "legendFilled": "plein = absente avant cette visite",
   "legendNumbers": "Les numéros renvoient aux constatations ci-dessous",
   "legendRemoved": "✕ rouge = extraite aujourd’hui",
@@ -157,6 +165,11 @@
     "range": " (degré {{from}} à {{to}})"
   },
   "otherFindings": "Autres observations",
+  "dischargeSource": {
+    "dischargeMedications": "Médicaments de sortie",
+    "dischargeInstructions": "Consignes de sortie",
+    "dischargeFollowUp": "Suivi après la sortie"
+  },
   "homecareTipsRabbit": {
     "hay": "Proposez du foin de graminées à volonté pour favoriser une usure normale des dents, en suivant les consignes alimentaires de votre équipe vétérinaire après le traitement.",
     "checkups": "Respectez les rendez-vous de contrôle dentaire recommandés par votre équipe vétérinaire ; les dents du lapin poussent en continu.",

@@ -242,29 +242,52 @@ it('labels report destinations separately and saves the description', async () =
   native = false; touchDevice = false;
   store.items = [{ id: 'a', chartId: 'c1', kind: 'photo', caption: '', url: '', toothTriadan: null }];
   store.updateCaption = vi.fn(async () => {});
-  const pdf = vi.fn(), role = vi.fn();
-  render(<ImagingSection chartId="c1" cloudActive includeInPdf onImageInPdfChange={pdf} onImageRoleChange={role} />);
+  const pdf = vi.fn(), role = vi.fn(), ownerReport = vi.fn();
+  render(<ImagingSection chartId="c1" cloudActive includeInPdf onImageInPdfChange={pdf} onImageRoleChange={role} onOwnerReportImageChange={ownerReport} />);
   const checkbox = screen.getByRole('checkbox', { name: 'In clinical PDF' });
   expect(checkbox).toBeChecked();
   fireEvent.click(checkbox); expect(pdf).toHaveBeenCalledWith('a', false);
-  expect(screen.getByRole('option', { name: 'Not in owner report' })).toBeInTheDocument();
+  expect(screen.getByRole('option', { name: 'No label' })).toBeInTheDocument();
+  const ownerCheckbox = screen.getByRole('checkbox', { name: 'In owner report' });
+  expect(ownerCheckbox).not.toBeChecked();
+  fireEvent.click(ownerCheckbox);
+  expect(ownerReport).toHaveBeenCalledWith('a', true);
+  expect(role).not.toHaveBeenCalled();
   fireEvent.change(screen.getByRole('combobox', { name: 'Owner-report tag for this image' }), { target: { value: 'before' } });
   expect(role).toHaveBeenCalledWith('a', 'before');
+  expect(ownerReport).toHaveBeenCalledTimes(1);
   const description = screen.getByRole('textbox', { name: 'Description' });
   fireEvent.change(description, { target: { value: 'Fractured crown' } }); fireEvent.blur(description);
   await waitFor(() => expect(store.updateCaption).toHaveBeenCalledWith('a', 'Fractured crown'));
 });
-it('keeps Remove image visible and requires confirmation before deletion', async () => {
+it('groups secondary actions in a disclosure and requires confirmation before deletion', async () => {
   native = false; touchDevice = false;
   store.items = [{ id: 'a', chartId: 'c1', kind: 'photo', caption: '', url: '', toothTriadan: null }];
   store.remove = vi.fn(async () => {});
   render(<><ImagingSection chartId="c1" cloudActive /><DialogHost /></>);
+  fireEvent.click(screen.getByRole('button', { name: 'Image actions' }));
   fireEvent.click(screen.getByRole('button', { name: 'Remove image' }));
   expect(await screen.findByRole('alertdialog')).toHaveTextContent('the clinical PDF, and the owner report');
   expect(store.remove).not.toHaveBeenCalled();
   fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
   expect(store.remove).not.toHaveBeenCalled();
+  fireEvent.click(screen.getByRole('button', { name: 'Image actions' }));
   fireEvent.click(screen.getByRole('button', { name: 'Remove image' }));
   fireEvent.click(await screen.findByRole('button', { name: 'Delete image' }));
   await waitFor(() => expect(store.remove).toHaveBeenCalledWith('a'));
+});
+
+it('keeps the original DICOM available on a read-only visit and closes the disclosure with Escape', () => {
+  native = false;
+  store.items = [{ id: 'a', chartId: 'c1', kind: 'xray', caption: '', url: '', toothTriadan: null, originalPath: 'a.dcm', originalUrl: 'https://images.test/a.dcm' }];
+  render(<ImagingSection chartId="c1" cloudActive readOnly />);
+  const trigger = screen.getByRole('button', { name: 'Image actions' });
+  const details = trigger.closest('details')!;
+  fireEvent.click(trigger);
+  const download = screen.getByRole('link', { name: 'Download original DICOM' });
+  expect(download).toHaveAttribute('href', 'https://images.test/a.dcm');
+  expect(screen.queryByRole('button', { name: 'Remove image' })).toBeNull();
+  fireEvent.keyDown(download, { key: 'Escape' });
+  expect(details).not.toHaveAttribute('open');
+  expect(trigger).toHaveFocus();
 });

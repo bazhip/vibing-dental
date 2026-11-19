@@ -12,11 +12,19 @@ For every new or changed UI, preserve the established clinical design: teal acce
 
 - Before implementing a UI feature or redesign, ground its mockup in established enterprise SaaS patterns (for example Linear, GitHub, or Atlassian). Identify the relevant reference and the placement, hierarchy, or interaction pattern being reused; show a mockup at the appropriate fidelity before building. Adapt the pattern to this app's clinical design and workflows rather than inventing a new convention or copying another product's branding.
 - Keep one clear primary action per context. Repeated table-row actions should be quiet; secondary and destructive actions belong in a compact disclosure.
+- For reusable templates, always show the available choices directly when the set is short. Use a compact, labeled grid or list of quiet buttons, mark the active template, and put creation or management beside the list. Use search or scrolling for larger sets. Re-selecting the active template must leave the document intact. Template editors must describe the supported fields and show the fields in the current draft when they can be detected.
 - Avoid duplicate information, stacked desktop row buttons, oversized empty rows, and controls with mismatched heights. Preserve 44px touch targets on phones.
 - Reuse shared components and existing tokens. Fix the owning layout instead of accumulating competing CSS overrides.
 - Inspect rendered screenshots before calling UI work complete: desktop and 320/390px phones, long names, single/multiple visits, populated/empty states, and expanded menus as applicable. Check alignment, density, wrapping, overflow, focus, and action discoverability—not just whether controls exist.
 - A “full UI review” needs an explicit screen/state/viewport coverage matrix. Default-state screenshots or route loads alone are not full coverage; list untested gaps and do not call the review complete while they remain.
 - Automated tests and builds are required but do not replace visual review. If browser verification is unavailable, say so explicitly.
+
+## Product documentation
+
+- Keep **Help → ToothOps Help Center** current in the same change as any user-facing workflow, navigation, label, permission, or settings change. Update the affected guide in `src/locales/en/help.json` and its translations, including the instructions, examples, and linked guides that depend on the change.
+- Write complete task guides. Explain where to find each control, what the available options change, and how to verify the result. Include examples where they help users complete a task.
+- Include a current screenshot in most web how-to guides. Capture the step being explained rather than a generic overview. Replace screenshots that no longer match the app. Use sample visits and assets without real patient, owner, or practice information. Keep screenshot captions and alternative text current.
+- Register new guides in `src/help/topics.ts` so they appear in navigation and search. Check the guide’s direct link and mobile layout. Keep PIMS, iPhone and iOS, and internal administrator documentation outside this public Help Center.
 
 ## Translations
 

@@ -507,6 +507,8 @@
   gap: 0;
 }
 
+.pdf-preview-body--view-only { grid-template-columns: minmax(0, 1fr); }
+
 .pdf-preview-styles {
   border-inline-end: 1px solid var(--ios-separator, #e2e8f0);
   padding: 1rem;
@@ -1136,6 +1138,22 @@
 .admin-panel__ai,
 .admin-panel__billing { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
 .admin-panel__ai-block { display: flex; flex-direction: column; gap: 0.4rem; }
+.admin-panel__ai-filters { display: flex; flex-wrap: wrap; align-items: end; gap: 8px; }
+.admin-panel__ai-filters > label { flex: 1 1 132px; margin: 0; min-width: 0; }
+.admin-panel__ai-filters .patient-form__input { width: 100%; min-width: 0; height: 44px; font-size: .875rem; text-overflow: ellipsis; }
+.admin-panel__ai-filters > button { min-height: 44px; margin-inline-start: auto; }
+.admin-panel__ai-totals {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(120px, 100%), 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 12px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+.admin-panel__ai-totals dt { color: var(--text-muted); font-size: .8125rem; }
+.admin-panel__ai-totals dd { margin: 3px 0 0; font-weight: 650; overflow-wrap: anywhere; }
 .admin-panel__ai-feature { display: flex; flex-direction: column; gap: 0.2rem; margin-bottom: 0.4rem; }
 .admin-panel__ai-total { margin: 0; font-size: 0.9rem; color: var(--text); }
 .admin-panel__usage-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
@@ -1653,6 +1671,10 @@
 .pims-dialog__target { margin: 0 0 6px; font-weight: 600; }
 .pims-dialog__rows { display: grid; gap: 8px; }
 .pims-dialog__row { display: grid; grid-template-columns: minmax(8rem, 1fr) minmax(10rem, 1.4fr); gap: 10px; align-items: center; font-size: 14px; }
+.pims-dialog__row select { min-width: 0; width: 100%; }
+@media (max-width: 480px) {
+  .pims-dialog__row { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+}
 .pims-dialog__results { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
 .pims-dialog__results li { display: grid; gap: 2px; font-size: 14px; }
 .pims-dialog__result--ok span { color: var(--primary, #0c6b63); }

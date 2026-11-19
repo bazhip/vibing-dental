@@ -59,6 +59,14 @@
     "warningSigns": "Figyelje a takarmány elejtését, fogyást, lassú evést, fejrázást vagy a zabla elleni ellenállást, kellemetlen szájszagot és orrfolyást – ha ilyet észlel, hívjon minket."
   },
   "intro": "Ez a lelet {{pet}} fogászati vizitjének dokumentált adatait foglalja össze. Kérdéseit beszélje meg állatorvosi csapatával.",
+  "visitIntro": {
+    "lead": "Ezt dokumentáltuk {{pet}} fogászati vizitjén.",
+    "extractions": "A viziten eltávolított fogak száma: {{total}}.",
+    "findings": "Dokumentált eltéréssel rendelkező fogak száma: {{total}}.",
+    "exam": "A szájüregi vizsgálat során további eltéréseket rögzítettünk.",
+    "treatment": "A vizithez kezelési megjegyzéseket rögzítettünk."
+  },
+  "visitImages": "A vizit képei",
   "legendFilled": "kitöltött = már a vizit előtt hiányzott",
   "legendNumbers": "A számok az alábbi leleteknek felelnek meg",
   "legendRemoved": "piros ✕ = ma eltávolítva",
@@ -157,6 +165,11 @@
     "range": " ({{from}}–{{to}})"
   },
   "otherFindings": "Egyéb leletek",
+  "dischargeSource": {
+    "dischargeMedications": "Hazabocsátáskor rendelt gyógyszerek",
+    "dischargeInstructions": "Hazabocsátási utasítások",
+    "dischargeFollowUp": "Hazabocsátás utáni utánkövetés"
+  },
   "homecareTipsRabbit": {
     "hay": "Biztosítson korlátlan mennyiségű fűszénát a fogak természetes kopásának elősegítésére, és a kezelés után kövesse az állatorvosi csapat etetési útmutatását.",
     "checkups": "Tartsa be az állatorvosi csapat által javasolt fogászati kontrollok időpontját; a nyúl fogai folyamatosan nőnek.",

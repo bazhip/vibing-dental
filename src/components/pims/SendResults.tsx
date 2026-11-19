@@ -33,12 +33,13 @@ export const SendResults: React.FC<SendResultsProps> = ({ rows, stampFailed, sen
   const heading = React.useRef<HTMLHeadingElement>(null);
   const summaryId = React.useId();
   React.useEffect(() => { heading.current?.focus(); }, []);
-  const saved = rows.filter((row) => row.code === null).length;
+  const saved = rows.filter((row) => row.code === null && !row.editorSubmitted).length;
+  const submitted = rows.filter(row => row.editorSubmitted).length;
   return (
     <>
       <h3 ref={heading} tabIndex={-1} aria-describedby={summaryId} className="pims-dialog__subtitle">{t('pims:results.title')}</h3>
       <p id={summaryId} role="status" aria-live="polite" aria-atomic="true">
-        {t('pims:results.summary', { saved, attention: rows.length - saved })}
+        {t(submitted ? 'pims:results.editorSummary' : 'pims:results.summary', { saved, submitted, attention: rows.length - saved - submitted })}
       </p>
       <ul className="pims-dialog__results">
         {rows.map((r, i) => (
@@ -46,7 +47,7 @@ export const SendResults: React.FC<SendResultsProps> = ({ rows, stampFailed, sen
             <strong>{r.fieldTitle}</strong>
             {r.code
               ? <span>{t(rowErrorKey(r.code))}</span>
-              : <span><span aria-hidden="true">✓ </span>{t('pims:results.saved')}</span>}
+              : <span><span aria-hidden="true">✓ </span>{t(r.editorSubmitted ? 'pims:results.editorSubmitted' : 'pims:results.saved')}</span>}
           </li>
         ))}
       </ul>

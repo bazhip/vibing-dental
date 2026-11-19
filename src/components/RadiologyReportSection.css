@@ -1,0 +1,38 @@
+.radiology-report { min-width: 0; }
+.radiology-report__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-bottom: 12px;
+}
+.radiology-report__header > h2 { margin: 0; }
+.radiology-report__toolbar { margin-inline-start: auto; justify-content: flex-end; align-items: flex-start; }
+.radiology-report__body { display: grid; gap: 12px; min-width: 0; }
+.radiology-report__body p { margin: 0; overflow-wrap: anywhere; }
+.radiology-report__field, .radiology-report label { min-width: 0; }
+.radiology-report__editor { display: block; resize: vertical; }
+.radiology-report__editor::placeholder { white-space: pre-line; }
+.radiology-report__actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; min-width: 0; }
+.radiology-report__actions :is(button, summary) { min-height: 40px; max-width: 100%; box-sizing: border-box; white-space: normal; overflow-wrap: anywhere; }
+.radiology-report__actions .entry-grid__button:disabled { opacity: 0.4; cursor: not-allowed; }
+.radiology-report__review { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 16px; border-top: 1px solid var(--border); padding-top: 12px; min-width: 0; }
+.radiology-report__check { display: flex; align-items: center; gap: 8px; flex: 1 1 300px; min-height: 44px; font-size: .875rem; color: var(--text); }
+.radiology-report__check input { flex: 0 0 auto; width: auto; }
+.radiology-report__error { color: var(--danger); }
+.radiology-report__language-link {
+  padding: 3px 0;
+  border: 0;
+  background: transparent;
+  color: var(--primary);
+  font: inherit;
+  font-size: .875rem;
+  text-align: start;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.radiology-report :is(button,summary,input,textarea):focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+@media (max-width: 600px) {
+  .radiology-report__actions :is(button, summary), .radiology-report__language-link { min-height: 44px; }
+}

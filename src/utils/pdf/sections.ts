@@ -1,3 +1,7 @@
+import { VISIT_DOCUMENT_TEMPLATES } from '../visitDocumentation';
+import type { ClinicalContinuation } from './continuation';
+import { ctRecordedText } from '../ctReportState';
+import { radiologyRecordedText } from '../radiologyReportState';
 import { PDFDocument, PDFFont, PDFForm, PDFImage, PDFPage } from 'pdf-lib';
 import { parseRootPockets } from '../pocket';
 import { filledBlocks, fieldLines } from '../customAnesthesia';
@@ -1606,4 +1610,14 @@ export async function drawImagePage(
   }
 
   finishSectionCard(page, cardX, cardTop, cardW, cardH);
+}
+
+/** GP clinical values only; raw transcript provenance never enters PDF output. */
+export function gpClinicalContinuations(patient: PatientInfo, lng: string): ClinicalContinuation[] {
+  const t = i18n.getFixedT(lng, 'visitDocumentation');
+  const paragraphs = VISIT_DOCUMENT_TEMPLATES['gp-exam'].fields.flatMap(field => {
+    const value = patient[field.id];
+    return value?.trim() ? [`${t(field.labelKey)}\n${value}`] : [];
+  });
+  return paragraphs.length ? [{ title: t('gp-exam.title'), paragraphs }] : [];
 }

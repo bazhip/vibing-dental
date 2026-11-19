@@ -116,11 +116,16 @@
     "confirmButton": "Restabiliți"
   },
   "templates": {
+    "chartCodes": "Coduri din fișă",
+    "chartCodeHelp": "Tastați { pentru a vedea sugestii sau selectați un cod de mai jos. Codurile folosesc valorile din fișă și vă cer să completați valorile lipsă. Alte nume între acolade creează câmpuri personalizate.",
+    "fieldExamples": "Exemple de câmpuri de completat: {Numerele dinților}, {Detaliile procedurii} și {Data controlului}.",
+    "fieldsInTemplate": "Câmpurile acestui șablon",
+    "fieldHelp": "Puneți o instrucțiune scurtă între acolade pentru a crea un câmp de completat, de exemplu {Introduceți numerele dinților}. Valoarea va fi solicitată când folosiți șablonul.",
     "aria": "Șabloane de raport",
     "title": "Șabloane de raport",
     "saved": "Șabloane salvate",
     "new": "Șablon nou",
-    "empty": "Nu există încă șabloane — scrieți unul mai jos și salvați-l sau folosiți „Salvați ca șablon” în secțiunea Raport de tratament.",
+    "empty": "Nu există încă șabloane. Creați unul mai jos sau alegeți Șablon nou în raportul de tratament.",
     "untitled": "Fără titlu",
     "nameLabel": "Numele șablonului",
     "namePlaceholder": "de ex. Detartraj de rutină (felină)",

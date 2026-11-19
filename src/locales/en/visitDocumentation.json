@@ -1,0 +1,62 @@
+{
+  "consultation": {
+    "title": "Consultation",
+    "purpose": "Record the reason for the visit, history, assessment, and plan alongside the shared examination and chart.",
+    "review": "Review clinical record"
+  },
+  "discharge": {
+    "title": "Discharge",
+    "purpose": "Record the medications, care instructions, and follow-up discussed for this visit.",
+    "review": "Review client report"
+  },
+  "sourceNotice": "Recorded wording stays as entered. Review the client language before sharing.",
+  "treatmentRecap": "Treatment report",
+  "noTreatment": "No treatment report recorded.",
+  "fields": {
+    "complaint": {
+      "label": "Reason for visit",
+      "helper": "Shared with the patient details for this visit."
+    },
+    "consultationHistory": {
+      "label": "History",
+      "helper": "Record the history provided and relevant context."
+    },
+    "consultationAssessment": {
+      "label": "Assessment",
+      "helper": "Record your assessment, including any uncertainty."
+    },
+    "consultationPlan": {
+      "label": "Plan",
+      "helper": "Record the plan discussed; do not imply that planned care is complete."
+    },
+    "dischargeMedications": {
+      "label": "Medications",
+      "helper": "Enter only recorded medications and doses, keeping any uncertainty."
+    },
+    "dischargeInstructions": {
+      "label": "Instructions",
+      "helper": "Record the care instructions discussed for this visit."
+    },
+    "dischargeFollowUp": {
+      "label": "Follow-up",
+      "helper": "Record the follow-up discussed; use the existing recall date for a scheduled recheck."
+    },
+    "gpVitals": {
+      "label": "Vital signs",
+      "helper": "Record measured values with their units and any uncertainty."
+    },
+    "gpPhysicalExam": {
+      "label": "Physical examination",
+      "helper": "Record only examination findings observed or reported."
+    },
+    "gpDiagnostics": {
+      "label": "Diagnostics",
+      "helper": "Record diagnostic findings and pending tests, keeping uncertainty."
+    }
+  },
+  "gp-exam": {
+    "title": "GP examination",
+    "purpose": "Record the vital signs, physical examination, and diagnostic findings for this visit.",
+    "review": "Review clinical record"
+  }
+}

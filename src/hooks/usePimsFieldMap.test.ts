@@ -25,6 +25,36 @@ beforeEach(() => { update.mockReset(); stored.value = null; stored.hang = false;
 afterEach(() => { vi.useRealTimers(); });
 
 describe('usePimsFieldMap', () => {
+  it('does not reuse ezyVet defaults or saved choices for another provider', async () => {
+    stored.value = { exam: 'Physical Exam', providers: { daysmart: { treatment: 'SOAP > Plan' } } };
+    const { result, rerender } = renderHook(({ provider }) => usePimsFieldMap(provider), {
+      initialProps: { provider: 'daysmart' as import('../extension/pims/types').PimsId },
+    });
+    await waitFor(() => expect(result.current.map.treatment).toBe('SOAP > Plan'));
+    expect(result.current.map.exam).toBeNull();
+    expect(result.current.map.chart).toBeNull();
+    rerender({ provider: 'ezyvet' });
+    expect(result.current.map.exam).toBe('Physical Exam');
+    rerender({ provider: 'shepherd' });
+    expect(Object.values(result.current.map).every((value) => value === null)).toBe(true);
+  });
+
+  it('saves and resets only the selected provider while preserving other maps', async () => {
+    stored.value = { chart: 'Notes', providers: { daysmart: { exam: 'Objective' }, instinct: { treatment: 'Plan' } } };
+    const { result, rerender } = renderHook(({ provider }) => usePimsFieldMap(provider), {
+      initialProps: { provider: 'daysmart' as import('../extension/pims/types').PimsId },
+    });
+    await act(async () => { await result.current.save({ findings: 'Assessment' }); });
+    expect(update).toHaveBeenLastCalledWith({ pims_field_map: {
+      chart: 'Notes', providers: { daysmart: { exam: 'Objective', findings: 'Assessment' }, instinct: { treatment: 'Plan' } },
+    } });
+    await act(async () => { await result.current.reset(); });
+    expect(update).toHaveBeenLastCalledWith({ pims_field_map: { chart: 'Notes', providers: { instinct: { treatment: 'Plan' } } } });
+    rerender({ provider: 'ezyvet' });
+    await act(async () => { await result.current.reset(); });
+    expect(update).toHaveBeenLastCalledWith({ pims_field_map: { providers: { instinct: { treatment: 'Plan' } } } });
+  });
+
   it('defaults then saves the merged saved map, not the effective one', async () => {
     const { result } = renderHook(() => usePimsFieldMap());
     expect(result.current.map.chart).toBe('Discharge Summary');
@@ -83,4 +113,22 @@ describe('usePimsFieldMap', () => {
     expect(update).toHaveBeenLastCalledWith({ pims_field_map: null });
     expect(result.current.map.chart).toBe('Discharge Summary');
   });
+});
+
+it('updates detected clinical defaults on a field change while retaining saved skips and custom targets', async () => {
+  stored.value = { gpVitals: null, ctReport: 'Specialist CT', providers: { rhapsody: { dischargeInstructions: null } } };
+  const available = (titles: string[]) => titles.map(title => ({ title, kind: 'note' as const, acceptsImage: false }));
+  const { result, rerender } = renderHook(({ provider, titles }) => usePimsFieldMap(provider, available(titles)), {
+    initialProps: { provider: 'ezyvet' as import('../extension/pims/types').PimsId, titles: ['Physical Exam', 'History', 'Plan'] },
+  });
+  await waitFor(() => expect(result.current.map.ct).toBe('Specialist CT'));
+  expect(result.current.map.gpVitals).toBeNull();
+  expect(result.current.map.gpPhysicalExam).toBe('Physical Exam');
+  rerender({ provider: 'rhapsody', titles: ['Medical notes', 'Discharge notes'] });
+  expect(result.current.map.gpVitals).toBe('Medical notes');
+  expect(result.current.map.dischargeInstructions).toBeNull();
+  expect(result.current.map.dischargeMedications).toBe('Discharge notes');
+  rerender({ provider: 'rhapsody', titles: ['Unrelated'] });
+  expect(result.current.map.gpVitals).toBeNull();
+  expect(result.current.map.ct).toBeNull();
 });

@@ -195,7 +195,8 @@
       "images": "包含影像",
       "imagesHint": "（每页4张，位于图表之后）",
       "radiographicReport": "包含 X 线报告",
-      "ctReport": "包含 CT 报告"
+      "ctReport": "包含 CT 报告",
+      "codesUsed": "包含使用的代码"
     },
     "noteDevice": "个人偏好会自动保存在此设备上。",
     "spaceMovesDownHint": "适合连续口述多个深度",

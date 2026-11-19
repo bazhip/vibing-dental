@@ -74,9 +74,11 @@ describe('pimsPatientMatch', () => {
   const nameRule = vi.fn(patientsMatch);
   beforeEach(() => nameRule.mockClear());
 
-  it('equal numbers are the same patient even when the names differ', () => {
-    expect(pimsPatientMatch({ name: 'Bella', number: '00123' }, { name: 'Max', number: '123' }, nameRule)).toBe('same');
-    expect(nameRule).not.toHaveBeenCalled();
+  it('equal unscoped numbers still require the name rule', () => {
+    expect(pimsPatientMatch({ name: 'Bella', number: '00123' }, { name: 'Max', number: '123' }, nameRule)).toBe('different');
+    expect(nameRule).toHaveBeenCalledWith('Bella', 'Max');
+    expect(pimsPatientMatch({ name: 'Bella', number: '00123' }, { name: null, number: '123' }, nameRule)).toBe('different');
+    expect(pimsPatientMatch({ name: 'Bella', number: '00123' }, { name: 'Bella Smith', number: '123' }, nameRule)).toBe('same');
   });
 
   it('different numbers are a different patient even when the names are equal', () => {

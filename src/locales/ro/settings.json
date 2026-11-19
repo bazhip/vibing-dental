@@ -195,7 +195,8 @@
       "images": "Includeți imaginile",
       "imagesHint": "(4 pe pagină, după fișă)",
       "radiographicReport": "Includeți raportul radiografic",
-      "ctReport": "Includeți raportul CT"
+      "ctReport": "Includeți raportul CT",
+      "codesUsed": "Include codurile utilizate"
     },
     "noteDevice": "Preferințele personale se salvează automat pe acest dispozitiv.",
     "spaceMovesDownHint": "Rapid pentru dictarea unei serii de adâncimi",

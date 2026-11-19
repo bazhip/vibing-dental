@@ -59,6 +59,14 @@
     "warningSigns": "Fique atento à comida caindo da boca, à perda de peso, se ele come devagar, balança a cabeça ou resiste à embocadura, ao mau hálito ou ao corrimento nasal — ligue para nós se notar algo."
   },
   "intro": "Este relatório resume as informações documentadas da consulta dentária de {{pet}}. Esclareça quaisquer dúvidas com a sua equipa veterinária.",
+  "visitIntro": {
+    "lead": "Veja o que registramos durante a consulta odontológica de {{pet}}.",
+    "extractions": "Dentes extraídos nesta consulta: {{total}}.",
+    "findings": "Dentes com achados registrados: {{total}}.",
+    "exam": "Registramos outros achados durante o exame oral.",
+    "treatment": "Registramos observações sobre o tratamento nesta consulta."
+  },
+  "visitImages": "Imagens da consulta",
   "legendFilled": "preenchido = ausente antes desta consulta",
   "legendNumbers": "Os números correspondem aos achados abaixo",
   "legendRemoved": "✕ vermelho = extraído hoje",
@@ -157,6 +165,11 @@
     "range": " (grau {{from}} a {{to}})"
   },
   "otherFindings": "Outros achados",
+  "dischargeSource": {
+    "dischargeMedications": "Medicamentos na alta",
+    "dischargeInstructions": "Instruções na alta",
+    "dischargeFollowUp": "Seguimento após a alta"
+  },
   "homecareTipsRabbit": {
     "hay": "Ofereça feno de gramíneas à vontade para favorecer o desgaste normal dos dentes e siga as instruções de alimentação da sua equipa veterinária após o tratamento.",
     "checkups": "Compareça às consultas de revisão dentária recomendadas pela sua equipa veterinária; os dentes do coelho crescem continuamente.",

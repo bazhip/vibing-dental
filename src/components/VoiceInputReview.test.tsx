@@ -101,3 +101,24 @@ describe('review queue', () => {
     expect(screen.queryByText(/Needs review/)).not.toBeInTheDocument();
   });
 });
+
+
+it('routes clear findings across sections and holds conflicting values for explicit review', async () => {
+  const conflict = { name: 'set_tooth_field', input: { triadan: 108, field: 'mobility', value: '3' } };
+  const clear = { name: 'set_exam_finding', input: { area: 'tongue', status: 'normal' } };
+  extract.mockResolvedValueOnce({ actions: [conflict, clear], flags: [], skipped: [], ran: true });
+  const handlers = { setToothField: vi.fn(), setExamFinding: vi.fn() };
+  const current = { ...(context as object), toothData: [{ triadan: 108, mobility: '1' }] } as never;
+  render(<VoiceInputButton context={current} handlers={handlers as never} activeSection="charting" sessionKey="a"
+    contextualDestination={{ label: 'Charting' }} />);
+  fireEvent.click(screen.getByRole('button', { name: 'Dictate' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Start dictation' }));
+  act(() => FakeRecognition.last!.say('108 mobility three, tongue normal'));
+  await flush(4000);
+  expect(handlers.setExamFinding).toHaveBeenCalledWith('tongue', 'normal', undefined);
+  expect(handlers.setToothField).not.toHaveBeenCalled();
+  expect(screen.getByText('Current text')).toBeVisible();
+  expect(screen.getByText('Keep current value')).toBeVisible();
+  fireEvent.click(screen.getByRole('button', { name: 'Apply suggestion' }));
+  expect(handlers.setToothField).toHaveBeenCalledExactlyOnceWith(108, 'mobility', '3');
+});

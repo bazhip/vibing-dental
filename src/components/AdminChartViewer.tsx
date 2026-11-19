@@ -1,3 +1,6 @@
+import { ctRecordedText } from '../utils/ctReportState';
+import { radiologyRecordedText } from '../utils/radiologyReportState';
+import { useTranslation } from 'react-i18next';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { ToothDiagram } from './ToothDiagram';
@@ -139,6 +142,8 @@ export function ChartReadOnlyView({ data }: { data: unknown }) {
 }
 
 function ChartBody({ snap }: { snap: ChartSnapshot }) {
+  const { t } = useTranslation('app');
+  const { t: visitT } = useTranslation('visitDocumentation');
   const p = snap.patientInfo;
   const exam = EXAM_ITEMS.filter((i) => p.exam[i.key]?.status);
   const blocks = (Object.keys(BLOCK_LABELS) as NerveBlockSite[]).filter((k) => p.nerveBlocks[k]?.trim());
@@ -253,7 +258,7 @@ function ChartBody({ snap }: { snap: ChartSnapshot }) {
         )}
       </section>
 
-      {p.radiographicFindings?.trim() && (
+      {radiologyRecordedText(p).trim() && (
         <section>
           <h3 className="ai-settings-subhead">Radiographic report</h3>
           <p className="admin-chart-viewer__report">{p.radiographicFindings}</p>

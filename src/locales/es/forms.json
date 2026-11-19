@@ -138,6 +138,14 @@
     "fieldType": "Tipo de campo"
   },
   "report": {
+    "replaceTemplateTitle": "¿Desea reemplazar el texto del informe de tratamiento?",
+    "replaceTemplateMessage": "La plantilla seleccionada reemplazará el texto del informe de tratamiento de esta visita.",
+    "replaceTemplate": "Usar plantilla",
+    "useSaved": "Usar una plantilla guardada",
+    "newTemplate": "Nueva plantilla",
+    "fillField": "Rellenar el campo de la plantilla",
+    "fieldRequired": "Introduzca un valor para continuar.",
+    "fieldContinue": "Continuar",
     "title": "Informe del tratamiento",
     "insertAria": "Insertar una plantilla de informe",
     "loading": "Cargando plantillas…",

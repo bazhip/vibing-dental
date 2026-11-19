@@ -138,6 +138,14 @@
     "fieldType": "Feldtyp"
   },
   "report": {
+    "replaceTemplateTitle": "Text des Behandlungsberichts ersetzen?",
+    "replaceTemplateMessage": "Die ausgewählte Vorlage ersetzt den aktuellen Text des Behandlungsberichts für diesen Besuch.",
+    "replaceTemplate": "Vorlage verwenden",
+    "useSaved": "Gespeicherte Vorlage verwenden",
+    "newTemplate": "Neue Vorlage",
+    "fillField": "Vorlagenfeld ausfüllen",
+    "fieldRequired": "Geben Sie einen Wert ein, um fortzufahren.",
+    "fieldContinue": "Weiter",
     "title": "Behandlungsbericht",
     "insertAria": "Berichtsvorlage einfügen",
     "loading": "Vorlagen werden geladen …",

@@ -1,4 +1,5 @@
 import { SectionHeader } from './SectionHeader';
+import { RefineTextAction } from './RefineTextAction';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -326,7 +327,7 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
       {/* Free text gets the full card width (label above) — squeezed into
           the two dose columns it was a narrow strip on phones. */}
       {otherShown && (
-        <label className="anesthesia-other">
+        <div className="anesthesia-other">
           <span className="anesthesia-other__label">{t('anesthesia.other')}</span>
           <textarea
             ref={otherRef}
@@ -336,7 +337,8 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
             value={nerveBlocks.other}
             onChange={handleChange('other')}
           />
-        </label>
+          <div className="clinical-text__actions"><RefineTextAction value={nerveBlocks.other ?? ''} onApply={text => onNerveBlockChange('other', text)} /></div>
+        </div>
       )}
 
       {customFields.length > 0 && (

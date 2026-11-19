@@ -138,6 +138,14 @@
     "fieldType": "Mező típusa"
   },
   "report": {
+    "replaceTemplateTitle": "Lecseréli a kezelési jelentés szövegét?",
+    "replaceTemplateMessage": "A kiválasztott sablon felülírja a vizit kezelési jelentésének jelenlegi szövegét.",
+    "replaceTemplate": "Sablon használata",
+    "useSaved": "Mentett sablon használata",
+    "newTemplate": "Új sablon",
+    "fillField": "Sablonmező kitöltése",
+    "fieldRequired": "A folytatáshoz adjon meg egy értéket.",
+    "fieldContinue": "Folytatás",
     "title": "Kezelési leírás",
     "insertAria": "Leletsablon beszúrása",
     "loading": "Sablonok betöltése…",

@@ -14,15 +14,15 @@ describe('transfer results', () => {
     expect(screen.getByRole('status')).toHaveTextContent('Saved fields: 1 · Need attention: 2');
     expect(screen.getByRole('status')).toHaveAttribute('aria-live', 'polite');
     expect(screen.getByRole('heading', { name: 'Results' })).toHaveFocus();
-    expect(screen.getAllByText('Saved in ezyVet')).toHaveLength(1);
-    expect(screen.getByText(/ezyVet didn’t confirm the save/)).toBeInTheDocument();
+    expect(screen.getAllByText('Saved in PIMS')).toHaveLength(1);
+    expect(screen.getByText(/PIMS didn’t confirm the save/)).toBeInTheDocument();
   });
 
   it('does not report a save when every field failed', () => {
     render(<SendResults rows={[{ fieldTitle: 'Plan', code: 'extension_error' }]}
       stampFailed={false} sentOn={null} onCopyDiagnostic={vi.fn()} />);
     expect(screen.getByRole('status')).toHaveTextContent('Saved fields: 0 · Need attention: 1');
-    expect(screen.queryByText('Saved in ezyVet')).not.toBeInTheDocument();
+    expect(screen.queryByText('Saved in PIMS')).not.toBeInTheDocument();
   });
 
   it('separates a successful field save from a failed chart date stamp', () => {
@@ -31,4 +31,12 @@ describe('transfer results', () => {
     expect(screen.getByRole('status')).toHaveTextContent('Saved fields: 1 · Need attention: 0');
     expect(screen.getByRole('alert')).toHaveTextContent('couldn’t record the send date');
   });
+});
+
+it('distinguishes editor-submitted images from confirmed saves', () => {
+  render(<SendResults rows={[{ fieldTitle: 'Image', code: null, editorSubmitted: true }]}
+    stampFailed={false} sentOn={null} onCopyDiagnostic={vi.fn()} />);
+  expect(screen.getByRole('status')).toHaveTextContent('Saved fields: 0 · Submitted images: 1 · Need attention: 0');
+  expect(screen.queryByText('Saved in PIMS')).not.toBeInTheDocument();
+  expect(screen.getByText(/Submitted to ezyVet/)).toHaveTextContent('not been independently verified');
 });

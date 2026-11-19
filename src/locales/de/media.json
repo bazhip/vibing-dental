@@ -1,5 +1,10 @@
 {
   "imaging": {
+    "inOwnerReport": "Im Halterbericht",
+    "beforeAfter": "Vorher / Nachher",
+    "noLabel": "Ohne Kennzeichnung",
+    "details": "Bilddetails",
+    "reportInclusion": "In Berichten verwenden",
     "title": "Bildgebung",
     "signedOut": "Melden Sie sich mit einem Praxiskonto an, um intraorale Fotos und Zahnröntgenaufnahmen anzuhängen — sie werden privat zusammen mit der Akte gespeichert.",
     "usage": "{{used}} von {{max}} Bildern",
@@ -67,7 +72,23 @@
     "toothLabel": "Zahn",
     "ownerReportLabel": "Besitzerbericht"
   },
+  "patientRecord": {
+    "open": "Besuchsverlauf ansehen",
+    "title": "Frühere Patientenakten",
+    "visit": "Besuch",
+    "currentVisit": "Aktueller Besuch",
+    "undatedVisit": "Besuch ohne Datum",
+    "loadingVisits": "Frühere Besuche werden geladen…",
+    "visitsFailed": "Frühere Besuche konnten nicht geladen werden.",
+    "noVisits": "In ToothOps sind keine früheren Besuche verfügbar.",
+    "visitFailed": "Dieser Besuch konnte nicht geöffnet werden.",
+    "pdfs": "Besuchs-PDFs",
+    "notes": "Klinische Notizen"
+  },
   "documents": {
+    "customize": "Anpassen",
+    "color": "Farbe",
+    "included": "PDF-Inhalt",
     "title": "Prüfen und exportieren",
     "chartTab": "Klinische Akte",
     "chartWho": "Für Ihre Unterlagen und Überweisungen — die vollständige Akte mit Codes.",
@@ -107,7 +128,16 @@
       "procedures": "Eingriffe",
       "radiographs": "Röntgenbericht",
       "ct": "CT-Bericht",
-      "recheck": "Nachkontrolle"
+      "recheck": "Nachkontrolle",
+      "consultationHistory": "Anamnese der Konsultation",
+      "consultationAssessment": "Beurteilung der Konsultation",
+      "consultationPlan": "Plan der Konsultation",
+      "dischargeMedications": "Medikamente bei Entlassung",
+      "dischargeInstructions": "Entlassungshinweise",
+      "dischargeFollowUp": "Nachsorge nach Entlassung",
+      "gpVitals": "Vitalparameter",
+      "gpPhysicalExam": "Körperliche Untersuchung",
+      "gpDiagnostics": "Diagnostik"
     },
     "alreadyMissing": "Bereits fehlend: {{teeth}}",
     "extracted": "Extrahiert: {{teeth}}",
@@ -154,6 +184,8 @@
     "missing": "Dieses Bild konnte nicht geladen werden."
   },
   "history": {
+    "expand": "Bildverlauf erweitern",
+    "collapse": "Bildverlauf einklappen",
     "show_one": "Bildverlauf (1 weiterer Besuch)",
     "show_other": "Bildverlauf ({{count}} weitere Besuche)",
     "hide": "Bildverlauf ausblenden",

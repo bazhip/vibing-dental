@@ -225,6 +225,31 @@ describe('write', () => {
 
   describe('popup', () => {
     const popupHtml = '<div class="popupFormInternal"><textarea></textarea><button id="saveRecord9"></button></div>';
+    it('never fills or saves a popup after the encounter changes while opening', async () => {
+      const save = vi.fn();
+      openOnClick('AddVetCommunication', popupHtml, (box) => {
+        document.querySelector('#rform1')!.className = 'Consult9999Form';
+        document.querySelector('.patientLink')!.textContent = 'Otherdog';
+        box.querySelector('button')!.addEventListener('click', save);
+      });
+      expect(await write({ fieldTitle: 'Vet Communication', text: 'FIRST PATIENT NOTE' })).toEqual({ ok: false, code: 'patient_changed' });
+      expect(document.querySelector('textarea')!.value).toBe('');
+      expect(save).not.toHaveBeenCalled();
+    });
+    it('does not save when an input listener changes the encounter', async () => {
+      const save = vi.fn();
+      const change = vi.fn();
+      openOnClick('AddVetCommunication', popupHtml, (box) => {
+        box.querySelector('textarea')!.addEventListener('input', () => {
+          document.querySelector('#rform1')!.className = 'Consult9999Form';
+        });
+        box.querySelector('textarea')!.addEventListener('change', change);
+        box.querySelector('button')!.addEventListener('click', save);
+      });
+      expect(await write({ fieldTitle: 'Vet Communication', text: 'FIRST PATIENT NOTE' })).toEqual({ ok: false, code: 'patient_changed' });
+      expect(save).not.toHaveBeenCalled();
+      expect(change).not.toHaveBeenCalled();
+    });
     it('fills textarea and saves', async () => {
       let saved = '';
       openOnClick('AddVetCommunication', popupHtml, (box) => {
@@ -364,6 +389,17 @@ describe('write', () => {
     function openDoc(ed: FakeHuge) {
       addButtonOf('AddDischargeSummary').addEventListener('click', () => ed.mount(pane()));
     }
+    it('does not fill or save after rich-editor focus switches the encounter', async () => {
+      const ed = fakeHugeRte();
+      openDoc(ed);
+      const saved = vi.fn();
+      saveAndClose(saved);
+      ed.focus.mockImplementation(() => { document.querySelector('#rform1')!.className = 'Consult9999Form'; });
+      expect(await write({ fieldTitle: 'Discharge Summary', text: 'FIRST NOTE' })).toEqual({ ok: false, code: 'patient_changed' });
+      expect(ed.content).toBe('');
+      expect(ed.saved).toBe(false);
+      expect(saved).not.toHaveBeenCalled();
+    });
 
     it('text then image in one document', async () => {
       const ed = fakeHugeRte();

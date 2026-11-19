@@ -1,3 +1,4 @@
+vi.mock('../../hooks/useProfile', () => ({ useProfile: () => ({ loaded: true, aiEnabled: false }) }));
 import { vi } from 'vitest';
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS } from '../../types';
@@ -8,7 +9,8 @@ import { effectiveMap } from '../../utils/pims/mapping';
 const mocks = vi.hoisted(() => ({
   load: vi.fn(),
   confirm: vi.fn(async (_o: unknown) => true),
-  transport: { ping: vi.fn(), inspect: vi.fn(), send: vi.fn(), diagnose: vi.fn(), appointments: vi.fn(), startChart: vi.fn(), takePendingPatient: vi.fn() },
+  transport: { ping: vi.fn(), inspect: vi.fn(), send: vi.fn(), diagnose: vi.fn(), appointments: vi.fn(), startChart: vi.fn(), takePendingPatient: vi.fn(), noteAutofill: vi.fn(), physicalExam: vi.fn() },
+  supabase: null as unknown,
   tab: { activated: null as null | (() => void) },
 }));
 vi.mock('../../utils/chartQueries', () => ({ loadChartSnapshot: mocks.load }));
@@ -19,7 +21,7 @@ vi.mock('./OffscreenChartPicture', () => ({
 vi.mock('../../hooks/usePimsFieldMap', () => ({
   usePimsFieldMap: () => ({ map: effectiveMap(null), save: async () => {}, reset: async () => {} }),
 }));
-vi.mock('../../utils/supabaseClient', () => ({ supabase: null, cloudEnabled: false }));
+vi.mock('../../utils/supabaseClient', () => ({ get supabase() { return mocks.supabase; }, cloudEnabled: false }));
 vi.mock('../../utils/edgeFunctions', () => ({ markPimsSent: vi.fn(async () => ({ sentAt: '2026-11-15T10:00:00Z' })) }));
 vi.mock('../../components/ui/dialogs', async (orig) => ({
   ...(await orig<typeof import('../../components/ui/dialogs')>()),
@@ -34,6 +36,7 @@ vi.mock('./useActiveTabChange', () => ({
 import { normalizeSnapshot } from '../../hooks/useChartState';
 import { ChartSend } from './ChartSend';
 import { recordNoteBasis } from '../../utils/recordNote';
+import { copyRichText } from '../../utils/clipboard';
 
 const chart: CloudChartMeta = {
   id: 'c1', patient_name: 'Bella', patient_number: '', owner_name: 'O', owner_phone: '', owner_email: '',
@@ -75,6 +78,7 @@ function open({ stored, fresh, ezyvet, ezyvetNumber = null, chartName, ownerName
 
 beforeEach(() => {
   vi.clearAllMocks();
+  mocks.supabase = null;
   mocks.confirm.mockResolvedValue(true);
 });
 afterEach(cleanup);
@@ -86,6 +90,53 @@ const send = async () => {
 };
 
 describe('ChartSend', () => {
+  it('exposes explicit Shepherd setup and keeps navigation locked until opening finishes', async () => {
+    mocks.supabase = { auth: { onAuthStateChange: (callback: (event: string, session: unknown) => void) => {
+      callback('INITIAL_SESSION', { user: { id: 'user' } });
+      return { data: { subscription: { unsubscribe: vi.fn() } } };
+    } } };
+    const onBusyChange = vi.fn(), onSent = vi.fn();
+    open({ onBusyChange, onSent });
+    const recordId = '12345678-1234-1234-1234-123456789abc';
+    mocks.transport.ping.mockResolvedValue({ version: '1', protocol: 1, capabilities: ['inspect', 'send', 'diagnose', 'physicalExam'] });
+    mocks.transport.inspect.mockResolvedValue({ tab: { id: 7, title: 'Shepherd' }, candidates: 1, fields: [], status: {
+      provider: 'shepherd', state: 'locked', patientName: 'Bella', patientNumber: null,
+      consult: { recordId, viewId: `https://app.shepherd.vet/soap/${recordId}/objective|` },
+    } });
+    let resolveOpen!: (value: unknown) => void;
+    mocks.transport.physicalExam.mockImplementation(async (_tabId, request) => request.operation === 'inspect'
+      ? { ok: true, state: 'available', pageId: 'page' }
+      : request.operation === 'prepare'
+        ? { ok: true, state: 'prepared', pageId: 'page', ticket: 'ticket', doctor: 'Dr Rivera', templates: [{ id: 'dental', label: 'Dental' }] }
+        : new Promise(resolve => { resolveOpen = resolve; }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Set up physical exam' }));
+    fireEvent.change(await screen.findByLabelText('Physical exam template'), { target: { value: 'dental' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Open physical exam' }));
+    await waitFor(() => expect(resolveOpen).toBeDefined());
+    expect(onBusyChange).toHaveBeenLastCalledWith(true);
+    expect(screen.getByRole('button', { name: '← Back to charts' })).toBeDisabled();
+    await act(async () => resolveOpen({ ok: true, state: 'opened', recordId, examId: 'aaaaaaaa-1234-1234-1234-123456789abc' }));
+    expect(onBusyChange).toHaveBeenLastCalledWith(false);
+    expect(mocks.transport.send).not.toHaveBeenCalled();
+    expect(onSent).not.toHaveBeenCalled();
+  });
+  it('allows manual copy when automatic writes cannot verify an encounter', async () => {
+    const onSent = vi.fn();
+    open({ stored: true, onSent });
+    mocks.transport.inspect.mockResolvedValue({ ...info(null), status: { state: 'notConsult', patientName: null, patientNumber: null, consult: null } });
+    await screen.findByText(/ToothOps can’t verify the active encounter/);
+    fireEvent.click(screen.getByRole('button', { name: 'Copy all' }));
+    await waitFor(() => expect(copyRichText).toHaveBeenCalledWith('<p>My edited note</p>', 'My edited note', expect.any(String)));
+    expect(mocks.transport.send).not.toHaveBeenCalled();
+    expect(onSent).not.toHaveBeenCalled();
+  });
+
+  it('does not expose manual transfer while the practice send flag is off', async () => {
+    open({ sendFlag: 'off' });
+    await screen.findByLabelText('Record note');
+    expect(screen.queryByRole('button', { name: 'Copy all' })).not.toBeInTheDocument();
+  });
+
   it('leads with destination and choices, keeps note preview secondary, and retains destination in results', async () => {
     open({ stored: true });
     const button = await screen.findByRole('button', { name: 'Send' });
@@ -97,7 +148,7 @@ describe('ChartSend', () => {
     expect(preview.compareDocumentPosition(button) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(preview.closest('details')).not.toHaveAttribute('open');
     await send();
-    expect(screen.getByRole('complementary', { name: 'Destination' })).toHaveTextContent('ezyVet: Bella');
+    expect(screen.getByRole('complementary', { name: 'Destination' })).toHaveTextContent('PIMS: Bella');
     expect(screen.getByRole('heading', { name: 'Results' })).toHaveFocus();
   });
 
@@ -124,7 +175,7 @@ describe('ChartSend', () => {
     open({ ezyvet: 'Max' });
     await send();
     expect(mocks.confirm).toHaveBeenCalledTimes(1);
-    expect(mocks.confirm.mock.calls[0][0]).toMatchObject({ message: 'ToothOps chart: Bella · ezyVet consult: Max' });
+    expect(mocks.confirm.mock.calls[0][0]).toMatchObject({ message: 'ToothOps chart: Bella · PIMS consult: Max' });
     expect(mocks.transport.send).not.toHaveBeenCalled();
   });
 
@@ -161,8 +212,8 @@ describe('ChartSend', () => {
     await act(async () => { fireEvent.click(btn); });
     expect(mocks.transport.send).not.toHaveBeenCalled();
     expect(mocks.confirm).not.toHaveBeenCalled();
-    expect(await screen.findByText(/The ezyVet consult changed/)).toBeInTheDocument();
-    expect(screen.getByText(/ezyVet: Max/)).toBeInTheDocument();
+    expect(await screen.findByText(/The PIMS consult changed/)).toBeInTheDocument();
+    expect(screen.getByText(/PIMS: Max/)).toBeInTheDocument();
     // Pressing Send again, now that the target is on screen, goes ahead (after the mismatch check).
     await send();
     expect(mocks.confirm).toHaveBeenCalledTimes(1);
@@ -177,7 +228,7 @@ describe('ChartSend', () => {
     mocks.transport.inspect.mockResolvedValue(other);
     await act(async () => { fireEvent.click(btn); });
     expect(mocks.transport.send).not.toHaveBeenCalled();
-    expect(await screen.findByText(/The ezyVet consult changed/)).toBeInTheDocument();
+    expect(await screen.findByText(/The PIMS consult changed/)).toBeInTheDocument();
   });
 
   it('a focus re-inspect is quiet: no loading, no ping, mapping choices kept', async () => {
@@ -188,7 +239,7 @@ describe('ChartSend', () => {
     const chosen = select.value;
     mocks.transport.ping.mockClear();
     let seenLoading = false;
-    const obs = new MutationObserver(() => { if (screen.queryByText('Looking for ezyVet…')) seenLoading = true; });
+    const obs = new MutationObserver(() => { if (screen.queryByText('Looking for PIMS…')) seenLoading = true; });
     obs.observe(document.body, { childList: true, subtree: true });
     await act(async () => { mocks.tab.activated!(); });
     obs.disconnect();
@@ -196,7 +247,7 @@ describe('ChartSend', () => {
     expect(seenLoading).toBe(false);
     expect(mocks.transport.ping).not.toHaveBeenCalled();
     expect((screen.getAllByRole('combobox')[0] as HTMLSelectElement).value).toBe(chosen);
-    expect(screen.queryByText(/The ezyVet consult changed/)).toBeNull();
+    expect(screen.queryByText(/The PIMS consult changed/)).toBeNull();
   });
 
   it('a focus re-inspect with a changed patient updates the target and shows the notice', async () => {
@@ -204,8 +255,8 @@ describe('ChartSend', () => {
     await screen.findByRole('button', { name: 'Send' });
     mocks.transport.inspect.mockResolvedValue(info('Max'));
     await act(async () => { mocks.tab.activated!(); });
-    expect(await screen.findByText(/The ezyVet consult changed/)).toBeInTheDocument();
-    expect(screen.getByText(/ezyVet: Max/)).toBeInTheDocument();
+    expect(await screen.findByText(/The PIMS consult changed/)).toBeInTheDocument();
+    expect(screen.getByText(/PIMS: Max/)).toBeInTheDocument();
   });
 
   it('a stored note edited before the chart changed shows the stale notice', async () => {
@@ -228,7 +279,7 @@ describe('ChartSend', () => {
     open({ ezyvet: 'Bella Smith', ownerName: 'Jane Jones' });
     await send();
     expect(mocks.confirm).toHaveBeenCalledTimes(1);
-    expect(mocks.confirm.mock.calls[0][0]).toMatchObject({ message: 'ToothOps chart: Bella · ezyVet consult: Bella Smith' });
+    expect(mocks.confirm.mock.calls[0][0]).toMatchObject({ message: 'ToothOps chart: Bella · PIMS consult: Bella Smith' });
     expect(mocks.transport.send).not.toHaveBeenCalled();
   });
 
@@ -239,12 +290,12 @@ describe('ChartSend', () => {
     expect(mocks.transport.send).toHaveBeenCalledTimes(1);
   });
 
-  it('the chart patient number equal to ezyVet\'s sends without asking, even with another name', async () => {
-    // The chart's patient number is '1'.
+  it('equal unscoped patient numbers still ask when the names differ', async () => {
+    mocks.confirm.mockResolvedValue(false);
     open({ ezyvet: 'Max', ezyvetNumber: '001' });
     await send();
-    expect(mocks.confirm).not.toHaveBeenCalled();
-    expect(mocks.transport.send).toHaveBeenCalledTimes(1);
+    expect(mocks.confirm).toHaveBeenCalledTimes(1);
+    expect(mocks.transport.send).not.toHaveBeenCalled();
   });
 
   it('a different patient number asks first, even with the same name', async () => {
@@ -253,14 +304,14 @@ describe('ChartSend', () => {
     await send();
     expect(mocks.confirm).toHaveBeenCalledTimes(1);
     expect(mocks.confirm.mock.calls[0][0]).toMatchObject({
-      message: 'The chart is for Bella (number 1), but ezyVet shows Bella (number 2).',
+      message: 'The chart is for Bella (number 1), but PIMS shows Bella (number 2).',
     });
     expect(mocks.transport.send).not.toHaveBeenCalled();
   });
 
   it('practice flag off: a notice and no Send, and ezyVet is not touched', async () => {
     open({ sendFlag: 'off' });
-    expect(await screen.findByText('Sending to ezyVet isn’t turned on for your practice.')).toBeInTheDocument();
+    expect(await screen.findByText('Sending to PIMS isn’t turned on for your practice.')).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Send' })).toBeNull();
     expect(mocks.transport.ping).not.toHaveBeenCalled();
     expect(mocks.transport.inspect).not.toHaveBeenCalled();
@@ -269,7 +320,7 @@ describe('ChartSend', () => {
   it('practice flag lookup failed: treated as off, with a retry', async () => {
     const onRetrySendFlag = vi.fn();
     open({ sendFlag: 'error', onRetrySendFlag });
-    expect(await screen.findByRole('alert')).toHaveTextContent('Couldn’t check whether sending to ezyVet is turned on');
+    expect(await screen.findByRole('alert')).toHaveTextContent('Couldn’t check whether sending to PIMS is turned on');
     expect(screen.queryByRole('button', { name: 'Send' })).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
     expect(onRetrySendFlag).toHaveBeenCalledTimes(1);
@@ -291,4 +342,35 @@ describe('ChartSend', () => {
     expect(onBusyChange).toHaveBeenCalledWith(true);
     expect(onBusyChange).toHaveBeenLastCalledWith(false);
   });
+});
+
+
+it('offers note autofill without a strict encounter and locks Back during dispatch', async () => {
+  mocks.supabase = { auth: { onAuthStateChange: (callback: (event: string, session: unknown) => void) => {
+    callback('INITIAL_SESSION', { user: { id: 'user' } });
+    return { data: { subscription: { unsubscribe: vi.fn() } } };
+  } } };
+  const destination = { provider: 'pulse', origin: 'https://pulse.example', title: 'Open encounter' };
+  let finish: (value: { state: string }) => void = () => {};
+  mocks.transport.noteAutofill.mockImplementation(async (request: { operation: string }) => request.operation === 'list'
+    ? { state: 'targets', targets: [{ ...destination, tabId: 7 }] } : request.operation === 'inspect'
+      ? { state: 'fields', ...destination, fields: ['Notes'] } : request.operation === 'prepare'
+        ? { state: 'prepared', ...destination, field: 'Notes', ticket: 'ticket', existing_characters: 0, expires_at: new Date(Date.now() + 60_000).toISOString() }
+        : new Promise(resolve => { finish = resolve; }));
+  const onBusyChange = vi.fn(), onSent = vi.fn(); open({ onBusyChange, onSent });
+  mocks.transport.inspect.mockResolvedValue({ tab: { id: 7, title: 'Open encounter' }, candidates: 1, fields: [], status: { state: 'notConsult', provider: 'pulse', patientName: null, patientNumber: null, consult: null } });
+  fireEvent.click(await screen.findByRole('button', { name: 'Fill an open PIMS note' }));
+  await screen.findByRole('option', { name: /Open encounter/ });
+  fireEvent.change(screen.getByLabelText('Destination tab'), { target: { value: '7' } });
+  await screen.findByRole('option', { name: 'Notes' });
+  fireEvent.change(screen.getByLabelText('Open field'), { target: { value: 'Notes' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Prepare autofill' }));
+  fireEvent.click(await screen.findByRole('checkbox'));
+  fireEvent.click(screen.getByRole('button', { name: 'Fill selected field' }));
+  expect(screen.getByRole('button', { name: /Back to charts/ })).toBeDisabled();
+  expect(onBusyChange).toHaveBeenLastCalledWith(true);
+  await act(async () => finish({ state: 'filled' }));
+  await screen.findByText('Filled. Verify the notes and save them in PIMS.');
+  expect(onSent).not.toHaveBeenCalled();
+  expect(onBusyChange).toHaveBeenLastCalledWith(false);
 });

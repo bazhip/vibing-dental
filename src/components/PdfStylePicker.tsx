@@ -18,6 +18,7 @@ type PresetId = 'clinic' | 'classic-blue' | 'slate' | 'iris' | 'journal';
 const STYLE_KEY = 'pdfStyle';
 const COLOR_KEY = 'pdfCustomColor';
 const DEFAULT_CUSTOM = '#7c3aed';
+const CUSTOM_OPTION = 'custom';
 const CHEVRON_ICON: IconName = 'chevron-down';
 
 /** The last PDF style used on this device (preset or custom color). */
@@ -49,6 +50,7 @@ interface Props {
   styleId: string;
   onChange: (styleId: string) => void;
   compact: boolean;
+  inline?: boolean;
 }
 
 /**
@@ -57,7 +59,7 @@ interface Props {
  * Wide screens get the list inline; phones get a compact button that opens
  * a bottom sheet, so the preview keeps the screen.
  */
-export const PdfStylePicker: React.FC<Props> = ({ styleId, onChange, compact }) => {
+export const PdfStylePicker: React.FC<Props> = ({ styleId, onChange, compact, inline = false }) => {
   const { t } = useTranslation('pdfui');
   const [open, setOpen] = React.useState(false);
   const [menuAnchor, setMenuAnchor] = React.useState<MenuAnchor | null>(null);
@@ -76,6 +78,18 @@ export const PdfStylePicker: React.FC<Props> = ({ styleId, onChange, compact }) 
     setLastColor(hex);
     onChange(customStyleId(hex, baseId));
   };
+
+  if (inline) return (
+    <div className="pdf-style-inline">
+      <select className="patient-form__input" aria-label={t('style.label')} value={customColor ? CUSTOM_OPTION : active.id}
+        onChange={event => { if (event.target.value === CUSTOM_OPTION) pickColor(lastColor); else pick(event.target.value); }}>
+        {PDF_STYLES.map(style => <option key={style.id} value={style.id}>{presetName(style.id)}</option>)}
+        <option value={CUSTOM_OPTION}>{t('style.custom')}</option>
+      </select>
+      {customColor && <input type="color" value={customColor} onChange={event => pickColor(event.target.value)}
+        aria-label={t('style.chooseColor')} />}
+    </div>
+  );
 
   const list = (
     <ul role="radiogroup" aria-label={t('style.label')} className="pdf-style-list">

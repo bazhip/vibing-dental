@@ -195,7 +195,8 @@
       "images": "Bilder einbeziehen",
       "imagesHint": "(4 pro Seite, nach der Akte)",
       "radiographicReport": "Röntgenbericht einbeziehen",
-      "ctReport": "CT-Bericht einbeziehen"
+      "ctReport": "CT-Bericht einbeziehen",
+      "codesUsed": "Verwendete Codes einfügen"
     },
     "noteDevice": "Persönliche Einstellungen werden automatisch auf diesem Gerät gespeichert.",
     "spaceMovesDownHint": "Schnell, um eine Reihe von Tiefen anzusagen",

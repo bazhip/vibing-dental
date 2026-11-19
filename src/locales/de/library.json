@@ -116,11 +116,16 @@
     "confirmButton": "Wiederherstellen"
   },
   "templates": {
+    "chartCodes": "Aktencodes",
+    "chartCodeHelp": "Geben Sie { ein, um Vorschläge anzuzeigen, oder wählen Sie unten einen Code. Codes übernehmen die Werte aus der Akte und fragen fehlende Angaben ab. Andere Namen in geschweiften Klammern erstellen eigene Eingabefelder.",
+    "fieldExamples": "Beispiele für ausfüllbare Felder sind {Zahnnummern}, {Behandlungsdetails} und {Kontrolltermin}.",
+    "fieldsInTemplate": "Felder in dieser Vorlage",
+    "fieldHelp": "Setzen Sie eine kurze Anweisung in geschweifte Klammern, um ein Eingabefeld zu erstellen, etwa {Zahnnummern eingeben}. Der Wert wird beim Verwenden der Vorlage abgefragt.",
     "aria": "Berichtsvorlagen",
     "title": "Berichtsvorlagen",
     "saved": "Gespeicherte Vorlagen",
     "new": "Neue Vorlage",
-    "empty": "Noch keine Vorlagen — schreiben Sie unten eine und speichern Sie sie, oder verwenden Sie „Als Vorlage speichern“ im Abschnitt Behandlungsbericht.",
+    "empty": "Noch keine Vorlagen. Erstellen Sie unten eine oder wählen Sie Neue Vorlage im Behandlungsbericht.",
     "untitled": "Ohne Titel",
     "nameLabel": "Name der Vorlage",
     "namePlaceholder": "z. B. Routinereinigung (Katze)",

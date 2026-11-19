@@ -127,3 +127,13 @@
 .chart-customization .chart-settings__choice:has(.chart-settings__hint) { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; column-gap: 8px; row-gap: 2px; }
 .chart-customization .chart-settings__choice:has(.chart-settings__hint) > input { margin-top: 4px; }
 .chart-customization .chart-settings__choice > .chart-settings__hint { grid-column: 2; }
+
+.chart-settings__imaging-language {
+  display: grid;
+  gap: 6px;
+  max-width: 18rem;
+  margin-block: 8px;
+  font-weight: 600;
+}
+.chart-settings__imaging-language select { min-height: 44px; }
+.ios-chart-settings .chart-settings__imaging-language { padding-inline: 16px; }

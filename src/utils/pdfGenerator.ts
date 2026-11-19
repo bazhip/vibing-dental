@@ -1,3 +1,5 @@
+import { radiologyRecordedText } from './radiologyReportState';
+import { gpClinicalContinuations } from './pdf/sections';
 import { PDFDocument, PDFHexString } from 'pdf-lib';
 import { embedPdfFonts } from './pdf/fonts';
 import { optionalClinicalContinuations, drawClinicalContinuations, drawContinuationNotice } from './pdf/continuation';
@@ -117,6 +119,7 @@ export interface PdfLayoutOptions {
   includeRadiographicReport?: boolean;
   /** Same for the CT report. Default true. */
   includeCtReport?: boolean;
+  includeCodesUsed?: boolean;
   /** Chart images to append after page 2, IMAGES_PER_PAGE to a page.
    *  Empty / absent → no image pages. Not round-tripped through the
    *  stash: the images live in cloud storage with the chart. */
@@ -142,7 +145,7 @@ export async function buildDentalChartPDFBytes(
 ): Promise<Uint8Array> {
   const includeGrid = layoutOptions.includeGrid ?? true;
   const lng: AppLanguage = layoutOptions.lng ?? 'en';
-  const printedRadiographic = layoutOptions.includeRadiographicReport ?? true ? patientInfo.radiographicFindings ?? '' : '';
+  const printedRadiographic = layoutOptions.includeRadiographicReport ?? true ? radiologyRecordedText(patientInfo) : '';
   const printedCt = layoutOptions.includeCtReport ?? true ? patientInfo.ctReport ?? '' : '';
   // English is bundled; other catalogs load on first use. If that fails
   // (offline), labels fall back to English rather than failing the PDF.
@@ -172,7 +175,7 @@ export async function buildDentalChartPDFBytes(
     measuredTableBottom > NERVE_BLOCK_BOX.yTopIn ? measuredTableBottom + 0.12 : TREATMENT_REPORT.headerYTopIn,
     NERVE_BLOCK_BOX.xIn, NERVE_BLOCK_BOX.labelColIn + 2 * NERVE_BLOCK_BOX.valueColIn,
     maxOptionalBottomIn, lng, measure);
-  const continuations = measure.overflow ? optionalClinicalContinuations(patientInfo, logo, lng) : [];
+  const continuations = [...(measure.overflow ? optionalClinicalContinuations(patientInfo, logo, lng) : []), ...gpClinicalContinuations(patientInfo, lng)];
   drawClinicalContinuations(pdfDoc, continuations, regular, bold);
   const continuationPages = pdfDoc.getPageCount() - 2;
   const totalPages = 2 + continuationPages + imagePageCount;
@@ -201,7 +204,7 @@ export async function buildDentalChartPDFBytes(
 
   // Codes are needed before the diagrams draw: each page's diagram
   // centers vertically in the space left over by its codes legend.
-  const usedByPage = collectUsedCodesByPage({
+  const usedByPage = layoutOptions.includeCodesUsed === false ? { page1: [], page2: [] } : collectUsedCodesByPage({
     patientInfo: { ...patientInfo, radiographicFindings: printedRadiographic, ctReport: printedCt },
     toothData,
     preCommentTexts:  preDiagram.state.comments.map((c)  => c.text),

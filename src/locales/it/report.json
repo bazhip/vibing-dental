@@ -59,6 +59,14 @@
     "warningSigns": "Faccia attenzione a cibo che cade dalla bocca, perdita di peso, masticazione lenta, scuotimento della testa o resistenza all’imboccatura, alito cattivo o scolo nasale — ci chiami se nota qualcosa."
   },
   "intro": "Paziente: {{pet}}. Questo rapporto riassume le informazioni documentate per la visita dentale. Per qualsiasi domanda, si rivolga al Suo team veterinario.",
+  "visitIntro": {
+    "lead": "Ecco cosa abbiamo documentato durante la visita odontoiatrica di {{pet}}.",
+    "extractions": "Denti estratti durante questa visita: {{total}}.",
+    "findings": "Denti con reperti documentati: {{total}}.",
+    "exam": "Durante l’esame orale abbiamo documentato ulteriori reperti.",
+    "treatment": "Abbiamo registrato le note di trattamento per questa visita."
+  },
+  "visitImages": "Immagini della visita",
   "legendFilled": "pieno = mancante prima di questa visita",
   "legendNumbers": "I numeri corrispondono ai riscontri riportati sotto",
   "legendRemoved": "✕ rosso = estratto oggi",
@@ -157,6 +165,11 @@
     "range": " (grado da {{from}} a {{to}})"
   },
   "otherFindings": "Altri riscontri",
+  "dischargeSource": {
+    "dischargeMedications": "Farmaci alla dimissione",
+    "dischargeInstructions": "Istruzioni alla dimissione",
+    "dischargeFollowUp": "Controllo dopo la dimissione"
+  },
   "homecareTipsRabbit": {
     "hay": "Offra fieno di graminacee a volontà per favorire la normale usura dei denti, seguendo le istruzioni alimentari della Sua équipe veterinaria dopo il trattamento.",
     "checkups": "Rispetti gli appuntamenti di controllo dentale raccomandati dalla Sua équipe veterinaria; i denti del coniglio crescono continuamente.",

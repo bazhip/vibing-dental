@@ -78,3 +78,27 @@ test('before the version column exists, it still loads and saves (no version sen
   await act(() => result.current.saveOwnerReportConfig(defaultConfig()));
   expect(teamCall.mock.calls[0][0]).not.toHaveProperty('expectedRev');
 });
+
+test.each([true, false, null])('enables GP exam only on an explicit practice flag (%s)', async flag => {
+  respond = (table, cols) => cols === 'gp_exam_enabled'
+    ? flag === null
+      ? { data: null, error: { message: 'column unavailable' } }
+      : { data: { gp_exam_enabled: flag }, error: null }
+    : base(table, cols);
+  const { result } = renderHook(() => useProfile());
+  expect(result.current.gpExamEnabled).toBe(false);
+  await waitFor(() => expect(result.current.loaded).toBe(true));
+  expect(result.current.gpExamEnabled).toBe(flag === true);
+});
+
+test.each([true, false, null])('enables Consultation only on an explicit practice flag (%s)', async flag => {
+  respond = (table, cols) => cols === 'consultation_enabled'
+    ? flag === null
+      ? { data: null, error: { message: 'column unavailable' } }
+      : { data: { consultation_enabled: flag }, error: null }
+    : base(table, cols);
+  const { result } = renderHook(() => useProfile());
+  expect(result.current.consultationEnabled).toBe(false);
+  await waitFor(() => expect(result.current.loaded).toBe(true));
+  expect(result.current.consultationEnabled).toBe(flag === true);
+});

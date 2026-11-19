@@ -11,7 +11,7 @@
 
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { apiError } from '../_shared/apiErrors.ts';
-import { featureForRequest, resolveAiModels } from '../_shared/aiModels.ts';
+import { AI_REQUEST_KINDS, featureForRequest, resolveAiModels, usesReviewSettings } from '../_shared/aiModels.ts';
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -59,7 +59,7 @@ const REVIEW_SETTINGS: Record<string, ModelSettings> = {
 const LIVE_MAX_CHARS = 120_000;
 // ai_usage rows that aren't AI calls (voice tokens, emails): left out of
 // the AI rate limits so sending reminders or reports never blocks AI.
-const NON_AI_USAGE = '("deepgram-token","reminder-email","owner-report-email")';
+const NON_AI_USAGE = '("deepgram-token","reminder-email","owner-report-email","feedback")';
 const REVIEW_MAX_CHARS = 400_000;
 
 Deno.serve(async (req: Request) => {
@@ -91,11 +91,10 @@ Deno.serve(async (req: Request) => {
   } catch {
     return json({ error: 'bad json' }, 400);
   }
-  const review = body.mode === 'review';
+  const review = usesReviewSettings(body.mode, body.kind);
   // Which feature this call is for — logged with usage so cost can be
   // split by feature. Unknown values are dropped.
-  const KINDS = ['live', 'review', 'owner_report', 'warmup'];
-  const kind = typeof body.kind === 'string' && KINDS.includes(body.kind) ? body.kind : '';
+  const kind = typeof body.kind === 'string' && (AI_REQUEST_KINDS as readonly string[]).includes(body.kind) ? body.kind : '';
   if (!review && raw.length > LIVE_MAX_CHARS) return json(apiError('request_too_large'), 413);
   const msgs = body.messages;
   if (!Array.isArray(msgs) || msgs.length !== 1 || (msgs[0] as { role?: string })?.role !== 'user') {
@@ -215,10 +214,12 @@ Deno.serve(async (req: Request) => {
   // cache_write_tokens comes from a later migration: if it isn't there
   // yet, record the row without it rather than losing the counts.
   // (No reservation — the log was down — means insert the row now.)
+  const newRow = { ...baseRow, user_id: caller.id, practice_id: practiceId, kind };
   const logged = (usageId
     ? admin.from('ai_usage').update({ ...baseRow, cache_write_tokens: u.cache_creation_input_tokens ?? 0 }).eq('id', usageId)
       .then(({ error }) => (error ? admin.from('ai_usage').update(baseRow).eq('id', usageId) : null))
-    : admin.from('ai_usage').insert({ ...baseRow, user_id: caller.id, practice_id: practiceId, kind })
+    : admin.from('ai_usage').insert({ ...newRow, cache_write_tokens: u.cache_creation_input_tokens ?? 0 })
+      .then(({ error }) => (error?.code === 'PGRST204' || error?.code === '42703') ? admin.from('ai_usage').insert(newRow) : null)
   ).then(() => {}, () => {});
   // Once the response is sent the function can be shut down, taking an
   // unfinished insert with it (the call is billed but never counted).

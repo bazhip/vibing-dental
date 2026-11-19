@@ -1,13 +1,20 @@
 import { SectionHeader } from './SectionHeader';
+import { RefineTextAction } from './RefineTextAction';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { promptDialog, toast, friendlyDetail } from './ui/dialogs';
+import { confirmDialog, promptDialog, toast } from './ui/dialogs';
 import { useReportTemplates } from '../hooks/useReportTemplates';
 import { ReportTemplatesModal } from './ReportTemplatesModal';
+
+import type { PlaceholderValues } from '../utils/ownerReportConfig';
+import { fillTreatmentTemplate, treatmentChartFieldValue, treatmentTemplateFields } from '../utils/treatmentTemplateFields';
 
 interface SurgeryReportFormProps {
   value: string;
   onChange: (value: string) => void;
+  templateId?: string;
+  chartFields?: PlaceholderValues;
+  onApplyTemplate?: (value: string, id: string) => void;
   /** False in trial mode — templates live in the per-user cloud store,
    *  which needs an account. */
   cloudActive?: boolean;
@@ -20,85 +27,94 @@ interface SurgeryReportFormProps {
 export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
   value,
   onChange,
+  templateId,
+  chartFields,
+  onApplyTemplate,
   cloudActive = true,
   practiceId = '',
   readOnly = false,
 }) => {
-  const { t } = useTranslation('forms');
+  const { t } = useTranslation(['forms', 'library']);
   const store = useReportTemplates(practiceId);
   const templatesOn = store.enabled && cloudActive;
-  const [manageOpen, setManageOpen] = React.useState(false);
+  const [templateEditor, setTemplateEditor] = React.useState<'manage' | 'new' | null>(null);
+  const selectedId = value.trim()
+    ? templateId ?? store.templates.find(template => template.body === value && !treatmentTemplateFields(template.body).length)?.id
+    : undefined;
+  const live = React.useRef({ value, readOnly, onChange, onApplyTemplate, templatesOn });
+  live.current = { value, readOnly, onChange, onApplyTemplate, templatesOn };
+  const mounted = React.useRef(false);
+  const filling = React.useRef(false);
+  React.useEffect(() => {
+    mounted.current = true;
+    return () => { mounted.current = false; };
+  }, []);
 
-  // Inserting appends (with a blank line) rather than replacing — a
-  // visit often stacks several procedures, and appending can never
-  // destroy typed text.
-  const insertTemplate = (id: string) => {
-    if (readOnly) return;
-    const tpl = store.templates.find((x) => x.id === id);
-    if (!tpl) return;
-    const existing = value.trimEnd();
-    onChange(existing ? `${existing}\n\n${tpl.body}` : tpl.body);
-  };
+  const applyTemplate = async (id: string) => {
+    if (id === selectedId || live.current.readOnly || !live.current.templatesOn || filling.current) return;
+    const template = store.templates.find((item) => item.id === id);
+    if (!template) return;
 
-  const saveCurrentAsTemplate = async () => {
-    if (readOnly) return;
-    const name = await promptDialog({
-      title: t('report.dialog.title'),
-      message: t('report.dialog.message'),
-      label: t('report.dialog.label'),
-      placeholder: t('report.dialog.placeholder'),
-      confirmLabel: t('report.dialog.confirm'),
-      validate: (v) => (v.trim() ? null : t('report.dialog.nameRequired')),
-    });
-    if (name === null) return;
+    const original = live.current.value;
+    const fields = treatmentTemplateFields(template.body);
+    const values = new Map<string, string>();
+    const canApply = () => mounted.current && !live.current.readOnly && live.current.templatesOn && live.current.value === original;
+    filling.current = true;
     try {
-      await store.create(name.trim(), value);
-      toast(t('report.saved', { name: name.trim() }), { kind: 'success' });
-    } catch (e) {
-      toast(t('report.saveFailed', { error: friendlyDetail(e) }), { kind: 'error' });
+      if (original.trim() && !(await confirmDialog({
+        title: t('report.replaceTemplateTitle'),
+        message: t('report.replaceTemplateMessage'),
+        confirmLabel: t('report.replaceTemplate'),
+      }))) return;
+      for (const field of fields) {
+        if (!canApply()) return;
+        const recorded = treatmentChartFieldValue(field, chartFields);
+        if (recorded) {
+          values.set(field, recorded);
+          continue;
+        }
+        const answer = await promptDialog({
+          title: t('report.fillField'),
+          label: field,
+          confirmLabel: t('report.fieldContinue'),
+          validate: (text) => text.trim() ? null : t('report.fieldRequired'),
+        });
+        if (answer === null) return;
+        values.set(field, answer.trim());
+      }
+      if (!canApply()) return;
+      const body = fillTreatmentTemplate(template.body, values);
+      if (live.current.onApplyTemplate) live.current.onApplyTemplate(body, id);
+      else live.current.onChange(body);
+    } finally {
+      filling.current = false;
     }
   };
 
   return (
     <div className="patient-form">
-      <SectionHeader title={t('report.title')} onCustomize={templatesOn ? () => setManageOpen(true) : undefined} customizeTitle={t('report.customizeTitle')} />
-      {templatesOn && (
-        <div className="surgery-report__template-bar">
-          <select
-            className="surgery-report__template-select"
-            aria-label={t('report.insertAria')}
-            value=""
-            disabled={readOnly || !store.loaded || store.templates.length === 0}
-            onChange={(e) => {
-              if (e.target.value) insertTemplate(e.target.value);
-              e.target.value = '';
-            }}
-          >
-            <option value="" disabled>
-              {!store.loaded
-                ? t('report.loading')
-                : store.templates.length === 0
-                ? t('report.none')
-                : t('report.insert')}
-            </option>
-            {store.templates.map((tpl) => (
-              <option key={tpl.id} value={tpl.id}>
-                {tpl.name.trim() || t('report.untitled')}
-              </option>
-            ))}
-          </select>
-          <button
-            type="button"
-            className="diagram-view__action"
-            onClick={saveCurrentAsTemplate}
-            disabled={readOnly || !value.trim()}
-            title={t('report.saveTitle')}
-          >
-            {t('report.save')}
-          </button>
-
+      <SectionHeader title={t('report.title')} onCustomize={templatesOn ? () => setTemplateEditor('manage') : undefined} customizeTitle={t('report.customizeTitle')} />
+      <div className="surgery-report__tools">
+        {templatesOn && <span className="patient-form__label surgery-report__templates-label">{t('library:templates.saved')}</span>}
+        <div className="surgery-report__actions">
+          {templatesOn && <button type="button" className="diagram-view__action" onClick={() => setTemplateEditor('new')} disabled={readOnly || !store.loaded}>
+            <span aria-hidden="true">+</span>{' '}{t('report.newTemplate')}
+          </button>}
+          <RefineTextAction value={value} onApply={onChange} readOnly={readOnly} />
         </div>
-      )}
+        {templatesOn && (!store.loaded || !store.templates.length
+          ? <p className="patient-form__hint surgery-report__templates-empty">{t(store.loaded ? 'report.none' : 'report.loading')}</p>
+          : <ul className="surgery-report__templates" aria-label={t('library:templates.saved')}>
+              {store.templates.map(template => (
+                <li key={template.id}>
+                  <button type="button" className="diagram-view__action" disabled={readOnly}
+                    aria-pressed={selectedId === template.id} onClick={() => void applyTemplate(template.id)}>
+                    {template.name.trim() || t('report.untitled')}
+                  </button>
+                </li>
+              ))}
+            </ul>)}
+      </div>
       <textarea
         className="patient-form__textarea surgery-report__textarea"
         aria-label={t('report.textareaAria')}
@@ -110,10 +126,12 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
 
       {templatesOn && (
         <ReportTemplatesModal
-          open={manageOpen}
-          onClose={() => setManageOpen(false)}
+          open={templateEditor !== null}
+          createOnly={templateEditor === 'new'}
+          onClose={() => setTemplateEditor(null)}
+          onCreated={(template) => toast(t('report.saved', { name: template.name }), { kind: 'success' })}
           store={store}
-          draftBody={value}
+          draftBody={templateEditor === 'manage' ? value : undefined}
         />
       )}
     </div>

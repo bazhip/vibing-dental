@@ -106,6 +106,7 @@ html:not(.native-ios) .entry-grid__topbar .topbar-new-patient { margin-inline-st
 /* One persistent workspace rail owns global and clinical navigation. */
 html:not(.native-ios) .workspace-layout { --workspace-rail-width: 208px; display: grid; grid-template-columns: var(--workspace-rail-width) minmax(0, 1fr); gap: 24px; align-items: start; }
 html:not(.native-ios) .workspace-main { grid-column: 2; min-width: 0; }
+html:not(.native-ios) .workspace-layout--empty .workspace-main { grid-column: 1 / -1; }
 html:not(.native-ios) .workspace-sidebar {
   /* Fixed to the viewport: a sticky rail is pushed up by the content's
      bottom boundary before the footer has finished scrolling. The grid
@@ -146,6 +147,15 @@ html:not(.native-ios) .workspace-sidebar__account .chart-menu__panel {
 }
 html:not(.native-ios) .sidebar-layout.sidebar-layout--external-nav { display: block; }
 html:not(.native-ios) .sidebar-layout__nav-item { border: 0; min-height: 40px; padding: 10px 14px; border-radius: 6px; font-size: 14px; }
+/* Keep the keyboard focus ring inside the scrollable sidebar. */
+html:not(.native-ios) .workspace-sidebar__sections .sidebar-layout__nav-item:focus-visible {
+  outline-offset: -2px;
+}
+@media (hover: hover) and (pointer: fine) {
+  html:not(.native-ios) .workspace-sidebar__sections .sidebar-layout__nav-item:not(:focus-visible):hover {
+    outline-offset: -1px;
+  }
+}
 html:not(.native-ios) .sidebar-layout__nav-num { display: none; }
 html:not(.native-ios) .sidebar-layout__nav-item--active {
   color: var(--primary); background: var(--action-tint); box-shadow: inset 3px 0 var(--primary);
@@ -205,7 +215,7 @@ html:not(.native-ios) .entry-grid__topbar .topbar-desktop-visit { display: inlin
   html:not(.native-ios) .entry-grid__patient-empty { font-size: 13px; white-space: normal; }
   html:not(.native-ios) .entry-grid__patient-date { display: inline; white-space: normal; }
   html:not(.native-ios) .entry-grid__visit-select { min-height: 44px; }
-  html:not(.native-ios) .entry-grid__topbar :is(.topbar-desktop-help, .chart-menu--account, .topbar-desktop-visit, .topbar-new-patient, .topbar-desktop-revert) { display: none; }
+  html:not(.native-ios) .entry-grid__topbar :is(.topbar-desktop-help, .topbar-desktop-save, .chart-menu--account, .topbar-desktop-visit, .topbar-new-patient, .topbar-desktop-revert) { display: none; }
   html:not(.native-ios) .entry-grid__topbar .chart-menu--more { display: block; }
   html:not(.native-ios) .entry-grid__topbar .chart-menu--more .chart-menu__trigger-label {
     position: static; display: inline; width: auto; height: auto; margin: 0; overflow: visible; clip: auto; white-space: normal;

@@ -1,0 +1,404 @@
+{
+  "site": {
+    "title": "ToothOps Súgóközpont",
+    "intro": "Gyakorlati útmutatók a fogászati vizit minden lépéséhez, a páciens megnyitásától a lelet elküldéséig.",
+    "search": "Keresés a dokumentációban",
+    "searchHint": "Keressen témákra, műveletekre vagy beállításokra",
+    "topics": "Témák",
+    "onPage": "Ezen az oldalon",
+    "openApp": "ToothOps megnyitása",
+    "home": "Súgó kezdőlapja",
+    "skip": "Ugrás az útmutatóra",
+    "results": "Keresési eredmények",
+    "empty": "Nincs megfelelő útmutató. Próbáljon rövidebb kifejezésre keresni, vagy böngésszen a témák között.",
+    "clear": "Keresés törlése",
+    "related": "Kapcsolódó útmutatók",
+    "language": "A dokumentáció nyelve",
+    "contact": "Visszajelzés küldése",
+    "guide": "Útmutató megnyitása"
+  },
+  "groups": {
+    "start": "Első lépések",
+    "clinical": "Klinikai munkafolyamat",
+    "output": "Leletek és utánkövetés",
+    "practice": "Rendelő és támogatás"
+  },
+  "images": {
+    "charting": "Minta fogászati lap számozott fogakkal és a leletek táblázatával.",
+    "imaging": "A Képalkotás szakasz külön mezőkkel a röntgen- és a CT-lelethez.",
+    "dictation": "A diktálás áttekintése, amely ugyanabból az átiratból külön röntgen- és CT-javaslatokat mutat.",
+    "owner": "A Gazdinak szóló lelet kezelőelemei és egy adott vizithez készült bevezető összefoglaló.",
+    "export": "A klinikai fogászati lap PDF-előnézete egy mintakitöltéssel.",
+    "start": "Minta páciensnézet a vizit fülével, a szakaszok menüjével és a páciens adataival.",
+    "patients": "Korábbi vizitek az előzményekben, az egyik kórlap szöveges jegyzetével.",
+    "exam": "A szájüregi vizsgálat táblázata Normális és Rendellenes választással, valamint megjegyzéssel.",
+    "viewer": "Képnézegető ablak- és szintbeállításokkal, illetve letöltéssel egy szintetikus DICOM-fájlon.",
+    "treatment": "Kezelési jelentés a mentett sablonokkal és alattuk a szerkeszthető jelentéssel.",
+    "preferences": "Kórlapbeállítások az elrendezéssel, az automatikus mentéssel és a tasakmélység rögzítésével.",
+    "help-tools": "A Súgó menü a súgóközponttal, a bemutatóval, az újdonságokkal és a visszajelzéssel.",
+    "by-number": "A Foganként nézet számozott diagramján a 108-as Triadan-számú fog van kijelölve, mellette az adott foghoz tartozó leletek láthatók.",
+    "imagingSettings": "A Képalkotás és PDF beállításai a lelet nyelvével és a PDF-be kerülő elemek alapbeállításaival."
+  },
+  "articles": {
+    "start": {
+      "title": "Az első fogászati vizit",
+      "intro": "Kövesse végig a vizitet az új fogászati laptól a lezárt dokumentációig.",
+      "sections": {
+        "first": {
+          "title": "Páciens megnyitása vagy létrehozása",
+          "text": "Használja a plusz gombot vagy az „Állat megnyitása” lehetőséget. Új páciens létrehozása előtt keressen név vagy páciensazonosító alapján. A „Páciens” szakaszban ellenőrizze a nevet, az állatfajt, a páciensazonosítót és a vizit dátumát."
+        },
+        "second": {
+          "title": "Az ellátás dokumentálása menet közben",
+          "text": "A megfigyeléseket a „Vizsgálat” és az „Érzéstelenítés”, a fogak mérési adatait a „Fogászati lap kitöltése”, a leleteket a „Diagnózis”, az elvégzett munkát pedig a „Beavatkozás” szakaszban rögzítse. A képeket és értelmezésüket a „Képalkotás” szakaszhoz adja hozzá. A kezelést és a hazabocsátási utasításokat a saját szakaszukban dokumentálja."
+        },
+        "third": {
+          "title": "Áttekintés, mentés és megosztás",
+          "text": "Az „Áttekintés és exportálás” alatt ellenőrizze a klinikai fogászati lapot vagy a gazdinak szóló leletet. Ha elkészült a dokumentáció, válassza a „Lezárás” lehetőséget. Kilépés előtt ellenőrizze a mentési állapotot a páciens lapfülén. Ha módosítania kell egy mentett vizitet, nyissa meg, majd válassza a „Fogászati lap szerkesztése” lehetőséget."
+        }
+      }
+    },
+    "patients": {
+      "title": "Páciensek és vizitelőzmények",
+      "intro": "Nyissa meg a megfelelő dátumú vizitet, és hasonlítsa össze a korábbi bejegyzéseket.",
+      "sections": {
+        "first": {
+          "title": "Páciens keresése",
+          "text": "A webes alkalmazásban a plusz gombbal nyissa meg a páciensválasztót. Azonos nevű pácienseknél ellenőrizze a páciensazonosítót. A folytatáshoz válasszon egy meglévő vizitet, új időponthoz pedig indítson új vizitet."
+        },
+        "second": {
+          "title": "Váltás a vizitek és a pácienslapok között",
+          "text": "A lapfülön a páciens és a vizit dátuma látható. Több mentett vizit esetén használja a lapfül vizitválasztóját. Másik páciens megnyitásához nyomja meg a plusz gombot. A lapfül bezárása nem törli a pácienst."
+        },
+        "third": {
+          "title": "Korábbi bejegyzések áttekintése",
+          "text": "A „Páciens” szakaszban válassza a „Vizitelőzmények megtekintése” lehetőséget, ha vannak korábbi vizitek. Válasszon egy dátumot, majd nézze át a PDF-eket vagy a szöveges feljegyzéseket. Egy korábbi fogászati lap módosításához az adott dátumú vizitet nyissa meg."
+        }
+      }
+    },
+    "charting": {
+      "title": "Fogászati lap, diagnózis és beavatkozások",
+      "intro": "Rögzítse a méréseket, és különítse el a megfigyeléseket az elvégzett beavatkozásoktól.",
+      "sections": {
+        "first": {
+          "title": "A fogak mérési adatainak rögzítése",
+          "text": "A „Fogászati lap kitöltése” szakaszban válassza a „Táblázat” vagy a „Foganként” nézetet. Írja be a mért parodontális értékeket a megfelelő számú foghoz. A „Testreszabás” alatt állíthatja be a megjelenő oszlopokat és a tasakmérések rögzítésének módját.\n\nA „Foganként” nézet diagramján válasszon ki egy számozott fogat a hozzá tartozó mérések és megjegyzések együttes megnyitásához. A „Táblázat” nézetben a fogszámok kijelölésével több fogon is dolgozhat. Tartomány kijelöléséhez tartsa lenyomva a Shift billentyűt kattintás közben. Mindkét nézet ugyanazokat a mérési adatokat használja."
+        },
+        "second": {
+          "title": "Leletek dokumentálása a Diagnózis szakaszban",
+          "text": "Válassza ki az érintett fogat, és jelölje a kezelés előtti elváltozásokat vagy a már hiányzó fogakat. Szükség szerint adjon meg fogászati kódokat és rövid megjegyzéseket. A kódjegyzékben ellenőrizheti a kiválasztott kódot."
+        },
+        "third": {
+          "title": "Az elvégzett munka dokumentálása a Beavatkozás szakaszban",
+          "text": "A „Beavatkozás” szakaszban rögzítse az adott viziten elvégzett munkát, beleértve a befejezett foghúzásokat is. A szöveges részleteket a „Kezelési leírás” szakaszban írja le. A tervezett beavatkozások elvégzésükig maradjanak tervezettként a dokumentációban."
+        }
+      }
+    },
+    "exam": {
+      "title": "Vizsgálat és érzéstelenítés",
+      "intro": "Rögzítse a megfigyeléseket és az érzéstelenítés adatait a megfelelő helyen.",
+      "sections": {
+        "first": {
+          "title": "A vizsgálat dokumentálása",
+          "text": "Nyissa meg a „Vizsgálat” szakaszt. Rögzítse az ellenőrzött területek állapotát és a megjegyzéseket. A nem vizsgált területeket hagyja üresen. A vizsgálati területeket a „Testreszabás” alatt kezelheti."
+        },
+        "second": {
+          "title": "Érzéstelenítő szerek és idegblokádok rögzítése",
+          "text": "Nyissa meg az „Érzéstelenítés” szakaszt, adja meg az alkalmazott szereket, majd rögzítse az elvégzett idegblokádok helyét és térfogatát. Lezárás előtt ellenőrizze az oldalt és a mértékegységeket az eredeti adatok alapján."
+        },
+        "third": {
+          "title": "Választható vizitszakaszok használata",
+          "text": "Ha a rendelő engedélyezte a „Konzultáció” vagy az „Általános állatorvosi vizsgálat” szakaszt, az megjelenik a fogászati lap navigációjában. Ezekben rögzítse a vonatkozó kórelőzményt, az állapotértékelést, a tervet és a vizsgálat részleteit."
+        }
+      }
+    },
+    "imaging": {
+      "title": "Képalkotás és leletek",
+      "intro": "Kezelje az aktuális vizit klinikai képeit, röntgenfelvételeit és CT-leleteit.",
+      "sections": {
+        "first": {
+          "title": "Képek hozzáadása és az előzmények megtekintése",
+          "text": "A weben a „Képek hozzáadása” lehetőséggel tallózhat, behúzhat vagy beilleszthet fájlokat. A támogatott DICOM-fájlok eredetije letölthető marad. A „Képelőzmények” alatt nyissa ki a sort, vagy nyissa meg a korábbi vizitet a képek megtekintéséhez."
+        },
+        "second": {
+          "title": "A leletbe kerülő képek kiválasztása",
+          "text": "Adja meg a kép típusát, szükség esetén a kapcsolódó fogat és a leírást. Válassza ki, hogy a kép szerepeljen-e a klinikai PDF-ben vagy a gazdinak szóló leletben. A kép értelmezését segítheti a „Kezelés előtt” vagy a „Kezelés után” címke."
+        },
+        "third": {
+          "title": "Képalkotó leletek írása",
+          "text": "A megfigyeléseket a „Röntgenlelet” vagy a „CT-lelet” mezőben rögzítse. Diktáláshoz a „Képalkotás” szakaszban válassza a „Diktálás” lehetőséget, és nevezze meg a vizsgálat típusát, ha az nem egyértelmű. Alkalmazás előtt ellenőrizze, melyik lelethez kerülne az egyes javaslatok szövege. Gépelt szöveghez használhatja a „Finomítás” lehetőséget."
+        }
+      }
+    },
+    "dictation": {
+      "title": "Diktálás és MI-javaslatok ellenőrzése",
+      "intro": "Diktáljon abból a szakaszból, amelyen dolgozik, és ellenőrizze, hová kerülnek a leletek.",
+      "sections": {
+        "first": {
+          "title": "Indítás az aktuális szakaszból",
+          "text": "Nyissa meg a megfelelő szakaszt, válassza a „Diktálás”, majd a „Diktálás indítása” lehetőséget. Ha az alkalmazás kéri, engedélyezze a mikrofon használatát. Ha számít, nevezze meg a fogat, az oldalt, a mértékegységet és a képalkotó vizsgálat típusát."
+        },
+        "second": {
+          "title": "Az átirat és a javaslatok ellenőrzése",
+          "text": "A beszédfelismerés elkészíti az átiratot. Az MI az átiratból leleteket vagy szöveges piszkozatot készít. A nem egyértelmű megfogalmazások értelmezésében az aktív szakasz segít. Egyértelmű leletek másik támogatott szakaszba is kerülhetnek."
+        },
+        "third": {
+          "title": "Javítások áttekintése alkalmazás előtt",
+          "text": "Az „Ellenőrzést igényel” részen hasonlítsa össze a jelenlegi értéket és a javasolt módosítást. Csak akkor alkalmazza a javaslatot, ha az átirat alátámasztja. Egyébként tartsa meg a jelenlegi értéket. A leleteknél és a vizit egyéb szakaszainál olvassa át a javasolt szöveget, és válassza ki az alkalmazni kívánt szakaszokat."
+        }
+      }
+    },
+    "treatment": {
+      "title": "Kezelési leírások és sablonok",
+      "intro": "Használjon újrafelhasználható szöveget, és dokumentálja a viziten elvégzett ellátást.",
+      "sections": {
+        "first": {
+          "title": "Kezelési leírás írása",
+          "text": "Nyissa meg a „Kezelési leírás” szakaszt, és írja be az elvégzett beavatkozásokat, a lényeges leleteket és a dokumentációhoz szükséges részleteket. Diktáláskor az aktuális szakasz adja a szöveg értelmezési keretét."
+        },
+        "second": {
+          "title": "Mentett sablon használata",
+          "text": "Válasszon egy megnevezett sablont a mentett sablonok közül. Mentés előtt nézze át a kitöltött szöveget. A lelet szerkeszthető marad, a „Finomítás” pedig átnézhető szövegjavaslatokat adhat."
+        },
+        "third": {
+          "title": "Újrafelhasználható sablon létrehozása",
+          "text": "Válassza az „Új sablon” lehetőséget, adjon a sablonnak könnyen felismerhető nevet, majd írja be az újrafelhasználható szöveget. A sablonszerkesztőben írjon be egy { karaktert a használható helyőrzők megtekintéséhez. A páciens nevéhez használjon olyan mezőt, mint a {pet}. A mentett sablon kiválasztásakor a ToothOps beilleszti a kórlapon szereplő értékeket, és bekéri a hiányzó adatokat."
+        }
+      }
+    },
+    "discharge": {
+      "title": "Hazabocsátás és a gazdinak szóló leletek",
+      "intro": "Készítse el a hazavihető dokumentumot a viziten rögzített adatokból.",
+      "sections": {
+        "first": {
+          "title": "Hazabocsátási utasítások rögzítése",
+          "text": "Nyissa meg a „Hazabocsátás” szakaszt. Rögzítse a dokumentált gyógyszereket, az utasításokat és az utánkövetést. Megosztás előtt vesse össze a gyógyszerneveket, adagokat és időpontokat a dokumentációval."
+        },
+        "second": {
+          "title": "A gazdinak szóló lelet piszkozatának elkészítése",
+          "text": "A „Gazdinak szóló lelet” alatt válassza ki a leletsablont. Az „Írás MI-vel” a vizit alapján elkészíti a bevezető összefoglaló és az otthoni ápolási tanácsok piszkozatát. Ellenőrizze, hogy a fő megállapítások érthetők-e, és szükség szerint szerkessze a szöveget. Módosítás után a „Létrehozott szöveg visszaállítása” lehetőséggel térhet vissza a mentett piszkozathoz."
+        },
+        "third": {
+          "title": "Előnézet és megosztás",
+          "text": "A gazdinak szóló PDF megnyitásához válassza a „Testreszabás” melletti „Előnézet” lehetőséget. A mellékelni kívánt képeket a „Képalkotás” szakaszban jelölje ki. A címzett és a dokumentum ellenőrzése után az „Áttekintés és exportálás” alatt letöltheti a leletet, vagy ha a funkció elérhető, e-mailben elküldheti."
+        }
+      }
+    },
+    "export": {
+      "title": "Áttekintés, exportálás és lezárás",
+      "intro": "Megosztás előtt ellenőrizze, hogy a megfelelő dokumentumot választotta-e, majd az elkészült vizitet zárja le.",
+      "sections": {
+        "first": {
+          "title": "Dokumentum kiválasztása",
+          "text": "Nyissa meg az „Áttekintés és exportálás” felületet. A „Klinikai fogászati lap” a teljes fogászati lap PDF-változata. A „Gazdinak szóló lelet” a hazavihető PDF, ahol a funkció engedélyezett. A „Kórlapi feljegyzés” a kórlaphoz használható szöveges változat."
+        },
+        "second": {
+          "title": "A klinikai PDF testreszabása",
+          "text": "A „Klinikai fogászati lap” alatt nyissa meg a „Testreszabás” panelt a színek és a belefoglalt szakaszok beállításához. Ide tartoznak például a képek, a képalkotó leletek és a használt kódok. Módosítás után ellenőrizze az előnézetet, és ha megfelelő, töltse le a dokumentumot."
+        },
+        "third": {
+          "title": "Vizit lezárása vagy újbóli megnyitása",
+          "text": "A „Lezárás” menti az elkészült vizitet, és csak megtekinthető állapotba állítja. Mentett vizit módosításához nyissa meg, válassza a „Fogászati lap szerkesztése” lehetőséget, végezze el a módosítást, majd válassza a „Szerkesztés kész” lehetőséget. A szerkesztés előtt ellenőrizze a pácienst és a dátumot."
+        }
+      }
+    },
+    "rechecks": {
+      "title": "Kontrollvizsgálatok és emlékeztetők",
+      "intro": "Rögzítse a következő kontrollt, és kövesse az esedékes viziteket.",
+      "sections": {
+        "first": {
+          "title": "A kontrollvizsgálat dátumának rögzítése",
+          "text": "Miután egyeztették a dátumot, a „Páciens” szakaszban töltse ki a „Kontroll esedékessége” mezőt. Szükség esetén adjon utasításokat a „Hazabocsátás” szakaszban. Ha emlékeztetőt küld, ellenőrizze a gazdi elérhetőségeit."
+        },
+        "second": {
+          "title": "A kontrollvizsgálatok listájának áttekintése",
+          "text": "A tervezett utánkövetéshez nyissa meg a „Kontrollvizsgálatok” nézetet. Ha szüksége van a klinikai előzményekre, nyissa meg a pácienst vagy a korábbi vizitet. A teljesített tételeket szükség szerint törölje a listáról."
+        },
+        "third": {
+          "title": "Emlékeztetők beállítása",
+          "text": "A rendelő vagy az alkalmazás beállításaiban nyissa meg a „Kontrollvizsgálati emlékeztetők” részt az elérhető küldési lehetőségek áttekintéséhez. Emlékeztető küldése előtt ellenőrizze a címzettet és az ütemezést."
+        }
+      }
+    },
+    "settings": {
+      "title": "Fiók- és rendelőbeállítások",
+      "intro": "Állítsa be a fogászati lapot a csapat számára, és kezelje külön a személyes és a közös beállításokat.",
+      "sections": {
+        "first": {
+          "title": "Személyes beállítások megadása",
+          "text": "A „Fiókbeállítások” alatt módosíthatja az alkalmazás nyelvét és a profilját. A „Fogászati lap beállításai” vagy az egyes szakaszok „Testreszabás” lehetősége alatt kezelheti az elrendezést, a méréseket, a képalkotást és a PDF megjelenítési beállításait."
+        },
+        "second": {
+          "title": "Közös rendelőbeállítások kezelése",
+          "text": "A rendelő tulajdonosai kezelhetik a rendelő arculatát, a csapattagok hozzáférését és a gazdinak szóló leletek közös sablonjait. A rendelő ügyfelekhez beállított nyelve határozza meg a gazdinak szóló alapértelmezett szövegeket, köztük a lelet megfogalmazását."
+        },
+        "third": {
+          "title": "Az elérhető funkciók ellenőrzése",
+          "text": "Egyes klinikai szakaszok, MI-eszközök és leletműveletek elérhetősége a rendelő beállításaitól, a hozzáféréstől és az Ön szerepkörétől függ. Ha nem jelenik meg egy eszköz, ellenőrizze, hogy a megfelelő rendelő és egy szerkeszthető vizit van-e megnyitva."
+        }
+      }
+    },
+    "troubleshooting": {
+      "title": "Hibaelhárítás",
+      "intro": "A mentés, a diktálás, a képek és az exportálás gyakori problémáinak megoldása.",
+      "sections": {
+        "first": {
+          "title": "A vizit nem menthető",
+          "text": "Ellenőrizze a mentési állapotjelzőt és az internetkapcsolatot. Nézze meg, hogy a vizitben szerepel-e a páciens neve és van-e klinikai tartalom. Használja a rendelkezésre álló újrapróbálkozási vagy kézi mentési lehetőséget. Tartsa nyitva a fogászati lapot, amíg az alkalmazás nem jelzi a sikeres mentést."
+        },
+        "second": {
+          "title": "A mikrofon vagy az MI nem elérhető",
+          "text": "Engedélyezze a mikrofon használatát a böngésző vagy az eszköz beállításaiban, zárja be a többi felvételt, és ellenőrizze a kapcsolatot. Nyisson meg egy szerkeszthető fogászati lapot, majd válassza a „Diktálás indítása” lehetőséget. Ha egy eredmény tévesnek tűnik, tartsa meg a mentett értéket, és nézze át az átiratot."
+        },
+        "third": {
+          "title": "Tartalom hiányzik a leletből",
+          "text": "Ellenőrizze, hogy a megfelelő vizitet és dokumentumfület nyitotta-e meg. Nézze át a leletsablont, a PDF tartalmi beállításait és az egyes képek beillesztési beállításait. Ha a probléma továbbra is fennáll, küldjön visszajelzést a Súgóból. Írja le, milyen eredményre számított, és mit látott."
+        }
+      }
+    },
+    "account": {
+      "title": "Bejelentkezés és fiókkezelés",
+      "intro": "Állítsa be a hozzáférést, állítsa vissza a jelszavát, vagy frissítse a profilját.",
+      "sections": {
+        "first": {
+          "title": "Bejelentkezés vagy meghívás elfogadása",
+          "text": "Jelentkezzen be a fiókjához tartozó e-mail-címmel. Új fiók létrehozásakor kövesse a postaládájába küldött megerősítő hivatkozást. Ha egy rendelő meghívta, azt a meghívót használja, amely a ToothOpshoz használni kívánt e-mail-címre érkezett."
+        },
+        "second": {
+          "title": "Hozzáférés helyreállítása",
+          "text": "A bejelentkezési képernyőn válassza az „Elfelejtette a jelszavát?” lehetőséget, majd kövesse az e-mailben küldött hivatkozást. Ha a munkamenet a fogászati lap kitöltése közben lejár, jelentkezzen be újra a felhőbe mentés folytatásához. Folytatás előtt ellenőrizze, hogy a megfelelő vizit van-e megnyitva."
+        },
+        "third": {
+          "title": "Profil és bejelentkezési adatok frissítése",
+          "text": "A „Fiókbeállítások” alatt módosíthatja a megjelenített nevét, e-mail-címét, jelszavát és az alkalmazás nyelvét. Kövesse az egyes szakaszokban megjelenő megerősítési lépéseket."
+        }
+      }
+    },
+    "viewer": {
+      "title": "Képek és DICOM-fájlok áttekintése",
+      "intro": "A képnézegetővel vizsgálhatja meg a mellékletet, és érheti el az eredeti fájlt.",
+      "sections": {
+        "first": {
+          "title": "A képnézegető megnyitása",
+          "text": "Válasszon ki egy képet a „Képalkotás” szakaszban vagy egy korábbi viziten. A képnézegető vezérlőivel nagyíthatja, a nézethez igazíthatja vagy elmozdíthatja a képet. Szükség esetén vesse össze a részleteket az eredeti felvétellel."
+        },
+        "second": {
+          "title": "A megjelenítés beállítása",
+          "text": "Támogatott eredeti DICOM-fájloknál az „Ablakszélesség / ablakszint” lehetőséggel dolgozhat az eredeti adatokkal. Asztali gépen tartsa lenyomva a Shift billentyűt, majd húzza az egeret vízszintesen az ablakszélesség vagy függőlegesen az ablakszint beállításához. Ha ezek nem állíthatók, használja a fényerőt és a kontrasztot."
+        },
+        "third": {
+          "title": "Az eredeti fájl letöltése",
+          "text": "Ha az eredeti fájl elérhető, a képműveletek között válassza az „Eredeti DICOM letöltése” lehetőséget. Ha a fájl nem olvasható, próbáljon tömörítetlen DICOM-fájlt vagy az eredeti képalkotó programból exportált, támogatott képformátumot használni."
+        }
+      }
+    },
+    "recovery": {
+      "title": "Mentett vizitek, verziók és PDF-importálás",
+      "intro": "Állítson vissza egy mentett verziót, vagy folytassa a munkát egy ToothOpsból exportált fogászati PDF alapján.",
+      "sections": {
+        "first": {
+          "title": "A mentési állapot értelmezése",
+          "text": "Ellenőrizze a mentési állapotjelzőt az aktív páciens lapfülén. Az offline módosítások a kapcsolat helyreállásáig a készüléken maradhatnak. Ha a ToothOps másik eszközről vagy munkatárstól származó újabb mentést jelez, hasonlítsa össze az aktuális fogászati lapot az újabb mentéssel, mielőtt megerősíti a módosítások felülírását."
+        },
+        "second": {
+          "title": "Korábbi verzió áttekintése vagy visszaállítása",
+          "text": "A „Fogászati lap előzményei” alatt összehasonlíthatja ugyanannak a vizitnek a mentéseit. Válasszon ki egy verziót a rögzített adatok megtekintéséhez. A visszaállításhoz nyissa meg a vizitet szerkesztésre, válassza a „Verzió visszaállítása” lehetőséget, majd erősítse meg. A visszaállítás előtti verzió megmarad az előzményekben."
+        },
+        "third": {
+          "title": "Fogászati PDF importálása",
+          "text": "A pácienslistában válassza a „Fogászati PDF importálása” lehetőséget, majd válasszon ki egy korábban ToothOpsból exportált fogászati PDF-et. Válaszoljon az aktuálisan megnyitott fogászati lapra vonatkozó kérdésre, majd folytatás előtt ellenőrizze a pácienst és a vizit dátumát. Más forrásból származó PDF nem feltétlenül tartalmaz szerkeszthető ToothOps-adatokat."
+        }
+      }
+    },
+    "preferences": {
+      "title": "A ToothOps testreszabása",
+      "intro": "Találja meg a megfelelő Testreszabás lehetőséget az adatrögzítéshez, a diagramok alapbeállításaihoz, a leletsablonokhoz és a PDF-exporthoz.",
+      "sections": {
+        "first": {
+          "title": "A feladathoz tartozó beállítások megkeresése",
+          "text": "Nyissa meg a „Páciens”, „Vizsgálat”, „Érzéstelenítés”, „Fogászati lap kitöltése”, „Diagnózis”, „Beavatkozás” vagy „Képalkotás” szakaszt, és a fejlécben válassza a „Testreszabás” lehetőséget. A „Fogászati lap beállításai” a megfelelő kategóriánál nyílik meg. A bal oldali kategórialistából a párbeszédpanel bezárása nélkül válthat másik területre. A személyes beállítások automatikusan a fiókjába kerülnek, ha elérhető a fiókszinkronizálás, egyébként az aktuális böngésző tárolja őket.\n\nA „Kezelési leírás” szakasz „Testreszabás” gombja a kezelési sablonokat nyitja meg. A „Gazdinak szóló lelet” szakaszban az „Előnézet” melletti „Testreszabás” gomb a gazdinak szóló leletek sablonjait nyitja meg. Ezekben a szerkesztőkben kezelheti a rendelőben újra felhasználható szöveget és elrendezést. Módosítás előtt ellenőrizze, melyik sablon van kijelölve."
+        },
+        "second": {
+          "title": "A fogászati lap beállítási kategóriáinak áttekintése",
+          "text": "A „Fogászati lap beállításai” oldalsávban a lehetőségek a vizit érintett részéhez vannak csoportosítva. A „Fogászati lap kitöltése” kategóriában például beállíthatja a „Táblázat” vagy a „Foganként” nézetet, a tasakmélység rögzítésének módját, a megjelenő méréseket és a pontszám beírása utáni lépést. A diagnosztikai és beavatkozási gyorsgombokat külön állítsa be, mert eltérő diagramokon jelennek meg.\n\nA mezők láthatóságának és a diagram megjelenítésének beállítása segít a kitöltésre összpontosítani. Exportálás előtt nézze át a páciens dokumentációjában rögzített leleteket."
+        },
+        "third": {
+          "title": "Képalkotási alapbeállítások és export testreszabása",
+          "text": "Nyissa meg a „Képalkotás” szakaszt, válassza a „Testreszabás”, majd a „Képalkotás és PDF” lehetőséget a képalkotó lelet nyelvének és a PDF tartalmi alapbeállításainak megadásához. Beillesztheti a képeket, a röntgen- és CT-leleteket, valamint a használt kódokat felsoroló szakaszt. Ha kikapcsolja a diagramleleteket, a kitöltési táblázat kötelező, így a rögzített mérési adatok láthatók maradnak a klinikai dokumentumban.\n\nEgy adott exporthoz nyissa meg az „Áttekintés és exportálás” felületet, válassza a „Klinikai fogászati lap” lapfület, majd a „Testreszabás” lehetőséget. Állítsa be a klinikai PDF színét és a szükséges szakaszokat, majd ellenőrizze az előnézetet. A gazdinak szóló dokumentumhoz használja a hozzá tartozó leletsablont, a képeket pedig egyenként válassza ki a „Képalkotás” szakaszban. A klinikai PDF színének módosítása nem változtatja meg a gazdinak szóló lelet sablonját."
+        }
+      }
+    },
+    "team": {
+      "title": "Rendelő beállítása és csapathozzáférés",
+      "intro": "Kezelje a rendelő arculatát, a munkatársak hozzáférését és a közös leletsablonokat.",
+      "sections": {
+        "first": {
+          "title": "A rendelő arculatának beállítása",
+          "text": "Nyissa meg a „Rendelő beállításai” felületet, és a szerepkörének megfelelően frissítse a rendelő nevét és logóját. PDF-előnézetben ellenőrizze, hogyan jelennek meg a rendelő adatai. Állítsa be az ügyfelek nyelvét a gazdiknak megjelenő alapértelmezett szöveghez."
+        },
+        "second": {
+          "title": "Munkatársak meghívása és kezelése",
+          "text": "A „Rendelő beállításai” felületen nyissa meg a „Csapat” szakaszt. Arra az e-mail-címre küldje a meghívót, amellyel a munkatárs bejelentkezik majd. Ellenőrizze a függő meghívókat, és szükség szerint küldje újra vagy vonja vissza őket. A rendelő tulajdonosa kezelheti a tagok hozzáférését és a tulajdonosi jogosultságot."
+        },
+        "third": {
+          "title": "Közös sablonok kezelése",
+          "text": "Nyissa meg a „Sablonok” részt a „Rendelő beállításai” alatt, vagy válassza a „Testreszabás” lehetőséget az adott lelet mellett. A rendelő tulajdonosai kezelhetik a gazdinak szóló leletek elrendezését, megfogalmazását és a rendelő alapértelmezett sablonját. Meglévő sablon szerkesztésekor mentés előtt nézze meg a minta előnézetét."
+        }
+      }
+    },
+    "billing": {
+      "title": "Előfizetés és számlázás",
+      "intro": "Itt találja a rendelő előfizetési és fizetési beállításait.",
+      "sections": {
+        "first": {
+          "title": "Az előfizetés megkeresése",
+          "text": "A ToothOps webes alkalmazásában nyissa meg a „Rendelő beállításai”, majd a „Számlázás” részt. Itt láthatók a rendelő elérhető előfizetési adatai. Ha nincs hozzáférése, kérje a rendelő tulajdonosától a számlázással kapcsolatos módosításokat."
+        },
+        "second": {
+          "title": "Fizetés és számlák kezelése",
+          "text": "Ha elérhető, a „Számlázás kezelése” lehetőség megnyitja a Stripe portált. A portálon megtekintheti a számlákat, módosíthatja a fizetési módot vagy kezelheti az előfizetést. Ellenőrizze, hogy a megfelelő rendelő adatait kezeli-e."
+        },
+        "third": {
+          "title": "Hozzáférési probléma megoldása",
+          "text": "Ha a rendelő számlázással vagy hozzáféréssel kapcsolatos értesítést kap, kövesse a webes felületen jelzett lépést. Ha a fizetés vagy az előfizetés állapota tévesnek tűnik, a „Súgó” menüből lépjen kapcsolatba a támogatással."
+        }
+      }
+    },
+    "help-tools": {
+      "title": "Segítség és újdonságok",
+      "intro": "Használja a bemutatót, a kiadási megjegyzéseket és a visszajelzési eszközöket.",
+      "sections": {
+        "first": {
+          "title": "A bemutató megnyitása",
+          "text": "A „Súgó” menüben válassza az „Első lépések” lehetőséget. A bemutató végigvezeti a kezelőelemeken, és szükség esetén újra megnyitható."
+        },
+        "second": {
+          "title": "A legutóbbi változások áttekintése",
+          "text": "A „Súgó” menü „Újdonságok” pontjában megtekintheti a legutóbbi változásokat. Az új munkafolyamatokról a súgóközpont útmutatóiban olvashat."
+        },
+        "third": {
+          "title": "Hasznos visszajelzés küldése",
+          "text": "A „Súgó” menüben válassza a „Visszajelzés küldése” lehetőséget, ha problémát tapasztal vagy ötlete van. Írja le, mit csinált, mi történt és mit várt. A képernyőkép csatolása előtt távolítsa el a páciens és a gazdi adatait."
+        }
+      }
+    },
+    "by-number": {
+      "title": "A fogászati lap kitöltése fogszám alapján",
+      "intro": "A számozott diagramon egyenként rögzítheti az egyes fogak méréseit, valamint diagnosztikai és beavatkozási megjegyzéseit.",
+      "sections": {
+        "first": {
+          "title": "A Foganként nézet megnyitása és fogszám kiválasztása",
+          "text": "Nyissa meg a „Fogászati lap kitöltése” szakaszt, majd a „Táblázat” mellett válassza a „Foganként” nézetet. Válassza ki a számozott fogat a diagramon. A szerkesztő fejléce mutatja a Triadan-számot és a fog nevét, így lelet rögzítése előtt ellenőrizheti a kijelölést. A felnőtt kutya diagramján például a 108-as a jobb felső negyedik előzápfog. A fogszámok a „Páciens” szakaszban kiválasztott állatfajnak és fogazatnak felelnek meg.\n\nHa keskeny böngészőablakban a diagram össze van csukva, válassza a „Fogtérkép” lehetőséget, válasszon kvadránst, majd a fog számát. Az „Előző fog” és a „Következő fog” gombbal a térkép újbóli megnyitása nélkül lépkedhet a fogak között."
+        },
+        "second": {
+          "title": "Leletek, megjegyzések és a foghúzás állapotának rögzítése",
+          "text": "A „Leletek” részen adja meg a mért értékeket. A tasakmélység egyetlen érték, gyökerenként egy érték vagy hat külön mérési pont értéke lehet. A „Fogászati lap kitöltése” szakasz „Testreszabás” beállításaiban válassza ki a tasakmélység rögzítésének módját és a megjelenítendő méréseket. Csak akkor jelölje be a „Hiányzó (e vizit előtt)” lehetőséget, ha a fog már a vizit előtt hiányzott.\n\nA megállapításokat a „Diagnosztikai megjegyzés” mezőben és a beállított gyorsgombokkal, az elvégzett ellátást a „Beavatkozási megjegyzés” mezőben rögzítse. Tervezett eltávolításhoz használja a „Foghúzás tervezése” lehetőséget. Ha a foghúzás megtörtént, jelölje eltávolítottnak a fogat. A diagram jelmagyarázata megkülönbözteti a rögzített leleteket, a tervezett és az elvégzett foghúzásokat, valamint a hiányzó fogakat."
+        },
+        "third": {
+          "title": "Váltás a nézetek között vagy lelet diktálása a fog számával",
+          "text": "A „Táblázat” és a „Foganként” nézet ugyanazt a fogászati lapot szerkeszti. A számozott szerkesztőben bevitt mérések a táblázatban is megjelennek. A diagnosztikai és beavatkozási megjegyzések és jelölések a megfelelő diagramokon jelennek meg. Az adatok ellenőrzéséhez bármikor válthat nézetet.\n\nDiktáláshoz maradjon a „Fogászati lap kitöltése” szakaszban, válassza a „Diktálás” lehetőséget, majd indítsa el a felvételt. Mondja ki a teljes fogszámot és a leletet, például „száznyolc, disztális tasak öt milliméter”. Ellenőrizze, hogy az adat a megfelelő foghoz és a megfelelő tasakmezőbe került-e. Ha a javasolt módosítás eltér egy már rögzített értéktől, alkalmazás előtt ellenőrizze."
+        }
+      }
+    }
+  }
+}

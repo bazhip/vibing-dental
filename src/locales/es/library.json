@@ -118,11 +118,16 @@
     "confirmButton": "Restaurar"
   },
   "templates": {
+    "chartCodes": "Códigos del historial",
+    "chartCodeHelp": "Escriba { para ver sugerencias o seleccione un código a continuación. Los códigos utilizan los valores del historial y le piden que complete los datos que falten. Los demás nombres entre llaves generan campos personalizados.",
+    "fieldExamples": "Ejemplos de campos para rellenar: {Números de dientes}, {Detalles del procedimiento} y {Fecha de seguimiento}.",
+    "fieldsInTemplate": "Campos de esta plantilla",
+    "fieldHelp": "Ponga una instrucción breve entre llaves para crear un campo rellenable, por ejemplo {Introduzca los números de los dientes}. Se le pedirá el valor al usar la plantilla.",
     "aria": "Plantillas de informe",
     "title": "Plantillas de informe",
     "saved": "Plantillas guardadas",
     "new": "Nueva plantilla",
-    "empty": "Aún no hay plantillas: escriba una abajo y guárdela, o use «Guardar como plantilla» en la sección Informe del tratamiento.",
+    "empty": "Aún no hay plantillas. Cree una a continuación o elija Nueva plantilla en el informe de tratamiento.",
     "untitled": "Sin título",
     "nameLabel": "Nombre de la plantilla",
     "namePlaceholder": "p. ej. Limpieza de rutina (felino)",

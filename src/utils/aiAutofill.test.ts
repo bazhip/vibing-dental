@@ -497,3 +497,9 @@ describe('dictation language in the AI prompt', () => {
     });
   }
 });
+it('passes the captured dictation language when appending radiology text', () => {
+  const appendRadiographicFindings = vi.fn();
+  const action: AiAction = { name: 'append_radiographic_findings', input: { text: '409: possible resorption' } };
+  applyAiActions([action], { appendRadiographicFindings } as never, 'fr');
+  expect(appendRadiographicFindings).toHaveBeenCalledExactlyOnceWith('409: possible resorption', 'fr');
+});

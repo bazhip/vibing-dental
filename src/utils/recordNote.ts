@@ -1,3 +1,5 @@
+import { ctRecordedText } from './ctReportState';
+import { radiologyRecordedText } from './radiologyReportState';
 import type { TFunction } from 'i18next';
 import i18n from '../i18n';
 import type { AppLanguage } from '../i18n/config';
@@ -49,7 +51,14 @@ const BLOCK_SITES = [
 // Headings reuse the app's own labels where it has one, so the note says
 // "Anesthesia" / "Treatment report" exactly as the chart sections do.
 export const HEADING_KEYS = {
+  complaint: 'forms:patient.complaint',
   header: 'media:recordNote.h.header',
+  consultationHistory: 'media:recordNote.h.consultationHistory',
+  consultationAssessment: 'media:recordNote.h.consultationAssessment',
+  consultationPlan: 'media:recordNote.h.consultationPlan',
+  gpVitals: 'media:recordNote.h.gpVitals',
+  gpPhysicalExam: 'media:recordNote.h.gpPhysicalExam',
+  gpDiagnostics: 'media:recordNote.h.gpDiagnostics',
   anesthesia: 'app:sections.anesthesia',
   exam: 'media:recordNote.h.exam',
   findings: 'media:recordNote.h.findings',
@@ -57,6 +66,9 @@ export const HEADING_KEYS = {
   radiographs: 'media:recordNote.h.radiographs',
   ct: 'media:recordNote.h.ct',
   treatment: 'forms:report.title',
+  dischargeMedications: 'media:recordNote.h.dischargeMedications',
+  dischargeInstructions: 'media:recordNote.h.dischargeInstructions',
+  dischargeFollowUp: 'media:recordNote.h.dischargeFollowUp',
   recheck: 'media:recordNote.h.recheck',
 } as const;
 
@@ -96,9 +108,9 @@ function examLine(label: string, v: ExamItemValue | undefined, t: RecordNoteT): 
 export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): RecordNote {
   const info = snapshot.patientInfo;
   const sections: RecordNoteSection[] = [];
-  const add = (key: RecordNoteKey, lines: (string | null | false | undefined)[]) => {
+  const add = (key: RecordNoteKey, lines: (string | null | false | undefined)[], heading = t(HEADING_KEYS[key])) => {
     const kept = lines.filter((l): l is string => !!l);
-    if (kept.length) sections.push({ key, heading: t(HEADING_KEYS[key]), lines: kept });
+    if (kept.length) sections.push({ key, heading, lines: kept });
   };
 
   // 1. Header
@@ -108,8 +120,15 @@ export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): Record
     clean(info.date),
     clean(info.doctor) && `${t('media:recordNote.doctor')}: ${clean(info.doctor)}`,
     clean(info.tech) && `${t('forms:patient.tech')}: ${clean(info.tech)}`,
-    clean(info.complaint) && `${t('forms:patient.complaint')}: ${clean(info.complaint)}`,
   ]);
+
+  add('complaint', textLines(info.complaint));
+  add('consultationHistory', textLines(info.consultationHistory));
+  add('consultationAssessment', textLines(info.consultationAssessment));
+  add('consultationPlan', textLines(info.consultationPlan));
+  add('gpVitals', textLines(info.gpVitals));
+  add('gpPhysicalExam', textLines(info.gpPhysicalExam));
+  add('gpDiagnostics', textLines(info.gpDiagnostics));
 
   // 2. Anesthesia
   const nb = info.nerveBlocks;
@@ -177,9 +196,12 @@ export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): Record
   ]);
 
   // 6–8. Free text and recheck
-  add('radiographs', textLines(info.radiographicFindings));
+  add('radiographs', textLines(radiologyRecordedText(info)));
   add('ct', textLines(info.ctReport));
   add('treatment', textLines(info.treatmentReport));
+  add('dischargeMedications', textLines(info.dischargeMedications));
+  add('dischargeInstructions', textLines(info.dischargeInstructions));
+  add('dischargeFollowUp', textLines(info.dischargeFollowUp));
   add('recheck', [clean(info.recallDate)]);
 
   return { sections };
@@ -226,7 +248,9 @@ export function recordNoteBasis(snapshot: ChartSnapshot): string {
     snapshot.species, snapshot.logo,
     i.patientName, i.patientNumber, i.date, i.doctor, i.tech, i.complaint,
     i.nerveBlocks, i.customAnesthesia ?? null, i.exam, i.customExam ?? null,
-    i.radiographicFindings ?? '', i.ctReport ?? '', i.treatmentReport, i.recallDate,
+    radiologyRecordedText(i), i.ctReport ?? '', i.treatmentReport, i.recallDate,
+    ...([i.consultationHistory, i.consultationAssessment, i.consultationPlan, i.dischargeMedications, i.dischargeInstructions, i.dischargeFollowUp, i.gpVitals, i.gpPhysicalExam, i.gpDiagnostics].some(value => value?.trim())
+      ? [i.consultationHistory ?? '', i.consultationAssessment ?? '', i.consultationPlan ?? '', i.dischargeMedications ?? '', i.dischargeInstructions ?? '', i.dischargeFollowUp ?? '', i.gpVitals ?? '', i.gpPhysicalExam ?? '', i.gpDiagnostics ?? ''] : []),
     snapshot.toothData.map((td) => GRID_FIELDS.map((f) => td[f] ?? '')),
     snapshot.preMarks, snapshot.postMarks,
     (snapshot.preComments ?? []).map((c) => [c.id, c.text, c.anchorTriadan]),

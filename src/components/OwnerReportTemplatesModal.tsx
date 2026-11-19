@@ -1,3 +1,4 @@
+import { RefineTextAction, RefineTextContext } from './RefineTextAction';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { PdfPagesPreview, canShowPdfInline } from './PdfPagesPreview';
@@ -36,6 +37,8 @@ interface OwnerReportTemplatesModalProps {
   onSave: (config: OwnerReportConfig) => Promise<void>;
   /** Practice owners edit; everyone else gets a read-only view. */
   canEdit: boolean;
+  startNew?: boolean;
+  aiEnabled?: boolean;
   /** Role still loading — suppress the read-only note until known. */
   roleKnown: boolean;
   /** The practice's saved templates couldn't be loaded — what's shown is
@@ -63,9 +66,8 @@ type TextField = HTMLInputElement | HTMLTextAreaElement;
 const clone = <T,>(v: T): T => JSON.parse(JSON.stringify(v)) as T;
 
 /**
- * Owner report templates editor (opened from Practice settings): a list
- * of templates on the left, the selected template on the right — title,
- * intro, section order/visibility/headings, custom text sections,
+ * Practice template editor for report title, intro, section order and
+ * visibility, headings, custom text sections,
  * home-care tips, closing note, footer, display options, and language.
  * Edits stay in a draft until Save; Cancel/Escape/backdrop ask before
  * discarding. Preview renders the PDF with a sample visit.
@@ -76,6 +78,8 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
   config,
   onSave,
   canEdit,
+  startNew = false,
+  aiEnabled,
   roleKnown,
   loadFailed = false,
   clientLanguage,
@@ -83,13 +87,18 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
   presentation = 'modal',
   onLeaveGuardChange,
 }) => {
+  const refinement = React.useContext(RefineTextContext);
+  const refineEnabled = (aiEnabled ?? refinement.enabled) && canEdit;
   const { t } = useTranslation('reportui');
   const asScreen = presentation === 'screen';
   const asSheet = presentation === 'sheet';
   const categorized = !asScreen && !asSheet;
+  const startedNew = React.useRef(false);
   const [actionsOpen, setActionsOpen] = React.useState(false);
+  const actionsTrigger = React.useRef<HTMLButtonElement>(null);
   const [category, setCategory] = React.useState<EditorCategory>('basics');
   const editorRef = React.useRef<HTMLDivElement>(null);
+  const nameRef = React.useRef<HTMLInputElement>(null);
   const [draft, setDraft] = React.useState<OwnerReportConfig>(() => clone(config));
   const [selectedId, setSelectedId] = React.useState(config.defaultTemplateId);
   const [busy, setBusy] = React.useState(false);
@@ -101,13 +110,28 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
   const activeField = React.useRef<{ el: TextField; set: (value: string) => void } | null>(null);
 
   React.useEffect(() => {
+    startedNew.current = false;
     if (!open) return;
     setDraft(clone(config));
     setSelectedId(config.defaultTemplateId);
     setCategory('basics');
+    setActionsOpen(false);
     setError('');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
+
+  const makeNewTemplate = React.useCallback(
+    () => ({ ...defaultTemplate(clientLanguage ?? appReportLocale()), id: newId('tpl-'), name: t('templates.newName') }),
+    [clientLanguage, t],
+  );
+  React.useEffect(() => {
+    if (!open || !startNew || !canEdit || loadFailed || startedNew.current || config.templates.length >= MAX_TEMPLATES) return;
+    startedNew.current = true;
+    const fresh = makeNewTemplate();
+    setDraft(previous => ({ ...previous, templates: [...previous.templates, fresh] }));
+    setSelectedId(fresh.id);
+    nameRef.current?.focus({ preventScroll: true });
+  }, [open, startNew, canEdit, loadFailed, config.templates.length, makeNewTemplate]);
 
   const baseline = React.useMemo(() => JSON.stringify(config), [config]);
   const dirty = open && JSON.stringify(draft) !== baseline;
@@ -159,7 +183,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
   React.useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape') return;
+      if (e.key !== 'Escape' || e.defaultPrevented) return;
       if (previewUrl) closePreview();
       else if (!asScreen && !asSheet) requestClose();
     };
@@ -242,7 +266,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
     if (!canEdit || busy || draft.templates.length >= MAX_TEMPLATES) return;
     const fresh = base
       ? { ...clone(base), id: newId('tpl-'), name: t('templates.copyName', { name: base.name }) }
-      : { ...defaultTemplate(clientLanguage ?? appReportLocale()), id: newId('tpl-'), name: t('templates.newName') };
+      : makeNewTemplate();
     setDraft((d) => ({ ...d, templates: [...d.templates, fresh] }));
     setSelectedId(fresh.id);
   };
@@ -375,69 +399,122 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
     if (editorRef.current) editorRef.current.scrollTop = 0;
   };
 
+  const selectTemplate = (id: string) => {
+    setSelectedId(id);
+    activeField.current = null;
+  };
+  const finishTemplateAction = (action: () => void) => {
+    setActionsOpen(false);
+    actionsTrigger.current?.focus();
+    action();
+  };
+  const canAddTemplate = !busy && draft.templates.length < MAX_TEMPLATES;
+  const templateActions = (
+    <>
+      <button type="button" className="diagram-view__action" onClick={() => finishTemplateAction(() => addTemplate(selected))} disabled={!canAddTemplate}>
+        {t('actions.duplicate', { ns: 'common' })}
+      </button>
+      <button
+        type="button"
+        className="diagram-view__action"
+        onClick={() => finishTemplateAction(() => setDraft((d) => ({ ...d, defaultTemplateId: selected.id })))}
+        disabled={busy || selected.id === draft.defaultTemplateId}
+      >
+        {t('templates.setDefault')}
+      </button>
+      <button type="button" className="diagram-view__action diagram-view__action--danger" onClick={() => finishTemplateAction(deleteTemplate)} disabled={busy || draft.templates.length <= 1}>
+        {t('actions.delete', { ns: 'common' })}
+      </button>
+    </>
+  );
+
   const templatesEditor = (
     <>
-      {/* ---- Template list ------------------------------------------- */}
-      <nav className="report-templates__list" aria-label={t('templates.listLabel')}>
-        {categorized && (
-          <label className="report-templates__compact-picker patient-form__label">
-            {t('section.templateLabel')}
-            <select className="patient-form__input" value={selected.id} onChange={(e) => { setSelectedId(e.target.value); activeField.current = null; }}>
-              {draft.templates.map((tpl) => <option key={tpl.id} value={tpl.id}>{tpl.name || t('templates.untitled')}{tpl.id === draft.defaultTemplateId ? ` — ${t('templates.badgeDefault')}` : ''}</option>)}
-            </select>
-          </label>
-        )}
-        <ul>
-          {draft.templates.map((tpl) => (
-            <li key={tpl.id}>
-              <button
-                type="button"
-                className={`report-templates__item${tpl.id === selected.id ? ' report-templates__item--on' : ''}`}
-                aria-current={tpl.id === selected.id ? 'true' : undefined}
-                onClick={() => { setSelectedId(tpl.id); activeField.current = null; }}
-              >
-                <span className="report-templates__item-name">{tpl.name || t('templates.untitled')}</span>
-                <span className="report-templates__item-meta">
-                  {tpl.id === draft.defaultTemplateId && <span className="report-templates__badge">{t('templates.badgeDefault')}</span>}
-                  {tpl.language !== 'en' && <span className="report-templates__lang">{tpl.language.toUpperCase()}</span>}
-                </span>
+      {categorized ? (
+        <div className="report-templates__toolbar">
+          <select
+            className="patient-form__input report-templates__template-picker"
+            aria-label={t('section.templateLabel')}
+            value={selected.id}
+            onChange={(e) => selectTemplate(e.target.value)}
+            disabled={busy}
+          >
+            {draft.templates.map((tpl) => (
+              <option key={tpl.id} value={tpl.id}>
+                {[tpl.name || t('templates.untitled'), tpl.language !== 'en' && tpl.language.toUpperCase(), tpl.id === draft.defaultTemplateId && t('templates.badgeDefault')].filter(Boolean).join(' · ')}
+              </option>
+            ))}
+          </select>
+          {canEdit && (
+            <div className="report-templates__toolbar-actions">
+              <button type="button" className="diagram-view__action" onClick={() => addTemplate()} disabled={!canAddTemplate}>
+                <span aria-hidden="true">+</span>{' '}{t('report.newTemplate', { ns: 'forms' })}
               </button>
-            </li>
-          ))}
-        </ul>
-        {canEdit && (
-          <div className="report-templates__management">
-          <button type="button" className="diagram-view__action report-templates__actions-toggle" aria-expanded={actionsOpen} aria-controls="template-management-actions" onClick={() => setActionsOpen((value) => !value)}>{t('templates.manageActions')}</button>
-          <div id="template-management-actions" className={`report-templates__list-actions${actionsOpen ? ' report-templates__list-actions--open' : ''}`}>
-
-            <button type="button" className="diagram-view__action" onClick={() => addTemplate()} disabled={busy || draft.templates.length >= MAX_TEMPLATES}>
-              {t('templates.new')}
-            </button>
-            <button type="button" className="diagram-view__action" onClick={() => addTemplate(selected)} disabled={busy || draft.templates.length >= MAX_TEMPLATES}>
-              {t('actions.duplicate', { ns: 'common' })}
-            </button>
-            <button
-              type="button"
-              className="diagram-view__action"
-              onClick={() => { if (!busy && canEdit) setDraft((d) => ({ ...d, defaultTemplateId: selected.id })); }}
-              disabled={busy || selected.id === draft.defaultTemplateId}
-              aria-label={t('templates.setDefault')}
-            >
-              <span className="report-templates__long">{t('templates.setDefault')}</span>
-              <span className="report-templates__short">{t('templates.setDefaultShort')}</span>
-            </button>
-            <button
-              type="button"
-              className="diagram-view__action diagram-view__action--danger"
-              onClick={deleteTemplate}
-              disabled={busy || draft.templates.length <= 1}
-            >
-              {t('actions.delete', { ns: 'common' })}
-            </button>
-          </div>
-          </div>
-        )}
-      </nav>
+              <div
+                className="report-templates__overflow"
+                onBlur={(e) => {
+                  if (!e.currentTarget.contains(e.relatedTarget)) setActionsOpen(false);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key !== 'Escape' || !actionsOpen) return;
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setActionsOpen(false);
+                  actionsTrigger.current?.focus();
+                }}
+              >
+                <button
+                  ref={actionsTrigger}
+                  type="button"
+                  className="diagram-view__action report-templates__overflow-trigger"
+                  aria-label={t('templates.manageActions')}
+                  aria-expanded={actionsOpen}
+                  aria-controls="template-management-actions"
+                  onClick={(e) => {
+                    e.currentTarget.focus();
+                    setActionsOpen((value) => !value);
+                  }}
+                  disabled={busy}
+                >
+                  <span aria-hidden="true">⋯</span>
+                </button>
+                <div id="template-management-actions" className="report-templates__overflow-panel" hidden={!actionsOpen}>
+                  {templateActions}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      ) : (
+        <nav className="report-templates__list" aria-label={t('templates.listLabel')}>
+          <ul>
+            {draft.templates.map((tpl) => (
+              <li key={tpl.id}>
+                <button
+                  type="button"
+                  className={`report-templates__item${tpl.id === selected.id ? ' report-templates__item--on' : ''}`}
+                  aria-current={tpl.id === selected.id ? 'true' : undefined}
+                  onClick={() => selectTemplate(tpl.id)}
+                >
+                  <span className="report-templates__item-name">{tpl.name || t('templates.untitled')}</span>
+                  <span className="report-templates__item-meta">
+                    {tpl.id === draft.defaultTemplateId && <span className="report-templates__badge">{t('templates.badgeDefault')}</span>}
+                    {tpl.language !== 'en' && <span className="report-templates__lang">{tpl.language.toUpperCase()}</span>}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+          {canEdit && (
+            <div className="report-templates__list-actions">
+              <button type="button" className="diagram-view__action" onClick={() => addTemplate()} disabled={!canAddTemplate}>
+                {t('templates.new')}
+              </button>
+              {templateActions}
+            </div>
+          )}
+        </nav>
+      )}
 
       {categorized && (
         <nav className="report-templates__categories" aria-label={t('templates.editor.navigation')}>
@@ -475,6 +552,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
               <label className="patient-form__label">
                 {t('templates.nameLabel')}
                 <input
+                  ref={nameRef}
                   type="text"
                   className="patient-form__input"
                   value={selected.name}
@@ -589,6 +667,8 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
               onChange={(e) => updateTemplate({ introTemplate: e.target.value })}
               {...track((v) => updateTemplate({ introTemplate: v }))}
             />
+            {refineEnabled && <div className="clinical-text__actions"><RefineTextAction value={selected.introTemplate} enabled={aiEnabled}
+              scopeKey={selected.id} readOnly={!canEdit || busy} onApply={introTemplate => updateTemplate({ introTemplate })} /></div>}
             <span className="patient-form__hint">{t('templates.summaryEmpty')}</span>
           </section>
 
@@ -656,6 +736,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
                       {...track((v) => updateSection(section.id, { title: v }))}
                     />
                     {custom && (
+                      <>
                       <textarea
                         className="patient-form__input report-templates__textarea"
                         rows={3}
@@ -665,6 +746,10 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
                         onChange={(e) => updateSection(section.id, { body: e.target.value })}
                         {...track((v) => updateSection(section.id, { body: v }))}
                       />
+                      {refineEnabled && <div className="clinical-text__actions"><RefineTextAction
+                        value={(section as CustomReportSection).body} enabled={aiEnabled}
+                        scopeKey={selected.id} readOnly={!canEdit || busy} onApply={body => updateSection(section.id, { body })} /></div>}
+                      </>
                     )}
                   </li>
                 );
@@ -710,6 +795,9 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
                           updateTemplate((tpl) => ({ homecareTips: tpl.homecareTips.map((x, j) => (j === i ? v : x)) }))
                         )}
                       />
+                      <RefineTextAction value={tip} enabled={aiEnabled} singleLine
+                        scopeKey={JSON.stringify([selected.id, selected.homecareTips])} readOnly={!canEdit || busy}
+                        onApply={value => updateTemplate(tpl => ({ homecareTips: tpl.homecareTips.map((previous, index) => index === i ? value : previous) }))} />
                       <button
                         type="button"
                         className="diagram-view__action diagram-view__action--danger"
@@ -759,6 +847,8 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
                 {...track((v) => updateTemplate({ closingNote: v }))}
               />
             </label>
+            {refineEnabled && <div className="clinical-text__actions"><RefineTextAction value={selected.closingNote} enabled={aiEnabled}
+              scopeKey={selected.id} readOnly={!canEdit || busy} onApply={closingNote => updateTemplate({ closingNote })} /></div>}
             <label className="patient-form__label">
               {t('templates.footerLabel')}
               <input

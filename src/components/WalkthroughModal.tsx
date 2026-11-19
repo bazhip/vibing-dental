@@ -52,7 +52,7 @@ export function buildSteps(aiEnabled?: boolean, ownerReportEnabled?: boolean): S
   }
   steps.push(
     { id: 'settings', target: '[data-tour="practice-settings"]', placement: 'bottom' },
-    { id: 'pdf', target: '.visit-export__button', placement: 'left' },
+    { id: 'pdf', section: 'treatment', target: '.visit-export__button', placement: 'left' },
   );
   return steps;
 }

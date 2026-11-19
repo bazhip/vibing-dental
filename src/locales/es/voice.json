@@ -51,6 +51,21 @@
     "sessionStart": "No se pudo iniciar la sesión de Deepgram.",
     "unsupported": "La entrada de voz requiere Chrome, Edge o Safari."
   },
+  "destination": {
+    "general": "General"
+  },
+  "correction": {
+    "conflict": "Revise este cambio en el historial.",
+    "apply": "Aplicar sugerencia",
+    "keep": "Conservar el valor actual"
+  },
+  "welcome": {
+    "ready": "La transcripción aparecerá aquí cuando inicie la grabación.",
+    "title": "Dictado",
+    "start": "Seleccione Iniciar dictado para comenzar la grabación.",
+    "transcript": "Siga la transcripción mientras habla. Seleccione Detener al terminar.",
+    "review": "Revise el informe o los cambios en el historial y corrija lo que haga falta."
+  },
   "intro": {
     "ariaLabel": "Dictar",
     "cancel": "Cancelar",
@@ -131,6 +146,7 @@
     "open_other": "{{count}} elementos por revisar."
   },
   "status": {
+    "idle": "Listo para comenzar",
     "connecting": "Conectando…",
     "finishing": "Finalizando…",
     "interrupted": "Interrumpido",
@@ -154,5 +170,50 @@
   "transcript": {
     "activity": "Actividad",
     "header": "Transcripción — grabación iniciada {{date}}"
+  },
+  "clinical": {
+    "dictate": "Dictar: {{target}}",
+    "title": "Dictado: {{target}}",
+    "kinds": {
+      "gp-visit": "visita general",
+      "consultation": "consulta",
+      "gp-exam": "Exploración general",
+      "discharge": "instrucciones de alta",
+      "ct": "Informe de TC"
+    },
+    "help": "Grabe o pegue las observaciones del profesional clínico. Revise las secciones propuestas antes de aplicarlas. Los hallazgos no documentados permanecen en blanco.",
+    "imagingHelp": "Grabe o pegue los hallazgos de imagen. Indique la modalidad si no está clara. Revise a qué informe, radiográfico o de TC, corresponde cada hallazgo antes de aplicarlo.",
+    "ctHelp": "Grabe o pegue las observaciones de TC. Al detener el dictado, se añaden únicamente al informe de TC y se revisa su redacción automáticamente.",
+    "ctApply": "Añadir y revisar el informe de TC",
+    "target": "Destino del dictado",
+    "transcript": "Transcripción",
+    "start": "Iniciar dictado",
+    "stop": "Detener dictado",
+    "prepare": "Preparar secciones",
+    "preparing": "Preparando secciones…",
+    "apply": "Aplicar secciones seleccionadas",
+    "noSections": "No se han encontrado secciones clínicas. Su transcripción está disponible para revisión.",
+    "includeField": "Incluir {{field}}",
+    "current": "Texto actual",
+    "evidence": "Fragmento de origen",
+    "stale": "Esta visita o su texto de origen ha cambiado. Prepare las secciones de nuevo antes de aplicarlas.",
+    "applied": "Las secciones seleccionadas se han aplicado a esta visita.",
+    "savedWithVisit": "La transcripción se conserva con esta visita después de aplicarla. No se incluye en los informes impresos.",
+    "sources": "Transcripciones guardadas",
+    "savedTranscript": "Transcripción registrada el {{date}}",
+    "copyTranscript": "Copiar transcripción",
+    "copyPrompt": "Copie la transcripción registrada:",
+    "copied": "Transcripción copiada.",
+    "copyPromptShown": "La transcripción está lista para copiar desde el cuadro de diálogo.",
+    "storageLimit": "Esta visita ha alcanzado el límite de almacenamiento de transcripciones. Copie la transcripción antes de cerrar.",
+    "invalidSource": "La fuente de la transcripción no es válida. Revise la transcripción e inténtelo de nuevo.",
+    "emptyTranscript": "Primero grabe o pegue una transcripción.",
+    "transcriptTooLong": "La transcripción es demasiado larga. Divídala en dictados más cortos e inténtelo de nuevo.",
+    "sourceTooLarge": "Hay demasiado texto de origen para una sola solicitud. Elija un destino de dictado más específico o acorte la transcripción.",
+    "invalidResponse": "No se han podido validar las secciones propuestas. Revise la transcripción e inténtelo de nuevo.",
+    "extractionFailed": "No se han podido preparar las secciones. Su transcripción se ha conservado.",
+    "failed": "No se ha podido completar el dictado. Su transcripción se ha conservado.",
+    "cancelled": "El dictado se ha cancelado.",
+    "consentRequired": "Se necesita consentimiento para usar la IA para grabar o preparar este dictado."
   }
 }

@@ -22,6 +22,10 @@ vi.mock('../utils/pims/extensionBridge', () => ({
   appointments: vi.fn(),
   startChart: vi.fn(),
   takePendingPatient: vi.fn(),
+  physicalExam: vi.fn(),
+  instinctSubmission: vi.fn(),
+  radiologyAutofill: vi.fn(),
+  noteAutofill: vi.fn(),
   extensionAvailable: () => true,
 }));
 vi.mock('../hooks/usePimsFieldMap', () => ({
@@ -77,12 +81,13 @@ function renderDialog(over: Partial<React.ComponentProps<typeof SendToEzyvetDial
 const pseudo = (key: string): string => (i18n.t as unknown as (k: string) => string)(key);
 
 beforeEach(async () => {
+  vi.stubEnv('VITE_PIMS_ROLLOUT_ENABLED', 'true');
   vi.clearAllMocks();
   mocks.ping.mockResolvedValue({ version: '1' });
   mocks.inspect.mockResolvedValue(writable);
   await installPseudoLocale();
 });
-afterEach(async () => { cleanup(); await restoreLocale(); });
+afterEach(async () => { cleanup(); vi.unstubAllEnvs(); await restoreLocale(); });
 
 describe('Send to ezyVet dialog (pseudo-locale)', () => {
   it('writable: target, rows, actions', async () => {
