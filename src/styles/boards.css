@@ -718,11 +718,12 @@
 }
 
 .chart-library__search {
+  flex: 1 1 16rem;
+  min-width: min(12rem, 100%);
   box-shadow: var(--shadow-xs);
   background: var(--surface);
   color: var(--text);
-  width: 100%;
-  max-width: 28rem;
+  width: auto;
   padding: 0.6rem 0.85rem;
   border: 1px solid var(--border-strong);
   border-radius: 8px;
@@ -979,12 +980,26 @@
   flex-wrap: wrap;
 }
 
+/* Rare imports stay outside the scrolling results and primary toolbar. */
+.chart-library-modal__footer {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid var(--border);
+}
+.chart-library-modal__footer .chart-library__filter { min-height: 44px; }
+
 /* Library controls: search + recall filter */
 .chart-library__controls {
   display: flex;
   align-items: center;
   gap: 0.6rem;
   flex-wrap: wrap;
+}
+.chart-library__controls > :is(input, select, button) {
+  box-sizing: border-box;
+  min-height: 44px;
 }
 /* Doctor / species dropdowns beside the search box. */
 .chart-library__filter-select {
@@ -1475,7 +1490,7 @@
   }
   .chart-library-modal:not(.admin-panel) .chart-library__act,
   .chart-library-modal:not(.admin-panel) .chart-library__delete {
-    min-height: 2.25rem;
+    min-height: 44px;
   }
   .chart-library-modal:not(.admin-panel) .chart-library__delete { padding: 0.4rem 0.6rem; }
   /* Header: just the sort buttons (Patient · Updated · Recheck) + Due. */

@@ -11,6 +11,7 @@
 
 import { Species } from '../types';
 import type { ColumnKey } from './columnDefinitions';
+import { RABBIT_TOOTH_DATA } from './toothData';
 
 export interface ChartTooth {
   triadan: number;
@@ -299,6 +300,25 @@ export const TOOTH_GRID_LAYOUTS: Record<Species, { maxilla: ToothGridLayout; man
       labelColIn: 0.50, toothColIn: 0.4167,   // 5.00 / 12 ≈ 0.417
       rowHeightIn: 0.13, fieldWidthIn: 0.387, fieldHeightIn: 0.115,
       teeth: FELINE_DECIDUOUS_MANDIBLE_TEETH,
+    },
+  },
+  rabbit: {
+    maxilla: {
+      pageIndex: 0, xIn: 5.10, yTopIn: 5.10,
+      labelColIn: 0.50, toothColIn: 0.3125,
+      rowHeightIn: 0.13, fieldWidthIn: 0.2875, fieldHeightIn: 0.115,
+      teeth: RABBIT_TOOTH_DATA.filter(t => t.triadan < 300)
+        .sort((a, b) => a.triadan < 200 && b.triadan < 200 ? b.triadan - a.triadan : a.triadan - b.triadan)
+        .map(t => ({ triadan: t.triadan, abbr: t.tooth })),
+    },
+    mandible: {
+      pageIndex: 0, xIn: 5.10, yTopIn: 6.70,
+      labelColIn: 0.50, toothColIn: 0.4167,
+      rowHeightIn: 0.13, fieldWidthIn: 0.387, fieldHeightIn: 0.115,
+      teeth: RABBIT_TOOTH_DATA.filter(t => t.triadan >= 300)
+        .sort((a, b) => Math.floor(b.triadan / 100) - Math.floor(a.triadan / 100) ||
+          (a.triadan >= 400 ? b.triadan - a.triadan : a.triadan - b.triadan))
+        .map(t => ({ triadan: t.triadan, abbr: t.tooth })),
     },
   },
   equine: {

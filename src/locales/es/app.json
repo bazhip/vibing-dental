@@ -20,7 +20,8 @@
     "canine": "Canino",
     "felineDeciduous": "Felino · Dientes deciduos",
     "canineDeciduous": "Canino · Dientes deciduos",
-    "equine": "Equino"
+    "equine": "Equino",
+    "rabbit": "Conejo"
   },
   "chartingView": {
     "label": "Vista del odontograma",

@@ -606,3 +606,12 @@ test('includes recorded discharge wording in the client-language fallback and pr
   snapshot.ownerReport.extraNotes = '';
   expect(buildOwnerReportModel(snapshot).extraNotes).toBe('');
 });
+
+it('a rabbit report uses rabbit care defaults and identifies the species', () => {
+  const snap = { ...baseSnapshot(), species: 'rabbit' as const, toothData: getInitialToothData('rabbit') };
+  const model = buildOwnerReportModel(snap);
+  expect(model.speciesLabel).toBe('Rabbit');
+  expect(model.homecareTips).toEqual(reportStrings('en').homecareTipsRabbit);
+  expect(model.homecareTips.join(' ')).toMatch(/hay/);
+  expect(model.homecareTips.join(' ')).not.toMatch(/brush|VOHC|chews|bit,/i);
+});

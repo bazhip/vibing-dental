@@ -5,7 +5,8 @@
       "canineDeciduous": "Kutya tejfogazatának fogászati lapja",
       "feline": "Macska fogászati lapja",
       "felineDeciduous": "Macska tejfogazatának fogászati lapja",
-      "equine": "Ló fogászati lapja"
+      "equine": "Ló fogászati lapja",
+      "rabbit": "Nyúl fogászati lap"
     },
     "subtitle": "Parodontális állapotfelmérés és kezelési terv",
     "tech": "Asszisztens: {{name}}"

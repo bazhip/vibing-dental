@@ -97,6 +97,7 @@ const SPECIES_KEYS = {
   'feline-deciduous': 'species.felineDeciduous',
   'canine-deciduous': 'species.canineDeciduous',
   equine: 'species.equine',
+  rabbit: 'species.rabbit',
 } as const;
 
 /** The species name in the active language (an unknown species is shown as stored). */
@@ -115,7 +116,7 @@ const ERROR_KEYS = {
 } as const satisfies Record<LibraryError['kind'], string>;
 
 /** Species offered in the filter (the stored species values). */
-const FILTER_SPECIES = ['canine', 'feline', 'equine'] as const;
+const FILTER_SPECIES = ['canine', 'feline', 'equine', 'rabbit'] as const;
 
 const SORT_LABELS = { patient: 'table.patient', updated: 'table.updated', recall: 'table.recheck' } as const;
 
@@ -325,36 +326,13 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
             )}
             <button
               type="button"
-              className="chart-library__filter"
-              onClick={() => pdfInputRef.current?.click()}
-              title={t('importPdfTitle')}
-            >
-              {t('importPdf')}
-            </button>
-            <button
-              type="button"
               className="chart-library__filter chart-library__filter--primary"
               onClick={onNewPatient}
               title={t('newPatientTitle')}
             >
               {t('newPatient')}
             </button>
-            <input
-              ref={pdfInputRef}
-              type="file"
-              accept="application/pdf"
-              style={{ display: 'none' }}
-              onChange={async (e) => {
-                const file = e.target.files?.[0];
-                e.target.value = '';
-                if (!file) return;
-                try {
-                  if ((await onLoadPdf(file)) !== false) onClose();
-                } catch (cause) {
-                  setLibraryError({ kind: 'open', cause });
-                }
-              }}
-            />
+
           </div>
 
           {error && <div className="login-error" role="alert">{error}</div>}
@@ -562,6 +540,32 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
             </div>
           )}
         </div>
+        <footer className="chart-library-modal__footer">
+            <button
+              type="button"
+              className="chart-library__filter"
+              onClick={() => pdfInputRef.current?.click()}
+              title={t('importPdfTitle')}
+            >
+              {t('importPdf')}
+            </button>
+            <input
+              ref={pdfInputRef}
+              type="file"
+              accept="application/pdf"
+              style={{ display: 'none' }}
+              onChange={async (e) => {
+                const file = e.target.files?.[0];
+                e.target.value = '';
+                if (!file) return;
+                try {
+                  if ((await onLoadPdf(file)) !== false) onClose();
+                } catch (cause) {
+                  setLibraryError({ kind: 'open', cause });
+                }
+              }}
+            />
+        </footer>
       </div>
     </div>
   );

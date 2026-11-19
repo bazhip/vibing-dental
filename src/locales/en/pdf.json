@@ -5,7 +5,8 @@
       "canineDeciduous": "Canine (Deciduous) Dental Chart",
       "feline": "Feline Dental Chart",
       "felineDeciduous": "Feline (Deciduous) Dental Chart",
-      "equine": "Equine Dental Chart"
+      "equine": "Equine Dental Chart",
+      "rabbit": "Rabbit Dental Chart"
     },
     "subtitle": "Periodontal Assessment & Treatment Plan",
     "tech": "Tech: {{name}}"

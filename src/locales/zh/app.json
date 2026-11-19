@@ -20,7 +20,8 @@
     "canine": "犬",
     "felineDeciduous": "猫 · 乳牙",
     "canineDeciduous": "犬 · 乳牙",
-    "equine": "马"
+    "equine": "马",
+    "rabbit": "兔"
   },
   "chartingView": {
     "label": "牙科记录视图",

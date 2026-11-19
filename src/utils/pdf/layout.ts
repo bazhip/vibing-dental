@@ -56,6 +56,10 @@ export const DIAGRAM_SLOTS: Record<Species, [DiagramSlot, DiagramSlot]> = {
   ],
   // Tall, narrow artwork (aspect ≈ 0.38): same height budget, so it
   // prints narrower, centred in the same column.
+  rabbit: [
+    { pageIndex: 0, xIn: 0.15, columnWidthIn: 4.95, yTopIn: 1.85, heightIn: 4.65, maxWidthIn: 4.85 },
+    { pageIndex: 1, xIn: 0.30, columnWidthIn: 5.10, yTopIn: 1.75, heightIn: 4.70, maxWidthIn: 5.00 },
+  ],
   equine: [
     { pageIndex: 0, xIn: 0.15, columnWidthIn: 4.95, yTopIn: 1.85, heightIn: 4.65, maxWidthIn: 4.85 },
     { pageIndex: 1, xIn: 0.30, columnWidthIn: 5.10, yTopIn: 1.75, heightIn: 4.70, maxWidthIn: 5.00 },

@@ -20,7 +20,8 @@
     "canine": "Kutya",
     "felineDeciduous": "Macska · Tejfogazat",
     "canineDeciduous": "Kutya · Tejfogazat",
-    "equine": "Ló"
+    "equine": "Ló",
+    "rabbit": "Nyúl"
   },
   "chartingView": {
     "label": "Kitöltési nézet",

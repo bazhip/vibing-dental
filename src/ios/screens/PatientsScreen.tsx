@@ -43,7 +43,7 @@ const ORDER_LABELS = {
   recall: { asc: 'filter.recallAsc', desc: 'filter.recallDesc' },
 } as const;
 const SORT_KEYS: SortKey[] = ['patient', 'updated', 'recall'];
-const SPECIES = ['', 'canine', 'feline'] as const;
+const SPECIES = ['', 'canine', 'feline', 'equine', 'rabbit'] as const;
 
 /** The library's message for each failure (the cause follows). */
 const LIBRARY_ERROR_KEYS = {

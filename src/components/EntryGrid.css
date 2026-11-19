@@ -231,8 +231,9 @@
   cursor: pointer;
   transition: border-color 0.15s, background 0.15s;
 }
-.voice-input:hover:not(:disabled) {
-  border-color: var(--text-muted, #94a3b8);
+.voice-input:not(.voice-input--recording, .voice-input--processing, .voice-input--error):hover:not(:disabled) {
+  background: var(--surface-alt);
+  border-color: var(--primary);
 }
 .voice-input:disabled {
   opacity: 0.6;
@@ -869,6 +870,57 @@
 .species-tab--active:hover {
   background: var(--primary);
   color: var(--ios-on-tint, white);
+}
+
+/* Common species stay inline; the less common species share one control. */
+.patient-form__species-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.patient-form__common-species {
+  display: flex;
+  flex: 2 1 auto;
+  gap: 0.5rem;
+}
+
+.patient-form__other {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+}
+
+.patient-form__other-select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.patient-form__other:focus-within {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+
+.patient-form--ios .patient-form__species-controls > .ios-segmented {
+  flex: 1 1 auto;
+}
+
+.patient-form--ios .patient-form__choice-row .ios-segmented__segment {
+  min-height: 44px;
+}
+
+.patient-form--ios .patient-form__other {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
 }
 
 /* Dental Grid Styles */
@@ -4128,6 +4180,8 @@ button.save-status--manual:hover {
 .custom-def__remove { flex: none; }
 
 /* ---- Chart history ----------------------------------------------------- */
+/* History is a child dialog of Patients, independent of portal mount order. */
+.chart-history-overlay { z-index: 1150; }
 .ai-settings-modal.chart-history { max-width: 64rem; height: min(88vh, 52rem); height: min(88dvh, 52rem); }
 .chart-history__body { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: minmax(15rem, 20rem) 1fr; }
 .chart-history__list { border-inline-end: 1px solid var(--border, #e2e8f0); overflow-y: auto; }

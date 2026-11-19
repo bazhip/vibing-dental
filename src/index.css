@@ -48,6 +48,16 @@ code {
   outline-offset: 2px;
 }
 
+/* Shared pointer feedback also covers quiet/icon buttons and disclosures.
+   Outline leaves layout and each control's status/selection colors intact.
+   Keyboard focus keeps the stronger ring above; touch has no sticky hover. */
+@media (hover: hover) and (pointer: fine) {
+  html:not(.native-ios) :where(button, summary, a[role="button"]):not(:disabled, [aria-disabled="true"]):not(:focus-visible):hover {
+    outline: 1px solid color-mix(in srgb, var(--primary) 55%, transparent);
+    outline-offset: 1px;
+  }
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;

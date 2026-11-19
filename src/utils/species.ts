@@ -2,11 +2,12 @@ import type { Species } from '../types';
 
 /** The animal, without the dentition (what the charts table stores in
  *  `species`). */
-export type SpeciesBase = 'canine' | 'feline' | 'equine';
+export type SpeciesBase = 'canine' | 'feline' | 'equine' | 'rabbit';
 export type Dentition = 'permanent' | 'deciduous';
 
 export function speciesBase(species: string): SpeciesBase {
   if (species.startsWith('canine')) return 'canine';
+  if (species === 'rabbit') return 'rabbit';
   if (species.startsWith('equine')) return 'equine';
   return 'feline';
 }
@@ -15,9 +16,9 @@ export function speciesDentition(species: string): Dentition {
   return species.endsWith('deciduous') ? 'deciduous' : 'permanent';
 }
 
-/** Dog and cat have a deciduous chart; the horse chart is adult only. */
+/** Dog and cat have a deciduous chart; horse and rabbit charts are adult only. */
 export function hasDeciduousChart(base: SpeciesBase): boolean {
-  return base !== 'equine';
+  return base === 'canine' || base === 'feline';
 }
 
 export function combineSpecies(base: SpeciesBase, dentition: Dentition): Species {

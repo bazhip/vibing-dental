@@ -78,7 +78,8 @@
     "canine-deciduous": "幼犬",
     "feline": "猫",
     "feline-deciduous": "幼猫",
-    "equine": "马"
+    "equine": "马",
+    "rabbit": "兔"
   },
   "tooth": {
     "deciduous": "乳",
@@ -160,5 +161,10 @@
     "dischargeMedications": "出院用药",
     "dischargeInstructions": "出院指导",
     "dischargeFollowUp": "出院随访"
+  },
+  "homecareTipsRabbit": {
+    "hay": "无限量提供禾本科干草，帮助牙齿正常磨耗；治疗后请遵循兽医团队的喂食指导。",
+    "checkups": "请按兽医团队建议按时进行牙科复查；兔的牙齿会持续生长。",
+    "warningSigns": "如果您的兔进食减少、停止进食、粪便减少、流口水或体重下降，请及时联系兽医团队。"
   }
 }

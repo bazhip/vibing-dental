@@ -93,7 +93,7 @@ function commentsByTooth(comments: DiagramComment[]) {
 }
 
 function speciesLabel(species: ChartSnapshot['species'], t: RecordNoteT): string {
-  const [base, dentition] = species.split('-') as ['canine' | 'feline' | 'equine', string | undefined];
+  const [base, dentition] = species.split('-') as ['canine' | 'feline' | 'equine' | 'rabbit', string | undefined];
   const name = t(`forms:patient.${base}`);
   return dentition === 'deciduous' ? `${name} (${t('forms:patient.deciduous')})` : name;
 }

@@ -133,6 +133,10 @@ html:not(.native-ios) .workspace-sidebar__account .chart-menu__trigger {
   display: flex; justify-content: space-between; gap: 8px; width: 100%; min-height: 44px;
   padding: 10px 12px; color: var(--primary); background: var(--surface); border-color: var(--action-border); font-size: 14px;
 }
+html:not(.native-ios) .workspace-sidebar__account .chart-menu__trigger:hover:not(:disabled) {
+  background: var(--surface-alt);
+  border-color: var(--primary);
+}
 html:not(.native-ios) .workspace-sidebar__account .chart-menu__trigger-label {
   position: static; width: auto; height: auto; margin: 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; clip: auto; white-space: nowrap; text-align: start;
 }

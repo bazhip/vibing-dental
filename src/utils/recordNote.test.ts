@@ -64,6 +64,7 @@ describe('record note builder', () => {
 
   it('renders equine and deciduous charts', () => {
     expect(buildRecordNote(snap({ species: 'equine' }), en()).sections[0].lines.join(' ')).toContain('Equine');
+    expect(buildRecordNote(snap({ species: 'rabbit' }), en()).sections[0].lines.join(' ')).toContain('Rabbit');
     expect(buildRecordNote(snap({ species: 'canine-deciduous' }), en()).sections[0].lines.join(' ')).toContain('Deciduous');
   });
 

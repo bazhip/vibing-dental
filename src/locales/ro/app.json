@@ -20,7 +20,8 @@
     "canine": "Canină",
     "felineDeciduous": "Felină · Dentiție deciduală",
     "canineDeciduous": "Canină · Dentiție deciduală",
-    "equine": "Ecvină"
+    "equine": "Ecvină",
+    "rabbit": "Iepure"
   },
   "chartingView": {
     "label": "Vizualizarea fișei dentare",

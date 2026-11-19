@@ -78,7 +78,8 @@
     "canine-deciduous": "Kölyökkutya",
     "feline": "Macska",
     "feline-deciduous": "Kölyökmacska",
-    "equine": "Ló"
+    "equine": "Ló",
+    "rabbit": "Nyúl"
   },
   "tooth": {
     "deciduous": "tej",
@@ -160,5 +161,10 @@
     "dischargeMedications": "Hazabocsátáskor rendelt gyógyszerek",
     "dischargeInstructions": "Hazabocsátási utasítások",
     "dischargeFollowUp": "Hazabocsátás utáni utánkövetés"
+  },
+  "homecareTipsRabbit": {
+    "hay": "Biztosítson korlátlan mennyiségű fűszénát a fogak természetes kopásának elősegítésére, és a kezelés után kövesse az állatorvosi csapat etetési útmutatását.",
+    "checkups": "Tartsa be az állatorvosi csapat által javasolt fogászati kontrollok időpontját; a nyúl fogai folyamatosan nőnek.",
+    "warningSigns": "Haladéktalanul forduljon állatorvosi csapatához, ha nyula kevesebbet eszik, nem eszik, kevesebbet ürít, nyálzik vagy fogy."
   }
 }

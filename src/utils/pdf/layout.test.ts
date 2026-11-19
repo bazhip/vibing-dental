@@ -2,6 +2,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { PDFDocument, PDFPage } from 'pdf-lib';
 import { buildDentalChartPDFBytes, type PdfLayoutOptions } from '../pdfGenerator';
 import { DIAGRAM_STATE_FIELD } from './parser';
+import { parseDentalChartPDF } from './parser';
+import { getInitialToothData } from '../../constants/toothData';
 import { EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS, type PatientInfo, type Species } from '../../types';
 
 const png = Uint8Array.from(atob('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=='), c => c.charCodeAt(0));
@@ -148,4 +150,25 @@ it('prints full GP sources on continuation pages and stashes their clinical fiel
   const stash = JSON.parse(doc.getForm().getTextField(DIAGRAM_STATE_FIELD).getText()!);
   expect(stash.patientInfo).toMatchObject(p);
   expect(stash).not.toHaveProperty('clinicalDictations');
+});
+
+it('exports all 28 rabbit teeth and reopens the complete chart without changing species', async () => {
+  const printed: string[] = [];
+  const drawText = PDFPage.prototype.drawText;
+  vi.spyOn(PDFPage.prototype, 'drawText').mockImplementation(function (this: PDFPage, text, options = {}) {
+    printed.push(text);
+    return drawText.call(this, text, options);
+  });
+  const teeth = getInitialToothData('rabbit').map(t => ({ ...t, pocket: t.triadan === 108 ? '2' : '' }));
+  const before = { ...diagram, state: { marks: { 102: 'missing' as const }, comments: [], strokes: [] } };
+  const bytes = await buildDentalChartPDFBytes(patient, teeth, 'rabbit', 'socal', before, diagram, 'clinic', { practiceName: 'Test practice' });
+  for (const t of teeth) expect(printed).toContain(String(t.triadan));
+  expect(printed).toContain('Rabbit Dental Chart');
+  expect(printed).not.toContain('104');
+  const file = new File([bytes as BlobPart], 'rabbit.pdf', { type: 'application/pdf' });
+  Object.defineProperty(file, 'arrayBuffer', { value: async () => bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) });
+  const parsed = await parseDentalChartPDF(file);
+  expect(parsed.species).toBe('rabbit');
+  expect(parsed.toothData).toEqual(teeth);
+  expect(parsed.preDiagram?.marks).toEqual({ 102: 'missing' });
 });
