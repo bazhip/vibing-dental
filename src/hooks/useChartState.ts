@@ -121,7 +121,7 @@ export interface UseChartStateReturn {
   getSnapshot: () => ChartSnapshot;
   /** Overwrite local state with a snapshot (e.g. a chart opened from the
    *  cloud) and adopt its cloud id. */
-  applySnapshot: (snapshot: ChartSnapshot, id: string) => void;
+  applySnapshot: (snapshot: ChartSnapshot, id: string, options?: { preserveSession?: boolean }) => void;
 
   /** True when the working chart was opened from a saved chart.
    *  Read-only status is controlled separately by finalizedAt. */
@@ -710,12 +710,13 @@ export function useChartState(): UseChartStateReturn {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [snapshot, cloudChartId, openedExisting]);
 
-  const applySnapshot = (raw: ChartSnapshot, id: string): void => {
+  const applySnapshot: UseChartStateReturn['applySnapshot'] = (raw, id, options) => {
     if (!isChartSnapshot(raw)) {
       throw new LocalizedError(i18n.t('errors.damagedChart', { ns: 'app' }));
     }
     const snapshot = normalizeSnapshot(raw);
-    setOpenedExisting(true);
+    const keepSession = options?.preserveSession && id === cloudChartId;
+    if (!keepSession) setOpenedExisting(true);
     setFinalizedAt(snapshot.finalizedAt || null);
     setImageRoles(snapshot.imageRoles ?? {});
     setOwnerReportImageInclusion(snapshot.ownerReportImageInclusion ?? {});
@@ -739,7 +740,7 @@ export function useChartState(): UseChartStateReturn {
     setPostToothMarksDirect(snapshot.postMarks ?? {});
     setPostDiagramComments(snapshot.postComments ?? []);
     setPostDiagramStrokes(snapshot.postStrokes ?? []);
-    openChartId(id);
+    if (!keepSession) openChartId(id);
   };
 
   // ----- Whole-chart actions -------------------------------------------

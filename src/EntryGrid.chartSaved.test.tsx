@@ -1,13 +1,21 @@
 import React from 'react';
-import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS } from './types';
 import { localDateISO } from './utils/localDate';
+import type { ChartListPage, ChartListQuery } from './hooks/useCloudSync';
 
 // The Chart tab in the iOS app on a saved visit (cloud sync mocked):
 // view-only state in the navigation bar, Edit / Done, New visit and
 // History in the More menu, and no web banners.
 const flags = vi.hoisted(() => ({ native: true }));
+const nativeEvents = vi.hoisted(() => ({ resume: undefined as (() => void) | undefined }));
+vi.mock('@capacitor/app', () => ({ App: {
+  addListener: async (event: string, callback: () => void) => {
+    if (event === 'resume') nativeEvents.resume = callback;
+    return { remove: async () => { nativeEvents.resume = undefined; } };
+  },
+} }));
 vi.mock('./native/platform', () => ({
   isNativeApp: () => flags.native,
   WEB_ORIGIN: 'https://toothops.app/',
@@ -22,8 +30,10 @@ const cloud = vi.hoisted(() => ({
   online: true,
   saveError: '',
   awaitingClinical: false,
+  preclinical: false,
+  refreshOpenChart: vi.fn(async () => {}),
   lastSavedAt: '',
-  listCharts: vi.fn(async () => ({ rows: [], hasMore: false })),
+  listCharts: vi.fn(async (_query?: ChartListQuery): Promise<ChartListPage> => ({ rows: [], hasMore: false })),
   openChart: vi.fn(async () => true),
   deleteChart: vi.fn(async () => {}),
   clearRecalls: vi.fn(async () => {}),
@@ -90,6 +100,7 @@ function seedSavedVisit(date = '2026-03-04', finalized = true) {
   put('chart.openedExisting', true);
   if (finalized) put('chart.finalizedAt', '2026-03-04T12:00:00Z');
   put('chart.cloudId', 'c-old');
+  localStorage.setItem('vibing-dental.onboarding.seen.v1', '1');
   put('chart.patientInfo', {
     patientName: 'Rex', patientNumber: '7', ownerName: '', ownerPhone: '', ownerEmail: '',
     doctor: '', tech: '', date, complaint: '', treatmentReport: '', recallDate: '',
@@ -101,6 +112,8 @@ beforeEach(() => {
   cloud.status = 'idle';
   cloud.lastSavedAt = '';
   cloud.dirty = false;
+  cloud.awaitingClinical = false;
+  cloud.preclinical = false;
   cloud.saveError = '';
   cloud.setFinalized.mockResolvedValue(true);
   seedSavedVisit();
@@ -285,6 +298,59 @@ it('reopens the last closed animal when choosing today’s visit from the librar
   expect(await screen.findByDisplayValue('Rex')).toBeVisible();
 });
 
+
+it.each([false, true])('offers one primary Save for a prefilled new chart (iOS: %s)', async (native) => {
+  flags.native = native;
+  seedSavedVisit(localDateISO(), false);
+  localStorage.removeItem('vibing-dental.chart.openedExisting.v1');
+  cloud.preclinical = true;
+  cloud.awaitingClinical = true;
+  cloud.dirty = true;
+  await renderApp();
+  expect(screen.queryByRole('button', { name: 'Finalize' })).toBeNull();
+  await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Save' })));
+  expect(cloud.saveNow).toHaveBeenCalledOnce();
+  expect(cloud.setFinalized).not.toHaveBeenCalled();
+  if (native) {
+    openMore();
+    expect(screen.queryByRole('menuitem', { name: 'Save now' })).toBeNull();
+  }
+});
+
+it.each([false, true])('refetches the open library on foreground (iOS: %s)', async (native) => {
+  flags.native = native;
+  cloud.listCharts.mockResolvedValue({ rows: [], hasMore: false });
+  if (native) {
+    await renderApp();
+    fireEvent.click(screen.getByRole('tab', { name: 'Patients' }));
+  } else {
+    window.history.replaceState(null, '', '/#/library');
+    render(<><EntryGrid /><DialogHost /></>);
+  }
+  await waitFor(() => expect(cloud.listCharts).toHaveBeenCalledWith(expect.objectContaining({ offset: 0 })));
+  const count = cloud.listCharts.mock.calls.filter(([q]) => q?.offset === 0).length;
+  cloud.listCharts.mockResolvedValue({
+    rows: [{
+      id: 'remote-visit', patient_name: 'A patient saved from another device', patient_number: '9',
+      owner_name: '', owner_phone: '', owner_email: '', species: 'canine', dentition: 'permanent',
+      chart_date: '2026-11-18', recall_date: '', updated_at: '2026-11-18T12:00:00Z', created_by: 'vet',
+    }],
+    hasMore: false,
+  });
+  cloud.refreshOpenChart.mockClear();
+  await act(async () => {
+    if (native) {
+      expect(nativeEvents.resume).toBeTypeOf('function');
+      nativeEvents.resume?.();
+    } else {
+      window.dispatchEvent(new Event('focus'));
+      window.dispatchEvent(new Event('online'));
+    }
+  });
+  expect(await screen.findByText('A patient saved from another device')).toBeVisible();
+  expect(cloud.listCharts.mock.calls.filter(([q]) => q?.offset === 0)).toHaveLength(count + 1);
+  expect(cloud.refreshOpenChart).toHaveBeenCalledOnce();
+});
 
 it('keeps past visits editable until explicitly finalized and permits reopening', async () => {
   flags.native = false;

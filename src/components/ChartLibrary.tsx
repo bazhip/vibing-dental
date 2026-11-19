@@ -77,6 +77,7 @@ interface ChartLibraryProps {
   presentation?: 'modal' | 'page';
   viewState?: React.RefObject<ChartLibraryViewState | undefined>;
   listCharts: (query?: ChartListQuery) => Promise<ChartListPage>;
+  reloadToken?: number;
   onOpen: (id: string) => Promise<boolean | void>;
   onDelete: (id: string) => Promise<void>;
   /** Start a fresh visit for a patient, carrying identity + gone teeth
@@ -128,6 +129,7 @@ const SORT_LABELS = { patient: 'table.patient', updated: 'table.updated', recall
 
 export const ChartLibrary: React.FC<ChartLibraryProps> = ({
   listCharts,
+  reloadToken,
   onOpen,
   onDelete,
   onNewVisit,
@@ -156,7 +158,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
     error: libraryError, setError: setLibraryError,
     busyId, setBusyId,
     deleteVisit, clearRecheck,
-  } = useChartLibraryList({ listCharts, onDelete, onClearRecalls, unnamedLabel: t('unnamedPatient'), viewState, lockedDueOnly: rechecksOnly });
+  } = useChartLibraryList({ listCharts, onDelete, onClearRecalls, unnamedLabel: t('unnamedPatient'), viewState, lockedDueOnly: rechecksOnly, reloadToken });
   const error = libraryError ? t(ERROR_KEYS[libraryError.kind], { error: friendlyDetail(libraryError.cause) }) : '';
   const [expanded, setExpanded] = React.useState<Set<string>>(new Set());
   // Only the modal presentation traps focus; pages keep normal document navigation.

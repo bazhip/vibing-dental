@@ -33,6 +33,7 @@ import { SidebarLayout, ChartSection } from './components/Layouts';
 import { ChartMenu } from './components/ChartMenu';
 import type { ChartSnapshot } from './components/PdfPreviewModal';
 import { VoiceInputButton, actionFocus } from './components/VoiceInputButton';
+import { App as CapacitorApp } from '@capacitor/app';
 import { FeedbackModal } from './components/FeedbackModal';
 import { ChartSettingsModal, type SettingsSection } from './components/ChartSettingsModal';
 import { WhatsNewModal } from './components/WhatsNewModal';
@@ -233,6 +234,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   React.useEffect(() => { setEditUnlocked(false); }, [chart.cloudChartId]);
   // The open patient's visits (newest first), for the topbar date
   // switcher. Loaded further down.
+  const [libraryVersion, setLibraryVersion] = React.useState(0);
   const [loadedVisits, setVisits] = React.useState<CloudChartMeta[]>([]);
   const visitCache = React.useRef(new Map<string, CloudChartMeta[]>());
   const visitIdentity = chart.patientInfo.patientId ? JSON.stringify([chart.patientInfo.patientId, chart.species]) : JSON.stringify([chart.patientInfo.patientNumber.trim().toLowerCase(), chart.patientInfo.patientName.trim().toLowerCase(), chart.species, !chart.patientInfo.patientNumber.trim() && !chart.patientInfo.patientName.trim() ? chart.cloudChartId : '']);
@@ -242,6 +244,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const rawCloud = useCloudSync(chart, !trial, profile.practiceId, editable, profile.loaded && profile.practiceKnown, chartSettings.loaded && prefs.autosave);
   const animalTabs = useAnimalTabs(chart, rawCloud, !native);
   const cloud = native ? rawCloud : { ...rawCloud, openChart: animalTabs.openChart, signOut: animalTabs.signOut, confirmDiscardIfDirty: animalTabs.confirmDiscardIfDirty };
+  const saveDraft = cloud.enabled && !chart.finalizedAt && cloud.preclinical;
   // Owner report is per-practice, admin-flagged, and off by default —
   // everything it touches (section, FAB, image tags, modal) gates here.
   const ownerReportOn = cloud.enabled && profile.ownerReportEnabled;
@@ -700,8 +703,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     if (chart.patientInfo.patientName.trim()) setSaveHint('');
   }, [chart.patientInfo.patientName]);
 
-  // Load the open patient's visits when the active chart changes (open /
-  // new visit / new patient) rather than on every keystroke.
+  // Load the open patient's visits when switching charts or refreshing the
+  // library, so the visit selector also picks up saves from another device.
   React.useEffect(() => {
     if (!cloud.enabled) { setVisits([]); return; }
     const num = chart.patientInfo.patientNumber.trim().toLowerCase();
@@ -725,7 +728,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       .catch(() => { if (!cancelled) setVisits([]); });
     return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cloud.enabled, chart.cloudChartId]);
+  }, [cloud.enabled, chart.cloudChartId, libraryVersion]);
 
   // The previous visit's per-tooth values — shown as muted hints in
   // empty grid cells and as "Last visit" tooltips, so the person probing
@@ -1483,7 +1486,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         : !prefs.autosave ? t('status.autosaveOff')
         : cloud.awaitingClinical ? t('status.waitingToChart') : t('status.unsavedTitle')
       : undefined;
-  const showManualSave = patientTabSaveStatus === 'notSaved' && cloud.status !== 'error' && cloud.online
+  const showManualSave = !saveDraft && patientTabSaveStatus === 'notSaved' && cloud.status !== 'error' && cloud.online
     && !!chart.patientInfo.patientName.trim() && (cloud.awaitingClinical || !prefs.autosave);
   const saveAction = React.useRef(attemptSave);
   saveAction.current = attemptSave;
@@ -1524,6 +1527,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
 
   // Only explicitly finalized records require Edit chart.
   const viewingSavedVisit = cloud.enabled && !!chart.finalizedAt;
+  const lifecycleLabel = viewingSavedVisit ? t('topbar.editChart') : saveDraft ? t('actions.save', { ns: 'common' }) : t('finalization.finalize');
   const startNewVisitFromLatest = () => {
     // Carry forward from the patient's LATEST visit — this also shows
     // when viewing an older one.
@@ -1648,7 +1652,36 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // One copy for the web's My charts dialog and the app's tabs (the app
   // adds "land on the Chart tab" on top). Stable identities.
   // libraryVersion tells the app's list screens to refetch.
-  const [libraryVersion, setLibraryVersion] = React.useState(0);
+  const refreshOpenChart = rawCloud.refreshOpenChart;
+  React.useEffect(() => {
+    if (!cloud.enabled) return;
+    let timer: number | undefined;
+    const refreshChart = () => { void refreshOpenChart?.().catch(() => { /* Keep the working copy on a failed read. */ }); };
+    const onForeground = () => {
+      if (document.visibilityState === 'hidden' || timer !== undefined) return;
+      // Browsers often deliver focus and visibility together on return.
+      timer = window.setTimeout(() => {
+        timer = undefined;
+        setLibraryVersion(version => version + 1);
+        refreshChart();
+      }, 0);
+    };
+    const onPageShow = (event: PageTransitionEvent) => { if (event.persisted) onForeground(); };
+    document.addEventListener('visibilitychange', onForeground);
+    window.addEventListener('focus', onForeground);
+    window.addEventListener('online', onForeground);
+    window.addEventListener('pageshow', onPageShow);
+    const resume = native ? CapacitorApp.addListener('resume', onForeground).catch(() => undefined) : undefined;
+    refreshChart();
+    return () => {
+      window.clearTimeout(timer);
+      document.removeEventListener('visibilitychange', onForeground);
+      window.removeEventListener('focus', onForeground);
+      window.removeEventListener('online', onForeground);
+      window.removeEventListener('pageshow', onPageShow);
+      void resume?.then(handle => handle?.remove()).catch(() => undefined);
+    };
+  }, [cloud.enabled, native, refreshOpenChart]);
   // App only: the website has no list that needs it (no extra renders there).
   const bumpLibrary = React.useCallback(() => {
     if (native) setLibraryVersion((v) => v + 1);
@@ -1798,6 +1831,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           key={route.view}
           rechecksOnly={route.view === 'rechecks'}
           viewState={route.view === 'rechecks' ? rechecksViewState : libraryViewState}
+          reloadToken={libraryVersion}
           listCharts={cloud.listCharts}
           onOpen={cloud.openChart}
           onDelete={libraryCore.deleteChart}
@@ -2220,7 +2254,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       ...(editingSavedVisit && unlockSnapshotChanged
         ? [{ label: t('topbar.undo', { ns: 'app' }), icon: 'arrow-uturn-backward' as const, onSelect: () => { void revertUnlockedChanges(); } }]
         : []),
-      ...(status.canSaveNow ? [{ label: t('ios.menu.saveNow', { ns: 'chart' }), icon: 'checkmark-circle' as const, onSelect: attemptSave }] : []),
+      ...(status.canSaveNow && !saveDraft ? [{ label: t('ios.menu.saveNow', { ns: 'chart' }), icon: 'checkmark-circle' as const, onSelect: attemptSave }] : []),
       ...(status.retry ? [{ label: t('ios.menu.retrySave', { ns: 'chart' }), icon: 'arrow-uturn-forward' as const, onSelect: attemptSave }] : []),
       ...(customize ? [{ label: t('ios.menu.customize', { ns: 'chart', section: sectionLabel }), icon: 'gear' as const, onSelect: customize }] : []),
       // Always there, so the bar's trailing capsule keeps its shape.
@@ -2237,8 +2271,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           shareLabel={ownerReportOn ? t('fab.downloadAria', { ns: 'app' }) : t('fab.previewAria', { ns: 'app' })}
           menu={moreMenu}
           onEdit={viewingSavedVisit ? unlockForEditing : undefined}
-          onFinalize={cloud.enabled && !chart.finalizedAt ? confirmFinalizeRecord : undefined}
-          lifecycleBusy={finalizationBusy || !cloud.online || cloud.status === 'saving'}
+          onSave={saveDraft ? attemptSave : undefined}
+          onFinalize={cloud.enabled && !chart.finalizedAt && !saveDraft ? confirmFinalizeRecord : undefined}
+          lifecycleBusy={finalizationBusy || !cloud.online || cloud.status === 'saving' || (saveDraft && !cloud.dirty)}
         />
         {/* Stays mounted so screen readers hear every save. */}
         {cloud.enabled && (
@@ -2455,13 +2490,17 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               <button
                 type="button"
                 className="entry-grid__button entry-grid__button--topbar topbar-lifecycle"
-                aria-label={viewingSavedVisit ? t('topbar.editChart') : t('finalization.finalize')}
-                title={viewingSavedVisit ? t('topbar.editChart') : t('finalization.finalize')}
-                onClick={viewingSavedVisit ? unlockForEditing : confirmFinalizeRecord}
-                disabled={finalizationBusy || !cloud.online || cloud.status === 'saving'}
+                aria-label={lifecycleLabel}
+                title={saveDraft && cloud.awaitingClinical ? t('status.saveTitle') : lifecycleLabel}
+                onClick={viewingSavedVisit ? unlockForEditing : saveDraft ? attemptSave : confirmFinalizeRecord}
+                disabled={finalizationBusy || !cloud.online || cloud.status === 'saving' || (saveDraft && !cloud.dirty)}
               >
-                <Icon className="topbar-lifecycle__icon" name={viewingSavedVisit ? EDIT_ICON : FINALIZE_ICON} size={18} />
-                <span className="topbar-lifecycle__label">{viewingSavedVisit ? t('topbar.editChart') : t('finalization.finalize')}</span>
+                {saveDraft ? lifecycleLabel : (
+                  <>
+                    <Icon className="topbar-lifecycle__icon" name={viewingSavedVisit ? EDIT_ICON : FINALIZE_ICON} size={18} />
+                    <span className="topbar-lifecycle__label">{lifecycleLabel}</span>
+                  </>
+                )}
               </button>
             </>
           )}
