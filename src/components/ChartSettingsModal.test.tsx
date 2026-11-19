@@ -93,10 +93,10 @@ describe('ChartSettingsModal — each page\'s Customize shows only its settings'
     expect(screen.getByRole('heading', { name: 'Charting settings' })).toBeInTheDocument();
     expect(present('One per tooth', 'radio')).toBe(true);
     expect(present('Show findings on the Diagnosis diagram (and in the PDF)')).toBe(false);
-    expect(present('Include the charting grid Required when diagram findings are off, so recorded measurements remain in the PDF.')).toBe(false);
+    expect(present('Charting grid Required when diagram findings are off, so recorded measurements remain in the PDF.')).toBe(false);
     expect(present('Caudal maxillary')).toBe(false);
     expect(present('Hide the Recheck due field')).toBe(false);
-    expect(present('Include images (4 per page, after the chart)')).toBe(false);
+    expect(present('Images (4 per page, after the chart)')).toBe(false);
   });
 
   it('Patient: just the recheck field', () => {
@@ -110,19 +110,19 @@ describe('ChartSettingsModal — each page\'s Customize shows only its settings'
     open('diagnosis');
     expect(present('Show findings on the Diagnosis diagram (and in the PDF)')).toBe(true);
     expect(present('One per tooth', 'radio')).toBe(false);
-    expect(present('Include the charting grid Required when diagram findings are off, so recorded measurements remain in the PDF.')).toBe(false);
+    expect(present('Charting grid Required when diagram findings are off, so recorded measurements remain in the PDF.')).toBe(false);
   });
 
   it('Imaging and PDF: both output controls', () => {
     open('images');
-    expect(present('Include images (4 per page, after the chart)')).toBe(true);
-    expect(present('Include the charting grid Required when diagram findings are off, so recorded measurements remain in the PDF.')).toBe(true);
+    expect(present('Images (4 per page, after the chart)')).toBe(true);
+    expect(present('Charting grid Required when diagram findings are off, so recorded measurements remain in the PDF.')).toBe(true);
     expect(present('Hide the Recheck due field')).toBe(false);
   });
 
   it('the Settings menu defaults to charting with categories for every area', () => {
     render(<ChartSettingsModal onClose={() => {}} prefs={DEFAULT_CHART_PREFS} followsAccount onChange={() => {}} />);
-    for (const n of ['Show the Recheck due field', 'Caudal maxillary', 'Include images (4 per page, after the chart)']) expect(present(n)).toBe(false);
+    for (const n of ['Show the Recheck due field', 'Caudal maxillary', 'Images (4 per page, after the chart)']) expect(present(n)).toBe(false);
     for (const name of ['Patient details', 'Oral exam', 'Anesthesia', 'Charting', 'Diagnosis', 'Imaging and PDF']) expect(screen.getByRole('button', { name })).toBeInTheDocument();
     expect(present('One per tooth', 'radio')).toBe(true);
     expect(screen.queryByRole('button', { name: 'All chart settings' })).not.toBeInTheDocument();
@@ -152,7 +152,7 @@ it('keeps the final chart column enabled and forces PDF grid when diagram findin
   render(<ChartSettingsModal prefs={{ ...DEFAULT_CHART_PREFS, hiddenColumns: ['recession', 'pocket', 'furcation', 'hyperplasia', 'calculus', 'gingivitis', 'pdstate'], mirrorToDiagnosis: false, pdfIncludeGrid: false }} followsAccount onChange={() => {}} onClose={() => {}} />);
   expect(screen.getByRole('checkbox', { name: 'Mobility' })).toBeDisabled();
   fireEvent.click(screen.getByRole('button', { name: 'Imaging and PDF' }));
-  const grid = screen.getByRole('checkbox', { name: /Include the charting grid/ });
+  const grid = screen.getByRole('checkbox', { name: /Charting grid/ });
   expect(grid).toBeChecked();
   expect(grid).toBeDisabled();
 });

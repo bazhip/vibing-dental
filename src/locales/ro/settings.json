@@ -190,13 +190,13 @@
     },
     "pdf": {
       "title": "PDF",
-      "grid": "Includeți tabelul odontogramei",
+      "grid": "Tabelul odontogramei",
       "gridHint": "Obligatoriu când constatările de pe diagramă sunt dezactivate, pentru ca măsurătorile înregistrate să rămână în PDF.",
-      "images": "Includeți imaginile",
+      "images": "Imagini",
       "imagesHint": "(4 pe pagină, după fișă)",
-      "radiographicReport": "Includeți raportul radiografic",
-      "ctReport": "Includeți raportul CT",
-      "codesUsed": "Include codurile utilizate"
+      "radiographicReport": "Raport radiografic",
+      "ctReport": "Raport CT",
+      "codesUsed": "Coduri utilizate"
     },
     "noteDevice": "Preferințele personale se salvează automat pe acest dispozitiv.",
     "spaceMovesDownHint": "Rapid pentru dictarea unei serii de adâncimi",
