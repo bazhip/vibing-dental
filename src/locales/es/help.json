@@ -180,7 +180,7 @@
         },
         "third": {
           "title": "Obtener una vista previa y compartir",
-          "text": "Seleccione «Vista previa» junto a «Personalizar» para abrir el PDF para el propietario. Para incluir imágenes, selecciónelas en «Diagnóstico por imagen». En «Revisar y exportar», compruebe el destinatario y el documento antes de descargar el informe o, cuando esté disponible, enviarlo por correo electrónico."
+          "text": "Seleccione «Vista previa» junto a «Personalizar» para abrir el PDF para el propietario. Para incluir imágenes, selecciónelas en «Diagnóstico por imagen». En «Revisar y exportar», compruebe el destinatario y el documento antes de descargar el informe o, cuando esté disponible, enviarlo por correo electrónico. En la pestaña del informe para el propietario, la barra situada encima de la vista previa contiene los botones para personalizar, descargar el PDF y, si está disponible, enviarlo por correo electrónico."
         }
       }
     },
@@ -194,7 +194,7 @@
         },
         "second": {
           "title": "Personalizar el PDF clínico",
-          "text": "En «Historial clínico», abra «Personalizar» para elegir los colores y el contenido que se incluirá, como imágenes, informes de diagnóstico por imagen y los códigos utilizados. Compruebe la vista previa después de cambiar una opción y descargue el documento cuando esté listo. Las secciones de alta aparecen por defecto debajo de los informes de diagnóstico por imagen. Desmarque la opción para ocultarlas en las páginas impresas."
+          "text": "En «Historial clínico», abra «Personalizar» para elegir los colores y el contenido que se incluirá, como imágenes, informes de diagnóstico por imagen y los códigos utilizados. Compruebe la vista previa después de cambiar una opción y descargue el documento cuando esté listo. Las secciones de alta aparecen por defecto debajo de los informes de diagnóstico por imagen. Desmarque la opción para ocultarlas en las páginas impresas. Los botones «Personalizar» y «Descargar PDF» están junto a las pestañas de los documentos."
         },
         "third": {
           "title": "Finalizar o reabrir una visita",

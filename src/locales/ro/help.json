@@ -180,7 +180,7 @@
         },
         "third": {
           "title": "Previzualizați și distribuiți raportul",
-          "text": "Folosiți „Previzualizați” de lângă „Personalizați” pentru a deschide PDF-ul destinat proprietarului. Pentru a include imagini, selectați-le în „Imagistică”. Verificați destinatarul și documentul, apoi folosiți „Verificați și exportați” pentru a descărca raportul sau, dacă opțiunea este disponibilă, a-l trimite prin e-mail."
+          "text": "Folosiți „Previzualizați” de lângă „Personalizați” pentru a deschide PDF-ul destinat proprietarului. Pentru a include imagini, selectați-le în „Imagistică”. Verificați destinatarul și documentul, apoi folosiți „Verificați și exportați” pentru a descărca raportul sau, dacă opțiunea este disponibilă, a-l trimite prin e-mail. În fila raportului pentru proprietar, bara de deasupra previzualizării conține butoanele pentru personalizare, descărcarea PDF-ului și, dacă este disponibilă, trimiterea prin e-mail."
         }
       }
     },
@@ -194,7 +194,7 @@
         },
         "second": {
           "title": "Personalizați PDF-ul clinic",
-          "text": "În „Fișă clinică”, deschideți „Personalizare” pentru a alege culorile și secțiunile incluse, cum ar fi imaginile, rapoartele imagistice și codurile utilizate. Verificați previzualizarea după modificarea unei opțiuni și descărcați documentul când este gata. Secțiunile de externare apar implicit sub rapoartele de imagistică. Debifați opțiunea pentru a le ascunde din paginile tipărite."
+          "text": "În „Fișă clinică”, deschideți „Personalizare” pentru a alege culorile și secțiunile incluse, cum ar fi imaginile, rapoartele imagistice și codurile utilizate. Verificați previzualizarea după modificarea unei opțiuni și descărcați documentul când este gata. Secțiunile de externare apar implicit sub rapoartele de imagistică. Debifați opțiunea pentru a le ascunde din paginile tipărite. Butoanele pentru personalizare și descărcarea PDF-ului se află lângă filele documentelor."
         },
         "third": {
           "title": "Finalizați sau redeschideți o vizită",

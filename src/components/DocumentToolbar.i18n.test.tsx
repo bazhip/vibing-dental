@@ -25,3 +25,22 @@ it.each([true, false])('keeps export available and uses the viewport only for in
   expect(toggle).toHaveAttribute('aria-expanded', String(compact));
   expect(findUntranslated(document.body, ['▾', '▴'])).toEqual([]);
 });
+
+it('places export controls in the shared header while keeping settings in the preview', () => {
+  viewport.compact = true;
+  const header = document.createElement('div');
+  document.body.append(header);
+  try {
+    const { container } = render(<DocumentToolbar controlsHost={header} actions={<button>{i18n.t('pdfui:preview.download')}</button>}>
+      <h3>{i18n.t('media:documents.color')}</h3>
+    </DocumentToolbar>);
+    const toggle = within(header).getByRole('button', { name: '⟦Customize⟧' });
+    expect(within(header).getByRole('button', { name: '⟦Download PDF⟧' })).toBeVisible();
+    fireEvent.click(toggle);
+    const settings = document.getElementById(toggle.getAttribute('aria-controls')!);
+    expect(container).toContainElement(settings);
+    expect(settings).toBeVisible();
+  } finally {
+    header.remove();
+  }
+});
