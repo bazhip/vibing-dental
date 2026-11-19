@@ -226,7 +226,7 @@ export function ownerReportIsReviewed(snapshot: ChartSnapshot, options: BuildOwn
 function recordedDischargeNotes(info: ChartSnapshot['patientInfo'], locale: ReportLocale): string {
   const t = i18n.getFixedT(locale, 'report');
   return (['dischargeMedications', 'dischargeInstructions', 'dischargeFollowUp'] as const).map(key =>
-    info[key]?.trim() ? `${t(`dischargeSource.${key}`)}: ${info[key]}` : ''
+    info[key]?.trim() ? `${t(`dischargeSource.${key}`)}:\n${info[key]}` : ''
   ).filter(Boolean).join('\n\n');
 }
 

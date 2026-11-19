@@ -589,14 +589,15 @@ test('photo review tracks caption, path and deletion while review metadata does 
 
 test('includes recorded discharge wording in the client-language fallback and preserves a manual override', () => {
   const snapshot = baseSnapshot();
-  snapshot.patientInfo.dischargeMedications = 'Drug 2 mg? confirm';
+  snapshot.patientInfo.dischargeMedications = 'Drug 2 mg? confirm\nSecond recorded medication';
   snapshot.patientInfo.dischargeInstructions = 'Recorded wording';
   snapshot.patientInfo.dischargeFollowUp = 'Call if concerned';
   const model = buildOwnerReportModel(snapshot, { template: defaultTemplate('fr') });
-  expect(model.extraNotes).toContain('Médicaments');
-  expect(model.extraNotes).toContain('Drug 2 mg? confirm');
-  expect(model.extraNotes).toContain('Recorded wording');
-  expect(model.extraNotes).toContain('Call if concerned');
+  expect(model.extraNotes).toBe([
+    'Médicaments de sortie:\nDrug 2 mg? confirm\nSecond recorded medication',
+    'Consignes de sortie:\nRecorded wording',
+    'Suivi après la sortie:\nCall if concerned',
+  ].join('\n\n'));
   const basis = ownerReportReviewBasis(snapshot);
   snapshot.patientInfo.dischargeInstructions = 'Updated wording';
   expect(ownerReportReviewBasis(snapshot)).not.toBe(basis);
