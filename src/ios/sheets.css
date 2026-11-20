@@ -171,6 +171,12 @@ html.native-ios .ios-segmented__segment:focus-visible { outline: 2px solid var(-
 /* ---- Documents sheet (DocumentsModal + the PDF / owner-report bodies) --- */
 html.native-ios .documents-sheet .ios-sheet__body { display: flex; flex-direction: column; }
 html.native-ios .documents-sheet__head { flex: none; padding: 0 16px 10px; }
+html.native-ios .documents-sheet .ios-segmented__segment {
+  min-height: 44px;
+  padding: 6px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
 html.native-ios .documents-sheet__subtitle {
   margin: 0 0 10px;
   text-align: center;

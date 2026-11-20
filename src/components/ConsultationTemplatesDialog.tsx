@@ -433,7 +433,10 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
                       onClick={() => setExpanded(expanded === section.id ? undefined : section.id)}>{label}</button> : <span dir="auto">{label}</span>}
                     {preview && section.options && <ul className="consultation-library__preview-choices">
                       {section.options.map((option, optionIndex) => <li key={optionIndex}>
-                        <label><input type={section.inputType === 'radio' ? 'radio' : 'checkbox'} disabled />{option}</label>
+                        <label className="choice-row">
+                          <input type={section.inputType === 'radio' ? 'radio' : 'checkbox'} disabled />
+                          <span dir="auto">{option}</span>
+                        </label>
                       </li>)}
                     </ul>}
                     {preview && !section.options && example && (section.format === 'bullets'
@@ -501,15 +504,15 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
                       {FORMATS.map(format => <option key={format} value={format}>{t(`consultation.templates.builder.${format}`)}</option>)}
                     </select>
                   </label>
-                  <label className="consultation-library__archived">
+                  <label className="choice-row consultation-library__checkbox">
                     <input type="checkbox" checked={section.level === 2}
                       onChange={event => updateSection({ ...section, level: event.target.checked ? 2 : undefined })} />
-                    {t('consultation.templates.builder.subsection')}
+                    <span>{t('consultation.templates.builder.subsection')}</span>
                   </label></>}
-                  {isDischarge && isCustomDischargeField(section.id) && <label className="consultation-library__archived">
+                  {isDischarge && isCustomDischargeField(section.id) && <label className="choice-row consultation-library__checkbox">
                     <input type="checkbox" checked={section.ownerReport === true}
                       onChange={event => updateSection({ ...section, ownerReport: event.target.checked ? true : undefined })} />
-                    {t('discharge.templates.ownerReport')}
+                    <span>{t('discharge.templates.ownerReport')}</span>
                   </label>}
                 </div>}
               </li>;

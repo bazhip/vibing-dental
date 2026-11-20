@@ -404,21 +404,17 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
               const update = (value: string) => setCustomField({ ...f, value });
               return (
                 <label key={f.id} className={`patient-form__label anesthesia-custom__field anesthesia-custom__field--${f.type}`}>
-                  {f.type === 'checkbox' && native ? (
-                    <span className="anesthesia-custom__check anesthesia-custom__check--switch">
-                      <span>{f.label}</span>
+                  {f.type === 'checkbox' ? (
+                    <span className="choice-row">
                       <input
                         type="checkbox"
-                        role="switch"
-                        className="ios-switch"
                         checked={f.value === 'yes'}
-                        onChange={(e) => { hapticSelection(); update(e.target.checked ? 'yes' : ''); }}
+                        onChange={(e) => {
+                          if (native) hapticSelection();
+                          update(e.target.checked ? 'yes' : '');
+                        }}
                       />
-                    </span>
-                  ) : f.type === 'checkbox' ? (
-                    <span className="anesthesia-custom__check">
-                      <input type="checkbox" checked={f.value === 'yes'} onChange={(e) => update(e.target.checked ? 'yes' : '')} />
-                      {f.label}
+                      <span>{f.label}</span>
                     </span>
                   ) : (
                     <>

@@ -293,8 +293,11 @@ function EnabledPimsDrafts({ chartId, disabled = false, backend = defaultBackend
         }}>{t('drafts.compose')}</button>
         <label>{t('drafts.body')}<textarea rows={9} maxLength={60000} value={body} onChange={(event) => { setBody(event.target.value); setChecked(false); setFeedback(null); }} /></label>
         <p role="status">{t(stale ? 'drafts.stale' : approved ? 'drafts.reviewed' : 'drafts.unreviewed')}</p>
-        <label className="pims-drafts__check"><input type="checkbox" checked={approved || checked} disabled={!selected || dirty || stale || approved}
-          onChange={(event) => setChecked(event.target.checked)} />{t('drafts.checked')}</label>
+        <label className="choice-row">
+          <input type="checkbox" checked={approved || checked} disabled={!selected || dirty || stale || approved}
+            onChange={(event) => setChecked(event.target.checked)} />
+          <span>{t('drafts.checked')}</span>
+        </label>
         <div className="pims-drafts__actions">
           <button type="button" className={!generated && (!selected || dirty || stale) ? 'pims-drafts__primary' : undefined} disabled={!body.trim() || (!!selected && !dirty && !stale)} onClick={() => void write('save')}>{t('drafts.save')}</button>
           <button type="button" className={!generated && selected && !dirty && !stale && !approved ? 'pims-drafts__primary' : undefined} disabled={!selected || !checked || dirty || stale || approved} onClick={() => void write('review')}>{t('drafts.review')}</button>
@@ -331,7 +334,10 @@ function EnabledPimsDrafts({ chartId, disabled = false, backend = defaultBackend
           <p>{t('drafts.radiologyAutofill.summary', { origin: radiologyDestination.origin, title: radiologyDestination.title })}</p>
           <p>{t('drafts.radiologyAutofill.append', { length: radiologyDestination.existing_characters })}</p>
           {!radiologyOutcome && <>
-            <label className="pims-drafts__check"><input type="checkbox" checked={radiologyChecked} onChange={event => setRadiologyChecked(event.target.checked)} />{t('drafts.radiologyAutofill.checked')}</label>
+            <label className="choice-row">
+              <input type="checkbox" checked={radiologyChecked} onChange={event => setRadiologyChecked(event.target.checked)} />
+              <span>{t('drafts.radiologyAutofill.checked')}</span>
+            </label>
             <button type="button" className="pims-drafts__primary" disabled={!radiologyChecked} onClick={() => void fillRadiology()}>{t('drafts.radiologyAutofill.fill')}</button>
           </>}
         </fieldset>}
@@ -343,7 +349,10 @@ function EnabledPimsDrafts({ chartId, disabled = false, backend = defaultBackend
           <p>{t('drafts.instinct.destination', { origin: destination.origin, patient: destination.patient_id, location: destination.location_id })}</p>
           <p>{t('drafts.instinct.compatibility')}</p>
           {!submission && <>
-            <label className="pims-drafts__check"><input type="checkbox" checked={destinationChecked} onChange={(event) => setDestinationChecked(event.target.checked)} />{t('drafts.instinct.checked')}</label>
+            <label className="choice-row">
+              <input type="checkbox" checked={destinationChecked} onChange={(event) => setDestinationChecked(event.target.checked)} />
+              <span>{t('drafts.instinct.checked')}</span>
+            </label>
             <button type="button" className="pims-drafts__primary" disabled={!destinationChecked} onClick={() => void submitInstinct()}>{t('drafts.instinct.submit')}</button>
           </>}
         </fieldset>}

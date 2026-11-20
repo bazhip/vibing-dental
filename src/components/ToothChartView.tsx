@@ -352,7 +352,7 @@ export function ToothChartView({
 
 
               <fieldset className="tooth-chart__fields" disabled={readOnly}>
-                <label className="tooth-chart__check">
+                <label className="choice-row tooth-chart__check">
                   <input
                     type="checkbox"
                     checked={isMissing}
@@ -459,7 +459,7 @@ export function ToothChartView({
 
                 <div className="tooth-chart__group-title">{t('toothChart.extraction')}</div>
                 <div className="tooth-chart__extraction">
-                  <label className="tooth-chart__check">
+                  <label className="choice-row tooth-chart__check">
                     <input
                       type="checkbox"
                       checked={isPlanned}
@@ -468,7 +468,7 @@ export function ToothChartView({
                     />
                     {t('toothChart.planExtract')}
                   </label>
-                  <label className="tooth-chart__check">
+                  <label className="choice-row tooth-chart__check">
                     <input
                       type="checkbox"
                       checked={isExtracted}

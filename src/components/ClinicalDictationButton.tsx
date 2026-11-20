@@ -318,7 +318,10 @@ export function ClinicalDictationButton(props: Props) {
       {stale && <p role="alert">{t('clinical.stale')}</p>}
       {proposals?.length === 0 && <p role="status">{t('clinical.noSections')}</p>}
       {proposals?.map((proposal, index) => <section key={proposal.field} className="clinical-dictation__proposal">
-        <label className="clinical-dictation__check"><input type="checkbox" checked={proposal.selected} disabled={restricted || stale} onChange={event => setProposals(previous => previous!.map((p, i) => i === index ? { ...p, selected: event.target.checked } : p))}/>{t('clinical.includeField', { field: fieldLabel(proposal.field) })}</label>
+        <label className="choice-row clinical-dictation__check">
+          <input type="checkbox" checked={proposal.selected} disabled={restricted || stale} onChange={event => setProposals(previous => previous!.map((p, i) => i === index ? { ...p, selected: event.target.checked } : p))} />
+          <span>{t('clinical.includeField', { field: fieldLabel(proposal.field) })}</span>
+        </label>
         {props.snapshot.patientInfo[proposal.field] && <dl className="clinical-dictation__current">
           <dt>{t('clinical.current')}</dt><dd>{props.snapshot.patientInfo[proposal.field]}</dd>
         </dl>}

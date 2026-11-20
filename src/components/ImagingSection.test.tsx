@@ -262,17 +262,19 @@ describe('ImagingSection uploads, teeth and viewer', () => {
   });
 });
 
-it('labels report destinations separately and saves the description', async () => {
-  native = false; touchDevice = false;
+it.each([false, true])('uses separate report destination checkboxes and saves the description (native: %s)', async (isNative) => {
+  native = isNative; touchDevice = false;
   store.items = [{ id: 'a', chartId: 'c1', kind: 'photo', caption: '', url: '', toothTriadan: null }];
   store.updateCaption = vi.fn(async () => {});
   const pdf = vi.fn(), role = vi.fn(), ownerReport = vi.fn();
   render(<ImagingSection chartId="c1" cloudActive includeInPdf onImageInPdfChange={pdf} onImageRoleChange={role} onOwnerReportImageChange={ownerReport} />);
   const checkbox = screen.getByRole('checkbox', { name: 'In clinical PDF' });
+  expect(checkbox.parentElement?.firstElementChild).toBe(checkbox);
   expect(checkbox).toBeChecked();
   fireEvent.click(checkbox); expect(pdf).toHaveBeenCalledWith('a', false);
   expect(screen.getByRole('option', { name: 'No label' })).toBeInTheDocument();
   const ownerCheckbox = screen.getByRole('checkbox', { name: 'In owner report' });
+  expect(ownerCheckbox.parentElement?.firstElementChild).toBe(ownerCheckbox);
   expect(ownerCheckbox).not.toBeChecked();
   fireEvent.click(ownerCheckbox);
   expect(ownerReport).toHaveBeenCalledWith('a', true);

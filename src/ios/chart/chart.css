@@ -145,42 +145,6 @@ html.native-ios .ios-chart-screen .owner-report-section__actions .diagram-view__
 }
 html.native-ios .ios-chart-screen .diagram-view__action:disabled { color: var(--ios-label-3); }
 
-/* ---- Checkboxes still in the chart (grid Missing, grid options, In PDF) -
- * WebKit draws native checkboxes white even in dark mode. In the app they
- * become iOS circular checkmarks that follow the scheme; Missing fills red
- * (the clinical colour) when ticked. Switches (role=switch) are separate. */
-html.native-ios .ios-chart-screen input[type='checkbox']:not([role='switch']) {
-  -webkit-appearance: none;
-  appearance: none;
-  flex: none;
-  width: 22px;
-  height: 22px;
-  margin: 0;
-  border: 1.5px solid var(--ios-label-3);
-  border-radius: 50%;
-  background: transparent;
-  cursor: pointer;
-  vertical-align: middle;
-}
-html.native-ios .ios-chart-screen input[type='checkbox']:not([role='switch']):checked {
-  border-color: var(--ios-tint);
-  background: var(--ios-tint) no-repeat center / 14px 14px
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4.5 12.8 9.6 18 19.5 6' fill='none' stroke='%23fff' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-}
-/* Missing: the same red ✕ as the column's badge (MissingBadge), white on
-   the clinical red. Out-specifies the generic tint checkmark above. */
-html.native-ios .ios-chart-screen input.dental-grid__missing-check[type='checkbox']:not([role='switch']):checked {
-  border-color: var(--ios-danger-solid);
-  background-color: var(--ios-danger-solid);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 4.5l7 7m0-7l-7 7' stroke='%23fff' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-size: 12px 12px;
-}
-html.native-ios .ios-chart-screen input[type='checkbox']:not([role='switch']):disabled { opacity: 0.5; cursor: default; }
-html.native-ios .ios-chart-screen input[type='checkbox']:not([role='switch']):focus-visible {
-  outline: 2px solid var(--ios-tint);
-  outline-offset: 2px;
-}
-
 /* ---- Patient: segmented rows wrap under the label on narrow phones ------- */
 html.native-ios .patient-form--ios .patient-form__recall {
   display: flex;
@@ -259,29 +223,10 @@ html.native-ios .ios-chart-screen .anesthesia-drug__remove {
   background: transparent;
   color: var(--ios-label-muted);
 }
-html.native-ios .ios-chart-screen .anesthesia-custom__check--switch {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  width: 100%;
-  min-height: 44px;
-}
-/* Switch on the trailing side of its row. */
 html.native-ios .ios-chart-screen .imaging__pdf-option {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 4px 12px;
-  min-height: 44px;
   font: 400 var(--ios-text-body) / 1.3 var(--ios-font);
   color: var(--ios-label);
 }
-html.native-ios .ios-chart-screen .imaging__pdf-option > .ios-switch { order: 2; margin-left: auto; }
-html.native-ios .ios-chart-screen .imaging__pdf-option > .patient-form__hint { order: 3; flex-basis: 100%; }
-html.native-ios .ios-chart-screen .imaging__in-pdf { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; }
-html.native-ios .ios-chart-screen .imaging__in-pdf > .ios-switch { order: 2; }
 
 /* Free-text areas as cards. */
 html.native-ios .ios-chart-screen :is(.surgery-report__textarea, .radiographic-findings__text, .anesthesia-table__other) {

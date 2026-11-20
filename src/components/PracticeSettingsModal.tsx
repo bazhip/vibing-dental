@@ -586,12 +586,12 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
       <section className="ai-settings-section" hidden={sectioned && section !== 'team'}>
         <h3 className="ai-settings-subhead">{t('practice.team.title')}</h3>
         {!team.enabled ? null : !team.loaded ? (
-          <p className="practice-logo-empty">{t('practice.team.loading')}</p>
+          <p className="practice-logo-empty" role="status">{t('practice.team.loading')}</p>
         ) : teamLoadFailed ? (
           teamLoadErrorRow
         ) : !team.practice ? (
           <div className="settings-msg--row">
-            <p className="practice-logo-empty">{t('practice.team.settingUp')}</p>
+            <p className="practice-logo-empty" role="status">{t('practice.team.settingUp')}</p>
             <button
               type="button"
               className="diagram-view__action"
@@ -807,7 +807,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                 </button>
               </div>
             ) : (
-              <p className="practice-logo-empty">{t('settings.loading', { ns: 'billing' })}</p>
+              <p className="practice-logo-empty" role="status">{t('settings.loading', { ns: 'billing' })}</p>
             )
           ) : billing.status === 'comped' ? (
             <p className="ai-settings-blurb">

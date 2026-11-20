@@ -282,8 +282,11 @@ export function PimsNoteAutofill({ note, stored, chartKey, patientName, transpor
         {current.prepared.map(value => <div key={value.field} className="pims-note-autofill__review-field"><p>{t('noteAutofill.preparedField', { field: value.field })}</p>
           {current.mapped && <p className="pims-review__hint">{t('noteAutofill.groupSources', { sections: value.sources.join(', ') })}</p>}
         </div>)}
-        <label className="pims-setup__check"><input type="checkbox" checked={!!current.reviewed} disabled={disabled || working}
-          onChange={event => setForm(previous => ({ ...previous, reviewed: event.target.checked }))} />{t('noteAutofill.review')}</label>
+        <label className="choice-row">
+          <input type="checkbox" checked={!!current.reviewed} disabled={disabled || working}
+            onChange={event => setForm(previous => ({ ...previous, reviewed: event.target.checked }))} />
+          <span>{t('noteAutofill.review')}</span>
+        </label>
         <button type="button" className="pims-setup__primary" disabled={disabled || working || !current.reviewed}
           onClick={() => void run('fill')}>{t(current.mapped ? 'noteAutofill.pasteAll' : 'noteAutofill.fill')}</button>
       </>}

@@ -73,6 +73,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ onClose, section, 
   const asModal = shown === 'modal';
   const { t } = useTranslation('settings');
   const modalRef = useModalFocus<HTMLFormElement>(asModal);
+  const kindGroup = React.useId();
   const [kind, setKind] = React.useState<FeedbackKind>(initialKind);
   const [message, setMessage] = React.useState('');
   const [attach, setAttach] = React.useState(!!transcript?.trim());
@@ -125,16 +126,17 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ onClose, section, 
     <>
       <div className="feedback-modal__kinds" role="radiogroup" aria-label={t('feedback.kindsAria')}>
         {KIND_IDS.map((id) => (
-          <button
-            key={id}
-            type="button"
-            role="radio"
-            aria-checked={kind === id}
-            className={`feedback-modal__kind${kind === id ? ' feedback-modal__kind--on' : ''}`}
-            onClick={() => setKind(id)}
-          >
+          <label key={id} className={`feedback-modal__kind${kind === id ? ' feedback-modal__kind--on' : ''}`}>
+            <input
+              className="visually-hidden"
+              type="radio"
+              name={kindGroup}
+              checked={kind === id}
+              disabled={sending}
+              onChange={() => setKind(id)}
+            />
             {t(`feedback.kinds.${id}`)}
-          </button>
+          </label>
         ))}
       </div>
       <label className="patient-form__label">
@@ -150,9 +152,9 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ onClose, section, 
         />
       </label>
       {transcript?.trim() && (
-        <label className="feedback-modal__attach">
+        <label className="choice-row feedback-modal__attach">
           <input type="checkbox" checked={attach} onChange={(e) => setAttach(e.target.checked)} />
-          {t('feedback.attach')}
+          <span>{t('feedback.attach')}</span>
         </label>
       )}
       <p className="feedback-modal__note">{t('feedback.note')}</p>

@@ -110,7 +110,14 @@ describe('DocumentsModal — iOS app', () => {
     expect(document.querySelector('.ios-sheet__grabber')).not.toBeNull();
     expect(document.querySelector('.pdf-preview-overlay')).toBeNull();
     expect(document.querySelector('.ios-segmented')).not.toBeNull();
-    fireEvent.click(screen.getByRole('tab', { name: 'Owner report' }));
+    const chartTab = screen.getByRole('tab', { name: 'Clinical chart' });
+    const ownerTab = screen.getByRole('tab', { name: 'Owner report' });
+    expect(chartTab).toHaveAttribute('tabindex', '0');
+    expect(ownerTab).toHaveAttribute('tabindex', '-1');
+    chartTab.focus();
+    fireEvent.keyDown(chartTab, { key: 'ArrowRight' });
+    expect(ownerTab).toHaveFocus();
+    expect(ownerTab).toHaveAttribute('aria-selected', 'true');
     expect(screen.getByText('owner-preview')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Close' }));
     await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1));

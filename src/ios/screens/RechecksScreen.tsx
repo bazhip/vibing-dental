@@ -96,10 +96,10 @@ export function RechecksScreen() {
       </>
     );
   } else if (!sections) {
-    body = <p className="ios-empty">{t('loading', { ns: 'library' })}</p>;
+    body = <p className="ios-empty" role="status">{t('loading', { ns: 'library' })}</p>;
   } else if (sections.overdue.length === 0 && sections.today.length === 0) {
     body = (
-      <div className="ios-empty ios-rechecks__empty">
+      <div className="ios-empty ios-rechecks__empty" role="status">
         <p className="ios-rechecks__empty-title">{t('rechecks.empty')}</p>
         <p>{t('rechecks.emptyHint')}</p>
       </div>

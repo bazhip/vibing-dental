@@ -5,6 +5,7 @@ import { createRoot } from 'react-dom/client';
 import '../../i18n';
 import { SidePanelApp } from './SidePanelApp';
 import '../../styles/themes.css';
+import '../../styles/controls.css';
 import './sidepanel.css';
 import { initAppearance } from '../../theme/appearance';
 import { AppearanceSelect } from '../../theme/AppearanceSelect';

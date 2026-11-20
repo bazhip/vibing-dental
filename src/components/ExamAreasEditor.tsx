@@ -47,7 +47,7 @@ export const ExamAreasEditor: React.FC<{
       <legend>{t('chart.exam.areas')}</legend>
       <p className="chart-settings__note">{t('chart.exam.areasNote')}</p>
       {EXAM_ITEMS.map(({ key }) => (
-        <label key={key} className="chart-settings__choice">
+        <label key={key} className="chart-settings__choice choice-row">
           <input type="checkbox" checked={!hiddenAreas.includes(key)} onChange={() => toggle(key)} />
           {t(`exam.items.${key}`, { ns: 'forms' })}
         </label>
@@ -88,7 +88,7 @@ export const ExamAreasEditor: React.FC<{
         <>
           <p className="chart-settings__note">{t('chart.exam.suggestions')}</p>
           {suggestions.map((key) => (
-            <label key={key} className="chart-settings__choice">
+            <label key={key} className="chart-settings__choice choice-row">
               <input type="checkbox" checked={false} disabled={room <= 0} onChange={() => {
                 const id = `preset-${key}`;
                 const next = [...draft, { id, label: t(`chart.exam.presets.${key}`) }];

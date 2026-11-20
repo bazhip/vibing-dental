@@ -90,7 +90,9 @@ describe('ChartLibrary (website)', () => {
     await screen.findByText('Bella');
     fireEvent.change(screen.getByRole('combobox', { name: 'Filter by species' }), { target: { value: 'feline' } });
     fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'missing' } });
-    fireEvent.click(await screen.findByRole('button', { name: 'Clear filters' }));
+    const clear = await screen.findByRole('button', { name: 'Clear filters' });
+    expect(clear.closest('[role="table"]')).toBeNull();
+    fireEvent.click(clear);
     expect(await screen.findByText('Bella')).toBeVisible();
     expect(screen.getByRole('searchbox')).toHaveValue('');
     expect(lastQuery(listCharts)).toMatchObject({ dueOnly: true, species: undefined, search: undefined });
@@ -126,6 +128,7 @@ describe('ChartLibrary (website)', () => {
     const { listCharts } = setup(undefined, true);
     await screen.findByRole('heading', { name: 'Rechecks' });
     expect(lastQuery(listCharts)).toMatchObject({ dueOnly: true, sortKey: 'recall', sortDir: 'asc' });
+    expect(await screen.findByText('Rechecks due (2)')).toHaveAttribute('role', 'status');
     expect(screen.queryByRole('button', { name: 'Rechecks due (2)' })).not.toBeInTheDocument();
     fireEvent.change(screen.getByRole('combobox', { name: 'Filter by species' }), { target: { value: 'feline' } });
     await waitFor(() => expect(lastQuery(listCharts)).toMatchObject({ dueOnly: true, species: 'feline' }));
@@ -295,7 +298,9 @@ describe('ChartLibrary (website)', () => {
 
   it('shows Load more when the server has more', async () => {
     const { listCharts } = setup(async () => ({ rows: ROWS, hasMore: true }));
-    fireEvent.click(await screen.findByRole('button', { name: 'Load more charts' }));
+    const more = await screen.findByRole('button', { name: 'Load more charts' });
+    expect(more.closest('[role="table"]')).toBeNull();
+    fireEvent.click(more);
     await waitFor(() => expect(listCharts).toHaveBeenCalledWith(expect.objectContaining({ offset: 4, limit: 200 })));
   });
 });

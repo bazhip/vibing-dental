@@ -18,8 +18,7 @@
 .radiology-report__actions :is(button, summary) { min-height: 40px; max-width: 100%; box-sizing: border-box; white-space: normal; overflow-wrap: anywhere; }
 .radiology-report__actions .entry-grid__button:disabled { opacity: 0.4; cursor: not-allowed; }
 .radiology-report__review { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 16px; border-top: 1px solid var(--border); padding-top: 12px; min-width: 0; }
-.radiology-report__check { display: flex; align-items: center; gap: 8px; flex: 1 1 300px; min-height: 44px; font-size: .875rem; color: var(--text); }
-.radiology-report__check input { flex: 0 0 auto; width: auto; }
+.radiology-report__check { flex: 1 1 300px; font-size: .875rem; color: var(--text); }
 .radiology-report__error { color: var(--danger); }
 .radiology-report__language-link {
   padding: 3px 0;
@@ -32,7 +31,7 @@
   text-decoration: underline;
   cursor: pointer;
 }
-.radiology-report :is(button,summary,input,textarea):focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.radiology-report :is(button, summary, textarea):focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 @media (max-width: 600px) {
   .radiology-report__actions :is(button, summary), .radiology-report__language-link { min-height: 44px; }
 }

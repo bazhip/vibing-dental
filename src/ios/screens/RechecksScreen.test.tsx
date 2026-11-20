@@ -124,7 +124,8 @@ describe('RechecksScreen', () => {
   it('empty state', async () => {
     const library = fakeLibrary([ROWS[4]], TODAY);
     renderShell(library, 'rechecks');
-    expect(await within(panel('rechecks')).findByText('No rechecks due')).toBeInTheDocument();
+    const empty = await within(panel('rechecks')).findByText('No rechecks due');
+    expect(empty.closest('[role="status"]')).toBeInTheDocument();
   });
 
   it('refetches when libraryVersion changes', async () => {
