@@ -125,6 +125,60 @@ describe('VoiceInputButton — stopping', () => {
     vi.mocked(reviewFullTranscript).mockClear();
   });
 
+  it('shows a resumable pause and checks the combined transcript once', async () => {
+    vi.useFakeTimers();
+    try {
+      render(<VoiceInputButton {...props} context={realContext} />);
+      startDictation();
+      act(() => FakeRecognition.last!.say('104 GI 2'));
+      fireEvent.click(screen.getAllByRole('button', { name: 'Stop' })[0]);
+      expect(screen.getByRole('status')).toHaveTextContent('Dictation paused');
+      const panel = screen.getByRole('complementary');
+      const resume = Array.from(panel.querySelectorAll('button')).find(button => button.textContent === 'Resume')!;
+      expect(resume).toBeEnabled();
+      fireEvent.click(resume);
+      await act(async () => { await vi.advanceTimersByTimeAsync(3000); });
+      expect(reviewFullTranscript).not.toHaveBeenCalled();
+
+      act(() => FakeRecognition.last!.say('105 missing'));
+      fireEvent.click(screen.getAllByRole('button', { name: 'Stop' })[0]);
+      await act(async () => { await vi.advanceTimersByTimeAsync(3000); });
+      expect(reviewFullTranscript).toHaveBeenCalledTimes(1);
+      expect(vi.mocked(reviewFullTranscript).mock.calls[0][0].transcript).toBe('104 GI 2\n105 missing');
+      expect(screen.getByRole('status')).toHaveTextContent('Chart checked');
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('finalization waits for the microphone to flush and runs the check without the grace period', async () => {
+    vi.useFakeTimers();
+    const stop = vi.spyOn(FakeRecognition.prototype, 'stop').mockImplementationOnce(function (this: FakeRecognition) {
+      window.setTimeout(() => {
+        this.say('105 missing');
+        this.onend?.();
+      }, 500);
+    });
+    try {
+      const finalReviewRef = { current: null as (() => Promise<void> | undefined) | null };
+      render(<VoiceInputButton {...props} context={realContext} finalReviewRef={finalReviewRef} />);
+      startDictation();
+      act(() => FakeRecognition.last!.say('104 GI 2'));
+      fireEvent.click(screen.getAllByRole('button', { name: 'Stop' })[0]);
+      const settled = vi.fn();
+      const finished = finalReviewRef.current!()!.then(settled);
+      await act(async () => { await vi.advanceTimersByTimeAsync(400); });
+      expect(settled).not.toHaveBeenCalled();
+      await act(async () => { await vi.advanceTimersByTimeAsync(500); });
+      expect(settled).toHaveBeenCalledOnce();
+      await finished;
+      expect(vi.mocked(reviewFullTranscript).mock.calls[0][0].transcript).toBe('104 GI 2\n105 missing');
+    } finally {
+      stop.mockRestore();
+      vi.useRealTimers();
+    }
+  });
+
   it('Stop mid-request still charts everything said, then runs the final check', async () => {
     let release!: () => void;
     vi.mocked(extractChartActions).mockImplementationOnce(
@@ -140,7 +194,7 @@ describe('VoiceInputButton — stopping', () => {
     fireEvent.click(screen.getAllByRole('button', { name: 'Stop' })[0]);
     expect(reviewFullTranscript).not.toHaveBeenCalled(); // waits for the live request
     expect(finished).not.toHaveBeenCalled();
-    await act(async () => { release(); await new Promise((r) => setTimeout(r, 600)); });
+    await act(async () => { release(); await new Promise((r) => setTimeout(r, 2400)); });
 
     const deltas = vi.mocked(extractChartActions).mock.calls.map((c) => c[0].delta);
     expect(deltas).toEqual(['104 GI 2', '105 missing']);
@@ -203,23 +257,28 @@ describe('VoiceInputButton — final check only when something new was said', ()
   });
 
   it('Stop → Resume → Stop with nothing new said runs the final check once', async () => {
-    render(<VoiceInputButton {...props} context={realContext} />);
-    startDictation();
-    act(() => FakeRecognition.last!.say('104 GI 2'));
-    fireEvent.click(screen.getAllByRole('button', { name: 'Stop' })[0]);
-    await act(async () => { await new Promise((r) => setTimeout(r, 600)); });
-    expect(reviewFullTranscript).toHaveBeenCalledTimes(1);
+    vi.useFakeTimers();
+    try {
+      render(<VoiceInputButton {...props} context={realContext} />);
+      startDictation();
+      act(() => FakeRecognition.last!.say('104 GI 2'));
+      fireEvent.click(screen.getAllByRole('button', { name: 'Stop' })[0]);
+      await act(async () => { await vi.advanceTimersByTimeAsync(2400); });
+      expect(reviewFullTranscript).toHaveBeenCalledTimes(1);
 
-    fireEvent.click(screen.getAllByRole('button', { name: /Resume/ })[0]);
-    fireEvent.click(screen.getAllByRole('button', { name: 'Stop' })[0]);
-    await act(async () => { await new Promise((r) => setTimeout(r, 600)); });
-    expect(reviewFullTranscript).toHaveBeenCalledTimes(1); // nothing new: skipped
+      fireEvent.click(screen.getAllByRole('button', { name: /Resume/ })[0]);
+      fireEvent.click(screen.getAllByRole('button', { name: 'Stop' })[0]);
+      await act(async () => { await vi.advanceTimersByTimeAsync(2400); });
+      expect(reviewFullTranscript).toHaveBeenCalledTimes(1); // nothing new: skipped
 
-    fireEvent.click(screen.getAllByRole('button', { name: /Resume/ })[0]);
-    act(() => FakeRecognition.last!.say('105 missing'));
-    fireEvent.click(screen.getAllByRole('button', { name: 'Stop' })[0]);
-    await act(async () => { await new Promise((r) => setTimeout(r, 600)); });
-    expect(reviewFullTranscript).toHaveBeenCalledTimes(2); // new speech: checked again
+      fireEvent.click(screen.getAllByRole('button', { name: /Resume/ })[0]);
+      act(() => FakeRecognition.last!.say('105 missing'));
+      fireEvent.click(screen.getAllByRole('button', { name: 'Stop' })[0]);
+      await act(async () => { await vi.advanceTimersByTimeAsync(2400); });
+      expect(reviewFullTranscript).toHaveBeenCalledTimes(2); // new speech: checked again
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
 
@@ -347,7 +406,7 @@ it('drops a final review result if the chart locks while the request is pending'
   startDictation();
   act(() => FakeRecognition.last!.say('104 GI 2'));
   fireEvent.click(screen.getAllByRole('button', { name: 'Stop' })[0]);
-  await act(async () => { await new Promise((r) => setTimeout(r, 600)); });
+  await act(async () => { await new Promise((r) => setTimeout(r, 2400)); });
   expect(release).toBeTypeOf('function');
   rerender(<VoiceInputButton {...configured} locked />);
   await act(async () => { release(); });

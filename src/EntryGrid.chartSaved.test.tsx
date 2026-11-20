@@ -9,6 +9,12 @@ import type { ChartListPage, ChartListQuery } from './hooks/useCloudSync';
 // view-only state in the navigation bar, Edit / Done, New visit and
 // History in the More menu, and no web banners.
 const flags = vi.hoisted(() => ({ native: true }));
+const reviewDictation = vi.hoisted(() => vi.fn());
+vi.mock('./utils/aiAutofill', async original => ({
+  ...await original<typeof import('./utils/aiAutofill')>(),
+  extractChartActions: vi.fn(async () => ({ actions: [], skipped: [], flags: [], ran: true })),
+  reviewFullTranscript: reviewDictation,
+}));
 const nativeEvents = vi.hoisted(() => ({ resume: undefined as (() => void) | undefined }));
 vi.mock('@capacitor/app', () => ({ App: {
   addListener: async (event: string, callback: () => void) => {
@@ -373,6 +379,43 @@ it('keeps past visits editable until explicitly finalized and permits reopening'
   expect(cloud.setFinalized).toHaveBeenLastCalledWith(false);
   expect(container.querySelector('.sidebar-layout__fieldset')).not.toBeDisabled();
   expect(screen.getByRole('button', { name: 'Finalize' })).toBeVisible();
+});
+
+it('finalizes a stopped dictation only after the full check completes', async () => {
+  flags.native = false;
+  seedSavedVisit('2020-01-01', false);
+  sessionStorage.setItem('ai.introSeen', '1');
+  class Recognition {
+    static current: Recognition;
+    onresult?: (event: unknown) => void;
+    onend?: () => void;
+    start() { Recognition.current = this; }
+    stop() { this.onend?.(); }
+    abort() {}
+  }
+  vi.stubGlobal('SpeechRecognition', Recognition);
+  let release!: () => void;
+  reviewDictation.mockImplementationOnce(() => new Promise(resolve => {
+    release = () => resolve({ actions: [], skipped: [], flags: [], ran: true });
+  }));
+  try {
+    await renderApp();
+    fireEvent.click(screen.getByRole('button', { name: 'Dictate' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Start dictation' }));
+    act(() => Recognition.current.onresult?.({
+      resultIndex: 0, results: [Object.assign([{ transcript: '104 mobility 2' }], { isFinal: true })],
+    }));
+    fireEvent.click(screen.getAllByRole('button', { name: /^Stop/ })[0]);
+    await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Finalize' })));
+    await act(async () => fireEvent.click(within(screen.getByRole('alertdialog', { name: 'Finalize this visit?' })).getByRole('button', { name: 'Finalize' })));
+    await waitFor(() => expect(reviewDictation).toHaveBeenCalledOnce());
+    expect(cloud.setFinalized).not.toHaveBeenCalled();
+    await act(async () => release());
+    await waitFor(() => expect(cloud.setFinalized).toHaveBeenCalledWith(true));
+  } finally {
+    vi.stubGlobal('SpeechRecognition', undefined);
+    reviewDictation.mockReset();
+  }
 });
 
 it('keeps the record editable when finalization fails', async () => {

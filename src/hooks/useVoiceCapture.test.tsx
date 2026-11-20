@@ -5,7 +5,8 @@ import * as deepgram from '../utils/deepgramVoice';
 import type { DeepgramHandlers } from '../utils/deepgramVoice';
 
 const mint = vi.hoisted(() => ({ invoke: vi.fn(async () => ({ data: { token: 'test-token', kind: 'token' }, error: null })) }));
-vi.mock('../utils/supabaseClient', () => ({ supabase: { functions: mint } }));
+const rpc = vi.hoisted(() => vi.fn<(name: string, args: Record<string, unknown>) => Promise<{ error: null }>>(() => Promise.resolve({ error: null })));
+vi.mock('../utils/supabaseClient', () => ({ supabase: { functions: mint, rpc } }));
 
 // Fake Web Speech recognizer. jsdom has no MediaRecorder, so the hook
 // picks the browser transport and uses this.
@@ -29,6 +30,79 @@ class FakeRecognition {
 
 beforeEach(() => {
   (window as unknown as { webkitSpeechRecognition: unknown }).webkitSpeechRecognition = FakeRecognition;
+});
+
+describe('useVoiceCapture transcript retention', () => {
+  beforeEach(() => rpc.mockClear());
+
+  it('archives only finalized speech, with the language used to dictate', async () => {
+    const { result, rerender } = renderHook(({ userId }) =>
+      useVoiceCapture({ transcriptSource: 'clinical', transcriptUserId: userId }),
+      { initialProps: { userId: 'original-user' } },
+    );
+    act(() => result.current.startInLanguage!('fr'));
+    act(() => FakeRecognition.last!.say('cent quatre absente'));
+    expect(rpc).not.toHaveBeenCalled();
+    rerender({ userId: 'other-user' });
+    await act(async () => result.current.stop());
+
+    expect(rpc).toHaveBeenCalledExactlyOnceWith('retain_dictation_transcript', {
+      p_session_id: expect.any(String),
+      p_user_id: 'original-user',
+      p_source: 'clinical',
+      p_language: 'fr',
+      p_transcript: 'cent quatre absente',
+    });
+  });
+
+  it('updates the same transcript on resume and skips stops with no new speech', async () => {
+    const { result } = renderHook(() => useVoiceCapture({ transcriptSource: 'dental', transcriptUserId: 'original-user' }));
+    act(() => result.current.start());
+    act(() => FakeRecognition.last!.say('104 fractured'));
+    await act(async () => result.current.stop());
+
+    act(() => result.current.resume());
+    await act(async () => result.current.stop());
+    expect(rpc).toHaveBeenCalledTimes(1);
+
+    act(() => result.current.resume());
+    act(() => FakeRecognition.last!.say('105 missing'));
+    await act(async () => result.current.stop());
+
+    expect(rpc).toHaveBeenCalledTimes(2);
+    expect(rpc.mock.calls[1]).toEqual(['retain_dictation_transcript', {
+      p_session_id: expect.any(String),
+      p_user_id: 'original-user',
+      p_source: 'dental',
+      p_language: 'en',
+      p_transcript: '104 fractured\n105 missing',
+    }]);
+    expect(rpc.mock.calls[1]?.[1]).toMatchObject({
+      p_session_id: rpc.mock.calls[0]?.[1].p_session_id,
+    });
+  });
+
+  it('starts a new archive without copying old speech after 30 days', async () => {
+    const start = Date.now();
+    const now = vi.spyOn(Date, 'now').mockReturnValue(start);
+    try {
+      const { result } = renderHook(() => useVoiceCapture({ transcriptSource: 'dental', transcriptUserId: 'original-user' }));
+      act(() => result.current.start());
+      act(() => FakeRecognition.last!.say('Old transcript'));
+      await act(async () => result.current.stop());
+
+      now.mockReturnValue(start + 30 * 24 * 60 * 60 * 1000 + 60_000);
+      act(() => result.current.resume());
+      act(() => FakeRecognition.last!.say('New transcript'));
+      await act(async () => result.current.stop());
+
+      expect(rpc).toHaveBeenCalledTimes(2);
+      expect(rpc.mock.calls[1][1].p_transcript).toBe('New transcript');
+      expect(rpc.mock.calls[1][1].p_session_id).not.toBe(rpc.mock.calls[0][1].p_session_id);
+    } finally {
+      now.mockRestore();
+    }
+  });
 });
 
 describe('useVoiceCapture interruptions', () => {
@@ -196,6 +270,39 @@ describe('useVoiceCapture delayed Deepgram stop callbacks', () => {
     });
   });
   afterEach(() => vi.restoreAllMocks());
+
+  it('archives on Stop before Deepgram finishes flushing', async () => {
+    rpc.mockClear();
+    const { result } = renderHook(() => useVoiceCapture({ transcriptSource: 'dental', transcriptUserId: 'original-user' }));
+    await act(async () => result.current.start());
+    act(() => handlers[0].onFinal({ text: '104 fractured', annotated: '104 fractured', receivedAt: 1 }));
+    await act(async () => result.current.stop());
+    expect(rpc).toHaveBeenCalledTimes(1);
+
+    act(() => handlers[0].onFinal({ text: '105 missing', annotated: '105 missing', receivedAt: 2 }));
+    await act(async () => handlers[0].onClose());
+    expect(rpc).toHaveBeenCalledTimes(2);
+    expect(rpc.mock.calls[1][1].p_transcript).toBe('104 fractured\n105 missing');
+    expect(rpc.mock.calls[1][1].p_session_id).toBe(rpc.mock.calls[0][1].p_session_id);
+  });
+
+  it('archives finalized words before a chart change clears a pending stop', async () => {
+    rpc.mockClear();
+    const { result } = renderHook(() => useVoiceCapture({ transcriptSource: 'dental', transcriptUserId: 'original-user' }));
+    await act(async () => result.current.start());
+    act(() => handlers[0].onFinal({ text: '104 fractured', annotated: '[?104] fractured', receivedAt: 1 }));
+    act(() => result.current.stop());
+    await act(async () => result.current.clear());
+    act(() => handlers[0].onClose());
+
+    expect(rpc).toHaveBeenCalledExactlyOnceWith('retain_dictation_transcript', {
+      p_session_id: expect.any(String),
+      p_user_id: 'original-user',
+      p_source: 'dental',
+      p_language: 'en',
+      p_transcript: '104 fractured',
+    });
+  });
 
   it('ignores an old stop after a fresh capture starts when opted in, and still finalizes the current capture', async () => {
     const oldOnStop = vi.fn();

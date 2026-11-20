@@ -5,7 +5,7 @@
  *   npm run replay -- <transcript.txt> [--lang fr] [--expect [expected.json]] [--runs N] [--offline] [--model claude-opus-5-5] [--section charting]
  *   npm run replay -- --all-langs [--expect] [--runs N] [--offline]
  *
- * What it measures: transcript cleanup + filter (stage 1) and Claude's
+ * What it measures: transcript cleanup + filter (stage 1) and model
  * extraction (stages 2-4) from TEXT. It does not measure speech recognition
  * (Deepgram) at all — the fixture transcripts are typed, not heard. To cover
  * recognition, read the fixture script aloud in the app, download the
@@ -26,7 +26,7 @@
  * language is within 0.05 of English.
  * --runs N repeats the online pass (stages 2-4) N times per language and
  * reports mean precision/recall/F1 plus every missing/extra action with how
- * many runs it occurred in. Claude's output varies run to run, so use
+ * many runs it occurred in. Model output varies run to run, so use
  * --runs 3 for the parity check.
  *
  * Input: the "Download transcript" file from the voice panel, or any text
@@ -38,20 +38,20 @@
  *   1. per chunk: whether the filter sends it, and what the regex cleanup changed
  *   2. LIVE: chunk-by-chunk extraction on a simulated chart (what the app does while recording)
  *   3. FINAL CHECK: the end-of-dictation pass over that chart
- *   4. ONE SHOT: the whole transcript on a blank chart (roughly what pasting it to Claude gets)
+ *   4. ONE SHOT: the whole transcript on a blank chart (a baseline without incremental chart updates)
  * and diffs the charts from 2+3 against 4.
  *
- * --offline runs stage 1 only (no API calls, no cost). Otherwise it calls
- * the Anthropic API directly with your credentials (ANTHROPIC_API_KEY or an
- * `ant auth login` profile) — one call per chunk plus two full-transcript
- * calls, per run. No Deepgram key is needed. Model settings mirror supabase/functions/ai-autofill — keep in sync.
+ * --offline runs stage 1 only (no API calls). Online replay calls the
+ * selected provider directly, once per sent chunk plus two full-transcript
+ * calls per run. --model sets all stages. --live-model and --review-model
+ * override their respective stages (the one-shot pass uses the review model).
+ * Use synthetic or de-identified transcripts with online providers.
  *
  * Runs through Vite's module runner (scripts/vite-run.mjs) because the app
  * modules it imports load their catalogs with import.meta.glob.
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import Anthropic from '@anthropic-ai/sdk';
 import {
   normalizeTranscript,
   chunkWorthSending,
@@ -82,11 +82,20 @@ import {
   type AggregateScore,
   type VoiceFixture,
 } from './i18n/voiceEval';
+import { createReplayCaller, replayCost, type ReplayCaller, type ReplayUsage } from './i18n/replayProviders';
 
 // ---- args ----------------------------------------------------------------
-const USAGE =
-  'usage: npm run replay -- <transcript.txt> [--lang en|fr|de|it|es|hu|ro|zh|ar] [--expect [expected.json]] [--runs N] [--offline] [--model id] [--section charting]\n' +
-  '       npm run replay -- --all-langs [--expect] [--runs N] [--offline] [--model id]';
+const USAGE = `Usage: npm run replay -- <transcript.txt> [--lang en|fr|de|it|es|hu|ro|zh|ar] [--expect [expected.json]] [--runs N] [--offline] [--section charting]
+       npm run replay -- --all-langs [--expect] [--runs N] [--offline]
+       Models: --model <id> [--live-model <id>] [--review-model <id>]
+
+       Claude: ANTHROPIC_API_KEY or ANTHROPIC_AUTH_TOKEN
+       GPT-6 Luna (gpt-6-luna): OPENAI_API_KEY
+       Qwen3.7-Flash (qwen3.7-flash): DASHSCOPE_API_KEY and DASHSCOPE_ANTHROPIC_BASE_URL
+         e.g. https://<workspace-id>.us-east-1.maas.aliyuncs.com/apps/anthropic
+       Use synthetic or de-identified transcripts for online replay.
+
+       Example: npm run replay -- scripts/fixtures/voice/en/transcript.txt --expect --runs 3 --live-model qwen3.7-flash --review-model claude-sonnet-5-5`;
 const args = process.argv.slice(2);
 const flag = (name: string) => {
   const i = args.indexOf(name);
@@ -97,9 +106,15 @@ const bool = (name: string) => {
   if (i >= 0) args.splice(i, 1);
   return i >= 0;
 };
+if (bool('--help') || bool('-h')) {
+  console.log(USAGE);
+  process.exit(0);
+}
 const offline = bool('--offline');
 const allLangs = bool('--all-langs');
 const model = flag('--model') ?? 'claude-opus-5-5';
+const liveModel = flag('--live-model') ?? model;
+const reviewModel = flag('--review-model') ?? model;
 const section = flag('--section');
 const lang = (flag('--lang') ?? 'en') as AppLanguage;
 let runs = 1;
@@ -180,39 +195,35 @@ function handlersFor(c: ChartContext): ChartHandlers {
   };
 }
 
-// ---- API (mirrors the edge function) -------------------------------------
-const LIVE: Record<string, Record<string, unknown>> = {
-  'claude-opus-5-5': { output_config: { effort: 'low' } },
-  'claude-sonnet-5-5': { thinking: { type: 'between_tools' } },
-  'claude-haiku-5-5': { output_config: { effort: 'low' } },
-  'claude-opus-4-8': {},
-};
-const REVIEW: Record<string, Record<string, unknown>> = {
-  'claude-opus-5-5': { output_config: { effort: 'medium' } },
-  'claude-sonnet-5-5': { output_config: { effort: 'medium' } },
-  'claude-haiku-5-5': { output_config: { effort: 'medium' } },
-  'claude-opus-4-8': { thinking: { type: 'adaptive' }, output_config: { effort: 'medium' } },
-};
-const usage = { calls: 0, input: 0, cacheRead: 0, output: 0 };
+// ---- provider usage ----------------------------------------------------
+type Stage = 'live' | 'review' | 'one-shot';
+type Callers = { live: ReplayCaller; review: ReplayCaller };
+interface StageUsage extends ReplayUsage {
+  calls: number;
+  elapsedMs: number;
+  usd: number | undefined;
+}
 
-async function call(client: Anthropic, req: AutofillRequest) {
-  const review = req.mode === 'review';
-  // mode and kind are for the edge function (thinking room, usage
-  // logging); Anthropic rejects them as extra inputs.
-  const { mode: _mode, kind: _kind, ...body } = req;
-  const res = await client.messages.create({
-    ...body,
-    model,
-    max_tokens: review ? 16_000 : 4096,
-    ...(review ? REVIEW[model] : LIVE[model]),
-  } as unknown as Anthropic.MessageCreateParamsNonStreaming);
-  usage.calls++;
-  usage.input += (res.usage.input_tokens ?? 0) + (res.usage.cache_creation_input_tokens ?? 0);
-  usage.cacheRead += res.usage.cache_read_input_tokens ?? 0;
-  usage.output += res.usage.output_tokens ?? 0;
-  if (res.stop_reason === 'max_tokens') console.log('   ⚠ hit max_tokens — output truncated');
-  if (res.stop_reason === 'refusal') console.log('   ⚠ refused');
-  return res.content as Array<{ type: string; name?: string; input?: unknown }>;
+const usage: Record<Stage, StageUsage> = {
+  live: { calls: 0, elapsedMs: 0, input: 0, cacheRead: 0, cacheWrite: 0, output: 0, usd: 0 },
+  review: { calls: 0, elapsedMs: 0, input: 0, cacheRead: 0, cacheWrite: 0, output: 0, usd: 0 },
+  'one-shot': { calls: 0, elapsedMs: 0, input: 0, cacheRead: 0, cacheWrite: 0, output: 0, usd: 0 },
+};
+
+async function call(callers: Callers, stage: Stage, request: AutofillRequest) {
+  const started = performance.now();
+  const result = await (stage === 'live' ? callers.live : callers.review)(request);
+  const total = usage[stage];
+  total.calls++;
+  total.elapsedMs += performance.now() - started;
+  total.input += result.usage.input;
+  total.cacheRead += result.usage.cacheRead;
+  total.cacheWrite += result.usage.cacheWrite;
+  total.output += result.usage.output;
+  const cost = replayCost(stage === 'live' ? liveModel : reviewModel, result.usage);
+  total.usd = cost === undefined || total.usd === undefined ? undefined : total.usd + cost;
+  if (result.warning) console.log(`   ⚠ ${result.warning}`);
+  return result.content;
 }
 
 // ---- report --------------------------------------------------------------
@@ -261,7 +272,7 @@ function printScore(label: string, s: AggregateScore) {
   for (const m of s.extra) console.log(dim(`   extra:   ${describeAction(m.action)}${times(m.count)}`));
 }
 
-async function run(lng: AppLanguage, utterances: string[], expected?: VoiceFixture): Promise<RunResult> {
+async function run(lng: AppLanguage, utterances: string[], expected: VoiceFixture | undefined, callers: Callers | null): Promise<RunResult> {
   const result: RunResult = { lng, cleanupMismatches: 0, droppedFindings: 0 };
   console.log(bold(`\n1. FILTER + CLEANUP — ${utterances.length} chunks, ${lng}\n`));
   let dropped = 0;
@@ -292,12 +303,10 @@ async function run(lng: AppLanguage, utterances: string[], expected?: VoiceFixtu
     }
     console.log(`  vs expected: ${result.cleanupMismatches} cleanup mismatches, ${result.droppedFindings} findings dropped by the filter.`);
   }
-  if (offline) return result;
-
-  const client = new Anthropic();
+  if (!callers) return result;
   const once = async (k: number) => {
     if (runs > 1) console.log(bold(`\n──── run ${k + 1}/${runs} ────`));
-    return onlinePass(client, lng, utterances);
+    return onlinePass(callers, lng, utterances);
   };
   if (!expected) {
     for (let k = 0; k < runs; k++) await once(k);
@@ -316,12 +325,12 @@ async function run(lng: AppLanguage, utterances: string[], expected?: VoiceFixtu
 }
 
 /** Stages 2-4 once: the live chart (chunks + final check) and the one-shot chart. */
-async function onlinePass(client: Anthropic, lng: AppLanguage, utterances: string[]) {
+async function onlinePass(callers: Callers, lng: AppLanguage, utterances: string[]) {
   const live = blankChart();
   const liveHandlers = handlersFor(live);
   const allowed = (a: AiAction) => actionAllowedAnywhere(a, lng);
 
-  console.log(bold(`\n2. LIVE — chunk by chunk on ${model}${section ? `, section ${section}` : ''}\n`));
+  console.log(bold(`\n2. LIVE — chunk by chunk on ${liveModel}${section ? `, section ${section}` : ''}\n`));
   for (let i = 0; i < utterances.length; i++) {
     const req = buildChunkRequest({
       delta: utterances[i],
@@ -331,7 +340,7 @@ async function onlinePass(client: Anthropic, lng: AppLanguage, utterances: strin
       lng,
     });
     if (!req) continue;
-    const r = parseAutofillContent(await call(client, req), allowed);
+    const r = parseAutofillContent(await call(callers, 'live', req), allowed);
     const applied = applyAiActions(dedupeActions(r.actions, live), liveHandlers);
     console.log(`  ${utterances[i]}`);
     for (const a of applied) console.log(`   + ${describeAction(a)}`);
@@ -339,22 +348,22 @@ async function onlinePass(client: Anthropic, lng: AppLanguage, utterances: strin
     if (r.flags.length) console.log(fmtFlags(r.flags));
   }
 
-  console.log(bold('\n3. FINAL CHECK — whole transcript vs. the live chart\n'));
+  console.log(bold(`\n3. FINAL CHECK — whole transcript vs. the live chart on ${reviewModel}\n`));
   const transcript = utterances.join('\n');
   const finalReq = buildReviewRequest({ transcript, context: live, rejected: [], lng });
   if (finalReq) {
-    const r = parseAutofillContent(await call(client, finalReq), allowed);
+    const r = parseAutofillContent(await call(callers, 'review', finalReq), allowed);
     const applied = applyAiActions(dedupeActions(r.actions, live), liveHandlers);
     if (!applied.length && !r.flags.length) console.log('  nothing missed');
     for (const a of applied) console.log(`   + ${describeAction(a)}`);
     if (r.flags.length) console.log(fmtFlags(r.flags));
   }
 
-  console.log(bold('\n4. ONE SHOT — whole transcript on a blank chart\n'));
+  console.log(bold(`\n4. ONE SHOT — whole transcript on a blank chart on ${reviewModel}\n`));
   const oneShot = blankChart();
   const oneReq = buildReviewRequest({ transcript, context: oneShot, rejected: [], lng });
   if (oneReq) {
-    const r = parseAutofillContent(await call(client, oneReq), allowed);
+    const r = parseAutofillContent(await call(callers, 'one-shot', oneReq), allowed);
     const oneShotActions = applyAiActions(dedupeActions(r.actions, oneShot), handlersFor(oneShot));
     for (const a of oneShotActions) console.log(`   + ${describeAction(a)}`);
     if (r.flags.length) console.log(fmtFlags(r.flags));
@@ -398,25 +407,40 @@ function printParity(results: RunResult[]) {
   for (const r of rows) console.log(line(r));
   console.log(dim('\n  cleanup = lines whose cleanup differs from expected.json; dropped = finding lines the filter skips.'));
   if (!offline) console.log(dim('  Accept when every language\'s F1 is within 0.05 of English (or above it). Use --runs 3: one run is noisy.'));
-  console.log(dim('  Replay scores cleanup + Claude extraction from text only; it does not test speech recognition.'));
+  console.log(dim('  Replay scores cleanup + model extraction from text only; it does not test speech recognition.'));
 }
 
 async function main() {
+  const live = offline ? null : createReplayCaller(liveModel);
+  const callers = live ? { live, review: reviewModel === liveModel ? live : createReplayCaller(reviewModel) } : null;
   const results: RunResult[] = [];
   if (allLangs) {
     for (const lng of VOICE_LANGS) {
       console.log(bold(`\n════════ ${lng} ════════`));
       const utterances = readUtterances(fs.readFileSync(fixtureTranscriptPath(lng), 'utf8'));
-      results.push(await run(lng, utterances, expectOn ? loadExpected(fixtureExpectedPath(lng)) : undefined));
+      results.push(await run(lng, utterances, expectOn ? loadExpected(fixtureExpectedPath(lng)) : undefined, callers));
     }
     printParity(results);
   } else {
     const utterances = readUtterances(fs.readFileSync(file, 'utf8'));
     const expected = expectOn ? loadExpected(expectFile ?? path.join(path.dirname(file), 'expected.json')) : undefined;
-    results.push(await run(lang, utterances, expected));
+    results.push(await run(lang, utterances, expected, callers));
   }
   if (results.some((r) => r.cleanupMismatches || r.droppedFindings)) process.exitCode = 1;
-  if (!offline) console.log(dim(`\n${usage.calls} calls · ${usage.input} input · ${usage.cacheRead} cache-read · ${usage.output} output tokens`));
+  if (callers) {
+    console.log(bold('\nUSAGE — USD estimates (Qwen US console tiers, explicit cache)'));
+    for (const stage of ['live', 'review', 'one-shot'] as const) {
+      const row = usage[stage];
+      if (!row.calls) continue;
+      const cost = row.usd === undefined ? 'price unavailable' : `$${row.usd.toFixed(4)} estimated`;
+      console.log(`  ${stage} (${stage === 'live' ? liveModel : reviewModel}): ${row.calls} calls · ${Math.round(row.elapsedMs / row.calls)} ms mean · ${cost}`);
+      console.log(dim(`    ${row.input} fresh input · ${row.cacheRead} cache read · ${row.cacheWrite} cache write · ${row.output} output tokens`));
+    }
+    if (usage.live.usd !== undefined && usage.review.usd !== undefined) {
+      const cost = (usage.live.usd + usage.review.usd) / (results.length * runs);
+      console.log(`  Live + review mean per replay: $${cost.toFixed(4)} estimated`);
+    }
+  }
 }
 
 main().catch((err) => {

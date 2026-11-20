@@ -42,7 +42,8 @@
     "imagingSettings": "Ajustes de diagnóstico por imagen y PDF que muestran el idioma de los informes y las opciones predeterminadas de inclusión en el PDF.",
     "consultationReview": "La sección Imágenes de una consulta, con el control Añadir imágenes y una miniatura de ejemplo.",
     "consultationTemplatePreview": "Biblioteca de plantillas con la vista previa de una consulta ficticia y las secciones en el orden elegido.",
-    "consultationRecordNote": "Nota de consulta con los controles Descargar PDF y Copiar."
+    "consultationRecordNote": "Nota de consulta con los controles Descargar PDF y Copiar.",
+    "dictationCheck": "El panel de dictado hace una breve pausa antes de revisar el historial. Con «Reanudar» puede continuar el mismo dictado."
   },
   "articles": {
     "start": {
@@ -149,7 +150,7 @@
         },
         "third": {
           "title": "Revisar las correcciones antes de aplicarlas",
-          "text": "En Pendiente de revisión, compare las propuestas con los valores existentes y conserve la redacción respaldada. La misma grabación puede proponer hallazgos de TC, otros resultados y detalles del alta. Compare las secciones con sus evidencias y seleccione las que desea aplicar."
+          "text": "En «Odontograma», consulte los cambios en «Actividad» mientras dicta. Los hallazgos numéricos claros pueden aparecer como «Registrado directamente», por ejemplo al indicar un número de diente y un grado de movilidad. Seleccione «Detener dictado» para pausar el micrófono. Mientras aparezca «Dictado en pausa», seleccione «Reanudar» si tiene algo más que añadir.\n\n«Revisando el historial» comienza automáticamente y compara la transcripción con el historial. Cuando aparezca «Historial revisado», compruebe si hay elementos en «Por revisar». En Pendiente de revisión, compare las propuestas con los valores existentes y conserve la redacción respaldada. La misma grabación puede proponer hallazgos de TC, otros resultados y detalles del alta. Compare las secciones con sus evidencias y seleccione las que desea aplicar."
         }
       }
     },

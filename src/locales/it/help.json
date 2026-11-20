@@ -42,7 +42,8 @@
     "imagingSettings": "Impostazioni di diagnostica per immagini e PDF con la lingua dei referti e le opzioni di inclusione predefinite nel PDF.",
     "consultationReview": "La sezione Immagini di una visita, con il comando Aggiungi immagini e una miniatura di esempio.",
     "consultationTemplatePreview": "Raccolta dei modelli con l’anteprima di una visita fittizia e le sezioni nell’ordine scelto.",
-    "consultationRecordNote": "Nota della consultazione con i comandi Scarica PDF e Copia."
+    "consultationRecordNote": "Nota della consultazione con i comandi Scarica PDF e Copia.",
+    "dictationCheck": "Il pannello di dettatura si ferma brevemente prima di verificare la cartella. Con «Riprendi» può proseguire la stessa dettatura."
   },
   "articles": {
     "start": {
@@ -149,7 +150,7 @@
         },
         "third": {
           "title": "Verificare le correzioni prima di applicarle",
-          "text": "In Da verificare, confronti le modifiche proposte con i valori esistenti e mantenga il testo supportato. Al termine, la stessa registrazione può proporre rilievi TC, altri risultati diagnostici e dettagli di dimissione. Verifichi le evidenze e selezioni le sezioni da applicare."
+          "text": "Nell’«Odontogramma», segua gli inserimenti in «Attività» mentre detta. I reperti numerici inequivocabili possono comparire come «Registrato direttamente», ad esempio se indica il numero del dente e il grado di mobilità. Selezioni «Interrompere la dettatura» per mettere in pausa il microfono. Mentre compare «Dettatura in pausa», selezioni «Riprendi» se desidera aggiungere altri reperti.\n\nLa «Verifica della cartella» inizia automaticamente e confronta la trascrizione con la cartella. Quando compare «Cartella verificata», controlli se ci sono elementi in «Da verificare». In Da verificare, confronti le modifiche proposte con i valori esistenti e mantenga il testo supportato. Al termine, la stessa registrazione può proporre rilievi TC, altri risultati diagnostici e dettagli di dimissione. Verifichi le evidenze e selezioni le sezioni da applicare."
         }
       }
     },

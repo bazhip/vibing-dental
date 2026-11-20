@@ -103,6 +103,7 @@ type AiUsageTotal = {
   output_tokens: number;
   cache_read_tokens: number;
   cache_write_tokens: number;
+  cache_write_1h_tokens?: number;
 };
 // deno-lint-ignore no-explicit-any
 async function aiUsageTotals(admin: any): Promise<AiUsageTotal[]> {
@@ -110,22 +111,29 @@ async function aiUsageTotals(admin: any): Promise<AiUsageTotal[]> {
   if (!error) return Array.isArray(data) ? data : [];
   const sums = new Map<string, AiUsageTotal>();
   const PAGE = 1000;
+  const columns = 'id, user_id, model, input_tokens, output_tokens, cache_read_tokens, cache_write_tokens';
+  let includeHourWrites = true;
   for (let from = 0; ; from += PAGE) {
-    const { data: rows, error: readError } = await admin
-      .from('ai_usage')
-      .select('id, user_id, model, input_tokens, output_tokens, cache_read_tokens, cache_write_tokens')
+    const readPage = (selection: string) => admin
+      .from('ai_usage').select(selection)
       .not('model', 'in', '(deepgram-token,reminder-email,feedback)')
       .order('id', { ascending: true })
       .range(from, from + PAGE - 1);
+    let { data: rows, error: readError } = await readPage(includeHourWrites ? columns + ', cache_write_1h_tokens' : columns);
+    if (includeHourWrites && (readError?.code === 'PGRST204' || readError?.code === '42703')) {
+      includeHourWrites = false;
+      ({ data: rows, error: readError } = await readPage(columns));
+    }
     if (readError) throw new Error(`Could not read AI usage: ${readError.message}`);
     for (const r of rows ?? []) {
       const key = `${r.user_id}|${r.model}`;
-      const cur = sums.get(key) ?? { user_id: r.user_id, model: r.model, calls: 0, input_tokens: 0, output_tokens: 0, cache_read_tokens: 0, cache_write_tokens: 0 };
+      const cur = sums.get(key) ?? { user_id: r.user_id, model: r.model, calls: 0, input_tokens: 0, output_tokens: 0, cache_read_tokens: 0, cache_write_tokens: 0, cache_write_1h_tokens: 0 };
       cur.calls += 1;
       cur.input_tokens += r.input_tokens ?? 0;
       cur.output_tokens += r.output_tokens ?? 0;
       cur.cache_read_tokens += r.cache_read_tokens ?? 0;
       cur.cache_write_tokens += r.cache_write_tokens ?? 0;
+      cur.cache_write_1h_tokens = (cur.cache_write_1h_tokens ?? 0) + (r.cache_write_1h_tokens ?? 0);
       sums.set(key, cur);
     }
     if (!rows || rows.length < PAGE) break;

@@ -17,7 +17,8 @@
     "noteProcedureTooth": "Note de procédure @{{triadan}} : « {{text}} »",
     "radiographic": "observations radiographiques += « {{text}}… »",
     "removed": "Supprimé : {{what}}",
-    "report": "rapport += « {{text}}… »"
+    "report": "rapport += « {{text}}… »",
+    "direct": "Saisie directe : {{what}}"
   },
   "button": {
     "dictate": "Dicter",
@@ -152,14 +153,19 @@
     "interrupted": "Interrompu",
     "listening": "Écoute en cours",
     "ready": "Prêt, vous pouvez parler",
-    "stopped": "Arrêté"
+    "stopped": "Arrêté",
+    "reviewPending": "Dictée en pause",
+    "reviewing": "Vérification du dossier",
+    "reviewed": "Dossier vérifié"
   },
   "sub": {
     "connecting": "préparation du micro…",
     "finishing": "finalisation…",
     "goAhead": "allez-y, parlez",
     "listening": "écoute",
-    "listeningSending": "écoute · envoi…"
+    "listeningSending": "écoute · envoi…",
+    "reviewPending": "Le dossier va être vérifié. Sélectionnez « Reprendre » pour continuer à dicter.",
+    "reviewing": "Comparaison de la transcription avec le dossier."
   },
   "toReview_many": "{{count}} à vérifier",
   "toReview_one": "{{count}} à vérifier",

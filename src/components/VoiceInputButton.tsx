@@ -15,6 +15,7 @@ import { needsAiConsent, ensureAiConsent } from '../native/aiConsent';
 import type { AppLanguage } from '../i18n/config';
 import { endsMidFindingOther } from '../utils/voice/normalize';
 import { transcriptTurns } from '../utils/voice/transcriptTurns';
+import { directDentalScore } from '../utils/voice/directDentalScore';
 import {
   extractChartActions,
   reviewFullTranscript,
@@ -101,12 +102,14 @@ export function actionFocus(a: AiAction, activeSection?: string, lng: AppLanguag
 }
 
 interface VoiceInputButtonProps {
+  transcriptUserId?: string;
   context: ChartContext;
   handlers: ChartHandlers;
   /** Called with each batch of applied actions so the app can focus the
    *  section + highlight the fields the AI just edited. */
   /** After pending chunks and the final check have landed for this session. */
   onDictationComplete?: (lng: AppLanguage, transcript: string) => void;
+  finalReviewRef?: React.RefObject<(() => Promise<void> | undefined) | null>;
   onBusyChange?: (busy: boolean) => void;
   /** Describe the visit or open its dedicated recorder. */
   contextualDestination?: { label: string; onOpen?: () => void };
@@ -206,6 +209,7 @@ export function endsMidFinding(cleaned: string, lng: AppLanguage): boolean {
 /** …or once speech has been pending this long, whichever comes first. */
 const MAX_PENDING_MS = 6_000;
 const RECENT_CONTEXT_MS = 90_000;
+const FINAL_REVIEW_DELAY_MS = 2_000;
 
 const ROW_TIME: Intl.DateTimeFormatOptions = { hour: 'numeric', minute: '2-digit', second: '2-digit' };
 
@@ -260,7 +264,7 @@ function useStickToBottom<T extends HTMLElement>(dep: unknown) {
 }
 
 export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
-  context, handlers, onActivity, onShowAction, onDictationComplete, onBusyChange, activeSection, sessionKey, locked = false, onOpenFeedback, contextualDestination, triggerHidden = false }) => {
+  context, handlers, onActivity, onShowAction, onDictationComplete, finalReviewRef, onBusyChange, activeSection, sessionKey, locked = false, onOpenFeedback, contextualDestination, transcriptUserId, triggerHidden = false }) => {
   const { t } = useTranslation(['voice', 'app']);
   const [activeChunkCount, setActiveChunkCount] = React.useState(0);
   const [activity, setActivity] = React.useState<ActivityEntry[]>([]);
@@ -269,6 +273,21 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
    *  from the panel, just a Close button. */
   const [intro, setIntro] = React.useState<null | 'start' | 'info' | 'welcome'>(null);
   const [finishing, setFinishing] = React.useState(false);
+  const [reviewStatus, setReviewStatus] = React.useState<'pending' | 'checking' | 'checked' | null>(null);
+  const pendingFinalReview = React.useRef<{ timer: number; run: () => Promise<void> } | null>(null);
+  const activeFinalReview = React.useRef<Promise<void> | null>(null);
+  const cancelQueuedReview = React.useCallback(() => {
+    if (pendingFinalReview.current) window.clearTimeout(pendingFinalReview.current.timer);
+    pendingFinalReview.current = null;
+  }, []);
+  const stoppingCapture = React.useRef<{ done: Promise<void>; resolve: () => void; timer: number } | null>(null);
+  const settleCapture = React.useCallback(() => {
+    const pending = stoppingCapture.current;
+    if (!pending) return;
+    window.clearTimeout(pending.timer);
+    stoppingCapture.current = null;
+    pending.resolve();
+  }, []);
   const [starting, setStarting] = React.useState(false);
   const startRequest = React.useRef(0);
   React.useEffect(() => {
@@ -349,6 +368,10 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
    *  pass. */
   const finalCheckedSegmentsRef = React.useRef(0);
   const resetSessionMemory = () => {
+    cancelQueuedReview();
+    settleCapture();
+    activeFinalReview.current = null;
+    setReviewStatus(null);
     sessionGenRef.current++;
     finalCheckedSegmentsRef.current = 0;
     rejectedRef.current = [];
@@ -362,7 +385,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 
   // Activity lines are written from processChunk (a callback with [] deps), so they
   // look up the language in effect now rather than the render-bound `t`.
-  const appendActivity = (actions: AiAction[], skipped: AiAction[] = [], uncertain: Set<AiAction> = new Set()) => {
+  const appendActivity = (actions: AiAction[], skipped: AiAction[] = [], uncertain: Set<AiAction> = new Set(), direct = false) => {
     if (!actions.length && !skipped.length) return;
     const tNow = i18n.getFixedT(null, 'voice');
     const lng = voiceRef.current?.lng ?? 'en';
@@ -371,7 +394,9 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       ...prev,
       ...actions.map((a, i) => ({
         id: `${now.getTime()}_${i}`,
-        description: withDestination(a, sectionRef.current, lng),
+        description: direct
+          ? tNow('activity.direct', { what: withDestination(a, sectionRef.current, lng) })
+          : withDestination(a, sectionRef.current, lng),
         at: now,
         uncertain: uncertain.has(a),
       })),
@@ -411,6 +436,15 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     const contextSegments = voiceRef.current.recentSegments(RECENT_CONTEXT_MS).filter((s) => !sentSet.has(s.receivedAt));
     const recentContext = contextSegments.map((s) => s.text).join(' ').trim();
 
+    const lng = voiceRef.current.lng;
+    const direct = segments.length === 1 && rejectedRef.current.length === 0 && contextRef.current.toothData
+      ? directDentalScore(segments[0], contextRef.current.toothData, lng, recentContext)
+      : null;
+    if (direct) {
+      applyResult({ actions: [direct], skipped: [], flags: [], ran: true }, true);
+      return;
+    }
+
     const gen = sessionGenRef.current;
     inFlightRef.current = true;
     setActiveChunkCount((c) => c + 1);
@@ -431,7 +465,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 
   /** Apply an extraction result: chart changes, review items, activity.
    *  Returns how many new review items it raised. */
-  function applyResult(result: ExtractResult): number {
+  function applyResult(result: ExtractResult, direct = false): number {
       if (!canEdit()) return 0;
       const before = contextRef.current;
       const all = dedupeActions(result.actions, before);
@@ -502,7 +536,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
           return [...remaining, ...newItems];
         });
       }
-      appendActivity(applied, result.skipped, flaggedActions);
+      appendActivity(applied, result.skipped, flaggedActions, direct);
       return newItems.length;
   }
 
@@ -557,6 +591,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       });
       if (!result.ran || gen !== sessionGenRef.current || !canEdit()) return;
       finalCheckedSegmentsRef.current = segments.length;
+      setReviewStatus('checked');
       const raised = applyResult(result);
       const now = new Date();
       setActivity((prev) => [...prev, {
@@ -575,7 +610,9 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       }
     } catch (err) {
       console.error('[VoiceInputButton] final check failed', err);
-      setError(err instanceof Error ? tNow('errors.finalCheckFailedDetail', { message: err.message }) : tNow('errors.finalCheckFailed'));
+      if (gen === sessionGenRef.current) {
+        setError(err instanceof Error ? tNow('errors.finalCheckFailedDetail', { message: err.message }) : tNow('errors.finalCheckFailed'));
+      }
     } finally {
       inFlightRef.current = false;
       setActiveChunkCount((c) => c - 1);
@@ -659,18 +696,80 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     onActivityRef.current?.([a], lng);
   };
 
-  const onStop = React.useCallback(async (transcript: string) => {
+  const onStop = React.useCallback((transcript?: string) => {
+    settleCapture();
     const gen = sessionGenRef.current, key = currentSessionRef.current;
-    const lng = voiceRef.current?.lng ?? 'en';
-    setFinishing(true);
-    try {
-      await runFinalCheck(); // drains every pending chunk first
-      if (gen === sessionGenRef.current && key === currentSessionRef.current && canEdit()) onDictationCompleteRef.current?.(lng, transcript);
-    } finally {
-      if (key === currentSessionRef.current) setFinishing(false);
+    const capture = voiceRef.current;
+    const lng = capture?.lng ?? 'en';
+    const finalText = transcript ?? capture?.allSegments().map(segment => segment.text).join(' ').trim() ?? '';
+    cancelQueuedReview();
+    const hasNewSpeech = (capture?.allSegments().length ?? 0) > finalCheckedSegmentsRef.current;
+    const current = () => gen === sessionGenRef.current && key === currentSessionRef.current;
+    const finish = async () => {
+      try {
+        await runFinalCheck();
+        if (current() && canEdit()) onDictationCompleteRef.current?.(lng, finalText);
+      } finally {
+        if (current()) {
+          setFinishing(false);
+          setReviewStatus(status => status === 'checking' ? null : status);
+        }
+      }
+    };
+    const run = () => {
+      cancelQueuedReview();
+      if (!current()) return Promise.resolve();
+      setFinishing(true);
+      if (hasNewSpeech && canEdit()) setReviewStatus('checking');
+      const task = finish().finally(() => {
+        if (activeFinalReview.current === task) activeFinalReview.current = null;
+      });
+      activeFinalReview.current = task;
+      return task;
+    };
+
+    if (!hasNewSpeech || !canEdit()) {
+      void run();
+      return;
     }
+    setFinishing(false);
+    setReviewStatus('pending');
+    // Flush live entries immediately. Only the whole-transcript review waits.
+    void processChunk(false);
+    pendingFinalReview.current = {
+      run,
+      timer: window.setTimeout(() => void run(), FINAL_REVIEW_DELAY_MS),
+    };
+    // The mutable chart, language and generation are read from refs.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [processChunk]);
+  }, [cancelQueuedReview, processChunk, settleCapture]);
+
+  const stopCapture = React.useCallback(() => {
+    if (stoppingCapture.current) return stoppingCapture.current.done;
+    const capture = voiceRef.current;
+    if (!capture?.recording) return;
+    if (!capture.ready) {
+      capture.stop();
+      return;
+    }
+    let resolve!: () => void;
+    const done = new Promise<void>(complete => { resolve = complete; });
+    // Deepgram drains for at most two seconds. Retain a fallback for a
+    // recognizer that never signals end so finalizing cannot hang.
+    const timer = window.setTimeout(onStop, 3_500);
+    stoppingCapture.current = { done, resolve, timer };
+    setFinishing(true);
+    capture.stop();
+    return done;
+  }, [onStop]);
+  React.useImperativeHandle(finalReviewRef, () => () => {
+    const gen = sessionGenRef.current;
+    const capture = stopCapture();
+    const finishReview = () => pendingFinalReview.current?.run() ?? activeFinalReview.current ?? undefined;
+    if (!capture) return finishReview();
+    return capture.then(() => gen === sessionGenRef.current ? finishReview() : undefined);
+  }, [stopCapture]);
+
   const [heardSinceStart, setHeardSinceStart] = React.useState(false);
   // Send each utterance as soon as the speaker pauses, rather than on a
   // fixed timer; cap the wait so continuous speech still flows.
@@ -689,8 +788,11 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   React.useEffect(() => () => {
     window.clearTimeout(quietTimerRef.current);
     window.clearTimeout(maxTimerRef.current);
-  }, []);
-  const voice = useVoiceCapture({ onStop, onSegment, ignoreStaleStopCallbacks: true });
+    cancelQueuedReview();
+    settleCapture();
+    sessionGenRef.current++;
+  }, [cancelQueuedReview, settleCapture]);
+  const voice = useVoiceCapture({ onStop, onSegment, ignoreStaleStopCallbacks: true, transcriptSource: 'dental', transcriptUserId });
   voiceRef.current = voice;
   // Keep the screen on while dictating: on a phone, the screen sleeping
   // cuts the mic and ends the session.
@@ -802,9 +904,9 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   React.useEffect(() => {
     if (prevKeyRef.current === sessionKey) return;
     prevKeyRef.current = sessionKey;
-    if (voiceRef.current?.recording) voiceRef.current.stop();
-    voiceRef.current?.clear();
     resetSessionMemory();
+    voiceRef.current?.clear();
+    if (voiceRef.current?.recording) voiceRef.current.stop();
     setActivity([]);
     setReviews([]);
     setReviewCompleted(false);
@@ -843,6 +945,8 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       setError(t('errors.unsupported'));
       return;
     }
+    cancelQueuedReview();
+    setReviewStatus(null);
     setError(null);
     setPanelOpen(true);
     // iOS only lets a page speak after it has spoken inside a tap.
@@ -866,7 +970,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   };
 
   const openDestination = () => {
-    if (!canEdit() || triggerHidden || voiceRef.current?.recording || sending || starting) return;
+    if (!canEdit() || triggerHidden || voiceRef.current?.recording || (sending && !waitingForReview) || starting) return;
     if (contextualDestination?.onOpen) {
       setPanelOpen(false);
       contextualDestination.onOpen();
@@ -886,7 +990,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 
   /** Stop listening; if anything needs checking, say so and show it. */
   const stopListening = () => {
-    voice.stop();
+    void stopCapture();
     const open = reviewsRef.current.length;
     if (open > 0) {
       setPanelOpen(true);
@@ -921,7 +1025,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   const closePanel = () => {
     startRequest.current++;
     setStarting(false);
-    if (voice.recording) voice.stop();
+    void stopCapture();
     voice.dismissInterruption();
     setPanelOpen(false);
   };
@@ -932,9 +1036,10 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       message: t('dialog.message'),
       confirmLabel: t('dialog.confirm'),
     }))) return;
-    if (voice.recording) voice.stop();
-    voice.clear();
     resetSessionMemory();
+    voice.clear();
+    if (voice.recording) voice.stop();
+    setFinishing(false);
     setActivity([]);
     setReviews([]);
     setReviewCompleted(false);
@@ -985,6 +1090,10 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   const activityScroll = useStickToBottom<HTMLDivElement>(activity.length);
 
   const sending = activeChunkCount > 0 || (finishing && !locked);
+  const waitingForReview = reviewStatus === 'pending' && !locked;
+  const checkingChart = reviewStatus === 'checking' && !locked;
+  const reviewMessage = waitingForReview ? t('sub.reviewPending')
+    : checkingChart ? t('sub.reviewing') : null;
   // The iOS app draws its symbols as icons, not text glyphs.
   const native = isNativeApp();
   const label = voice.recording ? t('button.stop') : hasSession && !contextualDestination ? t('button.resume') : t('button.dictate');
@@ -999,10 +1108,12 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     ? t('sub.goAhead')
     : voice.recording
     ? (sending ? t('sub.listeningSending') : reviewLabel ?? t('sub.listening'))
+    : waitingForReview ? t('status.reviewPending')
+    : checkingChart ? t('status.reviewing')
     : sending ? t('sub.finishing') : reviewLabel;
   const className = ['voice-input', voice.recording ? 'voice-input--recording' : '', sending ? 'voice-input--processing' : ''].filter(Boolean).join(' ');
 
-  React.useEffect(() => { onBusyChange?.(voice.recording || sending || starting); }, [voice.recording, sending, starting, onBusyChange]);
+  React.useEffect(() => { onBusyChange?.(voice.recording || sending || waitingForReview || starting); }, [voice.recording, sending, waitingForReview, starting, onBusyChange]);
   React.useEffect(() => () => { onBusyChange?.(false); }, [onBusyChange]);
   const status = connecting
     ? { text: t('status.connecting'), cls: 'ai-sidebar__status--connecting' }
@@ -1010,11 +1121,16 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     ? { text: t('status.ready'), cls: 'ai-sidebar__status--live' }
     : voice.recording
     ? { text: t('status.listening'), cls: 'ai-sidebar__status--live' }
-    : voice.interrupted
+    : waitingForReview
+      ? { text: t('status.reviewPending'), cls: '' }
+      : checkingChart
+      ? { text: t('status.reviewing'), cls: 'ai-sidebar__status--checking' }
+      : voice.interrupted
       ? { text: t('status.interrupted'), cls: 'ai-sidebar__status--warn' }
       : sending
         ? { text: t('status.finishing'), cls: '' }
-        : { text: contextualDestination && !hasSession ? t('status.idle') : t('status.stopped'), cls: '' };
+        : { text: reviewStatus === 'checked' ? t('status.reviewed')
+            : t(contextualDestination && !hasSession ? 'status.idle' : 'status.stopped'), cls: '' };
 
   const lastActivity = activity[activity.length - 1];
   // One-line summary for the collapsed panel: what's being heard right
@@ -1040,7 +1156,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
         type="button"
         className={className}
         onClick={handleButton}
-        disabled={!!contextualDestination && !voice.recording && (sending || starting)}
+        disabled={!voice.recording && ((sending && !waitingForReview) || starting)}
         aria-pressed={voice.recording}
         aria-label={contextualDestination && !voice.recording ? label : undefined}
         title={voice.recording ? t('button.titleStop') : undefined}
@@ -1119,6 +1235,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
             >
               <span className={`ai-sidebar__status ${status.cls}`} role="status" aria-live="polite" aria-atomic="true">
                 {voice.recording && <span className={`voice-input__rec-dot${connecting ? ' voice-input__rec-dot--connecting' : ''}`} aria-hidden="true" />}
+                {checkingChart && <span className="ai-sidebar__spinner" aria-hidden="true" />}
                 {status.text}
               </span>
               {native ? (
@@ -1127,7 +1244,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
                 <span className="ai-sidebar__chevron" aria-hidden="true">{collapsed ? '▴' : '▾'}</span>
               )}
             </button>
-            <button type="button" className={`ai-sidebar__primary ${primary.cls}`} onClick={primary.onClick} disabled={(locked || sending || starting) && !voice.recording} aria-describedby={locked ? "dictation-locked" : undefined}>
+            <button type="button" className={`ai-sidebar__primary ${primary.cls}`} onClick={primary.onClick} disabled={(locked || (sending && !waitingForReview) || starting) && !voice.recording} aria-describedby={locked ? "dictation-locked" : undefined}>
               {primary.text}
             </button>
             <button type="button" className="ai-sidebar__icon" onClick={closePanel} aria-label={t('panel.close')} title={t('panel.closeTitle')}>
@@ -1135,9 +1252,10 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
             </button>
           </header>
 
+          {reviewMessage && <p className="ai-sidebar__process">{reviewMessage}</p>}
           {locked && <p id="dictation-locked" className="ai-sidebar__notice">{t('toast.viewOnly', { button: t('topbar.editChart', { ns: 'app' }) })}</p>}
           {collapsed ? (
-            <button type="button" className={`ai-sidebar__peek ${peek.cls}`} onClick={toggleCollapsed}>
+            !reviewMessage && <button type="button" className={`ai-sidebar__peek ${peek.cls}`} onClick={toggleCollapsed}>
               {peek.text}
             </button>
           ) : (
@@ -1226,7 +1344,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
               {(!contextualDestination || voice.recording || sending || activity.length > 0) && <>
               <div className="ai-sidebar__section-label">
                 {t('panel.activity')}
-                {sending && <span className="ai-sidebar__sending">{t('panel.sending')}</span>}
+                {sending && !reviewMessage && <span className="ai-sidebar__sending">{t('panel.sending')}</span>}
               </div>
               <div className="ai-sidebar__activity" ref={activityScroll.ref} onScroll={activityScroll.onScroll}>
                 {activity.length === 0 ? (

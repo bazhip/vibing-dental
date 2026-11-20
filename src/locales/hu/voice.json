@@ -16,7 +16,8 @@
     "noteProcedureTooth": "Beavatkozási megjegyzés @{{triadan}}: „{{text}}”",
     "radiographic": "röntgenleletek += „{{text}}…”",
     "removed": "Eltávolítva: {{what}}",
-    "report": "lelet += „{{text}}…”"
+    "report": "lelet += „{{text}}…”",
+    "direct": "Közvetlenül rögzítve: {{what}}"
   },
   "button": {
     "dictate": "Diktálás",
@@ -147,14 +148,19 @@
     "interrupted": "Megszakítva",
     "listening": "Figyelés",
     "ready": "Kész – kezdjen beszélni",
-    "stopped": "Leállítva"
+    "stopped": "Leállítva",
+    "reviewPending": "Diktálás szünetel",
+    "reviewing": "Fogászati lap ellenőrzése",
+    "reviewed": "Fogászati lap ellenőrizve"
   },
   "sub": {
     "connecting": "mikrofon előkészítése…",
     "finishing": "befejezés…",
     "goAhead": "kezdjen beszélni",
     "listening": "figyelés",
-    "listeningSending": "figyelés · küldés…"
+    "listeningSending": "figyelés · küldés…",
+    "reviewPending": "Hamarosan elindul az ellenőrzés. A diktáláshoz válassza a „Folytatás” lehetőséget.",
+    "reviewing": "Az átirat összevetése a fogászati lappal."
   },
   "toReview_one": "{{count}} ellenőrizendő",
   "toReview_other": "{{count}} ellenőrizendő",

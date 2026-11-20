@@ -42,7 +42,8 @@
     "imagingSettings": "Imaging and PDF settings showing the report language and default PDF inclusion choices.",
     "consultationReview": "The Images section in a consultation, with the Add images control and a sample thumbnail.",
     "consultationTemplatePreview": "Template library with a fictional consultation preview showing the sections in the selected order.",
-    "consultationRecordNote": "A consultation’s record note with the Download PDF and Copy controls."
+    "consultationRecordNote": "A consultation’s record note with the Download PDF and Copy controls.",
+    "dictationCheck": "The dictation panel pauses briefly before it checks the chart. Resume keeps the same dictation open."
   },
   "articles": {
     "start": {
@@ -149,7 +150,7 @@
         },
         "third": {
           "title": "Review corrections before applying",
-          "text": "In Needs review, compare proposed changes with existing values and keep the supported wording. At the end, the same recording can propose CT, other diagnostic results and discharge details. Compare the proposed sections with their evidence and select the ones to apply."
+          "text": "In Charting, follow the entries in Activity as you dictate. Clear numeric findings can appear as “Charted directly,” for example when you give a tooth number and a mobility score. Select “Stop dictation” to pause the microphone. While the panel says “Dictation paused,” select “Resume” if you have more to add.\n\n“Checking chart” starts automatically and compares the transcript with the chart. When “Chart checked” appears, look for any items under “Needs review. In Needs review, compare proposed changes with existing values and keep the supported wording. At the end, the same recording can propose CT, other diagnostic results and discharge details. Compare the proposed sections with their evidence and select the ones to apply."
         }
       }
     },

@@ -16,7 +16,8 @@
     "noteProcedureTooth": "Verfahrensnotiz @{{triadan}}: „{{text}}“",
     "radiographic": "Röntgenbefunde += „{{text}}…“",
     "removed": "Entfernt: {{what}}",
-    "report": "Bericht += „{{text}}…“"
+    "report": "Bericht += „{{text}}…“",
+    "direct": "Direkt erfasst: {{what}}"
   },
   "button": {
     "dictate": "Diktieren",
@@ -147,14 +148,19 @@
     "interrupted": "Unterbrochen",
     "listening": "Zuhören",
     "ready": "Bereit — Sie können sprechen",
-    "stopped": "Gestoppt"
+    "stopped": "Gestoppt",
+    "reviewPending": "Diktat pausiert",
+    "reviewing": "Akte wird geprüft",
+    "reviewed": "Akte geprüft"
   },
   "sub": {
     "connecting": "Mikrofon wird vorbereitet …",
     "finishing": "Abschluss …",
     "goAhead": "bitte sprechen",
     "listening": "Zuhören",
-    "listeningSending": "Zuhören · Senden …"
+    "listeningSending": "Zuhören · Senden …",
+    "reviewPending": "Die Akte wird gleich geprüft. Wählen Sie „Fortsetzen“, um weiter zu diktieren.",
+    "reviewing": "Das Transkript wird mit der Akte abgeglichen."
   },
   "toReview_one": "{{count}} zu prüfen",
   "toReview_other": "{{count}} zu prüfen",

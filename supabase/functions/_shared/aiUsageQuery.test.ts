@@ -24,3 +24,20 @@ it('prices actual models before summing the costs across workflows and accounts'
   expect(usage.breakdown).toEqual([expect.objectContaining({ feature: 'ct_report', model: '', estCostUsd: 2.625 })]);
   expect(usage.users[0]).toMatchObject({ email: 'user@example.test', estCostUsd: 2.625 });
 });
+
+it('charges 1-hour and 5-minute prompt writes at their own rates', () => {
+  const sonnet = {
+    calls: 1, model: 'claude-sonnet-5-5', user_id: 'u',
+    input_tokens: 1_000_000, output_tokens: 0, cache_read_tokens: 0,
+    cache_write_tokens: 800_000, cache_write_1h_tokens: 500_000,
+  };
+  const result = aggregateAiUsage({
+    users: [sonnet],
+    breakdown: [{ ...sonnet, kind: 'review', day: null }],
+    models: [sonnet.model],
+  }, 'workflow', new Map());
+  // 200k regular at $2, 300k five-minute at $2.50, 500k one-hour at $4.
+  expect(result.totals.estCostUsd).toBe(3.15);
+  expect(result.breakdown[0].estCostUsd).toBe(3.15);
+  expect(result.users[0].estCostUsd).toBe(3.15);
+});

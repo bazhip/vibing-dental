@@ -42,7 +42,8 @@
     "imagingSettings": "Setările Imagini și PDF, cu limba raportului și opțiunile implicite de includere în PDF.",
     "consultationReview": "Secțiunea Imagini a unei consultații, cu opțiunea Adăugați imagini și o miniatură de exemplu.",
     "consultationTemplatePreview": "Biblioteca de șabloane cu previzualizarea unei consultații fictive și secțiunile în ordinea aleasă.",
-    "consultationRecordNote": "Nota consultației cu comenzile Descărcați PDF și Copiați."
+    "consultationRecordNote": "Nota consultației cu comenzile Descărcați PDF și Copiați.",
+    "dictationCheck": "Panoul de dictare face o scurtă pauză înainte de a verifica fișa. Cu „Reluați” continuați aceeași dictare."
   },
   "articles": {
     "start": {
@@ -149,7 +150,7 @@
         },
         "third": {
           "title": "Verificați corecțiile înainte de a le aplica",
-          "text": "În De verificat, comparați propunerile cu valorile existente și păstrați formulările susținute. Aceeași înregistrare poate propune constatări CT, alte rezultate diagnostice și detalii de externare. Verificați dovezile și selectați secțiunile de aplicat."
+          "text": "În „Fișă dentară”, urmăriți modificările din „Activitate” pe măsură ce dictați. Constatările numerice clare pot fi marcate „Înregistrat direct”, de exemplu când precizați numărul dintelui și gradul de mobilitate. Alegeți „Opriți dictarea” pentru a pune microfonul în pauză. Cât timp apare „Dictare în pauză”, alegeți „Reluați” dacă aveți ceva de adăugat.\n\n„Se verifică fișa” pornește automat și compară transcrierea cu fișa. Când apare „Fișă verificată”, căutați eventualele elemente din „Necesită verificare”. În De verificat, comparați propunerile cu valorile existente și păstrați formulările susținute. Aceeași înregistrare poate propune constatări CT, alte rezultate diagnostice și detalii de externare. Verificați dovezile și selectați secțiunile de aplicat."
         }
       }
     },

@@ -396,7 +396,7 @@ const App: React.FC = () => {
         {/* Signed in — but the charting app is behind the subscription
             gate (trials, comps, and admins pass straight through). */}
         <BillingGate>
-          <EntryGrid onGoHome={native ? undefined : () => setShowHome(true)} />
+          <EntryGrid transcriptUserId={lastUserIdRef.current} onGoHome={native ? undefined : () => setShowHome(true)} />
         </BillingGate>
         {/* Invitation link for an existing account (#/join/<token>). */}
         {route.view === 'join' && route.joinToken && (

@@ -42,7 +42,8 @@
     "imagingSettings": "Réglages « Imagerie et PDF » avec la langue des comptes rendus et le contenu inclus par défaut dans le PDF.",
     "consultationReview": "La section Images d’une consultation, avec la commande Ajouter des images et une miniature d’exemple.",
     "consultationTemplatePreview": "Bibliothèque de modèles avec un aperçu de consultation fictive présentant les rubriques dans l’ordre choisi.",
-    "consultationRecordNote": "Note de consultation avec les commandes Télécharger le PDF et Copier."
+    "consultationRecordNote": "Note de consultation avec les commandes Télécharger le PDF et Copier.",
+    "dictationCheck": "Le panneau de dictée marque une courte pause avant de vérifier le dossier. « Reprendre » permet de poursuivre la même dictée."
   },
   "articles": {
     "start": {
@@ -149,7 +150,7 @@
         },
         "third": {
           "title": "Vérifier les corrections avant de les appliquer",
-          "text": "Dans À vérifier, comparez les modifications proposées aux valeurs existantes et conservez le texte justifié. Le même enregistrement peut proposer des constatations CT, d’autres résultats et des détails de sortie. Vérifiez les éléments justificatifs et sélectionnez les rubriques à appliquer."
+          "text": "Dans « Schéma dentaire », suivez les saisies dans « Activité » pendant que vous dictez. Les constatations chiffrées explicites peuvent porter la mention « Saisie directe », par exemple lorsque vous indiquez un numéro de dent et un score de mobilité. Sélectionnez « Arrêter la dictée » pour mettre le microphone en pause. Lorsque « Dictée en pause » s’affiche, sélectionnez « Reprendre » si vous avez quelque chose à ajouter.\n\nLa « Vérification du dossier » démarre automatiquement et compare la transcription au dossier. Lorsque « Dossier vérifié » s’affiche, consultez les éventuels éléments sous « À vérifier ». Dans À vérifier, comparez les modifications proposées aux valeurs existantes et conservez le texte justifié. Le même enregistrement peut proposer des constatations CT, d’autres résultats et des détails de sortie. Vérifiez les éléments justificatifs et sélectionnez les rubriques à appliquer."
         }
       }
     },

@@ -16,7 +16,8 @@
     "noteProcedureTooth": "牙位{{triadan}}操作备注：“{{text}}”",
     "radiographic": "影像学检查结果 += “{{text}}…”",
     "removed": "已移除：{{what}}",
-    "report": "报告 += “{{text}}…”"
+    "report": "报告 += “{{text}}…”",
+    "direct": "已直接录入：{{what}}"
   },
   "button": {
     "dictate": "口述",
@@ -147,14 +148,19 @@
     "interrupted": "已中断",
     "listening": "正在聆听",
     "ready": "准备就绪，请开始说话",
-    "stopped": "已停止"
+    "stopped": "已停止",
+    "reviewPending": "口述已暂停",
+    "reviewing": "正在核对病历",
+    "reviewed": "病历已核对"
   },
   "sub": {
     "connecting": "正在准备麦克风…",
     "finishing": "正在完成…",
     "goAhead": "请开始说话",
     "listening": "正在聆听",
-    "listeningSending": "正在聆听 · 正在发送…"
+    "listeningSending": "正在聆听 · 正在发送…",
+    "reviewPending": "即将核对病历。如需继续口述，请选择“继续”。",
+    "reviewing": "正在比对转录与病历。"
   },
   "toReview_one": "{{count}}项待审核",
   "toReview_other": "{{count}}项待审核",

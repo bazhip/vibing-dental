@@ -42,13 +42,18 @@ interface UsageTotalsRow {
   output_tokens: number;
   cache_read_tokens: number;
   cache_write_tokens: number;
+  cache_write_1h_tokens?: number;
 }
 
 export function costOfAiUsage(row: Omit<UsageTotalsRow, 'calls'>): number {
   const prefix = Object.keys(RATES).find(key => row.model.startsWith(key));
   const rate = prefix ? RATES[prefix] : RATES['claude-opus-4'];
-  // Logged input already includes cache writes at the input rate.
-  return ((row.input_tokens + (row.cache_write_tokens ?? 0) * 0.25) * rate.in +
+  // Logged input already includes all cache writes at the input rate.
+  // Pay an extra 25% for 5-minute writes and 100% for one-hour writes.
+  const writes = row.cache_write_tokens ?? 0;
+  const hourWrites = row.cache_write_1h_tokens ?? 0;
+  const cachePremium = (writes - hourWrites) * 0.25 + hourWrites;
+  return ((row.input_tokens + cachePremium) * rate.in +
     row.output_tokens * rate.out + row.cache_read_tokens * rate.cacheRead) / 1e6;
 }
 
