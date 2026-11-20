@@ -181,7 +181,9 @@
         "helper": "Anote las restricciones de actividad que se hayan comentado.",
         "sample": "Se comentaron las restricciones de actividad."
       },
-      "deleteMessage": "Al guardar, se retirará la plantilla de la lista de la clínica. Las visitas guardadas conservan su plantilla y su texto."
+      "deleteMessage": "Al guardar, se retirará la plantilla de la lista de la clínica. Las visitas guardadas conservan su plantilla y su texto.",
+      "dragTemplate": "Reordenar la plantilla {{template}}",
+      "templateMoved": "La plantilla {{template}} está ahora en la posición {{position}}"
     }
   },
   "sourceNotice": "El texto registrado se conserva tal como se ha introducido. Revise el idioma del cliente antes de compartirlo.",

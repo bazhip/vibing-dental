@@ -7413,7 +7413,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "2494af3d69c3",
+      "hash": "f2d215537933",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -15612,6 +15612,10 @@
       "hash": "44d9851b3e17",
       "status": "machine"
     },
+    "visitDocumentation:discharge.templates.dragTemplate": {
+      "hash": "6f47733490cc",
+      "status": "machine"
+    },
     "visitDocumentation:discharge.templates.help": {
       "hash": "0ef709e28493",
       "status": "machine"
@@ -15642,6 +15646,10 @@
     },
     "visitDocumentation:discharge.templates.starter": {
       "hash": "5e9f1d91eafa",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.templateMoved": {
+      "hash": "021f2e47fcda",
       "status": "machine"
     },
     "visitDocumentation:discharge.templates.title": {
@@ -23975,7 +23983,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "2494af3d69c3",
+      "hash": "f2d215537933",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -32110,6 +32118,10 @@
       "hash": "44d9851b3e17",
       "status": "machine"
     },
+    "visitDocumentation:discharge.templates.dragTemplate": {
+      "hash": "6f47733490cc",
+      "status": "machine"
+    },
     "visitDocumentation:discharge.templates.help": {
       "hash": "0ef709e28493",
       "status": "machine"
@@ -32140,6 +32152,10 @@
     },
     "visitDocumentation:discharge.templates.starter": {
       "hash": "5e9f1d91eafa",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.templateMoved": {
+      "hash": "021f2e47fcda",
       "status": "machine"
     },
     "visitDocumentation:discharge.templates.title": {
@@ -40437,7 +40453,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "2494af3d69c3",
+      "hash": "f2d215537933",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -48604,6 +48620,10 @@
       "hash": "44d9851b3e17",
       "status": "machine"
     },
+    "visitDocumentation:discharge.templates.dragTemplate": {
+      "hash": "6f47733490cc",
+      "status": "machine"
+    },
     "visitDocumentation:discharge.templates.help": {
       "hash": "0ef709e28493",
       "status": "machine"
@@ -48634,6 +48654,10 @@
     },
     "visitDocumentation:discharge.templates.starter": {
       "hash": "5e9f1d91eafa",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.templateMoved": {
+      "hash": "021f2e47fcda",
       "status": "machine"
     },
     "visitDocumentation:discharge.templates.title": {
@@ -56955,7 +56979,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "2494af3d69c3",
+      "hash": "f2d215537933",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -65122,6 +65146,10 @@
       "hash": "44d9851b3e17",
       "status": "machine"
     },
+    "visitDocumentation:discharge.templates.dragTemplate": {
+      "hash": "6f47733490cc",
+      "status": "machine"
+    },
     "visitDocumentation:discharge.templates.help": {
       "hash": "0ef709e28493",
       "status": "machine"
@@ -65152,6 +65180,10 @@
     },
     "visitDocumentation:discharge.templates.starter": {
       "hash": "5e9f1d91eafa",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.templateMoved": {
+      "hash": "021f2e47fcda",
       "status": "machine"
     },
     "visitDocumentation:discharge.templates.title": {
@@ -73405,7 +73437,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "2494af3d69c3",
+      "hash": "f2d215537933",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -81476,6 +81508,10 @@
       "hash": "44d9851b3e17",
       "status": "machine"
     },
+    "visitDocumentation:discharge.templates.dragTemplate": {
+      "hash": "6f47733490cc",
+      "status": "machine"
+    },
     "visitDocumentation:discharge.templates.help": {
       "hash": "0ef709e28493",
       "status": "machine"
@@ -81506,6 +81542,10 @@
     },
     "visitDocumentation:discharge.templates.starter": {
       "hash": "5e9f1d91eafa",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.templateMoved": {
+      "hash": "021f2e47fcda",
       "status": "machine"
     },
     "visitDocumentation:discharge.templates.title": {
@@ -89803,7 +89843,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "2494af3d69c3",
+      "hash": "f2d215537933",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -97970,6 +98010,10 @@
       "hash": "44d9851b3e17",
       "status": "machine"
     },
+    "visitDocumentation:discharge.templates.dragTemplate": {
+      "hash": "6f47733490cc",
+      "status": "machine"
+    },
     "visitDocumentation:discharge.templates.help": {
       "hash": "0ef709e28493",
       "status": "machine"
@@ -98000,6 +98044,10 @@
     },
     "visitDocumentation:discharge.templates.starter": {
       "hash": "5e9f1d91eafa",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.templateMoved": {
+      "hash": "021f2e47fcda",
       "status": "machine"
     },
     "visitDocumentation:discharge.templates.title": {
@@ -106911,7 +106959,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "2494af3d69c3",
+      "hash": "f2d215537933",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -115014,6 +115062,10 @@
       "hash": "44d9851b3e17",
       "status": "machine"
     },
+    "visitDocumentation:discharge.templates.dragTemplate": {
+      "hash": "6f47733490cc",
+      "status": "machine"
+    },
     "visitDocumentation:discharge.templates.help": {
       "hash": "0ef709e28493",
       "status": "machine"
@@ -115044,6 +115096,10 @@
     },
     "visitDocumentation:discharge.templates.starter": {
       "hash": "5e9f1d91eafa",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.templateMoved": {
+      "hash": "021f2e47fcda",
       "status": "machine"
     },
     "visitDocumentation:discharge.templates.title": {
@@ -123297,7 +123353,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "2494af3d69c3",
+      "hash": "f2d215537933",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -131368,6 +131424,10 @@
       "hash": "44d9851b3e17",
       "status": "machine"
     },
+    "visitDocumentation:discharge.templates.dragTemplate": {
+      "hash": "6f47733490cc",
+      "status": "machine"
+    },
     "visitDocumentation:discharge.templates.help": {
       "hash": "0ef709e28493",
       "status": "machine"
@@ -131398,6 +131458,10 @@
     },
     "visitDocumentation:discharge.templates.starter": {
       "hash": "5e9f1d91eafa",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.templateMoved": {
+      "hash": "021f2e47fcda",
       "status": "machine"
     },
     "visitDocumentation:discharge.templates.title": {

@@ -181,7 +181,9 @@
         "helper": "记录讨论过的活动限制。",
         "sample": "已讨论活动限制。"
       },
-      "deleteMessage": "保存后，该模板将从诊所列表中移除。已保存的就诊仍保留原模板和文字。"
+      "deleteMessage": "保存后，该模板将从诊所列表中移除。已保存的就诊仍保留原模板和文字。",
+      "dragTemplate": "调整模板 {{template}} 的顺序",
+      "templateMoved": "模板 {{template}} 现位于第 {{position}} 位"
     }
   },
   "sourceNotice": "记录的措辞将保留原样。分享前，请检查面向客户的语言。",

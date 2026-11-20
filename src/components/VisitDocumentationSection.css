@@ -172,7 +172,7 @@
 .consultation-library__list { padding: 12px; background: var(--surface-alt); border-radius: 10px; }
 .consultation-library__list ul,
 .consultation-library__sections { padding: 0; margin: 0; list-style: none; }
-.consultation-library__list li button {
+.consultation-library__template-choice {
   display: grid;
   justify-items: start;
   align-content: center;
@@ -190,7 +190,25 @@
   font-size: 0.875rem;
   cursor: pointer;
 }
-.consultation-library__list li button:is([aria-current], :hover) { background: var(--action-tint); color: var(--primary); }
+.consultation-library__template-choice:is([aria-current], :hover) { background: var(--action-tint); color: var(--primary); }
+.consultation-library__template-list > [data-template-row] {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  border-radius: 6px;
+}
+.consultation-library__template-choice { min-inline-size: 0; }
+.consultation-library__template-list > [data-drop-target]::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  block-size: 2px;
+  border-radius: 2px;
+  background: var(--primary);
+  pointer-events: none;
+}
+.consultation-library__template-list > [data-drop-target="-1"]::after { inset-block-start: 0; }
+.consultation-library__template-list > [data-drop-target="1"]::after { inset-block-end: 0; }
 .consultation-library__list--scroll { max-block-size: 18rem; overflow-y: auto; }
 .consultation-library__new { inline-size: 100%; margin-block-start: 8px; }
 .consultation-library__new span { margin-inline-end: 4px; }
@@ -358,7 +376,7 @@
   .visit-documentation__toolbar { padding: 10px 12px; }
   .visit-documentation__guide,
   .visit-documentation__choices .diagram-view__action,
-  .consultation-library__list li button,
+  .consultation-library__template-choice,
   .consultation-library .ui-btn,
   .consultation-library__section-name,
   .consultation-library__settings summary,
@@ -366,6 +384,7 @@
   .consultation-library__row-action { min-inline-size: 44px; min-block-size: 44px; }
   .consultation-library__layout { grid-template-columns: minmax(0, 1fr); }
   .consultation-library__list ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; }
+  .consultation-library__list ul[data-template-sortable] { grid-template-columns: minmax(0, 1fr); }
   .consultation-library__list--scroll { max-block-size: 12rem; }
   .consultation-library__editor { padding-inline: 12px; }
   .visit-documentation__transcripts summary,

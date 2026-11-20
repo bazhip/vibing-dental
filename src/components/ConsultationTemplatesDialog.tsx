@@ -14,6 +14,8 @@ import {
   type PracticeNoteField, type NoteTemplateKind, type ConsultationSection, type ConsultationLayout, type ConsultationLibrary, type PracticeConsultationTemplate,
 } from '../utils/consultationTemplates';
 
+type ReorderList = 'sections' | 'templates';
+
 const SECTION_TEXT_SETTINGS = ['guidance', 'example', 'suggestedText'] as const;
 const FORMATS = ['paragraph', 'bullets'] as const;
 const DETAIL_LEVELS = ['concise', 'detailed'] as const;
@@ -60,8 +62,8 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
   const [managing, setManaging] = useState(false);
   const [removed, setRemoved] = useState<{ id: string; section: ConsultationSection; index: number }>();
   const [announcement, setAnnouncement] = useState('');
-  const [dragTarget, setDragTarget] = useState<number>();
-  const drag = useRef<{ pointer: number; from: number; to: number; startY: number } | null>(null);
+  const [dragTarget, setDragTarget] = useState<{ list: ReorderList; from: number; to: number }>();
+  const drag = useRef<{ list: ReorderList; pointer: number; from: number; to: number; startY: number } | null>(null);
   const [sample, setSample] = useState('');
   const [importing, setImporting] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -88,6 +90,7 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
   const sections = consultationSections(selected);
   const practiceFields = practiceNoteFields(draft, kind);
   const canCreateField = (draft.practiceFields?.length ?? 0) < PRACTICE_NOTE_FIELD_LIMIT;
+  const canReorderTemplates = isDischarge && editable && activeTemplates.length > 1;
   const selectedTemplateIndex = activeTemplates.findIndex(template => template.id === selected.id);
   const versionedDraft: ConsultationLibrary = { ...draft, version: CONSULTATION_LIBRARY_VERSION };
   const valid = !!parseConsultationLibrary(versionedDraft, kind);
@@ -228,35 +231,45 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
     updateSections(items);
     setAnnouncement(t('consultation.templates.builder.sectionMoved', { field: sectionName(field), position: destination + 1 }));
   };
-  const startDrag = (event: PointerEvent<HTMLButtonElement>, index: number) => {
-    if (event.button !== 0 || sections.length < 2) return;
-    drag.current = { pointer: event.pointerId, from: index, to: index, startY: event.clientY };
+  const startDrag = (event: PointerEvent<HTMLButtonElement>, list: ReorderList, index: number) => {
+    if (event.button !== 0 || (list === 'templates' ? activeTemplates.length : sections.length) < 2) return;
+    drag.current = { list, pointer: event.pointerId, from: index, to: index, startY: event.clientY };
     event.currentTarget.setPointerCapture(event.pointerId);
   };
   const trackDrag = (event: PointerEvent<HTMLButtonElement>) => {
     const current = drag.current;
     if (!current || current.pointer !== event.pointerId || Math.abs(event.clientY - current.startY) < 4 && dragTarget === undefined) return;
-    const container = event.currentTarget.closest('.consultation-library__body');
+    const list = event.currentTarget.closest(current.list === 'templates' ? '.consultation-library__template-list' : '.consultation-library__sections');
+    const container = list && list.scrollHeight > list.clientHeight ? list : event.currentTarget.closest('.consultation-library__body');
     const bounds = container?.getBoundingClientRect();
     if (bounds && event.clientY < bounds.top + 32) container?.scrollBy(0, -14);
     if (bounds && event.clientY > bounds.bottom - 32) container?.scrollBy(0, 14);
-    const row = document.elementFromPoint(event.clientX, event.clientY)?.closest<HTMLElement>('[data-section-row]');
-    if (!row || !container?.contains(row)) return;
-    current.to = Number(row.dataset.sectionRow);
-    setDragTarget(current.to);
+    const row = document.elementFromPoint(event.clientX, event.clientY)?.closest<HTMLElement>(
+      current.list === 'templates' ? '[data-template-row]' : '[data-section-row]',
+    );
+    if (!row || !list?.contains(row)) return;
+    current.to = Number(current.list === 'templates' ? row.dataset.templateRow : row.dataset.sectionRow);
+    setDragTarget({ list: current.list, from: current.from, to: current.to });
   };
   const finishDrag = (event: PointerEvent<HTMLButtonElement>, apply: boolean) => {
     const current = drag.current;
     if (!current || current.pointer !== event.pointerId) return;
-    if (apply) move(current.from, current.to);
+    if (apply) {
+      const reorder = current.list === 'templates' ? moveTemplate : move;
+      reorder(current.from, current.to);
+    }
     drag.current = null;
     setDragTarget(undefined);
   };
-  const moveTemplate = (delta: number) => {
-    const order = activeTemplates.map(template => template.id), destination = selectedTemplateIndex + delta;
-    if (selectedTemplateIndex < 0 || destination < 0 || destination >= order.length) return;
-    [order[selectedTemplateIndex], order[destination]] = [order[destination], order[selectedTemplateIndex]];
+  const moveTemplate = (index: number, destination: number) => {
+    if (index === destination || index < 0 || destination < 0 || destination >= activeTemplates.length) return;
+    const order = activeTemplates.map(template => template.id);
+    const [templateId] = order.splice(index, 1);
+    order.splice(destination, 0, templateId);
     setDraft({ ...draft, order });
+    if (isDischarge) setAnnouncement(t('discharge.templates.templateMoved', {
+      template: nameOf(activeTemplates[index]), position: destination + 1,
+    }));
   };
   const fallbackTemplate = activeTemplates.find(template => template.id === starter.id && template.id !== selected.id)
     ?? activeTemplates.find(template => template.id !== selected.id);
@@ -346,11 +359,30 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
       <div className="consultation-library__layout">
         <div className="consultation-library__list">
           <span id={`${id}-picker`} className="patient-form__label">{t('consultation.templates.label')}</span>
-          <ul ref={listRef} aria-labelledby={`${id}-picker`} className={templates.length > 6 ? 'consultation-library__list--scroll' : undefined}>
-            {templates.map(template => <li key={template.id}><button type="button" aria-current={template.id === selected.id || undefined}
-              onClick={() => choose(template.id)}><span dir="auto">{nameOf(template)}</span>
-              {template.id === draft.defaultId && <small>{t('consultation.templates.default')}</small>}
-            </button></li>)}
+          <ul ref={listRef} aria-labelledby={`${id}-picker`} data-template-sortable={canReorderTemplates || undefined}
+            className={templates.length > 6 ? 'consultation-library__template-list consultation-library__list--scroll' : 'consultation-library__template-list'}>
+            {templates.map((template, index) => {
+              const sortable = canReorderTemplates && index < activeTemplates.length;
+              const target = dragTarget?.list === 'templates' && dragTarget.to === index && dragTarget.from !== index
+                ? Math.sign(index - dragTarget.from) : undefined;
+              return <li key={template.id} data-template-row={sortable ? index : undefined} data-drop-target={target}>
+                {sortable && <button type="button" className="consultation-library__row-action consultation-library__drag"
+                  aria-label={t('discharge.templates.dragTemplate', { template: nameOf(template) })}
+                  aria-keyshortcuts="ArrowUp ArrowDown"
+                  onPointerDown={event => startDrag(event, 'templates', index)} onPointerMove={trackDrag}
+                  onPointerUp={event => finishDrag(event, true)} onPointerCancel={event => finishDrag(event, false)}
+                  onLostPointerCapture={event => finishDrag(event, false)}
+                  onKeyDown={event => {
+                    if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return;
+                    event.preventDefault();
+                    moveTemplate(index, index + (event.key === 'ArrowUp' ? -1 : 1));
+                  }}><span aria-hidden="true">⠿</span></button>}
+                <button type="button" className="consultation-library__template-choice" aria-current={template.id === selected.id || undefined}
+                  onClick={() => choose(template.id)}><span dir="auto">{nameOf(template)}</span>
+                  {template.id === draft.defaultId && <small>{t('consultation.templates.default')}</small>}
+                </button>
+              </li>;
+            })}
           </ul>
           {isDischarge && editable && <button type="button" className="ui-btn ui-btn--secondary consultation-library__new"
             disabled={!canAddTemplate} onClick={createTemplate}><span aria-hidden="true">+</span> {t('library:templates.new')}</button>}
@@ -381,11 +413,11 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
                 {isDischarge && <button type="button" disabled={!canAddTemplate} onClick={duplicate}>{t('common:actions.duplicate')}</button>}
                 <button type="button" className={menuActionClass} disabled={selected.id === draft.defaultId || custom?.archived}
                   onClick={() => setDraft({ ...draft, defaultId: selected.id })}>{t('consultation.templates.setDefault')}</button>
-                {selectedTemplateIndex >= 0 && <>
+                {!isDischarge && selectedTemplateIndex >= 0 && <>
                   <button type="button" className={menuActionClass} disabled={selectedTemplateIndex === 0}
-                    onClick={() => moveTemplate(-1)}>{t('consultation.templates.builder.earlier')}</button>
+                    onClick={() => moveTemplate(selectedTemplateIndex, selectedTemplateIndex - 1)}>{t('consultation.templates.builder.earlier')}</button>
                   <button type="button" className={menuActionClass} disabled={selectedTemplateIndex === activeTemplates.length - 1}
-                    onClick={() => moveTemplate(1)}>{t('consultation.templates.builder.later')}</button>
+                    onClick={() => moveTemplate(selectedTemplateIndex, selectedTemplateIndex + 1)}>{t('consultation.templates.builder.later')}</button>
                 </>}
                 <button type="button" className={menuActionClass} disabled={!canAddTemplate}
                   onClick={() => setImporting(!importing)}>{t('consultation.templates.builder.importTitle')}</button>
@@ -429,13 +461,13 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
                 : isCustomNoteField(section.id) ? ''
                   : section.id === 'dischargeMedications' || section.id === 'dischargeInstructions' || section.id === 'dischargeFollowUp'
                     ? t(`discharge.templates.samples.${section.id}`) : t(`consultation.templates.samples.${section.id}`));
-              return <li key={section.id} data-section-row={index} data-drop-target={dragTarget === index || undefined}
+              return <li key={section.id} data-section-row={index} data-drop-target={dragTarget?.list === 'sections' && dragTarget.to === index || undefined}
                 className={section.level === 2 ? 'consultation-library__subsection' : undefined}>
                 <div className="consultation-library__section-row">
                   {editSelected && <button type="button" className="consultation-library__row-action consultation-library__drag"
                     aria-label={t('consultation.templates.builder.dragField', { field: label })}
                     aria-keyshortcuts="ArrowUp ArrowDown"
-                    onPointerDown={event => startDrag(event, index)} onPointerMove={trackDrag}
+                    onPointerDown={event => startDrag(event, 'sections', index)} onPointerMove={trackDrag}
                     onPointerUp={event => finishDrag(event, true)} onPointerCancel={event => finishDrag(event, false)}
                     onLostPointerCapture={event => finishDrag(event, false)}
                     onKeyDown={event => {

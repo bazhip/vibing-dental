@@ -181,7 +181,9 @@
         "helper": "Annoti le eventuali limitazioni dell’attività concordate.",
         "sample": "Sono state discusse le limitazioni dell’attività."
       },
-      "deleteMessage": "Al salvataggio il modello verrà rimosso dall’elenco della clinica. Le visite salvate conservano il modello e il testo."
+      "deleteMessage": "Al salvataggio il modello verrà rimosso dall’elenco della clinica. Le visite salvate conservano il modello e il testo.",
+      "dragTemplate": "Riordina il modello {{template}}",
+      "templateMoved": "Il modello {{template}} è ora in posizione {{position}}"
     }
   },
   "sourceNotice": "Il testo registrato rimane come inserito. Verifichi la lingua del cliente prima della condivisione.",

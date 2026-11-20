@@ -181,7 +181,9 @@
         "helper": "Jegyezze fel a megbeszélt mozgáskorlátozásokat.",
         "sample": "A mozgáskorlátozásokat megbeszélték."
       },
-      "deleteMessage": "Mentéskor a sablon eltűnik a rendelő listájából. A mentett vizitek megőrzik sablonjukat és szövegüket."
+      "deleteMessage": "Mentéskor a sablon eltűnik a rendelő listájából. A mentett vizitek megőrzik sablonjukat és szövegüket.",
+      "dragTemplate": "A(z) {{template}} sablon áthelyezése",
+      "templateMoved": "A(z) {{template}} sablon most a(z) {{position}}. helyen van"
     }
   },
   "sourceNotice": "A rögzített megfogalmazás a beírt formában marad. Megosztás előtt ellenőrizze az ügyfél nyelvét.",

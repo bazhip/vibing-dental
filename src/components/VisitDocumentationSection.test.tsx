@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 import { EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS, type PatientInfo } from '../types';
-import { CONSULTATION_FIELDS } from '../utils/consultationTemplates';
+import { CONSULTATION_FIELDS, DISCHARGE_RECOVERY_ACTIVITY, EMPTY_DISCHARGE_LIBRARY } from '../utils/consultationTemplates';
 import { VisitDocumentationSection } from './VisitDocumentationSection';
 export const patient: PatientInfo = { patientName: '', patientNumber: '', ownerName: '', ownerPhone: '', ownerEmail: '', doctor: '', tech: '', date: '', complaint: 'Reason', treatmentReport: 'Existing treatment', recallDate: '', nerveBlocks: { ...EMPTY_NERVE_BLOCKS }, exam: { ...EMPTY_EXAM_FINDINGS } };
 it('edits declarative consultation sources with linked visible help and reviews the existing output', () => {
@@ -87,4 +87,28 @@ it('only inserts suggested text when requested and keeps a populated custom sect
   rerender(<VisitDocumentationSection {...props} patientInfo={{ ...documented, ...patch }} />);
   fireEvent.click(screen.getByText('Fields from other templates'));
   expect(screen.getByRole('textbox', { name: 'Decision' })).toHaveValue('Client received an estimate.');
+});
+
+
+it('retains recorded activity when switching from Dental recovery and skips blank fields with guidance', () => {
+  const onChange = vi.fn();
+  const props = { kind: 'discharge' as const, onChange, discharge: { library: EMPTY_DISCHARGE_LIBRARY } };
+  const { rerender } = render(<VisitDocumentationSection {...props} patientInfo={patient} />);
+
+  const activity = screen.getByRole('textbox', { name: 'Activity' });
+  expect(activity).toHaveAccessibleDescription('Record any activity restrictions discussed.');
+  expect(activity).toHaveValue('');
+  fireEvent.click(screen.getByRole('button', { name: 'Standard discharge' }));
+  rerender(<VisitDocumentationSection {...props} patientInfo={{ ...patient, ...onChange.mock.lastCall![0] }} />);
+  expect(screen.queryByText('Fields from other templates')).toBeNull();
+
+  rerender(<VisitDocumentationSection {...props} patientInfo={patient} />);
+  fireEvent.change(screen.getByRole('textbox', { name: 'Activity' }), { target: { value: 'Activity restrictions reviewed.' } });
+  expect(onChange.mock.lastCall![0]).toEqual({ [DISCHARGE_RECOVERY_ACTIVITY]: 'Activity restrictions reviewed.' });
+  const documented = { ...patient, ...onChange.mock.lastCall![0] };
+  rerender(<VisitDocumentationSection {...props} patientInfo={documented} />);
+  fireEvent.click(screen.getByRole('button', { name: 'Standard discharge' }));
+  rerender(<VisitDocumentationSection {...props} patientInfo={{ ...documented, ...onChange.mock.lastCall![0] }} />);
+  fireEvent.click(screen.getByText('Fields from other templates'));
+  expect(screen.getByRole('textbox', { name: 'Activity' })).toHaveValue('Activity restrictions reviewed.');
 });

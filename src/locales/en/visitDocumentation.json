@@ -181,7 +181,9 @@
         "helper": "Record any activity restrictions discussed.",
         "sample": "Activity restrictions were discussed."
       },
-      "deleteMessage": "The template will be removed from the practice list when you save. Saved visits keep their template and wording."
+      "deleteMessage": "The template will be removed from the practice list when you save. Saved visits keep their template and wording.",
+      "dragTemplate": "Reorder template {{template}}",
+      "templateMoved": "{{template}} is now number {{position}}"
     }
   },
   "sourceNotice": "Recorded wording stays as entered. Review the client language before sharing.",

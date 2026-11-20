@@ -181,7 +181,9 @@
         "helper": "Halten Sie die besprochenen Aktivitätseinschränkungen fest.",
         "sample": "Aktivitätseinschränkungen wurden besprochen."
       },
-      "deleteMessage": "Beim Speichern wird die Vorlage aus der Praxisliste entfernt. Gespeicherte Besuche behalten ihre Vorlage und ihren Text."
+      "deleteMessage": "Beim Speichern wird die Vorlage aus der Praxisliste entfernt. Gespeicherte Besuche behalten ihre Vorlage und ihren Text.",
+      "dragTemplate": "Vorlage {{template}} verschieben",
+      "templateMoved": "Die Vorlage {{template}} steht jetzt an Position {{position}}"
     }
   },
   "sourceNotice": "Die eingegebene Formulierung bleibt erhalten. Prüfen Sie vor dem Teilen die Sprache des Tierhalters.",

@@ -181,7 +181,9 @@
         "helper": "Notez les restrictions d’activité qui ont été discutées.",
         "sample": "Les restrictions d’activité ont été discutées."
       },
-      "deleteMessage": "Le modèle sera retiré de la liste de la clinique lors de l’enregistrement. Les visites enregistrées conservent leur modèle et leur texte."
+      "deleteMessage": "Le modèle sera retiré de la liste de la clinique lors de l’enregistrement. Les visites enregistrées conservent leur modèle et leur texte.",
+      "dragTemplate": "Réorganiser le modèle {{template}}",
+      "templateMoved": "Le modèle {{template}} est maintenant en position {{position}}"
     }
   },
   "sourceNotice": "Le texte saisi est conservé tel quel. Vérifiez la langue du client avant le partage.",

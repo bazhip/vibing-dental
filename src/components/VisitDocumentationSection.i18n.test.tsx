@@ -140,7 +140,7 @@ it('creates, edits, and deletes discharge templates while preserving the practic
   expect(findUntranslated(panel)).toEqual([]);
   expect(screen.getByRole('button', { name: /Dental recovery.*Practice default/ })).toHaveAttribute('aria-current', 'true');
 
-  fireEvent.click(screen.getByRole('button', { name: /Standard discharge/ }));
+  fireEvent.click(screen.getByRole('button', { name: '⟦Standard discharge⟧' }));
   fireEvent.click(screen.getByRole('button', { name: /Remove.*Medications/ }));
   fireEvent.click(screen.getByRole('button', { name: /New template/ }));
   fireEvent.change(screen.getByRole('textbox', { name: /Template name/ }), { target: { value: 'Postoperative call' } });
@@ -167,5 +167,23 @@ it('creates, edits, and deletes discharge templates while preserving the practic
       expect.objectContaining({ name: 'Postoperative call', sections: [{ id: 'dischargeMedications' }, { id: 'dischargeInstructions' }] }),
       expect.objectContaining({ id: 'dental-recovery-v1', archived: true }),
     ]),
+  });
+});
+
+it('reorders discharge templates from the list without changing the default or selected template', () => {
+  const onSave = vi.fn();
+  render(<ConsultationTemplatesDialog kind="discharge" initial={EMPTY_DISCHARGE_LIBRARY} status="ready" canEdit
+    onSave={onSave} onReload={vi.fn()} onClose={vi.fn()} />);
+  screen.getByText(/More options/).closest('details')!.open = true;
+  expect(screen.queryByRole('button', { name: /Move template (earlier|later)/ })).toBeNull();
+  const handle = screen.getByRole('button', { name: /Reorder template.*Standard discharge/ });
+  handle.focus();
+  fireEvent.keyDown(handle, { key: 'ArrowUp' });
+  expect(handle).toHaveFocus();
+  expect(screen.getAllByRole('listitem')[0]).toHaveTextContent('Standard discharge');
+  expect(screen.getByRole('button', { name: /Dental recovery.*Practice default/ })).toHaveAttribute('aria-current', 'true');
+  fireEvent.click(screen.getByRole('button', { name: /Save/ }));
+  expect(onSave.mock.lastCall?.[0]).toMatchObject({
+    defaultId: 'dental-recovery-v1', order: ['discharge-v1', 'dental-recovery-v1'],
   });
 });

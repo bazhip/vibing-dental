@@ -181,7 +181,9 @@
         "helper": "Notați restricțiile de activitate discutate.",
         "sample": "Restricțiile de activitate au fost discutate."
       },
-      "deleteMessage": "La salvare, șablonul va fi eliminat din lista cabinetului. Vizitele salvate își păstrează șablonul și textul."
+      "deleteMessage": "La salvare, șablonul va fi eliminat din lista cabinetului. Vizitele salvate își păstrează șablonul și textul.",
+      "dragTemplate": "Reordonați șablonul {{template}}",
+      "templateMoved": "Șablonul {{template}} se află acum pe poziția {{position}}"
     }
   },
   "sourceNotice": "Formularea înregistrată rămâne așa cum a fost introdusă. Verificați limba clientului înainte de partajare.",
