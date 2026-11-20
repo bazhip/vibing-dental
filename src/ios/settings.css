@@ -267,21 +267,19 @@ html.native-ios .feedback-modal--screen .feedback-modal__note {
   color: var(--ios-label-muted);
 }
 
-/* Owner report templates: list above the editor (one column). */
+/* Owner report templates: toolbar above the editor. */
 html.native-ios .report-templates--screen .report-templates__body {
   display: flex;
   flex-direction: column;
   gap: 16px;
   overflow: visible;
 }
-html.native-ios .report-templates--screen .report-templates__list {
-  overflow: visible;
+html.native-ios .report-templates--screen .report-templates__toolbar {
   padding: 12px 16px;
   border: 0;
   border-radius: 26px;
   background: var(--ios-list-cell, var(--ios-cell));
 }
-html.native-ios .report-templates--screen .report-templates__list-actions { border-top-color: var(--ios-separator); }
 html.native-ios .report-templates--screen .report-templates__editor,
 html.native-ios .report-templates--screen .report-templates__body > :last-child {
   overflow: visible;

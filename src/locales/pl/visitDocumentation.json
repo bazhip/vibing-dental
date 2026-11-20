@@ -246,6 +246,12 @@
       "technique": "Technika badania",
       "findings": "Wyniki badania",
       "impression": "Wnioski"
+    },
+    "layout": {
+      "title": "Dostosuj obrazowanie",
+      "intro": "Ustaw etykiety i tekst początkowy raportów dla nowych wizyt.",
+      "help": "Jak dostosować obrazowanie",
+      "starterText": "Tekst początkowy"
     }
   }
 }

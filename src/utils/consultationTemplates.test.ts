@@ -128,3 +128,12 @@ it('reads edited Discharge starters and hides deleted starters without changing 
   expect(normalizeConsultationLayout(standard, 'discharge')).toEqual(standard);
   expect(parseConsultationLibrary({ ...raw, defaultId: recovery.id }, 'discharge')).toBeUndefined();
 });
+
+it('stores Imaging report field settings separately from report text and legacy outlines', () => {
+  const settings = { version: 2, defaultId: 'imaging-v1', templates: [],
+    imagingReportFields: { ct: { label: 'CT findings', starterText: 'Findings:\n' } },
+  };
+  expect(parseConsultationLibrary(settings, 'imaging')).toEqual(settings);
+  expect(parseConsultationLibrary({ ...settings, imagingReportFields: { extra: {} } }, 'imaging')).toBeUndefined();
+  expect(parseConsultationLibrary({ ...settings, imagingReportFields: { ct: { starterText: 'x'.repeat(4001) } } }, 'imaging')).toBeUndefined();
+});

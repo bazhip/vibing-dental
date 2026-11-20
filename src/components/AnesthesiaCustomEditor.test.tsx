@@ -37,7 +37,11 @@ describe('AnesthesiaCustomEditor', () => {
   it('removing a field saves right away', () => {
     const onFieldsChange = vi.fn();
     render(<AnesthesiaCustomEditor blocks={[]} fields={[{ id: 'x', label: 'Fluids', type: 'text' }]} onBlocksChange={() => {}} onFieldsChange={onFieldsChange} />);
+    expect(screen.queryByRole('button', { name: 'Remove Fluids' })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Fluids' }));
+    expect(screen.getByRole('textbox', { name: 'Field 1 name' })).toHaveValue('Fluids');
     fireEvent.click(screen.getByRole('button', { name: 'Remove Fluids' }));
     expect(onFieldsChange).toHaveBeenCalledWith([]);
+    expect(screen.getByRole('button', { name: 'Add field' })).toHaveFocus();
   });
 });

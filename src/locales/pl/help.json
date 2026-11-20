@@ -34,6 +34,7 @@
     "start": "Przykładowy obszar roboczy pacjenta z kartą wizyty, nawigacją po sekcjach i danymi pacjenta.",
     "patients": "Historia pacjenta z wcześniejszymi zabiegami i konsultacjami stomatologicznymi oraz wybraną wizytą.",
     "exam": "Tabela wyników badania jamy ustnej z opcjami „W normie” i „Nieprawidłowe” oraz komentarzem.",
+    "examCustomize": "Okno dostosowywania badania z polami domyślnymi i przyciskami do zmiany układu.",
     "viewer": "Przeglądarka obrazów z ustawieniami szerokości i poziomu okna oraz opcją pobrania przykładowego pliku DICOM.",
     "treatment": "Raport z leczenia z zapisanymi szablonami i edytowalną treścią poniżej.",
     "preferences": "Ustawienia karty z opcjami układu, automatycznego zapisu i zapisu głębokości kieszonek.",
@@ -45,7 +46,7 @@
     "consultationRecordNote": "Notatka z konsultacji z przyciskami „Pobierz PDF” i „Kopiuj”.",
     "dentalConsultation": "Pole „Badanie jamy ustnej bez znieczulenia” w przykładowej konsultacji stomatologicznej.",
     "dictationCheck": "Panel dyktowania zatrzymuje nagrywanie na krótko przed sprawdzeniem karty. Opcja „Wznów” pozwala kontynuować to samo dyktowanie.",
-    "imagingTemplates": "Opcje szablonu raportu obrazowania nad fikcyjnym raportem radiograficznym.",
+    "imagingTemplates": "Sekcja Obrazowanie z osobnymi polami edycji raportu radiograficznego i raportu TK.",
     "dischargeTemplates": "Edytor szablonu wypisu z otwartą listą „Dodaj sekcję” na fikcyjnej wizycie."
   },
   "articles": {
@@ -73,7 +74,7 @@
       "sections": {
         "first": {
           "title": "Wyszukiwanie pacjenta",
-          "text": "Przycisk plusa otwiera wybór pacjenta. Jeśli imiona są takie same, proszę sprawdzić numer pacjenta. Proszę wybrać istniejącą wizytę, aby ją kontynuować, lub opcję „Nowa wizyta” i sprawdzić typ wizyty przed rozpoczęciem."
+          "text": "Przycisk plusa otwiera wybór pacjenta. Jeśli imiona są takie same, proszę sprawdzić numer pacjenta. Proszę wybrać istniejącą wizytę, aby ją kontynuować, lub opcję „Nowa wizyta” i sprawdzić typ wizyty przed rozpoczęciem.\n\nW widoku pacjentów lub kontroli proszę skorzystać z wyszukiwania i filtrów nad listą. Jeśli nie ma wyników, proszę wybrać „Wyczyść filtry” pod wynikami. Widok kontroli nadal pokazuje tylko kontrole przypadające do wykonania. Jeśli lista się nie wczyta, proszę wybrać „Spróbuj ponownie”."
         },
         "second": {
           "title": "Przełączanie wizyt i kart pacjentów",
@@ -95,7 +96,7 @@
         },
         "second": {
           "title": "Dokumentowanie zmian w sekcji „Rozpoznanie”",
-          "text": "Proszę wybrać właściwy ząb i zaznaczyć zmiany stwierdzone przed zabiegiem lub brakujące wcześniej zęby. W razie potrzeby można dodać kody stomatologiczne i krótkie notatki. Znaczenie kodu można sprawdzić w wykazie kodów. Nazwy narzędzi są widoczne pod ikonami. Opcja „Komentarz” dołącza notatkę do zęba, a opcja „Komentarz w dowolnym miejscu” pozwala ją umieścić w dowolnym miejscu diagramu. Przy ograniczonej ilości miejsca pasek narzędzi pokazuje skróconą etykietę „Dowolny”."
+          "text": "Proszę wybrać właściwy ząb i zaznaczyć zmiany stwierdzone przed zabiegiem lub brakujące wcześniej zęby. W razie potrzeby można dodać kody stomatologiczne i krótkie notatki. Znaczenie kodu można sprawdzić w wykazie kodów. Nazwy narzędzi są widoczne pod ikonami. Opcja „Komentarz” dołącza notatkę do zęba, a opcja „Komentarz w dowolnym miejscu” pozwala ją umieścić w dowolnym miejscu diagramu. Przy ograniczonej ilości miejsca pasek narzędzi pokazuje skróconą etykietę „Dowolny”.\n\nGdy wybrano narzędzie „Komentarz”, opcje „Rozmiar tekstu komentarza” pozostają widoczne. Po zamknięciu wizyty narzędzia edycji na diagramach w sekcjach „Rozpoznanie” i „Zabieg” są nieaktywne. Nadal można zmieniać powiększenie i przełączać wyświetlanie numerów zębów."
         },
         "third": {
           "title": "Dokumentowanie wykonanych czynności w sekcji „Zabieg”",
@@ -109,11 +110,11 @@
       "sections": {
         "first": {
           "title": "Dokumentowanie badania",
-          "text": "W sekcji „Badanie” proszę zapisać stan i uwagi dla ocenionych obszarów. Obszary, których nie oceniono, można pozostawić puste. Opcja „Dostosuj” pozwala zarządzać listą obszarów. W polu „Diagnostyka” pod wynikami badania można zapisać wyniki badań innych niż obrazowe oraz badania w toku."
+          "text": "Proszę otworzyć sekcję „Badanie” i w każdym ocenionym obszarze wybrać „W normie” lub „Nieprawidłowość”. Szczegóły można wpisać w polu „Uwagi”. Obszary bez oceny należy pozostawić puste. Wyniki badań innych niż obrazowe i badania w toku można zapisać w polu „Diagnostyka” pod wynikami badania.\n\nW nagłówku sekcji „Badanie” proszę wybrać „Dostosuj”, aby otworzyć „Dostosuj badanie”. Domyślny układ zawiera sześć obszarów badania jamy ustnej oraz pole „Diagnostyka”. Proszę wybrać pole, aby zmienić jego „Nazwa pola”. Za pomocą „Dodaj pole” można dodać pole typu „Obszar badania” z opcjami oceny i uwagami lub pole „Pole tekstowe” na dowolne notatki. Aby zmienić kolejność, proszę przeciągnąć pole za uchwyt lub ustawić fokus na uchwycie i użyć klawiszy strzałek.\n\nAby usunąć pole z układu, proszę użyć przycisku usuwania obok pola. Opcja „Cofnij” przywraca pole. Pole wbudowane można przywrócić również za pomocą „Dodaj pole”. Po usunięciu pola zapisane wyniki pozostają widoczne. Proszę wybrać „Zapisz” i sprawdzić nazwy oraz kolejność pól w sekcji „Badanie”.\n\nWłaściciele placówki mogą zapisać wspólny układ. Pozostali członkowie placówki mogą wyświetlić układ. Jeśli pracuje się poza współdzieloną placówką, układ zapisuje się w osobistych ustawieniach karty."
         },
         "second": {
           "title": "Zapisywanie środków znieczulających i blokad",
-          "text": "W sekcji „Znieczulenie” proszę wpisać podane leki oraz miejsca i objętości wykonanych blokad. Przed zakończeniem wizyty proszę porównać strony i jednostki z dokumentacją źródłową. Jeśli osobno podano inny środek znieczulający, proszę wybrać „Dodaj drugi zestaw blokad nerwów”. W drugim zestawie proszę wpisać nazwę leku, stężenie i objętość podaną w każdym miejscu."
+          "text": "W sekcji „Znieczulenie” proszę wpisać podane leki oraz miejsca i objętości wykonanych blokad. Przed zakończeniem wizyty proszę porównać strony i jednostki z dokumentacją źródłową. Jeśli osobno podano inny środek znieczulający, proszę wybrać „Dodaj drugi zestaw blokad nerwów”. W drugim zestawie proszę wpisać nazwę leku, stężenie i objętość podaną w każdym miejscu.\n\nW nagłówku sekcji „Znieczulenie” proszę wybrać „Dostosuj”. W grupie „Wyświetlane blokady nerwowe” można zaznaczyć wbudowane blokady do wyświetlenia. W grupie „Dodatkowe blokady nerwowe” proszę wybrać „Dodaj blokadę nerwową”, aby dodać blokadę z nazwą i polami objętości po prawej i lewej stronie. W grupie „Pola niestandardowe znieczulenia” można użyć „Dodaj pole”, aby dodać np. pole uwag o rurce dotchawiczej. Proszę wybrać istniejący element niestandardowy, aby go zmienić lub usunąć. Po zamknięciu ustawień proszę sprawdzić pola w sekcji „Znieczulenie”.\n\nW tych samych ustawieniach można skonfigurować „Preferowany środek do znieczulenia miejscowego” oraz opcjonalnie „Dodatkowy lek”. Jeśli dla wizyty nie zapisano jeszcze środka znieczulającego, w sekcji „Znieczulenie” pojawi się skrót. Przed użyciem proszę sprawdzić nazwy i stężenia. Skrót zapisuje skonfigurowane leki w bieżącej wizycie."
         },
         "third": {
           "title": "Przegląd zapisanych wyników",
@@ -135,7 +136,7 @@
         },
         "third": {
           "title": "Sporządzanie opisów badań obrazowych",
-          "text": "Proszę zapisać wyniki w polu „Raport radiograficzny” lub „Raport TK”. Inne wyniki i badania w toku można zapisać w polu „Diagnostyka” w sekcji „Badanie”. Wszystkie te informacje można podyktować w jednym nagraniu stomatologicznym. Proszę podawać rodzaj badania podczas opisywania obrazów i sprawdzić proponowane pola przed zastosowaniem zmian.\n\nNad dowolnym raportem proszę wybrać „Szablon raportu”, a następnie „Wstaw konspekt”. ToothOps dodaje brakujące nagłówki na końcu raportu i zachowuje dotychczasowy tekst. Przed wpisaniem wyników proszę sprawdzić nagłówki.\n\nW sekcji „Obrazowanie” proszę wybrać „Dostosuj”, aby otworzyć edytor szablonów. Można w nim wyświetlić podgląd konspektów i zarządzać konspektami placówki. Aby zmienić język raportu lub domyślny zakres pliku PDF, proszę wybrać „Ustawienia obrazowania i PDF”."
+          "text": "Proszę zapisać wyniki w polu „Raport radiograficzny” lub „Raport TK”. Inne wyniki i badania w toku można zapisać w polu „Diagnostyka” w sekcji „Badanie”. Wszystkie te informacje można podyktować w jednym nagraniu stomatologicznym. Proszę podać rodzaj obrazowania i sprawdzić proponowane pola przed zastosowaniem zmian.\n\nW nagłówku sekcji „Obrazowanie” proszę wybrać „Dostosuj”, aby otworzyć „Dostosuj obrazowanie”. Właściciele placówki mogą zmienić wspólny układ raportów. Można rozwinąć „Raport radiograficzny” lub „Raport TK”, aby zmienić etykietę i zawartość pola „Tekst początkowy”. Można na przykład dodać nagłówki techniki badania, wyników badania i wniosków.\n\nPo zapisaniu układu placówki proszę otworzyć sekcję „Obrazowanie” w nowej wizycie stomatologicznej i sprawdzić etykiety oraz tekst początkowy. Edycja tekstu początkowego w raporcie zapisuje go dla tej wizyty. Zapisane wcześniej raporty zachowują swoją treść.\n\nAby zmienić język raportów lub domyślną zawartość PDF, proszę wybrać „Ustawienia obrazowania i PDF” w oknie dostosowywania. Poza współdzieloną placówką opcja „Dostosuj” otwiera te ustawienia bezpośrednio."
         }
       }
     },
@@ -171,7 +172,7 @@
         },
         "third": {
           "title": "Tworzenie szablonu do wielokrotnego użycia",
-          "text": "Proszę wybrać „Nowy szablon”, nadać mu rozpoznawalną nazwę i wpisać tekst do wielokrotnego użycia. W edytorze szablonu wpisanie znaku { wyświetla dostępne pola do uzupełnienia. Przykładowo pole {pet} wstawia imię pacjenta. Po wybraniu zapisanego szablonu ToothOps uzupełnia dane z karty i prosi o podanie brakujących wartości."
+          "text": "Proszę wybrać „Nowy szablon”, nadać mu rozpoznawalną nazwę i wpisać tekst do wielokrotnego użycia. W edytorze szablonu wpisanie znaku { wyświetla dostępne pola do uzupełnienia. Przykładowo pole {pet} wstawia imię pacjenta. Po wybraniu zapisanego szablonu ToothOps wstawi dane zapisane w karcie. Niewypełnione kody można edytować w raporcie.\n\nAby edytować szablon, proszę wybrać „Zarządzaj szablonami” obok zapisanych szablonów. Aby go usunąć, proszę go wybrać, otworzyć „Więcej opcji” i wybrać „Usuń”."
         }
       }
     },
@@ -185,11 +186,11 @@
         },
         "second": {
           "title": "Przygotowywanie raportu dla opiekuna",
-          "text": "W sekcji „Raport dla opiekuna” proszę wybrać szablon raportu. Język wygenerowanej treści zależy od wybranego szablonu. Dla pojedynczej wizyty można wybrać szablon w języku opiekuna, jeśli taki szablon jest dostępny. Właściciel placówki może utworzyć go za pomocą przycisku „Dostosuj” i opcji „Język raportu”. Opcja „Napisz z pomocą AI” przygotowuje wstępne podsumowanie i zalecenia domowe na podstawie wizyty. Proszę sprawdzić język nagłówków i zaleceń w podglądzie oraz poprawić tekst, jeśli to potrzebne. Opcja „Przywróć wygenerowany tekst” przywraca zapisany projekt po edycji."
+          "text": "W sekcji „Raport dla opiekuna” pod etykietą „Szablon raportu” proszę wybrać nazwę szablonu dla tej wizyty lub pozostawić „Domyślny szablon placówki”, aby używać aktualnego szablonu domyślnego. Znacznik wskazuje aktywny wybór. Przy dłuższej liście proszę użyć menu „Szablon raportu”. Właściciel placówki może użyć opcji „Zarządzaj szablonami”, aby zmienić wspólne teksty i układ raportu, lub „Nowy szablon”, aby dodać szablon, na przykład w języku opiekuna. W edytorze proszę wybrać szablon, użyć menu „Działania na szablonie”, aby ustawić go jako domyślny, a następnie zapisać szablony. Opcja „Napisz z pomocą AI” przygotowuje wstępne podsumowanie i zalecenia domowe na podstawie wizyty. Proszę sprawdzić język nagłówków i zaleceń w podglądzie oraz poprawić tekst, jeśli to potrzebne. Opcja „Przywróć wygenerowany tekst” przywraca zapisany projekt po edycji."
         },
         "third": {
           "title": "Podgląd i udostępnianie",
-          "text": "Opcja „Podgląd” obok „Dostosuj” otwiera plik PDF dla opiekuna. Obrazy do raportu można wybrać w sekcji „Obrazowanie”. Po sprawdzeniu odbiorcy i treści dokumentu w sekcji „Sprawdź i eksportuj” można pobrać raport lub wysłać go e-mailem, jeśli ta opcja jest dostępna. Nad podglądem na karcie „Raport dla opiekuna” znajdują się przyciski „Dostosuj”, „Pobierz PDF” i, jeśli dostępny, „Wyślij do opiekuna”."
+          "text": "Opcja „Podgląd” w nagłówku raportu dla opiekuna otwiera plik PDF, w którym można sprawdzić tekst i układ raportu. Obrazy do raportu można wybrać w sekcji „Obrazowanie”. Po sprawdzeniu odbiorcy i treści dokumentu w sekcji „Sprawdź i eksportuj” można pobrać raport lub wysłać go e-mailem, jeśli ta opcja jest dostępna. Nad podglądem na karcie „Raport dla opiekuna” znajdują się przyciski „Dostosuj”, „Pobierz PDF” i, jeśli dostępny, „Wyślij do opiekuna”."
         }
       }
     },
@@ -239,7 +240,7 @@
         },
         "second": {
           "title": "Zarządzanie wspólnymi ustawieniami placówki",
-          "text": "Właściciele placówki mogą zarządzać nazwą i logo, dostępem zespołu oraz wspólnymi szablonami raportów. Aby ustawić domyślny język materiałów dla opiekunów, proszę otworzyć „Ustawienia placówki” i w sekcji „Język dla opiekunów zwierząt” wybrać na przykład „Polski”. To ustawienie jest niezależne od języka interfejsu. W podglądzie raportu dla opiekuna można sprawdzić domyślną treść i nagłówki."
+          "text": "Właściciele placówki mogą zarządzać nazwą i logo, dostępem zespołu oraz wspólnymi szablonami raportów. Aby ustawić domyślny język materiałów dla opiekunów, proszę otworzyć „Ustawienia placówki” i w sekcji „Język dla opiekunów zwierząt” wybrać na przykład „Polski”. To ustawienie jest niezależne od języka interfejsu. W podglądzie raportu dla opiekuna można sprawdzić domyślną treść i nagłówki.\n\nW wersji internetowej nazwę placówki można edytować w sekcji „Ustawienia placówki” → „Ogólne”. Aby zastosować zmianę, proszę wybrać „Zapisz” pod polem nazwy. Aby przywrócić bieżącą nazwę, proszę wybrać „Anuluj”."
         },
         "third": {
           "title": "Sprawdzanie dostępności funkcji",
@@ -325,15 +326,15 @@
       "sections": {
         "first": {
           "title": "Wyszukiwanie odpowiednich ustawień",
-          "text": "W nagłówku sekcji „Pacjent”, „Badanie”, „Znieczulenie”, „Karta zębowa”, „Rozpoznanie”, „Zabieg” proszę wybrać „Dostosuj”. Ustawienia karty otworzą się na odpowiedniej kategorii. Na liście po lewej można wybrać inny obszar bez zamykania okna. Preferencje osobiste zapisują się automatycznie na koncie, jeśli dostępna jest synchronizacja, albo w bieżącej przeglądarce.\n\nW sekcji „Obrazowanie” proszę wybrać „Dostosuj”, aby otworzyć edytor szablonów. Można w nim wyświetlić podgląd konspektów i zarządzać konspektami placówki. Aby zmienić język raportu lub domyślny zakres pliku PDF, proszę wybrać „Ustawienia obrazowania i PDF”.\n\nPrzycisk „Dostosuj” w sekcji „Raport z leczenia” otwiera szablony leczenia. Przycisk „Dostosuj” obok opcji „Podgląd” w sekcji „Raport dla opiekuna” otwiera szablony raportów dla opiekuna. Te edytory służą do zarządzania powtarzalną treścią i układem raportów placówki. Przed wprowadzeniem zmian proszę sprawdzić wybrany szablon."
+          "text": "W nagłówku sekcji „Pacjent”, „Znieczulenie”, „Karta zębowa”, „Rozpoznanie”, „Zabieg” proszę wybrać „Dostosuj”. Ustawienia karty otworzą się na odpowiedniej kategorii. Na liście po lewej można wybrać inny obszar bez zamykania okna. Preferencje osobiste zapisują się automatycznie na koncie, jeśli dostępna jest synchronizacja, albo w bieżącej przeglądarce.\n\nW nagłówku sekcji „Badanie” lub „Obrazowanie” proszę wybrać „Dostosuj”, aby otworzyć edytor tej sekcji. Można w nim zmienić wspólny układ placówki. Z edytora sekcji „Obrazowanie” można też otworzyć „Ustawienia obrazowania i PDF”.\n\nW sekcji „Raport z leczenia” opcja „Zarządzaj szablonami” obok zapisanych szablonów otwiera szablony raportów z leczenia. W sekcji „Raport dla opiekuna” opcja „Zarządzaj szablonami” obok wyboru szablonu otwiera szablony raportów dla opiekuna. Te edytory służą do zarządzania powtarzalną treścią i układem raportów placówki. Przed wprowadzeniem zmian proszę sprawdzić wybrany szablon."
         },
         "second": {
           "title": "Kategorie w ustawieniach karty",
-          "text": "Pasek boczny grupuje opcje według sekcji wizyty. Na przykład w sekcji „Karta zębowa” można wybrać widok „Tabela” lub „Według zęba”, tryb pomiaru głębokości kieszonek, widoczne pomiary oraz działanie po wpisaniu oceny. Skróty sekcji „Rozpoznanie” i „Zabieg” konfiguruje się osobno, ponieważ dotyczą różnych diagramów.\n\nOpcje widoczności pól i wyglądu diagramu pozwalają skupić uwagę na potrzebnych danych. Przed eksportem proszę sprawdzić wpisane wyniki w dokumentacji pacjenta."
+          "text": "Pasek boczny grupuje opcje według sekcji wizyty. Na przykład w sekcji „Karta zębowa” można wybrać widok „Tabela” lub „Według zęba”, tryb pomiaru głębokości kieszonek, widoczne pomiary oraz działanie po wpisaniu oceny. Skróty sekcji „Rozpoznanie” i „Zabieg” konfiguruje się osobno, ponieważ dotyczą różnych diagramów.\n\nAby wybrać pola w sekcji „Pacjent”, proszę otworzyć „Dostosuj”. W grupach „Dane opiekuna” i „Szczegóły wizyty” można zaznaczyć pola do wyświetlenia. Na przykład w „Szczegóły wizyty” można włączyć datę kontroli. Następnie proszę zamknąć ustawienia i sprawdzić pola w sekcji „Pacjent”.\n\nOpcje widoczności pól i wyglądu diagramu pozwalają skupić uwagę na potrzebnych danych. Przed eksportem proszę sprawdzić wpisane wyniki w dokumentacji pacjenta."
         },
         "third": {
           "title": "Domyślne ustawienia obrazowania i opcje eksportu",
-          "text": "W sekcji „Obrazowanie” proszę wybrać „Dostosuj”, aby otworzyć edytor szablonów, a potem „Ustawienia obrazowania i PDF”, aby ustawić język opisu i domyślną zawartość dokumentu. Można uwzględnić obrazy, opisy RTG i TK oraz sekcję „Użyte kody”. Po wyłączeniu wyników na diagramie tabela karty pozostaje wymagana, aby wyniki pomiarów były widoczne w dokumencie klinicznym.\n\nDla konkretnego eksportu proszę otworzyć „Sprawdź i eksportuj”, wybrać „Karta kliniczna”, a następnie „Dostosuj”. Proszę wybrać kolor klinicznego PDF i sekcje do uwzględnienia, a następnie sprawdzić podgląd. Aby przygotować dokument dla opiekuna, proszę wybrać szablon raportu dla opiekuna i obrazy w sekcji „Obrazowanie”. Wybór szablonu dla opiekuna jest niezależny od koloru klinicznego pliku PDF."
+          "text": "W nagłówku sekcji „Obrazowanie” proszę wybrać „Dostosuj”, a następnie „Ustawienia obrazowania i PDF”, aby ustawić język raportów i domyślną zawartość PDF. Można uwzględnić obrazy, opisy RTG i TK oraz sekcję „Użyte kody”. Po wyłączeniu wyników na diagramie tabela karty pozostaje wymagana, aby wyniki pomiarów były widoczne w dokumencie klinicznym.\n\nDla konkretnego eksportu proszę otworzyć „Sprawdź i eksportuj”, wybrać „Karta kliniczna”, a następnie „Dostosuj”. Proszę wybrać kolor klinicznego PDF i sekcje do uwzględnienia, a następnie sprawdzić podgląd. Aby przygotować dokument dla opiekuna, proszę wybrać szablon raportu dla opiekuna i obrazy w sekcji „Obrazowanie”. Wybór szablonu dla opiekuna jest niezależny od koloru klinicznego pliku PDF."
         }
       }
     },

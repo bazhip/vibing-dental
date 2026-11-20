@@ -91,7 +91,7 @@ describe('WalkthroughModal', () => {
     expect(steps.find(({ id }) => id === 'grid')?.target).toBe('.dental-grid, .tooth-chart');
     expect(steps.find(({ id }) => id === 'byTooth')).toMatchObject({ section: 'charting', target: '.charting-view-switch' });
     expect(steps.find(({ id }) => id === 'images')?.section).toBe('imaging');
-    expect(steps.find(({ id }) => id === 'treatment')?.target).toBe('.surgery-report__header');
+    expect(steps.find(({ id }) => id === 'treatment')?.target).toBe('[data-tour="treatment"] > .section-header');
     expect(steps.some(({ id }) => id === 'dictate')).toBe(false);
     expect(buildSteps(true).filter(({ id }) => id === 'dictate')).toHaveLength(1);
   });

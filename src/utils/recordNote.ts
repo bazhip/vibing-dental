@@ -1,4 +1,5 @@
 import { CONSULTATION_FIELDS, LEGACY_DENTAL_CONSULTATION, consultationSectionKey, consultationVisitSections, dischargeVisitSections, isCustomNoteField, noteSectionLines, type CustomConsultationField, type CustomDischargeField, type ConsultationSection } from './consultationTemplates';
+import { isCustomExamText } from './examLayout';
 import { ctRecordedText } from './ctReportState';
 import { radiologyRecordedText } from './radiologyReportState';
 import { visitTypeOf } from './visitTypes';
@@ -190,7 +191,9 @@ export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): Record
   // 3. Oral exam
   add('exam', [
     ...EXAM_ITEMS.map(({ key }) => examLine(t(`forms:exam.items.${key}`), info.exam?.[key], t)),
-    ...(info.customExam ?? []).map((c) => examLine(clean(c.label), c, t)),
+    ...(info.customExam ?? []).map((c) => isCustomExamText(c.id)
+      ? clean(c.comment) && `${clean(c.label)}: ${clean(c.comment)}`
+      : examLine(clean(c.label), c, t)),
   ]);
 
   // 4. Findings by tooth

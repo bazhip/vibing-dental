@@ -1,4 +1,5 @@
 import { DocumentToolbar } from './DocumentToolbar';
+import { OwnerReportTemplateChoices } from './OwnerReportTemplateChoices';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import i18n from '../i18n';
@@ -16,7 +17,7 @@ import { diagramSvgToPng, type DiagramPin } from '../utils/svgToPng';
 import { TOOTH_DIAGRAMS } from '../constants/toothShapes';
 import { useAttachments, listChartAttachments } from '../hooks/useAttachments';
 import { buildOwnerReportModel, ownerReportReviewBasis, ownerReportAttachmentBasis, ownerReportPhotoRoles, hasSection, teethWithFindings } from '../utils/ownerReport';
-import { resolveTemplate, type OwnerReportConfig } from '../utils/ownerReportConfig';
+import type { OwnerReportConfig } from '../utils/ownerReportConfig';
 import { fetchAsJpeg } from '../utils/imageJpeg';
 import { buildOwnerReportPdfBytes, OwnerReportBranding, OwnerReportPhoto } from '../utils/ownerReportPdf';
 
@@ -28,6 +29,7 @@ interface OwnerReportModalProps {
   onClose: () => void;
   snapshot: ChartSnapshot;
   branding: OwnerReportBranding;
+  brandingReady?: boolean;
   /** Before/after tags (attachment id → role) from the chart. */
   imageRoles: Record<string, ImageRole>;
   /** Attachments are cloud-scoped; '' disables the photo section. */
@@ -72,6 +74,7 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
   onClose,
   snapshot,
   branding,
+  brandingReady = true,
   imageRoles,
   chartId,
   practiceId,
@@ -99,7 +102,7 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
   const [attachmentInvalid, setAttachmentInvalid] = React.useState(false);
   React.useEffect(() => { setAttachmentInvalid(false); }, [chartId]);
   const model = baseModel;
-  const ready = attachments.loaded && !attachmentInvalid;
+  const ready = brandingReady && attachments.loaded && !attachmentInvalid;
   const [incomplete, setIncomplete] = React.useState(false);
   const [retry, setRetry] = React.useState(0);
   const reviewBasis = ownerReportReviewBasis(snapshot, reportContext);
@@ -138,7 +141,7 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
     pdfBlobRef.current = null;
     setPdfUrl(null);
     inAppLink.reset();
-    if (!open || !attachments.loaded) return;
+    if (!open || !brandingReady || !attachments.loaded) return;
     let cancelled = false;
     let createdUrl: string | null = null;
     setGenerating(true);
@@ -211,7 +214,7 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
     };
     // Stable manifest covers content changes without rebuilding on signed URL refresh.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, attachments.loaded, attachmentBasis, retry, chartId, snapshot, photoRoles, diagramSvg, species, config, model, branding.practiceName, branding.doctorName, branding.logoUrl]);
+  }, [open, brandingReady, attachments.loaded, attachmentBasis, retry, chartId, snapshot, photoRoles, diagramSvg, species, config, model, branding.practiceName, branding.doctorName, branding.logoUrl]);
 
   const reportFilename = () => {
     const sanitize = (value: string) => value.replace(/[^a-z0-9]/gi, '_').toLowerCase();
@@ -239,7 +242,7 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
   };
 
   const handleDownload = () => {
-    if (!pdfUrl || generating || error) return;
+    if (!brandingReady || !pdfUrl || generating || error) return;
     const filename = reportFilename();
     if (!pdfBlobRef.current) return;
     const blob = pdfBlobRef.current;
@@ -264,7 +267,7 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
               type="button"
               className={bare ? "ui-btn ui-btn--primary" : "pdf-preview-download"}
               onClick={handleDownload}
-              disabled={!pdfUrl || generating}
+              disabled={!brandingReady || !pdfUrl || generating}
             >
               {isNativeApp() ? (
                 <>
@@ -292,13 +295,6 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
             <PdfLinkPanel state={inAppLink.state} />
             {(incomplete || attachmentInvalid) && <div className="pdf-preview-warning" role="status"><p>{t('review.incompleteImages')}</p><button type="button" className="pdf-preview-secondary" onClick={() => { setAttachmentInvalid(false); setRetry((value) => value + 1); }}>{t('preview.retryImages', { ns: 'pdfui' })}</button></div>}
   </>;
-  const templates = config?.templates ?? [];
-  const templateId = templates.some(template => template.id === snapshot.ownerReport?.templateId)
-    ? snapshot.ownerReport?.templateId ?? '' : '';
-  const practiceTemplate = resolveTemplate(config);
-  const selectedTemplate = resolveTemplate(config, templateId);
-  const templateName = (name: string) => name || t('templates.untitled');
-  const defaultTemplateLabel = t('section.practiceDefault', { name: templateName(practiceTemplate.name) });
   const photosAvailable = cloudActive && attachments.items.length > 0;
   const photoWarning = !photosAvailable || !includedPhotos.length;
   let photoNote: string | undefined;
@@ -315,22 +311,13 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
         <div className={viewOnly ? 'pdf-preview-body pdf-preview-body--view-only' : bare ? 'pdf-preview-body pdf-preview-body--toolbar' : 'pdf-preview-body'}>
           {!viewOnly && (bare ? <DocumentToolbar actions={actions} notice={notices} controlsHost={controlsHost}>
             <section className="document-toolbar__group">
-              <h3>{t('section.templateLabel')}</h3>
-              <div className="document-toolbar__options">
-                {onTemplateChange && templates.length > 1 ? (
-                  <select className="patient-form__input document-toolbar__template-picker" value={templateId} aria-label={t('section.templateLabel')}
-                    onChange={event => onTemplateChange(event.target.value || null)}>
-                    <option value="">{defaultTemplateLabel}</option>
-                    {templates.map(template => (
-                      <option value={template.id} key={template.id}>
-                        {template.language === 'en' ? templateName(template.name) : t('section.templateOption', { name: templateName(template.name), language: t(`languages.${template.language}`) })}
-                      </option>
-                    ))}
-                  </select>
-                ) : <span className="document-toolbar__template-name">{templateId ? templateName(selectedTemplate.name) : defaultTemplateLabel}</span>}
-                {onEditWording && <button type="button" className="ui-btn ui-btn--secondary" onClick={onEditWording}>{t('modal.editWording')}</button>}
-                {onCustomizeTemplate && <button type="button" className="ui-btn ui-btn--secondary" onClick={onCustomizeTemplate}>{t('modal.customizeTemplate')}</button>}
-              </div>
+              <OwnerReportTemplateChoices config={config} templateId={snapshot.ownerReport?.templateId} followPracticeDefault onSelect={onTemplateChange}
+                actions={<>
+                  {onCustomizeTemplate && <button type="button" className="ui-btn ui-btn--secondary" onClick={onCustomizeTemplate}>
+                    {t('consultation.templates.manage', { ns: 'visitDocumentation' })}
+                  </button>}
+                  {onEditWording && <button type="button" className="ui-btn ui-btn--secondary" onClick={onEditWording}>{t('modal.editWording')}</button>}
+                </>} />
               {photoNote && <p className={photoWarning ? 'document-toolbar__note document-toolbar__note--warning' : 'document-toolbar__note'} role="status">{photoNote}</p>}
             </section>
           </DocumentToolbar> : <aside className="pdf-preview-styles">
@@ -347,11 +334,11 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
             {notices}
           </aside>)}
           <div className="pdf-preview-iframe-wrap">
-            {generating && <div className="pdf-preview-status">{t('modal.generating')}</div>}
-            {error && !generating && (
+            {(!brandingReady || !attachments.loaded || generating) && <div className="pdf-preview-status" role="status">{t('modal.generating')}</div>}
+            {brandingReady && error && !generating && (
               <div className="pdf-preview-status pdf-preview-status--error">{error}</div>
             )}
-            {pdfUrl && !error && (!viewOnly && canShowPdfInline() ? (
+            {brandingReady && pdfUrl && !error && (!viewOnly && canShowPdfInline() ? (
               <iframe src={pdfUrl} title={t('modal.previewTitle')} className="pdf-preview-iframe" />
             ) : pdfBlobRef.current && (
               <PdfPagesPreview blob={pdfBlobRef.current} title={t('modal.previewTitle')} />

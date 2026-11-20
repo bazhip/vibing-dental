@@ -186,7 +186,7 @@
     "patient": {
       "title": "Page Patient",
       "hideRecheck": "Masquer le champ Contrôle prévu",
-      "visibilityNote": "Choisissez les champs affichés pour les visites vierges. Les champs contenant des informations enregistrées restent visibles."
+      "visibilityNote": "Choisissez les champs à afficher. Les champs du propriétaire et de l’auxiliaire vétérinaire contenant déjà des informations restent visibles."
     },
     "pdf": {
       "title": "PDF",
@@ -250,8 +250,8 @@
         "procedure": "Intervention"
       },
       "descriptions": {
-        "patient": "Choisissez si la date de contrôle apparaît sur la page Patient.",
-        "exam": "Choisissez les zones supplémentaires que vous documentez lors d’un examen oral.",
+        "patient": "Choisissez les champs du propriétaire et de la visite à afficher sur les visites vierges.",
+        "exam": "Choisissez et organisez les champs de l’examen oral.",
         "anesthesia": "Configurez les blocs nerveux, les champs personnalisés et vos médicaments habituels.",
         "charting": "Définissez la présentation, les mesures et le comportement de saisie.",
         "diagnosis": "Choisissez les observations affichées sur le schéma diagnostique et vos codes rapides.",

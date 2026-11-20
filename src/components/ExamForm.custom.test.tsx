@@ -68,58 +68,42 @@ test('hidden empty rows stay out of bulk marking while saved findings remain vis
   expect(onCustomChange).not.toHaveBeenCalled();
 });
 
-const outerSubmit = vi.fn();
-function AddHarness({ areas = [], readOnly = false }: { areas?: { id: string; label: string }[]; readOnly?: boolean }) {
-  const [defs, setDefs] = React.useState(areas);
-  return <form onSubmit={(e) => { e.preventDefault(); outerSubmit(); }}>
-    <ExamForm exam={EMPTY_EXAM_FINDINGS} onStatusChange={() => {}} onCommentChange={() => {}}
-      customRows={customExamRows(defs)} customAreas={defs} hiddenAreas={['tongue', ...areas.map((a) => a.id)]}
-      onCustomChange={() => {}} readOnly={readOnly}
-      onAddArea={(label) => setDefs([...defs, { id: 'added', label }])} />
-    <output data-testid="definitions">{JSON.stringify(defs)}</output>
-  </form>;
-}
-
-test('inline area addition trims the name and Enter adds without submitting the chart', () => {
-  render(<AddHarness />);
-  fireEvent.click(screen.getByRole('button', { name: /Add area/ }));
-  const input = screen.getByRole('textbox', { name: 'Exam area 1 name' });
-  expect(input).toHaveAttribute('maxlength', '60');
-  fireEvent.change(input, { target: { value: '  Lips  ' } });
-  expect(fireEvent.keyDown(input, { key: 'Enter' })).toBe(false);
-  expect(outerSubmit).not.toHaveBeenCalled();
-  expect(screen.getByLabelText('Lips: normal')).not.toBeChecked();
-  expect(JSON.parse(screen.getByTestId('definitions').textContent!)).toEqual([{ id: 'added', label: 'Lips' }]);
-  expect(screen.queryByRole('textbox')).toBeNull();
+test('the Exam layout orders areas and text fields while retaining answered removed rows', () => {
+  const onCustomChange = vi.fn();
+  const statusChange = vi.fn();
+  render(<ExamForm exam={{ ...EMPTY_EXAM_FINDINGS, lymph: { status: 'abnormal', comment: 'Enlarged' } }}
+    onStatusChange={statusChange} onCommentChange={vi.fn()} onCustomChange={onCustomChange}
+    layout={[
+      { id: 'gpDiagnostics', kind: 'text', label: 'Tests' },
+      { id: 'tongue', kind: 'area', label: 'Oral tongue' },
+      { id: 'exam-text-notes', kind: 'text', label: 'Risk assessment' },
+    ]}
+    diagnostics="CBC pending" onDiagnosticsChange={vi.fn()}
+    customRows={[{ id: 'exam-text-notes', label: 'Risk assessment', status: '', comment: 'Review airway' }]} />);
+  expect(screen.getByLabelText('Tests')).toHaveValue('CBC pending');
+  expect(screen.getByLabelText('Risk assessment')).toHaveValue('Review airway');
+  expect(screen.getByLabelText('Lymph nodes: comment')).toHaveValue('Enlarged');
+  expect(screen.queryByLabelText('Extraoral / facial: normal')).toBeNull();
+  expect(screen.getByLabelText('Tests').compareDocumentPosition(screen.getByLabelText('Oral tongue: normal')) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  fireEvent.change(screen.getByLabelText('Risk assessment'), { target: { value: 'Recheck airway' } });
+  expect(onCustomChange).toHaveBeenCalledWith(expect.objectContaining({ id: 'exam-text-notes' }), { comment: 'Recheck airway' });
+  fireEvent.click(screen.getByRole('button', { name: 'Mark all normal' }));
+  expect(statusChange.mock.calls).toEqual([['tongue', 'normal']]);
 });
 
-test('inline editor rejects blanks and hidden built-in or custom duplicates and can cancel', () => {
-  render(<AddHarness areas={[{ id: 'hidden', label: 'Lips' }]} />);
-  fireEvent.click(screen.getByRole('button', { name: /Add area/ }));
-  const input = screen.getByRole('textbox');
-  for (const value of ['   ', ' tongue ', ' LIPS ']) {
-    fireEvent.change(input, { target: { value } });
-    expect(screen.getByRole('button', { name: /Add area/ })).toBeDisabled();
-    fireEvent.keyDown(input, { key: 'Enter' });
-  }
-  expect(screen.getByRole('alert')).toHaveTextContent('This area is already in your exam.');
-  fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
-  expect(screen.queryByRole('textbox')).toBeNull();
-  expect(JSON.parse(screen.getByTestId('definitions').textContent!)).toHaveLength(1);
+test('removed text fields and Diagnostics remain visible with their saved values', () => {
+  render(<ExamForm exam={EMPTY_EXAM_FINDINGS} layout={[]} diagnostics="Lab result" onDiagnosticsChange={vi.fn()}
+    readOnly onStatusChange={vi.fn()} onCommentChange={vi.fn()} onCustomChange={vi.fn()}
+    customRows={[{ id: 'exam-text-airway', label: 'Airway risk', status: '', comment: 'Monitor overnight' }]} />);
+  expect(screen.getByLabelText('Diagnostics')).toHaveValue('Lab result');
+  expect(screen.getByLabelText('Diagnostics')).toHaveAttribute('readonly');
+  expect(screen.getByLabelText('Airway risk')).toHaveValue('Monitor overnight');
+  expect(screen.getByLabelText('Airway risk')).toHaveAttribute('readonly');
+  expect(screen.queryByRole('button', { name: /Mark/ })).toBeNull();
 });
 
-test('inline editor enforces the personal area cap', () => {
-  render(<AddHarness areas={Array.from({ length: 8 }, (_, i) => ({ id: String(i), label: `Area ${i}` }))} />);
-  expect(screen.queryByRole('button', { name: /Add area/ })).toBeNull();
-  expect(screen.getByText('Limit reached. Remove an item to add another.')).toBeInTheDocument();
-});
-
-test('locking the chart while the inline editor is open prevents adding', () => {
-  const { rerender } = render(<AddHarness />);
-  fireEvent.click(screen.getByRole('button', { name: /Add area/ }));
-  fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Lips' } });
-  rerender(<AddHarness readOnly />);
-  expect(screen.getByRole('button', { name: /Add area/ })).toBeDisabled();
-  fireEvent.keyDown(screen.getByRole('textbox'), { key: 'Enter' });
-  expect(JSON.parse(screen.getByTestId('definitions').textContent!)).toEqual([]);
+test('an empty layout tells the clinician there are no configured fields', () => {
+  render(<ExamForm exam={EMPTY_EXAM_FINDINGS} layout={[]}
+    onStatusChange={vi.fn()} onCommentChange={vi.fn()} onCustomize={vi.fn()} />);
+  expect(screen.getByRole('status')).toHaveTextContent('No fields in the Exam layout.');
 });

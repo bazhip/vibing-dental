@@ -158,6 +158,12 @@
       "technique": "技术",
       "findings": "所见",
       "impression": "印象"
+    },
+    "layout": {
+      "title": "自定义影像",
+      "intro": "设置新就诊的影像报告标签和起始文本。",
+      "help": "如何自定义影像",
+      "starterText": "起始文本"
     }
   },
   "discharge": {

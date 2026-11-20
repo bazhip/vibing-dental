@@ -211,12 +211,18 @@ function PatientsList({ library }: { library: AppLibrary }) {
       </>
     );
   } else if (groups === null) {
-    body = <p className="ios-empty">{t('loading', { ns: 'library' })}</p>;
+    body = <p className="ios-empty" role="status">{t('loading', { ns: 'library' })}</p>;
   } else if (groups.length === 0) {
     body = (
-      <p className="ios-empty">
-        {!list.filtered ? t('empty') : list.query ? t('noMatch.search', { ns: 'library' }) : list.dueOnly ? t('noMatch.due', { ns: 'library' }) : t('noMatch.filters', { ns: 'library' })}
-      </p>
+      <>
+        <p className="ios-empty" role="status">
+          {!list.filtered ? t('empty') : list.query ? t('noMatch.search', { ns: 'library' }) : list.speciesFilter || list.doctorFilter
+            ? t('noMatch.filters', { ns: 'library' }) : t('noMatch.due', { ns: 'library' })}
+        </p>
+        {list.filtered && <ListSection>
+          <ListRow title={t('filters.clear', { ns: 'library' })} onClick={list.clearFilters} />
+        </ListSection>}
+      </>
     );
   } else {
     body = (

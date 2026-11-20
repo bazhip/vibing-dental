@@ -158,6 +158,12 @@
       "technique": "Tecnica",
       "findings": "Reperti",
       "impression": "Conclusioni"
+    },
+    "layout": {
+      "title": "Personalizza diagnostica per immagini",
+      "intro": "Imposti le etichette e il testo iniziale dei referti per le nuove visite.",
+      "help": "Come personalizzare la diagnostica per immagini",
+      "starterText": "Testo iniziale"
     }
   },
   "discharge": {

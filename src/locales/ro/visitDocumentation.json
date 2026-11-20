@@ -158,6 +158,12 @@
       "technique": "Tehnică",
       "findings": "Constatări",
       "impression": "Concluzii"
+    },
+    "layout": {
+      "title": "Personalizați imagistica",
+      "intro": "Stabiliți etichetele și textul inițial al rapoartelor pentru vizitele noi.",
+      "help": "Cum să personalizați imagistica",
+      "starterText": "Text inițial"
     }
   },
   "discharge": {

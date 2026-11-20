@@ -289,11 +289,25 @@ export function resolveTemplate(
 
 export type PlaceholderValues = Partial<Record<PlaceholderKey, string>>;
 
+const placeholderPattern = /\{([a-zA-Z]+)\}/g;
+
+export function ownerTemplateFields(template: OwnerReportTemplate): string[] {
+  const values = [template.title, template.introTemplate, ...template.homecareTips, template.closingNote, template.footer,
+    ...template.sections.flatMap(section => isCustomSection(section) ? [section.title, section.body] : [section.title])];
+  const fields = new Set<string>();
+  for (const value of values) {
+    for (const [token, name] of value.matchAll(placeholderPattern)) {
+      if ((PLACEHOLDERS as readonly string[]).includes(name.toLowerCase())) fields.add(token);
+    }
+  }
+  return Array.from(fields);
+}
+
 /** Replaces {pet}, {owner}, {species}, {date}, {practice}, {doctor}.
  *  Matching is case-insensitive; a capitalized token ({Pet}) capitalizes
  *  the first letter of the value. Unknown tokens are left untouched. */
 export function fillPlaceholders(text: string, values: PlaceholderValues): string {
-  return text.replace(/\{([a-zA-Z]+)\}/g, (match, name: string) => {
+  return text.replace(placeholderPattern, (match, name: string) => {
     const key = name.toLowerCase() as PlaceholderKey;
     if (!(PLACEHOLDERS as readonly string[]).includes(key)) return match;
     const value = values[key] ?? '';

@@ -1,6 +1,5 @@
 import React from 'react';
-import type { DentalField } from '../types';
-import { BlockRowId, ChartPrefs, PERIO_FIELDS } from '../utils/chartSettings';
+import { BlockRowId, ChartPrefs, OptionalPatientField, PERIO_FIELDS, PATIENT_FIELD_OPTIONS } from '../utils/chartSettings';
 import { ADJUNCT_DRUGS, strengthForInput, withDrugUnit } from '../types';
 import type { SettingsSection } from './ChartSettingsModal';
 
@@ -10,8 +9,13 @@ export const USUAL_DRUGS = ['Bupivacaine', 'Ropivacaine', 'Lidocaine', 'Mepivaca
 export const USUAL_ADJUNCTS = ADJUNCT_DRUGS;
 
 /** Adds or removes `key` in a field list. */
-export const toggleField = (list: DentalField[], key: DentalField, on: boolean): DentalField[] =>
+export const toggleField = <Field extends string>(list: Field[], key: Field, on: boolean): Field[] =>
   on ? Array.from(new Set([...list, key])) : list.filter((k) => k !== key);
+
+export const PATIENT_SETTINGS_GROUPS: ReadonlyArray<{ id: 'ownerGroup' | 'visitGroup'; fields: readonly OptionalPatientField[] }> = [
+  { id: 'ownerGroup', fields: PATIENT_FIELD_OPTIONS.filter(field => field !== 'tech') },
+  { id: 'visitGroup', fields: PATIENT_FIELD_OPTIONS.filter(field => field === 'tech') },
+];
 
 /**
  * The state and rules behind Chart settings, shared by the website's

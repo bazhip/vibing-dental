@@ -158,6 +158,12 @@
       "technique": "Technique",
       "findings": "Findings",
       "impression": "Impression"
+    },
+    "layout": {
+      "title": "Customize Imaging",
+      "intro": "Set report labels and starter text for new visits.",
+      "help": "How to customize Imaging",
+      "starterText": "Starter text"
     }
   },
   "discharge": {

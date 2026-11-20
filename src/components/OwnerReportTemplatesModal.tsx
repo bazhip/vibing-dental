@@ -1,3 +1,4 @@
+import { OwnerReportTemplateChoices } from './OwnerReportTemplateChoices';
 import { RefineTextAction, RefineTextContext } from './RefineTextAction';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -20,6 +21,7 @@ import {
   isCustomSection,
   newId,
   normalizeConfig,
+  ownerTemplateFields,
   placeholderTitle,
   sectionLabel,
 } from '../utils/ownerReportConfig';
@@ -90,6 +92,8 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
   const refinement = React.useContext(RefineTextContext);
   const refineEnabled = (aiEnabled ?? refinement.enabled) && canEdit;
   const closingId = React.useId();
+  const actionPanelId = React.useId();
+  const draftFieldsId = React.useId();
   const { t } = useTranslation('reportui');
   const asScreen = presentation === 'screen';
   const asSheet = presentation === 'sheet';
@@ -400,7 +404,9 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
     if (editorRef.current) editorRef.current.scrollTop = 0;
   };
 
-  const selectTemplate = (id: string) => {
+  const draftFields = ownerTemplateFields(selected);
+  const selectTemplate = (id: string | null) => {
+    if (!id) return;
     setSelectedId(id);
     activeField.current = null;
   };
@@ -431,25 +437,12 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
 
   const templatesEditor = (
     <>
-      {categorized ? (
-        <div className="report-templates__toolbar">
-          <select
-            className="patient-form__input report-templates__template-picker"
-            aria-label={t('section.templateLabel')}
-            value={selected.id}
-            onChange={(e) => selectTemplate(e.target.value)}
-            disabled={busy}
-          >
-            {draft.templates.map((tpl) => (
-              <option key={tpl.id} value={tpl.id}>
-                {[tpl.name || t('templates.untitled'), tpl.language !== 'en' && tpl.language.toUpperCase(), tpl.id === draft.defaultTemplateId && t('templates.badgeDefault')].filter(Boolean).join(' · ')}
-              </option>
-            ))}
-          </select>
-          {canEdit && (
+      <div className="report-templates__toolbar">
+        <OwnerReportTemplateChoices config={draft} templateId={selected.id} onSelect={selectTemplate} disabled={busy}
+          actions={canEdit && (
             <div className="report-templates__toolbar-actions">
               <button type="button" className="diagram-view__action" onClick={() => addTemplate()} disabled={!canAddTemplate}>
-                <span aria-hidden="true">+</span>{' '}{t('report.newTemplate', { ns: 'forms' })}
+                <span aria-hidden="true">+</span>{' '}{t('templates.newName')}
               </button>
               <div
                 className="report-templates__overflow"
@@ -470,7 +463,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
                   className="diagram-view__action report-templates__overflow-trigger"
                   aria-label={t('templates.manageActions')}
                   aria-expanded={actionsOpen}
-                  aria-controls="template-management-actions"
+                  aria-controls={actionPanelId}
                   onClick={(e) => {
                     e.currentTarget.focus();
                     setActionsOpen((value) => !value);
@@ -479,43 +472,13 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
                 >
                   <span aria-hidden="true">⋯</span>
                 </button>
-                <div id="template-management-actions" className="report-templates__overflow-panel" hidden={!actionsOpen}>
+                <div id={actionPanelId} className="report-templates__overflow-panel" hidden={!actionsOpen}>
                   {templateActions}
                 </div>
               </div>
             </div>
-          )}
-        </div>
-      ) : (
-        <nav className="report-templates__list" aria-label={t('templates.listLabel')}>
-          <ul>
-            {draft.templates.map((tpl) => (
-              <li key={tpl.id}>
-                <button
-                  type="button"
-                  className={`report-templates__item${tpl.id === selected.id ? ' report-templates__item--on' : ''}`}
-                  aria-current={tpl.id === selected.id ? 'true' : undefined}
-                  onClick={() => selectTemplate(tpl.id)}
-                >
-                  <span className="report-templates__item-name">{tpl.name || t('templates.untitled')}</span>
-                  <span className="report-templates__item-meta">
-                    {tpl.id === draft.defaultTemplateId && <span className="report-templates__badge">{t('templates.badgeDefault')}</span>}
-                    {tpl.language !== 'en' && <span className="report-templates__lang">{tpl.language.toUpperCase()}</span>}
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ul>
-          {canEdit && (
-            <div className="report-templates__list-actions">
-              <button type="button" className="diagram-view__action" onClick={() => addTemplate()} disabled={!canAddTemplate}>
-                {t('templates.new')}
-              </button>
-              {templateActions}
-            </div>
-          )}
-        </nav>
-      )}
+          )} />
+      </div>
 
       {categorized && (
         <nav className="report-templates__categories" aria-label={t('templates.editor.navigation')}>
@@ -673,6 +636,14 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
               scopeKey={selected.id} readOnly={!canEdit || busy} onApply={introTemplate => updateTemplate({ introTemplate })} />}
             </div>
             <span className="patient-form__hint">{t('templates.summaryEmpty')}</span>
+            {draftFields.length > 0 && (
+              <div className="report-templates__used-fields">
+                <span className="patient-form__hint" id={draftFieldsId}>{t('templates.fieldsInTemplate', { ns: 'library' })}</span>
+                <ul aria-labelledby={draftFieldsId}>
+                  {draftFields.map(field => <li key={field}><code>{field}</code></li>)}
+                </ul>
+              </div>
+            )}
           </section>
 
           <section className="ai-settings-section" hidden={categorized && category !== 'content'}>

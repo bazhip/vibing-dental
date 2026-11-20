@@ -372,10 +372,15 @@
 .consultation-library__footer { flex-wrap: wrap; }
 .consultation-library .ui-btn { max-width: 100%; overflow-wrap: anywhere; }
 .consultation-library .ui-btn:disabled { opacity: 0.55; cursor: default; }
+@media (max-width: 360px) {
+  .visit-documentation__tools { column-gap: 6px; }
+  .visit-documentation__tools .diagram-view__action { padding-inline: 8px; }
+}
 @media (max-width: 640px) {
   .visit-documentation__toolbar { padding: 10px 12px; }
   .visit-documentation__guide,
   .visit-documentation__choices .diagram-view__action,
+  .visit-documentation__tools .diagram-view__action,
   .consultation-library__template-choice,
   .consultation-library .ui-btn,
   .consultation-library__section-name,
@@ -464,3 +469,28 @@
 .drug-reference__label details p {
   white-space: pre-wrap;
 }
+
+.consultation-library__imaging-fields > .consultation-library__settings summary { min-block-size: 44px; }
+.consultation-library__imaging-fields .ui-dialog__label { gap: 6px; }
+
+.ui-dialog.exam-layout { --ui-dialog-max-width: 42rem; }
+.exam-layout__body .consultation-library__intro { margin-block-end: 8px; }
+.exam-layout__row-label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: 12px;
+  min-width: 0;
+}
+.exam-layout__field-kind { color: var(--text-muted); font-size: 0.8rem; }
+.exam-layout__choices {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+.exam-layout__defaults { margin-block: 12px 4px; font-size: 0.875rem; }
+.exam-layout__add { margin-block-start: 8px; }
+.dental-exam__diagnostics + .exam-table,
+.dental-exam__diagnostics + .ios-form__section { margin-block-start: 16px; }

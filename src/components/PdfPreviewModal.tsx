@@ -93,6 +93,8 @@ interface PdfPreviewModalProps {
   onClose: () => void;
   /** Returns the chart snapshot — captured fresh each time the modal opens. */
   snapshot: ChartSnapshot | null;
+  branding?: PdfBranding;
+  brandingReady?: boolean;
   /** Render just the preview body (style rail + PDF) inside another
    *  dialog — the Documents dialog supplies header, tabs and Escape. */
   bare?: boolean;
@@ -102,7 +104,7 @@ interface PdfPreviewModalProps {
   controlsHost?: HTMLElement | null;
 }
 
-export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose, snapshot, bare = false, viewOnly = false, lifecycle, options, controlsHost }) => {
+export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose, snapshot, branding = snapshot?.branding, brandingReady = true, bare = false, viewOnly = false, lifecycle, options, controlsHost }) => {
   const { t, i18n: i18nInstance } = useTranslation(['pdfui', 'media', 'settings']);
   // The document's labels print in the app language; the preview rebuilds
   // when it changes.
@@ -231,7 +233,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
     inAppLink.reset();
     pdfBlobRef.current = null;
     setPdfUrl(null);
-    if (!open || !snapshot || images === null || loadedSnapshot.current !== snapshot) return;
+    if (!open || !snapshot || !brandingReady || images === null || loadedSnapshot.current !== snapshot) return;
     let cancelled = false;
     let createdUrl: string | null = null;
     setGenerating(true);
@@ -255,7 +257,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
           { state: snapshot.preState,  png: prePng  },
           { state: snapshot.postState, png: postPng },
           styleId,
-          snapshot.branding ?? {},
+          branding ?? {},
           {
             includeGrid: snapshot.includeGrid,
             includeRadiographicReport: snapshot.includeRadiographicReport,
@@ -287,10 +289,12 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
       pdfBlobRef.current = null;
       if (createdUrl) URL.revokeObjectURL(createdUrl);
     };
-  }, [open, snapshot, styleId, images, lng, imageAttempt, inAppLink.reset]);
+  }, [open, snapshot, branding, brandingReady, styleId, images, lng, imageAttempt, inAppLink.reset]);
+
+  const canDownload = brandingReady && !!pdfUrl && !generating && images !== null && !error;
 
   const download = (withoutImages = false) => {
-    if (!pdfUrl || !snapshot || generating || images === null || error || (imageWarning && !withoutImages)) return;
+    if (!canDownload || !snapshot || (imageWarning && !withoutImages)) return;
     const sanitize = (str: string) => str.replace(/[^a-z0-9]/gi, '_').toLowerCase();
     const { patientInfo } = snapshot;
     const filename = `${sanitize(patientInfo.patientName) || 'patient'}_${sanitize(patientInfo.patientNumber) || 'pid'}_dental_chart_${patientInfo.date}.pdf`;
@@ -347,7 +351,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
       type="button"
       className={toolbar ? "ui-btn ui-btn--primary" : "pdf-preview-download"}
       onClick={() => handleDownload()}
-      disabled={!pdfUrl || generating || images === null || !!imageWarning || !!error}
+      disabled={!canDownload || !!imageWarning}
     >
       {isNativeApp() ? (
         <>
@@ -418,7 +422,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
     {imageWarning && <div className="pdf-preview-warning">
       <p role="status">{imageWarning}</p>
       <button type="button" className="pdf-preview-secondary" onClick={() => setImageAttempt(attempt => attempt + 1)}>{t('preview.retryImages')}</button>
-      <button type="button" className="pdf-preview-secondary" disabled={!pdfUrl || generating || images === null || !!error} onClick={() => handleDownload(true)}>{t('preview.withoutImages')}</button>
+      <button type="button" className="pdf-preview-secondary" disabled={!canDownload} onClick={() => handleDownload(true)}>{t('preview.withoutImages')}</button>
     </div>}
   </>;
   const included = [
@@ -467,15 +471,15 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
             <button type="button" className="pdf-preview-secondary" onClick={() => setImageAttempt(attempt => attempt + 1)}>{t('preview.retryImages')}</button>
           </div>}
           <div className="pdf-preview-iframe-wrap">
-            {(generating || (images === null && !error)) && (
-              <div className="pdf-preview-status">
-                {images === null ? t('preview.loadingImages') : t('preview.generating')}
+            {(!brandingReady || generating || (images === null && !error)) && (
+              <div className="pdf-preview-status" role="status">
+                {brandingReady && images === null ? t('preview.loadingImages') : t('preview.generating')}
               </div>
             )}
-            {error && !generating && (
+            {brandingReady && error && !generating && (
               <div className="pdf-preview-status pdf-preview-status--error">{error}</div>
             )}
-            {pdfUrl && !error && (!viewOnly && canShowPdfInline() ? (
+            {brandingReady && pdfUrl && !error && (!viewOnly && canShowPdfInline() ? (
               <iframe
                 key={styleId}
                 src={pdfUrl}

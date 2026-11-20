@@ -11,6 +11,7 @@
     "aria": "Buscar historiales"
   },
   "filters": {
+    "clear": "Borrar filtros",
     "speciesAria": "Filtrar por especie",
     "allSpecies": "Todas las especies",
     "doctorAria": "Filtrar por veterinario",
@@ -119,10 +120,8 @@
   },
   "templates": {
     "chartCodes": "Códigos del historial",
-    "chartCodeHelp": "Escriba { para ver sugerencias o seleccione un código a continuación. Los códigos utilizan los valores del historial y le piden que complete los datos que falten. Los demás nombres entre llaves generan campos personalizados.",
-    "fieldExamples": "Ejemplos de campos para rellenar: {Números de dientes}, {Detalles del procedimiento} y {Fecha de seguimiento}.",
+    "chartCodeHelp": "Escriba { para ver sugerencias o elija un código a continuación. Los códigos insertan los datos del historial. Puede editar en el informe los códigos que queden sin completar.",
     "fieldsInTemplate": "Campos de esta plantilla",
-    "fieldHelp": "Ponga una instrucción breve entre llaves para crear un campo rellenable, por ejemplo {Introduzca los números de los dientes}. Se le pedirá el valor al usar la plantilla.",
     "aria": "Plantillas de informe",
     "title": "Plantillas de informe",
     "saved": "Plantillas guardadas",

@@ -186,7 +186,7 @@
     "patient": {
       "title": "Patient page",
       "hideRecheck": "Hide the Recheck due field",
-      "visibilityNote": "Choose the fields shown on blank visits. Fields with recorded information remain visible."
+      "visibilityNote": "Choose which fields to show. Owner and technician fields with recorded information stay visible."
     },
     "pdf": {
       "title": "PDF",
@@ -250,8 +250,8 @@
         "procedure": "Procedure"
       },
       "descriptions": {
-        "patient": "Choose whether to show the recheck date on the Patient page.",
-        "exam": "Choose the additional areas you record during an oral exam.",
+        "patient": "Choose which owner and visit fields appear on blank visits.",
+        "exam": "Choose and arrange fields for the oral exam.",
         "anesthesia": "Configure nerve blocks, custom fields, and your usual medications.",
         "charting": "Set the chart layout, measurements, and data-entry behavior.",
         "diagnosis": "Choose the findings displayed on the diagnosis diagram and your quick codes.",

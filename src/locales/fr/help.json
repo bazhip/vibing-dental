@@ -24,7 +24,7 @@
     "practice": "Cabinet et assistance"
   },
   "images": {
-    "imagingTemplates": "Les modèles de comptes rendus d’imagerie proposés au-dessus d’un compte rendu radiographique fictif.",
+    "imagingTemplates": "La section Imagerie avec les zones de saisie distinctes pour le compte rendu radiographique et le compte rendu de scanner.",
     "dischargeTemplates": "L’éditeur de modèles de sortie avec le sélecteur « Ajouter une section » ouvert dans une visite fictive.",
     "consultationMedicationHistory": "Traitements en cours avec une notice vétérinaire dans l’application et un lien vers la source complète.",
     "consultationMedicationReview": "Vérification de la dictée de consultation avec des propositions distinctes pour les médicaments et leurs extraits de transcription.",
@@ -36,6 +36,7 @@
     "start": "Espace de travail d’un patient fictif avec l’onglet de consultation, la navigation et les informations du patient.",
     "patients": "Interventions dentaires et consultations antérieures réunies dans l’historique du patient, avec une visite sélectionnée.",
     "exam": "Grille d’examen oral avec les choix Normal et Anormal et un commentaire.",
+    "examCustomize": "La fenêtre de personnalisation de l’examen avec les champs par défaut et les commandes de présentation.",
     "viewer": "Visionneuse d’images avec les réglages de fenêtre et de niveau et le téléchargement d’un DICOM fictif.",
     "treatment": "Compte rendu de traitement avec les modèles enregistrés et la zone de texte modifiable.",
     "preferences": "Paramètres du dossier avec la disposition, l’enregistrement automatique et les mesures des poches.",
@@ -73,7 +74,7 @@
       "sections": {
         "first": {
           "title": "Trouver un patient",
-          "text": "Ouvrez le sélecteur de patients avec le bouton plus. Vérifiez le numéro du patient si plusieurs noms correspondent. Reprenez une visite existante ou choisissez Nouvelle visite et vérifiez le type avant de commencer."
+          "text": "Ouvrez le sélecteur de patients avec le bouton plus. Vérifiez le numéro du patient si plusieurs noms correspondent. Reprenez une visite existante ou choisissez Nouvelle visite et vérifiez le type avant de commencer.\n\nDans « Patients » ou « Contrôles », utilisez la recherche et les filtres au-dessus de la liste. En l’absence de résultat, choisissez « Effacer les filtres » sous les résultats. La liste des contrôles reste limitée aux visites à effectuer. Si la liste ne se charge pas, choisissez « Réessayer »."
         },
         "second": {
           "title": "Changer de consultation ou d’onglet patient",
@@ -95,7 +96,7 @@
         },
         "second": {
           "title": "Consigner les constatations dans Diagnostic",
-          "text": "Sélectionnez la dent concernée et indiquez les constatations avant traitement ou les dents déjà absentes. Ajoutez des codes dentaires et de courtes notes si nécessaire. En cas de doute sur un code, consultez le référentiel. Les libellés de la barre d’outils se trouvent sous les icônes. Utilisez « Commentaire » pour associer une note à une dent ou « Commentaire libre » pour la placer où vous le souhaitez sur le schéma. Lorsque l’espace manque, Commentaire libre s’affiche sous la forme Libre."
+          "text": "Sélectionnez la dent concernée et indiquez les constatations avant traitement ou les dents déjà absentes. Ajoutez des codes dentaires et de courtes notes si nécessaire. En cas de doute sur un code, consultez le référentiel. Les libellés de la barre d’outils se trouvent sous les icônes. Utilisez « Commentaire » pour associer une note à une dent ou « Commentaire libre » pour la placer où vous le souhaitez sur le schéma. Lorsque l’espace manque, Commentaire libre s’affiche sous la forme Libre.\n\nLorsque « Commentaire » est sélectionné, les choix de « Taille du texte des commentaires » restent visibles. Après la finalisation, les outils de modification des schémas « Diagnostic » et « Intervention » sont désactivés. Vous pouvez toujours zoomer et afficher ou masquer les numéros des dents."
         },
         "third": {
           "title": "Consigner les actes dans Intervention",
@@ -109,11 +110,11 @@
       "sections": {
         "first": {
           "title": "Documenter l’examen",
-          "text": "Ouvrez « Examen » et renseignez l’état des zones examinées ainsi que vos commentaires. Laissez les zones non examinées vides. Utilisez « Personnaliser » pour gérer les zones d’examen. Sous les constatations de l’examen, utilisez « Examens diagnostiques » pour consigner les résultats d’examens autres que l’imagerie et les tests en attente."
+          "text": "Ouvrez « Examen » et sélectionnez « Normal » ou « Anormal » pour chaque zone évaluée. Précisez vos observations dans « Commentaire ». Laissez les zones non évaluées vides. Utilisez « Examens diagnostiques », sous les constatations de l’examen, pour consigner les résultats hors imagerie et les examens en attente.\n\nChoisissez « Personnaliser » dans l’en-tête de « Examen » pour ouvrir « Personnaliser l’examen ». Par défaut, la présentation comprend six zones d’examen bucco-dentaire et le champ « Examens diagnostiques ». Sélectionnez un champ pour modifier son « Nom du champ ». Utilisez « Ajouter un champ » pour ajouter une « Zone d’examen » avec des choix d’état et un commentaire, ou un « Champ de texte » pour des notes libres. Pour réorganiser les champs, faites glisser leur poignée ou sélectionnez la poignée au clavier et utilisez les touches fléchées.\n\nUtilisez le bouton de retrait à côté d’un champ pour le retirer de la présentation. Sélectionnez « Annuler » pour le rétablir ou utilisez « Ajouter un champ » pour rétablir un champ intégré. Les constatations déjà consignées restent visibles après le retrait. Choisissez « Enregistrer », puis vérifiez les noms et l’ordre des champs dans « Examen ».\n\nLes propriétaires du cabinet peuvent enregistrer la présentation commune. Les autres membres du cabinet peuvent consulter la présentation. Si vous travaillez en dehors d’un cabinet partagé, la présentation est enregistrée dans vos réglages personnels du schéma dentaire."
         },
         "second": {
           "title": "Consigner les anesthésiques et les blocs",
-          "text": "Ouvrez « Anesthésie », renseignez les médicaments anesthésiques et notez le site et le volume de chaque bloc réalisé. Avant de finaliser, vérifiez le côté et les unités par rapport à la source. Sélectionnez « Ajouter une deuxième série de blocs nerveux » si vous avez administré un autre anesthésique séparément. Notez son nom, sa concentration et les volumes par site dans la deuxième série."
+          "text": "Ouvrez « Anesthésie », renseignez les médicaments anesthésiques et notez le site et le volume de chaque bloc réalisé. Avant de finaliser, vérifiez le côté et les unités par rapport à la source. Sélectionnez « Ajouter une deuxième série de blocs nerveux » si vous avez administré un autre anesthésique séparément. Notez son nom, sa concentration et les volumes par site dans la deuxième série.\n\nDans l’en-tête de la section « Anesthésie », choisissez « Personnaliser ». Sous « Blocs nerveux affichés », sélectionnez les blocs nerveux intégrés à afficher. Sous « Blocs nerveux supplémentaires », choisissez « Ajouter un bloc nerveux » pour ajouter un bloc nommé avec des champs de volume à droite et à gauche. Sous « Champs d’anesthésie personnalisés », choisissez « Ajouter un champ » pour créer, par exemple, un champ de notes sur la sonde endotrachéale. Sélectionnez un élément personnalisé pour le renommer ou le retirer. Fermez les réglages et vérifiez les champs dans « Anesthésie ».\n\nDans ces mêmes réglages, définissez « Anesthésique local préféré » et, si nécessaire, « Médicament supplémentaire ». Si aucun anesthésique n’a encore été consigné pour la visite, un raccourci s’affiche dans « Anesthésie ». Vérifiez les noms et les concentrations avant de l’utiliser. Le raccourci consigne les médicaments configurés pour cette visite."
         },
         "third": {
           "title": "Vérifier les constatations enregistrées",
@@ -135,7 +136,7 @@
         },
         "third": {
           "title": "Rédiger les comptes rendus d’imagerie",
-          "text": "Saisissez les constatations dans Rapport radiographique ou Rapport CT. Pour les autres résultats et les tests en attente, ouvrez « Examen » et utilisez « Examens diagnostiques ». Vous pouvez tout dicter dans le même enregistrement dentaire. Précisez la modalité et vérifiez les destinations proposées avant d’appliquer les modifications.\n\nAu-dessus de l’un ou l’autre compte rendu, choisissez un « Modèle de compte rendu » puis sélectionnez « Insérer la trame ». ToothOps ajoute les titres manquants à la fin du compte rendu et conserve le texte existant. Vérifiez les titres obtenus avant d’ajouter vos constatations.\n\nDans « Imagerie », choisissez « Personnaliser » pour ouvrir le gestionnaire de modèles. Vous pouvez y prévisualiser ou gérer les trames de votre clinique. Pour modifier la langue du compte rendu ou le contenu inclus par défaut dans le PDF, choisissez « Réglages d’imagerie et PDF » dans le gestionnaire."
+          "text": "Saisissez les constatations dans « Compte rendu radiographique » ou « Compte rendu de scanner ». Pour les autres résultats et les examens en attente, ouvrez « Examen » et utilisez « Examens diagnostiques ». Vous pouvez tout dicter dans le même enregistrement dentaire. Précisez la modalité d’imagerie et vérifiez les champs proposés avant d’appliquer les modifications.\n\nDans l’en-tête de la section « Imagerie », choisissez « Personnaliser » pour ouvrir « Personnaliser l’imagerie ». Les propriétaires du cabinet peuvent modifier la présentation commune des comptes rendus. Développez « Compte rendu radiographique » ou « Compte rendu de scanner » pour modifier son libellé et le champ « Texte de départ ». Vous pouvez par exemple ajouter des rubriques pour la technique, les observations et la conclusion.\n\nEnregistrez la présentation du cabinet, puis ouvrez « Imagerie » dans une nouvelle visite dentaire pour vérifier les libellés et le texte de départ. Lorsque vous modifiez le texte de départ dans le compte rendu, il est consigné pour cette visite. Le texte des comptes rendus déjà enregistrés est conservé.\n\nPour modifier la langue des comptes rendus ou le contenu par défaut du PDF, choisissez « Réglages d’imagerie et PDF » dans la fenêtre de personnalisation. En dehors d’un cabinet partagé, « Personnaliser » ouvre directement ces réglages."
         }
       }
     },
@@ -171,7 +172,7 @@
         },
         "third": {
           "title": "Créer un modèle réutilisable",
-          "text": "Choisissez « Nouveau modèle », donnez-lui un nom reconnaissable et rédigez le texte à réutiliser. Saisissez { dans l’éditeur pour afficher les codes de remplissage disponibles. Utilisez un champ comme {pet} pour le nom de l’animal. Lorsque vous sélectionnez le modèle enregistré, ToothOps renseigne les valeurs présentes dans le dossier et vous demande celles qui manquent."
+          "text": "Choisissez « Nouveau modèle », donnez-lui un nom reconnaissable et rédigez le texte à réutiliser. Saisissez { dans l’éditeur pour afficher les codes de remplissage disponibles. Utilisez un champ comme {pet} pour le nom de l’animal. Lorsque vous sélectionnez le modèle enregistré, ToothOps insère les valeurs du dossier. Les codes non renseignés restent modifiables dans le compte rendu.\n\nOuvrez « Gérer les modèles » à côté de « Modèles enregistrés » pour modifier un modèle. Pour en supprimer un, sélectionnez-le, ouvrez « Plus d’options » et choisissez « Supprimer »."
         }
       }
     },
@@ -185,11 +186,11 @@
         },
         "second": {
           "title": "Préparer le compte rendu pour le propriétaire",
-          "text": "Dans « Compte rendu pour le propriétaire », sélectionnez le modèle. L’action « Rédiger avec l’IA » prépare un résumé d’ouverture et des conseils de soins à domicile à partir de la consultation. Vérifiez que les constatations importantes sont bien expliquées et adaptez le texte. Après une modification, choisissez « Rétablir le texte généré » pour retrouver le brouillon enregistré."
+          "text": "Dans « Compte rendu pour le propriétaire », choisissez un modèle par son nom sous « Modèle de compte rendu » pour cette visite, ou gardez « Modèle par défaut de la clinique » pour suivre le modèle par défaut actuel. Une coche indique le choix actif. Si la liste est longue, utilisez le menu « Modèle de compte rendu ». Les propriétaires de la clinique peuvent utiliser « Gérer les modèles » pour modifier le texte et la présentation partagés, ou « Nouveau modèle » pour en ajouter un. Dans l’éditeur, choisissez un modèle, définissez-le par défaut dans « Actions du modèle », puis sélectionnez « Enregistrer les modèles ». L’action « Rédiger avec l’IA » prépare un résumé d’ouverture et des conseils de soins à domicile à partir de la consultation. Vérifiez que les constatations importantes sont bien expliquées et adaptez le texte. Après une modification, choisissez « Rétablir le texte généré » pour retrouver le brouillon enregistré."
         },
         "third": {
           "title": "Afficher l’aperçu et partager",
-          "text": "Choisissez « Aperçu » à côté de « Personnaliser » pour ouvrir le PDF destiné au propriétaire. Pour ajouter des images, sélectionnez-les dans « Imagerie ». Utilisez « Vérifier et exporter » pour télécharger le compte rendu ou, si l’option est disponible, l’envoyer par e-mail après avoir vérifié le destinataire et le document. Dans l’onglet du compte rendu destiné au propriétaire, la barre au-dessus de l’aperçu contient les boutons pour personnaliser, télécharger le PDF et, si disponible, l’envoyer par e-mail."
+          "text": "Choisissez « Aperçu » dans l’en-tête du compte rendu pour le propriétaire afin d’ouvrir le PDF et de vérifier le texte et la présentation. Pour ajouter des images, sélectionnez-les dans « Imagerie ». Utilisez « Vérifier et exporter » pour télécharger le compte rendu ou, si l’option est disponible, l’envoyer par e-mail après avoir vérifié le destinataire et le document. Dans l’onglet du compte rendu destiné au propriétaire, la barre au-dessus de l’aperçu contient les boutons pour personnaliser, télécharger le PDF et, si disponible, l’envoyer par e-mail."
         }
       }
     },
@@ -239,7 +240,7 @@
         },
         "second": {
           "title": "Gérer les paramètres partagés",
-          "text": "Les responsables du cabinet peuvent gérer son identité visuelle, les accès de l’équipe et les modèles de compte rendu partagés. La langue des clients choisie par le cabinet détermine les textes destinés aux propriétaires, dont le libellé par défaut des comptes rendus."
+          "text": "Les responsables du cabinet peuvent gérer son identité visuelle, les accès de l’équipe et les modèles de compte rendu partagés. La langue des clients choisie par le cabinet détermine les textes destinés aux propriétaires, dont le libellé par défaut des comptes rendus.\n\nSur le web, modifiez le nom du cabinet dans « Paramètres du cabinet » → « Général ». Choisissez « Enregistrer » sous le champ pour appliquer la modification ou « Annuler » pour rétablir le nom actuel."
         },
         "third": {
           "title": "Vérifier les fonctionnalités disponibles",
@@ -325,15 +326,15 @@
       "sections": {
         "first": {
           "title": "Trouver les réglages adaptés à votre tâche",
-          "text": "Ouvrez « Patient », « Examen », « Anesthésie », « Schéma dentaire », « Diagnostic », ou « Intervention », puis choisissez « Personnaliser » dans l’en-tête. Les « Réglages du schéma dentaire » s’ouvrent sur la catégorie correspondante. Dans la liste à gauche, choisissez une autre catégorie sans fermer la fenêtre. Vos préférences personnelles sont enregistrées automatiquement dans votre compte si la synchronisation est disponible, ou dans le navigateur en cours.\n\nDans « Imagerie », choisissez « Personnaliser » pour ouvrir le gestionnaire de modèles. Vous pouvez y prévisualiser ou gérer les trames de votre clinique. Pour modifier la langue du compte rendu ou le contenu inclus par défaut dans le PDF, choisissez « Réglages d’imagerie et PDF » dans le gestionnaire.\n\nLe bouton « Personnaliser » de « Compte rendu de traitement » ouvre les modèles de traitement. Dans « Compte rendu pour le propriétaire », le bouton « Personnaliser », à côté d’« Aperçu », ouvre les modèles destinés aux propriétaires. Ces éditeurs gèrent les textes réutilisables et leur présentation pour votre cabinet. Vérifiez le modèle sélectionné avant de le modifier."
+          "text": "Ouvrez « Patient », « Anesthésie », « Schéma dentaire », « Diagnostic », ou « Intervention », puis choisissez « Personnaliser » dans l’en-tête. Les « Réglages du schéma dentaire » s’ouvrent sur la catégorie correspondante. Dans la liste à gauche, choisissez une autre catégorie sans fermer la fenêtre. Vos préférences personnelles sont enregistrées automatiquement dans votre compte si la synchronisation est disponible, ou dans le navigateur en cours.\n\nDans « Examen » ou « Imagerie », choisissez « Personnaliser » dans l’en-tête pour ouvrir l’éditeur de cette section. Il permet de gérer la présentation commune du cabinet. Dans « Imagerie », vous pouvez aussi y ouvrir « Réglages d’imagerie et PDF ».\n\nDans « Compte rendu de traitement », « Gérer les modèles », à côté des modèles enregistrés, ouvre les modèles de traitement. Dans « Compte rendu pour le propriétaire », « Gérer les modèles », à côté des choix de modèle, ouvre les modèles destinés aux propriétaires. Ces éditeurs gèrent les textes réutilisables et leur présentation pour votre cabinet. Vérifiez le modèle sélectionné avant de le modifier."
         },
         "second": {
           "title": "Comprendre les catégories de réglages",
-          "text": "La liste latérale des « Réglages du schéma dentaire » regroupe les options selon la partie de la consultation concernée. Dans « Schéma dentaire », par exemple, choisissez « Grille » ou « Par dent », le mode de mesure des profondeurs de poche, les mesures visibles et l’action qui suit la saisie d’un score. Configurez séparément les « Raccourcis de diagnostic » et les « Raccourcis d’intervention », car ils s’appliquent à des schémas distincts.\n\nLes réglages de visibilité des champs et d’affichage des schémas vous aident à vous concentrer sur la saisie. Relisez les observations saisies dans le dossier du patient avant l’export."
+          "text": "La liste latérale des « Réglages du schéma dentaire » regroupe les options selon la partie de la consultation concernée. Dans « Schéma dentaire », par exemple, choisissez « Grille » ou « Par dent », le mode de mesure des profondeurs de poche, les mesures visibles et l’action qui suit la saisie d’un score. Configurez séparément les « Raccourcis de diagnostic » et les « Raccourcis d’intervention », car ils s’appliquent à des schémas distincts.\n\nPour choisir les champs de la section « Patient », ouvrez « Personnaliser ». Dans « Coordonnées du propriétaire » et « Informations sur la visite », sélectionnez les champs à afficher. Utilisez par exemple « Informations sur la visite » pour afficher la date du contrôle. Fermez les réglages du schéma dentaire et vérifiez les champs dans « Patient ».\n\nLes réglages de visibilité des champs et d’affichage des schémas vous aident à vous concentrer sur la saisie. Relisez les observations saisies dans le dossier du patient avant l’export."
         },
         "third": {
           "title": "Définir les options d’imagerie et personnaliser les exports",
-          "text": "Dans « Imagerie », choisissez « Personnaliser » pour ouvrir le gestionnaire de modèles, puis « Réglages d’imagerie et PDF » pour définir la langue des comptes rendus et leur contenu par défaut. Vous pouvez inclure les images, les comptes rendus radiographique et de scanner, ainsi que la section « Codes utilisés ». Lorsque les constatations ne sont pas affichées sur le schéma, la grille de mesures est obligatoire pour conserver les mesures consignées dans le document clinique.\n\nPour un export précis, ouvrez « Vérifier et exporter », choisissez « Dossier clinique », puis « Personnaliser ». Choisissez la couleur du PDF clinique et les sections à inclure, puis vérifiez l’aperçu. Pour le document à remettre au propriétaire, utilisez son modèle de compte rendu et sélectionnez les images à inclure dans « Imagerie ». La couleur du PDF clinique se règle indépendamment du modèle de compte rendu pour le propriétaire."
+          "text": "Dans l’en-tête de la section « Imagerie », choisissez « Personnaliser », puis « Réglages d’imagerie et PDF » pour définir la langue des comptes rendus et le contenu par défaut du PDF. Vous pouvez inclure les images, les comptes rendus radiographique et de scanner, ainsi que la section « Codes utilisés ». Lorsque les constatations ne sont pas affichées sur le schéma, la grille de mesures est obligatoire pour conserver les mesures consignées dans le document clinique.\n\nPour un export précis, ouvrez « Vérifier et exporter », choisissez « Dossier clinique », puis « Personnaliser ». Choisissez la couleur du PDF clinique et les sections à inclure, puis vérifiez l’aperçu. Pour le document à remettre au propriétaire, utilisez son modèle de compte rendu et sélectionnez les images à inclure dans « Imagerie ». La couleur du PDF clinique se règle indépendamment du modèle de compte rendu pour le propriétaire."
         }
       }
     },

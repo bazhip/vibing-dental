@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import { vi } from 'vitest';
 import { ChartSettingsModal } from './ChartSettingsModal';
 import { DEFAULT_CHART_PREFS, ChartPrefs } from '../utils/chartSettings';
@@ -33,6 +33,8 @@ describe('ChartSettingsModal', () => {
     fireEvent.click(screen.getAllByRole('checkbox', { name: 'Recession' })[0]);
     expect(onChange).toHaveBeenLastCalledWith({ hiddenColumns: ['recession'] });
     fireEvent.click(screen.getByRole('button', { name: 'Patient details' }));
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Owner email' }));
+    expect(onChange).toHaveBeenLastCalledWith({ hiddenPatientFields: ['ownerEmail'] });
     fireEvent.click(screen.getByRole('checkbox', { name: 'Show the Recheck due field' }));
     expect(onChange).toHaveBeenLastCalledWith({ hideRecheck: true });
     fireEvent.click(screen.getByRole('button', { name: 'Charting' }));
@@ -99,9 +101,13 @@ describe('ChartSettingsModal — each page\'s Customize shows only its settings'
     expect(present('Images (4 per page, after the chart)')).toBe(false);
   });
 
-  it('Patient: just the recheck field', () => {
+  it('Patient: groups owner fields separately from visit fields', () => {
     open('patient');
-    expect(present('Show the Recheck due field')).toBe(true);
+    const owner = within(screen.getByRole('group', { name: 'Owner details' }));
+    const visit = within(screen.getByRole('group', { name: 'Visit details' }));
+    expect(owner.getByRole('checkbox', { name: 'Owner email' })).toBeChecked();
+    expect(visit.getByRole('checkbox', { name: 'Technician' })).toBeChecked();
+    expect(visit.getByRole('checkbox', { name: 'Show the Recheck due field' })).toBeChecked();
     expect(present('One per tooth', 'radio')).toBe(false);
     expect(present('Caudal maxillary')).toBe(false);
   });
@@ -161,6 +167,18 @@ it('switches categories with the compact mobile selector', () => {
   setup();
   fireEvent.change(screen.getByRole('combobox', { name: 'Chart settings categories' }), { target: { value: 'patient' } });
   expect(screen.getByRole('checkbox', { name: 'Show the Recheck due field' })).toBeChecked();
+});
+
+it('opens the Exam layout editor from the Exam category when available', () => {
+  const onClose = vi.fn();
+  const onCustomizeExam = vi.fn();
+  render(<ChartSettingsModal prefs={DEFAULT_CHART_PREFS} followsAccount onChange={() => {}} onClose={onClose}
+    onCustomizeExam={onCustomizeExam} section="exam" />);
+  expect(screen.queryByRole('button', { name: /Add area/ })).not.toBeInTheDocument();
+  expect(screen.queryByText(/Changes save automatically/)).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: 'Customize Exam' }));
+  expect(onClose).toHaveBeenCalledOnce();
+  expect(onCustomizeExam).toHaveBeenCalledOnce();
 });
 
 it('procedure customization edits its own quick codes without changing diagnosis codes', () => {

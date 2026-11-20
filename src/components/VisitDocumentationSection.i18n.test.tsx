@@ -82,7 +82,9 @@ it('localizes the Discharge template editor and makes owner-report visibility an
   }] }} status="ready" canEdit onSave={onSave} onReload={vi.fn()} onClose={vi.fn()} />);
   const dialog = screen.getByRole('dialog', { name: /Discharge templates/ });
   fireEvent.click(screen.getByRole('button', { name: 'Feeding' }));
+  fireEvent.click(dialog.querySelector('button[aria-current="true"]')!);
   const include = screen.getByRole('checkbox', { name: /Include in owner report/ });
+  expect(include).toBeVisible();
   expect(include).not.toBeChecked();
   expect(findUntranslated(dialog, ['Dental recovery', 'Feeding', /⟦Move Feeding (up|down)⟧/])).toEqual([]);
   fireEvent.click(include);

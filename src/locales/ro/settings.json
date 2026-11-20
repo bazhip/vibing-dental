@@ -186,7 +186,7 @@
     "patient": {
       "title": "Pagina Pacient",
       "hideRecheck": "Ascundeți câmpul Data controlului",
-      "visibilityNote": "Alegeți câmpurile afișate la vizitele necompletate. Câmpurile cu informații înregistrate rămân vizibile."
+      "visibilityNote": "Alegeți câmpurile de afișat. Câmpurile despre proprietar și asistentul veterinar care conțin deja informații rămân vizibile."
     },
     "pdf": {
       "title": "PDF",
@@ -250,8 +250,8 @@
         "procedure": "Intervenție"
       },
       "descriptions": {
-        "patient": "Alegeți dacă data controlului este afișată pe pagina Pacient.",
-        "exam": "Alegeți zonele suplimentare pe care le înregistrați în timpul unei examinări orale.",
+        "patient": "Alegeți ce câmpuri despre proprietar și vizită apar în vizitele necompletate.",
+        "exam": "Alegeți și ordonați câmpurile pentru examinarea orală.",
         "anesthesia": "Configurați blocurile nervoase, câmpurile personalizate și medicația obișnuită.",
         "charting": "Setați aspectul odontogramei, măsurătorile și modul de introducere a datelor.",
         "diagnosis": "Alegeți constatările afișate pe diagrama de diagnostic și codurile dumneavoastră rapide.",

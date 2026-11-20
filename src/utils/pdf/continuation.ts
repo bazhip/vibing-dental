@@ -3,6 +3,7 @@ import i18n from '../../i18n';
 import { effectiveNerveBlockDrugs, formatAnestheticDrug, type PatientInfo, type Logo, type NerveBlocks } from '../../types';
 import { fieldLines, filledBlocks } from '../customAnesthesia';
 import { answeredCustomExam } from '../customExam';
+import { isCustomExamText } from '../examLayout';
 import { drawSectionCard, finishSectionCard, CARD_BAND_PT } from './draw';
 import { PAGE_WIDTH_PT, PAGE_HEIGHT_PT, NERVE_BLOCK_BOX } from './layout';
 import { PALETTE } from './styles';
@@ -48,11 +49,18 @@ export function optionalClinicalContinuations(patient: PatientInfo, logo: Logo, 
       ...blockParagraphs,
     ],
   }] : [];
-  const areas = answeredCustomExam(patient.customExam);
+  const areas = answeredCustomExam(patient.customExam).filter(({ id }) => !isCustomExamText(id));
   return [...anesthesia, ...(areas.length ? [{
     title: t('exam.additional'),
     paragraphs: areas.map(area => `${area.label}${area.status ? ` — ${t(area.status === 'normal' ? 'exam.normal' : 'exam.abnormal')}` : ''}${area.comment.trim() ? `: ${area.comment}` : ''}`),
   }] : [])];
+}
+
+export function customExamTextContinuation(patient: PatientInfo, lng: string): ClinicalContinuation[] {
+  const paragraphs = answeredCustomExam(patient.customExam)
+    .filter(({ id, comment }) => isCustomExamText(id) && comment.trim())
+    .map(({ label, comment }) => `${label}\n${comment}`);
+  return paragraphs.length ? [{ title: i18n.getFixedT(lng, 'pdf')('exam.title'), paragraphs }] : [];
 }
 
 /** Wraps even a single long token, retaining every character at a readable size. */

@@ -8,11 +8,11 @@ import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
 import { AnesthesiaCustomEditor } from './AnesthesiaCustomEditor';
 import { QuickCodesEditor } from './QuickCodesEditor';
 import { ExamAreasEditor } from './ExamAreasEditor';
-import { SCORE_PICKER_OPTIONS, BLOCK_ROW_OPTIONS, ChartPrefs, PERIO_FIELDS, PATIENT_FIELD_OPTIONS } from '../utils/chartSettings';
+import { SCORE_PICKER_OPTIONS, BLOCK_ROW_OPTIONS, ChartPrefs, PERIO_FIELDS } from '../utils/chartSettings';
 import { isNativeApp } from '../native/platform';
 import { Sheet } from '../ios/Sheet';
 import { ChartSettingsList } from './ChartSettingsList';
-import { USUAL_ADJUNCTS, USUAL_DRUGS, toggleField, useChartSettingsModel } from './useChartSettingsModel';
+import { PATIENT_SETTINGS_GROUPS, USUAL_ADJUNCTS, USUAL_DRUGS, toggleField, useChartSettingsModel } from './useChartSettingsModel';
 import { ADJUNCT_DRUGS, drugUnit, strengthHasUnit } from '../types';
 
 /**
@@ -31,6 +31,7 @@ export interface ChartSettingsModalProps {
   /** Saved to the account (vs. only this browser, without one). */
   followsAccount: boolean;
   onChange: (patch: Partial<ChartPrefs>) => void;
+  onCustomizeExam?: () => void;
   /** Open the matching category from a page's Customize button. Native
    *  retains its scoped list and All chart settings action. */
   section?: SettingsSection;
@@ -43,7 +44,7 @@ export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = (props) =>
   isNativeApp() ? <ChartSettingsSheet {...props} /> : <ChartSettingsDialog {...props} />;
 
 /** The app: an iOS sheet holding the settings list. */
-function ChartSettingsSheet({ onClose, prefs, followsAccount, onChange, section }: ChartSettingsModalProps) {
+function ChartSettingsSheet({ onClose, prefs, followsAccount, onChange, onCustomizeExam, section }: ChartSettingsModalProps) {
   const { t } = useTranslation(['settings', 'app']);
   const [only, setOnly] = React.useState<SettingsSection | null>(section ?? null);
   return (
@@ -55,15 +56,17 @@ function ChartSettingsSheet({ onClose, prefs, followsAccount, onChange, section 
       onDone={onClose}
       className="ios-chart-settings-sheet"
     >
-      <ChartSettingsList prefs={prefs} followsAccount={followsAccount} onChange={onChange} only={only} onShowAll={() => setOnly(null)} />
+      <ChartSettingsList prefs={prefs} followsAccount={followsAccount} onChange={onChange} only={only} onShowAll={() => setOnly(null)}
+        onCustomizeExam={onCustomizeExam && (() => { onClose(); onCustomizeExam(); })} />
     </Sheet>
   );
 }
 
 /** The website's dialog. */
-const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs, followsAccount, onChange, section }) => {
+const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs, followsAccount, onChange, onCustomizeExam, section }) => {
   const { t } = useTranslation(['settings', 'app']);
   const [only, setOnly] = React.useState<SettingsSection>(section ?? 'charting');
+  const contentRef = React.useRef<HTMLDivElement>(null);
   const categories: SettingsSection[] = ['patient', 'exam', 'anesthesia', 'charting', 'diagnosis', 'procedure', 'images'];
   const categoryLabel = (category: SettingsSection) => category === 'charting' || category === 'anesthesia'
     ? t(`chart.${category}.title`) : t(`chart.customization.categories.${category}`);
@@ -90,6 +93,9 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
     flushPendingDrafts();
     setOnly(next);
   };
+  React.useLayoutEffect(() => {
+    if (contentRef.current) contentRef.current.scrollTop = 0;
+  }, [only]);
   const modalRef = useModalFocus<HTMLDivElement>(true);
   const backdrop = useBackdropDismiss(close);
 
@@ -126,11 +132,15 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
               </button>
             ))}
           </nav>
-          <div className="ai-settings-body chart-settings__body chart-customization__content">
+          <div className="ai-settings-body chart-settings__body chart-customization__content" ref={contentRef}>
             <div className="chart-customization__intro">
               <h3>{t(`chart.sections.${only}`)}</h3>
-              <p className="chart-settings__note">{t(`chart.customization.descriptions.${only}`)}</p>
-              <p className="chart-customization__scope">{followsAccount ? t('chart.noteAccount') : t('chart.noteBrowser')}</p>
+              {(!show.exam || onCustomizeExam) && (
+                <p className="chart-settings__note">{show.patient ? t('chart.patient.visibilityNote') : t(`chart.customization.descriptions.${only}`)}</p>
+              )}
+              {!(show.exam && onCustomizeExam) && (
+                <p className="chart-customization__scope">{followsAccount ? t('chart.noteAccount') : t('chart.noteBrowser')}</p>
+              )}
             </div>
 
           <section className="chart-settings__group" hidden={!show.charting}>
@@ -265,16 +275,23 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
           </section>
 
           <section className="chart-settings__group" hidden={!show.exam}>
-            <h3 className="ai-settings-subhead">{t('chart.exam.title')}</h3>
-            <ExamAreasEditor hiddenAreas={prefs.hiddenExamAreas} onHiddenChange={(hiddenExamAreas) => onChange({ hiddenExamAreas })} areas={prefs.customExamAreas} onChange={(customExamAreas) => onChange({ customExamAreas })} />
+            {onCustomizeExam ? (
+              <button type="button" className="ui-btn ui-btn--secondary chart-customization__launch" onClick={() => { close(); onCustomizeExam(); }}>
+                {t('exam.layout.title', { ns: 'forms' })}
+              </button>
+            ) : (
+              <>
+                <h3 className="ai-settings-subhead">{t('chart.exam.title')}</h3>
+                <ExamAreasEditor hiddenAreas={prefs.hiddenExamAreas} onHiddenChange={(hiddenExamAreas) => onChange({ hiddenExamAreas })} areas={prefs.customExamAreas} onChange={(customExamAreas) => onChange({ customExamAreas })} />
+              </>
+            )}
           </section>
 
-          <section className="chart-settings__group" hidden={!show.anesthesia}>
-            <h3 className="ai-settings-subhead">{t('chart.anesthesia.title')}</h3>
-            <fieldset className="chart-settings__field">
+          <section className="chart-settings__group chart-customization__modules" hidden={!show.anesthesia}>
+            <fieldset className="chart-settings__field chart-customization__module">
               <legend>{t('chart.anesthesia.blocks')}</legend>
               <p className="chart-settings__note">{t('chart.anesthesia.blocksNote')}</p>
-              <div className="chart-settings__grid">
+              <div className="chart-customization__choices">
                 {BLOCK_ROW_OPTIONS.map((b) => (
                   <label key={b.id} className="chart-settings__choice">
                     <input
@@ -293,7 +310,7 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
               onBlocksChange={(customBlocks) => onChange({ customBlocks })}
               onFieldsChange={(customFields) => onChange({ customFields })}
             />
-            <fieldset className="chart-settings__field">
+            <fieldset className="chart-settings__field chart-customization__module">
               <legend>{t('chart.anesthesia.usual')}</legend>
               <p className="chart-settings__note">{t('chart.anesthesia.usualNote')}</p>
               <div className="chart-settings__drug">
@@ -328,9 +345,12 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
                   {USUAL_DRUGS.map((d) => <option key={d} value={d} />)}
                 </datalist>
               </div>
+            </fieldset>
+            <fieldset className="chart-settings__field chart-customization__module">
+              <legend>{t('chart.anesthesia.adjunct')}</legend>
               <p className="chart-settings__note">{t('chart.anesthesia.adjunctNote')}</p>
               <div className="chart-settings__drug">
-                <label className="custom-def__control"><span>{t('chart.anesthesia.adjunct')}</span>
+                <label className="custom-def__control"><span>{t('chart.drugName')}</span>
                 <input
                   type="text"
                   list="chart-settings-adjuncts"
@@ -364,20 +384,26 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
             </fieldset>
           </section>
 
-          <section className="chart-settings__group" hidden={!show.patient}>
-            <h3 className="ai-settings-subhead">{t('chart.patient.title')}</h3>
-            <p className="chart-settings__note">{t('chart.patient.visibilityNote')}</p>
-            {PATIENT_FIELD_OPTIONS.map((field) => (
-              <label key={field} className="chart-settings__choice">
-                <input type="checkbox" checked={!prefs.hiddenPatientFields.includes(field)} onChange={(e) => onChange({ hiddenPatientFields: e.target.checked ? prefs.hiddenPatientFields.filter((key) => key !== field) : [...prefs.hiddenPatientFields, field] })} />
-                {t(`patient.${field}`, { ns: 'forms' })}
-              </label>
+          <section className="chart-settings__group chart-customization__modules" hidden={!show.patient}>
+            {PATIENT_SETTINGS_GROUPS.map(({ id: group, fields }) => (
+              <fieldset key={group} className="chart-settings__field chart-customization__module">
+                <legend>{t(`patient.${group}`, { ns: 'forms' })}</legend>
+                <div className="chart-customization__choices">
+                  {fields.map((field) => (
+                    <label key={field} className="chart-settings__choice">
+                      <input type="checkbox" checked={!prefs.hiddenPatientFields.includes(field)} onChange={(e) => onChange({ hiddenPatientFields: toggleField(prefs.hiddenPatientFields, field, !e.target.checked) })} />
+                      {t(`patient.${field}`, { ns: 'forms' })}
+                    </label>
+                  ))}
+                  {group === 'visitGroup' && (
+                    <label className="chart-settings__choice">
+                      <input type="checkbox" checked={!prefs.hideRecheck} onChange={(e) => onChange({ hideRecheck: !e.target.checked })} />
+                      {t('chart.customization.showRecheck')}
+                    </label>
+                  )}
+                </div>
+              </fieldset>
             ))}
-
-            <label className="chart-settings__choice">
-              <input type="checkbox" checked={!prefs.hideRecheck} onChange={(e) => onChange({ hideRecheck: !e.target.checked })} />
-              {t('chart.customization.showRecheck')}
-            </label>
           </section>
 
           {show.pdfImages && (

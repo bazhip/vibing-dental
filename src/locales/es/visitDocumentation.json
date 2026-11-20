@@ -158,6 +158,12 @@
       "technique": "Técnica",
       "findings": "Hallazgos",
       "impression": "Conclusión"
+    },
+    "layout": {
+      "title": "Personalizar diagnóstico por imagen",
+      "intro": "Defina las etiquetas y el texto inicial de los informes para las nuevas visitas.",
+      "help": "Cómo personalizar el diagnóstico por imagen",
+      "starterText": "Texto inicial"
     }
   },
   "discharge": {

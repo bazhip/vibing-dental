@@ -1,6 +1,7 @@
-import { useEffect, useId, useRef, useState, type PointerEvent } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
+import { useReorderList } from '../hooks/useReorderList';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
 import { documentationUrl } from '../help/openDocumentation';
@@ -9,12 +10,10 @@ import { Sheet } from '../ios/Sheet';
 import { confirmDialog, friendlyError } from './ui/dialogs';
 import {
   CONSULTATION_LIBRARY_VERSION, CONSULTATION_TEMPLATE_LIMIT, CONSULTATION_TEMPLATE_NAME_LIMIT,
-  CONSULTATION_SECTION_LIMIT, PRACTICE_NOTE_FIELD_LIMIT, practiceNoteFields, updatePracticeNoteField, imagingSectionKey, consultationHeadings, consultationChoices, consultationLibraryFits, consultationSectionKey, consultationSections, dentalSectionKey, isCustomNoteField, isCustomDischargeField, standardNoteFields, defaultNoteLayout, dischargeStarterNameKey, isDischargeStarter, DISCHARGE_RECOVERY_ACTIVITY, DENTAL_RECOVERY, STANDARD_DISCHARGE,
-  isConsultationStarter, parseConsultationLibrary,
+  CONSULTATION_SECTION_LIMIT, PRACTICE_NOTE_FIELD_LIMIT, practiceNoteFields, updatePracticeNoteField, consultationHeadings, consultationChoices, consultationLibraryFits, consultationSectionKey, consultationSections, dentalSectionKey, isCustomNoteField, isCustomDischargeField, standardNoteFields, defaultNoteLayout, dischargeStarterNameKey, isDischargeStarter, DISCHARGE_RECOVERY_ACTIVITY, DENTAL_RECOVERY, STANDARD_DISCHARGE,
+  isConsultationStarter, parseConsultationLibrary, IMAGING_REPORT_KINDS, IMAGING_STARTER_TEXT_LIMIT,
   type PracticeNoteField, type NoteTemplateKind, type ConsultationSection, type ConsultationLayout, type ConsultationLibrary, type PracticeConsultationTemplate,
 } from '../utils/consultationTemplates';
-
-type ReorderList = 'sections' | 'templates';
 
 const SECTION_TEXT_SETTINGS = ['guidance', 'example', 'suggestedText'] as const;
 const FORMATS = ['paragraph', 'bullets'] as const;
@@ -32,7 +31,7 @@ interface Props {
 }
 
 export function ConsultationTemplatesDialog({ kind = 'consultation', initial, status, canEdit, onSave, onReload, onClose, onOpenSettings }: Props) {
-  const { t, i18n } = useTranslation(['visitDocumentation', 'common', 'reportui', 'settings', 'library']);
+  const { t, i18n } = useTranslation(['visitDocumentation', 'common', 'reportui', 'settings', 'library', 'app']);
   const id = useId();
   const isDischarge = kind === 'discharge';
   const isImaging = kind === 'imaging';
@@ -62,8 +61,6 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
   const [managing, setManaging] = useState(false);
   const [removed, setRemoved] = useState<{ id: string; section: ConsultationSection; index: number }>();
   const [announcement, setAnnouncement] = useState('');
-  const [dragTarget, setDragTarget] = useState<{ list: ReorderList; from: number; to: number }>();
-  const drag = useRef<{ list: ReorderList; pointer: number; from: number; to: number; startY: number } | null>(null);
   const [sample, setSample] = useState('');
   const [importing, setImporting] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -98,7 +95,6 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
   const nameOf = (template: ConsultationLayout) => {
     const dischargeKey = isDischarge && dischargeStarterNameKey(template);
     if (dischargeKey) return t(dischargeKey);
-    if (isImaging && template.id === starter.id) return t('imaging.templates.starter');
     if (isConsultationStarter(template.id)) return t(`consultation.templates.starters.${template.id}`);
     return template.name || t('consultation.templates.untitled');
   };
@@ -119,8 +115,6 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
   };
   const sectionName = (section: ConsultationSection) => {
     const key = consultationSectionKey(section);
-    const imagingKey = imagingSectionKey(section.id);
-    if (imagingKey) return section.label?.trim() || t(`imaging.sections.${imagingKey}`);
     return section.label?.trim() || (key ? t(`${key}.label`) : t('consultation.templates.builder.customSection'));
   };
   const newFieldId = (): PracticeNoteField['id'] => isDischarge ? `dischargeCustom_${crypto.randomUUID()}` as const : `consultationCustom_${crypto.randomUUID()}` as const;
@@ -231,36 +225,6 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
     updateSections(items);
     setAnnouncement(t('consultation.templates.builder.sectionMoved', { field: sectionName(field), position: destination + 1 }));
   };
-  const startDrag = (event: PointerEvent<HTMLButtonElement>, list: ReorderList, index: number) => {
-    if (event.button !== 0 || (list === 'templates' ? activeTemplates.length : sections.length) < 2) return;
-    drag.current = { list, pointer: event.pointerId, from: index, to: index, startY: event.clientY };
-    event.currentTarget.setPointerCapture(event.pointerId);
-  };
-  const trackDrag = (event: PointerEvent<HTMLButtonElement>) => {
-    const current = drag.current;
-    if (!current || current.pointer !== event.pointerId || Math.abs(event.clientY - current.startY) < 4 && dragTarget === undefined) return;
-    const list = event.currentTarget.closest(current.list === 'templates' ? '.consultation-library__template-list' : '.consultation-library__sections');
-    const container = list && list.scrollHeight > list.clientHeight ? list : event.currentTarget.closest('.consultation-library__body');
-    const bounds = container?.getBoundingClientRect();
-    if (bounds && event.clientY < bounds.top + 32) container?.scrollBy(0, -14);
-    if (bounds && event.clientY > bounds.bottom - 32) container?.scrollBy(0, 14);
-    const row = document.elementFromPoint(event.clientX, event.clientY)?.closest<HTMLElement>(
-      current.list === 'templates' ? '[data-template-row]' : '[data-section-row]',
-    );
-    if (!row || !list?.contains(row)) return;
-    current.to = Number(current.list === 'templates' ? row.dataset.templateRow : row.dataset.sectionRow);
-    setDragTarget({ list: current.list, from: current.from, to: current.to });
-  };
-  const finishDrag = (event: PointerEvent<HTMLButtonElement>, apply: boolean) => {
-    const current = drag.current;
-    if (!current || current.pointer !== event.pointerId) return;
-    if (apply) {
-      const reorder = current.list === 'templates' ? moveTemplate : move;
-      reorder(current.from, current.to);
-    }
-    drag.current = null;
-    setDragTarget(undefined);
-  };
   const moveTemplate = (index: number, destination: number) => {
     if (index === destination || index < 0 || destination < 0 || destination >= activeTemplates.length) return;
     const order = activeTemplates.map(template => template.id);
@@ -271,6 +235,8 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
       template: nameOf(activeTemplates[index]), position: destination + 1,
     }));
   };
+  const templateReorder = useReorderList('.consultation-library__template-list', 'data-template-row', activeTemplates.length, moveTemplate);
+  const sectionReorder = useReorderList('.consultation-library__sections', 'data-section-row', sections.length, move);
   const fallbackTemplate = activeTemplates.find(template => template.id === starter.id && template.id !== selected.id)
     ?? activeTemplates.find(template => template.id !== selected.id);
   const fieldsToKeepOnDelete = sections.flatMap(section => {
@@ -337,14 +303,14 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
   const close = async () => { if (await canClose()) onClose(); };
   const backdrop = useBackdropDismiss(() => void close());
 
-  const title = t(isImaging ? 'imaging.templates.title' : isDischarge ? 'discharge.templates.title' : 'consultation.templates.title');
+  const title = t(isImaging ? 'imaging.layout.title' : isDischarge ? 'discharge.templates.title' : 'consultation.templates.title');
   const menuActionClass = isDischarge ? undefined : 'ui-btn ui-btn--secondary';
   const body = <>
     <div className="consultation-library__body">
       <div className="consultation-library__intro">
-        <p>{t(isImaging ? 'imaging.templates.intro' : isDischarge ? 'discharge.templates.intro' : 'consultation.templates.intro')}</p>
+        <p>{t(isImaging ? 'imaging.layout.intro' : isDischarge ? 'discharge.templates.intro' : 'consultation.templates.intro')}</p>
         <a className="visit-documentation__guide" href={documentationUrl(language, isImaging ? 'imaging' : isDischarge ? 'discharge' : 'consultation-templates')}
-          target="_blank" rel="noopener noreferrer">{t(isImaging ? 'imaging.templates.help' : isDischarge ? 'discharge.templates.help' : 'consultation.templates.help')}</a>
+          target="_blank" rel="noopener noreferrer">{t(isImaging ? 'imaging.layout.help' : isDischarge ? 'discharge.templates.help' : 'consultation.templates.help')}</a>
         {onOpenSettings && <button type="button" className="ui-btn ui-btn--secondary" onClick={async () => {
           if (!(await canClose())) return;
           onClose();
@@ -356,29 +322,51 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
         <p role="status">{t('consultation.templates.loadFailed')}</p>
         <button type="button" className="ui-btn ui-btn--secondary" onClick={onReload}>{t('common:actions.tryAgain')}</button>
       </div>}
-      <div className="consultation-library__layout">
+      {isImaging ? <div className="consultation-library__imaging-fields">
+        {IMAGING_REPORT_KINDS.map(kind => {
+          const defaultTitle = t(kind === 'ct' ? 'app:ct.title' : 'app:radiographic.title');
+          const field = draft.imagingReportFields?.[kind];
+          const updateField = (name: 'label' | 'starterText', value: string) => setDraft({
+            ...draft, imagingReportFields: { ...draft.imagingReportFields, [kind]: { ...field, [name]: value } },
+          });
+          return <details key={kind} className="consultation-library__settings">
+            <summary><bdi>{field?.label?.trim() || defaultTitle}</bdi></summary>
+            <label className="ui-dialog__label">
+              {t('consultation.templates.builder.sectionLabel')}
+              <input className="ui-dialog__input" dir="auto" maxLength={CONSULTATION_TEMPLATE_NAME_LIMIT}
+                value={field?.label ?? ''} placeholder={defaultTitle} readOnly={!editable}
+                onChange={event => updateField('label', event.target.value)} />
+            </label>
+            <label className="ui-dialog__label">
+              {t('imaging.layout.starterText')}
+              <textarea className="ui-dialog__input" dir="auto" rows={4} maxLength={IMAGING_STARTER_TEXT_LIMIT}
+                value={field?.starterText ?? ''} readOnly={!editable} onChange={event => updateField('starterText', event.target.value)} />
+            </label>
+          </details>;
+        })}
+      </div> : <div className="consultation-library__layout">
         <div className="consultation-library__list">
           <span id={`${id}-picker`} className="patient-form__label">{t('consultation.templates.label')}</span>
           <ul ref={listRef} aria-labelledby={`${id}-picker`} data-template-sortable={canReorderTemplates || undefined}
             className={templates.length > 6 ? 'consultation-library__template-list consultation-library__list--scroll' : 'consultation-library__template-list'}>
             {templates.map((template, index) => {
               const sortable = canReorderTemplates && index < activeTemplates.length;
-              const target = dragTarget?.list === 'templates' && dragTarget.to === index && dragTarget.from !== index
-                ? Math.sign(index - dragTarget.from) : undefined;
+              const target = templateReorder.target?.to === index && templateReorder.target.from !== index
+                ? Math.sign(index - templateReorder.target.from) : undefined;
               return <li key={template.id} data-template-row={sortable ? index : undefined} data-drop-target={target}>
                 {sortable && <button type="button" className="consultation-library__row-action consultation-library__drag"
                   aria-label={t('discharge.templates.dragTemplate', { template: nameOf(template) })}
                   aria-keyshortcuts="ArrowUp ArrowDown"
-                  onPointerDown={event => startDrag(event, 'templates', index)} onPointerMove={trackDrag}
-                  onPointerUp={event => finishDrag(event, true)} onPointerCancel={event => finishDrag(event, false)}
-                  onLostPointerCapture={event => finishDrag(event, false)}
+                  onPointerDown={event => templateReorder.start(event, index)} onPointerMove={templateReorder.track}
+                  onPointerUp={event => templateReorder.finish(event, true)} onPointerCancel={event => templateReorder.finish(event, false)}
+                  onLostPointerCapture={event => templateReorder.finish(event, false)}
                   onKeyDown={event => {
                     if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return;
                     event.preventDefault();
                     moveTemplate(index, index + (event.key === 'ArrowUp' ? -1 : 1));
                   }}><span aria-hidden="true">⠿</span></button>}
                 <button type="button" className="consultation-library__template-choice" aria-current={template.id === selected.id || undefined}
-                  onClick={() => choose(template.id)}><span dir="auto">{nameOf(template)}</span>
+                  onClick={() => { if (template.id !== selected.id) choose(template.id); }}><span dir="auto">{nameOf(template)}</span>
                   {template.id === draft.defaultId && <small>{t('consultation.templates.default')}</small>}
                 </button>
               </li>;
@@ -437,7 +425,7 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
             <button type="button" className="ui-btn ui-btn--secondary" disabled={!canAddTemplate || !consultationHeadings(sample).length}
               onClick={importSample}>{t('consultation.templates.builder.createTemplate')}</button>
           </div>}
-          {editSelected && !isImaging && <details className="consultation-library__settings">
+          {editSelected && <details className="consultation-library__settings">
             <summary>{t('consultation.templates.builder.dictation')}</summary>
             <label className="ui-dialog__label">{t('consultation.templates.builder.instructions')}
               <textarea className="ui-dialog__input" rows={2} dir="auto" maxLength={2000} value={custom.instructions ?? ''}
@@ -461,15 +449,15 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
                 : isCustomNoteField(section.id) ? ''
                   : section.id === 'dischargeMedications' || section.id === 'dischargeInstructions' || section.id === 'dischargeFollowUp'
                     ? t(`discharge.templates.samples.${section.id}`) : t(`consultation.templates.samples.${section.id}`));
-              return <li key={section.id} data-section-row={index} data-drop-target={dragTarget?.list === 'sections' && dragTarget.to === index || undefined}
+              return <li key={section.id} data-section-row={index} data-drop-target={sectionReorder.target?.to === index || undefined}
                 className={section.level === 2 ? 'consultation-library__subsection' : undefined}>
                 <div className="consultation-library__section-row">
                   {editSelected && <button type="button" className="consultation-library__row-action consultation-library__drag"
                     aria-label={t('consultation.templates.builder.dragField', { field: label })}
                     aria-keyshortcuts="ArrowUp ArrowDown"
-                    onPointerDown={event => startDrag(event, 'sections', index)} onPointerMove={trackDrag}
-                    onPointerUp={event => finishDrag(event, true)} onPointerCancel={event => finishDrag(event, false)}
-                    onLostPointerCapture={event => finishDrag(event, false)}
+                    onPointerDown={event => sectionReorder.start(event, index)} onPointerMove={sectionReorder.track}
+                    onPointerUp={event => sectionReorder.finish(event, true)} onPointerCancel={event => sectionReorder.finish(event, false)}
+                    onLostPointerCapture={event => sectionReorder.finish(event, false)}
                     onKeyDown={event => {
                       if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return;
                       event.preventDefault();
@@ -493,13 +481,12 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
                       placeholder={key ? t(`${key}.label`) : undefined}
                       onChange={event => updateSection({ ...section, label: event.target.value || undefined })} />
                   </label>
-                  {SECTION_TEXT_SETTINGS.filter(property => !isImaging || property !== 'suggestedText').map(property => <label key={property} className="ui-dialog__label">
+                  {SECTION_TEXT_SETTINGS.map(property => <label key={property} className="ui-dialog__label">
                     {t(`consultation.templates.builder.${property}`)}
                     <textarea className="ui-dialog__input" dir="auto" rows={2} maxLength={1000} value={section[property] ?? ''}
                       placeholder={property === 'guidance' && key ? t(`${key}.helper`) : property === 'example' ? example : undefined}
                       onChange={event => updateSection({ ...section, [property]: event.target.value || undefined })} />
                   </label>)}
-                  {!isImaging && <>
                   <label className="ui-dialog__label">{t('consultation.templates.builder.format')}
                     <select className="ui-dialog__input" value={section.format ?? FORMATS[0]}
                       onChange={event => updateSection({ ...section, format: event.target.value as ConsultationSection['format'] })}>
@@ -511,7 +498,6 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
                       onChange={event => updateSection({ ...section, level: event.target.checked ? 2 : undefined })} />
                     {t('consultation.templates.builder.subsection')}
                   </label>
-                  </>}
                   {isDischarge && isCustomDischargeField(section.id) && <label className="consultation-library__archived">
                     <input type="checkbox" checked={section.ownerReport === true}
                       onChange={event => updateSection({ ...section, ownerReport: event.target.checked ? true : undefined })} />
@@ -598,20 +584,23 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
             </div>}
           </>}
         </section>
-      </div>
+      </div>}
     </div>
     {error && <p role="alert" className="ui-dialog__error">{error}</p>}
     {!valid && !consultationLibraryFits(versionedDraft) && <p role="alert" className="ui-dialog__error">
       {t('consultation.templates.builder.libraryTooLarge')}
     </p>}
-    <footer className="ui-dialog__actions consultation-library__footer">
+    {!native && <footer className="ui-dialog__actions consultation-library__footer">
       <button type="button" className="ui-btn ui-btn--secondary" disabled={saving} onClick={() => void close()}>{t('common:actions.close')}</button>
       {canEdit && <button type="button" className="ui-btn ui-btn--primary" disabled={!editable || !changed || !valid}
         onClick={() => void save()}>{t('common:actions.save')}</button>}
-    </footer>
+    </footer>}
   </>;
 
-  if (native) return <Sheet open title={title} confirmDismiss={canClose} onClose={onClose}>
+  if (native) return <Sheet open title={title} confirmDismiss={canClose} onClose={onClose}
+    cancelLabel={t('common:actions.close')}
+    onDone={canEdit ? () => void save() : undefined} doneLabel={canEdit ? t('common:actions.save') : undefined}
+    doneDisabled={!editable || !changed || !valid}>
     <div className="consultation-library">{body}</div>
   </Sheet>;
   return createPortal(<div className="ui-dialog-overlay consultation-library-overlay" {...backdrop}>

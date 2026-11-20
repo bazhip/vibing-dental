@@ -57,6 +57,8 @@ export function dicomAllowed(u: { plan: PracticePlan; admin: boolean }): boolean
 
 export interface UseProfileReturn extends PracticeProfile {
   loaded: boolean;
+  /** The profile and current practice logo (or absence of one) have settled for document generation. */
+  brandingReady: boolean;
   /** practiceId is known (the profile read succeeded). `loaded` is also
    *  true after a failed read, with practiceId '' meaning "unknown". */
   practiceKnown: boolean;
@@ -203,6 +205,7 @@ export function useProfile(): UseProfileReturn {
     doctorName: '',
   });
   const [logoUrl, setLogoUrl] = React.useState('');
+  const [logoSettled, setLogoSettled] = React.useState(!cloudEnabled);
   const logoRequest = React.useRef(0);
   const [practiceId, setPracticeId] = React.useState('');
   const [plan, setPlan] = React.useState<PracticePlan>('basic');
@@ -236,12 +239,15 @@ export function useProfile(): UseProfileReturn {
       const userId = session?.user.id;
       if (cancelled) return;
       if (!userId) {
+        setLogoSettled(true);
         setLoaded(true);
         return;
       }
       const cached = readPracticeLogo(userId);
       if (isCurrentLogoRequest() && cached) setLogoUrl(cached.dataUrl);
-      if (offline) {
+      const deviceOffline = () => typeof navigator !== 'undefined' && navigator.onLine === false;
+      if (offline || deviceOffline()) {
+        setLogoSettled(true);
         setLoaded(true);
         return;
       }
@@ -269,8 +275,18 @@ export function useProfile(): UseProfileReturn {
         else if (url) clearPracticeLogoCache(userId);
         if (url) setLogoUrl(url);
       };
-      const loadLogo = (path: string) => {
-        void refreshLogo(path).catch(() => { /* Keep the cached logo during a transient storage failure. */ });
+      const loadLogo = (path: string | undefined) => {
+        if (cancelled) return;
+        if (path === undefined) {
+          // The profile read failed. Keep the disk copy for an offline launch,
+          // but the account cache alone cannot identify the current practice.
+          if (isCurrentLogoRequest() && !deviceOffline()) setLogoUrl('');
+          setLogoSettled(true);
+          return;
+        }
+        void refreshLogo(path)
+          .catch(() => { /* Keep the verified practice's cached logo during a transient storage failure. */ })
+          .finally(() => { if (!cancelled) setLogoSettled(true); });
       };
       const { data, error: profileError } = await supabase
         .from('profiles')
@@ -280,7 +296,6 @@ export function useProfile(): UseProfileReturn {
       // Logo and NAME are shared per practice — the practice row is the
       // single source for team members (invited accounts have an empty
       // per-profile copy), falling back to the profile for solo users.
-      let effectiveLogoPath = data?.logo_path ?? '';
       let effectivePracticeName = data?.practice_name ?? '';
       const pid = data?.practice_id ?? '';
       // No practice = never subscribed = the free tier. Practices only
@@ -302,9 +317,8 @@ export function useProfile(): UseProfileReturn {
           .select('logo_path, plan, name, subscription_status')
           .eq('id', pid)
           .maybeSingle();
-        if (prac?.logo_path) effectiveLogoPath = prac.logo_path;
-        if (!profileError && !practiceError) loadLogo(effectiveLogoPath);
-        if (prac?.name?.trim()) effectivePracticeName = prac.name.trim();
+        loadLogo(profileError || practiceError ? undefined : prac?.logo_path ?? '');
+        effectivePracticeName = prac?.name?.trim() ?? '';
         const paidStatus = PAID_STATUSES.includes(prac?.subscription_status ?? '');
         if (paidStatus) practicePlan = prac?.plan === 'pro' ? 'pro' : 'basic';
         // Separate query so a database that predates the column (it ships
@@ -377,7 +391,7 @@ export function useProfile(): UseProfileReturn {
           reportLoadFailed = true;
         }
       }
-      if (!pid && !profileError) loadLogo(effectiveLogoPath);
+      if (!pid) loadLogo(profileError ? undefined : data?.logo_path ?? '');
       if (!cancelled) {
         setIsAdmin(admin);
         setDicomReady(true);
@@ -480,6 +494,7 @@ export function useProfile(): UseProfileReturn {
   return React.useMemo(() => ({
     ...profile,
     loaded,
+    brandingReady: loaded && logoSettled,
     practiceKnown,
     practiceId,
     plan,
@@ -499,5 +514,5 @@ export function useProfile(): UseProfileReturn {
     update,
     uploadLogo,
     removeLogo,
-  }), [profile, loaded, practiceKnown, practiceId, plan, dicomReady, isAdmin, ownerReportEnabled, pimsSendEnabled, gpExamEnabled, consultationEnabled, ownerReportConfig, saveOwnerReportConfig, logoUrl, update, uploadLogo, removeLogo]);
+  }), [profile, loaded, logoSettled, practiceKnown, practiceId, plan, dicomReady, isAdmin, ownerReportEnabled, pimsSendEnabled, gpExamEnabled, consultationEnabled, ownerReportConfig, saveOwnerReportConfig, logoUrl, update, uploadLogo, removeLogo]);
 }

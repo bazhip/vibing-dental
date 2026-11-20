@@ -158,6 +158,12 @@
       "technique": "Technique",
       "findings": "Observations",
       "impression": "Conclusion"
+    },
+    "layout": {
+      "title": "Personnaliser l’imagerie",
+      "intro": "Définissez les libellés et le texte de départ des comptes rendus pour les nouvelles visites.",
+      "help": "Comment personnaliser l’imagerie",
+      "starterText": "Texte de départ"
     }
   },
   "discharge": {

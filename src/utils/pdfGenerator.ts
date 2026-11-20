@@ -1,7 +1,7 @@
 import { radiologyRecordedText } from './radiologyReportState';
 import { PDFDocument, PDFHexString } from 'pdf-lib';
 import { embedPdfFonts } from './pdf/fonts';
-import { additionalNerveBlockContinuations, optionalClinicalContinuations, drawClinicalContinuations, drawContinuationNotice } from './pdf/continuation';
+import { additionalNerveBlockContinuations, customExamTextContinuation, optionalClinicalContinuations, drawClinicalContinuations, drawContinuationNotice } from './pdf/continuation';
 import download from 'downloadjs';
 import i18n, { loadLanguage } from '../i18n';
 import { isAppLanguage, type AppLanguage } from '../i18n/config';
@@ -106,6 +106,8 @@ export interface PdfBranding {
   doctorName?: string;
   logoUrl?: string;
   practiceName?: string;
+  /** Whether to print the built-in chart logo when practice branding is unavailable. */
+  useTemplateLogo?: boolean;
 }
 
 /** Page-1 layout switches. `includeGrid: false` drops the two arch
@@ -190,6 +192,7 @@ export async function buildDentalChartPDFBytes(
     ...(measure.overflow ? optionalClinicalContinuations(patientInfo, logo, lng) : []),
     ...additionalNerveBlockContinuations(patientInfo.secondNerveBlocks, lng),
     ...visitDocumentationContinuations(patientInfo, lng, 'gp-exam'),
+    ...customExamTextContinuation(patientInfo, lng),
   ];
   drawClinicalContinuations(pdfDoc, continuations, regular, bold);
   const continuationPages = pdfDoc.getPageCount() - 2;
@@ -239,7 +242,7 @@ export async function buildDentalChartPDFBytes(
 
   const headerBottomIn = await drawLogoAndHeader(
     pdfDoc, page1, logo, species, doctorLine, techLine, regular, bold,
-    branding.logoUrl, branding.practiceName, lng
+    branding.logoUrl, branding.practiceName, lng, branding.useTemplateLogo
   );
 
   // Page 1's right column is a chain: the patient card grows with the

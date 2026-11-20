@@ -6,6 +6,8 @@ import { installPseudoLocale, restoreLocale, findUntranslated } from '../i18n/te
 import i18n from '../i18n';
 import { sampleOwnerReportSnapshot } from '../utils/ownerReportSample';
 import type { ChartSnapshot, PatientInfo } from '../types';
+import { ConsultationTemplatesDialog } from './ConsultationTemplatesDialog';
+import { EMPTY_IMAGING_LIBRARY } from '../utils/consultationTemplates';
 import { RadiologyReportSection } from './RadiologyReportSection';
 vi.mock('../utils/radiologyReportAi',()=>({draftRadiologyReport:async()=> '108: documented findings'}));
 vi.mock('../native/aiConsent',()=>({ensureAiConsent:async()=>true}));
@@ -31,8 +33,9 @@ it('translates CT-specific guidance and export labels in the shared editor', () 
  expect(findUntranslated(document.body,['CT recorded text',...Object.values(LANGUAGE_NAMES)])).toEqual([]);
 });
 
-it('translates the Imaging templates and outline controls', () => {
-  render(<RadiologyReportSection chartEditor snapshot={sampleOwnerReportSnapshot()}
-    templateLibrary={{ defaultId: 'imaging-v1', templates: [] }} onChange={vi.fn()} />);
-  expect(findUntranslated(document.body, Object.values(LANGUAGE_NAMES))).toEqual([]);
+it('translates the section-level Imaging editor and its field settings', () => {
+  render(<ConsultationTemplatesDialog kind="imaging" initial={EMPTY_IMAGING_LIBRARY} status="ready" canEdit
+    onSave={vi.fn()} onReload={vi.fn()} onClose={vi.fn()} onOpenSettings={vi.fn()} />);
+  for (const summary of document.querySelectorAll('summary')) summary.closest('details')!.open = true;
+  expect(findUntranslated(screen.getByRole('dialog'), Object.values(LANGUAGE_NAMES))).toEqual([]);
 });

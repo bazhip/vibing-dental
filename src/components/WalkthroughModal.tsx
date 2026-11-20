@@ -43,7 +43,7 @@ export function buildSteps(aiEnabled?: boolean, ownerReportEnabled?: boolean): S
     { id: 'customize', section: 'charting', target: '.charting-header-actions', placement: 'bottom' },
     { id: 'diagrams', section: 'diagnosis', target: '.tooth-diagram-wrapper', placement: 'right' },
     { id: 'images', section: 'imaging', target: '.radiographic-findings', placement: 'bottom' },
-    { id: 'treatment', section: 'treatment', target: '.surgery-report__header', placement: 'bottom' },
+    { id: 'treatment', section: 'treatment', target: '[data-tour="treatment"] > .section-header', placement: 'bottom' },
     ...(ownerReportEnabled ? [{ id: 'ownerReport' as const, section: 'owner-report', target: '.owner-report__block', placement: 'top' as const }] : []),
     { id: 'library', target: '[data-tour="library"]', placement: 'bottom' },
   ];

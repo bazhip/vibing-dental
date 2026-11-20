@@ -5,10 +5,11 @@ import { List, ListRow, ListSection, SwitchRow } from '../ios/List';
 import { AnesthesiaCustomEditor } from './AnesthesiaCustomEditor';
 import { QuickCodesEditor } from './QuickCodesEditor';
 import { ExamAreasEditor } from './ExamAreasEditor';
-import { SCORE_PICKER_OPTIONS, BLOCK_ROW_OPTIONS, ChartPrefs, PERIO_FIELDS, PATIENT_FIELD_OPTIONS } from '../utils/chartSettings';
-import { USUAL_ADJUNCTS, USUAL_DRUGS, toggleField, useChartSettingsModel } from './useChartSettingsModel';
+import { SCORE_PICKER_OPTIONS, BLOCK_ROW_OPTIONS, ChartPrefs, PERIO_FIELDS } from '../utils/chartSettings';
+import { PATIENT_SETTINGS_GROUPS, USUAL_ADJUNCTS, USUAL_DRUGS, toggleField, useChartSettingsModel } from './useChartSettingsModel';
 import { ADJUNCT_DRUGS, drugUnit, strengthHasUnit } from '../types';
 import '../ios/settings.css';
+import './ChartCustomization.css';
 import type { SettingsSection } from './ChartSettingsModal';
 
 /**
@@ -27,6 +28,7 @@ export interface ChartSettingsListProps {
   only: SettingsSection | null;
   /** Shown with `only`: switch to every setting. */
   onShowAll?: () => void;
+  onCustomizeExam?: () => void;
 }
 
 // Pref values (not text).
@@ -36,9 +38,10 @@ const ROOT = 'root' as const;
 const SITE = 'site' as const;
 const FINDING = 'finding' as const;
 const STAY = 'stay' as const;
+const CHEVRON = 'chevron' as const;
 
 
-export function ChartSettingsList({ prefs, followsAccount, onChange, only, onShowAll }: ChartSettingsListProps) {
+export function ChartSettingsList({ prefs, followsAccount, onChange, only, onShowAll, onCustomizeExam }: ChartSettingsListProps) {
   const { t } = useTranslation(['settings', 'app']);
   // Same rules as the web dialog; a pending usual-anesthetic edit is also
   // saved when the screen or sheet goes away without a blur (iOS Back).
@@ -55,7 +58,7 @@ export function ChartSettingsList({ prefs, followsAccount, onChange, only, onSho
   return (
     <List className="ios-chart-settings">
       {!showAll && onShowAll && (
-        <ListSection footer={note}>
+        <ListSection footer={only === 'exam' && onCustomizeExam ? undefined : note}>
           <ListRow title={<span className="ios-row__tint">{t('chart.all')}</span>} onClick={onShowAll} />
         </ListSection>
       )}
@@ -172,9 +175,13 @@ export function ChartSettingsList({ prefs, followsAccount, onChange, only, onSho
 
       {show.exam && (
         <ListSection header={t('chart.exam.title')}>
-          <div role="listitem" className="ios-list__item ios-cell-embed">
-            <ExamAreasEditor hiddenAreas={prefs.hiddenExamAreas} onHiddenChange={(hiddenExamAreas) => onChange({ hiddenExamAreas })} areas={prefs.customExamAreas} onChange={(customExamAreas) => onChange({ customExamAreas })} />
-          </div>
+          {onCustomizeExam ? (
+            <ListRow title={t('exam.layout.title', { ns: 'forms' })} accessory={CHEVRON} onClick={onCustomizeExam} />
+          ) : (
+            <div role="listitem" className="ios-list__item ios-cell-embed">
+              <ExamAreasEditor hiddenAreas={prefs.hiddenExamAreas} onHiddenChange={(hiddenExamAreas) => onChange({ hiddenExamAreas })} areas={prefs.customExamAreas} onChange={(customExamAreas) => onChange({ customExamAreas })} />
+            </div>
+          )}
         </ListSection>
       )}
 
@@ -284,13 +291,15 @@ export function ChartSettingsList({ prefs, followsAccount, onChange, only, onSho
       )}
 
       {show.patient && (
-        <ListSection header={t('chart.patient.title')}>
-          <p className="chart-settings__note">{t('chart.patient.visibilityNote')}</p>
-          {PATIENT_FIELD_OPTIONS.map((field) => (
-            <SwitchRow key={field} title={t(`patient.${field}`, { ns: 'forms' })} checked={!prefs.hiddenPatientFields.includes(field)} onChange={(on) => onChange({ hiddenPatientFields: on ? prefs.hiddenPatientFields.filter((key) => key !== field) : [...prefs.hiddenPatientFields, field] })} />
-          ))}
-          <SwitchRow title={t('chart.customization.showRecheck')} checked={!prefs.hideRecheck} onChange={(on) => onChange({ hideRecheck: !on })} />
-        </ListSection>
+        PATIENT_SETTINGS_GROUPS.map(({ id: group, fields }) => (
+          <ListSection key={group} header={t(`patient.${group}`, { ns: 'forms' })}
+            footer={group === 'visitGroup' ? t('chart.patient.visibilityNote') : undefined}>
+            {fields.map((field) => (
+              <SwitchRow key={field} title={t(`patient.${field}`, { ns: 'forms' })} checked={!prefs.hiddenPatientFields.includes(field)} onChange={(on) => onChange({ hiddenPatientFields: toggleField(prefs.hiddenPatientFields, field, !on) })} />
+            ))}
+            {group === 'visitGroup' && <SwitchRow title={t('chart.customization.showRecheck')} checked={!prefs.hideRecheck} onChange={(on) => onChange({ hideRecheck: !on })} />}
+          </ListSection>
+        ))
       )}
 
       {show.pdfImages && (

@@ -1,9 +1,9 @@
 /* Owner report templates editor (opened from Practice settings).
    Reuses the ai-settings modal chrome and the patient-form inputs;
-   this file only adds the two-column layout, the template list,
+   this file only adds the template toolbar,
    the section/tip editors, and the placeholder chips. */
 
-/* Widen the shared modal and lay it out as list | editor. */
+/* Widen the shared modal for the report editor. */
 .ai-settings-modal.report-templates {
   max-width: 62rem;
 }
@@ -11,87 +11,12 @@
 .report-templates__body {
   flex: 1 1 auto;
   min-height: 0;
-  display: grid;
-  grid-template-columns: 230px minmax(0, 1fr);
-  overflow: hidden; /* each column scrolls on its own */
-}
-
-/* ---- Template list (left) ------------------------------------------- */
-.report-templates__list {
-  overflow-y: auto;
-  padding: 0.85rem 0.75rem;
-  border-inline-end: 1px solid var(--border, #e2e8f0);
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  overflow: hidden;
 }
 
-.report-templates__list ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-}
-
-.report-templates__item {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-  text-align: start;
-  padding: 0.5rem 0.6rem;
-  border-radius: 8px;
-  border: 1px solid transparent;
-  background: transparent;
-  cursor: pointer;
-  font: inherit;
-  color: var(--text, #0f172a);
-}
-
-.report-templates__item:hover {
-  background: var(--surface-alt, #f1f5f9);
-}
-
-.report-templates__item--on {
-  background: var(--surface-alt, #f1f5f9);
-  border-color: var(--accent, #94a3b8);
-  font-weight: 600;
-}
-
-.report-templates__item-name {
-  overflow-wrap: anywhere;
-}
-
-.report-templates__item-meta {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.report-templates__badge {
-  font-size: 0.7rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--primary, #2563eb);
-}
-
-.report-templates__lang {
-  font-size: 0.7rem;
-  color: var(--text-muted, #64748b);
-}
-
-.report-templates__list-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-  padding-top: 0.5rem;
-  border-top: 1px solid var(--border, #e2e8f0);
-}
-
-/* ---- Editor (right) --------------------------------------------------- */
+/* ---- Editor --------------------------------------------------------- */
 .report-templates__editor {
   overflow-y: auto;
   padding: 0.85rem 1rem;
@@ -279,29 +204,6 @@
 
 /* ---- Small screens: single column, 44px touch targets ----------------- */
 @media (max-width: 700px) {
-  .report-templates__body {
-    grid-template-columns: 1fr;
-    overflow-y: auto; /* scroll the whole body, not each column */
-  }
-
-  .report-templates__list {
-    border-inline-end: none;
-    border-bottom: 1px solid var(--border, #e2e8f0);
-    overflow-y: visible;
-    max-height: none;
-    order: -1;
-  }
-
-  .report-templates__list ul {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .report-templates__item {
-    width: auto;
-    border-color: var(--border, #e2e8f0);
-  }
-
   .report-templates__row {
     grid-template-columns: 1fr;
   }
@@ -322,16 +224,12 @@
   .report-templates .report-templates__icon {
     min-width: 44px;
   }
-
-  .report-templates__list-actions .diagram-view__action {
-    flex: 1 1 30%;
-  }
 }
 
 /* ---- Phones: a full-screen editor sheet (the iOS / Material pattern) ------
    The floating dialog left a ~220px window for the actual editing between
-   its header, template list and a two-row footer. Now: the whole screen,
-   one scrolling page, template actions as a tidy 2×2 grid, and a bar pinned
+   its header, template toolbar and a two-row footer. The whole screen uses
+   one scrolling page and a bar pinned
    to the bottom with Preview + Save side by side (× closes, with the same
    unsaved-changes check Cancel had). */
 @media (max-width: 600px) {
@@ -355,12 +253,6 @@
   .report-templates__check { align-items: center; min-height: 44px; margin: 0; }
   .report-templates__check input { width: 20px; height: 20px; }
 
-  .report-templates__list-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
-  }
-  .report-templates__list-actions .diagram-view__action { width: 100%; }
   .report-templates__long { display: none; }
   .report-templates__short { display: inline; }
 
@@ -391,28 +283,11 @@
 /* Web editor: template choice, editing category, then the active fields.
    Native screen/sheet presentations retain their existing continuous form. */
 html:not(.native-ios) .report-templates--categorized { height: min(850px, calc(100dvh - 48px)); }
-html:not(.native-ios) .report-templates--categorized .report-templates__body {
-  display: flex;
-  flex-direction: column;
-}
 .report-templates__toolbar {
   flex: 0 0 auto;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
   padding: 10px 24px;
   border-bottom: 1px solid var(--border);
   background: var(--surface-alt);
-}
-
-.report-templates__toolbar .report-templates__template-picker {
-  flex: 1 1 132px;
-  min-width: min(132px, 100%);
-  max-width: 280px;
-  margin: 0;
-  min-height: 44px;
-  text-overflow: ellipsis;
 }
 
 .report-templates__toolbar-actions {
@@ -423,15 +298,20 @@ html:not(.native-ios) .report-templates--categorized .report-templates__body {
 }
 
 .report-templates__toolbar-actions .diagram-view__action {
-  min-height: 44px;
+  min-height: 40px;
   justify-content: center;
 }
 
 .report-templates__overflow { position: relative; }
 .report-templates__overflow .report-templates__overflow-trigger {
-  width: 44px;
+  width: 40px;
   padding: 0;
   font-size: 20px;
+}
+
+@media (max-width: 800px) {
+  .report-templates__toolbar-actions .diagram-view__action { min-height: 44px; }
+  .report-templates__overflow .report-templates__overflow-trigger { width: 44px; }
 }
 
 .report-templates__overflow-panel {
@@ -504,7 +384,6 @@ html:not(.native-ios) .report-templates--categorized .report-templates__compact-
   html:not(.native-ios) .report-templates--categorized .report-templates__compact-picker { display: flex; flex-direction: column; gap: 6px; margin: 0; width: 100%; }
   html:not(.native-ios) .report-templates--categorized .report-templates__compact-picker select { width: 100%; min-height: 44px; }
   .report-templates__toolbar { padding: 8px 16px; }
-  .report-templates__toolbar .report-templates__template-picker { max-width: none; }
   html:not(.native-ios) .report-templates--categorized .report-templates__categories { padding: 8px 16px; }
   html:not(.native-ios) .report-templates--categorized .report-templates__categories > button { display: none; }
   html:not(.native-ios) .report-templates--categorized .report-templates__editor { padding: 16px; }
@@ -531,4 +410,18 @@ html:not(.native-ios) .report-templates--categorized .report-templates__editor {
   html:not(.native-ios) .report-templates--categorized .report-templates__body { overflow-y: auto; }
   html:not(.native-ios) .report-templates--categorized .report-templates__editor { overflow: visible; flex: 0 0 auto; }
   html:not(.native-ios) .report-templates--categorized .report-templates__cancel { display: none; }
+}
+
+.report-templates__used-fields ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.report-templates__used-fields code {
+  color: var(--text);
+  font-size: .875rem;
 }

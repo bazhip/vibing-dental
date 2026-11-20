@@ -1,4 +1,3 @@
-import { consultationChoices, consultationSections, imagingSectionKey, insertImagingOutline, STANDARD_IMAGING, type ConsultationLibrary } from '../utils/consultationTemplates';
 import { RefineTextAction } from './RefineTextAction';
 import { ClinicalDictationButton } from './ClinicalDictationButton';
 import React from 'react';
@@ -22,7 +21,8 @@ interface Props {
   chartEditor?: boolean;
   preferredLanguage?: AppLanguage | null;
   onCustomizeLanguage?: () => void;
-  templateLibrary?: ConsultationLibrary;
+  reportLabel?: string;
+  starterText?: string;
   reportKind?: 'radiology' | 'ct';
   chartId?: string | null;
   chartSession?: number;
@@ -40,8 +40,8 @@ type Guard = { epoch: number; source: string; report: string; reviewed: string; 
 const reportFields = ['radiologyReport', 'radiologyReportLanguage', 'radiologyReportBasis', 'radiologyReviewedBasis', 'radiologyReportGeneratedAt'] as const;
 const escapeHtml = (value: string) => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-export function RadiologyReportSection({ snapshot: originalSnapshot, chartEditor = false, preferredLanguage, onCustomizeLanguage, templateLibrary, reportKind = 'radiology', chartId = null, chartSession = 0, readOnly = false, aiEnabled = false, showAiNotice = true, onDictationApply, dictationDisabled, dictationOpenRequest, onDictationOpenChange, refineRequest, onChange: onPatientChange }: Props): React.ReactElement {
-  const { t, i18n } = useTranslation(['app', 'visitDocumentation']);
+export function RadiologyReportSection({ snapshot: originalSnapshot, chartEditor = false, preferredLanguage, onCustomizeLanguage, reportLabel, starterText, reportKind = 'radiology', chartId = null, chartSession = 0, readOnly = false, aiEnabled = false, showAiNotice = true, onDictationApply, dictationDisabled, dictationOpenRequest, onDictationOpenChange, refineRequest, onChange: onPatientChange }: Props): React.ReactElement {
+  const { t, i18n } = useTranslation('app');
   const snapshot = reportKind === 'ct' ? ctReportSnapshot(originalSnapshot) : originalSnapshot;
   const onChange = (changes: Partial<PatientInfo>) => onPatientChange(reportKind === 'ct' ? ctReportChanges(changes) : changes);
   const reportKey = (key: 'title' | 'editorHelp' | 'editorPlaceholder' | 'filename' | 'copyPrompt') => reportKind === 'ct' ? `ctReport.${key}` as const : `radiologyReport.${key}` as const;
@@ -57,17 +57,6 @@ export function RadiologyReportSection({ snapshot: originalSnapshot, chartEditor
   const requestedRefinement = refineRequest ?? localRefineRequest;
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
-  const [outlineChoice, setOutlineChoice] = React.useState<string>();
-  const [outlineStatus, setOutlineStatus] = React.useState(false);
-  const outlines = templateLibrary ? consultationChoices(templateLibrary, 'imaging') : [];
-  const outline = outlines.find(item => item.id === (outlineChoice ?? templateLibrary?.defaultId)) ?? outlines[0];
-  const outlineLabel = (option: typeof STANDARD_IMAGING) => option.id === STANDARD_IMAGING.id
-    ? t('visitDocumentation:imaging.templates.starter') : option.name;
-  const outlineSections = outline ? consultationSections(outline).flatMap(section => {
-    const key = imagingSectionKey(section.id);
-    const heading = section.label ?? (key ? t(`visitDocumentation:imaging.sections.${key}`) : '');
-    return heading ? [{ id: section.id, heading, guidance: section.guidance }] : [];
-  }) : [];
   const [feedback, setFeedback] = React.useState<'copied' | 'downloaded' | 'shared' | 'copyPromptShown' | null>(null);
   const [undo, setUndo] = React.useState<{ previous: Partial<PatientInfo>; applied: string; source: string } | null>(null);
   const mounted = React.useRef(true), epoch = React.useRef(0), locked = React.useRef(false);
@@ -84,7 +73,6 @@ export function RadiologyReportSection({ snapshot: originalSnapshot, chartEditor
   React.useEffect(() => { mounted.current = true; return () => { mounted.current = false; epoch.current++; }; }, []);
   React.useEffect(() => {
     epoch.current++; locked.current = false; setBusy(false); setError(null); setFeedback(null); setUndo(null);
-    setOutlineChoice(undefined); setOutlineStatus(false);
   }, [chartId, chartSession, reportKind]);
   React.useEffect(() => {
     const subscription = supabase?.auth?.onAuthStateChange(event => {
@@ -109,18 +97,6 @@ export function RadiologyReportSection({ snapshot: originalSnapshot, chartEditor
   const update = (changes: Partial<PatientInfo>) => {
     if (readOnly || busy) return;
     invalidate(); onChange({ ...changes, radiologyReviewedBasis: '' });
-  };
-  const insertOutline = () => {
-    if (!outline || readOnly || busy) return;
-    const text = insertImagingOutline(draft, outlineSections.map(section => section.heading));
-    if (text.length > 60000) {
-      setError(t('visitDocumentation:imaging.templates.tooLong'));
-      return;
-    }
-    if (text !== draft) {
-      update({ radiologyReport: text });
-      setOutlineStatus(true);
-    }
   };
   const applyDraft = (body: string, targetLanguage: AppLanguage) => {
     const previous = Object.fromEntries(reportFields.map(field => [field, info[field] ?? ''])) as Partial<PatientInfo>;
@@ -183,7 +159,7 @@ export function RadiologyReportSection({ snapshot: originalSnapshot, chartEditor
     }
   };
   const chartReport = reportKind === 'ct' ? 'ct' : 'radiographic';
-  const title = chartEditor ? t(`${chartReport}.title`) : t(reportKey('title'));
+  const title = chartEditor ? reportLabel || t(`${chartReport}.title`) : t(reportKey('title'));
   const help = chartEditor ? t(`${chartReport}.hint`) : t(reportKey('editorHelp'));
   const placeholder = chartEditor ? t(`${chartReport}.placeholder`) : t(reportKey('editorPlaceholder'));
   return <section className="radiology-report patient-form" aria-labelledby={`${fieldId}-title`} aria-busy={busy}>
@@ -205,34 +181,10 @@ export function RadiologyReportSection({ snapshot: originalSnapshot, chartEditor
       </div>
     </header>
     <div className="radiology-report__body">
-      {chartEditor && outline && !readOnly && <div className="visit-documentation__toolbar">
-        <div className="visit-documentation__template">
-          <span id={`${fieldId}-template`} className="patient-form__label">{t('visitDocumentation:imaging.templates.label')}</span>
-          <div className={`visit-documentation__choices${outlines.length > 6 ? ' visit-documentation__choices--scroll' : ''}`}
-            role="group" aria-labelledby={`${fieldId}-template`}>
-            {outlines.map(option => <button type="button" className="diagram-view__action" key={option.id}
-              aria-pressed={outline.id === option.id} dir="auto" disabled={busy}
-              onClick={() => { setOutlineChoice(option.id); setOutlineStatus(false); }}>{outlineLabel(option)}</button>)}
-          </div>
-        </div>
-        <button type="button" className="diagram-view__action" disabled={busy} onClick={insertOutline}>
-          {t('visitDocumentation:imaging.templates.insert')}
-        </button>
-      </div>}
-      {chartEditor && !readOnly && outlineSections.some(section => section.guidance) && <details className="visit-documentation__transcripts">
-        <summary>{t('visitDocumentation:consultation.templates.builder.guidance')}</summary>
-        <ul>{outlineSections.filter(section => section.guidance).map(section => <li key={section.id}>
-          <strong>{section.heading}</strong>
-          <p dir="auto">{section.guidance}</p>
-        </li>)}</ul>
-      </details>}
-      <span className="visually-hidden" role="status">
-        {outlineStatus ? t('visitDocumentation:imaging.templates.inserted') : ''}
-      </span>
       <div className="radiographic-findings radiology-report__field refine-field">
         {chartEditor ? <CodeField multiline className="patient-form__textarea radiographic-findings__text radiology-report__editor"
-          aria-label={title} aria-describedby={`${fieldId}-help`} placeholder={placeholder}
-          value={draft} readOnly={readOnly} onChange={text => {
+          aria-label={title} aria-describedby={`${fieldId}-help`} placeholder={placeholder} maxLength={60000}
+          value={draft || (!readOnly ? starterText ?? '' : '')} readOnly={readOnly} onChange={text => {
             if (readOnly) return;
             invalidate();
             onChange({ radiologyReport: text, radiologyReviewedBasis: '' });

@@ -81,6 +81,72 @@
 }
 .chart-customization .chart-settings__drug { margin-bottom: 20px; }
 .chart-customization__footer { flex: none; border-top: 1px solid var(--border); }
+.chart-customization .chart-customization__launch { align-self: flex-start; min-height: 44px; }
+.chart-customization .chart-customization__modules { gap: 20px; }
+.chart-customization .chart-customization__module {
+  margin: 0;
+  padding-block-end: 16px;
+  border-block-end: 1px solid var(--border);
+}
+.chart-customization .chart-customization__module:last-child { border-block-end: 0; }
+.chart-customization__module .chart-settings__note { line-height: 1.5; }
+.chart-customization__choices .chart-settings__choice {
+  justify-content: space-between;
+  overflow-wrap: anywhere;
+  padding: 6px 8px;
+}
+.chart-customization__choices .chart-settings__choice + .chart-settings__choice { border-block-start: 1px solid var(--border); }
+.chart-customization__choices .chart-settings__choice:hover { background: var(--surface-alt); }
+.chart-customization__choices .chart-settings__choice input { order: 1; flex: none; accent-color: var(--primary); }
+.chart-customization__choices .chart-settings__choice:focus-within { outline: 2px solid var(--primary); outline-offset: -2px; }
+.chart-customization .chart-customization__module .chart-settings__drug { margin: 4px 0 0; }
+
+.anesthesia-definitions .anesthesia-drug__add { align-self: flex-start; min-height: 44px; }
+.anesthesia-definition { border-block-end: 1px solid var(--border); }
+.anesthesia-definition__summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  text-align: start;
+}
+.anesthesia-definition__summary bdi { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.anesthesia-definition__summary span { color: var(--text-muted); font-size: 0.85em; }
+.anesthesia-definition__summary:hover,
+.anesthesia-definition__summary[aria-expanded='true'] { background: var(--surface-alt); }
+.anesthesia-definition__summary:focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; }
+.anesthesia-definition__summary::after {
+  content: '';
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-block-end: 1.5px solid currentColor;
+  border-inline-end: 1.5px solid currentColor;
+  transform: rotate(45deg);
+}
+.anesthesia-definition__summary[aria-expanded='true']::after { transform: rotate(225deg); }
+.anesthesia-definition__panel { padding: 8px; }
+.anesthesia-definition__panel .custom-def { gap: 8px; }
+.anesthesia-definition__panel .patient-form__input { margin: 0; min-height: 44px; }
+.anesthesia-definition__panel .custom-def__remove { min-height: 44px; }
+.chart-customization .anesthesia-definition__panel .custom-def__remove {
+  border-color: transparent;
+  background: transparent;
+  color: var(--danger);
+}
+.chart-customization .anesthesia-definition__panel .custom-def__remove:hover { background: var(--danger-tint); }
+.ios-chart-settings .anesthesia-definition__summary { color: var(--ios-label); }
+.ios-chart-settings .anesthesia-definition__summary span { color: var(--ios-label-muted); }
+.ios-chart-settings .anesthesia-definition { border-block-end-color: var(--ios-separator); }
+
 @media (max-width: 640px) {
   .ai-settings-modal.chart-customization { width: calc(100vw - 16px); height: calc(100dvh - 24px); }
   .chart-customization__layout { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
@@ -115,6 +181,7 @@
   .chart-customization .chart-customization__content { padding: 20px 16px; }
   .chart-customization .chart-settings__grid { grid-template-columns: minmax(0, 1fr); }
   .chart-customization .chart-settings__choice { min-height: 44px; }
+  .anesthesia-definition__panel .custom-def__control { flex-basis: 100%; }
 }
 
 /* Keep both labels and their controls aligned, with units inside the input. */

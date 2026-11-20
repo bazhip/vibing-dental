@@ -11,6 +11,7 @@
     "aria": "Search charts"
   },
   "filters": {
+    "clear": "Clear filters",
     "speciesAria": "Filter by species",
     "allSpecies": "All species",
     "doctorAria": "Filter by doctor",
@@ -117,10 +118,8 @@
   },
   "templates": {
     "chartCodes": "Chart codes",
-    "chartCodeHelp": "Type { to see suggestions or select a code below. Codes use recorded chart values and ask you to fill in any missing values. Other names in braces become custom prompts.",
-    "fieldExamples": "Examples of fill-in fields include {Tooth numbers}, {Procedure details}, and {Follow-up date}.",
+    "chartCodeHelp": "Type { to see suggestions, or select a code below. Codes fill in recorded chart values. Any unfilled codes stay in the report for you to edit.",
     "fieldsInTemplate": "Fields in this template",
-    "fieldHelp": "Put a short instruction in braces to make a fill-in field, for example {Enter tooth numbers}. You’ll be asked for the value when you use the template.",
     "aria": "Report templates",
     "title": "Report templates",
     "saved": "Saved templates",

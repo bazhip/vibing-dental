@@ -4,6 +4,7 @@ import { ColumnKey, columnLabel } from '../constants/columnDefinitions';
 import { CustomBlockDef, CustomFieldDef, normalizeBlockDefs, normalizeFieldDefs } from './customAnesthesia';
 import { DEFAULT_QUICK_CODES, normalizeQuickCodes } from './quickCodes';
 import { CustomExamAreaDef, normalizeExamAreaDefs } from './customExam';
+import { parseExamLayout, type ExamLayoutField } from './examLayout';
 import type { PocketMode } from './pocket';
 
 /**
@@ -114,6 +115,8 @@ export interface ChartPrefs {
   customExamAreas: CustomExamAreaDef[];
   /** Exam rows hidden when they have no saved findings. */
   hiddenExamAreas: string[];
+  /** Exam layout for accounts without a shared practice layout. */
+  examLayout?: ExamLayoutField[];
 }
 
 export const DEFAULT_CHART_PREFS: ChartPrefs = {
@@ -199,6 +202,8 @@ export function normalizeChartPrefs(raw: unknown, fallback: ChartPrefs = DEFAULT
     hiddenExamAreas: Array.isArray(r.hiddenExamAreas)
       ? [...new Set(r.hiddenExamAreas.filter((id): id is string => typeof id === 'string' && id.length > 0 && id.length <= 40))].slice(0, 32)
       : fallback.hiddenExamAreas,
+    ...(r.examLayout !== undefined || fallback.examLayout !== undefined
+      ? { examLayout: parseExamLayout(r.examLayout) ?? fallback.examLayout } : {}),
     customExamAreas: Array.isArray(r.customExamAreas) ? normalizeExamAreaDefs(r.customExamAreas) : fallback.customExamAreas,
   };
 }

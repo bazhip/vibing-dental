@@ -1698,38 +1698,9 @@
   box-sizing: border-box;
 }
 
-/* Template controls share the section header row and wrap on narrow
-   screens. */
-.surgery-report__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-}
-
-.surgery-report__tools {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px 12px;
-  margin-bottom: 12px;
-}
-.surgery-report__tools:has(.surgery-report__actions:empty):not(:has(.surgery-report__templates-label)) { display: none; }
-.surgery-report__actions { display: flex; align-items: flex-start; justify-content: flex-end; flex-wrap: wrap; gap: 8px; margin-inline-start: auto; }
-.surgery-report__templates-label { margin: 0; }
-.surgery-report__templates, .treatment-templates__fields {
+.treatment-templates__fields {
   display: flex; flex-wrap: wrap; gap: 6px 8px; list-style: none; margin: 0; padding: 0;
 }
-.surgery-report__templates, .surgery-report__templates-empty { width: 100%; }
-.surgery-report__templates { max-height: 12rem; overflow: auto; padding: 3px; margin-inline: -3px; }
-.surgery-report__templates li { min-width: 0; max-width: 100%; }
-.surgery-report__templates button {
-  max-width: 100%; min-height: 36px; white-space: normal; overflow-wrap: anywhere; text-align: start;
-  box-shadow: none; border-color: var(--border);
-}
-.surgery-report__templates button[aria-pressed="true"] { background: var(--action-tint); border-color: var(--primary); }
-.surgery-report__templates-empty { margin: 0; }
 .treatment-templates__field-help { display: grid; gap: 4px; min-width: 0; }
 .treatment-templates__field-help p { margin: 0; }
 .treatment-templates__code-menu, .treatment-templates__code-guide {
@@ -1754,9 +1725,6 @@
 .treatment-templates__fields code {
   display: inline-block; padding: 3px 6px; border-radius: var(--radius-sm);
   color: var(--text); background: var(--surface-alt); overflow-wrap: anywhere;
-}
-@media (max-width: 600px) {
-  .surgery-report__templates button, .surgery-report__actions > button { min-height: 44px; }
 }
 
 /* Report-templates modal */
@@ -2263,7 +2231,15 @@
 .diagram-view__panel-toggle > .ios-icon { transition: transform 0.15s ease; }
 .diagram-view__panel--collapsed .diagram-view__panel-toggle > .ios-icon { transform: rotate(-90deg); }
 [dir='rtl'] .diagram-view__panel--collapsed .diagram-view__panel-toggle > .ios-icon { transform: rotate(90deg); }
-.diagram-view__panel-toggle .diagram-view__textsize-label { padding: 0; margin: 0; border: 0; color: inherit; }
+.diagram-view__panel-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.diagram-view__panel-label .diagram-view__textsize-label { padding: 0; margin: 0; border: 0; color: inherit; }
 .diagram-view__text-panel .diagram-view__textsize { gap: 2px; }
 .diagram-view__text-panel .diagram-view__textsize-btn { min-width: 36px; min-height: 30px; }
 @container diagram (max-width: 620px) {
@@ -3958,7 +3934,13 @@ button.save-status--manual:hover {
 
 /* Locked form sections: a hint on hover instead of silently dead clicks. */
 .lock-wrap--locked { cursor: not-allowed; }
-.diagram-view__toolbar.diagram-view__toolbar--readonly :is(.diagram-view__tool-group, .diagram-view__history, .diagram-view__free-comment, .diagram-view__draw-panel) { display: none; }
+.diagram-view__toolbar.diagram-view__toolbar--readonly :is(.diagram-view__tool-group, .diagram-view__history) button:disabled {
+  opacity: 0.55;
+  color: var(--text-muted);
+  background: transparent;
+  border-color: transparent;
+  cursor: default;
+}
 
 /* Tour anchor around the Settings menu — layout-neutral. */
 .topbar-tour-anchor { display: inline-flex; }
@@ -4305,7 +4287,6 @@ button.save-status--manual:hover {
 .tooth-chart__root .tooth-chart__finding-input { width: 100%; }
 
 /* Owner report header: Customize · Write with AI · Preview. */
-.owner-report__actions { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; justify-content: flex-end; }
 
 /* Charting header: Grid / By tooth switch + Customize (Chart settings). */
 .charting-header-actions { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }

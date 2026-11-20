@@ -238,3 +238,11 @@ it('exports custom discharge sections in template order and preserves populated 
   expect(sections[0]).toEqual({ key: field, heading: 'Activity', lines: ['• Avoid vigorous play.'] });
   expect(recordNoteBasis(chart)).not.toBe(recordNoteBasis(snap({}, { ...chart.patientInfo, [field]: 'Different wording' })));
 });
+
+it('includes the result of a custom Exam text field in the clinical record note', () => {
+  const snapshot = snap({}, { customExam: [
+    { id: 'exam-text-airway', label: 'Airway risk', status: '', comment: 'Review nose and airway' },
+  ] });
+  const note = recordNoteText(buildRecordNote(snapshot, recordNoteT('en')));
+  expect(note).toContain('Airway risk: Review nose and airway');
+});

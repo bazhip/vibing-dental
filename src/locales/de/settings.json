@@ -186,7 +186,7 @@
     "patient": {
       "title": "Patientenseite",
       "hideRecheck": "Feld „Kontrolle fällig“ ausblenden",
-      "visibilityNote": "Wählen Sie die Felder für leere Besuche. Felder mit gespeicherten Angaben bleiben sichtbar."
+      "visibilityNote": "Wählen Sie, welche Felder angezeigt werden. Felder mit bereits erfassten Angaben zur Halterin oder zum Halter sowie zur tiermedizinischen Assistenz bleiben sichtbar."
     },
     "pdf": {
       "title": "PDF",
@@ -250,8 +250,8 @@
         "procedure": "Eingriff"
       },
       "descriptions": {
-        "patient": "Wählen Sie, ob das Nachkontrolldatum auf der Patientenseite angezeigt wird.",
-        "exam": "Wählen Sie zusätzliche Bereiche für Ihre orale Untersuchung.",
+        "patient": "Wählen Sie, welche Halter- und Besuchsfelder bei leeren Besuchen angezeigt werden.",
+        "exam": "Wählen Sie die Felder für die orale Untersuchung aus und ordnen Sie sie an.",
         "anesthesia": "Konfigurieren Sie Nervenblöcke, eigene Felder und Ihre üblichen Medikamente.",
         "charting": "Legen Sie Darstellung, Messungen und Dateneingabe fest.",
         "diagnosis": "Wählen Sie die Befunde im Diagnoseschema und Ihre Schnellcodes.",

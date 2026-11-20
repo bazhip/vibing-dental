@@ -186,7 +186,7 @@
     "patient": {
       "title": "Pagina Paziente",
       "hideRecheck": "Nascondi il campo Controllo previsto",
-      "visibilityNote": "Scelga i campi da mostrare nelle visite vuote. I campi con informazioni registrate restano visibili."
+      "visibilityNote": "Scelga quali campi mostrare. I campi del proprietario e del tecnico veterinario con informazioni registrate restano visibili."
     },
     "pdf": {
       "title": "PDF",
@@ -250,8 +250,8 @@
         "procedure": "Procedura"
       },
       "descriptions": {
-        "patient": "Scelga se mostrare la data del controllo nella pagina Paziente.",
-        "exam": "Scelga le aree aggiuntive da registrare durante l’esame orale.",
+        "patient": "Scelga quali campi del proprietario e della visita mostrare nelle visite vuote.",
+        "exam": "Scelga e riordini i campi per l’esame orale.",
         "anesthesia": "Configuri i blocchi nervosi, i campi personalizzati e i Suoi farmaci abituali.",
         "charting": "Definisca la disposizione, le misurazioni e il comportamento di inserimento.",
         "diagnosis": "Scelga i reperti visualizzati nel diagramma diagnostico e i Suoi codici rapidi.",

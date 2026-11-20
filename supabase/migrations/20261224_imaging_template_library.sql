@@ -66,6 +66,30 @@ begin
 end;
 $$;
 
+create function consultation_private.valid_imaging_report_fields(fields jsonb)
+returns boolean
+language plpgsql
+immutable
+strict
+set search_path = ''
+as $$
+declare
+  field jsonb;
+begin
+  if jsonb_typeof(fields) <> 'object' or fields - array['radiology', 'ct'] <> '{}'::jsonb then
+    return false;
+  end if;
+  for field in select value from jsonb_each(fields) loop
+    if jsonb_typeof(field) <> 'object' or field - array['label', 'starterText'] <> '{}'::jsonb
+      or (field ? 'label' and (jsonb_typeof(field->'label') <> 'string' or char_length(field->>'label') > 100))
+      or (field ? 'starterText' and (jsonb_typeof(field->'starterText') <> 'string' or char_length(field->>'starterText') > 4000)) then
+      return false;
+    end if;
+  end loop;
+  return true;
+end;
+$$;
+
 create function consultation_private.valid_imaging_template_library(config jsonb)
 returns boolean
 language plpgsql
@@ -88,14 +112,15 @@ begin
   if jsonb_typeof(config) <> 'object' or octet_length(config::text) > 196608 then
     return false;
   end if;
-  if config - array['defaultId', 'templates', 'order', 'version', 'practiceFields'] <> '{}'::jsonb
+  if config - array['defaultId', 'templates', 'order', 'version', 'practiceFields', 'imagingReportFields'] <> '{}'::jsonb
     or config->'version' is distinct from '2'::jsonb
     or jsonb_typeof(config->'defaultId') is distinct from 'string'
     or jsonb_typeof(config->'templates') is distinct from 'array' then
     return false;
   end if;
   if jsonb_array_length(config->'templates') > 24
-    or (config ? 'practiceFields' and not consultation_private.valid_imaging_sections(config->'practiceFields', true)) then
+    or (config ? 'practiceFields' and not consultation_private.valid_imaging_sections(config->'practiceFields', true))
+    or (config ? 'imagingReportFields' and not consultation_private.valid_imaging_report_fields(config->'imagingReportFields')) then
     return false;
   end if;
 
@@ -156,6 +181,8 @@ begin
 end;
 $$;
 
+revoke all on function consultation_private.valid_imaging_report_fields(jsonb) from public, anon, authenticated;
+grant execute on function consultation_private.valid_imaging_report_fields(jsonb) to authenticated, service_role;
 revoke all on function consultation_private.valid_imaging_sections(jsonb, boolean) from public, anon, authenticated;
 revoke all on function consultation_private.valid_imaging_template_library(jsonb) from public, anon, authenticated;
 grant execute on function consultation_private.valid_imaging_sections(jsonb, boolean) to authenticated, service_role;

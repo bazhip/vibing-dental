@@ -1,0 +1,70 @@
+.owner-template-choices {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.owner-template-choices__label {
+  color: var(--text);
+  font-size: .875rem;
+  font-weight: 650;
+}
+
+.owner-template-choices__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.owner-template-choices__choice,
+.owner-template-choices__current {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+  color: var(--text);
+  font-size: .875rem;
+  text-align: start;
+  overflow-wrap: anywhere;
+}
+
+.owner-template-choices__choice {
+  min-height: 40px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.owner-template-choices__choice:is([aria-pressed="true"], :hover:enabled) {
+  border-color: var(--primary);
+  background: var(--action-tint);
+  color: var(--primary);
+}
+
+.owner-template-choices__note { color: var(--text-muted); font-size: .75rem; }
+
+.owner-template-choices__select.patient-form__input {
+  width: auto;
+  min-width: 0;
+  max-width: min(100%, 20rem);
+  min-height: 40px;
+  margin: 0;
+  text-overflow: ellipsis;
+}
+
+.owner-template-choices__row > button {
+  max-width: 100%;
+  min-height: 40px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 800px) {
+  .owner-template-choices__row > button,
+  .owner-template-choices__select.patient-form__input { min-height: 44px; }
+}

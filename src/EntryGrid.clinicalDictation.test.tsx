@@ -159,6 +159,8 @@ it('rejects duplicate or overflowing sources before touching any supplemental fi
 });
 
 it('opens clinical history from a finalized patient visit', async () => {
+  // Exercise the finalized-record entry point separately from the PDF bundle's cold import.
+  await import('./components/PatientRecordHistory');
   localStorage.setItem('vibing-dental.chart.finalizedAt.v1', JSON.stringify('2026-11-18T12:00:00Z'));
   cloud.listPatientVisits.mockResolvedValue([{ id: 'prior', patient_number: '7', patient_name: 'Milo', chart_date: '2025-11-10', updated_at: '2025-11-10T00:00:00Z' }]);
   mount();
@@ -374,11 +376,22 @@ it('shows and applies custom Discharge fields with the Consult flag off', async 
   expect(screen.getByRole('textbox', { name: 'Activity' })).toHaveValue(text);
 });
 
-it('opens reusable Imaging templates from Customize and keeps Imaging and PDF preferences accessible', async () => {
+it('opens the Imaging layout from Customize and keeps Imaging and PDF preferences accessible', async () => {
   mount();
   navigateSection('imaging');
   fireEvent.click(await screen.findByRole('button', { name: 'Customize' }));
-  const templates = await screen.findByRole('dialog', { name: 'Imaging report templates' });
+  expect(screen.queryByRole('button', { name: 'Insert outline' })).toBeNull();
+  const templates = await screen.findByRole('dialog', { name: 'Customize Imaging' });
+  expect(within(templates).getByText('Radiographic report')).toBeVisible();
+  expect(within(templates).getByText('CT report')).toBeVisible();
   fireEvent.click(within(templates).getByRole('button', { name: 'Imaging and PDF settings' }));
   expect(await screen.findByRole('dialog', { name: 'Chart settings' })).toBeVisible();
+});
+
+it('opens the Exam layout editor from the chart', async () => {
+  mount();
+  navigateSection('exam');
+  expect(await screen.findByRole('textbox', { name: 'Diagnostics' })).toBeVisible();
+  fireEvent.click(screen.getByRole('button', { name: 'Customize' }));
+  expect(await screen.findByRole('dialog', { name: 'Customize Exam' })).toBeVisible();
 });

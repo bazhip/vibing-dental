@@ -158,6 +158,12 @@
       "technique": "Technika",
       "findings": "Leletek",
       "impression": "Összegzés"
+    },
+    "layout": {
+      "title": "Képalkotás testreszabása",
+      "intro": "Adja meg az új vizitek leleteinek címkéit és kezdőszövegét.",
+      "help": "A képalkotás testreszabása",
+      "starterText": "Kezdőszöveg"
     }
   },
   "discharge": {

@@ -5,7 +5,7 @@ import { CONSULTATION_FIELDS, isUnmodifiedStandardDischarge, consultationLayoutF
 import { ConsultationTemplatesDialog } from './components/ConsultationTemplatesDialog';
 import { Icon } from './ios/icons';
 import { useTeam } from './hooks/useTeam';
-import { RefineTextAction, RefineTextContext } from './components/RefineTextAction';
+import { RefineTextContext } from './components/RefineTextAction';
 import type { HistoryVisit } from './components/PatientRecordHistory';
 import { ClinicalDictationButton } from './components/ClinicalDictationButton';
 import { appendClinicalDictationSource } from './utils/clinicalDictationSources';
@@ -81,7 +81,10 @@ import type { CloudChartMeta } from './hooks/useCloudSync';
 import type { ChartContext, ChartHandlers, AiAction } from './utils/aiAutofill';
 import type { AppLanguage } from './i18n/config';
 import { DiagramComment, PatientInfo, NerveBlockSite, usualConcentration, withDrugUnit, ExamFinding, DentalField, ToothData, ToothMarks } from './types';
-import { customExamRows, setCustomExamValue, newExamAreaId, MAX_CUSTOM_EXAM_AREAS } from './utils/customExam';
+import { setCustomExamValue } from './utils/customExam';
+import { legacyExamLayout } from './utils/examLayout';
+import { useExamLayout } from './hooks/useExamLayout';
+import { ExamLayoutDialog } from './components/ExamLayoutDialog';
 import { localDateISO } from './utils/localDate';
 import { visitsForPatient } from './utils/currentVisit';
 import { shouldOpenLibraryOnArrival } from './utils/arrival';
@@ -317,6 +320,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const dischargeTemplatesAvailable = !consultationOn && !trial && cloud.enabled && !!profile.practiceId;
   const imagingTemplatesAvailable = !consultationOn && !trial && cloud.enabled && !!profile.practiceId;
   const imagingLibrary = useConsultationLibrary(imagingTemplatesAvailable && activeSection === 'imaging' ? profile.practiceId : '', 'imaging');
+  const imagingReportFields = imagingTemplatesAvailable ? imagingLibrary.config.imagingReportFields : undefined;
   const [imagingTemplatesPractice, setImagingTemplatesPractice] = React.useState<string | null>(null);
   const imagingTemplatesOpen = imagingTemplatesAvailable && imagingTemplatesPractice === profile.practiceId && activeSection === 'imaging';
   const openImagingTemplates = () => {
@@ -335,7 +339,16 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   };
   const [consultationTemplatesPractice, setConsultationTemplatesPractice] = React.useState<string | null>(null);
   const consultationTemplatesOpen = consultationOn && consultationTemplatesPractice === profile.practiceId;
-  const practiceTeam = useTeam(!trial && ((ownerReportOn && activeSection === OWNER_REPORT_SECTION) || consultationTemplatesOpen || dischargeTemplatesOpen || imagingTemplatesOpen));
+  const examPractice = !trial && cloud.enabled ? profile.practiceId : '';
+  const [examLayoutScope, setExamLayoutScope] = React.useState<string | null>(null);
+  const examLayoutOpen = examLayoutScope === examPractice;
+  const examLibrary = useExamLayout(activeSection === 'exam' || examLayoutOpen ? examPractice : '');
+  const examFields = examLibrary.fields ?? prefs.examLayout ?? legacyExamLayout(prefs.customExamAreas, prefs.hiddenExamAreas);
+  const openExamLayout = () => {
+    if (examPractice) examLibrary.reload();
+    setExamLayoutScope(examPractice);
+  };
+  const practiceTeam = useTeam(!trial && ((ownerReportOn && activeSection === OWNER_REPORT_SECTION) || consultationTemplatesOpen || dischargeTemplatesOpen || imagingTemplatesOpen || (examLayoutOpen && !!examPractice)));
   const openConsultationTemplates = () => {
     consultationLibrary.reload();
     setConsultationTemplatesPractice(profile.practiceId);
@@ -1184,9 +1197,12 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     setRecordHistory({ scope: recordHistoryScope, snapshot, listVisits });
   };
 
-  const pdfBranding = trial
+  const pdfBranding = React.useMemo(() => trial
     ? { doctorName: 'TRIAL', logoUrl: '', practiceName: 'TRIAL' }
-    : { doctorName: profile.doctorName, logoUrl: profile.logoUrl, practiceName: profile.practiceName };
+    : { doctorName: profile.doctorName, logoUrl: profile.logoUrl, practiceName: profile.practiceName,
+        useTemplateLogo: !transcriptUserId },
+  [trial, profile.doctorName, profile.logoUrl, profile.practiceName, transcriptUserId]);
+  const pdfBrandingReady = trial || (profile.brandingReady && chartSettings.loaded);
 
   const openDocuments = (tab?: 'chart' | 'owner' | 'note', ownerOnly = false) => {
     setDocsTab(tab);
@@ -1235,7 +1251,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         imagesChartId:
           pdfIncludeImages && cloud.enabled && !trial ? chart.cloudChartId : undefined,
         pdfExcludedImages: chart.pdfExcludedImages,
-        branding: pdfBranding,
       });
       setPreviewOpen(true);
     } catch (error) {
@@ -1337,37 +1352,21 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     {
       id: 'exam',
       label: t('sections.exam'),
-      content: lock(
-        <>
-          <ExamForm
-            exam={chart.patientInfo.exam}
-            onStatusChange={chart.handleExamStatusChange}
-            onCommentChange={chart.handleExamCommentChange}
-            customRows={customExamRows(prefs.customExamAreas, chart.patientInfo.customExam)}
-            onCustomChange={(row, patch) =>
-              chart.setPatientInfo((prev: PatientInfo) => ({ ...prev, customExam: setCustomExamValue(prev.customExam, row, patch) }))
-            }
-            customAreas={prefs.customExamAreas}
-            readOnly={readOnly}
-            onAddArea={(label) => {
-              if (readOnly || prefs.customExamAreas.length >= MAX_CUSTOM_EXAM_AREAS) return;
-              setPref({ customExamAreas: [...prefs.customExamAreas, { id: newExamAreaId(), label }] });
-            }}
-            hiddenAreas={prefs.hiddenExamAreas}
-            onCustomize={native ? undefined : () => setChartSettingsOpen('exam')}
-          />
-          <div className="patient-form visit-documentation__field dental-exam__diagnostics">
-            <label className="patient-form__label" htmlFor="dental-diagnostics">{i18n.t('visitDocumentation:fields.gpDiagnostics.label')}</label>
-            <p className="visit-documentation__helper" id="dental-diagnostics-help">{i18n.t('visitDocumentation:fields.gpDiagnostics.helper')}</p>
-            <div className="refine-field">
-              <textarea id="dental-diagnostics" className="patient-form__textarea" rows={3} maxLength={20000}
-                aria-describedby="dental-diagnostics-help" value={chart.patientInfo.gpDiagnostics ?? ''} readOnly={readOnly}
-                onChange={event => { if (!readOnly) chart.handlePatientInfoChange('gpDiagnostics', event.target.value); }} />
-              <RefineTextAction value={chart.patientInfo.gpDiagnostics ?? ''} readOnly={readOnly} maxLength={20000}
-                onApply={text => { if (!readOnly) chart.handlePatientInfoChange('gpDiagnostics', text); }} />
-            </div>
-          </div>
-        </>
+      content: (
+        <ExamForm
+          exam={chart.patientInfo.exam}
+          layout={examFields}
+          customRows={chart.patientInfo.customExam}
+          diagnostics={chart.patientInfo.gpDiagnostics ?? ''}
+          onDiagnosticsChange={value => { if (!readOnly) chart.handlePatientInfoChange('gpDiagnostics', value); }}
+          onStatusChange={chart.handleExamStatusChange}
+          onCommentChange={chart.handleExamCommentChange}
+          onCustomChange={(row, patch) => {
+            if (!readOnly) chart.setPatientInfo(previous => ({ ...previous, customExam: setCustomExamValue(previous.customExam, row, patch) }));
+          }}
+          readOnly={readOnly}
+          onCustomize={native ? undefined : openExamLayout}
+        />
       ),
     },
     {
@@ -1507,7 +1506,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               onStrokesChange={chart.setPostDiagramStrokes}
               lockedTriadans={chart.lockedPostTriadans}
               quickCodes={prefs.procedureQuickCodes}
-              onCustomize={() => setChartSettingsOpen('procedure')}
+              onCustomize={native ? undefined : () => setChartSettingsOpen('procedure')}
               markMode="extracted-only"
               highlightTriadan={aiHighlightTriadan}
             />
@@ -1537,7 +1536,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           onOwnerReportImageChange={ownerReportOn ? chart.setImageInOwnerReport : undefined}
           onReportContentChange={() => { if (chart.ownerReport.reviewedBasis && !readOnly) chart.setOwnerReportOverride('reviewedBasis', null); }}
           includeInPdf={pdfIncludeImages}
-          onCustomize={native && !imagingTemplatesAvailable ? undefined : openImagingTemplates}
+          onCustomize={native ? undefined : openImagingTemplates}
           pdfExcludedImages={chart.pdfExcludedImages}
           onImageInPdfChange={chart.setImageInPdf}
         />
@@ -1548,8 +1547,10 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             snapshot={{ ...chart.getSnapshot(), patientInfo: { ...chart.patientInfo,
               radiologyReport: chart.patientInfo.radiographicFindings ?? chart.patientInfo.radiologyReport ?? '', radiographicFindings: '' } }}
             chartId={chart.cloudChartId} chartSession={chart.chartSession} readOnly={readOnly}
-            templateLibrary={imagingTemplatesAvailable ? imagingLibrary.config : undefined}
-            preferredLanguage={prefs.imagingReportLanguage} onCustomizeLanguage={() => setChartSettingsOpen('images')}
+            reportLabel={imagingReportFields?.radiology?.label}
+            starterText={!chart.openedExisting && chart.patientInfo.radiographicFindings === undefined && chart.patientInfo.radiologyReport === undefined
+              ? imagingReportFields?.radiology?.starterText : undefined}
+            preferredLanguage={prefs.imagingReportLanguage}
             aiEnabled={profile.aiEnabled && !trial && cloud.enabled}
             refineRequest={radiologyRefineRequest?.session === radiologySession ? radiologyRefineRequest : undefined}
             onChange={changes => chart.setPatientInfo(prev => ({ ...prev, ...changes,
@@ -1558,8 +1559,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           <div>
           {lock(<RadiologyReportSection chartEditor reportKind={CLINICAL_WORKFLOWS.ct} snapshot={chart.getSnapshot()}
             chartId={chart.cloudChartId} chartSession={chart.chartSession} readOnly={readOnly}
-            templateLibrary={imagingTemplatesAvailable ? imagingLibrary.config : undefined}
-            preferredLanguage={prefs.imagingReportLanguage} onCustomizeLanguage={() => setChartSettingsOpen('images')}
+            reportLabel={imagingReportFields?.ct?.label}
+            starterText={!chart.openedExisting && chart.patientInfo.ctReport === undefined ? imagingReportFields?.ct?.starterText : undefined}
+            preferredLanguage={prefs.imagingReportLanguage}
             aiEnabled={profile.aiEnabled && !trial && cloud.enabled} showAiNotice={false}
             onChange={changes => chart.setPatientInfo(prev => ({ ...prev, ...changes }))} />)}
           </div>
@@ -1989,6 +1991,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           prefs={prefs}
           followsAccount={chartSettings.followsAccount}
           onChange={setPref}
+          onCustomizeExam={consultationOn ? undefined : openExamLayout}
         />
       )}
 
@@ -2095,6 +2098,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             currentId={cloud.enabled ? chart.cloudChartId : null}
             listVisits={recordHistory.listVisits} fetchVisit={cloud.fetchChart}
             branding={pdfBranding}
+            brandingReady={pdfBrandingReady}
             onClose={closeRecordHistory} />
         </React.Suspense>
       )}
@@ -2112,6 +2116,12 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           onSave={dischargeLibrary.save} onReload={dischargeLibrary.reload}
           onClose={() => setDischargeTemplatesPractice(null)} />
       )}
+      {examLayoutOpen && (
+        <ExamLayoutDialog fields={examFields} mode={examPractice ? 'practice' : 'personal'}
+          status={examLibrary.status} canEdit={!examPractice || (practiceTeam.practice?.id === examPractice && practiceTeam.role === 'owner')}
+          onSave={examPractice ? examLibrary.save : fields => chartSettings.update({ examLayout: fields })}
+          onReload={examLibrary.reload} onClose={() => setExamLayoutScope(null)} />
+      )}
       {imagingTemplatesOpen && (
         <ConsultationTemplatesDialog kind="imaging"
           initial={imagingLibrary.config} status={imagingLibrary.status}
@@ -2127,6 +2137,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             initialTab={docsTab}
             ownerPreviewOnly={ownerPreviewOnly}
             chartSnapshot={consultationOn ? null : documentChart}
+            chartBranding={pdfBranding}
+            brandingReady={pdfBrandingReady}
             chartOptions={{
               gridRequired: !mirrorToDiagnosis,
               imagesAvailable: cloud.enabled && !trial,
@@ -2304,6 +2316,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     account: () => setAccountOpen(true),
     practice: openPracticeSettings,
     chartSettings: (section?: SettingsSection) => setChartSettingsOpen(section ?? 'all'),
+    customizeExam: openExamLayout,
     reminders: () => setRemindersOpen(true),
     walkthrough: () => { setWalkthroughFirstRun(false); setWalkthroughOpen(true); },
     whatsNew: () => setWhatsNewOpen(true),
@@ -2332,6 +2345,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       account: cloud.enabled ? settingsFns.account : undefined,
       practice: cloud.enabled ? settingsFns.practice : undefined,
       chartSettings: settingsFns.chartSettings,
+      customizeExam: consultationOn ? undefined : settingsFns.customizeExam,
       reminders: cloud.enabled ? settingsFns.reminders : undefined,
       walkthrough: settingsFns.walkthrough,
       whatsNew: settingsFns.whatsNew,
@@ -2342,7 +2356,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     requestAccount: trial && onRequestAccount ? settingsFns.requestAccount : undefined,
     // settingsFns' members never change identity.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }), [trial, cloud.enabled, isAdmin, canFeedback, profile, prefs, chartSettings.followsAccount, language, activeSection, !!onRequestAccount]);
+  }), [trial, cloud.enabled, isAdmin, canFeedback, profile, prefs, chartSettings.followsAccount, language, activeSection, consultationOn, !!onRequestAccount]);
 
   // Hoisted elements: the other tabs don't re-render when the chart does
   // (they read live data through context; see appData.tsx).
@@ -2418,7 +2432,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     );
     const customizeFor: Record<string, (() => void) | undefined> = {
       patient: () => setChartSettingsOpen('patient'),
-      exam: () => setChartSettingsOpen('exam'),
+      exam: openExamLayout,
       procedure: () => setChartSettingsOpen('procedure'),
       anesthesia: () => setChartSettingsOpen('anesthesia'),
       charting: () => setChartSettingsOpen('charting'),
@@ -2446,7 +2460,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         : []),
       ...(status.canSaveNow && !saveDraft ? [{ label: t('ios.menu.saveNow', { ns: 'chart' }), icon: 'checkmark-circle' as const, onSelect: attemptSave }] : []),
       ...(status.retry ? [{ label: t('ios.menu.retrySave', { ns: 'chart' }), icon: 'arrow-uturn-forward' as const, onSelect: attemptSave }] : []),
-      ...(customize ? [{ label: t('ios.menu.customize', { ns: 'chart', section: sectionLabel }), icon: 'gear' as const, onSelect: customize }] : []),
+      ...(customize ? [{ label: activeSection === 'discharge' ? t('practice.ownerReport.title', { ns: 'settings' }) : t('ios.menu.customize', { ns: 'chart', section: sectionLabel }), icon: 'gear' as const, onSelect: customize }] : []),
       // Always there, so the bar's trailing capsule keeps its shape.
       { label: t('chart.title', { ns: 'settings' }), icon: 'line-3-horizontal-decrease' as const, onSelect: () => setChartSettingsOpen('all') },
     ];

@@ -87,12 +87,22 @@ export interface PracticeNoteField {
   archived?: boolean;
 }
 
+export const IMAGING_REPORT_KINDS = ['radiology', 'ct'] as const;
+export type ImagingReportKind = typeof IMAGING_REPORT_KINDS[number];
+export interface ImagingReportField {
+  label?: string;
+  starterText?: string;
+}
+export type ImagingReportFields = Partial<Record<ImagingReportKind, ImagingReportField>>;
+export const IMAGING_STARTER_TEXT_LIMIT = 4000;
+
 export interface ConsultationLibrary {
   version?: 2;
   defaultId: string;
   templates: PracticeConsultationTemplate[];
   order?: string[];
   practiceFields?: PracticeNoteField[];
+  imagingReportFields?: ImagingReportFields;
 }
 
 // Older clients cannot preserve custom sections and their dictation sources.
@@ -343,6 +353,20 @@ export function updatePracticeNoteField(library: ConsultationLibrary, field: Pra
   };
 }
 
+function normalizeImagingReportFields(value: unknown): ImagingReportFields | undefined {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined;
+  const fields: ImagingReportFields = {};
+  for (const [kind, field] of Object.entries(value)) {
+    if ((kind !== 'radiology' && kind !== 'ct') || !field || typeof field !== 'object' || Array.isArray(field)
+      || Object.keys(field).some(key => key !== 'label' && key !== 'starterText')) return undefined;
+    const { label, starterText } = field;
+    if (label !== undefined && (typeof label !== 'string' || [...label].length > CONSULTATION_TEMPLATE_NAME_LIMIT)) return undefined;
+    if (starterText !== undefined && (typeof starterText !== 'string' || [...starterText].length > IMAGING_STARTER_TEXT_LIMIT)) return undefined;
+    fields[kind] = { ...(label?.trim() ? { label: label.trim() } : {}), ...(starterText?.trim() ? { starterText } : {}) };
+  }
+  return fields;
+}
+
 export function parseConsultationLibrary(value: unknown, kind: NoteTemplateKind = 'consultation'): ConsultationLibrary | undefined {
   if (!value || typeof value !== 'object' || !('templates' in value) || !Array.isArray(value.templates)
     || value.templates.length > CONSULTATION_TEMPLATE_LIMIT + (kind === 'discharge' ? DISCHARGE_STARTERS.length : 0) || !('defaultId' in value) || typeof value.defaultId !== 'string') return;
@@ -366,7 +390,11 @@ export function parseConsultationLibrary(value: unknown, kind: NoteTemplateKind 
   const rawFields = 'practiceFields' in value ? value.practiceFields : undefined;
   const practiceFields = rawFields === undefined ? undefined : normalizePracticeNoteFields(rawFields, kind);
   if (rawFields !== undefined && (!practiceFields || version !== CONSULTATION_LIBRARY_VERSION)) return undefined;
+  const rawImagingFields = 'imagingReportFields' in value ? value.imagingReportFields : undefined;
+  const imagingReportFields = rawImagingFields === undefined ? undefined : normalizeImagingReportFields(rawImagingFields);
+  if (rawImagingFields !== undefined && (kind !== 'imaging' || !imagingReportFields)) return undefined;
   const config: ConsultationLibrary = { defaultId, templates, ...(order ? { order } : {}),
+    ...(imagingReportFields ? { imagingReportFields } : {}),
     ...(version ? { version } : {}), ...(practiceFields ? { practiceFields } : {}) };
   return consultationLibraryFits(config) ? config : undefined;
 }

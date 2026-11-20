@@ -69,6 +69,16 @@ describe.skipIf(!container)('practice Imaging template libraries', () => {
     expect(asUser(owner, insert(starter))).toBe(revision);
   });
 
+  it('validates starter text and stable field keys for the section layout', () => {
+    const imagingReportFields = { ct: { label: 'CT findings', starterText: 'Findings:\n' }, radiology: {} };
+    expect(asUser(owner, insert({ ...starter, imagingReportFields }))).toBe(revision);
+    expect(asUser(member, `select config#>>'{imagingReportFields,ct,label}' from ${table}`)).toBe('CT findings');
+    for (const invalid of [{ unknown: {} }, { ct: { label: 2 } }, { ct: { starterText: 'x'.repeat(4001) } }]) {
+      const config = JSON.stringify({ ...starter, imagingReportFields: invalid }).replaceAll("'", "''");
+      expect(() => asUser(owner, `update ${table} set config = '${config}'::jsonb`)).toThrow(/check constraint/);
+    }
+  });
+
   it('lets members read and co-owners save ordered outlines with shared fields', () => {
     const update = `update ${table} set revision = '${nextRevision}' where revision = '${revision}' returning revision`;
     expect(() => asUser(member, insert(config))).toThrow(/row-level security/);

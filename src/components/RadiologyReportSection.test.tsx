@@ -289,21 +289,25 @@ it('uses the report Refine control for empty X-ray and CT editors and labels CT 
   expect(ct.getByRole('button', { name: 'Dictate CT report' }).querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
 });
 
-it.each(['radiology', 'ct'] as const)('inserts only missing %s headings and keeps recorded text editable', kind => {
-  const original = 'Findings:\nRecorded finding.';
+it.each(['radiology', 'ct'] as const)('displays %s starter text without saving it and preserves recorded reports', kind => {
   const onChange = vi.fn();
-  function Editor() {
-    const [value, setValue] = React.useState(() => ({ ...snapshot(), patientInfo: {
-      ...snapshot().patientInfo, ctReport: original, radiologyReport: original,
-    } }));
-    return <RadiologyReportSection chartEditor reportKind={kind} snapshot={value}
-      templateLibrary={{ defaultId: 'imaging-v1', templates: [] }}
-      onChange={changes => { onChange(changes); setValue(previous => ({ ...previous, patientInfo: { ...previous.patientInfo, ...changes } })); }} />;
-  }
-  render(<Editor />);
-  fireEvent.click(screen.getByRole('button', { name: 'Insert outline' }));
   const key = kind === 'ct' ? 'ctReport' : 'radiologyReport';
-  expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ [key]: original + '\n\nTechnique:\n\nImpression:' }));
-  fireEvent.click(screen.getByRole('button', { name: 'Insert outline' }));
-  expect(onChange).toHaveBeenCalledOnce();
+  const label = 'Clinical report';
+  const starterText = 'Findings:\n';
+  const input = snapshot();
+  const empty = { ...input, patientInfo: { ...input.patientInfo, radiographicFindings: '', [key]: '' } };
+  const props = { chartEditor: true, aiEnabled: true, reportKind: kind, reportLabel: label, starterText, onChange };
+  const { rerender } = render(<RadiologyReportSection {...props} snapshot={empty} />);
+  expect(screen.getByRole('textbox', { name: label })).toHaveValue(starterText);
+  expect(onChange).not.toHaveBeenCalled();
+  expect(screen.queryByRole('button', { name: 'Insert outline' })).toBeNull();
+  expect(screen.getByRole('button', { name: 'Refine' })).toBeDisabled();
+
+  fireEvent.change(screen.getByRole('textbox', { name: label }), { target: { value: starterText + 'Recorded finding.' } });
+  expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ [key]: starterText + 'Recorded finding.' }));
+
+  rerender(<RadiologyReportSection {...props} snapshot={{ ...empty,
+    patientInfo: { ...empty.patientInfo, [key]: 'Previously recorded.' },
+  }} />);
+  expect(screen.getByRole('textbox', { name: label })).toHaveValue('Previously recorded.');
 });
