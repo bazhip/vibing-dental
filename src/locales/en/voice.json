@@ -16,7 +16,8 @@
     "noteProcedureTooth": "Procedure note @{{triadan}}: \"{{text}}\"",
     "radiographic": "radiographic findings += \"{{text}}…\"",
     "removed": "Removed: {{what}}",
-    "report": "report += \"{{text}}…\""
+    "report": "report += \"{{text}}…\"",
+    "direct": "Charted directly: {{what}}"
   },
   "button": {
     "dictate": "Dictate",
@@ -147,14 +148,19 @@
     "interrupted": "Interrupted",
     "listening": "Listening",
     "ready": "Ready — start talking",
-    "stopped": "Stopped"
+    "stopped": "Stopped",
+    "reviewPending": "Dictation paused",
+    "reviewing": "Checking chart",
+    "reviewed": "Chart checked"
   },
   "sub": {
     "connecting": "getting mic ready…",
     "finishing": "finishing…",
     "goAhead": "go ahead — talk",
     "listening": "listening",
-    "listeningSending": "listening · sending…"
+    "listeningSending": "listening · sending…",
+    "reviewPending": "Checking the chart shortly. Resume to keep dictating.",
+    "reviewing": "Comparing the transcript with the chart."
   },
   "toReview_one": "{{count}} to review",
   "toReview_other": "{{count}} to review",

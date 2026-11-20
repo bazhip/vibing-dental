@@ -43,7 +43,8 @@
     "consultationReview": "A konzultáció Képek szakasza a Képek hozzáadása vezérlővel és egy példaminiatűrrel.",
     "consultationTemplatePreview": "A sablonszerkesztő egy fiktív konzultáció szakaszának megnyitott beállításaival.",
     "consultationRecordNote": "Konzultációs jegyzet a PDF letöltése és a Másolás gombbal.",
-    "dentalConsultation": "Az Éber szájüregi vizsgálat mező egy fiktív fogászati konzultációban."
+    "dentalConsultation": "Az Éber szájüregi vizsgálat mező egy fiktív fogászati konzultációban.",
+    "dictationCheck": "A diktálási panel rövid szünetet tart a fogászati lap ellenőrzése előtt. A „Folytatás” ugyanazt a diktálást folytatja."
   },
   "articles": {
     "start": {
@@ -150,7 +151,7 @@
         },
         "third": {
           "title": "Javítások áttekintése alkalmazás előtt",
-          "text": "Az Ellenőrizendő részen hasonlítsa össze a javaslatokat a meglévő értékekkel, és tartsa meg az alátámasztott megfogalmazást. Ugyanez a felvétel CT-leleteket, egyéb diagnosztikai eredményeket és hazabocsátási részleteket is javasolhat. Ellenőrizze a bizonyítékokat, majd jelölje ki az alkalmazandó részeket."
+          "text": "A „Fogászati lap kitöltése” szakaszban diktálás közben a „Tevékenység” alatt követheti a bejegyzéseket. Az egyértelmű számszerű leletek „Közvetlenül rögzítve” jelöléssel jelenhetnek meg, például ha fogszámot és mobilitási fokozatot ad meg. A mikrofon szüneteltetéséhez válassza a „Diktálás leállítása” lehetőséget. Amíg a „Diktálás szünetel” állapot látszik, válassza a „Folytatás” lehetőséget, ha még szeretne valamit hozzáadni.\n\nA „Fogászati lap ellenőrzése” automatikusan elindul, és összeveti az átiratot a lappal. Ha megjelenik a „Fogászati lap ellenőrizve” állapot, nézze meg, vannak-e tételek az „Ellenőrzést igényel” részen. Az Ellenőrizendő részen hasonlítsa össze a javaslatokat a meglévő értékekkel, és tartsa meg az alátámasztott megfogalmazást. Ugyanez a felvétel CT-leleteket, egyéb diagnosztikai eredményeket és hazabocsátási részleteket is javasolhat. Ellenőrizze a bizonyítékokat, majd jelölje ki az alkalmazandó részeket."
         }
       }
     },

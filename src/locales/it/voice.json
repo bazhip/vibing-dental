@@ -17,7 +17,8 @@
     "noteProcedureTooth": "Nota di procedura @{{triadan}}: «{{text}}»",
     "radiographic": "reperti radiografici += «{{text}}…»",
     "removed": "Rimosso: {{what}}",
-    "report": "referto += «{{text}}…»"
+    "report": "referto += «{{text}}…»",
+    "direct": "Registrato direttamente: {{what}}"
   },
   "button": {
     "dictate": "Detta",
@@ -152,14 +153,19 @@
     "interrupted": "Interrotto",
     "listening": "In ascolto",
     "ready": "Pronto, può parlare",
-    "stopped": "Fermato"
+    "stopped": "Fermato",
+    "reviewPending": "Dettatura in pausa",
+    "reviewing": "Verifica della cartella",
+    "reviewed": "Cartella verificata"
   },
   "sub": {
     "connecting": "preparazione del microfono…",
     "finishing": "completamento…",
     "goAhead": "prego, parli",
     "listening": "ascolto",
-    "listeningSending": "ascolto · invio…"
+    "listeningSending": "ascolto · invio…",
+    "reviewPending": "La verifica della cartella inizierà a breve. Selezioni «Riprendi» per continuare a dettare.",
+    "reviewing": "Confronto tra la trascrizione e la cartella."
   },
   "toReview_many": "{{count}} da verificare",
   "toReview_one": "{{count}} da verificare",

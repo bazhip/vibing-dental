@@ -43,7 +43,8 @@
     "consultationReview": "Der Abschnitt Bilder einer Konsultation mit der Schaltfläche Bilder hinzufügen und einer Beispiel-Miniaturansicht.",
     "consultationTemplatePreview": "Der Vorlageneditor mit geöffneten Einstellungen eines Abschnitts für eine fiktive Konsultation.",
     "consultationRecordNote": "Konsultationsnotiz mit den Schaltflächen PDF herunterladen und Kopieren.",
-    "dentalConsultation": "Das Feld zur Mauluntersuchung am wachen Tier in einer fiktiven Zahnkonsultation."
+    "dentalConsultation": "Das Feld zur Mauluntersuchung am wachen Tier in einer fiktiven Zahnkonsultation.",
+    "dictationCheck": "Das Diktatfenster pausiert kurz vor der Prüfung der Akte. Mit „Fortsetzen“ führen Sie dasselbe Diktat weiter."
   },
   "articles": {
     "start": {
@@ -150,7 +151,7 @@
         },
         "third": {
           "title": "Korrekturen vor dem Übernehmen prüfen",
-          "text": "Vergleichen Sie unter Zu prüfen die Vorschläge mit vorhandenen Werten und behalten Sie die belegten Angaben. Dieselbe Aufnahme kann am Ende CT-Befunde, weitere Diagnostikergebnisse und Entlassungsdetails vorschlagen. Prüfen Sie die Belege und wählen Sie die zu übernehmenden Abschnitte."
+          "text": "Verfolgen Sie im „Zahnschema“ unter „Aktivität“ die Einträge während des Diktats. Eindeutige Zahlenbefunde können als „Direkt erfasst“ erscheinen, etwa wenn Sie eine Zahnnummer und einen Beweglichkeitsgrad angeben. Wählen Sie „Diktat beenden“, um das Mikrofon zu pausieren. Solange „Diktat pausiert“ angezeigt wird, wählen Sie bei Bedarf „Fortsetzen“, um weitere Befunde zu diktieren.\n\nBei „Akte wird geprüft“ gleicht die Anwendung das Transkript automatisch mit der Akte ab. Sobald „Akte geprüft“ erscheint, sehen Sie nach, ob unter „Zu prüfen“ Einträge vorliegen. Vergleichen Sie unter Zu prüfen die Vorschläge mit vorhandenen Werten und behalten Sie die belegten Angaben. Dieselbe Aufnahme kann am Ende CT-Befunde, weitere Diagnostikergebnisse und Entlassungsdetails vorschlagen. Prüfen Sie die Belege und wählen Sie die zu übernehmenden Abschnitte."
         }
       }
     },

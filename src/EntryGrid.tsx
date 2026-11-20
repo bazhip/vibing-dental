@@ -185,6 +185,7 @@ const CHARTING_VIEW_KEYS = { grid: 'chartingView.grid', tooth: 'chartingView.too
  * driven by the active design board, and the preview modal.
  */
 interface EntryGridProps {
+  transcriptUserId?: string;
   /** No-account trial: cloud sync off, PDFs stamped TRIAL in the
    *  doctor/practice/logo slots, topbar offers account creation. */
   trial?: boolean;
@@ -196,6 +197,7 @@ interface EntryGridProps {
 
 const EntryGrid: React.FC<EntryGridProps> = ({
   trial = false,
+  transcriptUserId,
   onRequestAccount,
   onGoHome,
 }) => {
@@ -458,6 +460,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const activeSectionRef = React.useRef(activeSection);
   activeSectionRef.current = activeSection;
   const [dentalDictationBusy, setDentalDictationBusy] = React.useState(false);
+  const finalDictationReviewRef = React.useRef<(() => Promise<void> | undefined) | null>(null);
   const [clinicalDictationActive, setClinicalDictationActive] = React.useState(false);
   const [dictationRequest, setDictationRequest] = React.useState<{
     kind: ClinicalDictationKind; id: number; session: number; transcript?: { text: string; language: AppLanguage };
@@ -526,7 +529,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         snapshot={kind === 'consultation' ? {
           ...chart.getSnapshot(),
           patientInfo: { ...chart.patientInfo, consultationLayout: consultationLayoutFor(chart.patientInfo, consultationLibrary.config, chart.openedExisting) },
-        } : chart.getSnapshot()} chartId={chart.cloudChartId} chartSession={chart.chartSession} readOnly={readOnly} aiEnabled
+        } : chart.getSnapshot()} chartId={chart.cloudChartId} chartSession={chart.chartSession} transcriptUserId={transcriptUserId} readOnly={readOnly} aiEnabled
         disabled={dentalDictationBusy} openRequest={requestFor(kind)}
         seededTranscript={dictationRequest?.kind === kind && dictationRequest.session === chart.chartSession ? dictationRequest.transcript : undefined}
         onApply={applyClinicalDictation} onOpenChange={setClinicalDictationActive} /> : undefined;
@@ -1708,8 +1711,16 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       return false;
     }
     lifecycleBusyRef.current = true;
-    setFinalizationBusy(true);
     try {
+      const session = activeLifecycleSession.current;
+      const review = finalized ? finalDictationReviewRef.current?.() : undefined;
+      if (review) {
+        await review;
+        // Allow any last chart updates from the review to reach the save snapshot.
+        await new Promise(resolve => setTimeout(resolve, 0));
+        if (session !== activeLifecycleSession.current) return false;
+      }
+      setFinalizationBusy(true);
       explicitSaveRef.current = true;
       return await cloud.setFinalized(finalized);
     } catch (err) {
@@ -2307,11 +2318,13 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       onActivity={handleAiActivity}
       onShowAction={goToSection}
       onDictationComplete={handleDictationComplete}
+      finalReviewRef={finalDictationReviewRef}
       contextualDestination={contextualDestination}
       triggerHidden={triggerHidden || readOnly || clinicalDictationActive}
       onBusyChange={setDentalDictationBusy}
       activeSection={activeSection}
       sessionKey={String(chart.chartSession)}
+      transcriptUserId={transcriptUserId}
       locked={readOnly || clinicalDictationActive}
       onOpenFeedback={canFeedback ? (transcript) => setFeedback({ transcript }) : undefined}
     />

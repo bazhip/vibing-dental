@@ -28,6 +28,8 @@ import {
 
 const appLanguage = (): AppLanguage => (isAppLanguage(i18n.language) ? i18n.language : 'en');
 
+const TRANSCRIPT_RETENTION_MS = 30 * 24 * 60 * 60 * 1000;
+
 type SpeechRecognitionConstructor = new () => SpeechRecognition;
 
 interface SpeechRecognitionEventLike extends Event {
@@ -67,6 +69,7 @@ export interface FinalSegment {
   text: string;
   /** Text for the AI, with low-confidence words marked "[?word]". */
   annotated?: string;
+  highConfidence?: boolean;
   /** ms timestamp from performance.now() at receipt. */
   receivedAt: number;
 }
@@ -131,6 +134,10 @@ function isTouchPrimary(): boolean {
 }
 
 export interface UseVoiceCaptureOptions {
+  /** The dictation workflow to record for transcript analysis. */
+  transcriptSource?: 'dental' | 'clinical';
+  /** Owner of the mounted chart workspace, even if the auth session changes. */
+  transcriptUserId?: string;
   /** Opt in to dropping events and stop callbacks from superseded capture sessions. */
   ignoreStaleStopCallbacks?: boolean;
   /** Fires when a session ends (stop or interruption), once its last
@@ -140,7 +147,9 @@ export interface UseVoiceCaptureOptions {
   onSegment?: (seg: FinalSegment) => void;
 }
 
-export function useVoiceCapture({ onStop, onSegment, ignoreStaleStopCallbacks = false }: UseVoiceCaptureOptions = {}): VoiceCapture {
+export function useVoiceCapture({
+  onStop, onSegment, ignoreStaleStopCallbacks = false, transcriptSource, transcriptUserId,
+}: UseVoiceCaptureOptions = {}): VoiceCapture {
   const browserCtor = React.useMemo(getRecognitionCtor, []);
   // Deepgram (high accuracy + diarization) is preferred when the browser
   // can capture raw audio; its key is minted per-session by the backend,
@@ -165,6 +174,14 @@ export function useVoiceCapture({ onStop, onSegment, ignoreStaleStopCallbacks = 
 
   // Internal buffers — refs so callbacks don't have to re-bind.
   const finalRef = React.useRef('');
+  const transcriptArchiveRef = React.useRef<{
+    id: string;
+    userId: string;
+    expiresAt: number;
+    firstSegment: number;
+    source: NonNullable<UseVoiceCaptureOptions['transcriptSource']>;
+    submittedSegments: number;
+  } | null>(null);
   const interimRef = React.useRef('');
   const pendingSegmentsRef = React.useRef<FinalSegment[]>([]);
   const recentSegmentsRef = React.useRef<FinalSegment[]>([]);
@@ -222,8 +239,30 @@ export function useVoiceCapture({ onStop, onSegment, ignoreStaleStopCallbacks = 
     setTranscript(finalRef.current + text);
   }, []);
 
+  const archiveTranscript = React.useCallback(() => {
+    const client = supabase;
+    const archive = transcriptArchiveRef.current;
+    const segments = allSegmentsRef.current;
+    if (!client || !archive || archive.expiresAt <= Date.now() || segments.length <= archive.submittedSegments) return;
+
+    const transcript = segments.slice(archive.firstSegment).map(({ text }) => text).join('\n');
+    archive.submittedSegments = segments.length;
+    // A storage outage must never delay or interrupt charting.
+    void Promise.resolve(client.rpc('retain_dictation_transcript', {
+      p_session_id: archive.id,
+      p_user_id: archive.userId,
+      p_source: archive.source,
+      p_language: lngRef.current,
+      p_transcript: transcript,
+    })).catch(() => {});
+  }, []);
+
   const clear = React.useCallback(() => {
+    // Switching charts can clear buffers before the provider flushes its
+    // stop callback. Keep the words that were already finalized.
+    archiveTranscript();
     generationRef.current++;
+    transcriptArchiveRef.current = null;
     finalRef.current = '';
     interimRef.current = '';
     pendingSegmentsRef.current = [];
@@ -234,7 +273,7 @@ export function useVoiceCapture({ onStop, onSegment, ignoreStaleStopCallbacks = 
     setError(null);
     setInterrupted(false);
     setStartedAt(null);
-  }, []);
+  }, [archiveTranscript]);
 
   /** A session ended. Existing consumers still receive stop callbacks
    *  after a resume; opted-in consumers require the current session and generation. */
@@ -249,9 +288,11 @@ export function useVoiceCapture({ onStop, onSegment, ignoreStaleStopCallbacks = 
       setInterimState('');
       setRecording(false);
       if (wasLive && !stopRequestedRef.current && !fatalRef.current) setInterrupted(true);
+
+      if (generation === generationRef.current) archiveTranscript();
     }
     onStopRef.current?.(finalText);
-  }, [isStaleSession]);
+  }, [archiveTranscript, isStaleSession]);
 
   const startBrowser = React.useCallback((id: number) => {
     const generation = generationRef.current;
@@ -266,7 +307,7 @@ export function useVoiceCapture({ onStop, onSegment, ignoreStaleStopCallbacks = 
     rec.lang = browserSpeechLang(lngRef.current, navigator.language);
 
     rec.onresult = (event) => {
-      if (isStaleSession(id, generation)) return;
+      if (generation !== generationRef.current || isStaleSession(id, generation)) return;
       let text = '';
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const result = event.results[i];
@@ -403,9 +444,26 @@ export function useVoiceCapture({ onStop, onSegment, ignoreStaleStopCallbacks = 
     // heard yet, or after clear()/start()) takes the current app language.
     if (allSegmentsRef.current.length === 0) lngRef.current = forcedFreshLanguageRef.current ?? appLanguage();
     setLng(lngRef.current);
+    const now = Date.now();
+    const archive = transcriptArchiveRef.current;
+    if (transcriptSource && transcriptUserId && supabase
+        && (!archive || archive.expiresAt <= now)
+        && typeof globalThis.crypto?.randomUUID === 'function') {
+      // A tab can keep an old dictation open after its server copy expires.
+      // Archive only new speech if the user resumes that dictation.
+      const firstSegment = allSegmentsRef.current.length;
+      transcriptArchiveRef.current = {
+        id: crypto.randomUUID(),
+        userId: transcriptUserId,
+        expiresAt: now + TRANSCRIPT_RETENTION_MS,
+        source: transcriptSource,
+        firstSegment,
+        submittedSegments: firstSegment,
+      };
+    }
     if (provider === 'deepgram') startDeepgram(id);
     else startBrowser(id);
-  }, [provider, startBrowser, startDeepgram]);
+  }, [provider, startBrowser, startDeepgram, transcriptSource, transcriptUserId]);
 
   const isListening = () => !!browserRef.current || !!deepgramRef.current;
 
@@ -432,6 +490,7 @@ export function useVoiceCapture({ onStop, onSegment, ignoreStaleStopCallbacks = 
   }, []);
 
   const stop = React.useCallback(() => {
+    archiveTranscript();
     stopRequestedRef.current = true;
     // Show "stopped" right away; the session finishes flushing in the
     // background and fires onStop when its last words are in.
@@ -447,7 +506,7 @@ export function useVoiceCapture({ onStop, onSegment, ignoreStaleStopCallbacks = 
       try { rec.stop(); } catch { /* ignore */ }
     }
     dg?.stop();
-  }, []);
+  }, [archiveTranscript]);
 
   // End the session (as an interruption, not a user stop) when a phone
   // leaves the page — the mic is gone either way, and ending it cleanly
@@ -456,6 +515,7 @@ export function useVoiceCapture({ onStop, onSegment, ignoreStaleStopCallbacks = 
   React.useEffect(() => {
     if (!recording || !isTouchPrimary()) return;
     const interrupt = () => {
+      archiveTranscript();
       if (browserRef.current) {
         try { browserRef.current.stop(); } catch { /* ignore */ }
       }
@@ -470,7 +530,7 @@ export function useVoiceCapture({ onStop, onSegment, ignoreStaleStopCallbacks = 
       document.removeEventListener('visibilitychange', onVisibility);
       window.removeEventListener('pagehide', interrupt);
     };
-  }, [recording]);
+  }, [archiveTranscript, recording]);
 
   const consumeFinalSegments = React.useCallback((): FinalSegment[] => {
     const out = pendingSegmentsRef.current;
@@ -488,6 +548,8 @@ export function useVoiceCapture({ onStop, onSegment, ignoreStaleStopCallbacks = 
   // Stop on unmount.
   React.useEffect(() => {
     return () => {
+      archiveTranscript();
+      transcriptArchiveRef.current = null;
       sessionIdRef.current++;
       if (browserRef.current) {
         try { browserRef.current.abort(); } catch { /* ignore */ }
@@ -498,7 +560,7 @@ export function useVoiceCapture({ onStop, onSegment, ignoreStaleStopCallbacks = 
         deepgramRef.current = null;
       }
     };
-  }, []);
+  }, [archiveTranscript]);
 
   return {
     supported, recording, ready, transcript, interim, start, startInLanguage, clear, stop, setMuted, error,

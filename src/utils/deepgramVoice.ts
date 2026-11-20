@@ -32,6 +32,7 @@ export interface DeepgramSegment {
   /** Same text with low-confidence words marked "[?word]" — what the AI
    *  sees, so it knows which words may be misheard. */
   annotated: string;
+  highConfidence?: boolean;
   /** ms timestamp from performance.now(). */
   receivedAt: number;
 }
@@ -334,7 +335,8 @@ export async function startDeepgramSession(
             const shown = w.punctuated_word ?? w.word;
             return w.confidence != null && w.confidence < LOW_CONFIDENCE ? `[?${shown}]` : shown;
           });
-          handlers.onFinal({ text, annotated, receivedAt: performance.now() });
+          const highConfidence = words.length > 0 && words.every(word => (word.confidence ?? 0) >= 0.90);
+          handlers.onFinal({ text, annotated, highConfidence, receivedAt: performance.now() });
         }
       }
     };

@@ -7397,7 +7397,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.third.text": {
-      "hash": "2f4c289ee78b",
+      "hash": "ef20264b7bc1",
       "status": "machine"
     },
     "help:articles.dictation.sections.third.title": {
@@ -7938,6 +7938,10 @@
     },
     "help:images.dictation": {
       "hash": "3331c33a8ed5",
+      "status": "machine"
+    },
+    "help:images.dictationCheck": {
+      "hash": "ff7bc6c58671",
       "status": "machine"
     },
     "help:images.exam": {
@@ -15664,6 +15668,10 @@
       "hash": "abf7d2af3444",
       "status": "machine"
     },
+    "voice:activity.direct": {
+      "hash": "45de7fbe7057",
+      "status": "machine"
+    },
     "voice:activity.finalNone": {
       "hash": "a555dfafab36",
       "status": "machine"
@@ -16360,6 +16368,18 @@
       "hash": "ed837c72f5ef",
       "status": "machine"
     },
+    "voice:status.reviewPending": {
+      "hash": "3d4bf69d7d8e",
+      "status": "machine"
+    },
+    "voice:status.reviewed": {
+      "hash": "9cf38be89190",
+      "status": "machine"
+    },
+    "voice:status.reviewing": {
+      "hash": "c0601b6e3708",
+      "status": "machine"
+    },
     "voice:status.stopped": {
       "hash": "1a4f630ac1b6",
       "status": "machine"
@@ -16382,6 +16402,14 @@
     },
     "voice:sub.listeningSending": {
       "hash": "8feb1f7900de",
+      "status": "machine"
+    },
+    "voice:sub.reviewPending": {
+      "hash": "b0d6a0883fa2",
+      "status": "machine"
+    },
+    "voice:sub.reviewing": {
+      "hash": "f8e3489d005b",
       "status": "machine"
     },
     "voice:toReview_few": {
@@ -23751,7 +23779,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.third.text": {
-      "hash": "2f4c289ee78b",
+      "hash": "ef20264b7bc1",
       "status": "machine"
     },
     "help:articles.dictation.sections.third.title": {
@@ -24292,6 +24320,10 @@
     },
     "help:images.dictation": {
       "hash": "3331c33a8ed5",
+      "status": "machine"
+    },
+    "help:images.dictationCheck": {
+      "hash": "ff7bc6c58671",
       "status": "machine"
     },
     "help:images.exam": {
@@ -31954,6 +31986,10 @@
       "hash": "abf7d2af3444",
       "status": "machine"
     },
+    "voice:activity.direct": {
+      "hash": "45de7fbe7057",
+      "status": "machine"
+    },
     "voice:activity.finalNone": {
       "hash": "a555dfafab36",
       "status": "machine"
@@ -32570,6 +32606,18 @@
       "hash": "ed837c72f5ef",
       "status": "machine"
     },
+    "voice:status.reviewPending": {
+      "hash": "3d4bf69d7d8e",
+      "status": "machine"
+    },
+    "voice:status.reviewed": {
+      "hash": "9cf38be89190",
+      "status": "machine"
+    },
+    "voice:status.reviewing": {
+      "hash": "c0601b6e3708",
+      "status": "machine"
+    },
     "voice:status.stopped": {
       "hash": "1a4f630ac1b6",
       "status": "machine"
@@ -32592,6 +32640,14 @@
     },
     "voice:sub.listeningSending": {
       "hash": "8feb1f7900de",
+      "status": "machine"
+    },
+    "voice:sub.reviewPending": {
+      "hash": "b0d6a0883fa2",
+      "status": "machine"
+    },
+    "voice:sub.reviewing": {
+      "hash": "f8e3489d005b",
       "status": "machine"
     },
     "voice:toReview_one": {
@@ -40005,7 +40061,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.third.text": {
-      "hash": "2f4c289ee78b",
+      "hash": "ef20264b7bc1",
       "status": "machine"
     },
     "help:articles.dictation.sections.third.title": {
@@ -40546,6 +40602,10 @@
     },
     "help:images.dictation": {
       "hash": "3331c33a8ed5",
+      "status": "machine"
+    },
+    "help:images.dictationCheck": {
+      "hash": "ff7bc6c58671",
       "status": "machine"
     },
     "help:images.exam": {
@@ -48240,6 +48300,10 @@
       "hash": "abf7d2af3444",
       "status": "machine"
     },
+    "voice:activity.direct": {
+      "hash": "45de7fbe7057",
+      "status": "machine"
+    },
     "voice:activity.finalNone": {
       "hash": "a555dfafab36",
       "status": "machine"
@@ -48876,6 +48940,18 @@
       "hash": "ed837c72f5ef",
       "status": "machine"
     },
+    "voice:status.reviewPending": {
+      "hash": "3d4bf69d7d8e",
+      "status": "machine"
+    },
+    "voice:status.reviewed": {
+      "hash": "9cf38be89190",
+      "status": "machine"
+    },
+    "voice:status.reviewing": {
+      "hash": "c0601b6e3708",
+      "status": "machine"
+    },
     "voice:status.stopped": {
       "hash": "1a4f630ac1b6",
       "status": "machine"
@@ -48898,6 +48974,14 @@
     },
     "voice:sub.listeningSending": {
       "hash": "8feb1f7900de",
+      "status": "machine"
+    },
+    "voice:sub.reviewPending": {
+      "hash": "b0d6a0883fa2",
+      "status": "machine"
+    },
+    "voice:sub.reviewing": {
+      "hash": "f8e3489d005b",
       "status": "machine"
     },
     "voice:toReview_many": {
@@ -56315,7 +56399,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.third.text": {
-      "hash": "2f4c289ee78b",
+      "hash": "ef20264b7bc1",
       "status": "machine"
     },
     "help:articles.dictation.sections.third.title": {
@@ -56856,6 +56940,10 @@
     },
     "help:images.dictation": {
       "hash": "3331c33a8ed5",
+      "status": "machine"
+    },
+    "help:images.dictationCheck": {
+      "hash": "ff7bc6c58671",
       "status": "machine"
     },
     "help:images.exam": {
@@ -64550,6 +64638,10 @@
       "hash": "abf7d2af3444",
       "status": "machine"
     },
+    "voice:activity.direct": {
+      "hash": "45de7fbe7057",
+      "status": "machine"
+    },
     "voice:activity.finalNone": {
       "hash": "a555dfafab36",
       "status": "machine"
@@ -65186,6 +65278,18 @@
       "hash": "ed837c72f5ef",
       "status": "machine"
     },
+    "voice:status.reviewPending": {
+      "hash": "3d4bf69d7d8e",
+      "status": "machine"
+    },
+    "voice:status.reviewed": {
+      "hash": "9cf38be89190",
+      "status": "machine"
+    },
+    "voice:status.reviewing": {
+      "hash": "c0601b6e3708",
+      "status": "machine"
+    },
     "voice:status.stopped": {
       "hash": "1a4f630ac1b6",
       "status": "machine"
@@ -65208,6 +65312,14 @@
     },
     "voice:sub.listeningSending": {
       "hash": "8feb1f7900de",
+      "status": "machine"
+    },
+    "voice:sub.reviewPending": {
+      "hash": "b0d6a0883fa2",
+      "status": "machine"
+    },
+    "voice:sub.reviewing": {
+      "hash": "f8e3489d005b",
       "status": "machine"
     },
     "voice:toReview_many": {
@@ -72557,7 +72669,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.third.text": {
-      "hash": "2f4c289ee78b",
+      "hash": "ef20264b7bc1",
       "status": "machine"
     },
     "help:articles.dictation.sections.third.title": {
@@ -73098,6 +73210,10 @@
     },
     "help:images.dictation": {
       "hash": "3331c33a8ed5",
+      "status": "machine"
+    },
+    "help:images.dictationCheck": {
+      "hash": "ff7bc6c58671",
       "status": "machine"
     },
     "help:images.exam": {
@@ -80696,6 +80812,10 @@
       "hash": "abf7d2af3444",
       "status": "machine"
     },
+    "voice:activity.direct": {
+      "hash": "45de7fbe7057",
+      "status": "machine"
+    },
     "voice:activity.finalNone": {
       "hash": "a555dfafab36",
       "status": "machine"
@@ -81312,6 +81432,18 @@
       "hash": "ed837c72f5ef",
       "status": "machine"
     },
+    "voice:status.reviewPending": {
+      "hash": "3d4bf69d7d8e",
+      "status": "machine"
+    },
+    "voice:status.reviewed": {
+      "hash": "9cf38be89190",
+      "status": "machine"
+    },
+    "voice:status.reviewing": {
+      "hash": "c0601b6e3708",
+      "status": "machine"
+    },
     "voice:status.stopped": {
       "hash": "1a4f630ac1b6",
       "status": "machine"
@@ -81334,6 +81466,14 @@
     },
     "voice:sub.listeningSending": {
       "hash": "8feb1f7900de",
+      "status": "machine"
+    },
+    "voice:sub.reviewPending": {
+      "hash": "b0d6a0883fa2",
+      "status": "machine"
+    },
+    "voice:sub.reviewing": {
+      "hash": "f8e3489d005b",
       "status": "machine"
     },
     "voice:toReview_one": {
@@ -88747,7 +88887,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.third.text": {
-      "hash": "2f4c289ee78b",
+      "hash": "ef20264b7bc1",
       "status": "machine"
     },
     "help:articles.dictation.sections.third.title": {
@@ -89288,6 +89428,10 @@
     },
     "help:images.dictation": {
       "hash": "3331c33a8ed5",
+      "status": "machine"
+    },
+    "help:images.dictationCheck": {
+      "hash": "ff7bc6c58671",
       "status": "machine"
     },
     "help:images.exam": {
@@ -96982,6 +97126,10 @@
       "hash": "abf7d2af3444",
       "status": "machine"
     },
+    "voice:activity.direct": {
+      "hash": "45de7fbe7057",
+      "status": "machine"
+    },
     "voice:activity.finalNone": {
       "hash": "a555dfafab36",
       "status": "machine"
@@ -97618,6 +97766,18 @@
       "hash": "ed837c72f5ef",
       "status": "machine"
     },
+    "voice:status.reviewPending": {
+      "hash": "3d4bf69d7d8e",
+      "status": "machine"
+    },
+    "voice:status.reviewed": {
+      "hash": "9cf38be89190",
+      "status": "machine"
+    },
+    "voice:status.reviewing": {
+      "hash": "c0601b6e3708",
+      "status": "machine"
+    },
     "voice:status.stopped": {
       "hash": "1a4f630ac1b6",
       "status": "machine"
@@ -97640,6 +97800,14 @@
     },
     "voice:sub.listeningSending": {
       "hash": "8feb1f7900de",
+      "status": "machine"
+    },
+    "voice:sub.reviewPending": {
+      "hash": "b0d6a0883fa2",
+      "status": "machine"
+    },
+    "voice:sub.reviewing": {
+      "hash": "f8e3489d005b",
       "status": "machine"
     },
     "voice:toReview_many": {
@@ -105643,7 +105811,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.third.text": {
-      "hash": "2f4c289ee78b",
+      "hash": "ef20264b7bc1",
       "status": "machine"
     },
     "help:articles.dictation.sections.third.title": {
@@ -106184,6 +106352,10 @@
     },
     "help:images.dictation": {
       "hash": "3331c33a8ed5",
+      "status": "machine"
+    },
+    "help:images.dictationCheck": {
+      "hash": "ff7bc6c58671",
       "status": "machine"
     },
     "help:images.exam": {
@@ -113814,6 +113986,10 @@
       "hash": "abf7d2af3444",
       "status": "machine"
     },
+    "voice:activity.direct": {
+      "hash": "45de7fbe7057",
+      "status": "machine"
+    },
     "voice:activity.finalNone": {
       "hash": "a555dfafab36",
       "status": "machine"
@@ -114450,6 +114626,18 @@
       "hash": "ed837c72f5ef",
       "status": "machine"
     },
+    "voice:status.reviewPending": {
+      "hash": "3d4bf69d7d8e",
+      "status": "machine"
+    },
+    "voice:status.reviewed": {
+      "hash": "9cf38be89190",
+      "status": "machine"
+    },
+    "voice:status.reviewing": {
+      "hash": "c0601b6e3708",
+      "status": "machine"
+    },
     "voice:status.stopped": {
       "hash": "1a4f630ac1b6",
       "status": "machine"
@@ -114472,6 +114660,14 @@
     },
     "voice:sub.listeningSending": {
       "hash": "8feb1f7900de",
+      "status": "machine"
+    },
+    "voice:sub.reviewPending": {
+      "hash": "b0d6a0883fa2",
+      "status": "machine"
+    },
+    "voice:sub.reviewing": {
+      "hash": "f8e3489d005b",
       "status": "machine"
     },
     "voice:toReview_few": {
@@ -121821,7 +122017,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.third.text": {
-      "hash": "2f4c289ee78b",
+      "hash": "ef20264b7bc1",
       "status": "machine"
     },
     "help:articles.dictation.sections.third.title": {
@@ -122362,6 +122558,10 @@
     },
     "help:images.dictation": {
       "hash": "3331c33a8ed5",
+      "status": "machine"
+    },
+    "help:images.dictationCheck": {
+      "hash": "ff7bc6c58671",
       "status": "machine"
     },
     "help:images.exam": {
@@ -129960,6 +130160,10 @@
       "hash": "abf7d2af3444",
       "status": "machine"
     },
+    "voice:activity.direct": {
+      "hash": "45de7fbe7057",
+      "status": "machine"
+    },
     "voice:activity.finalNone": {
       "hash": "a555dfafab36",
       "status": "machine"
@@ -130576,6 +130780,18 @@
       "hash": "ed837c72f5ef",
       "status": "machine"
     },
+    "voice:status.reviewPending": {
+      "hash": "3d4bf69d7d8e",
+      "status": "machine"
+    },
+    "voice:status.reviewed": {
+      "hash": "9cf38be89190",
+      "status": "machine"
+    },
+    "voice:status.reviewing": {
+      "hash": "c0601b6e3708",
+      "status": "machine"
+    },
     "voice:status.stopped": {
       "hash": "1a4f630ac1b6",
       "status": "machine"
@@ -130598,6 +130814,14 @@
     },
     "voice:sub.listeningSending": {
       "hash": "8feb1f7900de",
+      "status": "machine"
+    },
+    "voice:sub.reviewPending": {
+      "hash": "b0d6a0883fa2",
+      "status": "machine"
+    },
+    "voice:sub.reviewing": {
+      "hash": "f8e3489d005b",
       "status": "machine"
     },
     "voice:toReview_one": {

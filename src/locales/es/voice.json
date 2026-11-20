@@ -17,7 +17,8 @@
     "noteProcedureTooth": "Nota de procedimiento @{{triadan}}: «{{text}}»",
     "radiographic": "hallazgos radiográficos += «{{text}}…»",
     "removed": "Quitado: {{what}}",
-    "report": "informe += «{{text}}…»"
+    "report": "informe += «{{text}}…»",
+    "direct": "Registrado directamente: {{what}}"
   },
   "button": {
     "dictate": "Dictar",
@@ -152,14 +153,19 @@
     "interrupted": "Interrumpido",
     "listening": "Escuchando",
     "ready": "Listo: puede hablar",
-    "stopped": "Detenido"
+    "stopped": "Detenido",
+    "reviewPending": "Dictado en pausa",
+    "reviewing": "Revisando el historial",
+    "reviewed": "Historial revisado"
   },
   "sub": {
     "connecting": "preparando el micrófono…",
     "finishing": "finalizando…",
     "goAhead": "adelante, hable",
     "listening": "escuchando",
-    "listeningSending": "escuchando · enviando…"
+    "listeningSending": "escuchando · enviando…",
+    "reviewPending": "El historial se revisará en breve. Seleccione «Reanudar» para seguir dictando.",
+    "reviewing": "Comparando la transcripción con el historial."
   },
   "toReview_many": "{{count}} por revisar",
   "toReview_one": "{{count}} por revisar",

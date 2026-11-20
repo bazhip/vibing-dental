@@ -17,7 +17,8 @@
     "radiographic": "constatări radiografice += „{{text}}…”",
     "removed": "Eliminat: {{what}}",
     "report": "raport += „{{text}}…”",
-    "finalRaised_few": "Verificare finală: {{count}} elemente adăugate pentru verificare"
+    "finalRaised_few": "Verificare finală: {{count}} elemente adăugate pentru verificare",
+    "direct": "Înregistrat direct: {{what}}"
   },
   "button": {
     "dictate": "Dictați",
@@ -152,14 +153,19 @@
     "interrupted": "Întreruptă",
     "listening": "Se ascultă",
     "ready": "Pregătit — începeți să vorbiți",
-    "stopped": "Oprită"
+    "stopped": "Oprită",
+    "reviewPending": "Dictare în pauză",
+    "reviewing": "Se verifică fișa",
+    "reviewed": "Fișă verificată"
   },
   "sub": {
     "connecting": "se pregătește microfonul…",
     "finishing": "se finalizează…",
     "goAhead": "puteți vorbi",
     "listening": "se ascultă",
-    "listeningSending": "se ascultă · se trimite…"
+    "listeningSending": "se ascultă · se trimite…",
+    "reviewPending": "Verificarea fișei începe în curând. Alegeți „Reluați” pentru a continua dictarea.",
+    "reviewing": "Se compară transcrierea cu fișa."
   },
   "toReview_one": "{{count}} de verificat",
   "toReview_other": "{{count}} de verificat",

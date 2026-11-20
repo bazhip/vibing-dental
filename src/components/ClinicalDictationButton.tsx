@@ -25,6 +25,7 @@ interface Props {
   snapshot: ChartSnapshot;
   chartId: string | null;
   chartSession: number;
+  transcriptUserId?: string;
   readOnly?: boolean;
   aiEnabled?: boolean;
   gpExamEnabled?: boolean;
@@ -72,7 +73,12 @@ export function ClinicalDictationButton(props: Props) {
   current.current = { props, basis, target, transcript, identity };
   const prepareRef = React.useRef<(text: string) => void>(() => {});
   const stopHandler = React.useRef<(text: string) => void>(() => {});
-  const capture = useVoiceCapture({ ignoreStaleStopCallbacks: true, onStop: text => stopHandler.current(text) });
+  const capture = useVoiceCapture({
+    ignoreStaleStopCallbacks: true,
+    onStop: text => stopHandler.current(text),
+    transcriptSource: 'clinical',
+    transcriptUserId: props.transcriptUserId,
+  });
   const captureRef = React.useRef(capture); captureRef.current = capture;
   const native = isNativeApp();
   const seeded = props.seededTranscript;

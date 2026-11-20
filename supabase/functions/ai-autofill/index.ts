@@ -9,8 +9,9 @@
 //
 // Requires the ANTHROPIC_API_KEY edge-function secret (dashboard).
 
-import { createClient } from 'npm:@supabase/supabase-js@2';
+import { createClient, type SupabaseClient } from 'npm:@supabase/supabase-js@2';
 import { apiError } from '../_shared/apiErrors.ts';
+import { createDictationRequestReuse, reviewSystemCache } from '../_shared/aiDictationReuse.ts';
 import { AI_REQUEST_KINDS, featureForRequest, resolveAiModels, usesReviewSettings } from '../_shared/aiModels.ts';
 
 const CORS = {
@@ -61,6 +62,7 @@ const LIVE_MAX_CHARS = 120_000;
 // the AI rate limits so sending reminders or reports never blocks AI.
 const NON_AI_USAGE = '("deepgram-token","reminder-email","owner-report-email","feedback")';
 const REVIEW_MAX_CHARS = 400_000;
+const reuseDictationRequest = createDictationRequestReuse();
 
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS });
@@ -105,19 +107,44 @@ Deno.serve(async (req: Request) => {
   // defaults apply).
   const { data: cfg } = await admin.from('app_config').select('*').eq('id', 1).maybeSingle();
   const model = resolveAiModels(cfg?.ai_models)[featureForRequest(body.mode, kind)];
+  const finalReview = body.mode === 'review' && kind === 'review';
+  const forward = () => forwardToModel(admin, caller.id, practiceId, key, model, kind, body, review, finalReview);
+  if ((!review && kind === 'live') || finalReview) {
+    return reuseDictationRequest({ userId: caller.id, practiceId, model, raw }, forward);
+  }
+  return forward();
+});
 
+async function forwardToModel(
+  admin: SupabaseClient,
+  userId: string,
+  practiceId: string | null,
+  key: string,
+  model: string,
+  kind: string,
+  body: Record<string, unknown>,
+  review: boolean,
+  finalReview: boolean,
+): Promise<Response> {
   // Rate limits. Reserve the usage row FIRST, then count this user's calls
   // up to and including it: counting before the call and logging after
   // let any number of parallel requests through (each saw an old count).
   // Over a limit, the reservation is removed so it doesn't count.
-  let reserved = await admin.from('ai_usage')
-    .insert({ user_id: caller.id, practice_id: practiceId, model, kind })
-    .select('id, created_at').single();
+  const usageOwner = { user_id: userId, practice_id: practiceId, model };
+  const reserve = (columns: string) => admin.from('ai_usage')
+    .insert({ ...usageOwner, kind }).select(columns).single()
+    .overrideTypes<{ id: string; created_at: string }, { merge: false }>();
+  const reservationColumns = 'id, created_at';
+  let reserved = await reserve(finalReview ? reservationColumns + ', cache_write_1h_tokens' : reservationColumns);
+  // Enable the extended TTL only when the resulting usage can be priced
+  // correctly. Older deployments still issue the same five-minute review.
+  const hourCacheSupported = finalReview && !reserved.error;
+  if (finalReview && (reserved.error?.code === 'PGRST204' || reserved.error?.code === '42703')) {
+    reserved = await reserve(reservationColumns);
+  }
   if (reserved.error) {
     // Database without the `kind` column yet (later migration).
-    reserved = await admin.from('ai_usage')
-      .insert({ user_id: caller.id, practice_id: practiceId, model })
-      .select('id, created_at').single();
+    reserved = await admin.from('ai_usage').insert(usageOwner).select(reservationColumns).single();
   }
   // Usage log unavailable (database hiccup): don't break dictation over
   // it — run the call unmetered, as the old count-then-log check did.
@@ -127,7 +154,7 @@ Deno.serve(async (req: Request) => {
   if (usageId) {
     const since = (ms: number) => new Date(Date.now() - ms).toISOString();
     const callsSince = (ms: number) => admin.from('ai_usage').select('id', { count: 'exact', head: true })
-      .eq('user_id', caller.id).not('model', 'in', NON_AI_USAGE)
+      .eq('user_id', userId).not('model', 'in', NON_AI_USAGE)
       .gte('created_at', since(ms)).lte('created_at', reserved.data!.created_at);
     const [{ count: perMinute }, { count: perDay }] = await Promise.all([callsSince(60_000), callsSince(86_400_000)]);
     if ((perMinute ?? 0) > 40) { await releaseUsage(); return json(apiError('ai_rate_limit'), 429); }
@@ -144,7 +171,7 @@ Deno.serve(async (req: Request) => {
   const payload: Record<string, unknown> = {
     model,
     max_tokens: maxTokens,
-    system: body.system,
+    system: reviewSystemCache(body.system, hourCacheSupported),
     tools: body.tools,
     messages: body.messages,
     ...settings.extra,
@@ -191,6 +218,7 @@ Deno.serve(async (req: Request) => {
       output_tokens?: number;
       cache_read_input_tokens?: number;
       cache_creation_input_tokens?: number;
+      cache_creation?: { ephemeral_1h_input_tokens?: number };
     };
   };
   try {
@@ -203,24 +231,38 @@ Deno.serve(async (req: Request) => {
   // Fill in the reserved usage row (best-effort — never fail the call
   // over telemetry).
   const u = data.usage ?? {};
+  const cacheWrite = u.cache_creation_input_tokens ?? 0;
+  const hourWrite = u.cache_creation?.ephemeral_1h_input_tokens ?? 0;
   const baseRow = {
     // The model that actually served it (differs after a fallback).
     model: data.model ?? model,
-    // Cache writes are billed like input (×1.25) — count them as input.
-    input_tokens: (u.input_tokens ?? 0) + (u.cache_creation_input_tokens ?? 0),
+    // Both cache types are already included here at the base rate. The
+    // usage report charges the rest from the write columns.
+    input_tokens: (u.input_tokens ?? 0) + cacheWrite,
     output_tokens: u.output_tokens ?? 0,
     cache_read_tokens: u.cache_read_input_tokens ?? 0,
   };
-  // cache_write_tokens comes from a later migration: if it isn't there
-  // yet, record the row without it rather than losing the counts.
-  // (No reservation — the log was down — means insert the row now.)
-  const newRow = { ...baseRow, user_id: caller.id, practice_id: practiceId, kind };
-  const logged = (usageId
-    ? admin.from('ai_usage').update({ ...baseRow, cache_write_tokens: u.cache_creation_input_tokens ?? 0 }).eq('id', usageId)
-      .then(({ error }) => (error ? admin.from('ai_usage').update(baseRow).eq('id', usageId) : null))
-    : admin.from('ai_usage').insert({ ...newRow, cache_write_tokens: u.cache_creation_input_tokens ?? 0 })
-      .then(({ error }) => (error?.code === 'PGRST204' || error?.code === '42703') ? admin.from('ai_usage').insert(newRow) : null)
-  ).then(() => {}, () => {});
+  const withCacheWrite = { ...baseRow, cache_write_tokens: cacheWrite };
+  const withHourWrite = hourWrite ? { ...withCacheWrite, cache_write_1h_tokens: hourWrite } : withCacheWrite;
+  const rowOwner = { user_id: userId, practice_id: practiceId, kind };
+  // Roll back to fields recognized by older schemas if the usage update
+  // cannot use the newest column. The provider call is already done.
+  const missingColumn = (error: { code?: string } | null) => error?.code === 'PGRST204' || error?.code === '42703';
+  const logged = (async () => {
+    if (usageId) {
+      let result = await admin.from('ai_usage').update(withHourWrite).eq('id', usageId);
+      if (missingColumn(result.error) && hourWrite) {
+        result = await admin.from('ai_usage').update(withCacheWrite).eq('id', usageId);
+      }
+      if (result.error) await admin.from('ai_usage').update(baseRow).eq('id', usageId);
+    } else {
+      let result = await admin.from('ai_usage').insert({ ...rowOwner, ...withHourWrite });
+      if (missingColumn(result.error) && hourWrite) {
+        result = await admin.from('ai_usage').insert({ ...rowOwner, ...withCacheWrite });
+      }
+      if (missingColumn(result.error)) await admin.from('ai_usage').insert({ ...rowOwner, ...baseRow });
+    }
+  })().catch(() => {});
   // Once the response is sent the function can be shut down, taking an
   // unfinished insert with it (the call is billed but never counted).
   // waitUntil keeps it alive until the row is written without delaying
@@ -231,4 +273,4 @@ Deno.serve(async (req: Request) => {
   else await logged;
 
   return json({ content: data.content ?? [], usage: data.usage ?? {}, model: data.model ?? model });
-});
+}
