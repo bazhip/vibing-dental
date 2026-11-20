@@ -30,3 +30,9 @@ it('translates CT-specific guidance and export labels in the shared editor', () 
  render(<RadiologyReportSection reportKind="ct" snapshot={snapshot} onChange={vi.fn()}/>);
  expect(findUntranslated(document.body,['CT recorded text',...Object.values(LANGUAGE_NAMES)])).toEqual([]);
 });
+
+it('translates the Imaging templates and outline controls', () => {
+  render(<RadiologyReportSection chartEditor snapshot={sampleOwnerReportSnapshot()}
+    templateLibrary={{ defaultId: 'imaging-v1', templates: [] }} onChange={vi.fn()} />);
+  expect(findUntranslated(document.body, Object.values(LANGUAGE_NAMES))).toEqual([]);
+});

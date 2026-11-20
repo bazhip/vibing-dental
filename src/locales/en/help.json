@@ -24,7 +24,8 @@
     "practice": "Practice and support"
   },
   "images": {
-    "dischargeTemplates": "The discharge template editor with custom field settings expanded for a fictional visit.",
+    "imagingTemplates": "Imaging report template choices above a fictional radiographic report.",
+    "dischargeTemplates": "The Discharge template editor with the Add section picker open on a fictional visit.",
     "consultationMedicationHistory": "Current medications with an in-app veterinary label and a link to the full source.",
     "consultationMedicationReview": "Consultation dictation review with separate medication suggestions and their transcript excerpts.",
     "charting": "A sample dental chart with numbered teeth and a findings grid.",
@@ -42,7 +43,7 @@
     "by-number": "The By tooth chart with Triadan 108 selected on the numbered diagram and its findings open.",
     "imagingSettings": "Imaging and PDF settings showing the report language and default PDF inclusion choices.",
     "consultationReview": "The Images section in a consultation, with the Add images control and a sample thumbnail.",
-    "consultationTemplatePreview": "The template editor with section settings expanded for a fictional consultation.",
+    "consultationTemplatePreview": "The Consult template editor with the Add section picker open on a fictional visit.",
     "consultationRecordNote": "A consultation’s record note with the Download PDF and Copy controls.",
     "dentalConsultation": "The Awake oral examination field in a fictional dental consultation.",
     "dictationCheck": "The dictation panel pauses briefly before it checks the chart. Resume keeps the same dictation open."
@@ -108,7 +109,7 @@
       "sections": {
         "first": {
           "title": "Document the exam",
-          "text": "Open Exam and record the status and comments for the areas you assessed. Leave an area blank when it was not assessed. Use Customize to manage exam areas."
+          "text": "Open Exam and record the status and comments for the areas you assessed. Leave an area blank when it was not assessed. Use Customize to manage exam areas. Use Diagnostics below the exam findings to record non-imaging results and pending tests."
         },
         "second": {
           "title": "Record anesthetics and blocks",
@@ -134,7 +135,7 @@
         },
         "third": {
           "title": "Write the imaging reports",
-          "text": "Enter findings in Radiographic report or CT report. Use Diagnostics for other results and pending tests. You can dictate all of these in the same dental recording. Name the modality when describing imaging and check the proposed destinations before applying them."
+          "text": "Enter findings in Radiographic report or CT report. For other results and pending tests, open Exam and use Diagnostics. You can dictate all of these in the same dental recording. Name the modality when describing imaging and check the proposed destinations before applying them.\n\nAbove either report, choose a “Report template” and select “Insert outline”. ToothOps adds missing headings at the end of the report and keeps the existing text. Check the resulting headings before adding findings.\n\nIn Imaging, choose “Customize” to open the template manager. Use it to preview or manage your practice’s outlines. To change the report language or default PDF inclusion options, choose “Imaging and PDF settings” in the manager."
         }
       }
     },
@@ -180,7 +181,7 @@
       "sections": {
         "first": {
           "title": "Record discharge instructions",
-          "text": "In Discharge, choose from the available options under “Note template”. Switching templates keeps the wording you have already entered.\n\nIn Discharge, list one medication per line with the dose, how to give it, and for how long. Add home care and follow-up instructions. Check the details before sharing.\n\nOpen “Manage templates” beside the choices. If you own the practice, select a template and choose “Duplicate”. Use “Add section” to add a custom field, then select its name to expand the field settings. Custom fields appear in the owner report only if you turn on “Include in owner report” for each field you want to share. Use “Sample preview” to check how the sections look with fictional content. Choose “Save”, select the template for the visit, and use “Review and export” → “Record note” to check the clinical note."
+          "text": "In Discharge, choose from the available options under “Note template”. Switching templates keeps the wording you have already entered. After changing templates, expand “Fields from other templates” below the current fields to find previously entered text for fields that are outside the active template.\n\nIn Discharge, list one medication per line with the dose, how to give it, and for how long. Add home care and follow-up instructions. Check the details before sharing.\n\nOpen “Manage templates” beside the choices. If you own the practice, select a template and choose “Duplicate”. Open “Add section” and use “Search sections” to find a built-in field or a reusable field under “Practice fields”. If the field you need is missing, choose “Create a field” and enter a field name. To use it in another template, select it under “Practice fields” in that template’s picker. Open “Manage practice fields” to archive or restore a reusable field.\n\nDrag a field by its handle to change the order. Use the X to remove the field from the current template, or select “Undo” to put it back. Select the field name to expand its settings. To share a custom field, turn on “Include in owner report” in that template. If you use the same field in another template, set its sharing option there as well.\n\nUse “Sample preview” to check how the sections look with fictional content. Choose “Save”, select the template for the visit, and use “Review and export” → “Record note” to check the clinical note."
         },
         "second": {
           "title": "Draft the owner report",
@@ -324,7 +325,7 @@
       "sections": {
         "first": {
           "title": "Find the right settings for your task",
-          "text": "Open Patient, Exam, Anesthesia, Charting, Diagnosis, Procedure, or Imaging and choose Customize in that section’s header. Chart settings opens at the matching category. In the left-hand category list, choose another area without leaving the dialog. Personal chart preferences save automatically to your account when account sync is available, or to the current browser otherwise.\n\nThe Customize button in Treatment report opens treatment templates. The Customize button beside Preview in Owner report opens owner report templates. These editors manage reusable wording and layout for your practice, so review the selected template before changing it."
+          "text": "Open Patient, Exam, Anesthesia, Charting, Diagnosis, Procedure and choose Customize in that section’s header. Chart settings opens at the matching category. In the left-hand category list, choose another area without leaving the dialog. Personal chart preferences save automatically to your account when account sync is available, or to the current browser otherwise.\n\nIn Imaging, choose “Customize” to open the template manager. Use it to preview or manage your practice’s outlines. To change the report language or default PDF inclusion options, choose “Imaging and PDF settings” in the manager.\n\nThe Customize button in Treatment report opens treatment templates. The Customize button beside Preview in Owner report opens owner report templates. These editors manage reusable wording and layout for your practice, so review the selected template before changing it."
         },
         "second": {
           "title": "Understand each Chart settings category",
@@ -332,7 +333,7 @@
         },
         "third": {
           "title": "Set imaging defaults and customize exports",
-          "text": "Open Imaging, choose Customize, and select Imaging and PDF for the imaging report language and default inclusion options. You can include images, radiographic and CT reports, and the Codes used section. The charting grid is required when diagram findings are turned off, so recorded measurements remain visible in the clinical document.\n\nFor a specific export, open Review and export, select Clinical chart, and open Customize. Choose the clinical PDF color and included sections, then inspect the preview. For an owner handout, use the Owner report template and choose which individual images to include from Imaging. Changing the clinical PDF color does not select an owner report template."
+          "text": "Open Imaging, choose Customize to open the template manager, then select Imaging and PDF settings for the imaging report language and default inclusion options. You can include images, radiographic and CT reports, and the Codes used section. The charting grid is required when diagram findings are turned off, so recorded measurements remain visible in the clinical document.\n\nFor a specific export, open Review and export, select Clinical chart, and open Customize. Choose the clinical PDF color and included sections, then inspect the preview. For an owner handout, use the Owner report template and choose which individual images to include from Imaging. Changing the clinical PDF color does not select an owner report template."
         }
       }
     },
@@ -436,7 +437,7 @@
         },
         "second": {
           "title": "Arrange and preview sections",
-          "text": "Use Add section to choose a standard field or a custom section. Select a section name to change its label, guidance, example wording, suggested text, and output format, mark it as a subsection, or remove it. Use Dictation settings to add writing instructions and select the level of detail. Check the result with Sample preview. Use suggested text only after confirming it applies to the current visit.\n\nEnter a Template name. Use the up and down arrows beside each section to change its order. Select Sample preview to check the new order with fictional visit details. Select it again to return to editing. Every template includes Images below the note. Images belong to the visit and are kept when you switch templates."
+          "text": "Open “Add section” and use “Search sections” to find a built-in field or a reusable field under “Practice fields”. If the field you need is missing, choose “Create a field” and enter a field name. To use it in another template, select it under “Practice fields” in that template’s picker. Open “Manage practice fields” to archive or restore a reusable field.\n\nSelect a field name to change its section label, guidance, example wording, suggested text, output format, or subsection setting. Open “Dictation settings” to set writing instructions and the level of detail. Use suggested text only after confirming it applies to the current visit. Drag a field by its handle to change the order. Use the X to remove the field from the current template, or select “Undo” to put it back.\n\nEnter a template name. Open “Sample preview” to check the field order with fictional visit details, then select it again to return to editing. Images appear below the note and stay attached to the visit when you switch templates.\n\nAfter changing templates, expand “Fields from other templates” below the current fields to find previously entered text for fields that are outside the active template."
         },
         "third": {
           "title": "Save or archive",

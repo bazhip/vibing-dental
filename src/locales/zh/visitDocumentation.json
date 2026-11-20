@@ -71,6 +71,23 @@
       },
       "builder": {
         "addSection": "添加分节",
+        "searchSections": "搜索分节",
+        "practiceFields": "诊所字段",
+        "builtInFields": "内置字段",
+        "createField": "创建字段",
+        "manageFields": "管理诊所字段",
+        "noFields": "没有匹配的分节",
+        "alreadyAdded": "已添加",
+        "dragField": "调整 {{field}} 的顺序",
+        "removeNamed": "移除 {{field}}",
+        "fieldRemoved": "已移除 {{field}}",
+        "undoRemove": "撤销",
+        "archiveField": "归档字段",
+        "restoreField": "恢复字段",
+        "fieldsFromOtherTemplates": "其他模板中的字段",
+        "sectionMoved": "已将 {{field}} 移到第 {{position}} 位",
+        "fieldName": "字段名称",
+        "noPracticeFields": "尚无诊所字段",
         "chooseSection": "选择分节",
         "customSection": "自定义分节",
         "sectionLabel": "分节名称",
@@ -123,6 +140,24 @@
         "helper": "请记录商定的下一步、时间和需提前联系诊所的情形。",
         "sample": "主人将联系诊所预约。"
       }
+    }
+  },
+  "imaging": {
+    "templates": {
+      "title": "影像报告模板",
+      "starter": "标准报告",
+      "intro": "为放射报告和 CT 报告创建提纲。",
+      "label": "报告模板",
+      "insert": "插入提纲",
+      "inserted": "已插入报告提纲。",
+      "tooLong": "插入提纲会超出报告长度限制。",
+      "settings": "影像与 PDF 设置",
+      "help": "影像模板的使用方法"
+    },
+    "sections": {
+      "technique": "技术",
+      "findings": "所见",
+      "impression": "印象"
     }
   },
   "discharge": {

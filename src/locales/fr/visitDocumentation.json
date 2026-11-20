@@ -71,6 +71,23 @@
       },
       "builder": {
         "addSection": "Ajouter une section",
+        "searchSections": "Rechercher des sections",
+        "practiceFields": "Champs de la clinique",
+        "builtInFields": "Champs intégrés",
+        "createField": "Créer un champ",
+        "manageFields": "Gérer les champs de la clinique",
+        "noFields": "Aucune section correspondante",
+        "alreadyAdded": "Déjà ajouté",
+        "dragField": "Déplacer {{field}}",
+        "removeNamed": "Retirer {{field}}",
+        "fieldRemoved": "Champ {{field}} retiré",
+        "undoRemove": "Annuler",
+        "archiveField": "Archiver le champ",
+        "restoreField": "Restaurer le champ",
+        "fieldsFromOtherTemplates": "Champs d’autres modèles",
+        "sectionMoved": "Champ {{field}} déplacé en position {{position}}",
+        "fieldName": "Nom du champ",
+        "noPracticeFields": "Aucun champ de la clinique pour le moment",
         "chooseSection": "Choisir une section",
         "customSection": "Section personnalisée",
         "sectionLabel": "Libellé de la section",
@@ -123,6 +140,24 @@
         "helper": "Notez la prochaine étape convenue, le délai et les motifs de contacter le cabinet plus tôt.",
         "sample": "Le client contactera le cabinet pour prendre rendez-vous."
       }
+    }
+  },
+  "imaging": {
+    "templates": {
+      "title": "Modèles de comptes rendus d’imagerie",
+      "starter": "Compte rendu standard",
+      "intro": "Créez des trames pour les comptes rendus radiographiques et de scanner.",
+      "label": "Modèle de compte rendu",
+      "insert": "Insérer la trame",
+      "inserted": "Trame de compte rendu insérée.",
+      "tooLong": "La trame ferait dépasser la longueur maximale du compte rendu.",
+      "settings": "Réglages d’imagerie et PDF",
+      "help": "Fonctionnement des modèles d’imagerie"
+    },
+    "sections": {
+      "technique": "Technique",
+      "findings": "Observations",
+      "impression": "Conclusion"
     }
   },
   "discharge": {

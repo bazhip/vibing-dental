@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CONSULTATION_FIELDS, STANDARD_DISCHARGE, changeConsultationLayout, consultationVisitSections, consultationChoices, consultationHeadings, consultationLayoutFor, normalizeConsultationLayout, parseConsultationLibrary } from './consultationTemplates';
+import { CONSULTATION_FIELDS, STANDARD_DISCHARGE, changeConsultationLayout, insertImagingOutline, updatePracticeNoteField, consultationVisitSections, consultationChoices, consultationHeadings, consultationLayoutFor, normalizeConsultationLayout, parseConsultationLibrary } from './consultationTemplates';
 import { normalizeVisitDocumentation } from './visitDocumentation';
 
 const custom = { id: '11111111-1111-4111-8111-111111111111', name: 'Practice consult', fields: [...CONSULTATION_FIELDS].reverse() };
@@ -85,4 +85,27 @@ it('validates discharge fields independently and retains their owner-report choi
   const patch = changeConsultationLayout(visit, layout, STANDARD_DISCHARGE, 'discharge');
   expect(patch.dischargeRetainedSections).toEqual([section]);
   expect(consultationVisitSections({ ...visit, ...patch }, STANDARD_DISCHARGE, 'discharge')).toContainEqual(section);
+});
+
+it('recognizes existing inline and markdown imaging headings without changing their text', () => {
+  const report = 'Findings: Recorded.\n## Technique\n**Impression：** Reviewed.';
+  expect(insertImagingOutline(report, ['Findings', 'Technique', 'Impression'])).toBe(report);
+  expect(insertImagingOutline(report, ['Comparison'])).toBe(report + '\n\nComparison:');
+  const withCustom = insertImagingOutline(report, ['Findings: left side']);
+  expect(insertImagingOutline(withCustom, ['Findings: left side'])).toBe(withCustom);
+});
+
+it('applies shared metadata edits to existing placements even when the field is archived', () => {
+  const id = 'dischargeCustom_feeding' as const;
+  const before = { id, label: 'Diet', archived: true } as const;
+  const library = { defaultId: custom.id, practiceFields: [before], templates: [
+    { ...custom, sections: [{ id, label: 'Diet', ownerReport: true as const }] },
+    { ...custom, id: '22222222-2222-4222-8222-222222222222', sections: [{ id, label: 'Diet', format: 'bullets' as const }] },
+  ] };
+  const updated = updatePracticeNoteField(library, { ...before, label: 'Feeding' });
+  expect(updated.practiceFields).toEqual([{ ...before, label: 'Feeding' }]);
+  expect(updated.templates.map(template => template.sections?.[0])).toEqual([
+    expect.objectContaining({ id, label: 'Feeding', ownerReport: true }),
+    expect.objectContaining({ id, label: 'Feeding', format: 'bullets' }),
+  ]);
 });

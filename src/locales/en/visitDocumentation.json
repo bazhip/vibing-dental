@@ -71,6 +71,23 @@
       },
       "builder": {
         "addSection": "Add section",
+        "searchSections": "Search sections",
+        "practiceFields": "Practice fields",
+        "builtInFields": "Built-in fields",
+        "createField": "Create a field",
+        "manageFields": "Manage practice fields",
+        "noFields": "No matching sections",
+        "alreadyAdded": "Already added",
+        "dragField": "Reorder {{field}}",
+        "removeNamed": "Remove {{field}}",
+        "fieldRemoved": "{{field}} removed",
+        "undoRemove": "Undo",
+        "archiveField": "Archive field",
+        "restoreField": "Restore field",
+        "fieldsFromOtherTemplates": "Fields from other templates",
+        "sectionMoved": "{{field}} moved to position {{position}}",
+        "fieldName": "Field name",
+        "noPracticeFields": "No practice fields yet",
         "chooseSection": "Choose a section",
         "customSection": "Custom section",
         "sectionLabel": "Section label",
@@ -123,6 +140,24 @@
         "helper": "Record the agreed next step, timing and any reason to contact the practice sooner.",
         "sample": "The client will contact the practice to schedule."
       }
+    }
+  },
+  "imaging": {
+    "templates": {
+      "title": "Imaging report templates",
+      "starter": "Standard report",
+      "intro": "Create outlines for radiographic and CT reports.",
+      "label": "Report template",
+      "insert": "Insert outline",
+      "inserted": "Report outline inserted.",
+      "tooLong": "The outline would exceed the report length limit.",
+      "settings": "Imaging and PDF settings",
+      "help": "How imaging templates work"
+    },
+    "sections": {
+      "technique": "Technique",
+      "findings": "Findings",
+      "impression": "Impression"
     }
   },
   "discharge": {

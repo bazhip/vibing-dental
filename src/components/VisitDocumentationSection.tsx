@@ -1,7 +1,7 @@
 import { useId, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ClinicalDictationSource, PatientInfo } from '../types';
-import { changeConsultationLayout, consultationChoices, consultationSectionKey, consultationVisitSections, consultationLayoutFor, dischargeLayoutFor, EMPTY_CONSULTATION_LIBRARY, EMPTY_DISCHARGE_LIBRARY, isConsultationStarter, type ConsultationLibrary, type ConsultationSection } from '../utils/consultationTemplates';
+import { changeConsultationLayout, consultationChoices, consultationSectionKey, consultationSections, consultationVisitSections, consultationLayoutFor, dischargeLayoutFor, EMPTY_CONSULTATION_LIBRARY, EMPTY_DISCHARGE_LIBRARY, isConsultationStarter, type ConsultationLibrary, type ConsultationSection } from '../utils/consultationTemplates';
 import { documentationUrl } from '../help/openDocumentation';
 import { formatDate, formatDateTime } from '../i18n/format';
 import { VISIT_DOCUMENT_MAX_LENGTH, VISIT_DOCUMENT_TEMPLATES, type VisitDocumentKind } from '../utils/visitDocumentation';
@@ -46,6 +46,9 @@ export function VisitDocumentationSection({ kind, patientInfo, onChange, readOnl
   const layout = isDischarge ? dischargeLayoutFor(patientInfo, library, readOnly || discharge?.historical)
     : consultationLayoutFor(patientInfo, library, readOnly || consultation?.historical);
   const choices = consultationChoices(library, templateKind);
+  const hasLayout = isConsultation || (isDischarge && (discharge || patientInfo.dischargeLayout));
+  const activeFields = hasLayout ? consultationSections(layout) : VISIT_DOCUMENT_TEMPLATES[kind].fields;
+  const retainedFields = hasLayout ? consultationVisitSections(patientInfo, layout, templateKind).slice(activeFields.length) : [];
   const savedVersion = !choices.some(choice => choice.id === layout.id && choice.name === layout.name
     && JSON.stringify(choice.fields) === JSON.stringify(layout.fields)
     && JSON.stringify(choice.sections) === JSON.stringify(layout.sections)
@@ -172,8 +175,12 @@ export function VisitDocumentationSection({ kind, patientInfo, onChange, readOnl
         </ul>
       </details>}
       <div className="visit-documentation__fields">
-        {(isConsultation || (isDischarge && (discharge || patientInfo.dischargeLayout)) ? consultationVisitSections(patientInfo, layout, templateKind) : VISIT_DOCUMENT_TEMPLATES[kind].fields).map(renderField)}
+        {activeFields.map(renderField)}
       </div>
+      {retainedFields.length > 0 && <details key={layout.id} className="visit-documentation__transcripts visit-documentation__retained">
+        <summary>{t('consultation.templates.builder.fieldsFromOtherTemplates')}</summary>
+        <div className="visit-documentation__fields">{retainedFields.map(renderField)}</div>
+      </details>}
       {kind === 'discharge' && <p className="visit-documentation__helper visit-documentation__notice">{t('sourceNotice')}</p>}
       {children}
     </section>

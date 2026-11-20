@@ -71,6 +71,23 @@
       },
       "builder": {
         "addSection": "Añadir sección",
+        "searchSections": "Buscar secciones",
+        "practiceFields": "Campos de la clínica",
+        "builtInFields": "Campos integrados",
+        "createField": "Crear un campo",
+        "manageFields": "Gestionar campos de la clínica",
+        "noFields": "No hay secciones coincidentes",
+        "alreadyAdded": "Ya añadido",
+        "dragField": "Reordenar {{field}}",
+        "removeNamed": "Quitar {{field}}",
+        "fieldRemoved": "Se quitó {{field}}",
+        "undoRemove": "Deshacer",
+        "archiveField": "Archivar campo",
+        "restoreField": "Restaurar campo",
+        "fieldsFromOtherTemplates": "Campos de otras plantillas",
+        "sectionMoved": "Se movió {{field}} a la posición {{position}}",
+        "fieldName": "Nombre del campo",
+        "noPracticeFields": "Aún no hay campos de la clínica",
         "chooseSection": "Elegir una sección",
         "customSection": "Sección personalizada",
         "sectionLabel": "Etiqueta de la sección",
@@ -123,6 +140,24 @@
         "helper": "Anote el próximo paso acordado, los plazos y cuándo contactar antes con la clínica.",
         "sample": "El cliente contactará con la clínica para programar la cita."
       }
+    }
+  },
+  "imaging": {
+    "templates": {
+      "title": "Plantillas de informes de diagnóstico por imagen",
+      "starter": "Informe estándar",
+      "intro": "Cree esquemas para los informes radiográficos y de TC.",
+      "label": "Plantilla del informe",
+      "insert": "Insertar esquema",
+      "inserted": "Se insertó el esquema del informe.",
+      "tooLong": "El esquema haría que se superara la longitud máxima del informe.",
+      "settings": "Ajustes de diagnóstico por imagen y PDF",
+      "help": "Cómo funcionan las plantillas de diagnóstico por imagen"
+    },
+    "sections": {
+      "technique": "Técnica",
+      "findings": "Hallazgos",
+      "impression": "Conclusión"
     }
   },
   "discharge": {

@@ -24,7 +24,8 @@
     "practice": "Praxis und Support"
   },
   "images": {
-    "dischargeTemplates": "Der Editor für Entlassungsvorlagen mit geöffneten Einstellungen eines benutzerdefinierten Felds für einen fiktiven Besuch.",
+    "imagingTemplates": "Die Vorlagenauswahl über einem fiktiven Röntgenbericht.",
+    "dischargeTemplates": "Der Editor für Entlassungsvorlagen mit geöffneter Auswahl „Abschnitt hinzufügen“ in einem fiktiven Besuch.",
     "consultationMedicationHistory": "Aktuelle Medikation mit einer Tierarzneimittelinformation in der App und einem Link zur vollständigen Quelle.",
     "consultationMedicationReview": "Prüfung des Konsultationsdiktats mit getrennten Medikationsvorschlägen und den zugehörigen Transkriptausschnitten.",
     "charting": "Ein Beispiel für ein Zahnschema mit nummerierten Zähnen und einem Befundraster.",
@@ -42,7 +43,7 @@
     "by-number": "Die Ansicht „Pro Zahn“ mit ausgewähltem Zahn 108 im nummerierten Schema und den dazugehörigen Befunden.",
     "imagingSettings": "Einstellungen „Bildgebung und PDF“ mit Berichtssprache und Standardoptionen für den PDF-Inhalt.",
     "consultationReview": "Der Abschnitt Bilder einer Konsultation mit der Schaltfläche Bilder hinzufügen und einer Beispiel-Miniaturansicht.",
-    "consultationTemplatePreview": "Der Vorlageneditor mit geöffneten Einstellungen eines Abschnitts für eine fiktive Konsultation.",
+    "consultationTemplatePreview": "Der Editor für Konsultationsvorlagen mit geöffneter Auswahl „Abschnitt hinzufügen“ in einem fiktiven Besuch.",
     "consultationRecordNote": "Konsultationsnotiz mit den Schaltflächen PDF herunterladen und Kopieren.",
     "dentalConsultation": "Das Feld zur Mauluntersuchung am wachen Tier in einer fiktiven Zahnkonsultation.",
     "dictationCheck": "Das Diktatfenster pausiert kurz vor der Prüfung der Akte. Mit „Fortsetzen“ führen Sie dasselbe Diktat weiter."
@@ -108,7 +109,7 @@
       "sections": {
         "first": {
           "title": "Untersuchung dokumentieren",
-          "text": "Öffnen Sie „Untersuchung“ und tragen Sie den Status und Ihre Kommentare zu den untersuchten Bereichen ein. Lassen Sie nicht untersuchte Bereiche leer. Unter „Anpassen“ verwalten Sie die Untersuchungsbereiche."
+          "text": "Öffnen Sie „Untersuchung“ und tragen Sie den Status und Ihre Kommentare zu den untersuchten Bereichen ein. Lassen Sie nicht untersuchte Bereiche leer. Unter „Anpassen“ verwalten Sie die Untersuchungsbereiche. Erfassen Sie Ergebnisse außerhalb der Bildgebung und ausstehende Tests im Feld „Diagnostik“ unter den Untersuchungsbefunden."
         },
         "second": {
           "title": "Anästhetika und Nervenblockaden erfassen",
@@ -134,7 +135,7 @@
         },
         "third": {
           "title": "Röntgen- und CT-Berichte verfassen",
-          "text": "Tragen Sie Befunde unter Röntgenbericht oder CT-Bericht ein. Verwenden Sie Diagnostik für weitere Ergebnisse und ausstehende Tests. Sie können alles in derselben Zahnaufnahme diktieren. Nennen Sie bei Bildbefunden die Modalität und prüfen Sie die vorgeschlagenen Ziele vor der Übernahme."
+          "text": "Tragen Sie Befunde unter Röntgenbericht oder CT-Bericht ein. Für weitere Ergebnisse und ausstehende Tests öffnen Sie „Untersuchung“ und verwenden Sie das Feld „Diagnostik“. Sie können alles in derselben Zahnaufnahme diktieren. Nennen Sie bei Bildbefunden die Modalität und prüfen Sie die vorgeschlagenen Ziele vor der Übernahme.\n\nWählen Sie über dem jeweiligen Bericht eine „Berichtsvorlage“ und anschließend „Gliederung einfügen“. ToothOps ergänzt fehlende Überschriften am Ende des Berichts. Der vorhandene Text bleibt erhalten. Prüfen Sie die Überschriften, bevor Sie Befunde eintragen.\n\nWählen Sie in „Bildgebung“ die Schaltfläche „Anpassen“, um die Vorlagenverwaltung zu öffnen. Dort können Sie die Gliederungen Ihrer Praxis in der Vorschau prüfen oder verwalten. Wählen Sie dort „Bildgebungs- und PDF-Einstellungen“, um Berichtssprache und standardmäßig enthaltene PDF-Inhalte zu ändern."
         }
       }
     },
@@ -180,7 +181,7 @@
       "sections": {
         "first": {
           "title": "Entlassungshinweise erfassen",
-          "text": "Wählen Sie unter „Entlassung“ eine der verfügbaren Optionen unter „Notizvorlage“. Bereits eingegebener Text bleibt beim Vorlagenwechsel erhalten.\n\nListen Sie unter Entlassung pro Zeile ein Medikament mit Dosis, Art der Gabe und Dauer auf. Ergänzen Sie die Pflege zu Hause und die nächsten Schritte. Prüfen Sie die Angaben vor der Weitergabe.\n\nÖffnen Sie „Vorlagen verwalten“ neben der Vorlagenauswahl. Wenn Ihnen die Praxis gehört, wählen Sie eine Vorlage und dann „Duplizieren“. Fügen Sie über „Abschnitt hinzufügen“ ein benutzerdefiniertes Feld hinzu und wählen Sie seinen Namen, um die Feldeinstellungen zu öffnen. Benutzerdefinierte Felder erscheinen nur dann im Besitzerbericht, wenn Sie für das jeweilige Feld „In den Besitzerbericht aufnehmen“ aktivieren. In der „Beispielvorschau“ sehen Sie die Abschnitte mit fiktiven Inhalten. Wählen Sie „Speichern“, wählen Sie die Vorlage für den Besuch und prüfen Sie die klinische Notiz unter „Prüfen und exportieren“ → „Aktennotiz“."
+          "text": "Wählen Sie unter „Entlassung“ eine der verfügbaren Optionen unter „Notizvorlage“. Bereits eingegebener Text bleibt beim Vorlagenwechsel erhalten. Öffnen Sie nach einem Vorlagenwechsel „Felder aus anderen Vorlagen“ unter den aktuellen Feldern. Dort finden Sie bereits eingegebenen Text aus Feldern, die in der aktiven Vorlage fehlen.\n\nListen Sie unter Entlassung pro Zeile ein Medikament mit Dosis, Art der Gabe und Dauer auf. Ergänzen Sie die Pflege zu Hause und die nächsten Schritte. Prüfen Sie die Angaben vor der Weitergabe.\n\nÖffnen Sie „Vorlagen verwalten“ neben der Vorlagenauswahl. Wenn Ihnen die Praxis gehört, wählen Sie eine Vorlage und dann „Duplizieren“. Öffnen Sie „Abschnitt hinzufügen“ und verwenden Sie „Abschnitte suchen“, um ein integriertes Feld oder ein wiederverwendbares Feld unter „Praxisfelder“ zu finden. Fehlt das gewünschte Feld, wählen Sie „Feld erstellen“ und geben Sie einen Feldnamen ein. Um es in einer weiteren Vorlage zu verwenden, wählen Sie es dort in der Feldauswahl unter „Praxisfelder“. Öffnen Sie „Praxisfelder verwalten“, um ein wiederverwendbares Feld zu archivieren oder wiederherzustellen.\n\nZiehen Sie ein Feld am Griff an die gewünschte Position. Entfernen Sie es mit dem X aus der aktuellen Vorlage oder wählen Sie „Rückgängig“, um es wieder einzufügen. Wählen Sie den Feldnamen, um die Einstellungen zu öffnen. Wenn Sie ein benutzerdefiniertes Feld teilen möchten, aktivieren Sie „In den Besitzerbericht aufnehmen“ in dieser Vorlage. Wenn Sie das Feld in einer weiteren Vorlage verwenden, legen Sie die Freigabe auch dort fest.\n\nIn der „Beispielvorschau“ sehen Sie die Abschnitte mit fiktiven Inhalten. Wählen Sie „Speichern“, wählen Sie die Vorlage für den Besuch und prüfen Sie die klinische Notiz unter „Prüfen und exportieren“ → „Aktennotiz“."
         },
         "second": {
           "title": "Besitzerbericht entwerfen",
@@ -324,7 +325,7 @@
       "sections": {
         "first": {
           "title": "Passende Einstellungen für Ihre Aufgabe finden",
-          "text": "Öffnen Sie „Patient“, „Untersuchung“, „Narkose“, „Zahnschema“, „Diagnose“, „Eingriff“ oder „Bildgebung“ und wählen Sie im Abschnittskopf „Anpassen“. Die „Zahnschema-Einstellungen“ öffnen sich in der passenden Kategorie. Über die linke Kategorienliste wechseln Sie zu einem anderen Bereich, ohne den Dialog zu schließen. Ihre persönlichen Einstellungen werden automatisch in Ihrem Konto gespeichert, sofern die Kontosynchronisierung verfügbar ist, sonst im aktuellen Browser.\n\nDie Schaltfläche „Anpassen“ im „Behandlungsbericht“ öffnet die Vorlagen für Behandlungsberichte. Die Schaltfläche „Anpassen“ neben „Vorschau“ im „Besitzerbericht“ öffnet die Vorlagen für Besitzerberichte. Über diese Editoren verwalten Sie wiederverwendbare Texte und die Darstellung für Ihre Praxis. Prüfen Sie daher vor Änderungen, welche Vorlage ausgewählt ist."
+          "text": "Öffnen Sie „Patient“, „Untersuchung“, „Narkose“, „Zahnschema“, „Diagnose“, oder „Eingriff“ und wählen Sie im Abschnittskopf „Anpassen“. Die „Zahnschema-Einstellungen“ öffnen sich in der passenden Kategorie. Über die linke Kategorienliste wechseln Sie zu einem anderen Bereich, ohne den Dialog zu schließen. Ihre persönlichen Einstellungen werden automatisch in Ihrem Konto gespeichert, sofern die Kontosynchronisierung verfügbar ist, sonst im aktuellen Browser.\n\nWählen Sie in „Bildgebung“ die Schaltfläche „Anpassen“, um die Vorlagenverwaltung zu öffnen. Dort können Sie die Gliederungen Ihrer Praxis in der Vorschau prüfen oder verwalten. Wählen Sie dort „Bildgebungs- und PDF-Einstellungen“, um Berichtssprache und standardmäßig enthaltene PDF-Inhalte zu ändern.\n\nDie Schaltfläche „Anpassen“ im „Behandlungsbericht“ öffnet die Vorlagen für Behandlungsberichte. Die Schaltfläche „Anpassen“ neben „Vorschau“ im „Besitzerbericht“ öffnet die Vorlagen für Besitzerberichte. Über diese Editoren verwalten Sie wiederverwendbare Texte und die Darstellung für Ihre Praxis. Prüfen Sie daher vor Änderungen, welche Vorlage ausgewählt ist."
         },
         "second": {
           "title": "Kategorien der Zahnschema-Einstellungen verstehen",
@@ -332,7 +333,7 @@
         },
         "third": {
           "title": "Vorgaben für Bildgebung festlegen und Exporte anpassen",
-          "text": "Öffnen Sie „Bildgebung“, wählen Sie „Anpassen“ und dann „Bildgebung und PDF“. Dort legen Sie die Sprache der Bildgebungsberichte und die standardmäßig enthaltenen Inhalte fest. Sie können Bilder, Röntgen- und CT-Berichte sowie den Abschnitt „Verwendete Codes“ einfügen. Wenn Befunde im Schema ausgeblendet sind, ist das Befundraster erforderlich, damit die erfassten Messwerte im klinischen Dokument sichtbar bleiben.\n\nFür einen einzelnen Export öffnen Sie „Prüfen und exportieren“, wählen „Klinische Akte“ und dann „Anpassen“. Wählen Sie die Farbe und die Abschnitte des klinischen PDFs und prüfen Sie die Vorschau. Für das Dokument zum Mitgeben nutzen Sie die Vorlage für den „Besitzerbericht“ und wählen die einzelnen Bilder unter „Bildgebung“ aus. Die Farbe des klinischen PDFs und die Vorlage für den Besitzerbericht werden unabhängig voneinander festgelegt."
+          "text": "Öffnen Sie „Bildgebung“, wählen Sie „Anpassen“ und dann in der Vorlagenverwaltung „Bildgebungs- und PDF-Einstellungen“. Dort legen Sie die Sprache der Bildgebungsberichte und die standardmäßig enthaltenen Inhalte fest. Sie können Bilder, Röntgen- und CT-Berichte sowie den Abschnitt „Verwendete Codes“ einfügen. Wenn Befunde im Schema ausgeblendet sind, ist das Befundraster erforderlich, damit die erfassten Messwerte im klinischen Dokument sichtbar bleiben.\n\nFür einen einzelnen Export öffnen Sie „Prüfen und exportieren“, wählen „Klinische Akte“ und dann „Anpassen“. Wählen Sie die Farbe und die Abschnitte des klinischen PDFs und prüfen Sie die Vorschau. Für das Dokument zum Mitgeben nutzen Sie die Vorlage für den „Besitzerbericht“ und wählen die einzelnen Bilder unter „Bildgebung“ aus. Die Farbe des klinischen PDFs und die Vorlage für den Besitzerbericht werden unabhängig voneinander festgelegt."
         }
       }
     },
@@ -436,7 +437,7 @@
         },
         "second": {
           "title": "Abschnitte anordnen und Vorschau ansehen",
-          "text": "Wählen Sie Abschnitt hinzufügen und fügen Sie ein Standardfeld oder einen eigenen Abschnitt ein. Wählen Sie den Abschnittsnamen, um Bezeichnung, Hinweise, Beispiel, vorgeschlagenen Text und Format zu ändern oder den Abschnitt als Unterabschnitt zu kennzeichnen oder zu entfernen. Geben Sie unter Diktateinstellungen Schreibanweisungen und den Detailgrad an. Prüfen Sie das Ergebnis in der Vorschau. Übernehmen Sie vorgeschlagenen Text nur, wenn er auf den Besuch zutrifft.\n\nFüllen Sie Vorlagenname aus. Ändern Sie die Reihenfolge mit den Pfeilen neben den Abschnitten. Wählen Sie Beispielvorschau, um die neue Reihenfolge anhand eines fiktiven Besuchs zu prüfen. Wählen Sie dieselbe Schaltfläche erneut, um zur Bearbeitung zurückzukehren. Jede Vorlage enthält unter der Notiz den Abschnitt Bilder. Die Bilder gehören zum Besuch und bleiben beim Vorlagenwechsel erhalten."
+          "text": "Öffnen Sie „Abschnitt hinzufügen“ und verwenden Sie „Abschnitte suchen“, um ein integriertes Feld oder ein wiederverwendbares Feld unter „Praxisfelder“ zu finden. Fehlt das gewünschte Feld, wählen Sie „Feld erstellen“ und geben Sie einen Feldnamen ein. Um es in einer weiteren Vorlage zu verwenden, wählen Sie es dort in der Feldauswahl unter „Praxisfelder“. Öffnen Sie „Praxisfelder verwalten“, um ein wiederverwendbares Feld zu archivieren oder wiederherzustellen.\n\nWählen Sie den Feldnamen, um Abschnittsbezeichnung, Hinweise, Beispielformulierung, vorgeschlagenen Text, Ausgabeformat oder die Einstellung für Unterabschnitte zu ändern. Unter „Diktateinstellungen“ legen Sie Schreibanweisungen und Detailgrad fest. Übernehmen Sie vorgeschlagenen Text erst, nachdem Sie geprüft haben, ob er auf den Besuch zutrifft. Ziehen Sie ein Feld am Griff an die gewünschte Position. Entfernen Sie es mit dem X aus der aktuellen Vorlage oder wählen Sie „Rückgängig“, um es wieder einzufügen.\n\nGeben Sie einen Vorlagennamen ein. Öffnen Sie „Beispielvorschau“, um die Reihenfolge anhand eines fiktiven Besuchs zu prüfen. Wählen Sie dieselbe Schaltfläche erneut, um zur Bearbeitung zurückzukehren. Die Bilder erscheinen unter der Notiz und bleiben dem Besuch beim Vorlagenwechsel zugeordnet.\n\nÖffnen Sie nach einem Vorlagenwechsel „Felder aus anderen Vorlagen“ unter den aktuellen Feldern. Dort finden Sie bereits eingegebenen Text aus Feldern, die in der aktiven Vorlage fehlen."
         },
         "third": {
           "title": "Speichern oder archivieren",

@@ -71,6 +71,23 @@
       },
       "builder": {
         "addSection": "Szakasz hozzáadása",
+        "searchSections": "Szakaszok keresése",
+        "practiceFields": "Rendelői mezők",
+        "builtInFields": "Beépített mezők",
+        "createField": "Mező létrehozása",
+        "manageFields": "Rendelői mezők kezelése",
+        "noFields": "Nincs megfelelő szakasz",
+        "alreadyAdded": "Már hozzáadva",
+        "dragField": "A következő mező áthelyezése: {{field}}",
+        "removeNamed": "A következő mező eltávolítása: {{field}}",
+        "fieldRemoved": "Mező eltávolítva: {{field}}",
+        "undoRemove": "Visszavonás",
+        "archiveField": "Mező archiválása",
+        "restoreField": "Mező visszaállítása",
+        "fieldsFromOtherTemplates": "Más sablonok mezői",
+        "sectionMoved": "A(z) {{field}} mező a(z) {{position}}. helyre került",
+        "fieldName": "Mező neve",
+        "noPracticeFields": "Még nincsenek rendelői mezők",
         "chooseSection": "Szakasz kiválasztása",
         "customSection": "Egyéni szakasz",
         "sectionLabel": "Szakasz felirata",
@@ -123,6 +140,24 @@
         "helper": "Rögzítse a következő egyeztetett lépést, az időzítést és a korábbi kapcsolatfelvétel okait.",
         "sample": "A gazda időpontért felkeresi a rendelőt."
       }
+    }
+  },
+  "imaging": {
+    "templates": {
+      "title": "Képalkotólelet-sablonok",
+      "starter": "Általános lelet",
+      "intro": "Készítsen vázlatokat a röntgen- és CT-leletekhez.",
+      "label": "Leletsablon",
+      "insert": "Vázlat beszúrása",
+      "inserted": "Leletvázlat beszúrva.",
+      "tooLong": "A vázlattal a lelet túllépné a megengedett hosszúságot.",
+      "settings": "Képalkotás és PDF beállításai",
+      "help": "A képalkotólelet-sablonok használata"
+    },
+    "sections": {
+      "technique": "Technika",
+      "findings": "Leletek",
+      "impression": "Összegzés"
     }
   },
   "discharge": {

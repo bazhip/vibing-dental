@@ -220,7 +220,50 @@
   justify-content: space-between;
   gap: 8px;
 }
-.consultation-library__section-row > div:first-child { min-width: 0; overflow-wrap: anywhere; }
+.consultation-library__row-label { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.consultation-library__row-action {
+  flex: none;
+  min-inline-size: 40px;
+  min-block-size: 40px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--primary);
+  font: inherit;
+  cursor: pointer;
+}
+.consultation-library__row-action:not(:disabled):is(:hover, :focus-visible) { background: var(--action-tint); }
+.consultation-library__row-action:disabled { opacity: 0.45; cursor: default; }
+.consultation-library__drag { touch-action: none; cursor: grab; }
+.consultation-library__drag:active { cursor: grabbing; }
+.consultation-library__remove { font-size: 1.25rem; }
+.consultation-library__sections > li[data-drop-target] { box-shadow: inset 0 2px var(--primary); }
+.consultation-library__picker {
+  margin-block-start: 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-alt);
+}
+.consultation-library__picker h4 { margin-block: 8px 4px; font-size: 0.875rem; }
+.consultation-library__picker .ui-dialog__input { width: 100%; min-height: 44px; }
+.consultation-library__field-list { list-style: none; margin: 0; padding: 0; max-block-size: 10rem; overflow: auto; }
+.consultation-library__field-list li,
+.consultation-library__undo { display: flex; align-items: center; gap: 8px; overflow-wrap: anywhere; }
+.consultation-library__field-list li > button:first-child {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+  text-align: start;
+  overflow-wrap: anywhere;
+}
+.consultation-library__field-list small { flex: none; }
+.dental-exam__diagnostics { margin-block-start: 16px; }
+.consultation-library__field-list li > span { flex: 1; min-width: 0; }
+.visit-documentation__retained { margin-block-start: 16px; }
 .consultation-library__section-name {
   display: block;
   min-height: 40px;
@@ -262,8 +305,6 @@
 .consultation-library__editor > .ui-btn:last-child { margin-block-start: 8px; }
 .consultation-library__sections p,
 .consultation-library__sample { color: var(--text-muted); margin-block: 4px; font-size: 0.875rem; }
-.consultation-library__move { display: flex; gap: 4px; }
-.consultation-library__move .ui-btn { inline-size: 40px; padding: 0; }
 .consultation-library__footer { flex-wrap: wrap; }
 .consultation-library .ui-btn { max-width: 100%; overflow-wrap: anywhere; }
 .consultation-library .ui-btn:disabled { opacity: 0.55; cursor: default; }
@@ -276,7 +317,7 @@
   .consultation-library__section-name,
   .consultation-library__settings summary,
   .consultation-library__settings .ui-dialog__input { min-height: 44px; }
-  .consultation-library__move .ui-btn { inline-size: 44px; }
+  .consultation-library__row-action { min-inline-size: 44px; min-block-size: 44px; }
   .consultation-library__layout { grid-template-columns: minmax(0, 1fr); }
   .consultation-library__list ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; }
   .consultation-library__list--scroll { max-block-size: 12rem; }

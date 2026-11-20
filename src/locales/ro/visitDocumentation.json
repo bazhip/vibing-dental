@@ -71,6 +71,23 @@
       },
       "builder": {
         "addSection": "Adăugați o secțiune",
+        "searchSections": "Căutați secțiuni",
+        "practiceFields": "Câmpurile cabinetului",
+        "builtInFields": "Câmpuri predefinite",
+        "createField": "Creați un câmp",
+        "manageFields": "Gestionați câmpurile cabinetului",
+        "noFields": "Nicio secțiune corespunzătoare",
+        "alreadyAdded": "Deja adăugat",
+        "dragField": "Reordonați {{field}}",
+        "removeNamed": "Eliminați {{field}}",
+        "fieldRemoved": "Câmpul {{field}} a fost eliminat",
+        "undoRemove": "Anulați",
+        "archiveField": "Arhivați câmpul",
+        "restoreField": "Restaurați câmpul",
+        "fieldsFromOtherTemplates": "Câmpuri din alte șabloane",
+        "sectionMoved": "Câmpul {{field}} a fost mutat pe poziția {{position}}",
+        "fieldName": "Numele câmpului",
+        "noPracticeFields": "Cabinetul nu are încă niciun câmp",
         "chooseSection": "Alegeți o secțiune",
         "customSection": "Secțiune personalizată",
         "sectionLabel": "Eticheta secțiunii",
@@ -123,6 +140,24 @@
         "helper": "Notați pasul următor convenit, termenul și motivele pentru a contacta clinica mai devreme.",
         "sample": "Clientul va contacta clinica pentru programare."
       }
+    }
+  },
+  "imaging": {
+    "templates": {
+      "title": "Șabloane pentru rapoarte imagistice",
+      "starter": "Raport standard",
+      "intro": "Creați structuri pentru rapoartele radiografice și CT.",
+      "label": "Șablonul raportului",
+      "insert": "Inserați structura",
+      "inserted": "Structura raportului a fost inserată.",
+      "tooLong": "Structura ar depăși limita de lungime a raportului.",
+      "settings": "Setări pentru imagistică și PDF",
+      "help": "Cum funcționează șabloanele de imagistică"
+    },
+    "sections": {
+      "technique": "Tehnică",
+      "findings": "Constatări",
+      "impression": "Concluzii"
     }
   },
   "discharge": {

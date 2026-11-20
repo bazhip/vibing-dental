@@ -71,6 +71,23 @@
       },
       "builder": {
         "addSection": "إضافة قسم",
+        "searchSections": "البحث في الأقسام",
+        "practiceFields": "حقول العيادة",
+        "builtInFields": "الحقول المدمجة",
+        "createField": "إنشاء حقل",
+        "manageFields": "إدارة حقول العيادة",
+        "noFields": "لا توجد أقسام مطابقة",
+        "alreadyAdded": "تمت الإضافة بالفعل",
+        "dragField": "إعادة ترتيب {{field}}",
+        "removeNamed": "إزالة {{field}}",
+        "fieldRemoved": "تمت إزالة {{field}}",
+        "undoRemove": "تراجع",
+        "archiveField": "أرشفة الحقل",
+        "restoreField": "استعادة الحقل",
+        "fieldsFromOtherTemplates": "حقول من قوالب أخرى",
+        "sectionMoved": "تم نقل {{field}} إلى الموضع {{position}}",
+        "fieldName": "اسم الحقل",
+        "noPracticeFields": "لا توجد حقول للعيادة بعد",
         "chooseSection": "اختيار قسم",
         "customSection": "قسم مخصص",
         "sectionLabel": "تسمية القسم",
@@ -123,6 +140,24 @@
         "helper": "سجّل الخطوة التالية المتفق عليها وتوقيتها وأسباب التواصل المبكر مع العيادة.",
         "sample": "سيتواصل العميل مع العيادة لتحديد موعد."
       }
+    }
+  },
+  "imaging": {
+    "templates": {
+      "title": "قوالب تقارير التصوير",
+      "starter": "تقرير قياسي",
+      "intro": "أنشئ هياكل لتقارير الأشعة والتصوير المقطعي.",
+      "label": "قالب التقرير",
+      "insert": "إدراج الهيكل",
+      "inserted": "تم إدراج هيكل التقرير.",
+      "tooLong": "قد يؤدي إدراج الهيكل إلى تجاوز الحد الأقصى لطول التقرير.",
+      "settings": "إعدادات التصوير وملفات PDF",
+      "help": "كيفية استخدام قوالب التصوير"
+    },
+    "sections": {
+      "technique": "التقنية",
+      "findings": "النتائج",
+      "impression": "الانطباع"
     }
   },
   "discharge": {

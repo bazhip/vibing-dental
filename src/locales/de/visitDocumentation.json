@@ -71,6 +71,23 @@
       },
       "builder": {
         "addSection": "Abschnitt hinzufügen",
+        "searchSections": "Abschnitte suchen",
+        "practiceFields": "Praxisfelder",
+        "builtInFields": "Integrierte Felder",
+        "createField": "Feld erstellen",
+        "manageFields": "Praxisfelder verwalten",
+        "noFields": "Keine passenden Abschnitte",
+        "alreadyAdded": "Bereits hinzugefügt",
+        "dragField": "{{field}} verschieben",
+        "removeNamed": "{{field}} entfernen",
+        "fieldRemoved": "{{field}} entfernt",
+        "undoRemove": "Rückgängig",
+        "archiveField": "Feld archivieren",
+        "restoreField": "Feld wiederherstellen",
+        "fieldsFromOtherTemplates": "Felder aus anderen Vorlagen",
+        "sectionMoved": "{{field}} an Position {{position}} verschoben",
+        "fieldName": "Name des Feldes",
+        "noPracticeFields": "Noch keine Praxisfelder",
         "chooseSection": "Abschnitt auswählen",
         "customSection": "Eigener Abschnitt",
         "sectionLabel": "Abschnittsbezeichnung",
@@ -123,6 +140,24 @@
         "helper": "Halten Sie den nächsten vereinbarten Schritt, den Zeitraum und Gründe für eine frühere Kontaktaufnahme fest.",
         "sample": "Für die Terminvereinbarung wird die Praxis kontaktiert."
       }
+    }
+  },
+  "imaging": {
+    "templates": {
+      "title": "Vorlagen für Bildgebungsberichte",
+      "starter": "Standardbericht",
+      "intro": "Erstellen Sie Gliederungen für Röntgen- und CT-Berichte.",
+      "label": "Berichtsvorlage",
+      "insert": "Gliederung einfügen",
+      "inserted": "Berichtsgliederung eingefügt.",
+      "tooLong": "Die Gliederung würde die maximale Berichtslänge überschreiten.",
+      "settings": "Bildgebungs- und PDF-Einstellungen",
+      "help": "So funktionieren Bildgebungsvorlagen"
+    },
+    "sections": {
+      "technique": "Technik",
+      "findings": "Befunde",
+      "impression": "Beurteilung"
     }
   },
   "discharge": {

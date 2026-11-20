@@ -24,7 +24,8 @@
     "practice": "Studio e assistenza"
   },
   "images": {
-    "dischargeTemplates": "L’editor dei modelli di dimissione con le impostazioni di un campo personalizzato aperte per una visita fittizia.",
+    "imagingTemplates": "Le opzioni dei modelli di referto sopra un referto radiografico fittizio.",
+    "dischargeTemplates": "L’editor dei modelli di dimissione con il selettore «Aggiungi sezione» aperto in una visita fittizia.",
     "consultationMedicationHistory": "Farmaci in uso con una scheda veterinaria nell’app e un collegamento alla fonte completa.",
     "consultationMedicationReview": "Revisione della dettatura della visita con proposte separate per i farmaci e i relativi estratti.",
     "charting": "Esempio di odontogramma con denti numerati e griglia dei reperti.",
@@ -42,7 +43,7 @@
     "by-number": "Vista Per dente con il 108 Triadan selezionato sul diagramma numerato e i relativi reperti aperti.",
     "imagingSettings": "Impostazioni di diagnostica per immagini e PDF con la lingua dei referti e le opzioni di inclusione predefinite nel PDF.",
     "consultationReview": "La sezione Immagini di una visita, con il comando Aggiungi immagini e una miniatura di esempio.",
-    "consultationTemplatePreview": "L’editor del modello con le impostazioni di una sezione di un consulto fittizio.",
+    "consultationTemplatePreview": "L’editor dei modelli di consulto con il selettore «Aggiungi sezione» aperto in una visita fittizia.",
     "consultationRecordNote": "Nota della consultazione con i comandi Scarica PDF e Copia.",
     "dentalConsultation": "Il campo Esame orale a paziente sveglio in un consulto odontoiatrico fittizio.",
     "dictationCheck": "Il pannello di dettatura si ferma brevemente prima di verificare la cartella. Con «Riprendi» può proseguire la stessa dettatura."
@@ -108,7 +109,7 @@
       "sections": {
         "first": {
           "title": "Documentare l’esame",
-          "text": "Apra «Esame» e registri lo stato e le osservazioni per le aree valutate. Lasci vuote le aree che non ha valutato. Usi «Personalizza» per gestire le aree d’esame."
+          "text": "Apra «Esame» e registri lo stato e le osservazioni per le aree valutate. Lasci vuote le aree che non ha valutato. Usi «Personalizza» per gestire le aree d’esame. Usi «Diagnostica» sotto i rilievi dell’esame per registrare i risultati degli esami diversi da quelli di diagnostica per immagini e gli esami in attesa."
         },
         "second": {
           "title": "Registrare anestetici e blocchi nervosi",
@@ -134,7 +135,7 @@
         },
         "third": {
           "title": "Redigere i referti di diagnostica per immagini",
-          "text": "Inserisca i rilievi in Referto radiografico o Referto TC. Usi Diagnostica per altri risultati ed esami in attesa. Può dettare tutto nella stessa registrazione odontoiatrica. Indichi la modalità di imaging e verifichi le destinazioni proposte prima di applicarle."
+          "text": "Inserisca i rilievi in Referto radiografico o Referto TC. Per gli altri risultati e gli esami in attesa, apra «Esame» e usi «Diagnostica». Può dettare tutto nella stessa registrazione odontoiatrica. Indichi la modalità di imaging e verifichi le destinazioni proposte prima di applicarle.\n\nSopra uno dei due referti, scelga un «Modello del referto» e selezioni «Inserisci struttura». ToothOps aggiunge le intestazioni mancanti in fondo al referto e conserva il testo esistente. Controlli le intestazioni prima di aggiungere i reperti.\n\nIn «Diagnostica per immagini», scelga «Personalizza» per aprire il gestore dei modelli. Da lì può visualizzare in anteprima o gestire le strutture dello studio. Per modificare la lingua del referto o le opzioni predefinite di inclusione nel PDF, scelga «Impostazioni di diagnostica per immagini e PDF» nel gestore."
         }
       }
     },
@@ -180,7 +181,7 @@
       "sections": {
         "first": {
           "title": "Registrare le istruzioni di dimissione",
-          "text": "In «Dimissione», scelga una delle opzioni sotto «Modello della nota». Il testo già inserito viene conservato quando cambia modello.\n\nIn Dimissione, indichi un farmaco per riga, con dose, modalità e durata della somministrazione. Aggiunga le istruzioni per le cure a casa e il follow-up. Verifichi i dettagli prima della condivisione.\n\nApra «Gestisci i modelli» accanto alle opzioni. Se è titolare della clinica, selezioni un modello e scelga «Duplica». Usi «Aggiungi sezione» per aggiungere un campo personalizzato, poi selezioni il nome del campo per aprirne le impostazioni. I campi personalizzati compaiono nel referto per il proprietario solo se attiva «Includi nel referto per il proprietario» per ciascun campo che desidera condividere. Usi «Anteprima di esempio» per vedere le sezioni con contenuti fittizi. Scelga «Salva», selezioni il modello per la visita e verifichi la nota clinica in «Verifica ed esportazione» → «Nota di cartella»."
+          "text": "In «Dimissione», scelga una delle opzioni sotto «Modello della nota». Il testo già inserito viene conservato quando cambia modello. Dopo aver cambiato modello, espanda «Campi di altri modelli» sotto i campi correnti per trovare il testo già inserito nei campi assenti dal modello attivo.\n\nIn Dimissione, indichi un farmaco per riga, con dose, modalità e durata della somministrazione. Aggiunga le istruzioni per le cure a casa e il follow-up. Verifichi i dettagli prima della condivisione.\n\nApra «Gestisci i modelli» accanto alle opzioni. Se è titolare della clinica, selezioni un modello e scelga «Duplica». Apra «Aggiungi sezione» e usi «Cerca sezioni» per trovare un campo integrato o un campo riutilizzabile in «Campi della clinica». Se manca il campo necessario, scelga «Crea un campo» e ne inserisca il nome. Per riutilizzarlo, lo selezioni in «Campi della clinica» nel selettore di un altro modello. Apra «Gestisci i campi della clinica» per archiviare o ripristinare un campo riutilizzabile.\n\nTrascini un campo usando la maniglia per cambiarne la posizione. Usi la X per rimuovere il campo dal modello corrente o scelga «Annulla» per rimetterlo nella posizione precedente. Selezioni il nome del campo per aprirne le impostazioni. Per condividere un campo personalizzato, attivi «Includi nel referto per il proprietario» in quel modello. Se riutilizza il campo in un altro modello, imposti anche lì l’opzione di condivisione.\n\nUsi «Anteprima di esempio» per vedere le sezioni con contenuti fittizi. Scelga «Salva», selezioni il modello per la visita e verifichi la nota clinica in «Verifica ed esportazione» → «Nota di cartella»."
         },
         "second": {
           "title": "Preparare il referto per il proprietario",
@@ -324,7 +325,7 @@
       "sections": {
         "first": {
           "title": "Trovare le impostazioni adatte alla Sua attività",
-          "text": "Apra «Paziente», «Esame», «Anestesia», «Odontogramma», «Diagnosi», «Procedura» o «Diagnostica per immagini» e scelga «Personalizza» nell’intestazione della sezione. «Impostazioni dell’odontogramma» si apre nella categoria corrispondente. Nell’elenco delle categorie a sinistra può scegliere un’altra area senza chiudere la finestra. Se la sincronizzazione dell’account è disponibile, le preferenze personali della cartella vengono salvate automaticamente nel Suo account. Altrimenti vengono salvate nel browser in uso.\n\nIl pulsante «Personalizza» in «Referto del trattamento» apre i modelli di referto del trattamento. Il pulsante «Personalizza» accanto ad «Anteprima» in «Referto per il proprietario» apre i modelli di referto per il proprietario. Questi strumenti gestiscono i testi riutilizzabili e l’impaginazione per il Suo studio. Controlli il modello selezionato prima di modificarlo."
+          "text": "Apra «Paziente», «Esame», «Anestesia», «Odontogramma», «Diagnosi», o «Procedura» e scelga «Personalizza» nell’intestazione della sezione. «Impostazioni dell’odontogramma» si apre nella categoria corrispondente. Nell’elenco delle categorie a sinistra può scegliere un’altra area senza chiudere la finestra. Se la sincronizzazione dell’account è disponibile, le preferenze personali della cartella vengono salvate automaticamente nel Suo account. Altrimenti vengono salvate nel browser in uso.\n\nIn «Diagnostica per immagini», scelga «Personalizza» per aprire il gestore dei modelli. Da lì può visualizzare in anteprima o gestire le strutture dello studio. Per modificare la lingua del referto o le opzioni predefinite di inclusione nel PDF, scelga «Impostazioni di diagnostica per immagini e PDF» nel gestore.\n\nIl pulsante «Personalizza» in «Referto del trattamento» apre i modelli di referto del trattamento. Il pulsante «Personalizza» accanto ad «Anteprima» in «Referto per il proprietario» apre i modelli di referto per il proprietario. Questi strumenti gestiscono i testi riutilizzabili e l’impaginazione per il Suo studio. Controlli il modello selezionato prima di modificarlo."
         },
         "second": {
           "title": "Conoscere le categorie delle impostazioni della cartella",
@@ -332,7 +333,7 @@
         },
         "third": {
           "title": "Impostare le opzioni per le immagini e personalizzare le esportazioni",
-          "text": "Apra «Diagnostica per immagini», scelga «Personalizza» e selezioni «Diagnostica per immagini e PDF» per impostare la lingua dei referti e le opzioni di inclusione predefinite. Può includere immagini, referti radiografici e TC e la sezione dei codici utilizzati. Quando i reperti sul diagramma sono disattivati, la griglia delle misure è obbligatoria per mantenere visibili le misurazioni registrate nel documento clinico.\n\nPer personalizzare un’esportazione specifica, apra «Verifica ed esportazione», selezioni «Cartella clinica» e apra «Personalizza». Scelga il colore del PDF clinico e le sezioni da includere, poi controlli l’anteprima. Per il documento da consegnare al proprietario, usi il modello in «Referto per il proprietario» e scelga le singole immagini da includere in «Diagnostica per immagini». La modifica del colore del PDF clinico non cambia il modello di referto per il proprietario."
+          "text": "Apra «Diagnostica per immagini», scelga «Personalizza» e selezioni «Impostazioni di diagnostica per immagini e PDF» nel gestore dei modelli per impostare la lingua dei referti e le opzioni di inclusione predefinite. Può includere immagini, referti radiografici e TC e la sezione dei codici utilizzati. Quando i reperti sul diagramma sono disattivati, la griglia delle misure è obbligatoria per mantenere visibili le misurazioni registrate nel documento clinico.\n\nPer personalizzare un’esportazione specifica, apra «Verifica ed esportazione», selezioni «Cartella clinica» e apra «Personalizza». Scelga il colore del PDF clinico e le sezioni da includere, poi controlli l’anteprima. Per il documento da consegnare al proprietario, usi il modello in «Referto per il proprietario» e scelga le singole immagini da includere in «Diagnostica per immagini». La modifica del colore del PDF clinico non cambia il modello di referto per il proprietario."
         }
       }
     },
@@ -436,7 +437,7 @@
         },
         "second": {
           "title": "Ordinare e visualizzare le sezioni",
-          "text": "Scelga Aggiungi sezione per inserire un campo standard o personalizzato. Selezioni il nome della sezione per cambiare etichetta, indicazioni, esempio, testo suggerito e formato, renderla una sottosezione o rimuoverla. In Impostazioni della dettatura indichi le istruzioni e il livello di dettaglio. Verifichi il risultato nell’anteprima. Usi il testo suggerito solo se si applica alla visita.\n\nCompili Nome del modello. Usi le frecce accanto alle sezioni per cambiarne l’ordine. Selezioni Anteprima di esempio per controllare il nuovo ordine con una visita fittizia. Selezioni nuovamente lo stesso pulsante per tornare alla modifica. Ogni modello include Immagini sotto la nota. Le immagini appartengono alla visita e restano disponibili quando cambia modello."
+          "text": "Apra «Aggiungi sezione» e usi «Cerca sezioni» per trovare un campo integrato o un campo riutilizzabile in «Campi della clinica». Se manca il campo necessario, scelga «Crea un campo» e ne inserisca il nome. Per riutilizzarlo, lo selezioni in «Campi della clinica» nel selettore di un altro modello. Apra «Gestisci i campi della clinica» per archiviare o ripristinare un campo riutilizzabile.\n\nSelezioni il nome del campo per modificare l’etichetta della sezione, le indicazioni, l’esempio di formulazione, il testo suggerito, il formato o l’impostazione per le sottosezioni. Apra «Impostazioni della dettatura» per definire le istruzioni di scrittura e il livello di dettaglio. Usi il testo suggerito solo dopo aver verificato che si applichi alla visita. Trascini un campo usando la maniglia per cambiarne la posizione. Usi la X per rimuovere il campo dal modello corrente o scelga «Annulla» per rimetterlo nella posizione precedente.\n\nInserisca il nome del modello. Apra «Anteprima di esempio» per verificare l’ordine dei campi con una visita fittizia, poi selezioni nuovamente lo stesso pulsante per tornare alla modifica. Le immagini sono visibili sotto la nota e restano allegate alla visita quando cambia modello.\n\nDopo aver cambiato modello, espanda «Campi di altri modelli» sotto i campi correnti per trovare il testo già inserito nei campi assenti dal modello attivo."
         },
         "third": {
           "title": "Salvare o archiviare",

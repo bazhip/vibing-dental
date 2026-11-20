@@ -2,15 +2,16 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import i18n from '../i18n';
 import { LocalizedError } from '../utils/apiErrors';
 import { supabase } from '../utils/supabaseClient';
-import { CONSULTATION_LIBRARY_VERSION, EMPTY_CONSULTATION_LIBRARY, EMPTY_DISCHARGE_LIBRARY, parseConsultationLibrary, type ConsultationLibrary, type NoteTemplateKind } from '../utils/consultationTemplates';
+import { CONSULTATION_LIBRARY_VERSION, EMPTY_CONSULTATION_LIBRARY, EMPTY_DISCHARGE_LIBRARY, EMPTY_IMAGING_LIBRARY, parseConsultationLibrary, type ConsultationLibrary, type NoteTemplateKind } from '../utils/consultationTemplates';
 
 type LibraryState =
   | { practiceId: string; loadKey: number; status: 'ready'; config: ConsultationLibrary; revision: string | null }
   | { practiceId: string; loadKey: number; status: 'error' };
 
 export function useConsultationLibrary(practiceId: string, kind: NoteTemplateKind = 'consultation') {
-  const table = kind === 'discharge' ? 'discharge_template_libraries' : 'consultation_template_libraries';
-  const empty = kind === 'discharge' ? EMPTY_DISCHARGE_LIBRARY : EMPTY_CONSULTATION_LIBRARY;
+  const table = kind === 'imaging' ? 'imaging_template_libraries'
+    : kind === 'discharge' ? 'discharge_template_libraries' : 'consultation_template_libraries';
+  const empty = kind === 'imaging' ? EMPTY_IMAGING_LIBRARY : kind === 'discharge' ? EMPTY_DISCHARGE_LIBRARY : EMPTY_CONSULTATION_LIBRARY;
   const [state, setState] = useState<LibraryState>();
   const [reloadKey, setReloadKey] = useState(0);
   const scope = useRef(practiceId);

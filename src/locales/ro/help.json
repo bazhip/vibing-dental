@@ -24,7 +24,8 @@
     "practice": "Cabinet și asistență"
   },
   "images": {
-    "dischargeTemplates": "Editorul de șabloane de externare cu setările unui câmp personalizat deschise pentru o vizită fictivă.",
+    "imagingTemplates": "Opțiunile de șablon deasupra unui raport radiografic fictiv.",
+    "dischargeTemplates": "Editorul de șabloane de externare cu selectorul „Adăugați o secțiune” deschis într-o vizită fictivă.",
     "consultationMedicationHistory": "Medicația curentă cu un prospect veterinar în aplicație și un link către sursa completă.",
     "consultationMedicationReview": "Verificarea dictării unei consultații, cu propuneri separate pentru medicamente și fragmentele corespunzătoare din transcriere.",
     "charting": "Exemplu de fișă dentară cu dinți numerotați și o grilă de constatări.",
@@ -42,7 +43,7 @@
     "by-number": "Vizualizarea Pe dinte, cu dintele 108 în sistemul Triadan selectat în diagrama numerotată și constatările sale deschise.",
     "imagingSettings": "Setările Imagini și PDF, cu limba raportului și opțiunile implicite de includere în PDF.",
     "consultationReview": "Secțiunea Imagini a unei consultații, cu opțiunea Adăugați imagini și o miniatură de exemplu.",
-    "consultationTemplatePreview": "Editorul de șabloane cu setările unei secțiuni deschise pentru o consultație fictivă.",
+    "consultationTemplatePreview": "Editorul de șabloane de consultație cu selectorul „Adăugați o secțiune” deschis într-o vizită fictivă.",
     "consultationRecordNote": "Nota consultației cu comenzile Descărcați PDF și Copiați.",
     "dentalConsultation": "Câmpul Examen oral la pacientul treaz într-o consultație dentară fictivă.",
     "dictationCheck": "Panoul de dictare face o scurtă pauză înainte de a verifica fișa. Cu „Reluați” continuați aceeași dictare."
@@ -108,7 +109,7 @@
       "sections": {
         "first": {
           "title": "Documentați examenul",
-          "text": "Deschideți „Examen” și consemnați starea și observațiile pentru zonele evaluate. Lăsați necompletate zonele pe care nu le-ați evaluat. Folosiți „Personalizați” pentru a gestiona zonele de examinare."
+          "text": "Deschideți „Examen” și consemnați starea și observațiile pentru zonele evaluate. Lăsați necompletate zonele pe care nu le-ați evaluat. Folosiți „Personalizați” pentru a gestiona zonele de examinare. Folosiți câmpul „Diagnostic”, sub constatările examenului, pentru a consemna rezultatele altor teste decât cele imagistice și testele în așteptare."
         },
         "second": {
           "title": "Consemnați anestezicele și blocurile nervoase",
@@ -134,7 +135,7 @@
         },
         "third": {
           "title": "Redactați rapoartele imagistice",
-          "text": "Introduceți constatările în Raport radiografic sau Raport CT. Folosiți Diagnostice pentru celelalte rezultate și testele în așteptare. Le puteți dicta în aceeași înregistrare dentară. Precizați modalitatea imagistică și verificați destinațiile propuse înainte de aplicare."
+          "text": "Introduceți constatările în Raport radiografic sau Raport CT. Pentru celelalte rezultate și testele în așteptare, deschideți „Examen” și folosiți câmpul „Diagnostic”. Le puteți dicta în aceeași înregistrare dentară. Precizați modalitatea imagistică și verificați destinațiile propuse înainte de aplicare.\n\nDeasupra oricăruia dintre cele două rapoarte, alegeți „Șablonul raportului”, apoi selectați „Inserați structura”. ToothOps adaugă titlurile lipsă la finalul raportului și păstrează textul existent. Verificați titlurile înainte de a adăuga constatările.\n\nÎn „Imagistică”, alegeți „Personalizați” pentru a deschide gestionarea șabloanelor. Acolo puteți previzualiza sau gestiona structurile cabinetului. Pentru a schimba limba raportului imagistic sau conținutul implicit al PDF-ului, alegeți „Setări pentru imagistică și PDF” din fereastra de gestionare."
         }
       }
     },
@@ -180,7 +181,7 @@
       "sections": {
         "first": {
           "title": "Consemnați instrucțiunile de externare",
-          "text": "În „Externare”, alegeți una dintre opțiunile disponibile sub „Șablonul notei”. Textul introdus deja se păstrează când schimbați șablonul.\n\nÎn secțiunea Externare, treceți câte un medicament pe rând, cu doza, modul și durata administrării. Adăugați indicațiile de îngrijire la domiciliu și de monitorizare. Verificați detaliile înainte de a distribui raportul.\n\nDeschideți „Gestionați șabloanele” lângă opțiuni. Dacă sunteți proprietarul cabinetului, selectați un șablon și alegeți „Duplicați”. Folosiți „Adăugați o secțiune” pentru a adăuga un câmp personalizat, apoi selectați numele acestuia pentru a deschide setările câmpului. Un câmp personalizat apare în raportul pentru proprietar numai dacă activați „Includeți în raportul pentru proprietar” pentru acel câmp. Folosiți „Previzualizați exemplul” pentru a vedea secțiunile cu un conținut fictiv. Alegeți „Salvați”, selectați șablonul pentru vizită și verificați nota clinică în „Verificați și exportați” → „Notă pentru dosarul medical”."
+          "text": "În „Externare”, alegeți una dintre opțiunile disponibile sub „Șablonul notei”. Textul introdus deja se păstrează când schimbați șablonul. După ce schimbați șablonul, deschideți „Câmpuri din alte șabloane” sub câmpurile curente pentru a găsi textul introdus anterior în câmpurile care lipsesc din șablonul activ.\n\nÎn secțiunea Externare, treceți câte un medicament pe rând, cu doza, modul și durata administrării. Adăugați indicațiile de îngrijire la domiciliu și de monitorizare. Verificați detaliile înainte de a distribui raportul.\n\nDeschideți „Gestionați șabloanele” lângă opțiuni. Dacă sunteți proprietarul cabinetului, selectați un șablon și alegeți „Duplicați”. Deschideți „Adăugați o secțiune” și folosiți „Căutați secțiuni” pentru a găsi un câmp predefinit sau un câmp reutilizabil în „Câmpurile cabinetului”. Dacă lipsește câmpul dorit, alegeți „Creați un câmp” și introduceți numele acestuia. Pentru a reutiliza câmpul, selectați-l din „Câmpurile cabinetului” în selectorul altui șablon. Deschideți „Gestionați câmpurile cabinetului” pentru a arhiva sau restaura un câmp reutilizabil.\n\nTrageți câmpul de mâner pentru a-i schimba poziția. Folosiți butonul X pentru a scoate câmpul din șablonul curent sau alegeți „Anulați” pentru a-l pune la loc. Selectați numele câmpului pentru a deschide setările. Pentru a partaja un câmp personalizat, activați „Includeți în raportul pentru proprietar” în șablonul respectiv. Dacă reutilizați câmpul în alt șablon, stabiliți și acolo opțiunea de partajare.\n\nFolosiți „Previzualizați exemplul” pentru a vedea secțiunile cu un conținut fictiv. Alegeți „Salvați”, selectați șablonul pentru vizită și verificați nota clinică în „Verificați și exportați” → „Notă pentru dosarul medical”."
         },
         "second": {
           "title": "Redactați raportul pentru proprietar",
@@ -324,7 +325,7 @@
       "sections": {
         "first": {
           "title": "Găsiți setările potrivite pentru ce aveți de făcut",
-          "text": "Deschideți „Pacient”, „Examen”, „Anestezie”, „Fișă dentară”, „Diagnostic”, „Procedură” sau „Imagistică” și alegeți „Personalizați” în antetul secțiunii. Se deschide categoria corespunzătoare din „Setările fișei”. Alegeți altă categorie din lista din stânga, fără să închideți fereastra de dialog. Preferințele personale se salvează automat în cont când sincronizarea este disponibilă sau, în caz contrar, în browserul curent.\n\nÎn „Raport de tratament”, comanda „Personalizați” deschide șabloanele de tratament. În „Raport pentru proprietar”, comanda „Personalizați” de lângă „Previzualizați” deschide șabloanele acelui raport. Aceste editoare gestionează formulările și aspectul reutilizabil în cabinet. Verificați șablonul selectat înainte de a-l modifica."
+          "text": "Deschideți „Pacient”, „Examen”, „Anestezie”, „Fișă dentară”, „Diagnostic”, sau „Procedură” și alegeți „Personalizați” în antetul secțiunii. Se deschide categoria corespunzătoare din „Setările fișei”. Alegeți altă categorie din lista din stânga, fără să închideți fereastra de dialog. Preferințele personale se salvează automat în cont când sincronizarea este disponibilă sau, în caz contrar, în browserul curent.\n\nÎn „Imagistică”, alegeți „Personalizați” pentru a deschide gestionarea șabloanelor. Acolo puteți previzualiza sau gestiona structurile cabinetului. Pentru a schimba limba raportului imagistic sau conținutul implicit al PDF-ului, alegeți „Setări pentru imagistică și PDF” din fereastra de gestionare.\n\nÎn „Raport de tratament”, comanda „Personalizați” deschide șabloanele de tratament. În „Raport pentru proprietar”, comanda „Personalizați” de lângă „Previzualizați” deschide șabloanele acelui raport. Aceste editoare gestionează formulările și aspectul reutilizabil în cabinet. Verificați șablonul selectat înainte de a-l modifica."
         },
         "second": {
           "title": "Înțelegeți categoriile din Setările fișei",
@@ -332,7 +333,7 @@
         },
         "third": {
           "title": "Stabiliți setările implicite de imagistică și personalizați exporturile",
-          "text": "Deschideți „Imagistică”, alegeți „Personalizați”, apoi selectați „Imagini și PDF” pentru a configura limba raportului imagistic și opțiunile implicite de includere. Puteți include imagini, rapoarte radiografice și CT, precum și secțiunea de coduri utilizate. Grila fișei dentare este obligatorie atunci când constatările de pe diagramă sunt dezactivate, astfel încât măsurătorile consemnate să rămână vizibile în documentul clinic.\n\nPentru un anumit export, deschideți „Verificați și exportați”, selectați „Fișă clinică” și deschideți „Personalizare”. Alegeți culoarea PDF-ului clinic și secțiunile incluse, apoi verificați previzualizarea. Pentru un document destinat proprietarului, folosiți șablonul din „Raport pentru proprietar” și alegeți imaginile individuale în „Imagistică”. Schimbarea culorii PDF-ului clinic nu modifică șablonul raportului pentru proprietar."
+          "text": "Deschideți „Imagistică”, alegeți „Personalizați”, apoi selectați „Setări pentru imagistică și PDF” din fereastra de gestionare a șabloanelor pentru a configura limba raportului imagistic și opțiunile implicite de includere. Puteți include imagini, rapoarte radiografice și CT, precum și secțiunea de coduri utilizate. Grila fișei dentare este obligatorie atunci când constatările de pe diagramă sunt dezactivate, astfel încât măsurătorile consemnate să rămână vizibile în documentul clinic.\n\nPentru un anumit export, deschideți „Verificați și exportați”, selectați „Fișă clinică” și deschideți „Personalizare”. Alegeți culoarea PDF-ului clinic și secțiunile incluse, apoi verificați previzualizarea. Pentru un document destinat proprietarului, folosiți șablonul din „Raport pentru proprietar” și alegeți imaginile individuale în „Imagistică”. Schimbarea culorii PDF-ului clinic nu modifică șablonul raportului pentru proprietar."
         }
       }
     },
@@ -436,7 +437,7 @@
         },
         "second": {
           "title": "Ordonați și previzualizați secțiunile",
-          "text": "Alegeți Adăugați o secțiune pentru un câmp standard sau personalizat. Selectați numele secțiunii pentru a schimba eticheta, indicațiile, exemplul, textul sugerat și formatul, a o marca drept subsecțiune sau a o elimina. În Setări de dictare, stabiliți instrucțiunile și nivelul de detaliu. Verificați rezultatul în previzualizare. Folosiți textul sugerat doar când se aplică vizitei.\n\nCompletați Numele șablonului. Folosiți săgețile de lângă secțiuni pentru a le schimba ordinea. Selectați Previzualizați exemplul pentru a verifica noua ordine pe baza unei vizite fictive. Selectați din nou același buton pentru a reveni la editare. Fiecare șablon include secțiunea Imagini sub notă. Imaginile aparțin vizitei și se păstrează când schimbați șablonul."
+          "text": "Deschideți „Adăugați o secțiune” și folosiți „Căutați secțiuni” pentru a găsi un câmp predefinit sau un câmp reutilizabil în „Câmpurile cabinetului”. Dacă lipsește câmpul dorit, alegeți „Creați un câmp” și introduceți numele acestuia. Pentru a reutiliza câmpul, selectați-l din „Câmpurile cabinetului” în selectorul altui șablon. Deschideți „Gestionați câmpurile cabinetului” pentru a arhiva sau restaura un câmp reutilizabil.\n\nSelectați numele unui câmp pentru a modifica eticheta secțiunii, îndrumările, exemplul de formulare, textul sugerat, formatul sau setarea de subsecțiune. Deschideți „Setări de dictare” pentru a stabili instrucțiunile de redactare și nivelul de detaliu. Folosiți textul sugerat numai după ce verificați că se aplică vizitei. Trageți câmpul de mâner pentru a-i schimba poziția. Folosiți butonul X pentru a scoate câmpul din șablonul curent sau alegeți „Anulați” pentru a-l pune la loc.\n\nIntroduceți numele șablonului. Deschideți „Previzualizați exemplul” pentru a verifica ordinea câmpurilor pe baza unei vizite fictive, apoi selectați din nou butonul pentru a reveni la editare. Imaginile se afișează sub notă și rămân atașate vizitei când schimbați șablonul.\n\nDupă ce schimbați șablonul, deschideți „Câmpuri din alte șabloane” sub câmpurile curente pentru a găsi textul introdus anterior în câmpurile care lipsesc din șablonul activ."
         },
         "third": {
           "title": "Salvați sau arhivați",

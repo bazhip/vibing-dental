@@ -288,3 +288,22 @@ it('uses the report Refine control for empty X-ray and CT editors and labels CT 
   expect(ct.getByRole('button', { name: 'Refine' })).toBeDisabled();
   expect(ct.getByRole('button', { name: 'Dictate CT report' }).querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
 });
+
+it.each(['radiology', 'ct'] as const)('inserts only missing %s headings and keeps recorded text editable', kind => {
+  const original = 'Findings:\nRecorded finding.';
+  const onChange = vi.fn();
+  function Editor() {
+    const [value, setValue] = React.useState(() => ({ ...snapshot(), patientInfo: {
+      ...snapshot().patientInfo, ctReport: original, radiologyReport: original,
+    } }));
+    return <RadiologyReportSection chartEditor reportKind={kind} snapshot={value}
+      templateLibrary={{ defaultId: 'imaging-v1', templates: [] }}
+      onChange={changes => { onChange(changes); setValue(previous => ({ ...previous, patientInfo: { ...previous.patientInfo, ...changes } })); }} />;
+  }
+  render(<Editor />);
+  fireEvent.click(screen.getByRole('button', { name: 'Insert outline' }));
+  const key = kind === 'ct' ? 'ctReport' : 'radiologyReport';
+  expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ [key]: original + '\n\nTechnique:\n\nImpression:' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Insert outline' }));
+  expect(onChange).toHaveBeenCalledOnce();
+});

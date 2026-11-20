@@ -61,7 +61,7 @@ it('finds the template guide by task and follows a link to the consultation tran
   fireEvent.change(screen.getByRole('searchbox', { name: 'Search documentation' }), { target: { value: 'archive template' } });
   fireEvent.click(within(main).getByRole('link', { name: 'Customize consultation templates' }));
   expect(location.hash).toBe('#consultation-templates');
-  expect(within(main).getByRole('img', { name: /settings expanded for a fictional consultation/ })).toBeInTheDocument();
+  expect(within(main).getByRole('img', { name: /Consult template editor with the Add section picker open/ })).toBeInTheDocument();
 
   fireEvent.click(within(main).getByRole('link', { name: 'Review and transfer a consultation note' }));
   expect(location.hash).toBe('#consultation-transfer');

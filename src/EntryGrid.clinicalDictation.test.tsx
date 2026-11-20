@@ -131,6 +131,9 @@ it('persists diagnostics, CT and discharge in the same dental visit, with transc
   expect(persisted().ctReportLanguage).toBe('en');
   expect(storedSources()).toEqual([provenance]);
   navigateSection('imaging');
+  await waitFor(() => expect(document.querySelector('.sidebar-layout__main')).toHaveAttribute('data-active-section', 'imaging'));
+  expect(screen.queryByRole('textbox', { name: 'Diagnostics' })).toBeNull();
+  navigateSection('exam');
   expect(await screen.findByRole('textbox', { name: 'Diagnostics' })).toHaveValue(changes.gpDiagnostics);
 });
 
@@ -340,6 +343,7 @@ it('applies reviewed awake oral findings and keeps them when the clinician switc
   })));
   expect(persisted()[field]).toBe(text);
   fireEvent.click(screen.getByRole('button', { name: 'General SOAP' }));
+  fireEvent.click(screen.getByText('Fields from other templates'));
   expect(screen.getByRole('textbox', { name: 'Awake oral examination' })).toHaveValue(text);
   expect(() => act(() => live('consultation').onApply({ [field]: 'Stale change' }, source({
     kind: 'consultation', transcript: 'Stale change', fields: [field],
@@ -364,5 +368,17 @@ it('shows and applies custom Discharge fields with the Consult flag off', async 
   act(() => live().onApply({ [field]: text }, source({ transcript: text, fields: [field] })));
   expect(screen.getByRole('textbox', { name: 'Activity' })).toHaveValue(text);
   fireEvent.click(screen.getByRole('button', { name: 'Standard discharge' }));
+  const retained = screen.getByText('Fields from other templates').closest('details');
+  expect(retained).not.toHaveAttribute('open');
+  fireEvent.click(screen.getByText('Fields from other templates'));
   expect(screen.getByRole('textbox', { name: 'Activity' })).toHaveValue(text);
+});
+
+it('opens reusable Imaging templates from Customize and keeps Imaging and PDF preferences accessible', async () => {
+  mount();
+  navigateSection('imaging');
+  fireEvent.click(await screen.findByRole('button', { name: 'Customize' }));
+  const templates = await screen.findByRole('dialog', { name: 'Imaging report templates' });
+  fireEvent.click(within(templates).getByRole('button', { name: 'Imaging and PDF settings' }));
+  expect(await screen.findByRole('dialog', { name: 'Chart settings' })).toBeVisible();
 });

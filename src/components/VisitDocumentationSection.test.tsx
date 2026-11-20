@@ -85,5 +85,6 @@ it('only inserts suggested text when requested and keeps a populated custom sect
   const patch = onChange.mock.lastCall![0];
   expect(patch.consultationRetainedSections).toEqual(template.sections);
   rerender(<VisitDocumentationSection {...props} patientInfo={{ ...documented, ...patch }} />);
+  fireEvent.click(screen.getByText('Fields from other templates'));
   expect(screen.getByRole('textbox', { name: 'Decision' })).toHaveValue('Client received an estimate.');
 });

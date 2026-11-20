@@ -71,6 +71,23 @@
       },
       "builder": {
         "addSection": "Aggiungi sezione",
+        "searchSections": "Cerca sezioni",
+        "practiceFields": "Campi della clinica",
+        "builtInFields": "Campi integrati",
+        "createField": "Crea un campo",
+        "manageFields": "Gestisci i campi della clinica",
+        "noFields": "Nessuna sezione corrispondente",
+        "alreadyAdded": "Già aggiunto",
+        "dragField": "Riordina {{field}}",
+        "removeNamed": "Rimuovi {{field}}",
+        "fieldRemoved": "Campo {{field}} rimosso",
+        "undoRemove": "Annulla",
+        "archiveField": "Archivia campo",
+        "restoreField": "Ripristina campo",
+        "fieldsFromOtherTemplates": "Campi di altri modelli",
+        "sectionMoved": "Campo {{field}} spostato in posizione {{position}}",
+        "fieldName": "Nome del campo",
+        "noPracticeFields": "Nessun campo della clinica",
         "chooseSection": "Scelga una sezione",
         "customSection": "Sezione personalizzata",
         "sectionLabel": "Etichetta della sezione",
@@ -123,6 +140,24 @@
         "helper": "Registri il prossimo passo concordato, le tempistiche e quando contattare prima lo studio.",
         "sample": "Il cliente contatterà lo studio per fissare un appuntamento."
       }
+    }
+  },
+  "imaging": {
+    "templates": {
+      "title": "Modelli di referti di diagnostica per immagini",
+      "starter": "Referto standard",
+      "intro": "Crei strutture per i referti radiografici e TC.",
+      "label": "Modello di referto",
+      "insert": "Inserisci struttura",
+      "inserted": "Struttura del referto inserita.",
+      "tooLong": "La struttura farebbe superare la lunghezza massima del referto.",
+      "settings": "Impostazioni di diagnostica per immagini e PDF",
+      "help": "Come funzionano i modelli di diagnostica per immagini"
+    },
+    "sections": {
+      "technique": "Tecnica",
+      "findings": "Reperti",
+      "impression": "Conclusioni"
     }
   },
   "discharge": {

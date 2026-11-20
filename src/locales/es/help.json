@@ -24,7 +24,8 @@
     "practice": "Clínica y asistencia"
   },
   "images": {
-    "dischargeTemplates": "El editor de plantillas de alta con la configuración de un campo personalizado abierta en una visita ficticia.",
+    "imagingTemplates": "Las opciones de plantilla de informe encima de un informe radiográfico ficticio.",
+    "dischargeTemplates": "El editor de plantillas de alta con el selector «Añadir sección» abierto en una visita ficticia.",
     "consultationMedicationHistory": "Medicación actual con una ficha veterinaria en la aplicación y un enlace a la fuente completa.",
     "consultationMedicationReview": "Revisión del dictado de una consulta con sugerencias de medicación separadas y sus fragmentos de transcripción.",
     "charting": "Ejemplo de odontograma con dientes numerados y una cuadrícula de hallazgos.",
@@ -42,7 +43,7 @@
     "by-number": "Vista Por diente con el 108 Triadan seleccionado en el diagrama numerado y sus hallazgos abiertos.",
     "imagingSettings": "Ajustes de diagnóstico por imagen y PDF que muestran el idioma de los informes y las opciones predeterminadas de inclusión en el PDF.",
     "consultationReview": "La sección Imágenes de una consulta, con el control Añadir imágenes y una miniatura de ejemplo.",
-    "consultationTemplatePreview": "El editor de plantillas con la configuración de una sección de consulta ficticia abierta.",
+    "consultationTemplatePreview": "El editor de plantillas de consulta con el selector «Añadir sección» abierto en una visita ficticia.",
     "consultationRecordNote": "Nota de consulta con los controles Descargar PDF y Copiar.",
     "dentalConsultation": "El campo de exploración oral con el paciente despierto en una consulta dental ficticia.",
     "dictationCheck": "El panel de dictado hace una breve pausa antes de revisar el historial. Con «Reanudar» puede continuar el mismo dictado."
@@ -108,7 +109,7 @@
       "sections": {
         "first": {
           "title": "Documentar el examen",
-          "text": "Abra «Examen» y registre el estado y los comentarios de las zonas evaluadas. Deje en blanco las zonas que no haya evaluado. Use «Personalizar» para gestionar las zonas del examen."
+          "text": "Abra «Examen» y registre el estado y los comentarios de las zonas evaluadas. Deje en blanco las zonas que no haya evaluado. Use «Personalizar» para gestionar las zonas del examen. Use «Pruebas diagnósticas» debajo de los hallazgos del examen para registrar resultados ajenos al diagnóstico por imagen y pruebas pendientes."
         },
         "second": {
           "title": "Registrar anestésicos y bloqueos nerviosos",
@@ -134,7 +135,7 @@
         },
         "third": {
           "title": "Redactar los informes de diagnóstico por imagen",
-          "text": "Introduzca los hallazgos en Informe radiográfico o Informe de TC. Use Diagnóstico para otros resultados y pruebas pendientes. Puede dictarlo todo en la misma grabación dental. Indique la modalidad al describir las imágenes y compruebe los destinos propuestos antes de aplicarlos."
+          "text": "Introduzca los hallazgos en Informe radiográfico o Informe de TC. Para otros resultados y pruebas pendientes, abra «Examen» y use «Pruebas diagnósticas». Puede dictarlo todo en la misma grabación dental. Indique la modalidad al describir las imágenes y compruebe los destinos propuestos antes de aplicarlos.\n\nEncima de cualquiera de los dos informes, elija una «Plantilla de informe» y seleccione «Insertar esquema». ToothOps añade los encabezados que faltan al final del informe y conserva el texto existente. Compruebe los encabezados antes de añadir los hallazgos.\n\nEn «Diagnóstico por imagen», elija «Personalizar» para abrir el gestor de plantillas. Desde allí puede previsualizar o gestionar los esquemas de su clínica. Para cambiar el idioma de los informes o las opciones de inclusión predeterminadas del PDF, elija «Ajustes de diagnóstico por imagen y PDF» en el gestor."
         }
       }
     },
@@ -180,7 +181,7 @@
       "sections": {
         "first": {
           "title": "Registrar las instrucciones de alta",
-          "text": "En «Alta», elija una de las opciones disponibles en «Plantilla de nota». El texto ya introducido se conserva cuando cambia de plantilla.\n\nEn Alta, indique un medicamento por línea, con la dosis, cómo administrarlo y durante cuánto tiempo. Añada los cuidados en casa y el seguimiento. Compruebe los datos antes de compartir el informe.\n\nAbra «Gestionar plantillas» junto a las opciones. Si es titular de la clínica, seleccione una plantilla y elija «Duplicar». Use «Añadir sección» para añadir un campo personalizado y seleccione su nombre para abrir la configuración del campo. Los campos personalizados solo aparecen en el informe para el propietario si activa «Incluir en el informe para el propietario» para cada campo que desee compartir. Use «Vista previa de ejemplo» para ver las secciones con contenido ficticio. Elija «Guardar», seleccione la plantilla para la visita y compruebe la nota clínica en «Revisar y exportar» → «Nota clínica»."
+          "text": "En «Alta», elija una de las opciones disponibles en «Plantilla de nota». El texto ya introducido se conserva cuando cambia de plantilla. Tras cambiar de plantilla, despliegue «Campos de otras plantillas» debajo de los campos actuales para encontrar el texto ya introducido en campos que no aparecen en la plantilla activa.\n\nEn Alta, indique un medicamento por línea, con la dosis, cómo administrarlo y durante cuánto tiempo. Añada los cuidados en casa y el seguimiento. Compruebe los datos antes de compartir el informe.\n\nAbra «Gestionar plantillas» junto a las opciones. Si es titular de la clínica, seleccione una plantilla y elija «Duplicar». Abra «Añadir sección» y use «Buscar secciones» para encontrar un campo integrado o un campo reutilizable en «Campos de la clínica». Si no encuentra el campo que necesita, elija «Crear un campo» e indique su nombre. Para reutilizarlo, selecciónelo en «Campos de la clínica» en el selector de otra plantilla. Abra «Gestionar campos de la clínica» para archivar o restaurar un campo reutilizable.\n\nArrastre un campo por el asa para cambiarlo de posición. Use la X para quitar el campo de la plantilla actual o elija «Deshacer» para volver a colocarlo. Seleccione el nombre del campo para ver sus ajustes. Para compartir un campo personalizado, active «Incluir en el informe para el propietario» en esa plantilla. Si reutiliza el campo en otra plantilla, ajuste también allí la opción para compartirlo.\n\nUse «Vista previa de ejemplo» para ver las secciones con contenido ficticio. Elija «Guardar», seleccione la plantilla para la visita y compruebe la nota clínica en «Revisar y exportar» → «Nota clínica»."
         },
         "second": {
           "title": "Redactar el informe para el propietario",
@@ -324,7 +325,7 @@
       "sections": {
         "first": {
           "title": "Encontrar los ajustes para cada tarea",
-          "text": "Abra «Paciente», «Examen», «Anestesia», «Odontograma», «Diagnóstico», «Procedimiento» o «Diagnóstico por imagen» y elija «Personalizar» en el encabezado de la sección. Se abrirán los ajustes del odontograma en la categoría correspondiente. Elija otra sección en la lista de categorías de la izquierda sin cerrar el cuadro de diálogo. Las preferencias personales del historial se guardan automáticamente en su cuenta cuando hay sincronización o en el navegador actual si no la hay.\n\nEn «Informe del tratamiento», «Personalizar» abre las plantillas de informes del tratamiento. Junto a «Vista previa» en «Informe para el propietario», «Personalizar» abre las plantillas de informes para el propietario. Estos editores gestionan el texto reutilizable y el diseño de su clínica. Revise la plantilla seleccionada antes de modificarla."
+          "text": "Abra «Paciente», «Examen», «Anestesia», «Odontograma», «Diagnóstico», o «Procedimiento» y elija «Personalizar» en el encabezado de la sección. Se abrirán los ajustes del odontograma en la categoría correspondiente. Elija otra sección en la lista de categorías de la izquierda sin cerrar el cuadro de diálogo. Las preferencias personales del historial se guardan automáticamente en su cuenta cuando hay sincronización o en el navegador actual si no la hay.\n\nEn «Diagnóstico por imagen», elija «Personalizar» para abrir el gestor de plantillas. Desde allí puede previsualizar o gestionar los esquemas de su clínica. Para cambiar el idioma de los informes o las opciones de inclusión predeterminadas del PDF, elija «Ajustes de diagnóstico por imagen y PDF» en el gestor.\n\nEn «Informe del tratamiento», «Personalizar» abre las plantillas de informes del tratamiento. Junto a «Vista previa» en «Informe para el propietario», «Personalizar» abre las plantillas de informes para el propietario. Estos editores gestionan el texto reutilizable y el diseño de su clínica. Revise la plantilla seleccionada antes de modificarla."
         },
         "second": {
           "title": "Entender cada categoría de ajustes del odontograma",
@@ -332,7 +333,7 @@
         },
         "third": {
           "title": "Configurar las opciones de imagen y personalizar las exportaciones",
-          "text": "Abra «Diagnóstico por imagen», elija «Personalizar» y seleccione «Diagnóstico por imagen y PDF» para configurar el idioma de los informes y las opciones de inclusión predeterminadas. Puede incluir imágenes, informes radiográficos y de TC y la sección de códigos utilizados. Cuando se desactivan los hallazgos del diagrama, la cuadrícula de mediciones es obligatoria para mantener visibles las mediciones registradas en el documento clínico.\n\nPara una exportación concreta, abra «Revisar y exportar», seleccione «Historial clínico» y abra «Personalizar». Elija el color del PDF clínico y las secciones incluidas, y compruebe la vista previa. Para un documento para el propietario, use la plantilla de «Informe para el propietario» y elija en «Diagnóstico por imagen» qué imágenes individuales desea incluir. Cambiar el color del PDF clínico no cambia la plantilla del informe para el propietario."
+          "text": "Abra «Diagnóstico por imagen», elija «Personalizar» y, en el gestor de plantillas, seleccione «Ajustes de diagnóstico por imagen y PDF» para configurar el idioma de los informes y las opciones de inclusión predeterminadas. Puede incluir imágenes, informes radiográficos y de TC y la sección de códigos utilizados. Cuando se desactivan los hallazgos del diagrama, la cuadrícula de mediciones es obligatoria para mantener visibles las mediciones registradas en el documento clínico.\n\nPara una exportación concreta, abra «Revisar y exportar», seleccione «Historial clínico» y abra «Personalizar». Elija el color del PDF clínico y las secciones incluidas, y compruebe la vista previa. Para un documento para el propietario, use la plantilla de «Informe para el propietario» y elija en «Diagnóstico por imagen» qué imágenes individuales desea incluir. Cambiar el color del PDF clínico no cambia la plantilla del informe para el propietario."
         }
       }
     },
@@ -436,7 +437,7 @@
         },
         "second": {
           "title": "Ordenar y previsualizar las secciones",
-          "text": "Elija Añadir sección para insertar un campo estándar o personalizado. Seleccione el nombre de una sección para cambiar la etiqueta, las indicaciones, el ejemplo, el texto sugerido y el formato, marcarla como subsección o quitarla. En Configuración del dictado, ajuste las instrucciones y el nivel de detalle. Compruebe el resultado en la vista previa. Use el texto sugerido solo si corresponde a la visita.\n\nRellene Nombre de la plantilla. Use las flechas que aparecen junto a cada sección para cambiar el orden. Seleccione Vista previa de ejemplo para comprobar el resultado con una visita ficticia. Vuelva a seleccionar el botón para seguir editando. Todas las plantillas incluyen Imágenes debajo de la nota. Las imágenes pertenecen a la visita y se conservan al cambiar de plantilla."
+          "text": "Abra «Añadir sección» y use «Buscar secciones» para encontrar un campo integrado o un campo reutilizable en «Campos de la clínica». Si no encuentra el campo que necesita, elija «Crear un campo» e indique su nombre. Para reutilizarlo, selecciónelo en «Campos de la clínica» en el selector de otra plantilla. Abra «Gestionar campos de la clínica» para archivar o restaurar un campo reutilizable.\n\nSeleccione el nombre de un campo para cambiar la etiqueta de la sección, las indicaciones, el ejemplo de redacción, el texto sugerido, el formato o el ajuste de subsección. Abra «Configuración del dictado» para definir las instrucciones de redacción y el nivel de detalle. Use el texto sugerido solo después de comprobar que corresponde a la visita. Arrastre un campo por el asa para cambiarlo de posición. Use la X para quitar el campo de la plantilla actual o elija «Deshacer» para volver a colocarlo.\n\nIntroduzca el nombre de la plantilla. Abra «Vista previa de ejemplo» para comprobar el orden de los campos con una visita ficticia y vuelva a seleccionar el botón para seguir editando. Las imágenes aparecen debajo de la nota y siguen adjuntas a la visita al cambiar de plantilla.\n\nTras cambiar de plantilla, despliegue «Campos de otras plantillas» debajo de los campos actuales para encontrar el texto ya introducido en campos que no aparecen en la plantilla activa."
         },
         "third": {
           "title": "Guardar o archivar",

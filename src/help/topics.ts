@@ -39,7 +39,7 @@ export const HELP_SCREENSHOTS: Partial<Record<HelpTopic, readonly HelpScreenshot
   ],
   'help-tools': [{ caption: 'help-tools', src: '/help/screenshots/help-menu.jpg', width: 354, height: 329, section: 'first' }],
   charting: [{ caption: 'charting', src: '/screenshots/feat-grid.jpg', width: 1400, height: 515, section: 'first' }],
-  imaging: [{ caption: 'imaging', src: '/help/screenshots/imaging.jpg', width: 942, height: 634, section: 'third' }],
+  imaging: [{ caption: 'imagingTemplates', src: '/help/screenshots/imaging.jpg', width: 1240, height: 850, section: 'third' }],
   dictation: [
     { caption: 'dictation', src: '/help/screenshots/dictation.jpg', width: 600, height: 370, section: 'second' },
     { caption: 'dictationCheck', src: '/help/screenshots/dictation-check.jpg', width: 352, height: 290, section: 'third' },

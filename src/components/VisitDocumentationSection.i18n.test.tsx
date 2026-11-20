@@ -31,7 +31,7 @@ it('reorders the clinical fields and lists the shared Images section', () => {
   const fields = screen.getAllByRole('list')[1];
   expect(fields.querySelectorAll('li')).toHaveLength(11);
   expect(fields.lastElementChild).toHaveTextContent(/Images/);
-  fireEvent.click(fields.querySelectorAll('li')[0].querySelectorAll('button')[2]);
+  fireEvent.keyDown(fields.querySelectorAll('li')[0].querySelectorAll('button')[0], { key: 'ArrowDown' });
   fireEvent.click(screen.getByRole('button', { name: /Save/ }));
   expect(onSave).toHaveBeenCalledWith({ defaultId: id, templates: [{
     id, name: 'Custom consultation',
@@ -87,4 +87,46 @@ it('localizes the Discharge template editor and makes owner-report visibility an
   fireEvent.click(include);
   fireEvent.click(screen.getByRole('button', { name: /Save/ }));
   expect(onSave.mock.lastCall?.[0].templates[0].sections[0]).toMatchObject({ ownerReport: true });
+});
+
+it('creates a reusable practice field, adds it to another template, and undoes a removal', () => {
+  const id = '11111111-1111-4111-8111-111111111111';
+  const otherId = '22222222-2222-4222-8222-222222222222';
+  const onSave = vi.fn();
+  const templates = [
+    { id, name: 'Dental recovery', fields: [], sections: [{ id: 'dischargeInstructions' as const }] },
+    { id: otherId, name: 'Dental recheck', fields: [], sections: [{ id: 'dischargeFollowUp' as const }] },
+  ];
+  render(<ConsultationTemplatesDialog kind="discharge" initial={{ defaultId: id, templates }} status="ready" canEdit
+    onSave={onSave} onReload={vi.fn()} onClose={vi.fn()} />);
+  fireEvent.click(screen.getByRole('button', { name: /Add section/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Create a field/ }));
+  fireEvent.change(screen.getByRole('textbox', { name: /Field name/ }), { target: { value: 'Activity restrictions' } });
+  fireEvent.click(screen.getByRole('button', { name: /Create a field/ }));
+  fireEvent.click(screen.getByRole('button', { name: 'Dental recheck' }));
+  fireEvent.click(screen.getByRole('button', { name: /Add section/ }));
+  fireEvent.change(screen.getByRole('searchbox', { name: /Search sections/ }), { target: { value: 'Activity' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Activity restrictions' }));
+  fireEvent.click(screen.getByRole('button', { name: /Remove.*Activity restrictions/ }));
+  expect(screen.queryByRole('button', { name: 'Activity restrictions' })).toBeNull();
+  fireEvent.click(screen.getByRole('button', { name: /Undo/ }));
+  expect(screen.getByRole('button', { name: 'Activity restrictions' })).toBeVisible();
+  fireEvent.click(screen.getByRole('button', { name: /Save/ }));
+  const saved = onSave.mock.lastCall?.[0];
+  const field = saved.practiceFields[0];
+  expect(field).toMatchObject({ label: 'Activity restrictions' });
+  expect(saved.templates.every((template: { sections: { id: string }[] }) => template.sections.some(section => section.id === field.id))).toBe(true);
+});
+
+it('keeps pre-library custom fields in the practice picker when their last placement is removed', () => {
+  const id = '11111111-1111-4111-8111-111111111111';
+  const onSave = vi.fn();
+  render(<ConsultationTemplatesDialog kind="discharge" initial={{ defaultId: id, templates: [{
+    id, name: 'Recovery', fields: [], sections: [{ id: 'dischargeInstructions' }, { id: 'dischargeCustom_activity', label: 'Activity' }],
+  }] }} status="ready" canEdit onSave={onSave} onReload={vi.fn()} onClose={vi.fn()} />);
+  fireEvent.click(screen.getByRole('button', { name: /Remove.*Activity/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Add section/ }));
+  expect(screen.getByRole('button', { name: 'Activity' })).toBeEnabled();
+  fireEvent.click(screen.getByRole('button', { name: /Save/ }));
+  expect(onSave.mock.lastCall?.[0].practiceFields).toEqual([expect.objectContaining({ label: 'Activity' })]);
 });
