@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 import { EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS, type PatientInfo } from '../types';
+import { CONSULTATION_FIELDS } from '../utils/consultationTemplates';
 import { VisitDocumentationSection } from './VisitDocumentationSection';
 export const patient: PatientInfo = { patientName: '', patientNumber: '', ownerName: '', ownerPhone: '', ownerEmail: '', doctor: '', tech: '', date: '', complaint: 'Reason', treatmentReport: 'Existing treatment', recallDate: '', nerveBlocks: { ...EMPTY_NERVE_BLOCKS }, exam: { ...EMPTY_EXAM_FINDINGS } };
 it('edits declarative consultation sources with linked visible help and reviews the existing output', () => {
@@ -55,7 +56,34 @@ it('selects a consult template without changing any clinical fields', () => {
 
 it('keeps a saved consult template visible and protects its sources when locked', () => {
   render(<VisitDocumentationSection kind="consultation" patientInfo={patient} onChange={vi.fn()} readOnly />);
-  expect(screen.getByText('Dental consultation')).toBeVisible();
+  expect(screen.getByText('Dental consultation (original)')).toBeVisible();
   expect(screen.queryByRole('group', { name: 'Note template' })).not.toBeInTheDocument();
   expect(screen.getByRole('textbox', { name: 'Reason for visit' })).toHaveAttribute('readonly');
+});
+
+it('only inserts suggested text when requested and keeps a populated custom section after switching', () => {
+  const field = 'consultationCustom_decision';
+  const id = '11111111-1111-4111-8111-111111111111';
+  const template = {
+    id, name: 'Intake',
+    fields: CONSULTATION_FIELDS,
+    sections: [{ id: field, label: 'Decision', suggestedText: 'Client received an estimate.' }],
+  } as const;
+  const onChange = vi.fn();
+  const props = {
+    kind: 'consultation' as const, onChange,
+    consultation: { library: { defaultId: id, templates: [template] } },
+  };
+  const { rerender } = render(<VisitDocumentationSection {...props} patientInfo={patient} />);
+  expect(screen.getByRole('textbox', { name: 'Decision' })).toHaveValue('');
+  fireEvent.click(screen.getByText('Suggested text'));
+  fireEvent.click(screen.getByRole('button', { name: 'Use suggested text' }));
+  expect(onChange).toHaveBeenLastCalledWith({ [field]: 'Client received an estimate.' });
+  const documented = { ...patient, consultationLayout: template, [field]: 'Client received an estimate.' };
+  rerender(<VisitDocumentationSection {...props} patientInfo={documented} />);
+  fireEvent.click(screen.getByRole('button', { name: 'General SOAP' }));
+  const patch = onChange.mock.lastCall![0];
+  expect(patch.consultationRetainedSections).toEqual(template.sections);
+  rerender(<VisitDocumentationSection {...props} patientInfo={{ ...documented, ...patch }} />);
+  expect(screen.getByRole('textbox', { name: 'Decision' })).toHaveValue('Client received an estimate.');
 });

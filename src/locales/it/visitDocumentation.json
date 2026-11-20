@@ -52,9 +52,10 @@
       "moveUp": "Sposta {{field}} verso l’alto",
       "moveDown": "Sposta {{field}} verso il basso",
       "starters": {
-        "dental-v1": "Visita odontoiatrica",
+        "dental-v1": "Consulto odontoiatrico (versione precedente)",
         "soap-v1": "SOAP generale",
-        "recheck-v1": "Controllo"
+        "recheck-v1": "Controllo",
+        "dental-v2": "Visita odontoiatrica"
       },
       "samples": {
         "consultationCurrentMedications": "Il proprietario ha riferito un farmaco in uso.",
@@ -67,6 +68,60 @@
         "gpVitals": "Peso registrato durante la visita.",
         "gpPhysicalExam": "I rilievi dell’esame sono stati registrati.",
         "gpDiagnostics": "Le immagini precedenti sono disponibili per la revisione."
+      },
+      "builder": {
+        "addSection": "Aggiungi sezione",
+        "chooseSection": "Scelga una sezione",
+        "customSection": "Sezione personalizzata",
+        "sectionLabel": "Etichetta della sezione",
+        "removeSection": "Rimuovi sezione",
+        "guidance": "Indicazioni per il campo",
+        "example": "Esempio di formulazione",
+        "suggestedText": "Testo suggerito",
+        "useSuggested": "Usa testo suggerito",
+        "format": "Formato di output",
+        "paragraph": "Paragrafo",
+        "bullets": "Elenco puntato",
+        "dictation": "Impostazioni della dettatura",
+        "instructions": "Istruzioni di scrittura",
+        "detail": "Livello di dettaglio",
+        "standard": "Standard",
+        "concise": "Conciso",
+        "detailed": "Dettagliato",
+        "earlier": "Sposta il modello in alto",
+        "later": "Sposta il modello in basso",
+        "importTitle": "Crea da una nota di esempio",
+        "importHelp": "Incolli un esempio anonimizzato con titoli Markdown o etichette seguite da due punti. Controlli i titoli prima di salvare il modello.",
+        "createTemplate": "Crea modello",
+        "subsection": "Usa come sottosezione",
+        "libraryTooLarge": "La raccolta dei modelli è troppo grande. Accorci gli esempi, i testi suggeriti o le istruzioni di scrittura."
+      }
+    },
+    "dental": {
+      "awakeOralExam": {
+        "label": "Esame orale a paziente sveglio",
+        "helper": "Registri i reperti visibili e le aree che non ha potuto valutare a paziente sveglio.",
+        "sample": "Lieve arrossamento gengivale visibile. La parte caudale della bocca non è stata valutata."
+      },
+      "preanesthetic": {
+        "label": "Considerazioni preanestetiche",
+        "helper": "Registri rischi pertinenti, problemi anestesiologici pregressi ed esami o consulti discussi.",
+        "sample": "Anamnesi anestesiologica rivista. Discussi gli esami preanestetici."
+      },
+      "clientDiscussion": {
+        "label": "Colloquio e decisioni del cliente",
+        "helper": "Registri opzioni, preventivo, stato del consenso e cure rinviate o rifiutate. Indichi le decisioni ancora in sospeso.",
+        "sample": "È stato discusso un preventivo preliminare. Il cliente deciderà dopo averlo esaminato."
+      },
+      "homeCare": {
+        "label": "Cure dentali a domicilio",
+        "helper": "Registri le indicazioni per le cure a domicilio e le eventuali limitazioni pratiche.",
+        "sample": "Il cliente ha chiesto informazioni sulle cure dentali a domicilio."
+      },
+      "followUp": {
+        "label": "Controllo e appuntamenti",
+        "helper": "Registri il prossimo passo concordato, le tempistiche e quando contattare prima lo studio.",
+        "sample": "Il cliente contatterà lo studio per fissare un appuntamento."
       }
     }
   },

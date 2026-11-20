@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CONSULTATION_FIELDS, consultationChoices, consultationLayoutFor, normalizeConsultationLayout, parseConsultationLibrary } from './consultationTemplates';
+import { CONSULTATION_FIELDS, consultationChoices, consultationHeadings, consultationLayoutFor, normalizeConsultationLayout, parseConsultationLibrary } from './consultationTemplates';
 import { normalizeVisitDocumentation } from './visitDocumentation';
 
 const custom = { id: '11111111-1111-4111-8111-111111111111', name: 'Practice consult', fields: [...CONSULTATION_FIELDS].reverse() };
@@ -35,4 +35,41 @@ describe('consultation layouts', () => {
     expect(parseConsultationLibrary({ defaultId: custom.id, templates: [{ ...custom, archived: true }] })).toBeUndefined();
     expect(parseConsultationLibrary({ defaultId: custom.id, templates: [custom, custom] })).toBeUndefined();
   });
+});
+
+it('validates ordered custom sections and keeps their settings in a pinned layout', () => {
+  const section = { id: 'consultationCustom_dental-example', label: 'Oral findings', guidance: 'Only visible findings', format: 'bullets' };
+  const layout = { ...custom, sections: [section, { id: 'consultationPlan' }] };
+  expect(normalizeConsultationLayout(layout)).toEqual(layout);
+  expect(normalizeConsultationLayout({ ...layout, sections: [section, section] })).toBeUndefined();
+  expect(normalizeConsultationLayout({ ...layout, sections: [{ id: 'patientName' }] })).toBeUndefined();
+  expect(normalizeConsultationLayout({ ...layout, sections: [{ id: section.id }] })).toBeUndefined();
+});
+
+it('starts new dental consultations with dental-specific sections and keeps historical notes on the former layout', () => {
+  expect(consultationLayoutFor({}).sections?.map(section => section.id)).toContain('consultationCustom_awake-oral-exam');
+  expect(consultationLayoutFor({}, undefined, true).sections).toBeUndefined();
+});
+
+it('extracts unique headings from an example without importing its note body', () => {
+  expect(consultationHeadings('# Dental history\nClient saw a dentist.\nPlan: Return in two weeks.\n# Dental history'))
+    .toEqual(['Dental history', 'Plan']);
+});
+
+it('preserves retained section metadata after many template switches and ignores an independently invalid entry', () => {
+  const retained = Array.from({ length: 300 }, (_, index) => ({
+    id: `consultationCustom_section-${index}` as const, label: `Section ${index}`,
+  }));
+  const result = normalizeVisitDocumentation({
+    consultationRetainedSections: [...retained, { id: 'consultationCustom_unlabeled' as const }],
+  });
+  expect(result.consultationRetainedSections).toEqual(retained);
+});
+
+it('rejects a valid-looking library larger than the database limit', () => {
+  const text = '🐾'.repeat(950);
+  const sections = Array.from({ length: 24 }, (_, index) => ({
+    id: `consultationCustom_section-${index}` as const, label: `Section ${index}`, guidance: text, example: text, suggestedText: text,
+  }));
+  expect(parseConsultationLibrary({ defaultId: 'dental-v2', templates: [{ ...custom, sections }] })).toBeUndefined();
 });

@@ -41,8 +41,9 @@
     "by-number": "Vista Por diente con el 108 Triadan seleccionado en el diagrama numerado y sus hallazgos abiertos.",
     "imagingSettings": "Ajustes de diagnóstico por imagen y PDF que muestran el idioma de los informes y las opciones predeterminadas de inclusión en el PDF.",
     "consultationReview": "La sección Imágenes de una consulta, con el control Añadir imágenes y una miniatura de ejemplo.",
-    "consultationTemplatePreview": "Biblioteca de plantillas con la vista previa de una consulta ficticia y las secciones en el orden elegido.",
-    "consultationRecordNote": "Nota de consulta con los controles Descargar PDF y Copiar."
+    "consultationTemplatePreview": "El editor de plantillas con la configuración de una sección de consulta ficticia abierta.",
+    "consultationRecordNote": "Nota de consulta con los controles Descargar PDF y Copiar.",
+    "dentalConsultation": "El campo de exploración oral con el paciente despierto en una consulta dental ficticia."
   },
   "articles": {
     "start": {
@@ -415,7 +416,7 @@
         },
         "second": {
           "title": "Registrar o dictar la visita",
-          "text": "Registre el motivo, los antecedentes, la evaluación y el plan. Si hay dictado disponible, compare las secciones propuestas con sus evidencias antes de aplicarlas. Para revisar una transcripción, abra Transcripciones guardadas y seleccione la fecha de grabación. Registre las constantes vitales, la exploración y las pruebas diagnósticas en sus campos cuando estén documentadas. Deje sin rellenar los campos en los que no tenga hallazgos. Debajo de los campos de la nota, abra Imágenes y seleccione Añadir imágenes. Seleccione, arrastre o pegue los archivos. Espere a que aparezcan las miniaturas y abra una para revisarla. Las imágenes quedan adjuntas a la visita y no aparecen en el PDF independiente de la nota. Use Medicación actual para el uso comunicado, Medicamentos administrados durante la visita para las dosis realmente dadas, y Cambios de medicación y prescripciones para el plan. Al dictar, indique la categoría y revise los fragmentos citados antes de aplicarlos. En Medicación actual, abra Lista anterior de medicación para consultar la última consulta anterior y los cambios registrados. Compruebe qué sigue vigente y seleccione Copiar a Medicación actual si el campo está vacío. Use Busque un medicamento para introducir el nombre y abrir la búsqueda de fichas en DailyMed. Seleccione Buscar fichas de producto y elija el producto veterinario exacto. Abra la ficha completa en DailyMed para comprobar la concentración, las instrucciones y las advertencias."
+          "text": "Use Consulta dental para una visita previa al procedimiento. En Exploración oral con el paciente despierto, registre los hallazgos visibles y lo que no pudo valorar. Anote los riesgos en Consideraciones preanestésicas. En Conversación y decisiones del cliente, documente las opciones, el presupuesto, el consentimiento y la atención aplazada o pendiente. Anote los cuidados en casa y el seguimiento acordado en sus propias secciones. Revise el Texto sugerido y úselo solo si corresponde a la visita.\n\nRegistre el motivo, los antecedentes, la evaluación y el plan. Si hay dictado disponible, compare las secciones propuestas con sus evidencias antes de aplicarlas. Para revisar una transcripción, abra Transcripciones guardadas y seleccione la fecha de grabación. Registre las constantes vitales, la exploración y las pruebas diagnósticas en sus campos cuando estén documentadas. Deje sin rellenar los campos en los que no tenga hallazgos. Debajo de los campos de la nota, abra Imágenes y seleccione Añadir imágenes. Seleccione, arrastre o pegue los archivos. Espere a que aparezcan las miniaturas y abra una para revisarla. Las imágenes quedan adjuntas a la visita y no aparecen en el PDF independiente de la nota. Use Medicación actual para el uso comunicado, Medicamentos administrados durante la visita para las dosis realmente dadas, y Cambios de medicación y prescripciones para el plan. Al dictar, indique la categoría y revise los fragmentos citados antes de aplicarlos. En Medicación actual, abra Lista anterior de medicación para consultar la última consulta anterior y los cambios registrados. Compruebe qué sigue vigente y seleccione Copiar a Medicación actual si el campo está vacío. Use Busque un medicamento para introducir el nombre y abrir la búsqueda de fichas en DailyMed. Seleccione Buscar fichas de producto y elija el producto veterinario exacto. Abra la ficha completa en DailyMed para comprobar la concentración, las instrucciones y las advertencias."
         },
         "third": {
           "title": "Revisar la nota",
@@ -429,15 +430,15 @@
       "sections": {
         "first": {
           "title": "Partir de una plantilla existente",
-          "text": "Abra Gestionar plantillas desde Consulta. Los propietarios de la clínica pueden elegir una plantilla inicial o existente y seleccionar Duplicar para crear una copia editable."
+          "text": "Abra Gestionar plantillas desde Consulta. Los propietarios de la clínica pueden elegir una plantilla inicial o existente y seleccionar Duplicar para crear una copia editable.\n\nEn Más opciones, elija Crear a partir de una nota de ejemplo y pegue un ejemplo anonimizado. Use encabezados Markdown o etiquetas seguidas de dos puntos. Elija Crear plantilla y revise los encabezados importados. El cuerpo de la nota no se copia."
         },
         "second": {
           "title": "Ordenar y previsualizar las secciones",
-          "text": "Rellene Nombre de la plantilla. Use las flechas que aparecen junto a cada sección para cambiar el orden. Seleccione Vista previa de ejemplo para comprobar el resultado con una visita ficticia. Vuelva a seleccionar el botón para seguir editando. Todas las plantillas incluyen Imágenes debajo de la nota. Las imágenes pertenecen a la visita y se conservan al cambiar de plantilla."
+          "text": "Elija Añadir sección para insertar un campo estándar o personalizado. Seleccione el nombre de una sección para cambiar la etiqueta, las indicaciones, el ejemplo, el texto sugerido y el formato, marcarla como subsección o quitarla. En Configuración del dictado, ajuste las instrucciones y el nivel de detalle. Compruebe el resultado en la vista previa. Use el texto sugerido solo si corresponde a la visita.\n\nRellene Nombre de la plantilla. Use las flechas que aparecen junto a cada sección para cambiar el orden. Seleccione Vista previa de ejemplo para comprobar el resultado con una visita ficticia. Vuelva a seleccionar el botón para seguir editando. Todas las plantillas incluyen Imágenes debajo de la nota. Las imágenes pertenecen a la visita y se conservan al cambiar de plantilla."
         },
         "third": {
           "title": "Guardar o archivar",
-          "text": "Abra Más opciones y elija Establecer como predeterminada de la clínica para que la plantilla se preseleccione en las consultas nuevas. Para ocultar una plantilla personalizada de las opciones de la visita, elija Archivar plantilla. Para recuperarla, active Mostrar plantillas archivadas, seleccione la plantilla y elija Restaurar plantilla. Seleccione Guardar para aplicar los cambios. Las visitas guardadas conservan la estructura elegida."
+          "text": "Abra Más opciones y elija Establecer como predeterminada de la clínica para que la plantilla se preseleccione en las consultas nuevas. Para ocultar una plantilla personalizada de las opciones de la visita, elija Archivar plantilla. Para recuperarla, active Mostrar plantillas archivadas, seleccione la plantilla y elija Restaurar plantilla. Seleccione Guardar para aplicar los cambios. Las visitas guardadas conservan la estructura elegida.\n\nEn Más opciones, use Subir plantilla o Bajar plantilla para cambiar el orden de las opciones en las nuevas consultas."
         }
       }
     },

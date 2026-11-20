@@ -11,6 +11,7 @@ import { isNativeApp } from '../native/platform';
 import { Sheet } from '../ios/Sheet';
 import { Icon } from '../ios/icons';
 import { recordNoteBasis, plainTextToHtml } from '../utils/recordNote';
+import { consultationSections, consultationSectionKey, isCustomConsultationField } from '../utils/consultationTemplates';
 import { appendClinicalDictationSource } from '../utils/clinicalDictationSources';
 import { allowedClinicalFields, extractClinicalDictation, type ClinicalDictationProposal } from '../utils/clinicalDictationAi';
 import { copyRichText } from '../utils/clipboard';
@@ -41,7 +42,7 @@ interface Props {
 type Proposal = ClinicalDictationProposal & { selected: boolean };
 const MIC_ICON = 'mic';
 const kinds = ['gp-visit', 'consultation', 'gp-exam', 'discharge'] as const;
-const fingerprint = (snapshot: ChartSnapshot) => `${recordNoteBasis(snapshot)}\n${JSON.stringify(snapshot.clinicalDictations ?? [])}`;
+const fingerprint = (snapshot: ChartSnapshot) => `${recordNoteBasis(snapshot)}\n${JSON.stringify(snapshot.clinicalDictations ?? [])}\n${JSON.stringify(snapshot.patientInfo.consultationLayout ?? null)}`;
 const normalized = (text: string) => text.replace(/\s+/gu, ' ').trim();
 
 /** Capture is kept separate from dental parsing: raw wording is the saved source. */
@@ -194,7 +195,7 @@ export function ClinicalDictationButton(props: Props) {
           ...(structuredConsultation ? { structuredConsultation } : {}),
           ...(routedGpExamEnabled === undefined ? {} : { routedGpExamEnabled }) });
         if (!valid(token, sourceBasis, selectedTarget)) return;
-        const fields = allowedClinicalFields(selectedTarget, consultationEnabled, routedGpExamEnabled, structuredConsultation), seen = new Set<string>();
+        const fields = allowedClinicalFields(selectedTarget, consultationEnabled, routedGpExamEnabled, structuredConsultation, now.snapshot.patientInfo.consultationLayout), seen = new Set<string>();
         if (!Array.isArray(result) || result.some(p => !p || !fields.includes(p.field) || seen.has(p.field)
           || (seen.add(p.field), typeof p.value !== 'string') || !p.value.trim() || p.value.length > 20000
           || typeof p.evidence !== 'string' || !p.evidence.trim() || !normalized(raw).includes(normalized(p.evidence)))) {
@@ -249,9 +250,18 @@ export function ClinicalDictationButton(props: Props) {
     catch (cause) { setError(friendlyError(cause, t('clinical.failed'))); }
     finally { locked.current = false; }
   };
-  const fieldLabel = (field: ClinicalDictationField) => field === 'treatmentReport' ? t('forms:report.title')
-    : field === 'ctReport' ? t('app:ct.title')
-      : field === 'radiographicFindings' ? t('app:radiographic.title') : t(`visitDocumentation:fields.${field}.label`);
+  const fieldLabel = (field: ClinicalDictationField) => {
+    const layout = props.snapshot.patientInfo.consultationLayout;
+    const section = target === 'consultation' && layout ? consultationSections(layout).find(item => item.id === field) : undefined;
+    if (section?.label) return section.label;
+    const key = section && consultationSectionKey(section);
+    if (key) return t(`visitDocumentation:${key}.label`);
+    if (isCustomConsultationField(field)) return t('visitDocumentation:consultation.templates.builder.customSection');
+    if (field === 'treatmentReport') return t('forms:report.title');
+    if (field === 'ctReport') return t('app:ct.title');
+    if (field === 'radiographicFindings') return t('app:radiographic.title');
+    return t(`visitDocumentation:fields.${field}.label`);
+  };
   const copy = async (raw: string) => {
     const token = epoch.current, sourceIdentity = current.current.identity, sourceBasis = current.current.basis;
     const isCurrent = () => mounted.current && opened.current && token === epoch.current

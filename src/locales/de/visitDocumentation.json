@@ -52,9 +52,10 @@
       "moveUp": "{{field}} nach oben verschieben",
       "moveDown": "{{field}} nach unten verschieben",
       "starters": {
-        "dental-v1": "Zahnkonsultation",
+        "dental-v1": "Zahnkonsultation (bisherige Version)",
         "soap-v1": "Allgemeines SOAP",
-        "recheck-v1": "Nachkontrolle"
+        "recheck-v1": "Nachkontrolle",
+        "dental-v2": "Zahnkonsultation"
       },
       "samples": {
         "consultationCurrentMedications": "Die Halterin berichtet von einem laufenden Medikament.",
@@ -67,6 +68,60 @@
         "gpVitals": "Gewicht bei diesem Besuch erfasst.",
         "gpPhysicalExam": "Untersuchungsbefunde wurden dokumentiert.",
         "gpDiagnostics": "Frühere Aufnahmen stehen zur Prüfung bereit."
+      },
+      "builder": {
+        "addSection": "Abschnitt hinzufügen",
+        "chooseSection": "Abschnitt auswählen",
+        "customSection": "Eigener Abschnitt",
+        "sectionLabel": "Abschnittsbezeichnung",
+        "removeSection": "Abschnitt entfernen",
+        "guidance": "Hinweise zum Feld",
+        "example": "Beispielformulierung",
+        "suggestedText": "Vorgeschlagener Text",
+        "useSuggested": "Vorgeschlagenen Text übernehmen",
+        "format": "Ausgabeformat",
+        "paragraph": "Absatz",
+        "bullets": "Aufzählung",
+        "dictation": "Diktateinstellungen",
+        "instructions": "Schreibanweisungen",
+        "detail": "Detailgrad",
+        "standard": "Standard",
+        "concise": "Kurz",
+        "detailed": "Ausführlich",
+        "earlier": "Vorlage nach oben verschieben",
+        "later": "Vorlage nach unten verschieben",
+        "importTitle": "Aus einer Beispielnotiz erstellen",
+        "importHelp": "Fügen Sie ein anonymisiertes Beispiel mit Markdown-Überschriften oder Bezeichnungen mit abschließendem Doppelpunkt ein. Prüfen Sie die Überschriften vor dem Speichern.",
+        "createTemplate": "Vorlage erstellen",
+        "subsection": "Als Unterabschnitt verwenden",
+        "libraryTooLarge": "Die Vorlagenbibliothek ist zu groß. Kürzen Sie Beispiele, vorgeschlagene Texte oder Schreibanweisungen."
+      }
+    },
+    "dental": {
+      "awakeOralExam": {
+        "label": "Mauluntersuchung am wachen Tier",
+        "helper": "Halten Sie sichtbare Befunde und am wachen Tier nicht beurteilbare Bereiche fest.",
+        "sample": "Leichte sichtbare Zahnfleischrötung. Der hintere Maulbereich war nicht beurteilbar."
+      },
+      "preanesthetic": {
+        "label": "Überlegungen vor der Anästhesie",
+        "helper": "Halten Sie relevante Risiken, frühere Anästhesieprobleme und besprochene Untersuchungen oder Beratungen fest.",
+        "sample": "Die Anästhesieanamnese wurde geprüft. Voruntersuchungen wurden besprochen."
+      },
+      "clientDiscussion": {
+        "label": "Gespräch und Entscheidungen der Tierhalter",
+        "helper": "Dokumentieren Sie Optionen, Kostenschätzung, Einwilligungsstatus sowie aufgeschobene oder abgelehnte Maßnahmen. Kennzeichnen Sie offene Entscheidungen.",
+        "sample": "Eine vorläufige Kostenschätzung wurde besprochen. Die Entscheidung folgt nach Prüfung."
+      },
+      "homeCare": {
+        "label": "Zahnpflege zu Hause",
+        "helper": "Halten Sie besprochene Hinweise zur Zahnpflege und praktische Einschränkungen fest.",
+        "sample": "Die Tierhalter erkundigten sich nach Möglichkeiten der häuslichen Zahnpflege."
+      },
+      "followUp": {
+        "label": "Nachsorge und Terminplanung",
+        "helper": "Halten Sie den nächsten vereinbarten Schritt, den Zeitraum und Gründe für eine frühere Kontaktaufnahme fest.",
+        "sample": "Für die Terminvereinbarung wird die Praxis kontaktiert."
       }
     }
   },

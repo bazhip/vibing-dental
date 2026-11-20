@@ -1,5 +1,5 @@
 import type { PatientInfo } from '../types';
-import { CONSULTATION_MEDICATION_FIELDS, normalizeConsultationLayout } from './consultationTemplates';
+import { CONSULTATION_MEDICATION_FIELDS, isCustomConsultationField, normalizeConsultationLayout, normalizeConsultationSections, type ConsultationSection } from './consultationTemplates';
 
 export const VISIT_DOCUMENT_MAX_LENGTH = 20000;
 export const VISIT_DOCUMENT_FIELDS = [
@@ -30,8 +30,25 @@ export function normalizeVisitDocumentation<T extends Partial<PatientInfo>>(info
   const layout = normalizeConsultationLayout(result.consultationLayout);
   if (layout) result.consultationLayout = layout;
   else delete result.consultationLayout;
+  if (Array.isArray(result.consultationRetainedSections)) {
+    const retained = new Map<string, ConsultationSection>();
+    for (const candidate of result.consultationRetainedSections) {
+      const section = normalizeConsultationSections([candidate])?.[0];
+      if (section && !retained.has(section.id)) retained.set(section.id, section);
+    }
+    if (retained.size) result.consultationRetainedSections = [...retained.values()];
+    else delete result.consultationRetainedSections;
+  } else delete result.consultationRetainedSections;
+  for (const key of Object.keys(result)) {
+    if (!key.startsWith('consultationCustom_')) continue;
+    const value = result[key as `consultationCustom_${string}`];
+    if (!isCustomConsultationField(key) || typeof value !== 'string' || value.length > VISIT_DOCUMENT_MAX_LENGTH) {
+      delete result[key as `consultationCustom_${string}`];
+    }
+  }
   return result;
 }
 export function hasVisitDocumentation(info: Partial<PatientInfo>): boolean {
-  return VISIT_DOCUMENT_FIELDS.some(key => typeof info[key] === 'string' && !!info[key]?.trim());
+  return VISIT_DOCUMENT_FIELDS.some(key => typeof info[key] === 'string' && !!info[key]?.trim())
+    || Object.keys(info).some(key => isCustomConsultationField(key) && !!info[key]?.trim());
 }

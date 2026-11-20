@@ -1,4 +1,4 @@
-import type { ConsultationLayout } from '../utils/consultationTemplates';
+import type { ConsultationLayout, ConsultationSection, CustomConsultationField } from '../utils/consultationTemplates';
 import type { AppLanguage } from '../i18n/config';
 import type { VisitType } from '../utils/visitTypes';
 
@@ -294,6 +294,8 @@ export interface PatientInfo {
   gpPhysicalExam?: string;
   gpDiagnostics?: string;
   consultationLayout?: ConsultationLayout;
+  consultationRetainedSections?: ConsultationSection[];
+  [key: `consultationCustom_${string}`]: string | undefined;
   consultationHistory?: string;
   consultationAssessment?: string;
   consultationPlan?: string;
@@ -453,6 +455,7 @@ export interface OwnerReportOverrides {
 
 export type ClinicalDictationKind = 'dental-visit' | 'gp-visit' | 'consultation' | 'gp-exam' | 'discharge' | 'ct' | 'imaging';
 export type ClinicalDictationField =
+  | CustomConsultationField
   | 'complaint' | 'consultationHistory' | 'consultationAssessment' | 'consultationPlan'
   | 'consultationCurrentMedications' | 'consultationAdministeredMedications' | 'consultationMedicationPlan'
   | 'gpVitals' | 'gpPhysicalExam' | 'gpDiagnostics' | 'treatmentReport' | 'ctReport' | 'radiographicFindings'
