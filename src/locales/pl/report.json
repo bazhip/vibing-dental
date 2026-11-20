@@ -1,0 +1,178 @@
+{
+  "draftLabel": "WERSJA ROBOCZA — PRZED WERYFIKACJĄ",
+  "draftNotice": "Ten raport nie został jeszcze zweryfikowany na podstawie aktualnej karty. Informacje mogą być niepełne.",
+  "abnormalityNoted": "stwierdzono nieprawidłowość",
+  "after": "Po zabiegu",
+  "alreadyMissingLine": "Braki zębowe stwierdzone przed tą wizytą: {{list}}.",
+  "before": "Przed zabiegiem",
+  "defaultTitle": "Raport z wizyty stomatologicznej",
+  "examAreas": {
+    "buccal": "Błona śluzowa policzków",
+    "extraoral": "Okolica ust i twarzy",
+    "lymph": "Węzły chłonne",
+    "palate": "Podniebienie",
+    "pharynx": "Gardło i migdałki",
+    "tongue": "Język"
+  },
+  "extractionsLead": "W karcie odnotowano usunięcie następujących zębów podczas tej wizyty:",
+  "fieldPhrases": {
+    "calculus": "kamień nazębny (stopień {{value}})",
+    "furcation": "ubytek kości między korzeniami zęba (stopień {{value}})",
+    "gingivitis": "zapalenie dziąseł (stopień {{value}})",
+    "hyperplasia": "przerost dziąsła ({{value}})",
+    "mobility": "rozchwianie zęba (ruchomość {{value}})",
+    "pdstate": "choroba przyzębia, stadium {{value}}",
+    "pocket": "pogłębiona kieszonka dziąsłowa ({{value}} mm)",
+    "recession": "cofnięcie dziąsła ({{value}})"
+  },
+  "fieldPlain": {
+    "calculus": "kamień nazębny",
+    "furcation": "ubytek kości między korzeniami zęba",
+    "gingivitis": "zapalenie dziąseł",
+    "hyperplasia": "przerost dziąsła",
+    "mobility": "rozchwianie zęba",
+    "pdstate": "choroba przyzębia",
+    "pocket": "pogłębiona kieszonka dziąsłowa",
+    "recession": "cofnięcie dziąsła"
+  },
+  "headings": {
+    "alreadyMissing": "Braki zębowe sprzed wizyty",
+    "diagram_named": "Jama ustna pacjenta: {{pet}}",
+    "diagram_unnamed": "Jama ustna zwierzęcia",
+    "examNotes": "Pozostałe uwagi z badania",
+    "extractions": "Zęby usunięte podczas tej wizyty",
+    "findings": "Co wykazało badanie",
+    "homecare_named": "Domowa pielęgnacja zębów pacjenta: {{pet}}",
+    "homecare_unnamed": "Pielęgnacja zębów zwierzęcia w domu",
+    "photos": "Przed zabiegiem i po zabiegu",
+    "recheck": "Zalecana wizyta kontrolna",
+    "teamNote": "Informacja od zespołu weterynaryjnego"
+  },
+  "homecareTips": {
+    "brushing": "Najskuteczniejszym sposobem dbania o zęby jest codzienne szczotkowanie pastą przeznaczoną dla zwierząt.",
+    "products": "Karmy dentystyczne, gryzaki i dodatki do wody ze znakiem VOHC pomagają dbać o zęby między szczotkowaniami.",
+    "warningSigns": "Prosimy zwrócić uwagę na nieprzyjemny zapach z pyska, ślinienie, wypadanie jedzenia z pyska lub pocieranie pyska łapą. W razie wystąpienia tych objawów prosimy o telefon."
+  },
+  "homecareTipsEquine": {
+    "checkups": "U większości koni zaleca się kontrolę uzębienia co 6–12 miesięcy. Młode i starsze konie mogą wymagać częstszych kontroli.",
+    "forage": "Prosimy zapewnić odpowiednią ilość paszy objętościowej. Siano o długich źdźbłach i wypas pomagają równomiernie ścierać zęby.",
+    "warningSigns": "Prosimy zwrócić uwagę na wypadanie paszy z pyska, utratę masy ciała, powolne jedzenie, podrzucanie głową, opór przy wędzidle, nieprzyjemny zapach z pyska lub wypływ z nosa. W razie wystąpienia tych objawów prosimy o telefon."
+  },
+  "intro": "Raport podsumowuje informacje zapisane podczas wizyty stomatologicznej. Pacjent: {{pet}}. W razie pytań prosimy o kontakt z zespołem weterynaryjnym.",
+  "visitIntro": {
+    "lead": "Poniżej przedstawiamy informacje zapisane podczas wizyty stomatologicznej. Pacjent: {{pet}}.",
+    "extractions": "Liczba zębów usuniętych podczas wizyty: {{total}}.",
+    "findings": "Liczba zębów z odnotowanymi zmianami: {{total}}.",
+    "exam": "Odnotowano dodatkowe obserwacje podczas badania jamy ustnej.",
+    "treatment": "W karcie wizyty zapisano uwagi dotyczące leczenia."
+  },
+  "visitImages": "Zdjęcia z wizyty",
+  "legendFilled": "wypełnienie oznacza brak zęba przed wizytą",
+  "legendNumbers": "Numery odpowiadają pozycjom poniżej",
+  "legendRemoved": "czerwony ✕ oznacza ząb usunięty dzisiaj",
+  "noProblems": "W karcie tej wizyty nie odnotowano zmian w uzębieniu.",
+  "ourPractice": "nasza placówka",
+  "ownerLabel": "Opiekun",
+  "patientLabel": "Pacjent",
+  "preparedBy": {
+    "byTeam": "Raport przygotował zespół weterynaryjny.",
+    "byTeamAtPractice": "Raport przygotował zespół weterynaryjny placówki {{practice}}.",
+    "doctor": "Opracowanie: {{doctor}}.",
+    "doctorAtPractice": "Opracowanie: {{doctor}}, {{practice}}."
+  },
+  "removedToday": "usunięto dzisiaj",
+  "species": {
+    "canine": "Pies",
+    "canine-deciduous": "Szczenię",
+    "feline": "Kot",
+    "feline-deciduous": "Kocię",
+    "equine": "Koń",
+    "rabbit": "Królik"
+  },
+  "tooth": {
+    "deciduous": "mleczny",
+    "kinds": {
+      "canine": "kieł",
+      "incisor": "siekacz",
+      "molar": "trzonowiec",
+      "premolar": "przedtrzonowiec"
+    },
+    "ordinals": {
+      "first": "pierwszy",
+      "fourth": "czwarty",
+      "second": "drugi",
+      "third": "trzeci"
+    },
+    "sides": {
+      "lowerLeft": "dolny lewy",
+      "lowerRight": "dolny prawy",
+      "upperLeft": "górny lewy",
+      "upperRight": "górny prawy"
+    }
+  },
+  "yourPet": "zwierzę pod Państwa opieką",
+  "yourTeam": "zespół weterynaryjny",
+  "plainCodes": {
+    "T/FX": "złamanie zęba",
+    "T/FX/EI": "pęknięcie szkliwa",
+    "T/FX/EF": "odprysk zęba (tylko szkliwo)",
+    "T/FX/UCF": "złamanie zęba bez odsłonięcia miazgi",
+    "T/FX/CCF": "złamanie zęba z odsłonięciem miazgi",
+    "T/FX/UCRF": "złamanie zęba sięgające poniżej linii dziąsła, bez odsłonięcia miazgi",
+    "T/FX/CCRF": "złamanie zęba sięgające poniżej linii dziąsła, z odsłonięciem miazgi",
+    "T/FX/RF": "złamanie korzenia zęba",
+    "T/PE": "odsłonięta miazga zęba",
+    "T/NV": "martwy ząb",
+    "TR": "resorpcja zęba (organizm stopniowo rozkłada jego tkanki)",
+    "T/A": "wybity ząb",
+    "T/U": "ząb, który jeszcze się nie wyrżnął",
+    "T/I": "ząb zatrzymany pod dziąsłem",
+    "DT": "ząb mleczny",
+    "AT": "starcie od ocierania się zębów o siebie",
+    "AB": "starcie od gryzienia twardych przedmiotów",
+    "E/D": "ubytek szkliwa",
+    "E/H": "cienkie lub nieprawidłowo wykształcone szkliwo",
+    "CA": "ubytek próchnicowy",
+    "GR": "cofnięcie dziąsła",
+    "GH": "przerost dziąsła",
+    "OM": "zmiana rozrostowa w jamie ustnej",
+    "B": "biopsja (pobranie tkanki do badania)",
+    "B/I": "biopsja (pobranie fragmentu zmiany do badania)",
+    "B/E": "usunięcie zmiany do badania",
+    "X": "usunięto ząb",
+    "XS": "usunięto ząb w częściach",
+    "XSS": "usunięto ząb chirurgicznie",
+    "RCT": "leczenie kanałowe",
+    "VPT": "leczenie mające na celu zachowanie żywotności zęba",
+    "PRO": "profesjonalne czyszczenie zębów (usunięcie kamienia i polerowanie)"
+  },
+  "summary": {
+    "gingivitis": "Zapalenie dziąseł w okolicy {{extent}}{{severity}}",
+    "calculus": "Kamień nazębny na powierzchni {{extent}}{{severity}}",
+    "recession": "Cofnięcie dziąseł w okolicy {{extent}}",
+    "hyperplasia": "Przerost dziąseł w okolicy {{extent}}"
+  },
+  "extent": {
+    "most": "większości zębów",
+    "many": "wielu zębów",
+    "some": "niektórych zębów"
+  },
+  "severity": {
+    "mild": "łagodne",
+    "moderate": "umiarkowane",
+    "severe": "nasilone",
+    "single": " ({{level}})",
+    "range": " (od {{from}} do {{to}})"
+  },
+  "otherFindings": "Pozostałe obserwacje",
+  "dischargeSource": {
+    "dischargeMedications": "Leki do podania w domu",
+    "dischargeInstructions": "Zalecenia po wypisie",
+    "dischargeFollowUp": "Dalsze postępowanie po wypisie"
+  },
+  "homecareTipsRabbit": {
+    "hay": "Prosimy zapewnić stały dostęp do siana z traw, aby zęby ścierały się prawidłowo, i przestrzegać zaleceń żywieniowych zespołu weterynaryjnego po zabiegu.",
+    "checkups": "Zęby królika rosną przez całe życie. Prosimy zgłaszać się na kontrole stomatologiczne w terminach zaleconych przez zespół weterynaryjny.",
+    "warningSigns": "Jeśli królik je mniej lub przestaje jeść, oddaje mniej bobków, ślini się lub traci na wadze, prosimy niezwłocznie skontaktować się z zespołem weterynaryjnym."
+  }
+}

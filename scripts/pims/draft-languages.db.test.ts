@@ -12,9 +12,9 @@ const outsider = '33333333-3333-4333-8333-333333333333';
 const practice = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
 const chart = '88888888-8888-4888-8888-888888888888';
 const draft = '99999999-9999-4999-8999-999999999999';
-const migrationPath = 'supabase/migrations/20261210_pims_draft_languages.sql';
-const oldGuard = "language_value not in ('en','fr','de','it','es')";
-const newGuard = "language_value not in ('en','fr','de','it','es','hu','ro','zh','ar')";
+const migrationPath = 'supabase/migrations/20261220_polish_pims_drafts.sql';
+const oldGuard = "language_value not in ('en','fr','de','it','es','hu','ro','zh','ar')";
+const newGuard = "language_value not in ('en','fr','de','it','es','hu','ro','zh','ar','pl')";
 const functionDefinition = () => sql("select pg_get_functiondef('public.pims_draft_write(jsonb)'::regprocedure)");
 const functionSecurity = () => sql("select jsonb_build_object('acl',proacl,'config',proconfig,'definer',prosecdef) from pg_proc where oid='public.pims_draft_write(jsonb)'::regprocedure");
 function sql(statement: string, db = database) {
@@ -44,6 +44,7 @@ describe.skipIf(!container)('PIMS draft app languages on isolated PostgreSQL', (
     sql(readFileSync('scripts/pims/bootstrap.sql', 'utf8'));
     sql(readFileSync('supabase/migrations/20261129_pims_sync_foundation.sql', 'utf8'));
     sql(readFileSync('supabase/migrations/20261201_pims_transfer_drafts.sql', 'utf8'));
+    sql(readFileSync('supabase/migrations/20261210_pims_draft_languages.sql', 'utf8'));
     const definition = functionDefinition();
     const security = functionSecurity();
     sql(readFileSync(migrationPath, 'utf8'));
@@ -59,7 +60,7 @@ describe.skipIf(!container)('PIMS draft app languages on isolated PostgreSQL', (
       insert into public.charts(id,created_by,practice_id,patient_name,data)
         values ('${chart}','${member}','${practice}','Milo','{"findings":"4.5 mm"}');`);
   });
-  it.each(['en', 'fr', 'de', 'it', 'es', 'hu', 'ro', 'zh', 'ar'])('saves, reviews and exports %s clinical drafts', language => {
+  it.each(['en', 'fr', 'de', 'it', 'es', 'hu', 'ro', 'zh', 'ar', 'pl'])('saves, reviews and exports %s clinical drafts', language => {
     expect(save(language)).toMatchObject({ language, version: 1, reviewed_version: null });
     expect(() => exportDraft(1)).toThrow(/pims_unreviewed/);
     expect(rpc('pims_draft_write', reviewPayload())).toMatchObject({ language, version: 2, reviewed_version: 2, reviewed_by: member });
@@ -108,7 +109,7 @@ describe.skipIf(!container)('PIMS draft app languages on isolated PostgreSQL', (
     const constraint = () => sql("select pg_get_constraintdef(oid) from pg_constraint where conrelid='public.pims_drafts'::regclass and conname='pims_drafts_language_check'");
     sql("alter table public.pims_drafts drop constraint pims_drafts_language_check; alter table public.pims_drafts add constraint pims_drafts_language_check check (language in ('en','fr','de','it','es'))");
     const before = constraint();
-    expect(before).not.toContain("'hu'");
+    expect(before).not.toContain("'pl'");
     try {
       expect(() => sql(readFileSync(migrationPath, 'utf8'))).toThrow(/language guard differs from the expected definition/);
       expect(functionDefinition()).toBe(definition.replace(newGuard, "language_value not in ('en')"));
@@ -117,7 +118,7 @@ describe.skipIf(!container)('PIMS draft app languages on isolated PostgreSQL', (
       sql(definition);
       sql(readFileSync(migrationPath, 'utf8'));
     }
-    expect(constraint()).toContain("'hu'");
+    expect(constraint()).toContain("'pl'");
   });
   it('reapplies without altering existing drafts, receipts, function privileges or configuration', () => {
     save('en'); rpc('pims_draft_write', reviewPayload());

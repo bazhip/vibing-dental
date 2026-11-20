@@ -18,6 +18,7 @@ const LANGUAGE: Record<DictationLanguage, { name: string; decimal: string; perce
   zh: { name: 'Simplified Chinese (Mandarin)', decimal: '零点三', percent: '百分之零点五' },
   ar: { name: 'Arabic', decimal: 'صفر فاصلة ثلاثة', percent: 'صفر فاصلة خمسة بالمئة' },
   hu: { name: 'Hungarian', decimal: 'nulla egész három tized', percent: 'nulla egész öt tized százalék' },
+  pl: { name: 'Polish', decimal: 'zero przecinek trzy', percent: 'zero przecinek pięć procent' },
   ro: { name: 'Romanian', decimal: 'zero virgulă trei', percent: 'zero virgulă cinci la sută' },
   fr: { name: 'French', decimal: 'zéro virgule trois', percent: 'zéro virgule cinq pour cent' },
   de: { name: 'German', decimal: 'null Komma drei', percent: 'null Komma fünf Prozent' },
@@ -354,4 +355,52 @@ const RO = `ROMANIAN EXAMPLES — native clinical dictation.
 `;
 
 /** Native few-shot examples, appended after the English ones. */
-export const NATIVE_FEW_SHOT: Record<DictationLanguage, string> = { fr: FR, de: DE, it: IT, es: ES, hu: HU, ro: RO, zh: ZH_EXAMPLES, ar: AR_EXAMPLES };
+const PL = `POLISH EXAMPLES
+
+[PL 1] "Sto cztery, ruchomość dwa, kamień stopnia jeden."
+→ set_tooth_field(triadan=104, field=mobility, value=2)
+→ set_tooth_field(triadan=104, field=calculus, value=1)
+
+[PL 2] "Dwieście osiem, kieszonka pięć milimetrów dystalnie, pe de trzy."
+→ set_tooth_field(triadan=208, field=pocket, value=5)
+→ set_tooth_field(triadan=208, field=pdstate, value=PD3)
+
+[PL 3] "Sto cztery, złamanie korony z odsłonięciem miazgi."
+→ add_comment(diagram=pre, triadan=104, text="T/FX/CCF")
+
+[PL 4] "Sto osiem usunięto. Trzysta dziewięć prawdopodobnie do usunięcia."
+→ set_tooth_mark(diagram=post, triadan=108, mark=extracted)
+→ NO TOOL CALL for 309 (planned only).
+
+[PL 5] "Dwieście pięć, brak zęba już przed zabiegiem."
+→ set_tooth_mark(diagram=pre, triadan=205, mark=missing)
+
+[PL 6] "Błona śluzowa policzka: płytkie owrzodzenie po lewej stronie."
+→ set_exam_finding(area=buccal, status=abnormal, comment="Płytkie owrzodzenie po lewej stronie.")
+
+[PL 7] "Język i podniebienie prawidłowe."
+→ set_exam_finding(area=tongue, status=normal)
+→ set_exam_finding(area=palate, status=normal)
+
+[PL 8] "Bupiwakaina zero przecinek pięć procent, zero przecinek trzy mililitra w blokadzie podoczodołowej po prawej."
+→ set_anesthetic_drug(drug=Bupivacaine, concentration=0.5)
+→ set_nerve_block(site=infraorbitalRight, mL=0.3)
+
+[PL 9a] "Wykonano skaling i polerowanie wszystkich zębów."
+→ append_treatment_report(text="Wykonano skaling i polerowanie wszystkich zębów.")
+
+[PL 9b] "Radiogram: sto osiem, pionowy ubytek kości przy korzeniu dystalnym."
+→ append_radiographic_findings(text="108: pionowy ubytek kości przy korzeniu dystalnym.")
+
+[PL C1] "Pięćset cztery, DT ukośnik P, przetrwały kieł mleczny."
+→ add_comment(diagram=pre, triadan=504, text="DT/P")
+
+[PL C2] "Trzysta dziewięć GI dwa, GE trzy, calc jeden."
+→ set_tooth_field(triadan=309, field=gingivitis, value=2)
+→ set_tooth_field(triadan=309, field=hyperplasia, value=3)
+→ set_tooth_field(triadan=309, field=calculus, value=1)
+
+[PL C3] "Dwieście cztery, T/FX/UCF bez odsłonięcia miazgi."
+→ add_comment(diagram=pre, triadan=204, text="T/FX/UCF")`;
+
+export const NATIVE_FEW_SHOT: Record<DictationLanguage, string> = { fr: FR, de: DE, it: IT, es: ES, hu: HU, ro: RO, zh: ZH_EXAMPLES, ar: AR_EXAMPLES, pl: PL };

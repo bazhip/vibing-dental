@@ -154,7 +154,26 @@ const digitsOf = (small: Record<string, number>, keys: string) =>
 const remainderAlt = (small: Record<string, number>, exclude: string[] = []) =>
   alt(Object.keys(small).filter((w) => small[w] > 0 && !exclude.includes(w))).replace(/ /g, '[\\s-]+');
 
+// Polish hundred forms are irregular, and ł is a standalone letter.
+const PL_DIGITS = toMap('zero jeden dwa trzy cztery piec szesc siedem osiem dziewiec');
+const PL_SMALL = {
+  ...PL_DIGITS, jedna: 1, jedno: 1, dwie: 2,
+  ...toMap('dziesiec jedenascie dwanascie trzynascie czternascie pietnascie szesnascie siedemnascie osiemnascie dziewietnascie', 10),
+};
+const PL_HUNDREDS: Record<string, number> = {
+  sto: 1, dwiescie: 2, trzysta: 3, czterysta: 4,
+  piecset: 5, szescset: 6, siedemset: 7, osiemset: 8,
+};
+
 const LANGS: Record<Exclude<OtherLanguage, 'zh' | 'ar'>, LanguageNumbers> = {
+  pl: {
+    digits: PL_DIGITS,
+    small: PL_SMALL,
+    articles: ['jeden', 'jedna', 'jedno'],
+    compound: `(?<h>${alt(Object.keys(PL_HUNDREDS))})[\\s-]+(?<r>${remainderAlt(PL_SMALL)})`,
+    hundreds: (h) => h ? PL_HUNDREDS[h] : 1,
+    scoreTerms: scoreTermsFor('pl'), units: unitsFor('pl'), links: linksFor('pl'),
+  },
   hu: {
     digits: digitsOf(HU_SMALL, 'nulla egy ketto ket harom negy ot hat het nyolc kilenc'),
     small: HU_SMALL,

@@ -1,0 +1,88 @@
+{
+  "common": {
+    "fallback": "Jeśli przycisk nie działa, prosimy skopiować ten link do przeglądarki:",
+    "tagline": "Weterynaryjna dokumentacja stomatologiczna"
+  },
+  "confirmSignup": {
+    "subject": "Potwierdzenie konta ToothOps",
+    "title": "Potwierdź adres e-mail",
+    "preheader": "Prosimy potwierdzić adres e-mail, aby aktywować konto ToothOps.",
+    "body": "Witamy w ToothOps. Prosimy potwierdzić adres <strong>{{email}}</strong>, aby aktywować konto placówki. Po potwierdzeniu nastąpi zalogowanie.",
+    "button": "Potwierdź e-mail i zaloguj się",
+    "ignore": "Jeśli nie zakładali Państwo konta w ToothOps, można zignorować tę wiadomość. Konto zostanie aktywowane dopiero po użyciu linku."
+  },
+  "resetPassword": {
+    "subject": "Resetowanie hasła do ToothOps",
+    "title": "Zresetuj hasło",
+    "preheader": "Resetowanie hasła do konta ToothOps.",
+    "body": "Otrzymaliśmy prośbę o zresetowanie hasła do konta <strong>{{email}}</strong>. Link jest ważny przez godzinę.",
+    "button": "Ustaw nowe hasło",
+    "ignore": "Jeśli nie prosili Państwo o zmianę hasła, można zignorować tę wiadomość. Hasło pozostanie bez zmian."
+  },
+  "changeEmail": {
+    "subject": "Potwierdzenie nowego adresu e-mail w ToothOps",
+    "title": "Potwierdź nowy adres e-mail",
+    "preheader": "Prosimy potwierdzić nowy adres e-mail konta ToothOps.",
+    "body": "Prosimy potwierdzić zmianę adresu logowania do ToothOps z <strong>{{email}}</strong> na <strong>{{newEmail}}</strong>.",
+    "button": "Potwierdź nowy adres e-mail",
+    "ignore": "Jeśli nie prosili Państwo o tę zmianę, można zignorować wiadomość. Adres logowania pozostanie bez zmian."
+  },
+  "invite": {
+    "subject": "Zaproszenie do ToothOps",
+    "title": "Przyjmij zaproszenie",
+    "preheader": "Zaproszenie do utworzenia konta ToothOps.",
+    "body": "Otrzymali Państwo zaproszenie do utworzenia konta ToothOps z adresem <strong>{{email}}</strong>. Aby rozpocząć, prosimy przyjąć zaproszenie i ustawić hasło.",
+    "button": "Przyjmij zaproszenie",
+    "ignore": "Jeśli nie oczekują Państwo zaproszenia, można zignorować tę wiadomość. Konto zostanie utworzone dopiero po użyciu linku."
+  },
+  "magiclink": {
+    "subject": "Link do logowania w ToothOps",
+    "title": "Zaloguj się do ToothOps",
+    "preheader": "Link umożliwiający zalogowanie się do ToothOps.",
+    "body": "Aby zalogować się do ToothOps jako <strong>{{email}}</strong>, prosimy użyć poniższego przycisku. Link jest jednorazowy.",
+    "button": "Zaloguj się",
+    "ignore": "Jeśli nie próbowali Państwo się zalogować, można zignorować tę wiadomość. Do tego logowania potrzebny jest link."
+  },
+  "reauthentication": {
+    "subject": "Kod weryfikacyjny ToothOps",
+    "title": "Potwierdź tożsamość",
+    "preheader": "Kod weryfikacyjny ToothOps.",
+    "body": "Prosimy wprowadzić ten kod w ToothOps, aby potwierdzić swoją tożsamość:",
+    "ignore": "Jeśli nie prosili Państwo o kod, można zignorować tę wiadomość. Warto rozważyć zmianę hasła."
+  },
+  "notice": {
+    "footnote": "Jeśli nie wprowadzili Państwo tej zmiany, prosimy natychmiast zresetować hasło.",
+    "passwordChanged": {
+      "subject": "Zmieniono hasło do konta ToothOps",
+      "body": "Hasło do Państwa konta ToothOps zostało zmienione."
+    },
+    "emailChanged": {
+      "subject": "Zmieniono adres logowania do ToothOps",
+      "body": "Adres e-mail używany do logowania na Państwa konto ToothOps został zmieniony."
+    },
+    "phoneChanged": {
+      "subject": "Zmieniono numer telefonu na koncie ToothOps",
+      "body": "Numer telefonu przypisany do Państwa konta ToothOps został zmieniony."
+    },
+    "identityLinked": {
+      "subject": "Dodano metodę logowania do konta ToothOps",
+      "body": "Z Państwa kontem ToothOps powiązano nową metodę logowania."
+    },
+    "identityUnlinked": {
+      "subject": "Usunięto metodę logowania z konta ToothOps",
+      "body": "Z Państwa konta ToothOps usunięto metodę logowania."
+    },
+    "mfaEnrolled": {
+      "subject": "Dodano uwierzytelnianie dwuskładnikowe do konta ToothOps",
+      "body": "Do Państwa konta ToothOps dodano metodę uwierzytelniania dwuskładnikowego."
+    },
+    "mfaUnenrolled": {
+      "subject": "Usunięto uwierzytelnianie dwuskładnikowe z konta ToothOps",
+      "body": "Z Państwa konta ToothOps usunięto metodę uwierzytelniania dwuskładnikowego."
+    },
+    "generic": {
+      "subject": "Zaktualizowano konto ToothOps",
+      "body": "Zmieniono ustawienie zabezpieczeń Państwa konta ToothOps."
+    }
+  }
+}

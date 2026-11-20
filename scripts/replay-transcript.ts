@@ -14,7 +14,7 @@
  * (the cleanup column will differ by design — the words are what Deepgram
  * heard, not the typed fixture; the score is what counts).
  *
- * --lang is the dictation language (en, fr, de, it, es, hu, ro, zh, ar; default en). It
+ * --lang is the dictation language (en, fr, de, it, es, hu, ro, zh, ar, pl; default en). It
  * threads into the cleanup, the filler filter and the prompts.
  * --section sets the "open page" hint (a tie-break only; findings go anywhere).
  * --expect scores the result against a fixture's expected.json (default: the

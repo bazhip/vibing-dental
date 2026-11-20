@@ -1,0 +1,89 @@
+{
+  "header": {
+    "title": {
+      "canine": "Karta stomatologiczna psa",
+      "canineDeciduous": "Karta stomatologiczna psa (uzębienie mleczne)",
+      "feline": "Karta stomatologiczna kota",
+      "felineDeciduous": "Karta stomatologiczna kota (uzębienie mleczne)",
+      "equine": "Karta stomatologiczna konia",
+      "rabbit": "Karta stomatologiczna królika"
+    },
+    "subtitle": "Ocena przyzębia i plan leczenia",
+    "tech": "Technik weterynarii: {{name}}"
+  },
+  "patient": {
+    "title": "Dane pacjenta",
+    "date": "Data",
+    "patient": "Pacjent",
+    "pid": "Identyfikator pacjenta",
+    "complaint": "Główny powód wizyty"
+  },
+  "exam": {
+    "title": "Wyniki badania jamy ustnej",
+    "normal": "W NORMIE",
+    "abnormal": "ZMIANY",
+    "comment": "UWAGI",
+    "items": {
+      "extraoral": "Okolica ust i twarzy",
+      "lymph": "Węzły chłonne",
+      "buccal": "Błona śluzowa policzków",
+      "tongue": "Język",
+      "palate": "Podniebienie",
+      "pharynx": "Gardło i migdałki"
+    },
+    "additional": "Dodatkowe obszary badania",
+    "alsoNormal": "W normie: {{areas}}",
+    "moreAreas_one": "+{{count}} dodatkowy obszar w aplikacji",
+    "moreAreas_other": "+{{count}} dodatkowego obszaru w aplikacji",
+    "moreAreas_few": "+{{count}} dodatkowe obszary w aplikacji",
+    "moreAreas_many": "+{{count}} dodatkowych obszarów w aplikacji"
+  },
+  "grid": {
+    "maxilla": "Łuk zębowy szczęki",
+    "mandible": "Łuk zębowy żuchwy"
+  },
+  "codes": {
+    "title": "Użyte kody",
+    "more": "i jeszcze {{n}}"
+  },
+  "treatment": {
+    "title": "Raport z leczenia i zabiegu",
+    "radiographicTitle": "Opis badania RTG",
+    "ctTitle": "Opis badania TK",
+    "continued": "… ciąg dalszy. Pełny raport znajduje się w tym pliku. Aby go wyświetlić, otwórz plik ponownie w aplikacji."
+  },
+  "anesthesia": {
+    "title": "Znieczulenie · Blokady nerwów",
+    "nerveBlock": "Blokada nerwu",
+    "nerveBlockWith": "Blokada nerwu: {{drug}}",
+    "anesthetic": "Środek znieczulający",
+    "anesthetics": "Środki znieczulające",
+    "right": "PRAWA",
+    "left": "LEWA",
+    "dose": "{{value}} ml",
+    "other": "Inne",
+    "blocks": {
+      "infraorbital": "Nerw podoczodołowy",
+      "caudalMaxillary": "Nerw szczękowy (blokada doogonowa)",
+      "inferiorAlveolar": "Nerw zębodołowy dolny",
+      "mental": "Nerw bródkowy"
+    }
+  },
+  "footer": {
+    "generated": "Wygenerowano: {{at}}",
+    "pid": "ID pacjenta: {{id}}",
+    "pageOf": "Strona {{n}} z {{total}}"
+  },
+  "images": {
+    "title": "Zdjęcia i obrazy RTG",
+    "titleRange": "Zdjęcia i obrazy RTG ({{range}} z {{total}})",
+    "failed": "Nie udało się wczytać obrazu",
+    "photo": "Zdjęcie",
+    "radiograph": "Obraz RTG",
+    "tooth": "Ząb {{triadan}}"
+  },
+  "continuation": {
+    "title": "Uwagi kliniczne",
+    "notice": "Pełny opis znajduje się na kolejnych stronach."
+  }
+}

@@ -1,0 +1,374 @@
+{
+  "codeGroups": {
+    "occlusion": "Zgryz",
+    "toothNumberEruption": "Liczba i wyrzynanie zębów",
+    "developmental": "Wady rozwojowe",
+    "periodontal": "Przyzębie",
+    "toothPathology": "Choroby zębów",
+    "toothFracture": "Złamania zębów",
+    "periapicalBone": "Okolica okołowierzchołkowa i kości",
+    "trauma": "Urazy",
+    "softTissue": "Tkanki miękkie i błony śluzowe",
+    "immuneMediated": "Choroby o podłożu immunologicznym",
+    "salivary": "Ślinianki",
+    "headNosePharynx": "Głowa, nos i gardło",
+    "masses": "Zmiany rozrostowe i onkologia",
+    "jawTmj": "Szczęka, żuchwa, SSŻ i wady wrodzone",
+    "imaging": "Obrazowanie i diagnostyka",
+    "periodontalTreatment": "Leczenie przyzębia",
+    "endodontics": "Endodoncja",
+    "restorative": "Stomatologia zachowawcza i protetyka",
+    "extractions": "Ekstrakcje",
+    "oralSurgery": "Chirurgia jamy ustnej",
+    "oncologic": "Leczenie onkologiczne",
+    "jawRepair": "Leczenie złamań szczęki i żuchwy oraz SSŻ",
+    "orthodontics": "Ortodoncja",
+    "equine": "Zmiany u koni",
+    "equineProcedures": "Zabiegi u koni",
+    "equineExtractions": "Ekstrakcje zębów policzkowych"
+  },
+  "columns": {
+    "tooth": "Ząb",
+    "triadan": "Triadan",
+    "mobility": "Ruchomość",
+    "recession": "Recesja dziąsła",
+    "pocket": "Kieszonka",
+    "furcation": "Furkacja",
+    "hyperplasia": "Powiększenie dziąsła",
+    "calculus": "Kamień",
+    "gingivitis": "Zapalenie dziąseł",
+    "pdstate": "Stadium choroby przyzębia"
+  },
+  "customAnesthesia": {
+    "block": "Własna blokada",
+    "field": "Własne pole",
+    "yes": "Tak"
+  },
+  "grid": {
+    "title": "Karta zębów",
+    "short": {
+      "mobility": "Ruch.",
+      "recession": "Rec.",
+      "pocket": "Kieszonka",
+      "furcation": "Furk.",
+      "hyperplasia": "Pow.",
+      "calculus": "Kam.",
+      "gingivitis": "Zap.",
+      "pdstate": "Stadium"
+    },
+    "pdstateTitle": "Stadium choroby przyzębia",
+    "perRoot": "{{name}} (według korzeni)",
+    "perSite": "{{name}} (według punktów pomiaru)",
+    "missing": "Brak",
+    "triadanTooth": "Triadan · Ząb",
+    "cellAria": "Ząb {{triadan}}, {{column}}",
+    "rootAria": "Ząb {{triadan}}, kieszonka przy korzeniu {{root}}",
+    "siteAria": "Ząb {{triadan}}, kieszonka w punkcie {{site}}",
+    "setAll": {
+      "title": "Ustaw pole „{{name}}” dla wszystkich zębów",
+      "message": "Dotyczy wszystkich zębów bez oznaczenia braku. Pozostaw pole puste, aby wyczyścić kolumnę.",
+      "messageRange": "Dotyczy wszystkich zębów bez oznaczenia braku. Podaj liczbę od {{min}} do {{max}}. Pozostaw pole puste, aby wyczyścić kolumnę.",
+      "confirm": "Zastosuj do wszystkich",
+      "invalid": "W polu „{{name}}” wpisz liczbę od {{min}} do {{max}}.",
+      "applied": "Ustawiono wartość {{value}} w polu „{{name}}” dla wszystkich zębów.",
+      "cleared": "Wyczyszczono pole „{{name}}” dla wszystkich zębów."
+    },
+    "undo": "Cofnij",
+    "clear": {
+      "title": "Wyczyścić pole „{{name}}” dla wszystkich zębów?",
+      "message_one": "Z kolumny „{{name}}” zostanie usunięta {{count}} wartość.",
+      "message_other": "Z kolumny „{{name}}” zostanie usuniętych {{count}} wartości.",
+      "confirm": "Wyczyść kolumnę",
+      "message_few": "Z kolumny „{{name}}” zostaną usunięte {{count}} wartości.",
+      "message_many": "Z kolumny „{{name}}” zostanie usuniętych {{count}} wartości."
+    },
+    "bulk": {
+      "toast_one": "Ustawiono wartość {{value}} w polu „{{name}}” dla {{count}} zęba.",
+      "toast_other": "Ustawiono wartość {{value}} w polu „{{name}}” dla {{count}} zęba.",
+      "range": "Zakres {{min}}–{{max}}",
+      "region": "Ustaw wartość dla wybranych zębów",
+      "selected_one": "Wybrano {{count}} ząb",
+      "selected_other": "Wybrano {{count}} zęba",
+      "set": "Ustaw",
+      "column": "Kolumna do uzupełnienia",
+      "to": "na",
+      "value": "Wartość",
+      "apply": "Zastosuj",
+      "clearSelection": "Wyczyść wybór",
+      "tip": "Kliknij numery zębów, aby wybrać kilka zębów. Użyj klawisza Shift, aby zaznaczyć zakres i nadać wszystkim wybranym zębom tę samą wartość.",
+      "toast_few": "Ustawiono wartość {{value}} w polu „{{name}}” dla {{count}} zębów.",
+      "toast_many": "Ustawiono wartość {{value}} w polu „{{name}}” dla {{count}} zębów.",
+      "selected_few": "Wybrano {{count}} zęby",
+      "selected_many": "Wybrano {{count}} zębów"
+    },
+    "missingCheck": {
+      "label": "Brak zęba {{triadan}}",
+      "labelCarried": "Brak zęba {{triadan}} (z poprzedniej wizyty)",
+      "titleCarried": "Ząb {{triadan}} był już nieobecny lub został usunięty podczas poprzedniej wizyty. Oznaczenie przeniesiono automatycznie.",
+      "titleUnmark": "Usuń oznaczenie braku zęba {{triadan}}",
+      "titleMark": "Oznacz brak zęba {{triadan}}. Wiersz zostanie przekreślony, a ząb wypełniony na schemacie diagnostycznym.",
+      "prev": "poprz."
+    },
+    "tooth": {
+      "title": "Kliknij, aby wybrać ząb i nadać kilku zębom tę samą wartość. Użyj klawisza Shift, aby zaznaczyć zakres."
+    },
+    "slot": {
+      "root": "Korzeń {{root}}",
+      "rootLast": "Korzeń {{root}} · poprzednia wizyta: {{value}}",
+      "site": "Punkt {{site}}",
+      "siteLast": "Punkt {{site}} · poprzednia wizyta: {{value}}"
+    },
+    "unsplit": {
+      "title": "Wspólna wartość dla wszystkich korzeni. Kliknij, aby ją zmienić. Wyczyść ją, aby uzyskać osobne pola dla korzeni.",
+      "chip": "wszystkie korzenie"
+    },
+    "unsplitSites": {
+      "title": "Wspólna wartość dla wszystkich punktów. Kliknij, aby ją zmienić. Wyczyść ją, aby uzyskać osobne pola dla punktów pomiaru.",
+      "chip": "bez podziału"
+    },
+    "lastVisit": "Poprzednia wizyta: {{value}}",
+    "lastVisitRef": "Poprzednia wizyta: {{value}} (wyłącznie do porównania, bez przenoszenia)",
+    "setAllHint": "Ustaw pole „{{name}}” dla wszystkich zębów jednocześnie",
+    "options": {
+      "mirror": "Pokaż wyniki na schemacie diagnostycznym",
+      "mirrorTitle": "Dodaje komentarz do każdego opisanego zęba na schemacie diagnostycznym i aktualizuje go przy wpisywaniu danych. Własne komentarze pozostają bez zmian.",
+      "pdf": "Dodaj kartę zębów do PDF",
+      "pdfTitleOn": "Odznacz, aby pominąć w PDF tabele łuków zębowych. Schemat diagnostyczny zawiera już wyniki i zyska więcej miejsca.",
+      "pdfTitleOff": "Opcja dostępna po włączeniu wyświetlania wyników na schemacie diagnostycznym."
+    }
+  },
+  "toothChart": {
+    "legend": {
+      "label": "Legenda schematu",
+      "charted": "Opisany",
+      "planned": "Planowana ekstrakcja",
+      "extracted": "Po ekstrakcji",
+      "missing": "Brak"
+    },
+    "clickTooth": "<strong>Kliknij ząb</strong> na schemacie, aby go opisać.",
+    "hint": "Wprowadzone tu dane trafiają również do karty zębów oraz schematów diagnostycznego i zabiegów.",
+    "start": "Zacznij od {{triadan}} →",
+    "prev": "Poprzedni ząb",
+    "prevAria": "Poprzedni ząb ({{triadan}})",
+    "next": "Następny ząb",
+    "nextAria": "Następny ząb ({{triadan}})",
+    "missingBefore": "Brak (sprzed tej wizyty)",
+    "findings": "Wyniki badania",
+    "rootAria": "Kieszonka przy korzeniu {{root}}",
+    "siteAria": "Kieszonka w punkcie {{site}}",
+    "expected": "Oczekiwana wartość: {{range}}",
+    "diagnosisNote": "Notatka diagnostyczna",
+    "diagnosisPlaceholder": "np. Złamanie korony, odsłonięcie miazgi",
+    "extraction": "Ekstrakcja",
+    "planExtract": "Zaplanuj ekstrakcję",
+    "procedureNote": "Notatka z zabiegu",
+    "procedurePlaceholder": "np. Ekstrakcja chirurgiczna, płat zamknięto szwem 5-0",
+    "plan": "Plan ekstrakcji",
+    "chipDone": "{{triadan}} — usunięty",
+    "chipPending": "{{triadan}} — jeszcze nie oznaczono jako usunięty",
+    "allConfirmed": "Potwierdzono wszystkie planowane ekstrakcje.",
+    "confirmed": "Potwierdzono {{done}} z {{total}} ekstrakcji.",
+    "markExtracted_one": "Oznacz jako usunięty",
+    "markExtracted_other": "Oznacz wszystkie zęby jako usunięte ({{count}})",
+    "toothMap": "Mapa zębów",
+    "quadrant": "Kwadrant",
+    "quadrants": {
+      "1": "Prawy górny",
+      "2": "Lewy górny",
+      "3": "Lewy dolny",
+      "4": "Prawy dolny"
+    },
+    "selectTooth": "Wybierz ząb {{triadan}}: {{name}}",
+    "markExtracted_few": "Oznacz wszystkie zęby jako usunięte ({{count}})",
+    "markExtracted_many": "Oznacz wszystkie zęby jako usunięte ({{count}})"
+  },
+  "toothName": {
+    "side": {
+      "right": "prawy",
+      "left": "lewy"
+    },
+    "jaw": {
+      "maxillary": "górny",
+      "mandibular": "dolny"
+    },
+    "type": {
+      "incisor": "siekacz",
+      "canine": "kieł",
+      "premolar": "przedtrzonowiec",
+      "molar": "trzonowiec"
+    },
+    "ordinal": {
+      "1": "pierwszy",
+      "2": "drugi",
+      "3": "trzeci",
+      "4": "czwarty"
+    },
+    "ordinalTooth": "{{ordinal}} {{type}}",
+    "permanent": "{{tooth}} {{jaw}} {{side}}",
+    "deciduous": "{{tooth}} mleczny {{jaw}} {{side}}"
+  },
+  "diagram": {
+    "label": {
+      "maxilla": "Szczęka",
+      "mandible": "Żuchwa",
+      "right": "P",
+      "left": "L"
+    },
+    "aria": {
+      "select": "Schemat zębów — wybierz ząb, aby go opisać",
+      "extracted": "Schemat zębów — naciśnij Enter lub spację na zębie, aby zmienić oznaczenie ekstrakcji",
+      "missing": "Schemat zębów — naciśnij Enter lub spację na zębie, aby zmienić oznaczenie braku",
+      "default": "Schemat zębów"
+    },
+    "tooth": {
+      "label": "Ząb {{triadan}}{{details}}",
+      "markedMissing": ", oznaczony jako brakujący",
+      "markedExtracted": ", oznaczony jako usunięty",
+      "planned": ", planowana ekstrakcja",
+      "locked": " (brak sprzed wizyty, edycja zablokowana)"
+    },
+    "comment": {
+      "fromGrid": "Komentarz z karty zębów. Przejdź do karty, aby go zmienić.",
+      "delete": "Usuń komentarz",
+      "placeholder": "Uwagi…",
+      "resize": "Zmień rozmiar komentarza"
+    }
+  },
+  "diagramView": {
+    "customize": "Dostosuj",
+    "customizeTitle": "Wyniki wyświetlane obok zębów",
+    "toolGroup": "Narzędzie schematu",
+    "markMissingTitle": "Dotknij zęba, aby oznaczyć jego brak. Dotknij ponownie, aby usunąć oznaczenie.",
+    "markExtractedTitle": "Dotknij zęba, aby oznaczyć ekstrakcję. Dotknij ponownie, aby usunąć oznaczenie.",
+    "markTitle": "Dotknij zęba, aby oznaczyć brak lub ekstrakcję",
+    "markMissing": "Oznacz brak",
+    "markExtracted": "Oznacz ekstrakcję",
+    "mark": "Oznacz",
+    "comment": "Komentarz",
+    "draw": "Rysuj",
+    "historyGroup": "Cofnij lub ponów",
+    "undo": "Cofnij",
+    "redo": "Ponów",
+    "undoTitle": "Cofnij ({{shortcut}})",
+    "redoTitle": "Ponów ({{shortcut}})",
+    "freeShort": "Dowolny",
+    "freeComment": "+ Komentarz w dowolnym miejscu",
+    "numbers": "# Numery",
+    "numbersTitle": "Pokaż na schemacie numery Triadan poszczególnych zębów. Numery nie pojawią się w PDF.",
+    "zoomGroup": "Powiększenie",
+    "zoomOut": "Pomniejsz",
+    "zoomIn": "Powiększ",
+    "zoomReset": "Dopasuj do widoku",
+    "zoomLevel": "Powiększenie {{percent}} procent. Kliknij, aby dopasować do widoku.",
+    "textSize": {
+      "group": "Rozmiar tekstu komentarza",
+      "glyph": "A",
+      "s": "S",
+      "m": "M",
+      "l": "L",
+      "xl": "XL",
+      "aria": "Rozmiar tekstu komentarza {{size}}",
+      "title": "Rozmiar tekstu komentarza: {{size}}"
+    },
+    "drawSettings": "Ustawienia rysowania",
+    "strokeColor": "Kolor linii",
+    "colors": {
+      "red": "czerwony",
+      "blue": "niebieski",
+      "green": "zielony",
+      "amber": "bursztynowy",
+      "charcoal": "grafitowy"
+    },
+    "strokeColorAria": "Kolor linii: {{color}}",
+    "strokeWidth": "Grubość linii",
+    "strokeWidthValue": "{{width}} px",
+    "clearStrokes": "Usuń rysunki"
+  },
+  "codeRef": {
+    "all": "Kody",
+    "diagnosisTitle": "Kody rozpoznań",
+    "procedureTitle": "Kody zabiegów",
+    "searchLabel": "Szukaj według kodu lub opisu",
+    "searchPlaceholder": "Szukaj według kodu lub opisu…",
+    "diagnoses": "Rozpoznania",
+    "procedures": "Zabiegi",
+    "noMatches": "Brak wyników."
+  },
+  "scoreChips": {
+    "group": "Ocena: {{name}}",
+    "clear": "Wyczyść pole „{{name}}”"
+  },
+  "menu": {
+    "practiceSettingsHintApp": "Nazwa, logo i zespół."
+  },
+  "imaging": {
+    "takePhoto": "Zrób zdjęcie",
+    "cameraFailed": "Nie udało się uruchomić aparatu.",
+    "cameraNoPhoto": "Aparat nie zwrócił zdjęcia.",
+    "cameraReadFailed": "Nie udało się odczytać zdjęcia ({{status}}).",
+    "limitReached_one": "Osiągnięto limit zdjęć dla tej karty ({{count}}).",
+    "limitReached_other": "Osiągnięto limit zdjęć dla tej karty ({{count}}).",
+    "uploadsUnavailable": "Dodawanie zdjęć jest niedostępne na tym koncie.",
+    "formatsApp": "PNG, JPEG lub WEBP.",
+    "dicomUnavailable": "Przesyłanie plików DICOM jest niedostępne na tym koncie. Wyeksportuj obraz RTG jako JPEG lub PNG, aby go dodać.",
+    "limitReached_few": "Osiągnięto limit zdjęć dla tej karty ({{count}}).",
+    "limitReached_many": "Osiągnięto limit zdjęć dla tej karty ({{count}})."
+  },
+  "aiConsent": {
+    "title": "Zezwolić na korzystanie z usług AI?",
+    "intro": "Aby umożliwić dyktowanie do karty i tworzenie wersji roboczych z AI, ToothOps przesyła dane do dwóch usług:",
+    "deepgram": "<strong>Deepgram</strong> otrzymuje dźwięk podczas dyktowania, aby zamienić mowę na tekst.",
+    "anthropic": "<strong>Anthropic</strong> (Claude) otrzymuje transkrypcję dyktowania i treść karty, m.in. dane pacjenta i wyniki, aby uzupełnić kartę lub przygotować raport dla opiekuna.",
+    "nothingSent": "Dane są wysyłane tylko podczas korzystania z tych funkcji.",
+    "allow": "Zezwól",
+    "notNow": "Nie teraz"
+  },
+  "ios": {
+    "newChart": "Nowa karta",
+    "more": "Więcej",
+    "menu": {
+      "newChart": "Nowa karta",
+      "newVisit": "Nowa wizyta",
+      "saveNow": "Zapisz teraz",
+      "retrySave": "Ponów zapis",
+      "customize": "Dostosuj sekcję „{{section}}”"
+    },
+    "status": {
+      "saved": "Zapisano · {{time}}",
+      "notSaved": "Nie zapisano",
+      "viewOnlyDate": "Tylko odczyt · {{date}}",
+      "editingWith": "Edycja · {{status}}",
+      "keptOnDevice": "Zapis po rozpoczęciu wprowadzania danych",
+      "unsaved": "Niezapisane zmiany",
+      "onDevice": "Tylko na tym urządzeniu"
+    },
+    "notice": {
+      "otherTab": "Karta jest otwarta w innym oknie. Oba okna korzystają z tej samej kopii roboczej. Zamknij jedno z nich, aby uniknąć nadpisania zmian.",
+      "gotIt": "Rozumiem",
+      "notSaved": "Ta karta nie została zapisana."
+    },
+    "form": {
+      "patient": "Pacjent",
+      "owner": "Opiekun",
+      "visit": "Wizyta",
+      "complaint": "Główny powód wizyty",
+      "dictate": "Dyktowanie",
+      "nerveBlocks": "Blokady nerwów",
+      "addInterval": "Dodaj zakres"
+    },
+    "diagram": {
+      "numbers": "Numery",
+      "freeComment": "Komentarz w dowolnym miejscu"
+    },
+    "grid": {
+      "tip": "Dotknij numerów zębów, aby wybrać kilka i nadać im tę samą wartość.",
+      "pickTitle": "Dotknij, aby wybrać ząb i nadać kilku zębom tę samą wartość"
+    }
+  },
+  "quickCodes": {
+    "group": "Szybkie kody",
+    "chipAria": "{{code}}: {{definition}}",
+    "label": "Dotknij kodu, a następnie zęba:",
+    "stampHint": "Dotknij zęba, aby dodać kod {{code}}. Dotknij ponownie, aby go usunąć."
+  }
+}
