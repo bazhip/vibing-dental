@@ -650,3 +650,23 @@ it('builds the opening from documented visit data without treating missing teeth
   expect(model.generatedOpening).toBe(model.intro);
   expect(buildOwnerReportModel(baseSnapshot()).generatedOpening).toBeUndefined();
 });
+
+it('includes only active discharge template fields explicitly selected for the owner report', () => {
+  const snapshot = baseSnapshot();
+  const shared = 'dischargeCustom_feeding';
+  const privateField = 'dischargeCustom_staff';
+  const retired = 'dischargeCustom_retired';
+  snapshot.patientInfo = { ...snapshot.patientInfo,
+    [shared]: 'Offer soft food as discussed.',
+    [privateField]: 'Internal note for the clinic.',
+    [retired]: 'Text from an earlier template.',
+    dischargeLayout: { id: 'practice-discharge', fields: [], sections: [
+      { id: shared, label: 'Feeding', ownerReport: true },
+      { id: privateField, label: 'Staff note' },
+    ] },
+    dischargeRetainedSections: [{ id: retired, label: 'Retired field', ownerReport: true }],
+  };
+  const report = buildOwnerReportModel(snapshot).extraNotes;
+  expect(report).toContain('Feeding:\nOffer soft food as discussed.');
+  expect(report).not.toMatch(/Internal note|earlier template/);
+});

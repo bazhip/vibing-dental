@@ -128,7 +128,19 @@
   "discharge": {
     "title": "Sortie",
     "purpose": "Consignez les médicaments, les consignes de soins et le suivi discutés pour cette visite.",
-    "review": "Vérifier le compte rendu client"
+    "review": "Vérifier le compte rendu client",
+    "templates": {
+      "title": "Modèles de sortie",
+      "starter": "Sortie standard",
+      "help": "Fonctionnement des modèles de sortie",
+      "ownerReport": "Inclure dans le compte rendu pour le propriétaire",
+      "intro": "Choisissez comment les sections s’affichent dans les notes de sortie.",
+      "samples": {
+        "dischargeMedications": "Les consignes d’administration des médicaments ont été revues avec le propriétaire.",
+        "dischargeInstructions": "Proposez des aliments mous, comme convenu.",
+        "dischargeFollowUp": "Le rendez-vous de suivi a été évoqué."
+      }
+    }
   },
   "sourceNotice": "Le texte saisi est conservé tel quel. Vérifiez la langue du client avant le partage.",
   "treatmentRecap": "Compte rendu de traitement",

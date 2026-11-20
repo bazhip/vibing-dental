@@ -72,3 +72,19 @@ it('closes sample import when a duplicate fills the final template slot', () => 
   fireEvent.click(screen.getByRole('button', { name: /Save/ }));
   expect(onSave.mock.lastCall?.[0].templates).toHaveLength(24);
 });
+
+it('localizes the Discharge template editor and makes owner-report visibility an explicit opt-in', () => {
+  const onSave = vi.fn();
+  const id = '11111111-1111-4111-8111-111111111111';
+  render(<ConsultationTemplatesDialog kind="discharge" initial={{ defaultId: id, templates: [{
+    id, name: 'Dental recovery', fields: [], sections: [{ id: 'dischargeCustom_feeding', label: 'Feeding' }],
+  }] }} status="ready" canEdit onSave={onSave} onReload={vi.fn()} onClose={vi.fn()} />);
+  const dialog = screen.getByRole('dialog', { name: /Discharge templates/ });
+  fireEvent.click(screen.getByRole('button', { name: 'Feeding' }));
+  const include = screen.getByRole('checkbox', { name: /Include in owner report/ });
+  expect(include).not.toBeChecked();
+  expect(findUntranslated(dialog, ['Dental recovery', 'Feeding', /⟦Move Feeding (up|down)⟧/])).toEqual([]);
+  fireEvent.click(include);
+  fireEvent.click(screen.getByRole('button', { name: /Save/ }));
+  expect(onSave.mock.lastCall?.[0].templates[0].sections[0]).toMatchObject({ ownerReport: true });
+});

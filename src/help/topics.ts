@@ -44,7 +44,10 @@ export const HELP_SCREENSHOTS: Partial<Record<HelpTopic, readonly HelpScreenshot
     { caption: 'dictation', src: '/help/screenshots/dictation.jpg', width: 600, height: 370, section: 'second' },
     { caption: 'dictationCheck', src: '/help/screenshots/dictation-check.jpg', width: 352, height: 290, section: 'third' },
   ],
-  discharge: [{ caption: 'owner', src: '/help/screenshots/owner-report.jpg', width: 982, height: 317, section: 'second' }],
+  discharge: [
+    { caption: 'dischargeTemplates', src: '/help/screenshots/discharge-templates.jpg', width: 1240, height: 1100, section: 'first' },
+    { caption: 'owner', src: '/help/screenshots/owner-report.jpg', width: 982, height: 317, section: 'second' },
+  ],
   export: [{ caption: 'export', src: '/help/screenshots/review-export.jpg', width: 1232, height: 772, section: 'second' }],
   'by-number': [{ caption: 'by-number', src: '/help/screenshots/by-tooth.jpg', width: 942, height: 927, section: 'first' }],
 };

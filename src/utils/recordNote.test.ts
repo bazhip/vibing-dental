@@ -224,3 +224,17 @@ it('uses custom headings and formatting while keeping recorded text from other c
     expect.objectContaining({ key: 'consultationHistory', lines: ['Earlier history'] }),
   ]));
 });
+
+it('exports custom discharge sections in template order and preserves populated standard sections', () => {
+  const field = 'dischargeCustom_activity';
+  const chart = snap({}, {
+    [field]: 'Avoid vigorous play.',
+    dischargeFollowUp: 'Call tomorrow.',
+    dischargeLayout: { id: 'discharge-layout', fields: [], sections: [{ id: field, label: 'Activity', format: 'bullets' }] },
+  });
+  const note = buildRecordNote(chart, recordNoteT('en'));
+  const sections = note.sections.filter(section => section.key === field || section.key === 'dischargeFollowUp');
+  expect(sections.map(section => section.key)).toEqual([field, 'dischargeFollowUp']);
+  expect(sections[0]).toEqual({ key: field, heading: 'Activity', lines: ['• Avoid vigorous play.'] });
+  expect(recordNoteBasis(chart)).not.toBe(recordNoteBasis(snap({}, { ...chart.patientInfo, [field]: 'Different wording' })));
+});

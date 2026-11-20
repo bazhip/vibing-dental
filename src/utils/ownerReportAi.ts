@@ -1,3 +1,4 @@
+import { dischargeOwnerReportFields } from './consultationTemplates';
 import { ctRecordedText } from './ctReportState';
 import { radiologyRecordedText } from './radiologyReportState';
 import type Anthropic from '@anthropic-ai/sdk';
@@ -104,6 +105,7 @@ export function ownerReportFacts(snapshot: ChartSnapshot, context?: OwnerReportC
     info.dischargeMedications?.trim() ? `dischargeMedications (recorded source, preserve doses and uncertainty):\n${info.dischargeMedications}` : '',
     info.dischargeInstructions?.trim() ? `dischargeInstructions (recorded source, preserve doses and uncertainty):\n${info.dischargeInstructions}` : '',
     info.dischargeFollowUp?.trim() ? `dischargeFollowUp (recorded source, preserve doses and uncertainty):\n${info.dischargeFollowUp}` : '',
+    ...dischargeOwnerReportFields(info).map(field => `${field.label} (recorded source, preserve doses and uncertainty):\n${field.value}`),
     model.recallDate ? `Recommended recheck: ${model.recallDate}` : 'Recommended recheck: none set',
     model.extraNotes ? `Note from the veterinary team (already printed separately): ${model.extraNotes}` : '',
   ];

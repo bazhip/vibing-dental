@@ -24,6 +24,7 @@
     "practice": "Rendelő és támogatás"
   },
   "images": {
+    "dischargeTemplates": "A hazabocsátási sablon szerkesztője egy fiktív vizithez, egy egyéni mező megnyitott beállításaival.",
     "consultationMedicationHistory": "Jelenlegi gyógyszerek az alkalmazásban megjelenő állatgyógyászati tájékoztatóval és a teljes forrás hivatkozásával.",
     "consultationMedicationReview": "A konzultációs diktálás áttekintése külön gyógyszerjavaslatokkal és az átirat megfelelő részleteivel.",
     "charting": "Minta fogászati lap számozott fogakkal és a leletek táblázatával.",
@@ -179,7 +180,7 @@
       "sections": {
         "first": {
           "title": "Hazabocsátási utasítások rögzítése",
-          "text": "A hazabocsátásnál soronként egy gyógyszert tüntessen fel az adaggal, a beadás módjával és a kezelés időtartamával. Adja meg az otthoni teendőket és a következő lépéseket. Megosztás előtt ellenőrizze az adatokat."
+          "text": "A „Hazabocsátás” lapon válasszon a „Jegyzetsablon” alatt felsorolt lehetőségek közül. Sablonváltáskor a már beírt szöveg megmarad.\n\nA hazabocsátásnál soronként egy gyógyszert tüntessen fel az adaggal, a beadás módjával és a kezelés időtartamával. Adja meg az otthoni teendőket és a következő lépéseket. Megosztás előtt ellenőrizze az adatokat.\n\nA sablonok mellett nyissa meg a „Sablonok kezelése” lehetőséget. Ha Ön a rendelő tulajdonosa, válasszon egy sablont, majd kattintson a „Másolat készítése” gombra. A „Szakasz hozzáadása” lehetőséggel adjon hozzá egy egyéni mezőt, majd a mező nevére kattintva nyissa meg a beállításait. Az egyéni mező csak akkor kerül a gazdinak szóló leletbe, ha a mezőnél bekapcsolja a „Megjelenítés a gazdinak szóló leletben” lehetőséget. A „Minta előnézete” fiktív tartalommal mutatja a szakaszokat. Válassza a „Mentés” gombot, válassza ki a vizithez tartozó sablont, majd ellenőrizze a klinikai jegyzetet az „Áttekintés és exportálás” ablak „Kórlapi feljegyzés” lapján."
         },
         "second": {
           "title": "A gazdinak szóló lelet piszkozatának elkészítése",

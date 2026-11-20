@@ -24,6 +24,7 @@
     "practice": "Studio e assistenza"
   },
   "images": {
+    "dischargeTemplates": "L’editor dei modelli di dimissione con le impostazioni di un campo personalizzato aperte per una visita fittizia.",
     "consultationMedicationHistory": "Farmaci in uso con una scheda veterinaria nell’app e un collegamento alla fonte completa.",
     "consultationMedicationReview": "Revisione della dettatura della visita con proposte separate per i farmaci e i relativi estratti.",
     "charting": "Esempio di odontogramma con denti numerati e griglia dei reperti.",
@@ -179,7 +180,7 @@
       "sections": {
         "first": {
           "title": "Registrare le istruzioni di dimissione",
-          "text": "In Dimissione, indichi un farmaco per riga, con dose, modalità e durata della somministrazione. Aggiunga le istruzioni per le cure a casa e il follow-up. Verifichi i dettagli prima della condivisione."
+          "text": "In «Dimissione», scelga una delle opzioni sotto «Modello della nota». Il testo già inserito viene conservato quando cambia modello.\n\nIn Dimissione, indichi un farmaco per riga, con dose, modalità e durata della somministrazione. Aggiunga le istruzioni per le cure a casa e il follow-up. Verifichi i dettagli prima della condivisione.\n\nApra «Gestisci i modelli» accanto alle opzioni. Se è titolare della clinica, selezioni un modello e scelga «Duplica». Usi «Aggiungi sezione» per aggiungere un campo personalizzato, poi selezioni il nome del campo per aprirne le impostazioni. I campi personalizzati compaiono nel referto per il proprietario solo se attiva «Includi nel referto per il proprietario» per ciascun campo che desidera condividere. Usi «Anteprima di esempio» per vedere le sezioni con contenuti fittizi. Scelga «Salva», selezioni il modello per la visita e verifichi la nota clinica in «Verifica ed esportazione» → «Nota di cartella»."
         },
         "second": {
           "title": "Preparare il referto per il proprietario",

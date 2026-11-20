@@ -1,3 +1,4 @@
+import { consultationSectionKey, dischargeVisitSections, noteSectionLines } from '../consultationTemplates';
 import { loadPracticeLogoBytes } from '../practiceLogoCache';
 import { VISIT_DOCUMENT_TEMPLATES } from '../visitDocumentation';
 import type { ClinicalContinuation } from './continuation';
@@ -1639,7 +1640,14 @@ export function visitDocumentationContinuations(patient: PatientInfo, lng: strin
   if (kind === 'gp-exam' && !patient.gpVitals?.trim() && !patient.gpPhysicalExam?.trim() && patient.gpDiagnostics?.trim()) {
     return [{ title: t('fields.gpDiagnostics.label'), paragraphs: [patient.gpDiagnostics] }];
   }
-  const paragraphs = VISIT_DOCUMENT_TEMPLATES[kind].fields.flatMap(field => {
+  const paragraphs = kind === 'discharge' ? dischargeVisitSections(patient).flatMap(section => {
+    const key = consultationSectionKey(section);
+    const label = section.label ?? (key ? t(`${key}.label`) : '');
+    const value = patient[section.id];
+    if (!value?.trim()) return [];
+    const text = section.format === 'bullets' ? noteSectionLines(value, section).join('\n') : value;
+    return [`${label}\n${text}`];
+  }) : VISIT_DOCUMENT_TEMPLATES[kind].fields.flatMap(field => {
     const value = patient[field.id];
     return value?.trim() ? [`${t(field.labelKey)}\n${value}`] : [];
   });

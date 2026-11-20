@@ -7413,7 +7413,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "6bf15f5e2493",
+      "hash": "64c7055f2323",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -7942,6 +7942,10 @@
     },
     "help:images.dictationCheck": {
       "hash": "ff7bc6c58671",
+      "status": "machine"
+    },
+    "help:images.dischargeTemplates": {
+      "hash": "8bd66db6f710",
       "status": "machine"
     },
     "help:images.exam": {
@@ -15514,6 +15518,38 @@
     },
     "visitDocumentation:discharge.review": {
       "hash": "313c911930bc",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.help": {
+      "hash": "0ef709e28493",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.intro": {
+      "hash": "7ae9f0c2a365",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.ownerReport": {
+      "hash": "6bca03adc186",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.samples.dischargeFollowUp": {
+      "hash": "4bfc5d05b072",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.samples.dischargeInstructions": {
+      "hash": "ab7f07d05f19",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.samples.dischargeMedications": {
+      "hash": "8150188d8011",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.starter": {
+      "hash": "5e9f1d91eafa",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.title": {
+      "hash": "b641a2223f0f",
       "status": "machine"
     },
     "visitDocumentation:discharge.title": {
@@ -23795,7 +23831,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "6bf15f5e2493",
+      "hash": "64c7055f2323",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -24324,6 +24360,10 @@
     },
     "help:images.dictationCheck": {
       "hash": "ff7bc6c58671",
+      "status": "machine"
+    },
+    "help:images.dischargeTemplates": {
+      "hash": "8bd66db6f710",
       "status": "machine"
     },
     "help:images.exam": {
@@ -31832,6 +31872,38 @@
     },
     "visitDocumentation:discharge.review": {
       "hash": "313c911930bc",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.help": {
+      "hash": "0ef709e28493",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.intro": {
+      "hash": "7ae9f0c2a365",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.ownerReport": {
+      "hash": "6bca03adc186",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.samples.dischargeFollowUp": {
+      "hash": "4bfc5d05b072",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.samples.dischargeInstructions": {
+      "hash": "ab7f07d05f19",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.samples.dischargeMedications": {
+      "hash": "8150188d8011",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.starter": {
+      "hash": "5e9f1d91eafa",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.title": {
+      "hash": "b641a2223f0f",
       "status": "machine"
     },
     "visitDocumentation:discharge.title": {
@@ -40077,7 +40149,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "6bf15f5e2493",
+      "hash": "64c7055f2323",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -40606,6 +40678,10 @@
     },
     "help:images.dictationCheck": {
       "hash": "ff7bc6c58671",
+      "status": "machine"
+    },
+    "help:images.dischargeTemplates": {
+      "hash": "8bd66db6f710",
       "status": "machine"
     },
     "help:images.exam": {
@@ -48146,6 +48222,38 @@
     },
     "visitDocumentation:discharge.review": {
       "hash": "313c911930bc",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.help": {
+      "hash": "0ef709e28493",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.intro": {
+      "hash": "7ae9f0c2a365",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.ownerReport": {
+      "hash": "6bca03adc186",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.samples.dischargeFollowUp": {
+      "hash": "4bfc5d05b072",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.samples.dischargeInstructions": {
+      "hash": "ab7f07d05f19",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.samples.dischargeMedications": {
+      "hash": "8150188d8011",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.starter": {
+      "hash": "5e9f1d91eafa",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.title": {
+      "hash": "b641a2223f0f",
       "status": "machine"
     },
     "visitDocumentation:discharge.title": {
@@ -56415,7 +56523,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "6bf15f5e2493",
+      "hash": "64c7055f2323",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -56944,6 +57052,10 @@
     },
     "help:images.dictationCheck": {
       "hash": "ff7bc6c58671",
+      "status": "machine"
+    },
+    "help:images.dischargeTemplates": {
+      "hash": "8bd66db6f710",
       "status": "machine"
     },
     "help:images.exam": {
@@ -64484,6 +64596,38 @@
     },
     "visitDocumentation:discharge.review": {
       "hash": "313c911930bc",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.help": {
+      "hash": "0ef709e28493",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.intro": {
+      "hash": "7ae9f0c2a365",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.ownerReport": {
+      "hash": "6bca03adc186",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.samples.dischargeFollowUp": {
+      "hash": "4bfc5d05b072",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.samples.dischargeInstructions": {
+      "hash": "ab7f07d05f19",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.samples.dischargeMedications": {
+      "hash": "8150188d8011",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.starter": {
+      "hash": "5e9f1d91eafa",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.title": {
+      "hash": "b641a2223f0f",
       "status": "machine"
     },
     "visitDocumentation:discharge.title": {
@@ -72685,7 +72829,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "6bf15f5e2493",
+      "hash": "64c7055f2323",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -73214,6 +73358,10 @@
     },
     "help:images.dictationCheck": {
       "hash": "ff7bc6c58671",
+      "status": "machine"
+    },
+    "help:images.dischargeTemplates": {
+      "hash": "8bd66db6f710",
       "status": "machine"
     },
     "help:images.exam": {
@@ -80658,6 +80806,38 @@
     },
     "visitDocumentation:discharge.review": {
       "hash": "313c911930bc",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.help": {
+      "hash": "0ef709e28493",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.intro": {
+      "hash": "7ae9f0c2a365",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.ownerReport": {
+      "hash": "6bca03adc186",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.samples.dischargeFollowUp": {
+      "hash": "4bfc5d05b072",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.samples.dischargeInstructions": {
+      "hash": "ab7f07d05f19",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.samples.dischargeMedications": {
+      "hash": "8150188d8011",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.starter": {
+      "hash": "5e9f1d91eafa",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.title": {
+      "hash": "b641a2223f0f",
       "status": "machine"
     },
     "visitDocumentation:discharge.title": {
@@ -88903,7 +89083,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "6bf15f5e2493",
+      "hash": "64c7055f2323",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -89432,6 +89612,10 @@
     },
     "help:images.dictationCheck": {
       "hash": "ff7bc6c58671",
+      "status": "machine"
+    },
+    "help:images.dischargeTemplates": {
+      "hash": "8bd66db6f710",
       "status": "machine"
     },
     "help:images.exam": {
@@ -96972,6 +97156,38 @@
     },
     "visitDocumentation:discharge.review": {
       "hash": "313c911930bc",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.help": {
+      "hash": "0ef709e28493",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.intro": {
+      "hash": "7ae9f0c2a365",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.ownerReport": {
+      "hash": "6bca03adc186",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.samples.dischargeFollowUp": {
+      "hash": "4bfc5d05b072",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.samples.dischargeInstructions": {
+      "hash": "ab7f07d05f19",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.samples.dischargeMedications": {
+      "hash": "8150188d8011",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.starter": {
+      "hash": "5e9f1d91eafa",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.title": {
+      "hash": "b641a2223f0f",
       "status": "machine"
     },
     "visitDocumentation:discharge.title": {
@@ -105827,7 +106043,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "6bf15f5e2493",
+      "hash": "64c7055f2323",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -106356,6 +106572,10 @@
     },
     "help:images.dictationCheck": {
       "hash": "ff7bc6c58671",
+      "status": "machine"
+    },
+    "help:images.dischargeTemplates": {
+      "hash": "8bd66db6f710",
       "status": "machine"
     },
     "help:images.exam": {
@@ -113832,6 +114052,38 @@
     },
     "visitDocumentation:discharge.review": {
       "hash": "313c911930bc",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.help": {
+      "hash": "0ef709e28493",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.intro": {
+      "hash": "7ae9f0c2a365",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.ownerReport": {
+      "hash": "6bca03adc186",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.samples.dischargeFollowUp": {
+      "hash": "4bfc5d05b072",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.samples.dischargeInstructions": {
+      "hash": "ab7f07d05f19",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.samples.dischargeMedications": {
+      "hash": "8150188d8011",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.starter": {
+      "hash": "5e9f1d91eafa",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.title": {
+      "hash": "b641a2223f0f",
       "status": "machine"
     },
     "visitDocumentation:discharge.title": {
@@ -122033,7 +122285,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "6bf15f5e2493",
+      "hash": "64c7055f2323",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -122562,6 +122814,10 @@
     },
     "help:images.dictationCheck": {
       "hash": "ff7bc6c58671",
+      "status": "machine"
+    },
+    "help:images.dischargeTemplates": {
+      "hash": "8bd66db6f710",
       "status": "machine"
     },
     "help:images.exam": {
@@ -130006,6 +130262,38 @@
     },
     "visitDocumentation:discharge.review": {
       "hash": "313c911930bc",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.help": {
+      "hash": "0ef709e28493",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.intro": {
+      "hash": "7ae9f0c2a365",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.ownerReport": {
+      "hash": "6bca03adc186",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.samples.dischargeFollowUp": {
+      "hash": "4bfc5d05b072",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.samples.dischargeInstructions": {
+      "hash": "ab7f07d05f19",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.samples.dischargeMedications": {
+      "hash": "8150188d8011",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.starter": {
+      "hash": "5e9f1d91eafa",
+      "status": "machine"
+    },
+    "visitDocumentation:discharge.templates.title": {
+      "hash": "b641a2223f0f",
       "status": "machine"
     },
     "visitDocumentation:discharge.title": {

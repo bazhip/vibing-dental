@@ -3,7 +3,7 @@ import React from 'react';
 import type { ClinicalDictationSource } from '../types';
 import { normalizeClinicalDictations, appendClinicalDictationSource } from '../utils/clinicalDictationSources';
 import { createPatientIdentity, patientNumberOf } from '../utils/patientIds';
-import { CONSULTATION_SNAPSHOT_VERSION } from '../utils/consultationTemplates';
+import { CONSULTATION_SNAPSHOT_VERSION, DISCHARGE_SNAPSHOT_VERSION } from '../utils/consultationTemplates';
 import { normalizeVisitDocumentation } from '../utils/visitDocumentation';
 import { isVisitType, visitTypeOf, type VisitType } from '../utils/visitTypes';
 import { normalizeCustomAnesthesia } from '../utils/customAnesthesia';
@@ -643,7 +643,8 @@ export function useChartState(): UseChartStateReturn {
   // referential-equality caches off it — without this, every render
   // built a fresh object and the full chart re-serialized per keystroke.
   const snapshot = React.useMemo<ChartSnapshot>(() => ({
-    version: patientInfo.visitType === 'consultation' ? CONSULTATION_SNAPSHOT_VERSION : CHART_SNAPSHOT_VERSION,
+    version: patientInfo.dischargeLayout ? DISCHARGE_SNAPSHOT_VERSION
+      : patientInfo.visitType === 'consultation' ? CONSULTATION_SNAPSHOT_VERSION : CHART_SNAPSHOT_VERSION,
     imageRoles,
     ...(Object.keys(ownerReportImageInclusion).length ? { ownerReportImageInclusion } : {}),
     pdfExcludedImages,

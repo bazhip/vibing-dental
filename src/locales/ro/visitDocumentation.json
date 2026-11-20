@@ -128,7 +128,19 @@
   "discharge": {
     "title": "Externare",
     "purpose": "Înregistrați medicamentele, instrucțiunile de îngrijire și monitorizarea discutate pentru această vizită.",
-    "review": "Verificați raportul pentru proprietar"
+    "review": "Verificați raportul pentru proprietar",
+    "templates": {
+      "title": "Șabloane de externare",
+      "starter": "Externare standard",
+      "help": "Cum funcționează șabloanele de externare",
+      "ownerReport": "Includeți în raportul pentru proprietar",
+      "intro": "Alegeți cum apar secțiunile în notele de externare.",
+      "samples": {
+        "dischargeMedications": "Instrucțiunile de administrare a medicamentelor au fost revizuite împreună cu proprietarul.",
+        "dischargeInstructions": "Oferiți hrană moale, conform celor discutate.",
+        "dischargeFollowUp": "S-a discutat despre o vizită de control."
+      }
+    }
   },
   "sourceNotice": "Formularea înregistrată rămâne așa cum a fost introdusă. Verificați limba clientului înainte de partajare.",
   "treatmentRecap": "Raport de tratament",

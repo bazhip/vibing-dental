@@ -24,6 +24,7 @@
     "practice": "Praxis und Support"
   },
   "images": {
+    "dischargeTemplates": "Der Editor für Entlassungsvorlagen mit geöffneten Einstellungen eines benutzerdefinierten Felds für einen fiktiven Besuch.",
     "consultationMedicationHistory": "Aktuelle Medikation mit einer Tierarzneimittelinformation in der App und einem Link zur vollständigen Quelle.",
     "consultationMedicationReview": "Prüfung des Konsultationsdiktats mit getrennten Medikationsvorschlägen und den zugehörigen Transkriptausschnitten.",
     "charting": "Ein Beispiel für ein Zahnschema mit nummerierten Zähnen und einem Befundraster.",
@@ -179,7 +180,7 @@
       "sections": {
         "first": {
           "title": "Entlassungshinweise erfassen",
-          "text": "Listen Sie unter Entlassung pro Zeile ein Medikament mit Dosis, Art der Gabe und Dauer auf. Ergänzen Sie die Pflege zu Hause und die nächsten Schritte. Prüfen Sie die Angaben vor der Weitergabe."
+          "text": "Wählen Sie unter „Entlassung“ eine der verfügbaren Optionen unter „Notizvorlage“. Bereits eingegebener Text bleibt beim Vorlagenwechsel erhalten.\n\nListen Sie unter Entlassung pro Zeile ein Medikament mit Dosis, Art der Gabe und Dauer auf. Ergänzen Sie die Pflege zu Hause und die nächsten Schritte. Prüfen Sie die Angaben vor der Weitergabe.\n\nÖffnen Sie „Vorlagen verwalten“ neben der Vorlagenauswahl. Wenn Ihnen die Praxis gehört, wählen Sie eine Vorlage und dann „Duplizieren“. Fügen Sie über „Abschnitt hinzufügen“ ein benutzerdefiniertes Feld hinzu und wählen Sie seinen Namen, um die Feldeinstellungen zu öffnen. Benutzerdefinierte Felder erscheinen nur dann im Besitzerbericht, wenn Sie für das jeweilige Feld „In den Besitzerbericht aufnehmen“ aktivieren. In der „Beispielvorschau“ sehen Sie die Abschnitte mit fiktiven Inhalten. Wählen Sie „Speichern“, wählen Sie die Vorlage für den Besuch und prüfen Sie die klinische Notiz unter „Prüfen und exportieren“ → „Aktennotiz“."
         },
         "second": {
           "title": "Besitzerbericht entwerfen",

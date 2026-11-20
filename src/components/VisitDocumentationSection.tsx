@@ -1,7 +1,7 @@
 import { useId, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ClinicalDictationSource, PatientInfo } from '../types';
-import { changeConsultationLayout, consultationChoices, consultationSectionKey, consultationVisitSections, consultationLayoutFor, EMPTY_CONSULTATION_LIBRARY, isConsultationStarter, type ConsultationLibrary, type ConsultationSection } from '../utils/consultationTemplates';
+import { changeConsultationLayout, consultationChoices, consultationSectionKey, consultationVisitSections, consultationLayoutFor, dischargeLayoutFor, EMPTY_CONSULTATION_LIBRARY, EMPTY_DISCHARGE_LIBRARY, isConsultationStarter, type ConsultationLibrary, type ConsultationSection } from '../utils/consultationTemplates';
 import { documentationUrl } from '../help/openDocumentation';
 import { formatDate, formatDateTime } from '../i18n/format';
 import { VISIT_DOCUMENT_MAX_LENGTH, VISIT_DOCUMENT_TEMPLATES, type VisitDocumentKind } from '../utils/visitDocumentation';
@@ -20,6 +20,7 @@ export interface VisitDocumentationSectionProps {
   reviewLabel?: string;
   children?: ReactNode;
   dictation?: ReactNode;
+  discharge?: { library: ConsultationLibrary; historical?: boolean; onTemplates?: () => void };
   consultation?: {
     library: ConsultationLibrary;
     historical?: boolean;
@@ -32,22 +33,25 @@ export interface VisitDocumentationSectionProps {
 }
 
 /** Source-only forms: generated clinical/client reports keep their existing owners. */
-export function VisitDocumentationSection({ kind, patientInfo, onChange, readOnly, onReview, reviewLabel, children, dictation, consultation }: VisitDocumentationSectionProps) {
+export function VisitDocumentationSection({ kind, patientInfo, onChange, readOnly, onReview, reviewLabel, children, dictation, consultation, discharge }: VisitDocumentationSectionProps) {
   const { t, i18n } = useTranslation('visitDocumentation');
   const id = useId();
   const [selectedDrug, setSelectedDrug] = useState('');
   const currentMedicationsInput = useRef<HTMLTextAreaElement>(null);
   const isConsultation = kind === 'consultation';
   const language = i18n.resolvedLanguage ?? i18n.language;
-  const library = consultation?.library ?? EMPTY_CONSULTATION_LIBRARY;
-  const layout = consultationLayoutFor(patientInfo, library, readOnly || consultation?.historical);
-  const choices = consultationChoices(library);
+  const isDischarge = kind === 'discharge';
+  const templateKind = isDischarge ? 'discharge' : 'consultation';
+  const library = isDischarge ? discharge?.library ?? EMPTY_DISCHARGE_LIBRARY : consultation?.library ?? EMPTY_CONSULTATION_LIBRARY;
+  const layout = isDischarge ? dischargeLayoutFor(patientInfo, library, readOnly || discharge?.historical)
+    : consultationLayoutFor(patientInfo, library, readOnly || consultation?.historical);
+  const choices = consultationChoices(library, templateKind);
   const savedVersion = !choices.some(choice => choice.id === layout.id && choice.name === layout.name
     && JSON.stringify(choice.fields) === JSON.stringify(layout.fields)
     && JSON.stringify(choice.sections) === JSON.stringify(layout.sections)
     && choice.instructions === layout.instructions && choice.detail === layout.detail);
   const layoutName = (option: typeof layout) =>
-    isConsultationStarter(option.id) ? t(`consultation.templates.starters.${option.id}`) : option.name;
+    isDischarge && option.id === 'discharge-v1' ? t('discharge.templates.starter') : isConsultationStarter(option.id) ? t(`consultation.templates.starters.${option.id}`) : option.name;
   const update = (patch: Partial<PatientInfo>) => {
     if (!readOnly) onChange(patch);
   };
@@ -119,7 +123,7 @@ export function VisitDocumentationSection({ kind, patientInfo, onChange, readOnl
           {t(`${kind}.purpose`)}
         </SectionHeader>
       </div>
-      {isConsultation && <>
+      {(isConsultation || discharge) && <>
         <div className="visit-documentation__toolbar">
           <div className="visit-documentation__template">
             <span id={`${id}-template`} className="patient-form__label">{t('consultation.templates.label')}</span>
@@ -134,19 +138,19 @@ export function VisitDocumentationSection({ kind, patientInfo, onChange, readOnl
                   const selected = !savedVersion && choice.id === layout.id;
                   return <button key={choice.id} type="button" className="diagram-view__action" aria-pressed={selected} dir="auto"
                     onClick={() => {
-                      if (!selected) update(changeConsultationLayout(patientInfo, layout, choice));
+                      if (!selected) update(changeConsultationLayout(patientInfo, layout, choice, templateKind));
                     }}>{layoutName(choice)}</button>;
                 })}
               </div>}
           </div>
           <div className="visit-documentation__tools">
-            {consultation?.onTemplates && <button type="button" className="diagram-view__action"
-              onClick={consultation.onTemplates} aria-haspopup="dialog">{t('consultation.templates.manage')}</button>}
-            <a className="visit-documentation__guide" href={documentationUrl(language, 'consultation')}
-              target="_blank" rel="noopener noreferrer">{t('consultation.guide')}</a>
+            {(consultation?.onTemplates || discharge?.onTemplates) && <button type="button" className="diagram-view__action"
+              onClick={consultation?.onTemplates ?? discharge?.onTemplates} aria-haspopup="dialog">{t('consultation.templates.manage')}</button>}
+            <a className="visit-documentation__guide" href={documentationUrl(language, isDischarge ? 'discharge' : 'consultation')}
+              target="_blank" rel="noopener noreferrer">{t(isDischarge ? 'discharge.templates.help' : 'consultation.guide')}</a>
           </div>
         </div>
-        {(dictation || consultation?.onExam) && <div className="visit-documentation__sources">
+        {isConsultation && (dictation || consultation?.onExam) && <div className="visit-documentation__sources">
           {dictation}
           {consultation?.onExam && <button className="diagram-view__action" type="button"
             onClick={consultation.onExam}>{t('consultation.openExam')}</button>}
@@ -168,7 +172,7 @@ export function VisitDocumentationSection({ kind, patientInfo, onChange, readOnl
         </ul>
       </details>}
       <div className="visit-documentation__fields">
-        {(isConsultation ? consultationVisitSections(patientInfo, layout) : VISIT_DOCUMENT_TEMPLATES[kind].fields).map(renderField)}
+        {(isConsultation || (isDischarge && (discharge || patientInfo.dischargeLayout)) ? consultationVisitSections(patientInfo, layout, templateKind) : VISIT_DOCUMENT_TEMPLATES[kind].fields).map(renderField)}
       </div>
       {kind === 'discharge' && <p className="visit-documentation__helper visit-documentation__notice">{t('sourceNotice')}</p>}
       {children}

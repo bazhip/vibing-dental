@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CONSULTATION_FIELDS, consultationChoices, consultationHeadings, consultationLayoutFor, normalizeConsultationLayout, parseConsultationLibrary } from './consultationTemplates';
+import { CONSULTATION_FIELDS, STANDARD_DISCHARGE, changeConsultationLayout, consultationVisitSections, consultationChoices, consultationHeadings, consultationLayoutFor, normalizeConsultationLayout, parseConsultationLibrary } from './consultationTemplates';
 import { normalizeVisitDocumentation } from './visitDocumentation';
 
 const custom = { id: '11111111-1111-4111-8111-111111111111', name: 'Practice consult', fields: [...CONSULTATION_FIELDS].reverse() };
@@ -72,4 +72,17 @@ it('rejects a valid-looking library larger than the database limit', () => {
     id: `consultationCustom_section-${index}` as const, label: `Section ${index}`, guidance: text, example: text, suggestedText: text,
   }));
   expect(parseConsultationLibrary({ defaultId: 'dental-v2', templates: [{ ...custom, sections }] })).toBeUndefined();
+});
+
+it('validates discharge fields independently and retains their owner-report choices when changing layouts', () => {
+  const section = { id: 'dischargeCustom_call', label: 'When to call', ownerReport: true } as const;
+  const layout = { id: custom.id, name: 'Recovery', fields: [], sections: [section] };
+  const library = { version: 2, defaultId: layout.id, templates: [layout] };
+  expect(parseConsultationLibrary(library, 'discharge')).toEqual(library);
+  expect(parseConsultationLibrary({ ...library, templates: [{ id: layout.id, name: layout.name, fields: [] }] }, 'discharge')).toBeUndefined();
+  expect(parseConsultationLibrary(library)).toBeUndefined();
+  const visit = { dischargeLayout: layout, [section.id]: 'Call if concerned.' };
+  const patch = changeConsultationLayout(visit, layout, STANDARD_DISCHARGE, 'discharge');
+  expect(patch.dischargeRetainedSections).toEqual([section]);
+  expect(consultationVisitSections({ ...visit, ...patch }, STANDARD_DISCHARGE, 'discharge')).toContainEqual(section);
 });

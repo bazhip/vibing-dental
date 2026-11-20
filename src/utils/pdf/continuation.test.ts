@@ -1,5 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { PDFDocument, PDFPage, StandardFonts } from 'pdf-lib';
+import { sampleOwnerReportSnapshot } from '../ownerReportSample';
+import { visitDocumentationContinuations } from './sections';
 import { continuationLines, drawClinicalContinuations } from './continuation';
 
 describe('clinical continuation pages', () => {
@@ -26,4 +28,17 @@ describe('clinical continuation pages', () => {
     const bytes = await doc.save();
     expect((await PDFDocument.load(bytes)).getPageCount()).toBe(doc.getPageCount());
   });
+});
+
+it('prints custom discharge headings and formatting in the clinical chart PDF', () => {
+  const { patientInfo } = sampleOwnerReportSnapshot();
+  const field = 'dischargeCustom_activity';
+  const discharge = visitDocumentationContinuations({
+    ...patientInfo,
+    [field]: 'Follow the activity plan.',
+    dischargeFollowUp: 'Follow-up reviewed.',
+    dischargeLayout: { id: 'recovery', fields: [], sections: [{ id: field, label: 'Activity', format: 'bullets' }] },
+  }, 'en', 'discharge');
+  expect(discharge[0].paragraphs[0]).toBe('Activity\n• Follow the activity plan.');
+  expect(discharge[0].paragraphs.at(-1)).toContain('Follow-up reviewed.');
 });

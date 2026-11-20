@@ -24,6 +24,7 @@
     "practice": "Practice and support"
   },
   "images": {
+    "dischargeTemplates": "The discharge template editor with custom field settings expanded for a fictional visit.",
     "consultationMedicationHistory": "Current medications with an in-app veterinary label and a link to the full source.",
     "consultationMedicationReview": "Consultation dictation review with separate medication suggestions and their transcript excerpts.",
     "charting": "A sample dental chart with numbered teeth and a findings grid.",
@@ -179,7 +180,7 @@
       "sections": {
         "first": {
           "title": "Record discharge instructions",
-          "text": "In Discharge, list one medication per line with the dose, how to give it, and for how long. Add home care and follow-up instructions. Check the details before sharing."
+          "text": "In Discharge, choose from the available options under “Note template”. Switching templates keeps the wording you have already entered.\n\nIn Discharge, list one medication per line with the dose, how to give it, and for how long. Add home care and follow-up instructions. Check the details before sharing.\n\nOpen “Manage templates” beside the choices. If you own the practice, select a template and choose “Duplicate”. Use “Add section” to add a custom field, then select its name to expand the field settings. Custom fields appear in the owner report only if you turn on “Include in owner report” for each field you want to share. Use “Sample preview” to check how the sections look with fictional content. Choose “Save”, select the template for the visit, and use “Review and export” → “Record note” to check the clinical note."
         },
         "second": {
           "title": "Draft the owner report",

@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import type { StoredRecordNote } from '../types';
 import type { InspectResult, ItemResult, SendResult } from '../extension/protocol';
-import { isCustomConsultationField } from '../utils/consultationTemplates';
+import { isCustomDischargeField, isCustomNoteField } from '../utils/consultationTemplates';
 import { HEADING_KEYS, type RecordNote } from '../utils/recordNote';
 import {
   buildSendItems,
@@ -224,8 +224,9 @@ export function usePimsSend({
   const wantedFor = (key: SourceKey): string | null => {
     if (Object.hasOwn(edits, key)) return edits[key] ?? null;
     if (Object.hasOwn(map, key)) return map[key];
-    if (!isCustomConsultationField(key)) return null;
-    const destination = key === 'consultationCustom_awake-oral-exam' ? 'gpPhysicalExam' : 'consultationPlan';
+    if (!isCustomNoteField(key)) return null;
+    const destination = isCustomDischargeField(key) ? 'dischargeInstructions'
+      : key === 'consultationCustom_awake-oral-exam' ? 'gpPhysicalExam' : 'consultationPlan';
     return map[destination] ?? null;
   };
   const editedWanted =
@@ -239,7 +240,7 @@ export function usePimsSend({
 
   const rows: MappingRow[] = writable
     ? split
-      ? sections.map((s) => ({ key: s.key, label: s.headingOverride || isCustomConsultationField(s.key) ? s.heading : t(HEADING_KEYS[s.key]), options: targets, wanted: wantedFor(s.key) }))
+      ? sections.map((s) => ({ key: s.key, label: s.headingOverride || isCustomNoteField(s.key) ? s.heading : t(HEADING_KEYS[s.key]), options: targets, wanted: wantedFor(s.key) }))
       : [{ key: 'edited', label: t('pims:rows.edited'), options: targets, wanted: editedWanted }]
     : [];
   if (writable && hasChartPicture) rows.push({ key: 'chart', label: t('pims:rows.chart'), options: imageTargets, wanted: wantedFor('chart') });

@@ -1,7 +1,7 @@
 import React from 'react';
 import { supabase } from '../utils/supabaseClient';
 import { DEFAULT_EZYVET_MAP, effectiveMap, type EffectiveFieldMap, type PimsFieldMap, type FieldInfo } from '../utils/pims/mapping';
-import { isCustomConsultationField } from '../utils/consultationTemplates';
+import { isCustomNoteField } from '../utils/consultationTemplates';
 import type { PimsId } from '../extension/pims/types';
 
 /**
@@ -30,7 +30,7 @@ const OTHER_PROVIDERS: PimsId[] = ['daysmart', 'instinct', 'pulse', 'rhapsody', 
 function asSaved(value: unknown): PimsFieldMap | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
   const out: PimsFieldMap = {};
-  for (const key of [...SAVED_KEYS, ...Object.keys(value).filter(isCustomConsultationField)]) {
+  for (const key of [...SAVED_KEYS, ...Object.keys(value).filter(isCustomNoteField)]) {
     const v = (value as Record<string, unknown>)[key];
     if (typeof v === 'string' || v === null) out[key] = v;
   }

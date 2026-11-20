@@ -128,7 +128,19 @@
   "discharge": {
     "title": "Discharge",
     "purpose": "Record the medications, care instructions, and follow-up discussed for this visit.",
-    "review": "Review client report"
+    "review": "Review client report",
+    "templates": {
+      "title": "Discharge templates",
+      "starter": "Standard discharge",
+      "help": "How discharge templates work",
+      "ownerReport": "Include in owner report",
+      "intro": "Choose how sections appear in discharge notes.",
+      "samples": {
+        "dischargeMedications": "Medication instructions reviewed with the owner.",
+        "dischargeInstructions": "Offer soft food as discussed.",
+        "dischargeFollowUp": "Follow-up appointment discussed."
+      }
+    }
   },
   "sourceNotice": "Recorded wording stays as entered. Review the client language before sharing.",
   "treatmentRecap": "Treatment report",

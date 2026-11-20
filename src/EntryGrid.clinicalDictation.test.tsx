@@ -346,3 +346,23 @@ it('applies reviewed awake oral findings and keeps them when the clinician switc
   })))).toThrow(LocalizedError);
   expect(persisted()[field]).toBe(text);
 });
+
+it('shows and applies custom Discharge fields with the Consult flag off', async () => {
+  state.consultationEnabled = false;
+  const id = '11111111-1111-4111-8111-111111111111';
+  const field = 'dischargeCustom_activity';
+  const text = 'Restrict activity as discussed.';
+  localStorage.setItem('vibing-dental.chart.patientInfo.v1', JSON.stringify({
+    ...persisted(), dischargeLayout: { id, name: 'Recovery', fields: [], sections: [{ id: field, label: 'Activity' }] },
+  }));
+  mount();
+  navigateSection('discharge');
+  expect(await screen.findByRole('button', { name: 'Manage templates' })).toBeVisible();
+  expect(screen.getByRole('textbox', { name: 'Activity' })).toHaveValue('');
+  act(() => state.voice?.onDictationComplete?.('en', text));
+  expect(live().snapshot.version).toBe(3);
+  act(() => live().onApply({ [field]: text }, source({ transcript: text, fields: [field] })));
+  expect(screen.getByRole('textbox', { name: 'Activity' })).toHaveValue(text);
+  fireEvent.click(screen.getByRole('button', { name: 'Standard discharge' }));
+  expect(screen.getByRole('textbox', { name: 'Activity' })).toHaveValue(text);
+});

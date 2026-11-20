@@ -128,7 +128,19 @@
   "discharge": {
     "title": "Entlassung",
     "purpose": "Dokumentieren Sie die für diesen Besuch besprochenen Medikamente, Pflegehinweise und Nachsorge.",
-    "review": "Bericht für Tierhalter prüfen"
+    "review": "Bericht für Tierhalter prüfen",
+    "templates": {
+      "title": "Entlassungsvorlagen",
+      "starter": "Standardentlassung",
+      "help": "So funktionieren Entlassungsvorlagen",
+      "ownerReport": "In den Besitzerbericht aufnehmen",
+      "intro": "Legen Sie fest, wie die Abschnitte in Entlassungsnotizen angezeigt werden.",
+      "samples": {
+        "dischargeMedications": "Die Hinweise zur Medikamentengabe wurden mit dem Besitzer besprochen.",
+        "dischargeInstructions": "Bieten Sie wie besprochen weiches Futter an.",
+        "dischargeFollowUp": "Ein Kontrolltermin wurde besprochen."
+      }
+    }
   },
   "sourceNotice": "Die eingegebene Formulierung bleibt erhalten. Prüfen Sie vor dem Teilen die Sprache des Tierhalters.",
   "treatmentRecap": "Behandlungsbericht",

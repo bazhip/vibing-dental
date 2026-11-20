@@ -11,9 +11,9 @@ import { isNativeApp } from '../native/platform';
 import { Sheet } from '../ios/Sheet';
 import { Icon } from '../ios/icons';
 import { recordNoteBasis, plainTextToHtml } from '../utils/recordNote';
-import { consultationSections, consultationSectionKey, isCustomConsultationField } from '../utils/consultationTemplates';
+import { consultationSections, consultationSectionKey, isCustomNoteField } from '../utils/consultationTemplates';
 import { appendClinicalDictationSource } from '../utils/clinicalDictationSources';
-import { allowedClinicalFields, extractClinicalDictation, type ClinicalDictationProposal } from '../utils/clinicalDictationAi';
+import { clinicalDictationLayout, allowedClinicalFields, extractClinicalDictation, type ClinicalDictationProposal } from '../utils/clinicalDictationAi';
 import { copyRichText } from '../utils/clipboard';
 import { ctRecordedText } from '../utils/ctReportState';
 import { friendlyError } from './ui/dialogs';
@@ -43,7 +43,7 @@ interface Props {
 type Proposal = ClinicalDictationProposal & { selected: boolean };
 const MIC_ICON = 'mic';
 const kinds = ['gp-visit', 'consultation', 'gp-exam', 'discharge'] as const;
-const fingerprint = (snapshot: ChartSnapshot) => `${recordNoteBasis(snapshot)}\n${JSON.stringify(snapshot.clinicalDictations ?? [])}\n${JSON.stringify(snapshot.patientInfo.consultationLayout ?? null)}`;
+const fingerprint = (snapshot: ChartSnapshot) => `${recordNoteBasis(snapshot)}\n${JSON.stringify(snapshot.clinicalDictations ?? [])}\n${JSON.stringify(snapshot.patientInfo.consultationLayout ?? null)}\n${JSON.stringify(snapshot.patientInfo.dischargeLayout ?? null)}`;
 const normalized = (text: string) => text.replace(/\s+/gu, ' ').trim();
 
 /** Capture is kept separate from dental parsing: raw wording is the saved source. */
@@ -201,7 +201,7 @@ export function ClinicalDictationButton(props: Props) {
           ...(structuredConsultation ? { structuredConsultation } : {}),
           ...(routedGpExamEnabled === undefined ? {} : { routedGpExamEnabled }) });
         if (!valid(token, sourceBasis, selectedTarget)) return;
-        const fields = allowedClinicalFields(selectedTarget, consultationEnabled, routedGpExamEnabled, structuredConsultation, now.snapshot.patientInfo.consultationLayout), seen = new Set<string>();
+        const fields = allowedClinicalFields(selectedTarget, consultationEnabled, routedGpExamEnabled, structuredConsultation, clinicalDictationLayout(selectedTarget, now.snapshot.patientInfo)), seen = new Set<string>();
         if (!Array.isArray(result) || result.some(p => !p || !fields.includes(p.field) || seen.has(p.field)
           || (seen.add(p.field), typeof p.value !== 'string') || !p.value.trim() || p.value.length > 20000
           || typeof p.evidence !== 'string' || !p.evidence.trim() || !normalized(raw).includes(normalized(p.evidence)))) {
@@ -257,12 +257,12 @@ export function ClinicalDictationButton(props: Props) {
     finally { locked.current = false; }
   };
   const fieldLabel = (field: ClinicalDictationField) => {
-    const layout = props.snapshot.patientInfo.consultationLayout;
-    const section = target === 'consultation' && layout ? consultationSections(layout).find(item => item.id === field) : undefined;
+    const layout = clinicalDictationLayout(target, props.snapshot.patientInfo);
+    const section = layout ? consultationSections(layout).find(item => item.id === field) : undefined;
     if (section?.label) return section.label;
     const key = section && consultationSectionKey(section);
     if (key) return t(`visitDocumentation:${key}.label`);
-    if (isCustomConsultationField(field)) return t('visitDocumentation:consultation.templates.builder.customSection');
+    if (isCustomNoteField(field)) return t('visitDocumentation:consultation.templates.builder.customSection');
     if (field === 'treatmentReport') return t('forms:report.title');
     if (field === 'ctReport') return t('app:ct.title');
     if (field === 'radiographicFindings') return t('app:radiographic.title');

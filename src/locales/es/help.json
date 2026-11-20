@@ -24,6 +24,7 @@
     "practice": "Clínica y asistencia"
   },
   "images": {
+    "dischargeTemplates": "El editor de plantillas de alta con la configuración de un campo personalizado abierta en una visita ficticia.",
     "consultationMedicationHistory": "Medicación actual con una ficha veterinaria en la aplicación y un enlace a la fuente completa.",
     "consultationMedicationReview": "Revisión del dictado de una consulta con sugerencias de medicación separadas y sus fragmentos de transcripción.",
     "charting": "Ejemplo de odontograma con dientes numerados y una cuadrícula de hallazgos.",
@@ -179,7 +180,7 @@
       "sections": {
         "first": {
           "title": "Registrar las instrucciones de alta",
-          "text": "En Alta, indique un medicamento por línea, con la dosis, cómo administrarlo y durante cuánto tiempo. Añada los cuidados en casa y el seguimiento. Compruebe los datos antes de compartir el informe."
+          "text": "En «Alta», elija una de las opciones disponibles en «Plantilla de nota». El texto ya introducido se conserva cuando cambia de plantilla.\n\nEn Alta, indique un medicamento por línea, con la dosis, cómo administrarlo y durante cuánto tiempo. Añada los cuidados en casa y el seguimiento. Compruebe los datos antes de compartir el informe.\n\nAbra «Gestionar plantillas» junto a las opciones. Si es titular de la clínica, seleccione una plantilla y elija «Duplicar». Use «Añadir sección» para añadir un campo personalizado y seleccione su nombre para abrir la configuración del campo. Los campos personalizados solo aparecen en el informe para el propietario si activa «Incluir en el informe para el propietario» para cada campo que desee compartir. Use «Vista previa de ejemplo» para ver las secciones con contenido ficticio. Elija «Guardar», seleccione la plantilla para la visita y compruebe la nota clínica en «Revisar y exportar» → «Nota clínica»."
         },
         "second": {
           "title": "Redactar el informe para el propietario",

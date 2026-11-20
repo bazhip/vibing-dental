@@ -199,3 +199,18 @@ it('routes configured consultation sections, preserving evidence rules and keepi
   expect(() => parseClinicalDictationProposal([tool()], data)).toThrow(LocalizedError);
   expect(() => parseClinicalDictationProposal([tool([{ ...proposal, field, evidence: 'Illustrative' }])], data)).toThrow(LocalizedError);
 });
+
+it('routes recorded dental discharge details to the selected custom fields and requires transcript evidence', () => {
+  const field = 'dischargeCustom_when-to-call';
+  const transcript = 'Call the clinic if there is persistent bleeding.';
+  const data = input({ kind: 'dental-visit', transcript, patientInfo: {
+    ...input().patientInfo,
+    dischargeLayout: { id: 'practice-discharge', fields: [], sections: [{ id: field, label: 'When to call', ownerReport: true }] },
+  } });
+  const payload = JSON.parse(buildClinicalDictationRequest(data).messages[0].content[0].text);
+  expect(payload.allowed_fields).toEqual(['gpDiagnostics', 'ctReport', field]);
+  expect(payload.template.sections).toEqual([{ id: field, label: 'When to call' }]);
+  const proposed = { field, value: transcript, evidence: transcript };
+  expect(parseClinicalDictationProposal([tool([proposed])], data)).toEqual([proposed]);
+  expect(() => parseClinicalDictationProposal([tool([{ ...proposed, evidence: 'An invented quote.' }])], data)).toThrow(LocalizedError);
+});

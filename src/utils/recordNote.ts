@@ -1,4 +1,4 @@
-import { CONSULTATION_FIELDS, LEGACY_DENTAL_CONSULTATION, consultationSectionKey, consultationVisitSections, isCustomConsultationField, type CustomConsultationField, type ConsultationSection } from './consultationTemplates';
+import { CONSULTATION_FIELDS, LEGACY_DENTAL_CONSULTATION, consultationSectionKey, consultationVisitSections, dischargeVisitSections, isCustomNoteField, noteSectionLines, type CustomConsultationField, type CustomDischargeField, type ConsultationSection } from './consultationTemplates';
 import { ctRecordedText } from './ctReportState';
 import { radiologyRecordedText } from './radiologyReportState';
 import { visitTypeOf } from './visitTypes';
@@ -80,7 +80,7 @@ export const HEADING_KEYS = {
   recheck: 'media:recordNote.h.recheck',
 } as const;
 
-export type RecordNoteKey = keyof typeof HEADING_KEYS | CustomConsultationField;
+export type RecordNoteKey = keyof typeof HEADING_KEYS | CustomConsultationField | CustomDischargeField;
 /** Section keys in note order. */
 export const RECORD_NOTE_KEYS = Object.keys(HEADING_KEYS) as RecordNoteKey[];
 
@@ -91,15 +91,10 @@ const consultationFields = (info: ChartSnapshot['patientInfo']) => info.consulta
 const consultationNoteSections = (info: ChartSnapshot['patientInfo']) => consultationVisitSections(info, info.consultationLayout ?? LEGACY_DENTAL_CONSULTATION);
 const sectionHeading = (section: ConsultationSection, t: RecordNoteT) => {
   if (section.label) return section.label;
-  if (!isCustomConsultationField(section.id)) return t(HEADING_KEYS[section.id]);
+  if (!isCustomNoteField(section.id)) return t(HEADING_KEYS[section.id]);
   const key = consultationSectionKey(section);
   return key ? t(`visitDocumentation:${key}.label`) : '';
 };
-const consultationLines = (value: string | undefined, section: ConsultationSection) => {
-  const lines = textLines(value);
-  return section.format === 'bullets' ? lines.map(line => `• ${line.replace(/^(?:[-*•] |\d+[.)] )/u, '')}`) : lines;
-};
-
 function commentsByTooth(comments: DiagramComment[]) {
   const pinned = new Map<number, string[]>();
   const unpinned: string[] = [];
@@ -129,7 +124,7 @@ export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): Record
   const info = snapshot.patientInfo;
   const consultation = visitTypeOf(info.visitType) === 'consultation';
   const sections: RecordNoteSection[] = [];
-  const add = (key: RecordNoteKey, lines: (string | null | false | undefined)[], heading = isCustomConsultationField(key) ? '' : t(HEADING_KEYS[key]), level?: 2, headingOverride?: true) => {
+  const add = (key: RecordNoteKey, lines: (string | null | false | undefined)[], heading = isCustomNoteField(key) ? '' : t(HEADING_KEYS[key]), level?: 2, headingOverride?: true) => {
     const kept = lines.filter((l): l is string => !!l);
     if (kept.length) sections.push({ key, heading, lines: kept, ...(level ? { level } : {}), ...(headingOverride ? { headingOverride } : {}) });
   };
@@ -145,7 +140,7 @@ export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): Record
 
   if (consultation) {
     for (const section of consultationNoteSections(info)) {
-      add(section.id, consultationLines(info[section.id], section), sectionHeading(section, t), section.level, section.label && !isCustomConsultationField(section.id) ? true : undefined);
+      add(section.id, noteSectionLines(info[section.id], section), sectionHeading(section, t), section.level, section.label && !isCustomNoteField(section.id) ? true : undefined);
     }
     add('dischargeFollowUp', textLines(info.dischargeFollowUp));
     add('recheck', [clean(info.recallDate)]);
@@ -231,9 +226,10 @@ export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): Record
   add('radiographs', textLines(radiologyRecordedText(info)));
   add('ct', textLines(info.ctReport));
   add('treatment', textLines(info.treatmentReport));
-  add('dischargeMedications', textLines(info.dischargeMedications));
-  add('dischargeInstructions', textLines(info.dischargeInstructions));
-  add('dischargeFollowUp', textLines(info.dischargeFollowUp));
+  for (const section of dischargeVisitSections(info)) {
+    add(section.id, noteSectionLines(info[section.id], section), sectionHeading(section, t), section.level,
+      section.label && !isCustomNoteField(section.id) ? true : undefined);
+  }
   add('recheck', [clean(info.recallDate)]);
 
   return { sections };
@@ -283,7 +279,7 @@ export function recordNoteBasis(snapshot: ChartSnapshot): string {
     return hashStr(JSON.stringify([
       'consultation', snapshot.species, i.patientName, i.patientNumber, i.date, i.doctor, i.tech,
       consultationNoteSections(i).flatMap(section => {
-        const lines = consultationLines(i[section.id], section);
+        const lines = noteSectionLines(i[section.id], section);
         return lines.length ? [[section.id, lines, ...(section.label ? [section.label] : []), ...(section.level ? [section.level] : [])]] : [];
       }),
       textLines(i.dischargeFollowUp), clean(i.recallDate),
@@ -300,6 +296,10 @@ export function recordNoteBasis(snapshot: ChartSnapshot): string {
     ...([i.consultationHistory, i.consultationAssessment, i.consultationPlan, i.dischargeMedications, i.dischargeInstructions, i.dischargeFollowUp, i.gpVitals, i.gpPhysicalExam, i.gpDiagnostics].some(value => value?.trim())
       ? [i.consultationHistory ?? '', i.consultationAssessment ?? '', i.consultationPlan ?? '', i.dischargeMedications ?? '', i.dischargeInstructions ?? '', i.dischargeFollowUp ?? '', i.gpVitals ?? '', i.gpPhysicalExam ?? '', i.gpDiagnostics ?? ''] : []),
     ...(reordered ? [templateOrder] : []),
+    ...(i.dischargeLayout ? [dischargeVisitSections(i).flatMap(section => {
+      const lines = noteSectionLines(i[section.id], section);
+      return lines.length ? [[section.id, lines, section.label, section.level]] : [];
+    })] : []),
     snapshot.toothData.map((td) => GRID_FIELDS.map((f) => td[f] ?? '')),
     snapshot.preMarks, snapshot.postMarks,
     (snapshot.preComments ?? []).map((c) => [c.id, c.text, c.anchorTriadan]),

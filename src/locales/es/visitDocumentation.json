@@ -128,7 +128,19 @@
   "discharge": {
     "title": "Alta",
     "purpose": "Registre los medicamentos, las instrucciones de cuidado y el seguimiento comentados para esta visita.",
-    "review": "Revisar el informe para el cliente"
+    "review": "Revisar el informe para el cliente",
+    "templates": {
+      "title": "Plantillas de alta",
+      "starter": "Alta estándar",
+      "help": "Cómo funcionan las plantillas de alta",
+      "ownerReport": "Incluir en el informe para el propietario",
+      "intro": "Elija cómo se muestran las secciones en las notas de alta.",
+      "samples": {
+        "dischargeMedications": "Se revisaron las instrucciones de medicación con el propietario.",
+        "dischargeInstructions": "Ofrézcale comida blanda según lo acordado.",
+        "dischargeFollowUp": "Se habló de una cita de seguimiento."
+      }
+    }
   },
   "sourceNotice": "El texto registrado se conserva tal como se ha introducido. Revise el idioma del cliente antes de compartirlo.",
   "treatmentRecap": "Informe del tratamiento",

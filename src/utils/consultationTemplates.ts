@@ -14,8 +14,11 @@ const MEDICATION_SECTION: Partial<Record<ConsultationField,
 };
 export const CONSULTATION_MEDICATION_FIELDS = Object.values(MEDICATION_SECTION);
 export const CONSULTATION_STANDARD_FIELDS = [...CONSULTATION_FIELDS, ...CONSULTATION_MEDICATION_FIELDS] as const;
+export const DISCHARGE_FIELDS = ['dischargeMedications', 'dischargeInstructions', 'dischargeFollowUp'] as const;
+export type NoteTemplateKind = 'consultation' | 'discharge';
+export type CustomDischargeField = `dischargeCustom_${string}`;
 export type CustomConsultationField = `consultationCustom_${string}`;
-export type ConsultationSectionId = typeof CONSULTATION_STANDARD_FIELDS[number] | CustomConsultationField;
+export type ConsultationSectionId = typeof CONSULTATION_STANDARD_FIELDS[number] | CustomConsultationField | typeof DISCHARGE_FIELDS[number] | CustomDischargeField;
 export interface ConsultationSection {
   id: ConsultationSectionId;
   label?: string;
@@ -24,10 +27,17 @@ export interface ConsultationSection {
   suggestedText?: string;
   format?: 'bullets' | 'paragraph';
   level?: 2;
+  ownerReport?: true;
 }
 export const CONSULTATION_SECTION_LIMIT = 24;
 export const isCustomConsultationField = (id: string): id is CustomConsultationField =>
   /^consultationCustom_[a-z0-9-]{1,50}$/u.test(id);
+export const isCustomDischargeField = (id: string): id is CustomDischargeField =>
+  /^dischargeCustom_[a-z0-9-]{1,50}$/u.test(id);
+export const isCustomNoteField = (id: string): id is CustomConsultationField | CustomDischargeField =>
+  isCustomConsultationField(id) || isCustomDischargeField(id);
+export const standardNoteFields = (kind: NoteTemplateKind) => kind === 'discharge' ? DISCHARGE_FIELDS : CONSULTATION_STANDARD_FIELDS;
+
 export const DENTAL_SECTION_KEYS = {
   'consultationCustom_awake-oral-exam': 'awakeOralExam',
   'consultationCustom_preanesthetic': 'preanesthetic',
@@ -69,6 +79,7 @@ export interface ConsultationLibrary {
 
 // Older clients cannot preserve custom sections and their dictation sources.
 export const CONSULTATION_SNAPSHOT_VERSION = 2;
+export const DISCHARGE_SNAPSHOT_VERSION = 3;
 export const CONSULTATION_LIBRARY_VERSION = 2;
 export const CONSULTATION_TEMPLATE_LIMIT = 24;
 const CONSULTATION_LIBRARY_BYTES = 196608;
@@ -105,21 +116,32 @@ export type ConsultationStarter = keyof typeof CONSULTATION_STARTERS;
 export const isConsultationStarter = (id: string): id is ConsultationStarter =>
   Object.hasOwn(CONSULTATION_STARTERS, id);
 export const EMPTY_CONSULTATION_LIBRARY: ConsultationLibrary = { defaultId: DENTAL_CONSULTATION.id, templates: [] };
+export const STANDARD_DISCHARGE: ConsultationLayout = {
+  id: 'discharge-v1', fields: [], sections: DISCHARGE_FIELDS.map(id => ({ id })),
+};
+export const EMPTY_DISCHARGE_LIBRARY: ConsultationLibrary = { defaultId: STANDARD_DISCHARGE.id, templates: [] };
+export const defaultNoteLayout = (kind: NoteTemplateKind) => kind === 'discharge' ? STANDARD_DISCHARGE : DENTAL_CONSULTATION;
+export const isNoteStarter = (id: string, kind: NoteTemplateKind) =>
+  kind === 'discharge' ? id === STANDARD_DISCHARGE.id : isConsultationStarter(id);
 
 export const isConsultationSectionId = (id: string): id is ConsultationSectionId =>
   (CONSULTATION_STANDARD_FIELDS as readonly string[]).includes(id) || isCustomConsultationField(id);
 
-export function normalizeConsultationSections(value: unknown): ConsultationSection[] | undefined {
+export function normalizeConsultationSections(value: unknown, kind: NoteTemplateKind = 'consultation'): ConsultationSection[] | undefined {
   if (!Array.isArray(value) || !value.length || value.length > CONSULTATION_SECTION_LIMIT) return undefined;
   const sections: ConsultationSection[] = [];
   const ids = new Set<string>();
   for (const section of value) {
     if (!section || typeof section !== 'object' || Array.isArray(section)
-      || Object.keys(section).some(key => !['id', 'label', 'guidance', 'example', 'suggestedText', 'format', 'level'].includes(key))
-      || typeof section.id !== 'string' || !isConsultationSectionId(section.id) || ids.has(section.id)) return undefined;
-    const { id, label, guidance, example, suggestedText, format, level } = section;
+      || Object.keys(section).some(key => !['id', 'label', 'guidance', 'example', 'suggestedText', 'format', 'level', 'ownerReport'].includes(key))
+      || typeof section.id !== 'string' || ids.has(section.id)) return undefined;
+    const { id, label, guidance, example, suggestedText, format, level, ownerReport } = section;
+    if (kind === 'discharge'
+      ? !(DISCHARGE_FIELDS as readonly string[]).includes(id) && !isCustomDischargeField(id)
+      : !isConsultationSectionId(id)) return undefined;
+    if (ownerReport !== undefined && (kind !== 'discharge' || !isCustomDischargeField(id) || typeof ownerReport !== 'boolean')) return undefined;
     if (label !== undefined && (typeof label !== 'string' || !label.trim() || [...label].length > 100)) return undefined;
-    if (isCustomConsultationField(id) && !dentalSectionKey(id) && label === undefined) return undefined;
+    if (isCustomNoteField(id) && !dentalSectionKey(id) && label === undefined) return undefined;
     if ([guidance, example, suggestedText].some(text => text !== undefined && (typeof text !== 'string' || [...text].length > 1000))) return undefined;
     if (level !== undefined && level !== 2) return undefined;
     if (format !== undefined && format !== 'bullets' && format !== 'paragraph') return undefined;
@@ -127,7 +149,7 @@ export function normalizeConsultationSections(value: unknown): ConsultationSecti
     sections.push({ id,
       ...(label !== undefined ? { label: label.trim() } : {}),
       ...(guidance ? { guidance } : {}), ...(example ? { example } : {}),
-      ...(suggestedText ? { suggestedText } : {}), ...(format ? { format } : {}), ...(level ? { level } : {}),
+      ...(suggestedText ? { suggestedText } : {}), ...(format ? { format } : {}), ...(level ? { level } : {}), ...(ownerReport ? { ownerReport: true } : {}),
     });
   }
   return sections;
@@ -136,7 +158,7 @@ export function normalizeConsultationSections(value: unknown): ConsultationSecti
 export function consultationSectionKey(section: ConsultationSection) {
   const dentalKey = dentalSectionKey(section.id);
   if (dentalKey) return `consultation.dental.${dentalKey}` as const;
-  if (isCustomConsultationField(section.id)) return undefined;
+  if (isCustomNoteField(section.id)) return undefined;
   return `fields.${section.id}` as const;
 }
 
@@ -156,11 +178,12 @@ export function consultationSections(layout: ConsultationLayout): readonly Consu
 }
 
 /** Keep populated sections visible when a clinician switches templates. */
-export function consultationVisitSections(info: Partial<PatientInfo>, layout: ConsultationLayout): readonly ConsultationSection[] {
+export function consultationVisitSections(info: Partial<PatientInfo>, layout: ConsultationLayout, kind: NoteTemplateKind = 'consultation'): readonly ConsultationSection[] {
   const active = consultationSections(layout);
   const ids = new Set(active.map(section => section.id));
   const retained: ConsultationSection[] = [];
-  for (const section of [...(info.consultationRetainedSections ?? []), ...CONSULTATION_STANDARD_FIELDS.map(id => ({ id }))]) {
+  const saved = kind === 'discharge' ? info.dischargeRetainedSections : info.consultationRetainedSections;
+  for (const section of [...(saved ?? []), ...standardNoteFields(kind).map(id => ({ id }))]) {
     if (!ids.has(section.id) && info[section.id]?.trim()) {
       retained.push(section);
       ids.add(section.id);
@@ -169,37 +192,49 @@ export function consultationVisitSections(info: Partial<PatientInfo>, layout: Co
   return [...active, ...retained];
 }
 
-export function changeConsultationLayout(info: Partial<PatientInfo>, previous: ConsultationLayout, next: ConsultationLayout): Partial<PatientInfo> {
+export function changeConsultationLayout(info: Partial<PatientInfo>, previous: ConsultationLayout, next: ConsultationLayout, kind: NoteTemplateKind = 'consultation'): Partial<PatientInfo> {
   const nextSections = new Set(consultationSections(next).map(section => section.id));
+  const { id, name, fields, sections, instructions, detail } = next;
+  const layout = { id, fields, ...(name ? { name } : {}), ...(sections ? { sections } : {}),
+    ...(instructions ? { instructions } : {}), ...(detail ? { detail } : {}) };
+  if (kind === 'discharge') {
+    // Another device can fill a blank field while this device changes its layout.
+    const previousSections = new Map([...info.dischargeRetainedSections ?? [], ...consultationSections(previous)]
+      .map(section => [section.id, section]));
+    const retained = [...previousSections.values()].filter(section => !nextSections.has(section.id));
+    return {
+      dischargeLayout: layout,
+      ...(retained.length || info.dischargeRetainedSections?.length ? { dischargeRetainedSections: retained } : {}),
+    };
+  }
   const retained = consultationVisitSections(info, previous)
     .filter(section => !nextSections.has(section.id) && !!info[section.id]?.trim());
   return {
-    consultationLayout: { id: next.id, ...(next.name ? { name: next.name } : {}), fields: next.fields,
-      ...(next.sections ? { sections: next.sections } : {}),
-      ...(next.instructions ? { instructions: next.instructions } : {}), ...(next.detail ? { detail: next.detail } : {}) },
+    consultationLayout: layout,
     ...(retained.length || info.consultationRetainedSections?.length ? { consultationRetainedSections: retained } : {}),
   };
 }
 
-export function normalizeConsultationLayout(value: unknown): ConsultationLayout | undefined {
+export function normalizeConsultationLayout(value: unknown, kind: NoteTemplateKind = 'consultation'): ConsultationLayout | undefined {
   if (!value || typeof value !== 'object' || !('id' in value) || typeof value.id !== 'string') return;
   const fields = 'fields' in value ? value.fields : undefined;
-  const complete = Array.isArray(fields) && fields.length === CONSULTATION_FIELDS.length
-    && CONSULTATION_FIELDS.every(field => fields.includes(field));
-  const sections = 'sections' in value ? normalizeConsultationSections(value.sections) : undefined;
+  const complete = Array.isArray(fields) && (kind === 'discharge' ? fields.length === 0
+    : fields.length === CONSULTATION_FIELDS.length && CONSULTATION_FIELDS.every(field => fields.includes(field)));
+  const sections = 'sections' in value ? normalizeConsultationSections(value.sections, kind) : undefined;
   if ('sections' in value && !sections) return undefined;
   const instructions = 'instructions' in value ? value.instructions : undefined;
   if (instructions !== undefined && (typeof instructions !== 'string' || [...instructions].length > 2000)) return undefined;
   const detail = 'detail' in value ? value.detail : undefined;
   if (detail !== undefined && detail !== 'concise' && detail !== 'detailed') return undefined;
   const options: Pick<ConsultationLayout, 'sections' | 'instructions' | 'detail'> = { ...(sections ? { sections } : {}), ...(instructions ? { instructions } : {}), ...(detail ? { detail } : {}) };
-  if (isConsultationStarter(value.id)) {
+  if (kind === 'discharge' && value.id === STANDARD_DISCHARGE.id) return STANDARD_DISCHARGE;
+  if (kind === 'consultation' && isConsultationStarter(value.id)) {
     if (!complete || (value.id === DENTAL_CONSULTATION.id && !sections)) return CONSULTATION_STARTERS[value.id];
     return { id: value.id, fields: [...fields] as ConsultationField[], ...options };
   }
   if (!/^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/u.test(value.id)) return;
   if (!('name' in value) || typeof value.name !== 'string' || [...value.name].length > CONSULTATION_TEMPLATE_NAME_LIMIT || !value.name.trim()) return;
-  if (!complete) return;
+  if (!complete || (kind === 'discharge' && !sections)) return;
   return { id: value.id, name: value.name.trim(), fields: [...fields] as ConsultationField[], ...options };
 }
 
@@ -215,31 +250,32 @@ export function consultationLibraryFits(config: ConsultationLibrary): boolean {
   return new TextEncoder().encode(JSON.stringify(config)).byteLength + jsonbSpaces(config) <= CONSULTATION_LIBRARY_BYTES;
 }
 
-export function parseConsultationLibrary(value: unknown): ConsultationLibrary | undefined {
+export function parseConsultationLibrary(value: unknown, kind: NoteTemplateKind = 'consultation'): ConsultationLibrary | undefined {
   if (!value || typeof value !== 'object' || !('templates' in value) || !Array.isArray(value.templates)
     || value.templates.length > CONSULTATION_TEMPLATE_LIMIT || !('defaultId' in value) || typeof value.defaultId !== 'string') return;
   const version = 'version' in value ? value.version : undefined;
-  if (version !== undefined && version !== CONSULTATION_LIBRARY_VERSION) return undefined;
+  if ((kind === 'discharge' || version !== undefined) && version !== CONSULTATION_LIBRARY_VERSION) return undefined;
   const templates: PracticeConsultationTemplate[] = [];
   const ids = new Set<string>();
   for (const raw of value.templates) {
-    const layout = normalizeConsultationLayout(raw);
+    const layout = normalizeConsultationLayout(raw, kind);
     if (!layout?.name || ids.has(layout.id) || (raw.archived !== undefined && typeof raw.archived !== 'boolean')) return;
     ids.add(layout.id);
     templates.push({ ...layout, name: layout.name, ...(raw.archived ? { archived: true } : {}) });
   }
   const defaultId = value.defaultId;
-  if (!isConsultationStarter(defaultId) && !templates.some(template => template.id === defaultId && !template.archived)) return;
+  if (!isNoteStarter(defaultId, kind) && !templates.some(template => template.id === defaultId && !template.archived)) return;
   const order = 'order' in value ? value.order : undefined;
   if (order !== undefined && (!Array.isArray(order) || new Set(order).size !== order.length
-    || order.some(id => typeof id !== 'string' || (!isConsultationStarter(id) && !ids.has(id))))) return undefined;
+    || order.some(id => typeof id !== 'string' || (!isNoteStarter(id, kind) && !ids.has(id))))) return undefined;
   const config: ConsultationLibrary = { defaultId, templates, ...(order ? { order } : {}),
     ...(version ? { version } : {}) };
   return consultationLibraryFits(config) ? config : undefined;
 }
 
-export function consultationChoices(library: ConsultationLibrary): ConsultationLayout[] {
-  const choices = [...Object.values(CONSULTATION_STARTERS), ...library.templates.filter(template => !template.archived)]
+export function consultationChoices(library: ConsultationLibrary, kind: NoteTemplateKind = 'consultation'): ConsultationLayout[] {
+  const starters = kind === 'discharge' ? [STANDARD_DISCHARGE] : Object.values(CONSULTATION_STARTERS);
+  const choices = [...starters, ...library.templates.filter(template => !template.archived)]
     .filter(template => template.id !== LEGACY_DENTAL_CONSULTATION.id || library.defaultId === template.id);
   const byId = new Map(choices.map(layout => [layout.id, layout]));
   return [...(library.order ?? []).flatMap(id => {
@@ -257,4 +293,27 @@ export function consultationLayoutFor(
   if (patient.consultationLayout) return patient.consultationLayout;
   if (historical) return LEGACY_DENTAL_CONSULTATION;
   return consultationChoices(library).find(layout => layout.id === library.defaultId) ?? DENTAL_CONSULTATION;
+}
+
+export function dischargeLayoutFor(patient: Partial<PatientInfo>, library = EMPTY_DISCHARGE_LIBRARY, historical = false): ConsultationLayout {
+  if (patient.dischargeLayout) return patient.dischargeLayout;
+  if (historical) return STANDARD_DISCHARGE;
+  return consultationChoices(library, 'discharge').find(layout => layout.id === library.defaultId) ?? STANDARD_DISCHARGE;
+}
+
+export function dischargeVisitSections(info: Partial<PatientInfo>) {
+  return consultationVisitSections(info, info.dischargeLayout ?? STANDARD_DISCHARGE, 'discharge');
+}
+
+export function dischargeOwnerReportFields(info: Partial<PatientInfo>) {
+  return consultationSections(info.dischargeLayout ?? STANDARD_DISCHARGE).flatMap(section => {
+    if (!isCustomDischargeField(section.id) || !section.ownerReport || !section.label) return [];
+    const value = info[section.id];
+    return value?.trim() ? [{ id: section.id, label: section.label, value }] : [];
+  });
+}
+
+export function noteSectionLines(value: string | undefined, section: ConsultationSection): string[] {
+  const lines = (value ?? '').split(/\r?\n/u).map(line => line.trim()).filter(Boolean);
+  return section.format === 'bullets' ? lines.map(line => `• ${line.replace(/^(?:[-*•] |\d+[.)] )/u, '')}`) : lines;
 }

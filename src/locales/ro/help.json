@@ -24,6 +24,7 @@
     "practice": "Cabinet și asistență"
   },
   "images": {
+    "dischargeTemplates": "Editorul de șabloane de externare cu setările unui câmp personalizat deschise pentru o vizită fictivă.",
     "consultationMedicationHistory": "Medicația curentă cu un prospect veterinar în aplicație și un link către sursa completă.",
     "consultationMedicationReview": "Verificarea dictării unei consultații, cu propuneri separate pentru medicamente și fragmentele corespunzătoare din transcriere.",
     "charting": "Exemplu de fișă dentară cu dinți numerotați și o grilă de constatări.",
@@ -179,7 +180,7 @@
       "sections": {
         "first": {
           "title": "Consemnați instrucțiunile de externare",
-          "text": "În secțiunea Externare, treceți câte un medicament pe rând, cu doza, modul și durata administrării. Adăugați indicațiile de îngrijire la domiciliu și de monitorizare. Verificați detaliile înainte de a distribui raportul."
+          "text": "În „Externare”, alegeți una dintre opțiunile disponibile sub „Șablonul notei”. Textul introdus deja se păstrează când schimbați șablonul.\n\nÎn secțiunea Externare, treceți câte un medicament pe rând, cu doza, modul și durata administrării. Adăugați indicațiile de îngrijire la domiciliu și de monitorizare. Verificați detaliile înainte de a distribui raportul.\n\nDeschideți „Gestionați șabloanele” lângă opțiuni. Dacă sunteți proprietarul cabinetului, selectați un șablon și alegeți „Duplicați”. Folosiți „Adăugați o secțiune” pentru a adăuga un câmp personalizat, apoi selectați numele acestuia pentru a deschide setările câmpului. Un câmp personalizat apare în raportul pentru proprietar numai dacă activați „Includeți în raportul pentru proprietar” pentru acel câmp. Folosiți „Previzualizați exemplul” pentru a vedea secțiunile cu un conținut fictiv. Alegeți „Salvați”, selectați șablonul pentru vizită și verificați nota clinică în „Verificați și exportați” → „Notă pentru dosarul medical”."
         },
         "second": {
           "title": "Redactați raportul pentru proprietar",

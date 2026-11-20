@@ -1,7 +1,7 @@
 import { VisitTypeChooser } from './components/VisitTypeChooser';
 import { visitTypeOf, type VisitType } from './utils/visitTypes';
 import { useConsultationLibrary } from './hooks/useConsultationLibrary';
-import { CONSULTATION_FIELDS, consultationLayoutFor, isCustomConsultationField } from './utils/consultationTemplates';
+import { CONSULTATION_FIELDS, STANDARD_DISCHARGE, consultationLayoutFor, dischargeLayoutFor, isCustomConsultationField, isCustomDischargeField } from './utils/consultationTemplates';
 import { ConsultationTemplatesDialog } from './components/ConsultationTemplatesDialog';
 import { Icon } from './ios/icons';
 import { useTeam } from './hooks/useTeam';
@@ -10,7 +10,7 @@ import type { HistoryVisit } from './components/PatientRecordHistory';
 import { ClinicalDictationButton } from './components/ClinicalDictationButton';
 import { appendClinicalDictationSource } from './utils/clinicalDictationSources';
 import { previousMedicationVisit, sameMedicationPatient, type PreviousMedicationList } from './utils/consultationMedicationHistory';
-import { allowedClinicalFields } from './utils/clinicalDictationAi';
+import { clinicalDictationLayout, allowedClinicalFields } from './utils/clinicalDictationAi';
 import { LocalizedError } from './utils/apiErrors';
 import type { ClinicalDictationKind, ClinicalDictationSource } from './types';
 import { appendRadiologyDictation, radiologyRecordedText } from './utils/radiologyReportState';
@@ -313,9 +313,17 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     : requestedSection === 'gp-exam' || requestedSection === 'consultation' ? 'patient' : requestedSection;
   const sectionDisabled = requestedSection !== activeSection;
   const consultationLibrary = useConsultationLibrary(consultationOn ? profile.practiceId : '');
+  const dischargeLibrary = useConsultationLibrary(!consultationOn && cloud.enabled && !trial ? profile.practiceId : '', 'discharge');
+  const dischargeTemplatesAvailable = !consultationOn && !trial && cloud.enabled && !!profile.practiceId;
+  const [dischargeTemplatesPractice, setDischargeTemplatesPractice] = React.useState<string | null>(null);
+  const dischargeTemplatesOpen = dischargeTemplatesAvailable && dischargeTemplatesPractice === profile.practiceId;
+  const openDischargeTemplates = () => {
+    dischargeLibrary.reload();
+    setDischargeTemplatesPractice(profile.practiceId);
+  };
   const [consultationTemplatesPractice, setConsultationTemplatesPractice] = React.useState<string | null>(null);
   const consultationTemplatesOpen = consultationOn && consultationTemplatesPractice === profile.practiceId;
-  const practiceTeam = useTeam(!trial && ((ownerReportOn && activeSection === OWNER_REPORT_SECTION) || consultationTemplatesOpen));
+  const practiceTeam = useTeam(!trial && ((ownerReportOn && activeSection === OWNER_REPORT_SECTION) || consultationTemplatesOpen || dischargeTemplatesOpen));
   const openConsultationTemplates = () => {
     consultationLibrary.reload();
     setConsultationTemplatesPractice(profile.practiceId);
@@ -357,6 +365,13 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       consultationLayout: consultationLayoutFor(previous, consultationLibrary.config),
     });
   }, [pinInitialConsultationLayout, chart.chartSession, chart.setPatientInfo, consultationLibrary.config]);
+  const defaultDischargeLayout = dischargeLayoutFor(chart.patientInfo, dischargeLibrary.config, chart.openedExisting);
+  const pinDischargeLayout = dischargeTemplatesAvailable && dischargeLibrary.resolved && !readOnly
+    && !chart.openedExisting && !chart.patientInfo.dischargeLayout && defaultDischargeLayout.id !== STANDARD_DISCHARGE.id;
+  React.useEffect(() => {
+    if (!pinDischargeLayout) return;
+    chart.setPatientInfo(previous => previous.dischargeLayout ? previous : { ...previous, dischargeLayout: defaultDischargeLayout });
+  }, [pinDischargeLayout, defaultDischargeLayout, chart.chartSession, chart.setPatientInfo]);
   // Has the chart changed since the user chose Edit chart? (Offers Undo changes.)
   const unlockSnapshotChanged = React.useMemo(() => {
     if (!editUnlocked || !chart.openedExisting) return false;
@@ -488,7 +503,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     const allowed: readonly string[] = source.kind === 'ct'
       ? ['ctReport', 'ctReportLanguage', 'ctReviewedBasis']
       : allowedClinicalFields(source.kind, live.consultationOn, routed ? false : undefined, source.kind === 'consultation' && live.consultationOn,
-        source.kind === 'consultation' ? consultationLayoutFor(live.chart.patientInfo, consultationLibrary.config, live.chart.openedExisting) : undefined);
+        source.kind === 'consultation' ? consultationLayoutFor(live.chart.patientInfo, consultationLibrary.config, live.chart.openedExisting)
+          : clinicalDictationLayout(source.kind, live.chart.patientInfo));
     if (!Object.keys(changes).length || [...Object.keys(changes), ...source.fields].some(field => !allowed.includes(field))) throw new LocalizedError(i18n.t('voice:clinical.invalidSource'));
     appendClinicalDictationSource(live.chart.clinicalDictations, source);
     // The source append validates synchronously before any clinical fields change.
@@ -1565,7 +1581,15 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       id: OWNER_REPORT_SECTION,
       label: i18n.t('visitDocumentation:discharge.title'),
       content: <VisitDocumentationSection kind="discharge" patientInfo={chart.patientInfo} readOnly={readOnly}
-        onChange={changes => { if (!readOnly) chart.setPatientInfo(previous => ({ ...previous, ...changes })); }}>
+        discharge={dischargeTemplatesAvailable ? { library: dischargeLibrary.config, historical: chart.openedExisting, onTemplates: openDischargeTemplates } : undefined}
+        onChange={changes => {
+          if (readOnly) return;
+          chart.setPatientInfo(previous => ({
+            ...previous,
+            ...(!previous.dischargeLayout && Object.keys(changes).some(isCustomDischargeField) ? { dischargeLayout: defaultDischargeLayout } : {}),
+            ...changes,
+          }));
+        }}>
         {ownerReportOn && <OwnerReportSection
           key={chart.chartSession}
           editorRef={ownerReportEditor}
@@ -2064,6 +2088,13 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           canEdit={practiceTeam.practice?.id === profile.practiceId && practiceTeam.role === 'owner'}
           onSave={consultationLibrary.save} onReload={consultationLibrary.reload}
           onClose={() => setConsultationTemplatesPractice(null)} />
+      )}
+      {dischargeTemplatesOpen && (
+        <ConsultationTemplatesDialog kind="discharge"
+          initial={dischargeLibrary.config} status={dischargeLibrary.status}
+          canEdit={practiceTeam.practice?.id === profile.practiceId && practiceTeam.role === 'owner'}
+          onSave={dischargeLibrary.save} onReload={dischargeLibrary.reload}
+          onClose={() => setDischargeTemplatesPractice(null)} />
       )}
       {(previewSnapshot || consultationOn) && previewVisitSession === chart.chartSession && (
         <React.Suspense fallback={null}>

@@ -128,7 +128,19 @@
   "discharge": {
     "title": "Dimissione",
     "purpose": "Registri i farmaci, le istruzioni di cura e il controllo successivo discussi per questa visita.",
-    "review": "Verifichi il resoconto per il cliente"
+    "review": "Verifichi il resoconto per il cliente",
+    "templates": {
+      "title": "Modelli di dimissione",
+      "starter": "Dimissione standard",
+      "help": "Come funzionano i modelli di dimissione",
+      "ownerReport": "Includi nel referto per il proprietario",
+      "intro": "Scelga come visualizzare le sezioni nelle note di dimissione.",
+      "samples": {
+        "dischargeMedications": "Le istruzioni per la somministrazione dei farmaci sono state riesaminate con il proprietario.",
+        "dischargeInstructions": "Offra cibo morbido come concordato.",
+        "dischargeFollowUp": "È stato discusso un appuntamento di controllo."
+      }
+    }
   },
   "sourceNotice": "Il testo registrato rimane come inserito. Verifichi la lingua del cliente prima della condivisione.",
   "treatmentRecap": "Referto del trattamento",

@@ -128,7 +128,19 @@
   "discharge": {
     "title": "Hazabocsátás",
     "purpose": "Rögzítse a vizit során megbeszélt gyógyszereket, ápolási utasításokat és utánkövetést.",
-    "review": "Gazdinak szóló jelentés áttekintése"
+    "review": "Gazdinak szóló jelentés áttekintése",
+    "templates": {
+      "title": "Hazabocsátási sablonok",
+      "starter": "Általános hazabocsátás",
+      "help": "A hazabocsátási sablonok használata",
+      "ownerReport": "Megjelenítés a gazdinak szóló leletben",
+      "intro": "Válassza ki, hogyan jelenjenek meg a szakaszok a hazabocsátási jegyzetben.",
+      "samples": {
+        "dischargeMedications": "A gyógyszerek beadására vonatkozó utasításokat átbeszéltük a gazdival.",
+        "dischargeInstructions": "A megbeszéltek szerint adjon puha eledelt.",
+        "dischargeFollowUp": "A kontrollvizitről egyeztettünk."
+      }
+    }
   },
   "sourceNotice": "A rögzített megfogalmazás a beírt formában marad. Megosztás előtt ellenőrizze az ügyfél nyelvét.",
   "treatmentRecap": "Kezelési jelentés",

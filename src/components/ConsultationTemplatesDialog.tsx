@@ -8,10 +8,10 @@ import { isNativeApp } from '../native/platform';
 import { Sheet } from '../ios/Sheet';
 import { confirmDialog, friendlyError } from './ui/dialogs';
 import {
-  CONSULTATION_LIBRARY_VERSION, CONSULTATION_STARTERS, CONSULTATION_TEMPLATE_LIMIT, CONSULTATION_TEMPLATE_NAME_LIMIT,
-  CONSULTATION_SECTION_LIMIT, CONSULTATION_STANDARD_FIELDS, consultationHeadings, consultationChoices, consultationLibraryFits, consultationSectionKey, consultationSections, dentalSectionKey, isCustomConsultationField,
-  DENTAL_CONSULTATION, isConsultationStarter, parseConsultationLibrary,
-  type ConsultationSection, type ConsultationLayout, type ConsultationLibrary, type PracticeConsultationTemplate,
+  CONSULTATION_LIBRARY_VERSION, CONSULTATION_TEMPLATE_LIMIT, CONSULTATION_TEMPLATE_NAME_LIMIT,
+  CONSULTATION_SECTION_LIMIT, consultationHeadings, consultationChoices, consultationLibraryFits, consultationSectionKey, consultationSections, dentalSectionKey, isCustomNoteField, isCustomDischargeField, standardNoteFields, defaultNoteLayout,
+  isConsultationStarter, parseConsultationLibrary,
+  type NoteTemplateKind, type ConsultationSection, type ConsultationLayout, type ConsultationLibrary, type PracticeConsultationTemplate,
 } from '../utils/consultationTemplates';
 
 const SECTION_TEXT_SETTINGS = ['guidance', 'example', 'suggestedText'] as const;
@@ -20,6 +20,7 @@ const DETAIL_LEVELS = ['concise', 'detailed'] as const;
 const CUSTOM_SECTION = 'custom';
 
 interface Props {
+  kind?: NoteTemplateKind;
   initial: ConsultationLibrary;
   status: 'loading' | 'error' | 'ready';
   canEdit: boolean;
@@ -28,9 +29,11 @@ interface Props {
   onClose: () => void;
 }
 
-export function ConsultationTemplatesDialog({ initial, status, canEdit, onSave, onReload, onClose }: Props) {
+export function ConsultationTemplatesDialog({ kind = 'consultation', initial, status, canEdit, onSave, onReload, onClose }: Props) {
   const { t, i18n } = useTranslation(['visitDocumentation', 'common', 'reportui', 'settings']);
   const id = useId();
+  const isDischarge = kind === 'discharge';
+  const starter = defaultNoteLayout(kind);
   const native = isNativeApp();
   const focus = useModalFocus(!native);
   const [edits, setDraft] = useState<ConsultationLibrary>();
@@ -47,19 +50,21 @@ export function ConsultationTemplatesDialog({ initial, status, canEdit, onSave, 
   const savingRef = useRef(false);
   const [error, setError] = useState('');
   const changed = draft !== initial && JSON.stringify(draft) !== JSON.stringify(initial);
-  const activeTemplates = consultationChoices(draft);
+  const activeTemplates = consultationChoices(draft, kind);
   const templates = [...activeTemplates, ...draft.templates.filter(template => showArchived && template.archived)];
   const custom = draft.templates.find(template => template.id === selectedId);
-  const selected: ConsultationLayout = custom ?? (isConsultationStarter(selectedId) ? CONSULTATION_STARTERS[selectedId] : DENTAL_CONSULTATION);
+  const selected: ConsultationLayout = custom ?? activeTemplates.find(template => template.id === selectedId) ?? starter;
   const editable = status === 'ready' && canEdit && !saving;
   const canAddTemplate = editable && draft.templates.length < CONSULTATION_TEMPLATE_LIMIT;
   const editSelected = editable && !!custom && !custom.archived && !preview;
   const sections = consultationSections(selected);
   const selectedTemplateIndex = activeTemplates.findIndex(template => template.id === selected.id);
   const versionedDraft: ConsultationLibrary = { ...draft, version: CONSULTATION_LIBRARY_VERSION };
-  const valid = !!parseConsultationLibrary(versionedDraft);
+  const valid = !!parseConsultationLibrary(versionedDraft, kind);
   const language = i18n.resolvedLanguage ?? i18n.language;
-  const nameOf = (template: ConsultationLayout) => isConsultationStarter(template.id)
+  const nameOf = (template: ConsultationLayout) => isDischarge && template.id === starter.id
+    ? t('discharge.templates.starter')
+    : isConsultationStarter(template.id)
     ? t(`consultation.templates.starters.${template.id}`)
     : template.name || t('consultation.templates.untitled');
   const update = (template: PracticeConsultationTemplate) => setDraft({
@@ -75,6 +80,7 @@ export function ConsultationTemplatesDialog({ initial, status, canEdit, onSave, 
     const key = consultationSectionKey(section);
     return section.label?.trim() || (key ? t(`${key}.label`) : t('consultation.templates.builder.customSection'));
   };
+  const newFieldId = () => isDischarge ? `dischargeCustom_${crypto.randomUUID()}` as const : `consultationCustom_${crypto.randomUUID()}` as const;
   const addTemplate = (template: Omit<PracticeConsultationTemplate, 'id'>) => {
     if (!canAddTemplate) return;
     const id = crypto.randomUUID();
@@ -92,8 +98,8 @@ export function ConsultationTemplatesDialog({ initial, status, canEdit, onSave, 
     if (!headings.length) return;
     addTemplate({
       name: t('consultation.templates.untitled'),
-      fields: DENTAL_CONSULTATION.fields,
-      sections: headings.map(label => ({ id: `consultationCustom_${crypto.randomUUID()}`, label })),
+      fields: starter.fields,
+      sections: headings.map(label => ({ id: newFieldId(), label })),
     });
     setSample('');
   };
@@ -105,7 +111,7 @@ export function ConsultationTemplatesDialog({ initial, status, canEdit, onSave, 
   };
   const addSection = (field: ConsultationSection['id'] | 'custom') => {
     const section: ConsultationSection = field === 'custom'
-      ? { id: `consultationCustom_${crypto.randomUUID()}`, label: t('consultation.templates.builder.customSection') }
+      ? { id: newFieldId(), label: t('consultation.templates.builder.customSection') }
       : { id: field };
     updateSections([...sections, section]);
     setExpanded(section.id);
@@ -128,13 +134,13 @@ export function ConsultationTemplatesDialog({ initial, status, canEdit, onSave, 
     const archiving = !custom.archived;
     setDraft({
       ...draft,
-      defaultId: archiving && draft.defaultId === custom.id ? DENTAL_CONSULTATION.id : draft.defaultId,
+      defaultId: archiving && draft.defaultId === custom.id ? starter.id : draft.defaultId,
       templates: draft.templates.map(item => item.id === custom.id ? { ...item, archived: archiving } : item),
     });
-    if (archiving && !showArchived) choose(DENTAL_CONSULTATION.id);
+    if (archiving && !showArchived) choose(starter.id);
   };
   const setArchivedVisibility = () => {
-    if (showArchived && custom?.archived) choose(DENTAL_CONSULTATION.id);
+    if (showArchived && custom?.archived) choose(starter.id);
     setShowArchived(!showArchived);
   };
   const save = async () => {
@@ -159,13 +165,13 @@ export function ConsultationTemplatesDialog({ initial, status, canEdit, onSave, 
   const close = async () => { if (await canClose()) onClose(); };
   const backdrop = useBackdropDismiss(() => void close());
 
-  const title = t('consultation.templates.title');
+  const title = t(isDischarge ? 'discharge.templates.title' : 'consultation.templates.title');
   const body = <>
     <div className="consultation-library__body">
       <div className="consultation-library__intro">
-        <p>{t('consultation.templates.intro')}</p>
-        <a className="visit-documentation__guide" href={documentationUrl(language, 'consultation-templates')}
-          target="_blank" rel="noopener noreferrer">{t('consultation.templates.help')}</a>
+        <p>{t(isDischarge ? 'discharge.templates.intro' : 'consultation.templates.intro')}</p>
+        <a className="visit-documentation__guide" href={documentationUrl(language, isDischarge ? 'discharge' : 'consultation-templates')}
+          target="_blank" rel="noopener noreferrer">{t(isDischarge ? 'discharge.templates.help' : 'consultation.templates.help')}</a>
       </div>
       {status === 'loading' && <p role="status">{t('consultation.templates.loading')}</p>}
       {status === 'error' && <div className="consultation-library__notice">
@@ -249,7 +255,9 @@ export function ConsultationTemplatesDialog({ initial, status, canEdit, onSave, 
               const key = consultationSectionKey(section);
               const dentalKey = dentalSectionKey(section.id);
               const example = section.example ?? (dentalKey ? t(`consultation.dental.${dentalKey}.sample`)
-                : isCustomConsultationField(section.id) ? '' : t(`consultation.templates.samples.${section.id}`));
+                : isCustomNoteField(section.id) ? ''
+                  : section.id === 'dischargeMedications' || section.id === 'dischargeInstructions' || section.id === 'dischargeFollowUp'
+                    ? t(`discharge.templates.samples.${section.id}`) : t(`consultation.templates.samples.${section.id}`));
               return <li key={section.id} className={section.level === 2 ? 'consultation-library__subsection' : undefined}>
                 <div className="consultation-library__section-row">
                   <div>
@@ -290,6 +298,11 @@ export function ConsultationTemplatesDialog({ initial, status, canEdit, onSave, 
                       onChange={event => updateSection({ ...section, level: event.target.checked ? 2 : undefined })} />
                     {t('consultation.templates.builder.subsection')}
                   </label>
+                  {isDischarge && isCustomDischargeField(section.id) && <label className="consultation-library__archived">
+                    <input type="checkbox" checked={section.ownerReport === true}
+                      onChange={event => updateSection({ ...section, ownerReport: event.target.checked ? true : undefined })} />
+                    {t('discharge.templates.ownerReport')}
+                  </label>}
                   <button type="button" className="ui-btn ui-btn--secondary" disabled={sections.length === 1}
                     onClick={() => { updateSections(sections.filter(item => item.id !== section.id)); setExpanded(undefined); }}>
                     {t('consultation.templates.builder.removeSection')}
@@ -297,7 +310,7 @@ export function ConsultationTemplatesDialog({ initial, status, canEdit, onSave, 
                 </div>}
               </li>;
             })}
-            <li>{t('settings:chart.pdf.images')}</li>
+            {!isDischarge && <li>{t('settings:chart.pdf.images')}</li>}
           </ol>
           {editSelected && sections.length < CONSULTATION_SECTION_LIMIT && (adding
             ? <label className="ui-dialog__label">{t('consultation.templates.builder.addSection')}
@@ -306,7 +319,7 @@ export function ConsultationTemplatesDialog({ initial, status, canEdit, onSave, 
               }}>
                 <option value="">{t('consultation.templates.builder.chooseSection')}</option>
                 <option value={CUSTOM_SECTION}>{t('consultation.templates.builder.customSection')}</option>
-                {[...CONSULTATION_STANDARD_FIELDS.map(id => ({ id })), ...consultationSections(DENTAL_CONSULTATION)]
+                {[...standardNoteFields(kind).map(id => ({ id })), ...consultationSections(starter)]
                   .filter((item, index, list) => !sections.some(section => section.id === item.id) && list.findIndex(other => other.id === item.id) === index)
                   .map(section => <option key={section.id} value={section.id}>{sectionName(section)}</option>)}
               </select>

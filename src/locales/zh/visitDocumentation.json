@@ -128,7 +128,19 @@
   "discharge": {
     "title": "出院",
     "purpose": "记录本次就诊时讨论的用药、护理指导和随访安排。",
-    "review": "审核宠物主人报告"
+    "review": "审核宠物主人报告",
+    "templates": {
+      "title": "出院模板",
+      "starter": "标准出院模板",
+      "help": "出院模板的使用方法",
+      "ownerReport": "纳入宠物主人报告",
+      "intro": "选择各分节在出院记录中的显示方式。",
+      "samples": {
+        "dischargeMedications": "已与宠主核对用药说明。",
+        "dischargeInstructions": "按沟通内容提供软质食物。",
+        "dischargeFollowUp": "已讨论复查安排。"
+      }
+    }
   },
   "sourceNotice": "记录的措辞将保留原样。分享前，请检查面向客户的语言。",
   "treatmentRecap": "治疗报告",

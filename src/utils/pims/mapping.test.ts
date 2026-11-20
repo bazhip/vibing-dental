@@ -126,3 +126,19 @@ it('keeps the whole stored note when only its complaint heading was removed', ()
   const edited = recordNoteText(generated).replace(complaint.heading.toLocaleUpperCase() + '\n', '');
   expect(splitStoredNote(edited, generated)).toBeNull();
 });
+
+it('sends a mapped custom discharge section with its clinical heading and text', () => {
+  const field = 'dischargeCustom_activity';
+  const note = buildRecordNote({ ...snapshot, patientInfo: {
+    ...snapshot.patientInfo,
+    [field]: 'Follow the activity plan.',
+    dischargeLayout: { id: 'recovery', fields: [], sections: [{ id: field, label: 'Activity' }] },
+  } }, recordNoteT('en'));
+  const available = fields.filter(field => field.title === 'Discharge Summary');
+  const { items } = buildSendItems({ note, map: { ...effectiveMap(null, 'ezyvet', available), [field]: 'Discharge Summary' },
+    fields: available, pngDataUrl: null });
+  expect(items).toEqual([expect.objectContaining({
+    fieldTitle: 'Discharge Summary',
+    text: 'ACTIVITY\nFollow the activity plan.',
+  })]);
+});
