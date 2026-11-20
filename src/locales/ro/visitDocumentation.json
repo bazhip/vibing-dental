@@ -70,6 +70,21 @@
         "gpDiagnostics": "Imaginile anterioare sunt disponibile pentru verificare."
       },
       "builder": {
+        "inputTypes": {
+          "paragraph": "Text lung",
+          "shortText": "Text scurt",
+          "radio": "Alegere unică",
+          "multiselect": "Alegere multiplă"
+        },
+        "choiceOptions": "Opțiuni",
+        "choiceOption": "Opțiunea {{n}}",
+        "removeChoice": "Eliminați opțiunea {{n}}",
+        "choiceHelp": "Introduceți un nume unic pentru fiecare opțiune.",
+        "deletePracticeFieldMessage": "Acest câmp va fi eliminat din selectorul cabinetului. Șabloanele și vizitele existente păstrează câmpul.",
+        "recordedText": "Text înregistrat",
+        "clearSelection": "Goliți selecția",
+        "choiceLegacyHelp": "Ștergeți textul înregistrat pentru a alege o opțiune.",
+        "addChoice": "Adăugați o opțiune",
         "addSection": "Adăugați o secțiune",
         "searchSections": "Căutați secțiuni",
         "practiceFields": "Câmpurile cabinetului",

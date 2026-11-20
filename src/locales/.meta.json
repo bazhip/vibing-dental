@@ -7337,7 +7337,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.text": {
-      "hash": "23ffa89cf3b4",
+      "hash": "39fc47b54427",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.title": {
@@ -7345,7 +7345,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.text": {
-      "hash": "357a9b542d8b",
+      "hash": "5fceddc220ec",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.title": {
@@ -7353,11 +7353,11 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.text": {
-      "hash": "419abeaee7e8",
+      "hash": "e675066ccf95",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.title": {
-      "hash": "9808b44bec79",
+      "hash": "12c1e3f3a1e3",
       "status": "machine"
     },
     "help:articles.consultation-templates.title": {
@@ -7465,7 +7465,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "f2d215537933",
+      "hash": "4b08f1c537cb",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -7473,7 +7473,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.second.text": {
-      "hash": "fe0644e785b1",
+      "hash": "b203da5e5fc8",
       "status": "machine"
     },
     "help:articles.discharge.sections.second.title": {
@@ -7593,7 +7593,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.first.text": {
-      "hash": "a9da9bce81d6",
+      "hash": "2c60f2c5cd47",
       "status": "machine"
     },
     "help:articles.imaging.sections.first.title": {
@@ -7913,7 +7913,7 @@
       "status": "machine"
     },
     "help:articles.viewer.sections.first.text": {
-      "hash": "85f50068b50b",
+      "hash": "4e287cee6d5f",
       "status": "machine"
     },
     "help:articles.viewer.sections.first.title": {
@@ -7956,12 +7956,20 @@
       "hash": "61e8d44ad423",
       "status": "machine"
     },
+    "help:images.attachmentNames": {
+      "hash": "f0fa8e0840b3",
+      "status": "machine"
+    },
     "help:images.by-number": {
       "hash": "f557b04cbfe2",
       "status": "machine"
     },
     "help:images.charting": {
       "hash": "5c70ddbcedfa",
+      "status": "machine"
+    },
+    "help:images.consultationBuilder": {
+      "hash": "a6d6d25aaaaf",
       "status": "machine"
     },
     "help:images.consultationMedicationHistory": {
@@ -15328,6 +15336,10 @@
       "hash": "bdb86505f806",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.builder.addChoice": {
+      "hash": "ffbcabd155ad",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.templates.builder.addSection": {
       "hash": "7c3690997f72",
       "status": "machine"
@@ -15348,8 +15360,28 @@
       "hash": "20c579c3da98",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.builder.choiceHelp": {
+      "hash": "d9fb7d0c1eff",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.choiceLegacyHelp": {
+      "hash": "d8f8556a8779",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.choiceOption": {
+      "hash": "8eddcc618b6c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.choiceOptions": {
+      "hash": "d0db8b5e364b",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.templates.builder.chooseSection": {
       "hash": "551647764038",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.clearSelection": {
+      "hash": "cea4d2e010b8",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.builder.concise": {
@@ -15366,6 +15398,10 @@
     },
     "visitDocumentation:consultation.templates.builder.customSection": {
       "hash": "ca803a429ff0",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.deletePracticeFieldMessage": {
+      "hash": "0ea7d40eae9b",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.builder.detail": {
@@ -15420,6 +15456,22 @@
       "hash": "3081f3042451",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.builder.inputTypes.multiselect": {
+      "hash": "79fefc32357d",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.inputTypes.paragraph": {
+      "hash": "4448b9ffe696",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.inputTypes.radio": {
+      "hash": "45a76a9d2e7a",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.inputTypes.shortText": {
+      "hash": "38a11505fddd",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.templates.builder.instructions": {
       "hash": "eb96796aa9b8",
       "status": "machine"
@@ -15450,6 +15502,14 @@
     },
     "visitDocumentation:consultation.templates.builder.practiceFields": {
       "hash": "55562c35a8bc",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.recordedText": {
+      "hash": "f63187829a69",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.removeChoice": {
+      "hash": "f11172e5c32a",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.builder.removeNamed": {
@@ -23979,7 +24039,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.text": {
-      "hash": "23ffa89cf3b4",
+      "hash": "39fc47b54427",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.title": {
@@ -23987,7 +24047,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.text": {
-      "hash": "357a9b542d8b",
+      "hash": "5fceddc220ec",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.title": {
@@ -23995,11 +24055,11 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.text": {
-      "hash": "419abeaee7e8",
+      "hash": "e675066ccf95",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.title": {
-      "hash": "9808b44bec79",
+      "hash": "12c1e3f3a1e3",
       "status": "machine"
     },
     "help:articles.consultation-templates.title": {
@@ -24107,7 +24167,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "f2d215537933",
+      "hash": "4b08f1c537cb",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -24115,7 +24175,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.second.text": {
-      "hash": "fe0644e785b1",
+      "hash": "b203da5e5fc8",
       "status": "machine"
     },
     "help:articles.discharge.sections.second.title": {
@@ -24235,7 +24295,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.first.text": {
-      "hash": "a9da9bce81d6",
+      "hash": "2c60f2c5cd47",
       "status": "machine"
     },
     "help:articles.imaging.sections.first.title": {
@@ -24555,7 +24615,7 @@
       "status": "machine"
     },
     "help:articles.viewer.sections.first.text": {
-      "hash": "85f50068b50b",
+      "hash": "4e287cee6d5f",
       "status": "machine"
     },
     "help:articles.viewer.sections.first.title": {
@@ -24598,12 +24658,20 @@
       "hash": "61e8d44ad423",
       "status": "machine"
     },
+    "help:images.attachmentNames": {
+      "hash": "f0fa8e0840b3",
+      "status": "machine"
+    },
     "help:images.by-number": {
       "hash": "f557b04cbfe2",
       "status": "machine"
     },
     "help:images.charting": {
       "hash": "5c70ddbcedfa",
+      "status": "machine"
+    },
+    "help:images.consultationBuilder": {
+      "hash": "a6d6d25aaaaf",
       "status": "machine"
     },
     "help:images.consultationMedicationHistory": {
@@ -31906,6 +31974,10 @@
       "hash": "bdb86505f806",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.builder.addChoice": {
+      "hash": "ffbcabd155ad",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.templates.builder.addSection": {
       "hash": "7c3690997f72",
       "status": "machine"
@@ -31926,8 +31998,28 @@
       "hash": "20c579c3da98",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.builder.choiceHelp": {
+      "hash": "d9fb7d0c1eff",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.choiceLegacyHelp": {
+      "hash": "d8f8556a8779",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.choiceOption": {
+      "hash": "8eddcc618b6c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.choiceOptions": {
+      "hash": "d0db8b5e364b",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.templates.builder.chooseSection": {
       "hash": "551647764038",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.clearSelection": {
+      "hash": "cea4d2e010b8",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.builder.concise": {
@@ -31944,6 +32036,10 @@
     },
     "visitDocumentation:consultation.templates.builder.customSection": {
       "hash": "ca803a429ff0",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.deletePracticeFieldMessage": {
+      "hash": "0ea7d40eae9b",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.builder.detail": {
@@ -31998,6 +32094,22 @@
       "hash": "3081f3042451",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.builder.inputTypes.multiselect": {
+      "hash": "79fefc32357d",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.inputTypes.paragraph": {
+      "hash": "4448b9ffe696",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.inputTypes.radio": {
+      "hash": "45a76a9d2e7a",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.inputTypes.shortText": {
+      "hash": "38a11505fddd",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.templates.builder.instructions": {
       "hash": "eb96796aa9b8",
       "status": "machine"
@@ -32028,6 +32140,14 @@
     },
     "visitDocumentation:consultation.templates.builder.practiceFields": {
       "hash": "55562c35a8bc",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.recordedText": {
+      "hash": "f63187829a69",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.removeChoice": {
+      "hash": "f11172e5c32a",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.builder.removeNamed": {
@@ -40521,7 +40641,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.text": {
-      "hash": "23ffa89cf3b4",
+      "hash": "39fc47b54427",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.title": {
@@ -40529,7 +40649,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.text": {
-      "hash": "357a9b542d8b",
+      "hash": "5fceddc220ec",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.title": {
@@ -40537,11 +40657,11 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.text": {
-      "hash": "419abeaee7e8",
+      "hash": "e675066ccf95",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.title": {
-      "hash": "9808b44bec79",
+      "hash": "12c1e3f3a1e3",
       "status": "machine"
     },
     "help:articles.consultation-templates.title": {
@@ -40649,7 +40769,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "f2d215537933",
+      "hash": "4b08f1c537cb",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -40657,7 +40777,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.second.text": {
-      "hash": "fe0644e785b1",
+      "hash": "b203da5e5fc8",
       "status": "machine"
     },
     "help:articles.discharge.sections.second.title": {
@@ -40777,7 +40897,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.first.text": {
-      "hash": "a9da9bce81d6",
+      "hash": "2c60f2c5cd47",
       "status": "machine"
     },
     "help:articles.imaging.sections.first.title": {
@@ -41097,7 +41217,7 @@
       "status": "machine"
     },
     "help:articles.viewer.sections.first.text": {
-      "hash": "85f50068b50b",
+      "hash": "4e287cee6d5f",
       "status": "machine"
     },
     "help:articles.viewer.sections.first.title": {
@@ -41140,12 +41260,20 @@
       "hash": "61e8d44ad423",
       "status": "machine"
     },
+    "help:images.attachmentNames": {
+      "hash": "f0fa8e0840b3",
+      "status": "machine"
+    },
     "help:images.by-number": {
       "hash": "f557b04cbfe2",
       "status": "machine"
     },
     "help:images.charting": {
       "hash": "5c70ddbcedfa",
+      "status": "machine"
+    },
+    "help:images.consultationBuilder": {
+      "hash": "a6d6d25aaaaf",
       "status": "machine"
     },
     "help:images.consultationMedicationHistory": {
@@ -48480,6 +48608,10 @@
       "hash": "bdb86505f806",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.builder.addChoice": {
+      "hash": "ffbcabd155ad",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.templates.builder.addSection": {
       "hash": "7c3690997f72",
       "status": "machine"
@@ -48500,8 +48632,28 @@
       "hash": "20c579c3da98",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.builder.choiceHelp": {
+      "hash": "d9fb7d0c1eff",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.choiceLegacyHelp": {
+      "hash": "d8f8556a8779",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.choiceOption": {
+      "hash": "8eddcc618b6c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.choiceOptions": {
+      "hash": "d0db8b5e364b",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.templates.builder.chooseSection": {
       "hash": "551647764038",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.clearSelection": {
+      "hash": "cea4d2e010b8",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.builder.concise": {
@@ -48518,6 +48670,10 @@
     },
     "visitDocumentation:consultation.templates.builder.customSection": {
       "hash": "ca803a429ff0",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.deletePracticeFieldMessage": {
+      "hash": "0ea7d40eae9b",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.builder.detail": {
@@ -48572,6 +48728,22 @@
       "hash": "3081f3042451",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.builder.inputTypes.multiselect": {
+      "hash": "79fefc32357d",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.inputTypes.paragraph": {
+      "hash": "4448b9ffe696",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.inputTypes.radio": {
+      "hash": "45a76a9d2e7a",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.inputTypes.shortText": {
+      "hash": "38a11505fddd",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.templates.builder.instructions": {
       "hash": "eb96796aa9b8",
       "status": "machine"
@@ -48602,6 +48774,14 @@
     },
     "visitDocumentation:consultation.templates.builder.practiceFields": {
       "hash": "55562c35a8bc",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.recordedText": {
+      "hash": "f63187829a69",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.removeChoice": {
+      "hash": "f11172e5c32a",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.builder.removeNamed": {
@@ -57119,7 +57299,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.text": {
-      "hash": "23ffa89cf3b4",
+      "hash": "39fc47b54427",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.title": {
@@ -57127,7 +57307,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.text": {
-      "hash": "357a9b542d8b",
+      "hash": "5fceddc220ec",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.title": {
@@ -57135,11 +57315,11 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.text": {
-      "hash": "419abeaee7e8",
+      "hash": "e675066ccf95",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.title": {
-      "hash": "9808b44bec79",
+      "hash": "12c1e3f3a1e3",
       "status": "machine"
     },
     "help:articles.consultation-templates.title": {
@@ -57247,7 +57427,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "f2d215537933",
+      "hash": "4b08f1c537cb",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -57255,7 +57435,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.second.text": {
-      "hash": "fe0644e785b1",
+      "hash": "b203da5e5fc8",
       "status": "machine"
     },
     "help:articles.discharge.sections.second.title": {
@@ -57375,7 +57555,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.first.text": {
-      "hash": "a9da9bce81d6",
+      "hash": "2c60f2c5cd47",
       "status": "machine"
     },
     "help:articles.imaging.sections.first.title": {
@@ -57695,7 +57875,7 @@
       "status": "machine"
     },
     "help:articles.viewer.sections.first.text": {
-      "hash": "85f50068b50b",
+      "hash": "4e287cee6d5f",
       "status": "machine"
     },
     "help:articles.viewer.sections.first.title": {
@@ -57738,12 +57918,20 @@
       "hash": "61e8d44ad423",
       "status": "machine"
     },
+    "help:images.attachmentNames": {
+      "hash": "f0fa8e0840b3",
+      "status": "machine"
+    },
     "help:images.by-number": {
       "hash": "f557b04cbfe2",
       "status": "machine"
     },
     "help:images.charting": {
       "hash": "5c70ddbcedfa",
+      "status": "machine"
+    },
+    "help:images.consultationBuilder": {
+      "hash": "a6d6d25aaaaf",
       "status": "machine"
     },
     "help:images.consultationMedicationHistory": {
@@ -65078,6 +65266,10 @@
       "hash": "bdb86505f806",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.builder.addChoice": {
+      "hash": "ffbcabd155ad",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.templates.builder.addSection": {
       "hash": "7c3690997f72",
       "status": "machine"
@@ -65098,8 +65290,28 @@
       "hash": "20c579c3da98",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.builder.choiceHelp": {
+      "hash": "d9fb7d0c1eff",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.choiceLegacyHelp": {
+      "hash": "d8f8556a8779",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.choiceOption": {
+      "hash": "8eddcc618b6c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.choiceOptions": {
+      "hash": "d0db8b5e364b",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.templates.builder.chooseSection": {
       "hash": "551647764038",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.clearSelection": {
+      "hash": "cea4d2e010b8",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.builder.concise": {
@@ -65116,6 +65328,10 @@
     },
     "visitDocumentation:consultation.templates.builder.customSection": {
       "hash": "ca803a429ff0",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.deletePracticeFieldMessage": {
+      "hash": "0ea7d40eae9b",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.builder.detail": {
@@ -65170,6 +65386,22 @@
       "hash": "3081f3042451",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.builder.inputTypes.multiselect": {
+      "hash": "79fefc32357d",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.inputTypes.paragraph": {
+      "hash": "4448b9ffe696",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.inputTypes.radio": {
+      "hash": "45a76a9d2e7a",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.inputTypes.shortText": {
+      "hash": "38a11505fddd",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.templates.builder.instructions": {
       "hash": "eb96796aa9b8",
       "status": "machine"
@@ -65200,6 +65432,14 @@
     },
     "visitDocumentation:consultation.templates.builder.practiceFields": {
       "hash": "55562c35a8bc",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.recordedText": {
+      "hash": "f63187829a69",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.removeChoice": {
+      "hash": "f11172e5c32a",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.builder.removeNamed": {
@@ -73649,7 +73889,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.text": {
-      "hash": "23ffa89cf3b4",
+      "hash": "39fc47b54427",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.title": {
@@ -73657,7 +73897,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.text": {
-      "hash": "357a9b542d8b",
+      "hash": "5fceddc220ec",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.title": {
@@ -73665,11 +73905,11 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.text": {
-      "hash": "419abeaee7e8",
+      "hash": "e675066ccf95",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.title": {
-      "hash": "9808b44bec79",
+      "hash": "12c1e3f3a1e3",
       "status": "machine"
     },
     "help:articles.consultation-templates.title": {
@@ -73777,7 +74017,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "f2d215537933",
+      "hash": "4b08f1c537cb",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -73785,7 +74025,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.second.text": {
-      "hash": "fe0644e785b1",
+      "hash": "b203da5e5fc8",
       "status": "machine"
     },
     "help:articles.discharge.sections.second.title": {
@@ -73905,7 +74145,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.first.text": {
-      "hash": "a9da9bce81d6",
+      "hash": "2c60f2c5cd47",
       "status": "machine"
     },
     "help:articles.imaging.sections.first.title": {
@@ -74225,7 +74465,7 @@
       "status": "machine"
     },
     "help:articles.viewer.sections.first.text": {
-      "hash": "85f50068b50b",
+      "hash": "4e287cee6d5f",
       "status": "machine"
     },
     "help:articles.viewer.sections.first.title": {
@@ -74268,12 +74508,20 @@
       "hash": "61e8d44ad423",
       "status": "machine"
     },
+    "help:images.attachmentNames": {
+      "hash": "f0fa8e0840b3",
+      "status": "machine"
+    },
     "help:images.by-number": {
       "hash": "f557b04cbfe2",
       "status": "machine"
     },
     "help:images.charting": {
       "hash": "5c70ddbcedfa",
+      "status": "machine"
+    },
+    "help:images.consultationBuilder": {
+      "hash": "a6d6d25aaaaf",
       "status": "machine"
     },
     "help:images.consultationMedicationHistory": {
@@ -81512,6 +81760,10 @@
       "hash": "bdb86505f806",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.builder.addChoice": {
+      "hash": "ffbcabd155ad",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.templates.builder.addSection": {
       "hash": "7c3690997f72",
       "status": "machine"
@@ -81532,8 +81784,28 @@
       "hash": "20c579c3da98",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.builder.choiceHelp": {
+      "hash": "d9fb7d0c1eff",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.choiceLegacyHelp": {
+      "hash": "d8f8556a8779",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.choiceOption": {
+      "hash": "8eddcc618b6c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.choiceOptions": {
+      "hash": "d0db8b5e364b",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.templates.builder.chooseSection": {
       "hash": "551647764038",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.clearSelection": {
+      "hash": "cea4d2e010b8",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.builder.concise": {
@@ -81550,6 +81822,10 @@
     },
     "visitDocumentation:consultation.templates.builder.customSection": {
       "hash": "ca803a429ff0",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.deletePracticeFieldMessage": {
+      "hash": "0ea7d40eae9b",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.builder.detail": {
@@ -81604,6 +81880,22 @@
       "hash": "3081f3042451",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.builder.inputTypes.multiselect": {
+      "hash": "79fefc32357d",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.inputTypes.paragraph": {
+      "hash": "4448b9ffe696",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.inputTypes.radio": {
+      "hash": "45a76a9d2e7a",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.inputTypes.shortText": {
+      "hash": "38a11505fddd",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.templates.builder.instructions": {
       "hash": "eb96796aa9b8",
       "status": "machine"
@@ -81634,6 +81926,14 @@
     },
     "visitDocumentation:consultation.templates.builder.practiceFields": {
       "hash": "55562c35a8bc",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.recordedText": {
+      "hash": "f63187829a69",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.removeChoice": {
+      "hash": "f11172e5c32a",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.builder.removeNamed": {
@@ -90127,7 +90427,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.text": {
-      "hash": "23ffa89cf3b4",
+      "hash": "39fc47b54427",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.title": {
@@ -90135,7 +90435,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.text": {
-      "hash": "357a9b542d8b",
+      "hash": "5fceddc220ec",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.title": {
@@ -90143,11 +90443,11 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.text": {
-      "hash": "419abeaee7e8",
+      "hash": "e675066ccf95",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.title": {
-      "hash": "9808b44bec79",
+      "hash": "12c1e3f3a1e3",
       "status": "machine"
     },
     "help:articles.consultation-templates.title": {
@@ -90255,7 +90555,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "f2d215537933",
+      "hash": "4b08f1c537cb",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -90263,7 +90563,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.second.text": {
-      "hash": "fe0644e785b1",
+      "hash": "b203da5e5fc8",
       "status": "machine"
     },
     "help:articles.discharge.sections.second.title": {
@@ -90383,7 +90683,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.first.text": {
-      "hash": "a9da9bce81d6",
+      "hash": "2c60f2c5cd47",
       "status": "machine"
     },
     "help:articles.imaging.sections.first.title": {
@@ -90703,7 +91003,7 @@
       "status": "machine"
     },
     "help:articles.viewer.sections.first.text": {
-      "hash": "85f50068b50b",
+      "hash": "4e287cee6d5f",
       "status": "machine"
     },
     "help:articles.viewer.sections.first.title": {
@@ -90746,12 +91046,20 @@
       "hash": "61e8d44ad423",
       "status": "machine"
     },
+    "help:images.attachmentNames": {
+      "hash": "f0fa8e0840b3",
+      "status": "machine"
+    },
     "help:images.by-number": {
       "hash": "f557b04cbfe2",
       "status": "machine"
     },
     "help:images.charting": {
       "hash": "5c70ddbcedfa",
+      "status": "machine"
+    },
+    "help:images.consultationBuilder": {
+      "hash": "a6d6d25aaaaf",
       "status": "machine"
     },
     "help:images.consultationMedicationHistory": {
@@ -98086,6 +98394,10 @@
       "hash": "bdb86505f806",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.builder.addChoice": {
+      "hash": "ffbcabd155ad",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.templates.builder.addSection": {
       "hash": "7c3690997f72",
       "status": "machine"
@@ -98106,8 +98418,28 @@
       "hash": "20c579c3da98",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.builder.choiceHelp": {
+      "hash": "d9fb7d0c1eff",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.choiceLegacyHelp": {
+      "hash": "d8f8556a8779",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.choiceOption": {
+      "hash": "8eddcc618b6c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.choiceOptions": {
+      "hash": "d0db8b5e364b",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.templates.builder.chooseSection": {
       "hash": "551647764038",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.clearSelection": {
+      "hash": "cea4d2e010b8",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.builder.concise": {
@@ -98124,6 +98456,10 @@
     },
     "visitDocumentation:consultation.templates.builder.customSection": {
       "hash": "ca803a429ff0",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.deletePracticeFieldMessage": {
+      "hash": "0ea7d40eae9b",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.builder.detail": {
@@ -98178,6 +98514,22 @@
       "hash": "3081f3042451",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.builder.inputTypes.multiselect": {
+      "hash": "79fefc32357d",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.inputTypes.paragraph": {
+      "hash": "4448b9ffe696",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.inputTypes.radio": {
+      "hash": "45a76a9d2e7a",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.inputTypes.shortText": {
+      "hash": "38a11505fddd",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.templates.builder.instructions": {
       "hash": "eb96796aa9b8",
       "status": "machine"
@@ -98208,6 +98560,14 @@
     },
     "visitDocumentation:consultation.templates.builder.practiceFields": {
       "hash": "55562c35a8bc",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.recordedText": {
+      "hash": "f63187829a69",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.removeChoice": {
+      "hash": "f11172e5c32a",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.builder.removeNamed": {
@@ -106777,7 +107137,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.text": {
-      "hash": "23ffa89cf3b4",
+      "hash": "39fc47b54427",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.title": {
@@ -106785,7 +107145,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.text": {
-      "hash": "357a9b542d8b",
+      "hash": "5fceddc220ec",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.title": {
@@ -106793,11 +107153,11 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.text": {
-      "hash": "419abeaee7e8",
+      "hash": "e675066ccf95",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.title": {
-      "hash": "9808b44bec79",
+      "hash": "12c1e3f3a1e3",
       "status": "machine"
     },
     "help:articles.consultation-templates.title": {
@@ -106905,7 +107265,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "f2d215537933",
+      "hash": "4b08f1c537cb",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -106913,7 +107273,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.second.text": {
-      "hash": "fe0644e785b1",
+      "hash": "b203da5e5fc8",
       "status": "machine"
     },
     "help:articles.discharge.sections.second.title": {
@@ -107033,7 +107393,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.first.text": {
-      "hash": "a9da9bce81d6",
+      "hash": "2c60f2c5cd47",
       "status": "machine"
     },
     "help:articles.imaging.sections.first.title": {
@@ -107353,7 +107713,7 @@
       "status": "machine"
     },
     "help:articles.viewer.sections.first.text": {
-      "hash": "85f50068b50b",
+      "hash": "4e287cee6d5f",
       "status": "machine"
     },
     "help:articles.viewer.sections.first.title": {
@@ -107396,12 +107756,20 @@
       "hash": "61e8d44ad423",
       "status": "machine"
     },
+    "help:images.attachmentNames": {
+      "hash": "f0fa8e0840b3",
+      "status": "machine"
+    },
     "help:images.by-number": {
       "hash": "f557b04cbfe2",
       "status": "machine"
     },
     "help:images.charting": {
       "hash": "5c70ddbcedfa",
+      "status": "machine"
+    },
+    "help:images.consultationBuilder": {
+      "hash": "a6d6d25aaaaf",
       "status": "machine"
     },
     "help:images.consultationMedicationHistory": {
@@ -114704,6 +115072,10 @@
       "hash": "bdb86505f806",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.builder.addChoice": {
+      "hash": "ffbcabd155ad",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.templates.builder.addSection": {
       "hash": "7c3690997f72",
       "status": "machine"
@@ -114724,8 +115096,28 @@
       "hash": "20c579c3da98",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.builder.choiceHelp": {
+      "hash": "d9fb7d0c1eff",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.choiceLegacyHelp": {
+      "hash": "d8f8556a8779",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.choiceOption": {
+      "hash": "8eddcc618b6c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.choiceOptions": {
+      "hash": "d0db8b5e364b",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.templates.builder.chooseSection": {
       "hash": "551647764038",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.clearSelection": {
+      "hash": "cea4d2e010b8",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.builder.concise": {
@@ -114742,6 +115134,10 @@
     },
     "visitDocumentation:consultation.templates.builder.customSection": {
       "hash": "ca803a429ff0",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.deletePracticeFieldMessage": {
+      "hash": "0ea7d40eae9b",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.builder.detail": {
@@ -114796,6 +115192,22 @@
       "hash": "3081f3042451",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.builder.inputTypes.multiselect": {
+      "hash": "79fefc32357d",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.inputTypes.paragraph": {
+      "hash": "4448b9ffe696",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.inputTypes.radio": {
+      "hash": "45a76a9d2e7a",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.inputTypes.shortText": {
+      "hash": "38a11505fddd",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.templates.builder.instructions": {
       "hash": "eb96796aa9b8",
       "status": "machine"
@@ -114826,6 +115238,14 @@
     },
     "visitDocumentation:consultation.templates.builder.practiceFields": {
       "hash": "55562c35a8bc",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.recordedText": {
+      "hash": "f63187829a69",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.removeChoice": {
+      "hash": "f11172e5c32a",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.builder.removeNamed": {
@@ -123957,7 +124377,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.text": {
-      "hash": "23ffa89cf3b4",
+      "hash": "39fc47b54427",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.title": {
@@ -123965,7 +124385,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.text": {
-      "hash": "357a9b542d8b",
+      "hash": "5fceddc220ec",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.title": {
@@ -123973,11 +124393,11 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.text": {
-      "hash": "419abeaee7e8",
+      "hash": "e675066ccf95",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.title": {
-      "hash": "9808b44bec79",
+      "hash": "12c1e3f3a1e3",
       "status": "machine"
     },
     "help:articles.consultation-templates.title": {
@@ -124085,7 +124505,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "f2d215537933",
+      "hash": "4b08f1c537cb",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -124093,7 +124513,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.second.text": {
-      "hash": "fe0644e785b1",
+      "hash": "b203da5e5fc8",
       "status": "machine"
     },
     "help:articles.discharge.sections.second.title": {
@@ -124213,7 +124633,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.first.text": {
-      "hash": "a9da9bce81d6",
+      "hash": "2c60f2c5cd47",
       "status": "machine"
     },
     "help:articles.imaging.sections.first.title": {
@@ -124533,7 +124953,7 @@
       "status": "machine"
     },
     "help:articles.viewer.sections.first.text": {
-      "hash": "85f50068b50b",
+      "hash": "4e287cee6d5f",
       "status": "machine"
     },
     "help:articles.viewer.sections.first.title": {
@@ -124576,12 +124996,20 @@
       "hash": "61e8d44ad423",
       "status": "machine"
     },
+    "help:images.attachmentNames": {
+      "hash": "f0fa8e0840b3",
+      "status": "machine"
+    },
     "help:images.by-number": {
       "hash": "f557b04cbfe2",
       "status": "machine"
     },
     "help:images.charting": {
       "hash": "5c70ddbcedfa",
+      "status": "machine"
+    },
+    "help:images.consultationBuilder": {
+      "hash": "a6d6d25aaaaf",
       "status": "machine"
     },
     "help:images.consultationMedicationHistory": {
@@ -131852,6 +132280,10 @@
       "hash": "bdb86505f806",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.builder.addChoice": {
+      "hash": "ffbcabd155ad",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.templates.builder.addSection": {
       "hash": "7c3690997f72",
       "status": "machine"
@@ -131872,8 +132304,28 @@
       "hash": "20c579c3da98",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.builder.choiceHelp": {
+      "hash": "d9fb7d0c1eff",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.choiceLegacyHelp": {
+      "hash": "d8f8556a8779",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.choiceOption": {
+      "hash": "8eddcc618b6c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.choiceOptions": {
+      "hash": "d0db8b5e364b",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.templates.builder.chooseSection": {
       "hash": "551647764038",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.clearSelection": {
+      "hash": "cea4d2e010b8",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.builder.concise": {
@@ -131890,6 +132342,10 @@
     },
     "visitDocumentation:consultation.templates.builder.customSection": {
       "hash": "ca803a429ff0",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.deletePracticeFieldMessage": {
+      "hash": "0ea7d40eae9b",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.builder.detail": {
@@ -131944,6 +132400,22 @@
       "hash": "3081f3042451",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.builder.inputTypes.multiselect": {
+      "hash": "79fefc32357d",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.inputTypes.paragraph": {
+      "hash": "4448b9ffe696",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.inputTypes.radio": {
+      "hash": "45a76a9d2e7a",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.inputTypes.shortText": {
+      "hash": "38a11505fddd",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.templates.builder.instructions": {
       "hash": "eb96796aa9b8",
       "status": "machine"
@@ -131974,6 +132446,14 @@
     },
     "visitDocumentation:consultation.templates.builder.practiceFields": {
       "hash": "55562c35a8bc",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.recordedText": {
+      "hash": "f63187829a69",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.removeChoice": {
+      "hash": "f11172e5c32a",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.builder.removeNamed": {
@@ -140423,7 +140903,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.text": {
-      "hash": "23ffa89cf3b4",
+      "hash": "39fc47b54427",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.title": {
@@ -140431,7 +140911,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.text": {
-      "hash": "357a9b542d8b",
+      "hash": "5fceddc220ec",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.title": {
@@ -140439,11 +140919,11 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.text": {
-      "hash": "419abeaee7e8",
+      "hash": "e675066ccf95",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.title": {
-      "hash": "9808b44bec79",
+      "hash": "12c1e3f3a1e3",
       "status": "machine"
     },
     "help:articles.consultation-templates.title": {
@@ -140551,7 +141031,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.first.text": {
-      "hash": "f2d215537933",
+      "hash": "4b08f1c537cb",
       "status": "machine"
     },
     "help:articles.discharge.sections.first.title": {
@@ -140559,7 +141039,7 @@
       "status": "machine"
     },
     "help:articles.discharge.sections.second.text": {
-      "hash": "fe0644e785b1",
+      "hash": "b203da5e5fc8",
       "status": "machine"
     },
     "help:articles.discharge.sections.second.title": {
@@ -140679,7 +141159,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.first.text": {
-      "hash": "a9da9bce81d6",
+      "hash": "2c60f2c5cd47",
       "status": "machine"
     },
     "help:articles.imaging.sections.first.title": {
@@ -140999,7 +141479,7 @@
       "status": "machine"
     },
     "help:articles.viewer.sections.first.text": {
-      "hash": "85f50068b50b",
+      "hash": "4e287cee6d5f",
       "status": "machine"
     },
     "help:articles.viewer.sections.first.title": {
@@ -141042,12 +141522,20 @@
       "hash": "61e8d44ad423",
       "status": "machine"
     },
+    "help:images.attachmentNames": {
+      "hash": "f0fa8e0840b3",
+      "status": "machine"
+    },
     "help:images.by-number": {
       "hash": "f557b04cbfe2",
       "status": "machine"
     },
     "help:images.charting": {
       "hash": "5c70ddbcedfa",
+      "status": "machine"
+    },
+    "help:images.consultationBuilder": {
+      "hash": "a6d6d25aaaaf",
       "status": "machine"
     },
     "help:images.consultationMedicationHistory": {
@@ -148286,6 +148774,10 @@
       "hash": "bdb86505f806",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.builder.addChoice": {
+      "hash": "ffbcabd155ad",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.templates.builder.addSection": {
       "hash": "7c3690997f72",
       "status": "machine"
@@ -148306,8 +148798,28 @@
       "hash": "20c579c3da98",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.builder.choiceHelp": {
+      "hash": "d9fb7d0c1eff",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.choiceLegacyHelp": {
+      "hash": "d8f8556a8779",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.choiceOption": {
+      "hash": "8eddcc618b6c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.choiceOptions": {
+      "hash": "d0db8b5e364b",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.templates.builder.chooseSection": {
       "hash": "551647764038",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.clearSelection": {
+      "hash": "cea4d2e010b8",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.builder.concise": {
@@ -148324,6 +148836,10 @@
     },
     "visitDocumentation:consultation.templates.builder.customSection": {
       "hash": "ca803a429ff0",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.deletePracticeFieldMessage": {
+      "hash": "0ea7d40eae9b",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.builder.detail": {
@@ -148378,6 +148894,22 @@
       "hash": "3081f3042451",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.builder.inputTypes.multiselect": {
+      "hash": "79fefc32357d",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.inputTypes.paragraph": {
+      "hash": "4448b9ffe696",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.inputTypes.radio": {
+      "hash": "45a76a9d2e7a",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.inputTypes.shortText": {
+      "hash": "38a11505fddd",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.templates.builder.instructions": {
       "hash": "eb96796aa9b8",
       "status": "machine"
@@ -148408,6 +148940,14 @@
     },
     "visitDocumentation:consultation.templates.builder.practiceFields": {
       "hash": "55562c35a8bc",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.recordedText": {
+      "hash": "f63187829a69",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.removeChoice": {
+      "hash": "f11172e5c32a",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.builder.removeNamed": {

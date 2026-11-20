@@ -50,6 +50,19 @@ describe('ImagingSection camera button', () => {
     expect(screen.queryByRole('textbox', { name: 'Image description (optional)' })).toBeNull();
   });
 
+  it('shows the original filename on a thumbnail and in its viewer', () => {
+    store.items = [
+      { id: 'photo', fileName: 'Upper-jaw.dcm', kind: 'xray', caption: '', toothTriadan: null, url: 'https://example.test/rad.png' },
+      { id: 'legacy', kind: 'photo', caption: '', toothTriadan: null, url: 'https://example.test/legacy.jpg' },
+    ];
+    const { container } = renderIt();
+    expect(container.querySelectorAll('.imaging__thumb-filename')).toHaveLength(1);
+    fireEvent.click(screen.getByRole('link', { name: /Upper-jaw.dcm/ }));
+    expect(screen.getByRole('dialog').querySelector('.imaging__thumb-filename')).toHaveTextContent('Upper-jaw.dcm');
+    fireEvent.click(screen.getByRole('button', { name: 'Next image' }));
+    expect(screen.getByRole('dialog').querySelector('.imaging__thumb-filename')).toBeNull();
+  });
+
   it('uploads from the compact consultation Images section', async () => {
     const { container } = render(<ImagingSection chartId="consultation-1" cloudActive compact />);
     const file = new File(['photo'], 'visit.jpg', { type: 'image/jpeg' });

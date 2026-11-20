@@ -27,6 +27,7 @@ import { OwnerReportSection } from './OwnerReportSection';
 import { OwnerReportCustomize } from './OwnerReportCustomize';
 import { OwnerReportTemplateChoices } from './OwnerReportTemplateChoices';
 import { OwnerReportTemplatesModal } from './OwnerReportTemplatesModal';
+import { ReorderHandle } from './ui/ReorderHandle';
 import { defaultConfig, defaultTemplate, defaultSectionTitle, BUILT_IN_SECTION_IDS, type OwnerReportConfig } from '../utils/ownerReportConfig';
 import { appReportLocale, reportStrings, type ReportLocale } from '../utils/ownerReportI18n';
 import { buildOwnerReportModel, ownerReportChartWording } from '../utils/ownerReport';
@@ -83,6 +84,14 @@ it('localizes the compact owner template picker for large lists', () => {
   fireEvent.change(picker, { target: { value: 'extra-2' } });
   expect(onSelect).toHaveBeenCalledExactlyOnceWith('extra-2');
   expect(findUntranslated(container, config.templates.map(template => template.name))).toEqual([]);
+});
+
+it('gives the reorder handle a localized accessible name', () => {
+  const label = i18n.t('consultation.templates.builder.dragField', { ns: 'visitDocumentation', field: 'Section' });
+  const { container } = render(<ReorderHandle index={0} label={label}
+    reorder={{ target: undefined, start: vi.fn(), track: vi.fn(), finish: vi.fn(), moveByKey: vi.fn(), dropAt: vi.fn() }} />);
+  expect(screen.getByRole('button', { name: '⟦Reorder Section⟧' })).toHaveAttribute('aria-keyshortcuts', 'ArrowUp ArrowDown');
+  expect(findUntranslated(container)).toEqual([]);
 });
 
 describe('OwnerReportTemplatesModal', () => {

@@ -70,6 +70,21 @@
         "gpDiagnostics": "Frühere Aufnahmen stehen zur Prüfung bereit."
       },
       "builder": {
+        "inputTypes": {
+          "paragraph": "Langtext",
+          "shortText": "Kurztext",
+          "radio": "Einfachauswahl",
+          "multiselect": "Mehrfachauswahl"
+        },
+        "choiceOptions": "Optionen",
+        "choiceOption": "Option {{n}}",
+        "removeChoice": "Option {{n}} entfernen",
+        "choiceHelp": "Geben Sie jeder Option einen eindeutigen Namen.",
+        "deletePracticeFieldMessage": "Dieses Feld wird aus der Praxisauswahl entfernt. Bestehende Vorlagen und Termine behalten das Feld.",
+        "recordedText": "Erfasster Text",
+        "clearSelection": "Auswahl aufheben",
+        "choiceLegacyHelp": "Löschen Sie den erfassten Text, um eine Option auszuwählen.",
+        "addChoice": "Option hinzufügen",
         "addSection": "Abschnitt hinzufügen",
         "searchSections": "Abschnitte suchen",
         "practiceFields": "Praxisfelder",

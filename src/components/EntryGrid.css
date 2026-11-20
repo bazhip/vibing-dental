@@ -3604,6 +3604,29 @@ button.save-status--error {
 .imaging__queue-item--failed .imaging__queue-status { color: var(--danger, #dc2626); }
 .imaging__queue-dismiss { border: 0; background: none; cursor: pointer; color: inherit; font: inherit; }
 .imaging__thumb-link { position: relative; }
+.imaging__thumb-filename {
+  position: absolute;
+  inset-inline: 6px;
+  inset-block-end: 6px;
+  padding: 3px 6px;
+  border-radius: 4px;
+  background: rgb(15 23 42 / 88%);
+  color: #fff;
+  font-size: 0.75rem;
+  line-height: 1.3;
+  text-align: start;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.image-viewer__filename {
+  inset-inline: 12px auto;
+  inset-block-end: 12px;
+  max-inline-size: min(34rem, calc(100% - 24px));
+  box-sizing: border-box;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
 .imaging__tooth-badge {
   position: absolute; top: 6px; left: 6px;
   padding: 0.05rem 0.4rem; border-radius: 999px;

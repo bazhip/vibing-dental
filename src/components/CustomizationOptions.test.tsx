@@ -7,13 +7,35 @@ import { MAX_QUICK_CODES } from '../utils/quickCodes';
 import { MAX_CUSTOM_EXAM_AREAS } from '../utils/customExam';
 
 describe('customization list management', () => {
-  it('reorders quick codes and disables boundary moves', () => {
+  it('reorders quick codes from the keyboard and ignores boundary moves', () => {
     const onChange = vi.fn();
     render(<QuickCodesEditor codes={['T/SN', 'T/SR']} onChange={onChange} />);
-    expect(screen.getByRole('button', { name: 'Move T/SN up' })).toBeDisabled();
-    expect(screen.getByRole('button', { name: 'Move T/SR down' })).toBeDisabled();
-    fireEvent.click(screen.getByRole('button', { name: 'Move T/SR up' }));
+    const first = screen.getByRole('button', { name: 'Reorder T/SN' });
+    const last = screen.getByRole('button', { name: 'Reorder T/SR' });
+    fireEvent.keyDown(first, { key: 'ArrowUp' });
+    fireEvent.keyDown(last, { key: 'ArrowDown' });
+    expect(onChange).not.toHaveBeenCalled();
+    fireEvent.keyDown(last, { key: 'ArrowUp' });
     expect(onChange).toHaveBeenCalledWith(['T/SR', 'T/SN']);
+  });
+
+  it('moves a quick code across multiple rows with a single pointer drag', () => {
+    const onChange = vi.fn();
+    render(<QuickCodesEditor codes={['T/SN', 'T/SR', 'T/F'] } onChange={onChange} />);
+    const start = screen.getByRole('button', { name: 'Reorder T/SN' });
+    const destination = screen.getByRole('button', { name: 'Reorder T/F' });
+    start.setPointerCapture = vi.fn();
+    const original = document.elementFromPoint;
+    document.elementFromPoint = vi.fn(() => destination);
+    try {
+      fireEvent.pointerDown(start, { pointerId: 1, button: 0, clientY: 8 });
+      fireEvent.pointerMove(start, { pointerId: 1, clientY: 80 });
+      expect(destination.closest('[data-quick-code-row]')).toHaveAttribute('data-reorder-drop', 'after');
+      fireEvent.pointerUp(start, { pointerId: 1, clientY: 80 });
+      expect(onChange).toHaveBeenCalledWith(['T/SR', 'T/F', 'T/SN']);
+    } finally {
+      document.elementFromPoint = original;
+    }
   });
 
   it('explains duplicates without clearing the typed code or saving', () => {
@@ -37,9 +59,10 @@ describe('customization list management', () => {
     const onChange = vi.fn();
     render(<ExamAreasEditor areas={[{ id: 'a', label: 'Lips' }, { id: 'b', label: 'Gingiva' }]} onChange={onChange} />);
     fireEvent.change(screen.getByRole('textbox', { name: 'Exam area 2 name' }), { target: { value: 'Updated area' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Move Updated area up' }));
+    fireEvent.keyDown(screen.getByRole('button', { name: 'Reorder Updated area' }), { key: 'ArrowUp' });
     expect(onChange).toHaveBeenLastCalledWith([{ id: 'b', label: 'Updated area' }, { id: 'a', label: 'Lips' }]);
-    expect(screen.getByRole('button', { name: 'Move Updated area up' })).toBeDisabled();
+    fireEvent.keyDown(screen.getByRole('button', { name: 'Reorder Updated area' }), { key: 'ArrowUp' });
+    expect(onChange).toHaveBeenCalledTimes(1);
   });
 
   it('explains the exam area limit', () => {

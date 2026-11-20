@@ -32,7 +32,7 @@ export const HELP_SCREENSHOTS: Partial<Record<HelpTopic, readonly HelpScreenshot
     { caption: 'consultationMedicationReview', src: '/help/screenshots/consultation-medication-review.jpg', width: 1000, height: 1000, section: 'second' },
     { caption: 'consultationReview', src: '/help/screenshots/consultation-review.jpg', width: 1200, height: 780, section: 'second' },
   ],
-  'consultation-templates': [{ caption: 'consultationTemplatePreview', src: '/help/screenshots/consultation-template-preview.jpg', width: 1240, height: 1100, section: 'second' }],
+  'consultation-templates': [{ caption: 'consultationBuilder', src: '/help/screenshots/consultation-builder.jpg', width: 832, height: 928, section: 'second' }],
   'consultation-transfer': [{ caption: 'consultationRecordNote', src: '/help/screenshots/consultation-record-note.jpg', width: 1100, height: 780, section: 'first' }],
   viewer: [{ caption: 'viewer', src: '/help/screenshots/viewer.jpg', width: 1200, height: 772, section: 'second' }],
   treatment: [{ caption: 'treatment', src: '/help/screenshots/treatment.jpg', width: 976, height: 418, section: 'second' }],
@@ -42,7 +42,10 @@ export const HELP_SCREENSHOTS: Partial<Record<HelpTopic, readonly HelpScreenshot
   ],
   'help-tools': [{ caption: 'help-tools', src: '/help/screenshots/help-menu.jpg', width: 354, height: 329, section: 'first' }],
   charting: [{ caption: 'charting', src: '/screenshots/feat-grid.jpg', width: 1400, height: 515, section: 'first' }],
-  imaging: [{ caption: 'imagingTemplates', src: '/help/screenshots/imaging.jpg', width: 1240, height: 850, section: 'third' }],
+  imaging: [
+    { caption: 'attachmentNames', src: '/help/screenshots/attachment-names.jpg', width: 968, height: 233, section: 'first' },
+    { caption: 'imagingTemplates', src: '/help/screenshots/imaging.jpg', width: 1240, height: 850, section: 'third' },
+  ],
   dictation: [
     { caption: 'dictation', src: '/help/screenshots/dictation.jpg', width: 600, height: 370, section: 'second' },
     { caption: 'dictationCheck', src: '/help/screenshots/dictation-check.jpg', width: 352, height: 290, section: 'third' },

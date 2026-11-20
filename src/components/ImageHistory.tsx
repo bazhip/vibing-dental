@@ -125,6 +125,7 @@ export const ImageHistory: React.FC<ImageHistoryProps> = ({ visits, onOpenVisit,
                           ) : (
                             <span className="imaging__thumb imaging__thumb--missing">{t('imaging.missing')}</span>
                           )}
+                          {a.fileName && <bdi className="imaging__thumb-filename" title={a.fileName}>{a.fileName}</bdi>}
                         </button>
                         <span className="image-history__label">
                           {kindLabel}

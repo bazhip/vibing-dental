@@ -1,5 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useReorderList } from '../hooks/useReorderList';
+import { ReorderHandle } from './ui/ReorderHandle';
 import type { CustomFieldType } from '../types';
 import {
   CustomBlockDef,
@@ -19,22 +21,30 @@ import {
 
 const FIELD_TYPES: CustomFieldType[] = ['text', 'number', 'checkbox', 'select'];
 
-function DefinitionRow({ title, detail, expanded, onToggle, children }: {
+function DefinitionRow({ title, detail, expanded, onToggle, index, reorder, canReorder, children }: {
   title: string;
   detail?: string;
   expanded: boolean;
   onToggle: () => void;
+  index: number;
+  reorder: ReturnType<typeof useReorderList>;
+  canReorder: boolean;
   children: React.ReactNode;
 }) {
+  const { t } = useTranslation('visitDocumentation');
   const id = React.useId();
   return (
-    <div className="anesthesia-definition">
-      <button type="button" className="anesthesia-definition__summary" aria-expanded={expanded}
-        aria-controls={id} aria-describedby={detail ? `${id}-type` : undefined}
-        onClick={(event) => { event.currentTarget.focus(); onToggle(); }}>
-        <bdi>{title}</bdi>
-        {detail && <span id={`${id}-type`} aria-hidden="true">{detail}</span>}
-      </button>
+    <div className="anesthesia-definition" data-anesthesia-definition-row={index} data-reorder-drop={reorder.dropAt(index)}>
+      <div className="anesthesia-definition__header">
+        <ReorderHandle index={index} reorder={reorder} disabled={!canReorder}
+          label={t('consultation.templates.builder.dragField', { field: title })} />
+        <button type="button" className="anesthesia-definition__summary" aria-expanded={expanded}
+          aria-controls={id} aria-describedby={detail ? `${id}-type` : undefined}
+          onClick={(event) => { event.currentTarget.focus(); onToggle(); }}>
+          <bdi>{title}</bdi>
+          {detail && <span id={`${id}-type`} aria-hidden="true">{detail}</span>}
+        </button>
+      </div>
       <div id={id} hidden={!expanded} className="anesthesia-definition__panel">
         {children}
       </div>
@@ -74,6 +84,20 @@ export const AnesthesiaCustomEditor: React.FC<{
     const clean = next.filter((x) => x.label.trim());
     if (JSON.stringify(clean) !== JSON.stringify(fields)) onFieldsChange(clean);
   };
+  const blockOrder = useReorderList('.anesthesia-definitions__list', 'data-anesthesia-definition-row', b.length, (from, to) => {
+    const next = [...b];
+    const [block] = next.splice(from, 1);
+    next.splice(to, 0, block);
+    setB(next);
+    saveBlocks(next);
+  });
+  const fieldOrder = useReorderList('.anesthesia-definitions__list', 'data-anesthesia-definition-row', f.length, (from, to) => {
+    const next = [...f];
+    const [field] = next.splice(from, 1);
+    next.splice(to, 0, field);
+    setF(next);
+    saveFields(next);
+  });
   const parseOptions = (text: string) =>
     text.split(',').map((o) => o.trim().slice(0, 30)).filter(Boolean).slice(0, MAX_SELECT_OPTIONS);
 
@@ -82,8 +106,9 @@ export const AnesthesiaCustomEditor: React.FC<{
       <fieldset className="chart-settings__field chart-customization__module anesthesia-definitions">
         <legend>{t('customEditor.blocksLegend')}</legend>
         <p className="chart-settings__note">{t('customEditor.blocksNote')}</p>
-        {b.map((x, i) => (
+        <div className="anesthesia-definitions__list">{b.map((x, i) => (
           <DefinitionRow key={x.id} title={x.label || t('customEditor.fallbackBlock')} expanded={openBlock === x.id}
+            index={i} reorder={blockOrder} canReorder={b.length > 1}
             onToggle={() => setOpenBlock(openBlock === x.id ? undefined : x.id)}>
             <div className="custom-def">
               <label className="custom-def__control">
@@ -116,7 +141,7 @@ export const AnesthesiaCustomEditor: React.FC<{
               </button>
             </div>
           </DefinitionRow>
-        ))}
+        ))}</div>
         {b.length < MAX_CUSTOM_BLOCKS && (
           <button type="button" ref={addBlockRef} className="anesthesia-drug__add" onClick={(event) => {
             event.currentTarget.focus();
@@ -133,8 +158,9 @@ export const AnesthesiaCustomEditor: React.FC<{
       <fieldset className="chart-settings__field chart-customization__module anesthesia-definitions">
         <legend>{t('customEditor.fieldsLegend')}</legend>
         <p className="chart-settings__note">{t('customEditor.fieldsNote')}</p>
-        {f.map((x, i) => (
+        <div className="anesthesia-definitions__list">{f.map((x, i) => (
           <DefinitionRow key={x.id} title={x.label || t('customEditor.fallbackField')} detail={t(`customEditor.types.${x.type}`)}
+            index={i} reorder={fieldOrder} canReorder={f.length > 1}
             expanded={openField === x.id} onToggle={() => setOpenField(openField === x.id ? undefined : x.id)}>
             <div className="custom-def custom-def--field">
               <label className="custom-def__control">
@@ -215,7 +241,7 @@ export const AnesthesiaCustomEditor: React.FC<{
               </button>
             </div>
           </DefinitionRow>
-        ))}
+        ))}</div>
         {f.length < MAX_CUSTOM_FIELDS && (
           <button type="button" ref={addFieldRef} className="anesthesia-drug__add" onClick={(event) => {
             event.currentTarget.focus();

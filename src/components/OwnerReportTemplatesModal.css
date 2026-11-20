@@ -118,23 +118,21 @@
 .report-templates__section-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 0.5rem;
   min-height: 34px;
 }
 
+.report-templates__section-head > label { flex: 1 1 8rem; min-width: 0; }
+
 .report-templates__section-name {
   font-weight: 600;
+  overflow-wrap: anywhere;
 }
 
 .report-templates__section-actions {
   display: flex;
   gap: 0.3rem;
   flex: 0 0 auto;
-}
-
-.report-templates__icon {
-  min-width: 34px;
 }
 
 /* Standard-tips preview + custom tips editor. */
@@ -218,11 +216,6 @@
   .report-templates .patient-form__input,
   .report-templates .report-templates__chip {
     min-height: 44px;
-  }
-
-  /* Icon buttons are square-ish; both dimensions clear 44px. */
-  .report-templates .report-templates__icon {
-    min-width: 44px;
   }
 }
 

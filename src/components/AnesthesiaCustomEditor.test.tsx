@@ -3,6 +3,25 @@ import { vi } from 'vitest';
 import { AnesthesiaCustomEditor } from './AnesthesiaCustomEditor';
 
 describe('AnesthesiaCustomEditor', () => {
+  it('reorders nerve blocks and fields independently and keeps their values and settings', () => {
+    const blocks = [{ id: 'a', label: 'Mental' }, { id: 'b', label: 'Major palatine' }];
+    const fields = [
+      { id: 'x', label: 'Tube', type: 'number', unit: 'mm' },
+      { id: 'y', label: 'ASA status', type: 'select', options: ['I', 'II'] },
+    ] as const;
+    const onBlocksChange = vi.fn();
+    const onFieldsChange = vi.fn();
+    render(<AnesthesiaCustomEditor blocks={blocks} fields={[{ ...fields[0] }, { ...fields[1], options: [...fields[1].options] }]}
+      onBlocksChange={onBlocksChange} onFieldsChange={onFieldsChange} />);
+    fireEvent.keyDown(screen.getByRole('button', { name: 'Reorder Mental' }), { key: 'ArrowDown' });
+    expect(onBlocksChange).toHaveBeenCalledExactlyOnceWith([blocks[1], blocks[0]]);
+    expect(onFieldsChange).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: 'ASA status' }));
+    fireEvent.keyDown(screen.getByRole('button', { name: 'Reorder ASA status' }), { key: 'ArrowUp' });
+    expect(onFieldsChange).toHaveBeenCalledExactlyOnceWith([fields[1], fields[0]]);
+    expect(screen.getByRole('textbox', { name: 'Field 1 options' })).toHaveValue('I, II');
+  });
+
   it('adds a nerve block and saves it when the name box loses focus', () => {
     const onBlocksChange = vi.fn();
     render(<AnesthesiaCustomEditor blocks={[]} fields={[]} onBlocksChange={onBlocksChange} onFieldsChange={() => {}} />);

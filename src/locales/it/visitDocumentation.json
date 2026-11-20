@@ -70,6 +70,21 @@
         "gpDiagnostics": "Le immagini precedenti sono disponibili per la revisione."
       },
       "builder": {
+        "inputTypes": {
+          "paragraph": "Testo lungo",
+          "shortText": "Testo breve",
+          "radio": "Scelta singola",
+          "multiselect": "Scelta multipla"
+        },
+        "choiceOptions": "Opzioni",
+        "choiceOption": "Opzione {{n}}",
+        "removeChoice": "Rimuovi opzione {{n}}",
+        "choiceHelp": "Inserisca un nome univoco per ogni opzione.",
+        "deletePracticeFieldMessage": "Questo campo verrà rimosso dal selettore dei campi dello studio. I modelli e le visite esistenti conservano il campo.",
+        "recordedText": "Testo registrato",
+        "clearSelection": "Deseleziona",
+        "choiceLegacyHelp": "Cancelli il testo registrato per scegliere un’opzione.",
+        "addChoice": "Aggiungi opzione",
         "addSection": "Aggiungi sezione",
         "searchSections": "Cerca sezioni",
         "practiceFields": "Campi della clinica",

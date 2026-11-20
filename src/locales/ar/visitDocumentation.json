@@ -70,6 +70,21 @@
         "gpDiagnostics": "الصور السابقة متاحة للمراجعة."
       },
       "builder": {
+        "inputTypes": {
+          "paragraph": "نص طويل",
+          "shortText": "نص قصير",
+          "radio": "اختيار واحد",
+          "multiselect": "اختيارات متعددة"
+        },
+        "choiceOptions": "الخيارات",
+        "choiceOption": "الخيار {{n}}",
+        "removeChoice": "إزالة الخيار {{n}}",
+        "choiceHelp": "أدخل اسمًا فريدًا لكل خيار.",
+        "deletePracticeFieldMessage": "سيُزال هذا الحقل من منتقي حقول العيادة. تحتفظ القوالب والزيارات الحالية بالحقل.",
+        "recordedText": "النص المسجل",
+        "clearSelection": "مسح الاختيار",
+        "choiceLegacyHelp": "امسح النص المسجل لاختيار أحد الخيارات.",
+        "addChoice": "إضافة خيار",
         "addSection": "إضافة قسم",
         "searchSections": "البحث في الأقسام",
         "practiceFields": "حقول العيادة",

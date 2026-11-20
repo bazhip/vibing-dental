@@ -179,8 +179,8 @@ html:not(.native-ios) .entry-grid-container .entry-grid-form .imaging__uploader 
     gap: 18px;
     margin-bottom: 20px;
   }
-  /* Touch targets for actions only: never expand tooth marks or chart cells. */
-  html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.species-tab, .diagram-view__action, .diagram-view__tool, .anesthesia-drug__add, .anesthesia-drug__remove, .imaging__queue-dismiss, .exam-table__radio-hit) {
+  /* Keep touch targets outside the chart large enough without expanding chart cells. */
+  html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.species-tab, .diagram-view__action, .diagram-view__tool, .anesthesia-drug__add, .anesthesia-drug__remove, .imaging__queue-dismiss, .exam-table__radio-hit, .visit-documentation__short-text) {
     min-height: 44px;
     min-width: 44px;
   }

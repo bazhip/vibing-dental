@@ -70,6 +70,21 @@
         "gpDiagnostics": "Hay imágenes anteriores disponibles para revisar."
       },
       "builder": {
+        "inputTypes": {
+          "paragraph": "Texto largo",
+          "shortText": "Texto corto",
+          "radio": "Selección única",
+          "multiselect": "Selección múltiple"
+        },
+        "choiceOptions": "Opciones",
+        "choiceOption": "Opción {{n}}",
+        "removeChoice": "Quitar opción {{n}}",
+        "choiceHelp": "Escriba un nombre único para cada opción.",
+        "deletePracticeFieldMessage": "Este campo se quitará del selector de campos de la clínica. Las plantillas y visitas existentes conservan el campo.",
+        "recordedText": "Texto registrado",
+        "clearSelection": "Borrar selección",
+        "choiceLegacyHelp": "Borre el texto registrado para elegir una opción.",
+        "addChoice": "Añadir opción",
         "addSection": "Añadir sección",
         "searchSections": "Buscar secciones",
         "practiceFields": "Campos de la clínica",

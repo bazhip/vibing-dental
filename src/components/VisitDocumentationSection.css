@@ -16,6 +16,37 @@
   min-height: 88px;
   resize: vertical;
 }
+.visit-documentation__short-text {
+  width: 100%;
+  box-sizing: border-box;
+}
+.visit-documentation__option-group {
+  display: grid;
+  gap: 4px;
+  border: 0;
+  padding: 0;
+  margin: 0 0 6px;
+  min-inline-size: 0;
+}
+.visit-documentation__option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 4px 8px;
+  box-sizing: border-box;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow-wrap: anywhere;
+}
+.visit-documentation__option input {
+  accent-color: var(--primary);
+  flex: none;
+}
+.visit-documentation__option:focus-within {
+  border-color: var(--primary);
+}
+.visit-documentation__recorded-text { margin-block-start: 8px; }
 .visit-documentation__helper {
   color: var(--text-muted);
   font-size: 0.8125rem;
@@ -47,6 +78,8 @@
   .visit-documentation .visit-documentation__review {
     min-height: 44px;
   }
+  .visit-documentation__short-text,
+  .visit-documentation__option { min-height: 44px; }
 }
 
 .visit-documentation__review { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
@@ -135,6 +168,28 @@
   color: var(--text);
   margin-block-start: 0;
 }
+.consultation-library__preview-choices {
+  list-style: none;
+  padding-inline-start: 0;
+}
+.consultation-library__preview-choices label { display: flex; align-items: center; gap: 6px; }
+.consultation-library__input-options {
+  display: grid;
+  gap: 8px;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 8px 12px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.consultation-library__input-options legend { font-size: 0.875rem; font-weight: 600; }
+.consultation-library__input-options > button { justify-self: start; }
+.consultation-library__field-option {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+}
 /* Keep shared confirmation dialogs above the template editor. */
 .ui-dialog-overlay.consultation-library-overlay { z-index: 1150; }
 .ui-dialog.consultation-library {
@@ -207,8 +262,8 @@
   background: var(--primary);
   pointer-events: none;
 }
-.consultation-library__template-list > [data-drop-target="-1"]::after { inset-block-start: 0; }
-.consultation-library__template-list > [data-drop-target="1"]::after { inset-block-end: 0; }
+.consultation-library__template-list > [data-drop-target="before"]::after { inset-block-start: 0; }
+.consultation-library__template-list > [data-drop-target="after"]::after { inset-block-end: 0; }
 .consultation-library__list--scroll { max-block-size: 18rem; overflow-y: auto; }
 .consultation-library__new { inline-size: 100%; margin-block-start: 8px; }
 .consultation-library__new span { margin-inline-end: 4px; }
@@ -302,7 +357,8 @@
 .consultation-library__drag { touch-action: none; cursor: grab; }
 .consultation-library__drag:active { cursor: grabbing; }
 .consultation-library__remove { font-size: 1.25rem; }
-.consultation-library__sections > li[data-drop-target] { box-shadow: inset 0 2px var(--primary); }
+.consultation-library__sections > li[data-drop-target="before"] { box-shadow: inset 0 2px var(--primary); }
+.consultation-library__sections > li[data-drop-target="after"] { box-shadow: inset 0 -2px var(--primary); }
 .consultation-library__picker {
   margin-block-start: 8px;
   padding: 8px 12px;

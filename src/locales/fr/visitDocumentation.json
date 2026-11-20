@@ -70,6 +70,21 @@
         "gpDiagnostics": "Des images antérieures sont disponibles pour examen."
       },
       "builder": {
+        "inputTypes": {
+          "paragraph": "Texte long",
+          "shortText": "Texte court",
+          "radio": "Choix unique",
+          "multiselect": "Choix multiples"
+        },
+        "choiceOptions": "Options",
+        "choiceOption": "Option {{n}}",
+        "removeChoice": "Retirer l’option {{n}}",
+        "choiceHelp": "Saisissez un nom unique pour chaque option.",
+        "deletePracticeFieldMessage": "Ce champ sera retiré du sélecteur de champs du cabinet. Les modèles et visites existants conservent le champ.",
+        "recordedText": "Texte enregistré",
+        "clearSelection": "Désélectionner",
+        "choiceLegacyHelp": "Effacez le texte enregistré pour choisir une option.",
+        "addChoice": "Ajouter une option",
         "addSection": "Ajouter une section",
         "searchSections": "Rechercher des sections",
         "practiceFields": "Champs de la clinique",

@@ -58,10 +58,10 @@ it('features numbered charting and links to the settings reference', () => {
 it('finds the template guide by task and follows a link to the consultation transfer guide', () => {
   render(<HelpSite />);
   const main = screen.getByRole('main');
-  fireEvent.change(screen.getByRole('searchbox', { name: 'Search documentation' }), { target: { value: 'archive template' } });
+  fireEvent.change(screen.getByRole('searchbox', { name: 'Search documentation' }), { target: { value: 'Delete template' } });
   fireEvent.click(within(main).getByRole('link', { name: 'Customize consultation templates' }));
   expect(location.hash).toBe('#consultation-templates');
-  expect(within(main).getByRole('img', { name: /Consult template editor with the Add section picker open/ })).toBeInTheDocument();
+  expect(within(main).getByRole('img', { name: /Consultation template editor with a single-choice field/ })).toBeInTheDocument();
 
   fireEvent.click(within(main).getByRole('link', { name: 'Review and transfer a consultation note' }));
   expect(location.hash).toBe('#consultation-transfer');

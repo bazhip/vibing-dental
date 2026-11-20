@@ -1,7 +1,7 @@
 import { useId, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ClinicalDictationSource, PatientInfo } from '../types';
-import { changeConsultationLayout, consultationChoices, consultationSectionKey, consultationSections, consultationVisitSections, consultationLayoutFor, dischargeLayoutFor, dischargeStarterNameKey, EMPTY_CONSULTATION_LIBRARY, EMPTY_DISCHARGE_LIBRARY, isConsultationStarter, type ConsultationLibrary, type ConsultationSection } from '../utils/consultationTemplates';
+import { canConfigureNoteInput, changeConsultationLayout, consultationChoices, consultationSectionKey, consultationSections, consultationStarterNameKey, consultationVisitSections, consultationLayoutFor, dischargeLayoutFor, dischargeStarterNameKey, EMPTY_CONSULTATION_LIBRARY, EMPTY_DISCHARGE_LIBRARY, type ConsultationLibrary, type ConsultationSection } from '../utils/consultationTemplates';
 import { documentationUrl } from '../help/openDocumentation';
 import { formatDate, formatDateTime } from '../i18n/format';
 import { VISIT_DOCUMENT_MAX_LENGTH, VISIT_DOCUMENT_TEMPLATES, type VisitDocumentKind } from '../utils/visitDocumentation';
@@ -32,6 +32,57 @@ export interface VisitDocumentationSectionProps {
   };
 }
 
+function VisitChoiceField({ id, describedBy, options, type, value, readOnly, onChange }: {
+  id: string;
+  describedBy?: string;
+  options: readonly string[];
+  type: 'radio' | 'multiselect';
+  value: string;
+  readOnly?: boolean;
+  onChange: (next: string) => void;
+}) {
+  const { t } = useTranslation('visitDocumentation');
+  const single = type === 'radio';
+  const lines = value ? value.split(/\r\n|\n|\r/u) : [];
+  const recordedText = single
+    ? !!value && !options.includes(value)
+    : lines.some(line => !options.includes(line));
+  const selectionDisabled = readOnly || (single && recordedText);
+
+  return <>
+    <fieldset className="visit-documentation__option-group" disabled={selectionDisabled}
+      aria-labelledby={`${id}-label`} aria-describedby={describedBy}>
+      {options.map(option => {
+        const checked = single ? value === option : lines.includes(option);
+        const next = single ? option : checked
+          ? lines.filter(line => line !== option).join('\n')
+          : [value, option].filter(Boolean).join('\n');
+        return <label className="visit-documentation__option" key={option}>
+          <input type={single ? 'radio' : 'checkbox'} name={id} checked={checked}
+            disabled={next.length > VISIT_DOCUMENT_MAX_LENGTH}
+            onChange={() => { if (!selectionDisabled && next.length <= VISIT_DOCUMENT_MAX_LENGTH) onChange(next); }} />
+          <span dir="auto">{option}</span>
+        </label>;
+      })}
+    </fieldset>
+    {recordedText && <div className="visit-documentation__recorded-text">
+      <label htmlFor={`${id}-recorded`} id={`${id}-recorded-label`} className="patient-form__label">{t('consultation.templates.builder.recordedText')}</label>
+      <textarea id={`${id}-recorded`} className="patient-form__textarea" rows={3} dir="auto"
+        value={value} maxLength={VISIT_DOCUMENT_MAX_LENGTH} readOnly={readOnly}
+        aria-labelledby={`${id}-label ${id}-recorded-label`}
+        aria-describedby={single && !readOnly ? `${id}-recorded-help` : undefined}
+        onChange={event => { if (!readOnly) onChange(event.target.value); }} />
+      {single && !readOnly && <p className="visit-documentation__helper" id={`${id}-recorded-help`}>
+        {t('consultation.templates.builder.choiceLegacyHelp')}
+      </p>}
+    </div>}
+    {single && !readOnly && !!value && !recordedText &&
+      <button type="button" className="diagram-view__action" onClick={() => onChange('')}>
+        {t('consultation.templates.builder.clearSelection')}
+      </button>}
+  </>;
+}
+
 /** Source-only forms: generated clinical/client reports keep their existing owners. */
 export function VisitDocumentationSection({ kind, patientInfo, onChange, readOnly, onReview, reviewLabel, children, dictation, consultation, discharge }: VisitDocumentationSectionProps) {
   const { t, i18n } = useTranslation('visitDocumentation');
@@ -54,8 +105,8 @@ export function VisitDocumentationSection({ kind, patientInfo, onChange, readOnl
     && JSON.stringify(choice.sections) === JSON.stringify(layout.sections)
     && choice.instructions === layout.instructions && choice.detail === layout.detail);
   const layoutName = (option: typeof layout) => {
-    const dischargeKey = isDischarge && dischargeStarterNameKey(option);
-    return dischargeKey ? t(dischargeKey) : isConsultationStarter(option.id) ? t(`consultation.templates.starters.${option.id}`) : option.name;
+    const starterKey = isDischarge ? dischargeStarterNameKey(option) : consultationStarterNameKey(option);
+    return starterKey ? t(starterKey) : option.name;
   };
   const update = (patch: Partial<PatientInfo>) => {
     if (!readOnly) onChange(patch);
@@ -86,27 +137,41 @@ export function VisitDocumentationSection({ kind, patientInfo, onChange, readOnl
     const helper = section?.guidance || ('helperKey' in field ? t(field.helperKey) : key ? t(`${key}.helper`) : '');
     const value = patientInfo[field.id] ?? '';
     const locked = readOnly;
+    const fieldId = `${id}-${field.id}`;
+    const describedBy = helper ? `${fieldId}-help` : undefined;
+    const inputType = section && canConfigureNoteInput(section.id, templateKind) ? section.inputType : undefined;
+    const options = section?.options;
+    const choiceType = options?.length && (inputType === 'radio' || inputType === 'multiselect') ? inputType : undefined;
+    const shortInput = inputType === 'shortText' && !/[\r\n]/u.test(value);
+    const updateField = (text: string) => update({ [field.id]: text });
     return (
       <div className={section?.level === 2 ? 'visit-documentation__field visit-documentation__field--subsection' : 'visit-documentation__field'} key={field.id}>
         <div className="visit-documentation__field-head">
-          <label className="patient-form__label" htmlFor={`${id}-${field.id}`}>{label}</label>
+          {choiceType
+            ? <span className="patient-form__label" id={`${fieldId}-label`}>{label}</span>
+            : <label className="patient-form__label" htmlFor={fieldId}>{label}</label>}
         </div>
-        {helper && <p className="visit-documentation__helper" id={`${id}-${field.id}-help`}>{helper}</p>}
+        {helper && <p className="visit-documentation__helper" id={describedBy}>{helper}</p>}
         {field.id === 'consultationCurrentMedications' && medicationTools}
-        <div className="refine-field">
-          <textarea id={`${id}-${field.id}`} ref={field.id === 'consultationCurrentMedications' ? currentMedicationsInput : undefined} className="patient-form__textarea" rows={field.id === 'gpPhysicalExam' && !isConsultation ? 6 : 3}
-            aria-describedby={helper ? `${id}-${field.id}-help` : undefined} maxLength={VISIT_DOCUMENT_MAX_LENGTH}
-            value={value} readOnly={locked}
-            onSelect={field.id === 'consultationCurrentMedications' ? event => {
-              const input = event.currentTarget;
-              const selection = input.value.slice(input.selectionStart, input.selectionEnd).trim();
-              setSelectedDrug(selection.length <= 100 && !selection.includes('\n') ? selection : '');
-            } : undefined}
-            onChange={event => { if (!locked) update({ [field.id]: event.target.value }); }} />
-          <RefineTextAction value={value} readOnly={locked}
-            maxLength={VISIT_DOCUMENT_MAX_LENGTH}
-            onApply={text => { if (!locked) update({ [field.id]: text }); }} />
-        </div>
+        {choiceType && options ? <VisitChoiceField id={fieldId} describedBy={describedBy} options={options} type={choiceType}
+          value={value} readOnly={locked} onChange={updateField} />
+          : shortInput ? <input type="text" id={fieldId} className="patient-form__input visit-documentation__short-text"
+            value={value} readOnly={locked} dir="auto" aria-describedby={describedBy} maxLength={VISIT_DOCUMENT_MAX_LENGTH}
+            onChange={event => updateField(event.target.value)} />
+          : <div className="refine-field">
+            <textarea id={fieldId} ref={field.id === 'consultationCurrentMedications' ? currentMedicationsInput : undefined} className="patient-form__textarea" rows={field.id === 'gpPhysicalExam' && !isConsultation ? 6 : 3}
+              aria-describedby={describedBy} maxLength={VISIT_DOCUMENT_MAX_LENGTH}
+              value={value} readOnly={locked}
+              onSelect={field.id === 'consultationCurrentMedications' ? event => {
+                const input = event.currentTarget;
+                const selection = input.value.slice(input.selectionStart, input.selectionEnd).trim();
+                setSelectedDrug(selection.length <= 100 && !selection.includes('\n') ? selection : '');
+              } : undefined}
+              onChange={event => updateField(event.target.value)} />
+            <RefineTextAction value={value} readOnly={locked}
+              maxLength={VISIT_DOCUMENT_MAX_LENGTH}
+              onApply={updateField} />
+          </div>}
         {!locked && section?.suggestedText && !value.trim() && <details className="visit-documentation__transcripts">
           <summary>{t('consultation.templates.builder.suggestedText')}</summary>
           <p dir="auto">{section.suggestedText}</p>

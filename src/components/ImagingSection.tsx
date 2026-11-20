@@ -381,6 +381,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                 ) : (
                   <span className="imaging__thumb imaging__thumb--missing">{t('imaging.missing')}</span>
                 )}
+                {a.fileName && <bdi className="imaging__thumb-filename" title={a.fileName}>{a.fileName}</bdi>}
               </a>
               <div className="imaging__meta">
                 <div className="imaging__card-header">

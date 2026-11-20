@@ -70,6 +70,21 @@
         "gpDiagnostics": "Previous imaging is available for review."
       },
       "builder": {
+        "inputTypes": {
+          "paragraph": "Long text",
+          "shortText": "Short text",
+          "radio": "Single choice",
+          "multiselect": "Multiple choice"
+        },
+        "choiceOptions": "Options",
+        "choiceOption": "Option {{n}}",
+        "removeChoice": "Remove option {{n}}",
+        "choiceHelp": "Enter a unique name for each option.",
+        "deletePracticeFieldMessage": "This field will be removed from the practice field picker. Existing templates and visits keep the field.",
+        "recordedText": "Recorded text",
+        "clearSelection": "Clear selection",
+        "choiceLegacyHelp": "Clear the recorded text to choose an option.",
+        "addChoice": "Add option",
         "addSection": "Add section",
         "searchSections": "Search sections",
         "practiceFields": "Practice fields",

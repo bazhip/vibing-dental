@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import i18n from '../i18n';
 import { LocalizedError } from '../utils/apiErrors';
 import { supabase } from '../utils/supabaseClient';
-import { CONSULTATION_LIBRARY_VERSION, EMPTY_CONSULTATION_LIBRARY, EMPTY_DISCHARGE_LIBRARY, EMPTY_IMAGING_LIBRARY, parseConsultationLibrary, type ConsultationLibrary, type NoteTemplateKind } from '../utils/consultationTemplates';
+import { noteLibraryVersion, EMPTY_CONSULTATION_LIBRARY, EMPTY_DISCHARGE_LIBRARY, EMPTY_IMAGING_LIBRARY, parseConsultationLibrary, type ConsultationLibrary, type NoteTemplateKind } from '../utils/consultationTemplates';
 
 type LibraryState =
   | { practiceId: string; loadKey: number; status: 'ready'; config: ConsultationLibrary; revision: string | null }
@@ -42,7 +42,7 @@ export function useConsultationLibrary(practiceId: string, kind: NoteTemplateKin
   }, []);
 
   const save = async (draft: ConsultationLibrary) => {
-    const config = parseConsultationLibrary({ ...draft, version: CONSULTATION_LIBRARY_VERSION }, kind);
+    const config = parseConsultationLibrary({ ...draft, version: noteLibraryVersion(kind) }, kind);
     const conflict = () => new LocalizedError(i18n.t('visitDocumentation:consultation.templates.conflict'));
     if (!supabase || !practiceId || scope.current !== practiceId || current?.status !== 'ready' || current.loadKey !== reloadKey || !config) throw conflict();
     const revision = crypto.randomUUID();

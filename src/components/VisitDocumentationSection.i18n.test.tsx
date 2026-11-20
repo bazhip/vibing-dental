@@ -189,3 +189,40 @@ it('reorders discharge templates from the list without changing the default or s
     defaultId: 'dental-recovery-v1', order: ['discharge-v1', 'dental-recovery-v1'],
   });
 });
+
+it('lets practice owners edit and reorder Consult defaults and save a choice field', () => {
+  const onSave = vi.fn();
+  render(<ConsultationTemplatesDialog initial={EMPTY_CONSULTATION_LIBRARY} status="ready" canEdit
+    onSave={onSave} onReload={vi.fn()} onClose={vi.fn()} />);
+  expect(screen.getByRole('button', { name: /New template/ })).toBeVisible();
+  fireEvent.keyDown(screen.getByRole('button', { name: /Reorder template.*General SOAP/ }), { key: 'ArrowUp' });
+  fireEvent.change(screen.getByRole('textbox', { name: /Template name/ }), { target: { value: 'Dental intake' } });
+  fireEvent.click(screen.getByRole('button', { name: /^⟦Reason for visit⟧$/ }));
+  fireEvent.change(screen.getByRole('combobox', { name: /Field type/ }), { target: { value: 'radio' } });
+  expect(screen.getByRole('button', { name: /Save/ })).toBeDisabled();
+  fireEvent.change(screen.getByRole('textbox', { name: /Option 1/ }), { target: { value: 'Routine screening' } });
+  fireEvent.click(screen.getByRole('button', { name: /Sample preview/ }));
+  expect(screen.getByRole('radio', { name: 'Routine screening' })).toBeDisabled();
+  fireEvent.click(screen.getByRole('button', { name: /Save/ }));
+  expect(onSave.mock.lastCall?.[0]).toMatchObject({
+    defaultId: 'dental-v2', order: ['soap-v1', 'dental-v2', 'recheck-v1'],
+    templates: [expect.objectContaining({ id: 'dental-v2', name: 'Dental intake', sections: expect.arrayContaining([
+      { id: 'complaint', inputType: 'radio', options: ['Routine screening'] },
+    ]) })],
+  });
+});
+
+it('deletes a Consult starter and selects another default without an archive control', async () => {
+  const onSave = vi.fn();
+  render(<><ConsultationTemplatesDialog initial={EMPTY_CONSULTATION_LIBRARY} status="ready" canEdit
+    onSave={onSave} onReload={vi.fn()} onClose={vi.fn()} /><DialogHost /></>);
+  screen.getByText(/More options/).closest('details')!.open = true;
+  expect(screen.queryByRole('button', { name: /Archive|Restore/ })).toBeNull();
+  fireEvent.click(screen.getByRole('button', { name: /Delete template/ }));
+  fireEvent.click(screen.getByRole('button', { name: /^⟦Delete⟧$/ }));
+  await waitFor(() => expect(screen.queryByRole('button', { name: /Dental consultation/ })).toBeNull());
+  fireEvent.click(screen.getByRole('button', { name: /Save/ }));
+  expect(onSave.mock.lastCall?.[0]).toMatchObject({
+    defaultId: 'soap-v1', templates: [expect.objectContaining({ id: 'dental-v2', archived: true })],
+  });
+});

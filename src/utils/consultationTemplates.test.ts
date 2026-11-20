@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CONSULTATION_FIELDS, STANDARD_DISCHARGE, dischargeLayoutFor, changeConsultationLayout, insertImagingOutline, updatePracticeNoteField, consultationVisitSections, consultationChoices, consultationHeadings, consultationLayoutFor, normalizeConsultationLayout, parseConsultationLibrary } from './consultationTemplates';
+import { DENTAL_CONSULTATION, CONSULTATION_FIELDS, STANDARD_DISCHARGE, dischargeLayoutFor, changeConsultationLayout, insertImagingOutline, updatePracticeNoteField, consultationVisitSections, consultationChoices, consultationHeadings, consultationLayoutFor, normalizeConsultationLayout, parseConsultationLibrary } from './consultationTemplates';
 import { normalizeVisitDocumentation } from './visitDocumentation';
 
 const custom = { id: '11111111-1111-4111-8111-111111111111', name: 'Practice consult', fields: [...CONSULTATION_FIELDS].reverse() };
@@ -136,4 +136,23 @@ it('stores Imaging report field settings separately from report text and legacy 
   expect(parseConsultationLibrary(settings, 'imaging')).toEqual(settings);
   expect(parseConsultationLibrary({ ...settings, imagingReportFields: { extra: {} } }, 'imaging')).toBeUndefined();
   expect(parseConsultationLibrary({ ...settings, imagingReportFields: { ct: { starterText: 'x'.repeat(4001) } } }, 'imaging')).toBeUndefined();
+});
+
+it('preserves named, typed Consult defaults in both the library and a saved visit layout', () => {
+  const dental = { ...DENTAL_CONSULTATION, name: 'Dental intake', sections: [
+    { id: 'complaint', inputType: 'multiselect', options: ['Pain', 'Follow-up'] },
+  ] };
+  const config = { version: 3, defaultId: dental.id, templates: [dental] };
+  expect(parseConsultationLibrary(config)).toEqual(config);
+  expect(normalizeConsultationLayout(dental)).toEqual(dental);
+  expect(consultationChoices(parseConsultationLibrary(config)!)[0]).toEqual(dental);
+  expect(parseConsultationLibrary({ ...config, version: 2 })).toBeUndefined();
+  for (const section of [
+    { id: 'gpVitals', inputType: 'shortText' },
+    { id: 'complaint', inputType: 'radio', options: ['same', 'same'] },
+    { id: 'complaint', inputType: 'multiselect', options: ['across\nlines'] },
+    { id: 'complaint', inputType: 'radio' },
+  ]) {
+    expect(parseConsultationLibrary({ ...config, templates: [{ ...dental, sections: [section] }] })).toBeUndefined();
+  }
 });

@@ -248,6 +248,7 @@ alter table public.attachments        add column if not exists practice_id uuid;
 -- Gate: public.current_user_can_store_dicom() — paid or comped practice
 -- members and app admins (migration 20261129_dicom_comped_and_admins).
 alter table public.attachments        add column if not exists original_path text;
+alter table public.attachments        add column if not exists file_name text;
 -- SECURITY DEFINER membership checks used in row policies (see migrations
 -- team_access / team_access_row_policies for the full policy definitions):
 --   is_member_of(pid), is_owner_of(pid)

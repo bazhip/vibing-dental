@@ -4,9 +4,11 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { PdfPagesPreview, canShowPdfInline } from './PdfPagesPreview';
 import { useModalFocus } from '../hooks/useModalFocus';
+import { useReorderList } from '../hooks/useReorderList';
 import ReactDOM from 'react-dom';
 import { useStackLeaveGuard, useStackScreenOptions } from '../ios/Stack';
 import { confirmDialog } from './ui/dialogs';
+import { ReorderHandle } from './ui/ReorderHandle';
 import { Sheet } from '../ios/Sheet';
 import {
   BuiltInSectionId,
@@ -94,7 +96,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
   const closingId = React.useId();
   const actionPanelId = React.useId();
   const draftFieldsId = React.useId();
-  const { t } = useTranslation('reportui');
+  const { t } = useTranslation(['reportui', 'visitDocumentation']);
   const asScreen = presentation === 'screen';
   const asSheet = presentation === 'sheet';
   const categorized = !asScreen && !asSheet;
@@ -223,11 +225,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
     if (previewUrl) URL.revokeObjectURL(previewUrl);
   }, [previewUrl]);
 
-  if (!open) return null;
-
   const selected = draft.templates.find((tpl) => tpl.id === selectedId) ?? draft.templates[0];
-  const strings = reportStrings(selected.language);
-
   // ---- Draft mutation helpers ---------------------------------------------
   const updateTemplate = (patch: Partial<OwnerReportTemplate> | ((tpl: OwnerReportTemplate) => Partial<OwnerReportTemplate>)) => {
     setDraft((d) => ({
@@ -242,15 +240,18 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
       sections: tpl.sections.map((s) => (s.id === id ? ({ ...s, ...patch } as ReportSectionConfig) : s)),
     }));
   };
-  const moveSection = (index: number, delta: number) => {
+  const sectionOrder = useReorderList('.report-templates__sections', 'data-report-section-row', selected?.sections.length ?? 0, (from, to) => {
     updateTemplate((tpl) => {
       const next = [...tpl.sections];
-      const target = index + delta;
-      if (target < 0 || target >= next.length) return {};
-      [next[index], next[target]] = [next[target], next[index]];
+      const [section] = next.splice(from, 1);
+      next.splice(to, 0, section);
       return { sections: next };
     });
-  };
+  });
+
+  if (!open) return null;
+
+  const strings = reportStrings(selected.language);
   const addCustomSection = () => {
     updateTemplate((tpl) => ({
       sections: [...tpl.sections, { id: newId('custom-'), enabled: true, title: '', body: '' }],
@@ -654,9 +655,13 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
             <ol className="report-templates__sections">
               {selected.sections.map((section, index) => {
                 const custom = isCustomSection(section);
+                const name = custom ? section.title.trim() || t('templates.customText') : sectionLabel(section.id as BuiltInSectionId);
                 return (
-                  <li key={section.id} className={`report-templates__section${section.enabled ? '' : ' report-templates__section--off'}`}>
+                  <li key={section.id} className={`report-templates__section${section.enabled ? '' : ' report-templates__section--off'}`}
+                    data-report-section-row={index} data-reorder-drop={sectionOrder.dropAt(index)}>
                     <div className="report-templates__section-head">
+                      <ReorderHandle index={index} reorder={sectionOrder} disabled={!canEdit || busy || selected.sections.length < 2}
+                        label={t('visitDocumentation:consultation.templates.builder.dragField', { field: name })} />
                       <label className="report-templates__check report-templates__check--inline">
                         <input
                           type="checkbox"
@@ -664,31 +669,11 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
                           onChange={(e) => updateSection(section.id, { enabled: e.target.checked })}
                         />
                         <span className="report-templates__section-name">
-                          {custom ? t('templates.customText') : sectionLabel(section.id as BuiltInSectionId)}
+                          {custom ? t('templates.customText') : name}
                         </span>
                       </label>
-                      <span className="report-templates__section-actions">
-                        <button
-                          type="button"
-                          className="diagram-view__action report-templates__icon"
-                          onClick={() => moveSection(index, -1)}
-                          disabled={index === 0}
-                          aria-label={t('templates.moveUp')}
-                          title={t('templates.moveUp')}
-                        >
-                          ↑
-                        </button>
-                        <button
-                          type="button"
-                          className="diagram-view__action report-templates__icon"
-                          onClick={() => moveSection(index, 1)}
-                          disabled={index === selected.sections.length - 1}
-                          aria-label={t('templates.moveDown')}
-                          title={t('templates.moveDown')}
-                        >
-                          ↓
-                        </button>
-                        {custom && (
+                      {custom && (
+                        <span className="report-templates__section-actions">
                           <button
                             type="button"
                             className="diagram-view__action diagram-view__action--danger"
@@ -696,8 +681,8 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
                           >
                             {t('actions.delete', { ns: 'common' })}
                           </button>
-                        )}
-                      </span>
+                        </span>
+                      )}
                     </div>
                     <input
                       type="text"

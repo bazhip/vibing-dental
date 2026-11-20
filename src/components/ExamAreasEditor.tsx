@@ -1,6 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { EXAM_ITEMS } from '../types';
+import { useReorderList } from '../hooks/useReorderList';
+import { ReorderHandle } from './ui/ReorderHandle';
 import {
   CustomExamAreaDef,
   EXAM_PRESET_KEYS,
@@ -16,7 +18,7 @@ export const ExamAreasEditor: React.FC<{
   onHiddenChange?: (next: string[]) => void;
   onChange: (next: CustomExamAreaDef[]) => void;
 }> = ({ areas, onChange, hiddenAreas = [], onHiddenChange }) => {
-  const { t } = useTranslation('settings');
+  const { t } = useTranslation(['settings', 'forms', 'visitDocumentation']);
   // Edited locally, like the custom anesthesia editor.
   const [draft, setDraft] = React.useState(areas);
 
@@ -24,6 +26,13 @@ export const ExamAreasEditor: React.FC<{
     const clean = next.filter((a) => a.label.trim()).map((a) => ({ ...a, label: a.label.trim() }));
     if (JSON.stringify(clean) !== JSON.stringify(areas)) onChange(clean);
   };
+  const reorder = useReorderList('.exam-areas__list', 'data-custom-exam-row', draft.length, (from, to) => {
+    const next = [...draft];
+    const [area] = next.splice(from, 1);
+    next.splice(to, 0, area);
+    setDraft(next);
+    save(next);
+  });
 
   const room = MAX_CUSTOM_EXAM_AREAS - draft.length;
   const toggle = (id: string) => onHiddenChange?.(
@@ -44,8 +53,10 @@ export const ExamAreasEditor: React.FC<{
         </label>
       ))}
       <p className="chart-settings__note">{t('chart.exam.customCount', { used: draft.filter((area) => area.label.trim()).length, max: MAX_CUSTOM_EXAM_AREAS })}</p>
-      {draft.map((a, i) => (
-        <div key={a.id} className="custom-def">
+      <div className="exam-areas__list">{draft.map((a, i) => (
+        <div key={a.id} className="custom-def exam-areas__row" data-custom-exam-row={i} data-reorder-drop={reorder.dropAt(i)}>
+          <ReorderHandle index={i} reorder={reorder} disabled={draft.length < 2}
+            label={t('visitDocumentation:consultation.templates.builder.dragField', { field: a.label.trim() || t('chart.exam.areaN', { n: i + 1 }) })} />
           <input type="checkbox" checked={!hiddenAreas.includes(a.id)}
             aria-label={t('chart.exam.showArea', { name: a.label.trim() || t('chart.exam.areaN', { n: i + 1 }) })}
             onChange={() => toggle(a.id)} />
@@ -59,19 +70,6 @@ export const ExamAreasEditor: React.FC<{
             onChange={(e) => setDraft(draft.map((x) => (x.id === a.id ? { ...x, label: e.target.value } : x)))}
             onBlur={() => save()}
           />
-          <div className="customization-order">
-            {([-1, 1] as const).map((offset) => (
-              <button type="button" key={offset} className="diagram-view__action"
-                disabled={i + offset < 0 || i + offset >= draft.length}
-                aria-label={t(offset === -1 ? 'chart.list.moveUp' : 'chart.list.moveDown', { name: a.label.trim() || t('chart.exam.areaN', { n: i + 1 }) })}
-                onClick={() => {
-                  const next = [...draft];
-                  [next[i], next[i + offset]] = [next[i + offset], next[i]];
-                  setDraft(next);
-                  save(next);
-                }}>{offset === -1 ? '↑' : '↓'}</button>
-            ))}
-          </div>
           <button
             type="button"
             className="diagram-view__action custom-def__remove"
@@ -85,7 +83,7 @@ export const ExamAreasEditor: React.FC<{
             {t('chart.exam.remove')}
           </button>
         </div>
-      ))}
+      ))}</div>
       {suggestions.length > 0 && (
         <>
           <p className="chart-settings__note">{t('chart.exam.suggestions')}</p>

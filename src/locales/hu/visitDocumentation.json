@@ -70,6 +70,21 @@
         "gpDiagnostics": "A korábbi felvételek áttekinthetők."
       },
       "builder": {
+        "inputTypes": {
+          "paragraph": "Hosszú szöveg",
+          "shortText": "Rövid szöveg",
+          "radio": "Egy válasz",
+          "multiselect": "Több válasz"
+        },
+        "choiceOptions": "Lehetőségek",
+        "choiceOption": "{{n}}. lehetőség",
+        "removeChoice": "{{n}}. lehetőség eltávolítása",
+        "choiceHelp": "Adjon meg minden lehetőséghez egyedi nevet.",
+        "deletePracticeFieldMessage": "A mező eltűnik a rendelő mezőválasztójából. A meglévő sablonokban és viziteken megmarad.",
+        "recordedText": "Rögzített szöveg",
+        "clearSelection": "Kijelölés törlése",
+        "choiceLegacyHelp": "A választáshoz törölje a rögzített szöveget.",
+        "addChoice": "Lehetőség hozzáadása",
         "addSection": "Szakasz hozzáadása",
         "searchSections": "Szakaszok keresése",
         "practiceFields": "Rendelői mezők",

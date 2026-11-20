@@ -6,19 +6,19 @@ vi.mock('../utils/supabaseClient', () => ({ cloudEnabled: true, supabase: {
   storage: { from: () => ({ createSignedUrls: async (paths: string[]) => ({ data: paths.map(path => ({ path, signedUrl: `https://images.test/${path}` })) }) }) },
 } }));
 import { useAttachments } from './useAttachments';
-const result = (id: string) => ({ data: [{ id: `image-${id}`, chart_id: id, path: `${id}/image.jpg`, caption: '', kind: 'photo', tooth_triadan: null, created_at: '2026-11-17T12:00:00Z' }], error: null });
+const result = (id: string, fileName?: string) => ({ data: [{ id: `image-${id}`, chart_id: id, path: `${id}/image.jpg`, file_name: fileName, caption: '', kind: 'photo', tooth_triadan: null, created_at: '2026-11-17T12:00:00Z' }], error: null });
 beforeEach(() => backend.responses.clear());
 it('clears image visibility immediately when switching between two chart ids', async () => {
-  backend.responses.set('a', Promise.resolve(result('a')));
+  backend.responses.set('a', Promise.resolve(result('a', 'Upper jaw.jpg')));
   let finishB!: (value: unknown) => void;
   backend.responses.set('b', new Promise(resolve => { finishB = resolve; }));
   const h = renderHook(({ id }) => useAttachments(id), { initialProps: { id: 'a' } });
-  await waitFor(() => expect(h.result.current.items[0]?.id).toBe('image-a'));
+  await waitFor(() => expect(h.result.current.items[0]).toMatchObject({ id: 'image-a', fileName: 'Upper jaw.jpg' }));
   h.rerender({ id: 'b' });
   expect(h.result.current.items).toEqual([]);
   expect(h.result.current.loaded).toBe(false);
   await act(async () => finishB(result('b')));
-  await waitFor(() => expect(h.result.current.items.map(image => image.chartId)).toEqual(['b']));
+  await waitFor(() => expect(h.result.current.items[0]).toMatchObject({ chartId: 'b', fileName: null }));
   h.rerender({ id: 'a' });
   expect(h.result.current.items).toEqual([]);
   await waitFor(() => expect(h.result.current.items.map(image => image.chartId)).toEqual(['a']));

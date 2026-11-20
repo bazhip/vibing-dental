@@ -70,6 +70,21 @@
         "gpDiagnostics": "可查看以往的影像资料。"
       },
       "builder": {
+        "inputTypes": {
+          "paragraph": "长文本",
+          "shortText": "短文本",
+          "radio": "单选",
+          "multiselect": "多选"
+        },
+        "choiceOptions": "选项",
+        "choiceOption": "选项 {{n}}",
+        "removeChoice": "移除选项 {{n}}",
+        "choiceHelp": "为每个选项输入一个唯一的名称。",
+        "deletePracticeFieldMessage": "此字段将从诊所字段选择器中移除。现有模板和就诊仍会保留此字段。",
+        "recordedText": "已记录文本",
+        "clearSelection": "清除选择",
+        "choiceLegacyHelp": "清除已记录文本后即可选择选项。",
+        "addChoice": "添加选项",
         "addSection": "添加分节",
         "searchSections": "搜索分节",
         "practiceFields": "诊所字段",

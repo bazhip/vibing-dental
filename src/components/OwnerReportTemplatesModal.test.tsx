@@ -61,6 +61,17 @@ describe('OwnerReportTemplatesModal', () => {
     expect(onClose).toHaveBeenCalled();
   });
 
+  it('saves the new owner report section order after a keyboard reorder', async () => {
+    const onSave = vi.fn().mockResolvedValue(undefined);
+    renderModal({ onSave });
+    fireEvent.click(screen.getByRole('button', { name: 'Report content' }));
+    fireEvent.keyDown(screen.getByRole('button', { name: 'Reorder Teeth removed' }), { key: 'ArrowDown' });
+    fireEvent.click(screen.getByRole('button', { name: 'Save templates' }));
+    await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
+    const saved = onSave.mock.calls[0][0] as OwnerReportConfig;
+    expect(saved.templates[0].sections[1].id).toBe('extractions');
+  });
+
   it('disables template mutations while saving', async () => {
     let finish!: () => void;
     const onSave = vi.fn(() => new Promise<void>((resolve) => { finish = resolve; }));

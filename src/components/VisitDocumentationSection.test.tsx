@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 import { EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS, type PatientInfo } from '../types';
-import { CONSULTATION_FIELDS, DISCHARGE_RECOVERY_ACTIVITY, EMPTY_DISCHARGE_LIBRARY } from '../utils/consultationTemplates';
+import { CONSULTATION_FIELDS, DISCHARGE_RECOVERY_ACTIVITY, EMPTY_DISCHARGE_LIBRARY, type ConsultationSection } from '../utils/consultationTemplates';
 import { VisitDocumentationSection } from './VisitDocumentationSection';
 export const patient: PatientInfo = { patientName: '', patientNumber: '', ownerName: '', ownerPhone: '', ownerEmail: '', doctor: '', tech: '', date: '', complaint: 'Reason', treatmentReport: 'Existing treatment', recallDate: '', nerveBlocks: { ...EMPTY_NERVE_BLOCKS }, exam: { ...EMPTY_EXAM_FINDINGS } };
 it('edits declarative consultation sources with linked visible help and reviews the existing output', () => {
@@ -52,6 +52,15 @@ it('selects a consult template without changing any clinical fields', () => {
   fireEvent.click(screen.getByRole('button', { name: 'General SOAP', pressed: false }));
   expect(onChange).toHaveBeenCalledWith({ consultationLayout: expect.objectContaining({ id: 'soap-v1' }) });
   expect(screen.getByRole('textbox', { name: 'Reason for visit' })).toHaveValue('Reason');
+});
+
+it('shows the saved name of an edited starter in the consult template selector', () => {
+  render(<VisitDocumentationSection kind="consultation" patientInfo={patient} onChange={vi.fn()} consultation={{ library: {
+    defaultId: 'dental-v2',
+    templates: [{ id: 'dental-v2', name: 'Dental intake', fields: CONSULTATION_FIELDS, sections: [{ id: 'complaint' }] }],
+  } }} />);
+  expect(screen.getByRole('button', { name: 'Dental intake', pressed: true })).toBeVisible();
+  expect(screen.queryByRole('button', { name: 'Dental consultation' })).toBeNull();
 });
 
 it('keeps a saved consult template visible and protects its sources when locked', () => {
@@ -111,4 +120,80 @@ it('retains recorded activity when switching from Dental recovery and skips blan
   rerender(<VisitDocumentationSection {...props} patientInfo={{ ...documented, ...onChange.mock.lastCall![0] }} />);
   fireEvent.click(screen.getByText('Fields from other templates'));
   expect(screen.getByRole('textbox', { name: 'Activity' })).toHaveValue('Activity restrictions reviewed.');
+});
+
+it('renders short text and single-choice fields in consultations while leaving the medication editor as text', () => {
+  const onChange = vi.fn();
+  const sections: ConsultationSection[] = [
+    { id: 'consultationCustom_reference', label: 'Referral number', inputType: 'shortText' },
+    { id: 'consultationCustom_follow-up', label: 'Follow-up method', inputType: 'radio', options: ['Telephone', 'In person'] },
+    { id: 'consultationCurrentMedications', inputType: 'radio', options: ['None', 'Known'] },
+  ];
+  const info = { ...patient, consultationLayout: { id: 'dental-v2', fields: CONSULTATION_FIELDS, sections } };
+  const { rerender } = render(<VisitDocumentationSection kind="consultation" patientInfo={info} onChange={onChange} />);
+  const reference = screen.getByRole('textbox', { name: 'Referral number' });
+  expect(reference.tagName).toBe('INPUT');
+  fireEvent.change(reference, { target: { value: 'R-102' } });
+  expect(onChange).toHaveBeenLastCalledWith({ consultationCustom_reference: 'R-102' });
+  expect(screen.getByRole('textbox', { name: 'Current medications' }).tagName).toBe('TEXTAREA');
+  expect(screen.getByRole('group', { name: 'Follow-up method' })).toBeVisible();
+  fireEvent.click(screen.getByRole('radio', { name: 'In person' }));
+  expect(onChange).toHaveBeenLastCalledWith({ 'consultationCustom_follow-up': 'In person' });
+
+  const saved: PatientInfo = { ...info, 'consultationCustom_follow-up': 'In person' };
+  rerender(<VisitDocumentationSection kind="consultation" patientInfo={saved} onChange={onChange} />);
+  expect(screen.getByRole('radio', { name: 'In person' })).toBeChecked();
+  fireEvent.click(screen.getByRole('button', { name: 'Clear selection' }));
+  expect(onChange).toHaveBeenLastCalledWith({ 'consultationCustom_follow-up': '' });
+
+  rerender(<VisitDocumentationSection kind="consultation" patientInfo={saved} onChange={onChange} readOnly />);
+  expect(screen.getByRole('radio', { name: 'Telephone' })).toBeDisabled();
+  onChange.mockClear();
+  fireEvent.click(screen.getByRole('radio', { name: 'Telephone' }));
+  expect(onChange).not.toHaveBeenCalled();
+});
+
+it('keeps unmatched single-choice text and multiline short text editable', () => {
+  const onChange = vi.fn();
+  const sections: ConsultationSection[] = [
+    { id: 'consultationCustom_method', label: 'Method', inputType: 'radio', options: ['Telephone', 'In person'] },
+    { id: 'consultationCustom_reference', label: 'Referral number', inputType: 'shortText' },
+  ];
+  const info: PatientInfo = {
+    ...patient, consultationLayout: { id: 'dental-v2', fields: CONSULTATION_FIELDS, sections },
+    consultationCustom_method: 'Schedule next week if needed',
+    consultationCustom_reference: 'R-102\nAlso see D-201',
+  };
+  render(<VisitDocumentationSection kind="consultation" patientInfo={info} onChange={onChange} />);
+  expect(screen.getByRole('radio', { name: 'Telephone' })).toBeDisabled();
+  expect(screen.getByRole('textbox', { name: 'Referral number' })).toHaveValue('R-102\nAlso see D-201');
+  const recorded = screen.getByRole('textbox', { name: 'Method Recorded text' });
+  expect(recorded).toHaveValue('Schedule next week if needed');
+  fireEvent.change(recorded, { target: { value: 'Record two-week follow-up' } });
+  expect(onChange).toHaveBeenLastCalledWith({ consultationCustom_method: 'Record two-week follow-up' });
+});
+
+it('saves multiple discharge options on separate lines and preserves recorded text when toggling them', () => {
+  const onChange = vi.fn();
+  const sections: ConsultationSection[] = [
+    { id: 'dischargeInstructions', inputType: 'multiselect', options: ['Brush daily', 'Soft food'] },
+  ];
+  const info: PatientInfo = {
+    ...patient,
+    dischargeLayout: { id: 'example', fields: [], sections },
+    dischargeInstructions: 'Brush daily\nEarlier custom advice',
+  };
+  const { rerender } = render(<VisitDocumentationSection kind="discharge" patientInfo={info} onChange={onChange} />);
+  expect(screen.getByRole('group', { name: 'Instructions' })).toBeVisible();
+  expect(screen.getByRole('checkbox', { name: 'Brush daily' })).toBeChecked();
+  const recorded = screen.getByRole('textbox', { name: 'Instructions Recorded text' });
+  expect(recorded).toHaveValue('Brush daily\nEarlier custom advice');
+  fireEvent.click(screen.getByRole('checkbox', { name: 'Soft food' }));
+  expect(onChange).toHaveBeenLastCalledWith({ dischargeInstructions: 'Brush daily\nEarlier custom advice\nSoft food' });
+  rerender(<VisitDocumentationSection kind="discharge"
+    patientInfo={{ ...info, ...onChange.mock.lastCall![0] }} onChange={onChange} />);
+  fireEvent.click(screen.getByRole('checkbox', { name: 'Brush daily' }));
+  expect(onChange).toHaveBeenLastCalledWith({ dischargeInstructions: 'Earlier custom advice\nSoft food' });
+  fireEvent.change(screen.getByRole('textbox', { name: 'Instructions Recorded text' }), { target: { value: 'Updated custom advice' } });
+  expect(onChange).toHaveBeenLastCalledWith({ dischargeInstructions: 'Updated custom advice' });
 });

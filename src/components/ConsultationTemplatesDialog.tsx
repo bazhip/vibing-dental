@@ -2,6 +2,7 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { useReorderList } from '../hooks/useReorderList';
+import { ReorderHandle } from './ui/ReorderHandle';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
 import { documentationUrl } from '../help/openDocumentation';
@@ -9,9 +10,9 @@ import { isNativeApp } from '../native/platform';
 import { Sheet } from '../ios/Sheet';
 import { confirmDialog, friendlyError } from './ui/dialogs';
 import {
-  CONSULTATION_LIBRARY_VERSION, CONSULTATION_TEMPLATE_LIMIT, CONSULTATION_TEMPLATE_NAME_LIMIT,
-  CONSULTATION_SECTION_LIMIT, PRACTICE_NOTE_FIELD_LIMIT, practiceNoteFields, updatePracticeNoteField, consultationHeadings, consultationChoices, consultationLibraryFits, consultationSectionKey, consultationSections, dentalSectionKey, isCustomNoteField, isCustomDischargeField, standardNoteFields, defaultNoteLayout, dischargeStarterNameKey, isDischargeStarter, DISCHARGE_RECOVERY_ACTIVITY, DENTAL_RECOVERY, STANDARD_DISCHARGE,
-  isConsultationStarter, parseConsultationLibrary, IMAGING_REPORT_KINDS, IMAGING_STARTER_TEXT_LIMIT,
+  noteLibraryVersion, CONSULTATION_TEMPLATE_LIMIT, CONSULTATION_TEMPLATE_NAME_LIMIT,
+  CONSULTATION_SECTION_LIMIT, PRACTICE_NOTE_FIELD_LIMIT, practiceNoteFields, updatePracticeNoteField, consultationHeadings, consultationChoices, consultationLibraryFits, consultationSectionKey, consultationSections, dentalSectionKey, isCustomNoteField, isCustomDischargeField, standardNoteFields, defaultNoteLayout, dischargeStarterNameKey, DISCHARGE_RECOVERY_ACTIVITY, DENTAL_RECOVERY, STANDARD_DISCHARGE,
+  consultationStarterNameKey, isNoteStarter, noteStarterName, canConfigureNoteInput, NOTE_INPUT_TYPES, NOTE_OPTION_LIMIT, NOTE_OPTION_LENGTH, parseConsultationLibrary, IMAGING_REPORT_KINDS, IMAGING_STARTER_TEXT_LIMIT,
   type PracticeNoteField, type NoteTemplateKind, type ConsultationSection, type ConsultationLayout, type ConsultationLibrary, type PracticeConsultationTemplate,
 } from '../utils/consultationTemplates';
 
@@ -31,7 +32,7 @@ interface Props {
 }
 
 export function ConsultationTemplatesDialog({ kind = 'consultation', initial, status, canEdit, onSave, onReload, onClose, onOpenSettings }: Props) {
-  const { t, i18n } = useTranslation(['visitDocumentation', 'common', 'reportui', 'settings', 'library', 'app']);
+  const { t, i18n } = useTranslation(['visitDocumentation', 'common', 'reportui', 'settings', 'library', 'app', 'forms']);
   const id = useId();
   const isDischarge = kind === 'discharge';
   const isImaging = kind === 'imaging';
@@ -51,7 +52,6 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
     templateNameInput.current?.focus();
     templateNameInput.current?.select();
   }, [newTemplateId]);
-  const [showArchived, setShowArchived] = useState(false);
   const [preview, setPreview] = useState(false);
   const [expanded, setExpanded] = useState<ConsultationSection['id']>();
   const [adding, setAdding] = useState(false);
@@ -68,34 +68,31 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
   const [error, setError] = useState('');
   const changed = draft !== initial && JSON.stringify(draft) !== JSON.stringify(initial);
   const activeTemplates = consultationChoices(draft, kind);
-  const archivedTemplates = draft.templates.filter(template => template.archived && !(isDischarge && isDischargeStarter(template.id)));
-  const templates = showArchived ? [...activeTemplates, ...archivedTemplates] : activeTemplates;
+  const templates = activeTemplates;
   const selected: ConsultationLayout = templates.find(template => template.id === selectedId) ?? activeTemplates[0] ?? starter;
   useEffect(() => {
     if (!focusTemplate.current) return;
     focusTemplate.current = false;
     listRef.current?.querySelector<HTMLButtonElement>('[aria-current="true"]')?.focus();
   }, [selected.id]);
-  const builtinDischarge = isDischarge && isDischargeStarter(selected.id);
+  const builtin = isNoteStarter(selected.id, kind);
   const stored = draft.templates.find(template => template.id === selected.id);
-  const custom = stored ?? (builtinDischarge ? {
-    ...selected, name: selected.id === STANDARD_DISCHARGE.id ? 'Standard discharge' : 'Dental recovery',
-  } : undefined);
+  const custom = stored ?? (builtin ? { ...selected, name: noteStarterName(selected.id) } : undefined);
   const editable = status === 'ready' && canEdit && !saving;
-  const canAddTemplate = editable && draft.templates.filter(template => !isDischarge || !isDischargeStarter(template.id)).length < CONSULTATION_TEMPLATE_LIMIT;
+  const canAddTemplate = editable && draft.templates.filter(template => !isNoteStarter(template.id, kind)).length < CONSULTATION_TEMPLATE_LIMIT;
   const editSelected = editable && !!custom && !custom.archived && !preview;
   const sections = consultationSections(selected);
   const practiceFields = practiceNoteFields(draft, kind);
   const canCreateField = (draft.practiceFields?.length ?? 0) < PRACTICE_NOTE_FIELD_LIMIT;
-  const canReorderTemplates = isDischarge && editable && activeTemplates.length > 1;
-  const selectedTemplateIndex = activeTemplates.findIndex(template => template.id === selected.id);
-  const versionedDraft: ConsultationLibrary = { ...draft, version: CONSULTATION_LIBRARY_VERSION };
+  const canReorderTemplates = editable && activeTemplates.length > 1;
+  const versionedDraft: ConsultationLibrary = { ...draft, version: noteLibraryVersion(kind) };
   const valid = !!parseConsultationLibrary(versionedDraft, kind);
   const language = i18n.resolvedLanguage ?? i18n.language;
   const nameOf = (template: ConsultationLayout) => {
     const dischargeKey = isDischarge && dischargeStarterNameKey(template);
     if (dischargeKey) return t(dischargeKey);
-    if (isConsultationStarter(template.id)) return t(`consultation.templates.starters.${template.id}`);
+    const consultKey = consultationStarterNameKey(template);
+    if (consultKey) return t(consultKey);
     return template.name || t('consultation.templates.untitled');
   };
   const replaceTemplate = (template: PracticeConsultationTemplate) => draft.templates.some(item => item.id === template.id)
@@ -125,11 +122,13 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
     choose(id);
     setNewTemplateId(id);
   };
-  const createTemplate = () => addTemplate({
-    name: t('consultation.templates.untitled'), fields: STANDARD_DISCHARGE.fields, sections: consultationSections(STANDARD_DISCHARGE),
-  });
+  const createTemplate = () => {
+    const startingLayout = isDischarge ? STANDARD_DISCHARGE : starter;
+    addTemplate({ name: t('consultation.templates.untitled'), fields: startingLayout.fields, sections: consultationSections(startingLayout) });
+  };
   const duplicate = () => addTemplate({
-    name: nameOf(selected), fields: selected.fields, sections,
+    name: [...t('reportui:templates.copyName', { name: nameOf(selected) })].slice(0, CONSULTATION_TEMPLATE_NAME_LIMIT).join(''),
+    fields: selected.fields, sections,
     ...(selected.instructions ? { instructions: selected.instructions } : {}),
     ...(selected.detail ? { detail: selected.detail } : {}),
   });
@@ -153,10 +152,10 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
     }) };
     const shared = practiceFields.find(field => field.id === section.id);
     const old = sections.find(item => item.id === section.id);
-    if (shared && old && (old.label !== section.label || SECTION_TEXT_SETTINGS.some(key => old[key] !== section[key]))
+    if (shared && old && (old.label !== section.label || SECTION_TEXT_SETTINGS.some(key => old[key] !== section[key]) || old.inputType !== section.inputType || old.options !== section.options)
       && (canCreateField || draft.practiceFields?.some(field => field.id === shared.id))) {
-      const { label, guidance, example, suggestedText } = section;
-      setDraft(updatePracticeNoteField(next, { ...shared, label: label ?? '', guidance, example, suggestedText }));
+      const { label, guidance, example, suggestedText, inputType, options } = section;
+      setDraft(updatePracticeNoteField(next, { ...shared, label: label ?? '', guidance, example, suggestedText, inputType, options }));
     } else setDraft(next);
   };
   const closePicker = () => {
@@ -183,12 +182,21 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
     setExpanded(field.id);
     closePicker();
   };
-  const toggleFieldArchive = (field: PracticeNoteField) => {
+  const deletePracticeField = async (field: PracticeNoteField) => {
     const members = draft.practiceFields ?? [];
     const known = members.some(item => item.id === field.id);
     if (!known && !canCreateField) return;
-    const updated = { ...field, archived: !field.archived };
-    setDraft({ ...draft, practiceFields: known ? members.map(item => item.id === field.id ? updated : item) : [...members, updated] });
+    if (!await confirmDialog({
+      title: t('library:templates.deleteTitle', { name: field.label }),
+      message: t('consultation.templates.builder.deletePracticeFieldMessage'),
+      confirmLabel: t('common:actions.delete'),
+      danger: true,
+    })) return;
+    // A field may still be referenced by an existing template. Its hidden
+    // entry keeps that definition from being rediscovered in the picker.
+    const inUse = draft.templates.some(template => template.sections?.some(section => section.id === field.id));
+    const remaining = members.filter(item => item.id !== field.id);
+    setDraft({ ...draft, practiceFields: inUse ? [...remaining, { ...field, archived: true }] : remaining });
   };
   const fieldToKeep = (id: ConsultationSection['id']) => {
     if (draft.practiceFields?.some(field => field.id === id)) return undefined;
@@ -231,7 +239,7 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
     const [templateId] = order.splice(index, 1);
     order.splice(destination, 0, templateId);
     setDraft({ ...draft, order });
-    if (isDischarge) setAnnouncement(t('discharge.templates.templateMoved', {
+    setAnnouncement(t('discharge.templates.templateMoved', {
       template: nameOf(activeTemplates[index]), position: destination + 1,
     }));
   };
@@ -245,7 +253,7 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
       && !draft.templates.some(template => template.id !== selected.id && template.sections?.some(item => item.id === field.id))
       ? [field] : [];
   });
-  const canDelete = !!custom && (custom.archived || !!fallbackTemplate)
+  const canDelete = !!custom && !!fallbackTemplate
     && (draft.practiceFields?.length ?? 0) + fieldsToKeepOnDelete.length <= PRACTICE_NOTE_FIELD_LIMIT;
   const deleteTemplate = async () => {
     if (!custom || !canDelete || !await confirmDialog({
@@ -257,29 +265,14 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
     setDraft({
       ...draft,
       defaultId: draft.defaultId === selected.id && fallbackTemplate ? fallbackTemplate.id : draft.defaultId,
-      templates: builtinDischarge
-        ? replaceTemplate({ ...(selected.id === STANDARD_DISCHARGE.id ? STANDARD_DISCHARGE : DENTAL_RECOVERY),
-          name: selected.id === STANDARD_DISCHARGE.id ? 'Standard discharge' : 'Dental recovery', archived: true })
+      templates: builtin
+        ? replaceTemplate({ ...custom, archived: true })
         : draft.templates.filter(template => template.id !== selected.id),
       ...(draft.order ? { order: draft.order.filter(id => id !== selected.id) } : {}),
       ...(fieldsToKeepOnDelete.length ? { practiceFields: [...(draft.practiceFields ?? []), ...fieldsToKeepOnDelete] } : {}),
     });
     focusTemplate.current = true;
     choose(fallbackTemplate?.id ?? draft.defaultId);
-  };
-  const toggleArchive = () => {
-    if (!custom) return;
-    const archiving = !custom.archived;
-    setDraft({
-      ...draft,
-      defaultId: archiving && draft.defaultId === custom.id ? fallbackTemplate?.id ?? draft.defaultId : draft.defaultId,
-      templates: draft.templates.map(item => item.id === custom.id ? { ...item, archived: archiving } : item),
-    });
-    if (archiving && !showArchived) choose(fallbackTemplate?.id ?? draft.defaultId);
-  };
-  const setArchivedVisibility = () => {
-    if (showArchived && custom?.archived) choose(draft.defaultId);
-    setShowArchived(!showArchived);
   };
   const save = async () => {
     if (!editable || !valid || savingRef.current) return;
@@ -304,7 +297,6 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
   const backdrop = useBackdropDismiss(() => void close());
 
   const title = t(isImaging ? 'imaging.layout.title' : isDischarge ? 'discharge.templates.title' : 'consultation.templates.title');
-  const menuActionClass = isDischarge ? undefined : 'ui-btn ui-btn--secondary';
   const body = <>
     <div className="consultation-library__body">
       <div className="consultation-library__intro">
@@ -351,20 +343,9 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
             className={templates.length > 6 ? 'consultation-library__template-list consultation-library__list--scroll' : 'consultation-library__template-list'}>
             {templates.map((template, index) => {
               const sortable = canReorderTemplates && index < activeTemplates.length;
-              const target = templateReorder.target?.to === index && templateReorder.target.from !== index
-                ? Math.sign(index - templateReorder.target.from) : undefined;
-              return <li key={template.id} data-template-row={sortable ? index : undefined} data-drop-target={target}>
-                {sortable && <button type="button" className="consultation-library__row-action consultation-library__drag"
-                  aria-label={t('discharge.templates.dragTemplate', { template: nameOf(template) })}
-                  aria-keyshortcuts="ArrowUp ArrowDown"
-                  onPointerDown={event => templateReorder.start(event, index)} onPointerMove={templateReorder.track}
-                  onPointerUp={event => templateReorder.finish(event, true)} onPointerCancel={event => templateReorder.finish(event, false)}
-                  onLostPointerCapture={event => templateReorder.finish(event, false)}
-                  onKeyDown={event => {
-                    if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return;
-                    event.preventDefault();
-                    moveTemplate(index, index + (event.key === 'ArrowUp' ? -1 : 1));
-                  }}><span aria-hidden="true">⠿</span></button>}
+              return <li key={template.id} data-template-row={sortable ? index : undefined} data-drop-target={templateReorder.dropAt(index)}>
+                {sortable && <ReorderHandle index={index} reorder={templateReorder}
+                  label={t('discharge.templates.dragTemplate', { template: nameOf(template) })} />}
                 <button type="button" className="consultation-library__template-choice" aria-current={template.id === selected.id || undefined}
                   onClick={() => { if (template.id !== selected.id) choose(template.id); }}><span dir="auto">{nameOf(template)}</span>
                   {template.id === draft.defaultId && <small>{t('consultation.templates.default')}</small>}
@@ -372,47 +353,32 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
               </li>;
             })}
           </ul>
-          {isDischarge && editable && <button type="button" className="ui-btn ui-btn--secondary consultation-library__new"
+          {editable && <button type="button" className="ui-btn ui-btn--secondary consultation-library__new"
             disabled={!canAddTemplate} onClick={createTemplate}><span aria-hidden="true">+</span> {t('library:templates.new')}</button>}
-          {archivedTemplates.length > 0 && <label className="consultation-library__archived">
-            <input type="checkbox" checked={showArchived} onChange={setArchivedVisibility} />
-            {t('consultation.templates.showArchived')}
-          </label>}
         </div>
         <section className="consultation-library__editor" aria-labelledby={`${id}-name`}>
-          <header className={isDischarge && editSelected ? 'visually-hidden' : 'consultation-library__heading'}>
+          <header className={editSelected ? 'visually-hidden' : 'consultation-library__heading'}>
             <h3 id={`${id}-name`}><bdi>{nameOf(selected)}</bdi></h3>
-            {custom?.archived && <span className="visit-documentation__status">{t('consultation.templates.archived')}</span>}
           </header>
           {editSelected && <label className="ui-dialog__label">
             {t('reportui:templates.nameLabel')}
             <input ref={templateNameInput} className="ui-dialog__input" dir="auto" maxLength={CONSULTATION_TEMPLATE_NAME_LIMIT}
-              value={dischargeStarterNameKey(custom) ? nameOf(custom) : custom.name}
+              value={dischargeStarterNameKey(custom) || consultationStarterNameKey(custom) ? nameOf(custom) : custom.name}
               onChange={event => update({ ...custom, name: event.target.value })} />
           </label>}
-          <div className={isDischarge ? 'consultation-library__tools consultation-library__tools--discharge' : 'consultation-library__tools'}>
+          <div className="consultation-library__tools consultation-library__tools--discharge">
             <button type="button" className="ui-btn ui-btn--secondary" aria-pressed={preview}
               onClick={() => setPreview(!preview)}>{t('consultation.templates.preview')}</button>
-            {editable && !isDischarge && <button type="button" className="ui-btn ui-btn--secondary"
-              disabled={!canAddTemplate} onClick={duplicate}>{t('common:actions.duplicate')}</button>}
             {editable && <details key={selected.id}>
               <summary>{t('consultation.templates.options')}</summary>
-              <div className={isDischarge ? 'consultation-library__menu consultation-library__menu--discharge' : 'consultation-library__menu'}>
-                {isDischarge && <button type="button" disabled={!canAddTemplate} onClick={duplicate}>{t('common:actions.duplicate')}</button>}
-                <button type="button" className={menuActionClass} disabled={selected.id === draft.defaultId || custom?.archived}
+              <div className="consultation-library__menu consultation-library__menu--discharge">
+                <button type="button" disabled={!canAddTemplate} onClick={duplicate}>{t('common:actions.duplicate')}</button>
+                <button type="button" disabled={selected.id === draft.defaultId}
                   onClick={() => setDraft({ ...draft, defaultId: selected.id })}>{t('consultation.templates.setDefault')}</button>
-                {!isDischarge && selectedTemplateIndex >= 0 && <>
-                  <button type="button" className={menuActionClass} disabled={selectedTemplateIndex === 0}
-                    onClick={() => moveTemplate(selectedTemplateIndex, selectedTemplateIndex - 1)}>{t('consultation.templates.builder.earlier')}</button>
-                  <button type="button" className={menuActionClass} disabled={selectedTemplateIndex === activeTemplates.length - 1}
-                    onClick={() => moveTemplate(selectedTemplateIndex, selectedTemplateIndex + 1)}>{t('consultation.templates.builder.later')}</button>
-                </>}
-                <button type="button" className={menuActionClass} disabled={!canAddTemplate}
+                <button type="button" disabled={!canAddTemplate}
                   onClick={() => setImporting(!importing)}>{t('consultation.templates.builder.importTitle')}</button>
-                {custom && !builtinDischarge && <button type="button" className={menuActionClass}
-                  disabled={!custom.archived && !fallbackTemplate} onClick={toggleArchive}>{t(custom.archived ? 'consultation.templates.restore' : 'consultation.templates.archive')}</button>}
-                {isDischarge && <button type="button" className="consultation-library__delete" disabled={!canDelete}
-                  onClick={() => void deleteTemplate()}>{t('library:templates.deleteConfirm')}</button>}
+                <button type="button" className="consultation-library__delete" disabled={!canDelete}
+                  onClick={() => void deleteTemplate()}>{t('library:templates.deleteConfirm')}</button>
               </div>
             </details>}
           </div>
@@ -449,25 +415,21 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
                 : isCustomNoteField(section.id) ? ''
                   : section.id === 'dischargeMedications' || section.id === 'dischargeInstructions' || section.id === 'dischargeFollowUp'
                     ? t(`discharge.templates.samples.${section.id}`) : t(`consultation.templates.samples.${section.id}`));
-              return <li key={section.id} data-section-row={index} data-drop-target={sectionReorder.target?.to === index || undefined}
+              return <li key={section.id} data-section-row={index} data-drop-target={sectionReorder.dropAt(index)}
                 className={section.level === 2 ? 'consultation-library__subsection' : undefined}>
                 <div className="consultation-library__section-row">
-                  {editSelected && <button type="button" className="consultation-library__row-action consultation-library__drag"
-                    aria-label={t('consultation.templates.builder.dragField', { field: label })}
-                    aria-keyshortcuts="ArrowUp ArrowDown"
-                    onPointerDown={event => sectionReorder.start(event, index)} onPointerMove={sectionReorder.track}
-                    onPointerUp={event => sectionReorder.finish(event, true)} onPointerCancel={event => sectionReorder.finish(event, false)}
-                    onLostPointerCapture={event => sectionReorder.finish(event, false)}
-                    onKeyDown={event => {
-                      if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return;
-                      event.preventDefault();
-                      move(index, index + (event.key === 'ArrowUp' ? -1 : 1));
-                    }}><span aria-hidden="true">⠿</span></button>}
+                  {editSelected && <ReorderHandle index={index} reorder={sectionReorder}
+                    label={t('consultation.templates.builder.dragField', { field: label })} />}
                   <div className="consultation-library__row-label">
                     {editSelected ? <button type="button" className="consultation-library__section-name"
                       aria-expanded={expanded === section.id} aria-controls={`${id}-${section.id}`}
                       onClick={() => setExpanded(expanded === section.id ? undefined : section.id)}>{label}</button> : <span dir="auto">{label}</span>}
-                    {preview && example && (section.format === 'bullets'
+                    {preview && section.options && <ul className="consultation-library__preview-choices">
+                      {section.options.map((option, optionIndex) => <li key={optionIndex}>
+                        <label><input type={section.inputType === 'radio' ? 'radio' : 'checkbox'} disabled />{option}</label>
+                      </li>)}
+                    </ul>}
+                    {preview && !section.options && example && (section.format === 'bullets'
                       ? <ul>{example.split(/\r?\n/u).filter(Boolean).map((line, n) => <li key={n}>{line}</li>)}</ul>
                       : <p>{example}</p>)}
                   </div>
@@ -481,6 +443,45 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
                       placeholder={key ? t(`${key}.label`) : undefined}
                       onChange={event => updateSection({ ...section, label: event.target.value || undefined })} />
                   </label>
+                  {canConfigureNoteInput(section.id, kind) && <>
+                    <label className="ui-dialog__label">{t('forms:customEditor.fieldType')}
+                      <select className="ui-dialog__input" value={section.inputType ?? ''}
+                        onChange={event => {
+                          const inputType = (event.target.value || undefined) as ConsultationSection['inputType'];
+                          const options = inputType === 'radio' || inputType === 'multiselect' ? section.options ?? [''] : undefined;
+                          updateSection({ ...section, inputType, options });
+                        }}>
+                        <option value="">{t('consultation.templates.builder.inputTypes.paragraph')}</option>
+                        {NOTE_INPUT_TYPES.map(type => <option key={type} value={type}>
+                          {t(`consultation.templates.builder.inputTypes.${type}`)}
+                        </option>)}
+                      </select>
+                    </label>
+                    {section.options && <fieldset className="consultation-library__input-options">
+                      <legend>{t('consultation.templates.builder.choiceOptions')}</legend>
+                      {section.options.map((option, optionIndex) => <div className="consultation-library__field-option" key={optionIndex}>
+                        <input className="ui-dialog__input" dir="auto" maxLength={NOTE_OPTION_LENGTH} value={option}
+                          aria-label={t('consultation.templates.builder.choiceOption', { n: optionIndex + 1 })}
+                          onChange={event => updateSection({ ...section, options: section.options?.map((value, index) =>
+                            index === optionIndex ? event.target.value : value) })}
+                          onBlur={event => {
+                            const value = event.target.value.trim();
+                            if (value !== option) updateSection({ ...section, options: section.options?.map((name, index) => index === optionIndex ? value : name) });
+                          }} />
+                        <button type="button" className="consultation-library__row-action consultation-library__remove"
+                          aria-label={t('consultation.templates.builder.removeChoice', { n: optionIndex + 1 })}
+                          disabled={section.options?.length === 1}
+                          onClick={() => updateSection({ ...section, options: section.options?.filter((_, index) => index !== optionIndex) })}>
+                          <span aria-hidden="true">×</span>
+                        </button>
+                      </div>)}
+                      <button type="button" className="ui-btn ui-btn--secondary" disabled={section.options.length >= NOTE_OPTION_LIMIT}
+                        onClick={() => updateSection({ ...section, options: [...(section.options ?? []), ''] })}>
+                        {t('consultation.templates.builder.addChoice')}
+                      </button>
+                      <p className="visit-documentation__helper">{t('consultation.templates.builder.choiceHelp')}</p>
+                    </fieldset>}
+                  </>}
                   {SECTION_TEXT_SETTINGS.map(property => <label key={property} className="ui-dialog__label">
                     {t(`consultation.templates.builder.${property}`)}
                     <textarea className="ui-dialog__input" dir="auto" rows={2} maxLength={1000} value={section[property] ?? ''}
@@ -521,14 +522,14 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
             {adding && <div className="consultation-library__picker">
               {managing ? <>
                 <h4>{t('consultation.templates.builder.manageFields')}</h4>
-                {practiceFields.length === 0 && <p>{t('consultation.templates.builder.noPracticeFields')}</p>}
+                {!practiceFields.some(field => !field.archived) && <p>{t('consultation.templates.builder.noPracticeFields')}</p>}
                 <ul className="consultation-library__field-list">
-                  {practiceFields.map(field => <li key={field.id}>
+                  {practiceFields.filter(field => !field.archived).map(field => <li key={field.id}>
                     <span dir="auto">{field.label}</span>
                     <button type="button" className="consultation-library__row-action"
                       disabled={!canCreateField && !draft.practiceFields?.some(item => item.id === field.id)}
-                      onClick={() => toggleFieldArchive(field)}>
-                      {t(field.archived ? 'consultation.templates.builder.restoreField' : 'consultation.templates.builder.archiveField')}
+                      onClick={() => void deletePracticeField(field)}>
+                      {t('common:actions.delete')}
                     </button>
                   </li>)}
                 </ul>
@@ -559,8 +560,8 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
                       return <li key={section.id}>
                         <button type="button" className="consultation-library__row-action" dir="auto" disabled={added}
                           onClick={() => {
-                            const { id, label, guidance, example, suggestedText } = section;
-                            addSection({ id, label, guidance, example, suggestedText });
+                            const { id, label, guidance, example, suggestedText, inputType, options } = section;
+                            addSection({ id, label, guidance, example, suggestedText, inputType, options });
                           }}>
                           <span>{sectionName(section)}</span>
                           {added && <small>{t('consultation.templates.builder.alreadyAdded')}</small>}

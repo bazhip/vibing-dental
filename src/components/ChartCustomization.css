@@ -72,6 +72,31 @@
   min-width: 0;
 }
 .chart-customization .chart-settings__field legend { margin-bottom: 10px; font-size: 14px; font-weight: 600; }
+
+.quick-codes-editor .quick-codes-editor__row {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) auto;
+  align-items: center;
+}
+.quick-codes-editor__row .quick-codes-editor__code { min-inline-size: 0; overflow-wrap: anywhere; }
+.exam-areas__list .exam-areas__row {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) auto;
+  align-items: center;
+}
+.exam-areas__row .exam-areas__label { inline-size: 100%; }
+
+@media (max-width: 600px) {
+  .quick-codes-editor .quick-codes-editor__row {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    row-gap: 0;
+  }
+  .quick-codes-editor__row .quick-codes-editor__def:not(:empty) { grid-column: 2 / -1; }
+  .quick-codes-editor__row .quick-codes-editor__def:empty { display: none; }
+  .quick-codes-editor__row .custom-def__remove { grid-column: 3; grid-row: 1; }
+  .exam-areas__list .exam-areas__row { grid-template-columns: auto auto minmax(0, 1fr); }
+  .exam-areas__row .custom-def__remove { grid-column: 3; justify-self: end; }
+}
 .chart-customization .chart-settings__choice { padding-block: 7px; line-height: 1.5; }
 .chart-customization .chart-settings__hint { line-height: 1.5; }
 .chart-customization .chart-customization__subheading {
@@ -103,11 +128,13 @@
 
 .anesthesia-definitions .anesthesia-drug__add { align-self: flex-start; min-height: 44px; }
 .anesthesia-definition { border-block-end: 1px solid var(--border); }
+.anesthesia-definition__header { display: flex; align-items: center; }
 .anesthesia-definition__summary {
   display: flex;
   align-items: center;
+  flex: 1;
   gap: 10px;
-  width: 100%;
+  min-width: 0;
   min-height: 44px;
   padding: 6px 8px;
   border: 0;
