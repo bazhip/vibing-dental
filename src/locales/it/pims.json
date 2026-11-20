@@ -425,6 +425,8 @@
       "back": "← Torna alle cartelle",
       "loading": "Apertura della cartella…",
       "noteLabel": "Nota di cartella",
+      "openConsultation": "Aprire la consultazione",
+      "reloadSavedNote": "Ricaricare la nota salvata",
       "flagLoading": "Verifica dell’attivazione dell’invio per il Suo studio…",
       "flagFailed": "Impossibile verificare se l’invio al software dello studio è attivo per il Suo studio.",
       "sendOff": "L’invio al software dello studio non è attivo per il Suo studio.",

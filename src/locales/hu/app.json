@@ -490,5 +490,16 @@
       "model": "Modell",
       "day": "Nap"
     }
+  },
+  "visitTypes": {
+    "choose": "Új vizit",
+    "dental": "Fogászati beavatkozás",
+    "dentalDescription": "Fogászati vizsgálat, fogászati karton, képalkotás és kezelés.",
+    "consultation": "Konzultáció",
+    "consultationDescription": "Előzmények, értékelés, terv és diktálás.",
+    "start": "Vizit megkezdése",
+    "dictateDental": "Fogászati vizit diktálása",
+    "dentalAdditions": "További fogászati leletek",
+    "dentalAdditionsHelp": "Ellenőrizze az ugyanazon felvételből származó diagnosztikai eredményeket, CT-leleteket és hazabocsátási utasításokat."
   }
 }

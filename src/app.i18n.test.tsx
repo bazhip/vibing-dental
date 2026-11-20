@@ -276,8 +276,8 @@ describe('chart frame', () => {
     expect(screen.queryByRole('button', { name: '⟦New patient⟧' })).toBeNull();
     expect(screen.getByRole('button', { name: '⟦Open another animal⟧' })).toBeTruthy();
     expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual([
-      '⟦Nov 12, 2026⟧',
-      '⟦Jan 5, 2026⟧',
+      '⟦Nov 12, 2026⟧ · ⟦Dental procedure⟧',
+      '⟦Jan 5, 2026⟧ · ⟦Dental procedure⟧',
     ]);
     expect(untranslated()).toEqual([]);
     // Visit creation and revision history live in Patients, not a duplicate topbar menu.
@@ -522,7 +522,7 @@ describe('French', () => {
     await act(() => i18n.changeLanguage('fr'));
     await frame();
     // Chart dates are language-neutral ISO; the saved-at time follows the language.
-    expect(screen.getAllByRole('option')[1].textContent).toBe('5 janv. 2026');
+    expect(screen.getAllByRole('option')[1].textContent).toBe('5 janv. 2026 · Intervention dentaire');
     expect(formatDate('2026-01-05', 'medium', 'fr')).toMatch(/janv/);
     expect(screen.getAllByText('Modifier le dossier')[0]).toBeTruthy();
     expect(await screen.findByRole('button', { name: 'vet@clinic.test' })).toBeTruthy();
@@ -542,7 +542,7 @@ describe('English dates', () => {
     seedChart({ date: '2026-11-12', saved: true });
     sync.override = fakeCloud();
     const first = await frame();
-    expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual(['Nov 12, 2026', 'Jan 5, 2026']);
+    expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual(['Nov 12, 2026 · Dental procedure', 'Jan 5, 2026 · Dental procedure']);
     first.unmount();
 
     // Saved status belongs to the patient tab, with the full timestamp in its tooltip.

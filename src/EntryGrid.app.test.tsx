@@ -225,7 +225,7 @@ describe('EntryGrid in the app, with saved charts', () => {
 
   describe('New visit when the patient already has a visit today', () => {
     beforeEach(() => {
-      cloud.listPatientVisits.mockResolvedValue([{ id: 'today-1', chart_date: localDateISO(), species: 'canine' }] as never);
+      cloud.listPatientVisits.mockResolvedValue([{ id: 'today-1', chart_date: localDateISO(), species: 'canine', patient_name: 'Rex', patient_number: '7', updated_at: '2026-11-19T11:00:00Z' }] as never);
     });
     afterEach(() => { cloud.listPatientVisits.mockResolvedValue([]); });
     const ask = async () => {
@@ -275,6 +275,28 @@ describe('EntryGrid in the app, with saved charts', () => {
       expect(cloud.openChart).not.toHaveBeenCalled();
       await expectLandedOnChartRoot();
     });
+  });
+
+  it('carries missing teeth from the newest dental procedure when the latest visit is a consultation', async () => {
+    const identity = { patientName: 'Rex', patientNumber: '7' };
+    const row = (id: string, chart_date: string, visit_type: 'dental' | 'consultation') => ({
+      id, chart_date, visit_type, updated_at: chart_date + 'T12:00:00Z', species: 'canine', patient_name: 'Rex', patient_number: '7',
+    });
+    cloud.listPatientVisits.mockResolvedValueOnce([
+      row('old-dental', '2025-01-01', 'dental'),
+      row('consultation', localDateISO(), 'consultation'),
+      row('new-dental', '2025-10-01', 'dental'),
+    ] as never);
+    cloud.fetchChart
+      .mockResolvedValueOnce({ species: 'canine', patientInfo: { ...identity, visitType: 'consultation' }, postMarks: {} } as never)
+      .mockResolvedValueOnce({ species: 'canine', patientInfo: { ...identity }, postMarks: { 108: 'extracted' } } as never);
+    await renderApp();
+    act(() => fireEvent.click(tab('Patients')));
+    await act(async () => fireEvent.click(screen.getByRole('button', { name: 'New visit' })));
+    expect(cloud.fetchChart).toHaveBeenLastCalledWith('new-dental');
+    expect(screen.queryByRole('alertdialog', { name: 'Rex already has a visit today' })).toBeNull();
+    expect(JSON.parse(localStorage.getItem('vibing-dental.chart.preMarks.v1')!)).toMatchObject({ 108: 'missing' });
+    await expectLandedOnChartRoot();
   });
 
   it('a PDF that can’t be imported stays on Patients (nothing changed)', async () => {

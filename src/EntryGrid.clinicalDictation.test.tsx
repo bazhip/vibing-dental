@@ -3,12 +3,13 @@ import { act, fireEvent, render, screen, waitFor, within } from '@testing-librar
 import { beforeAll, beforeEach, expect, it, vi } from 'vitest';
 import type { ChartSnapshot, ClinicalDictationKind, ClinicalDictationSource, PatientInfo } from './types';
 import type { VoiceInputButton } from './components/VoiceInputButton';
+import { applyAiActions } from './utils/aiAutofill';
 import { localDateISO } from './utils/localDate';
 import { sampleOwnerReportSnapshot } from './utils/ownerReportSample';
 import { LocalizedError } from './utils/apiErrors';
 import { DEFAULT_CHART_PREFS } from './utils/chartSettings';
 
-type Control = { kind: ClinicalDictationKind; snapshot: ChartSnapshot; chartId?: string | null; chartSession?: number; readOnly?: boolean; aiEnabled?: boolean; disabled?: boolean; openRequest?: number | null; imagingFocus?: 'ctReport' | 'radiographicFindings'; onApply: (changes: Partial<PatientInfo>, source: ClinicalDictationSource) => void; onOpenChange?: (open: boolean) => void };
+type Control = { kind: ClinicalDictationKind; snapshot: ChartSnapshot; chartId?: string | null; chartSession?: number; readOnly?: boolean; aiEnabled?: boolean; disabled?: boolean; openRequest?: number | null; seededTranscript?: { text: string; language: string }; onApply: (changes: Partial<PatientInfo>, source: ClinicalDictationSource) => void; onOpenChange?: (open: boolean) => void };
 const state = vi.hoisted(() => ({ controls: {} as Partial<Record<ClinicalDictationKind, Control>>, voice: null as React.ComponentProps<typeof VoiceInputButton> | null, refine: vi.fn(), aiEnabled: true, profileLoaded: true, gpExamEnabled: true, consultationEnabled: true, ownerReportEnabled: false }));
 vi.mock('./components/ClinicalDictationButton', () => ({ ClinicalDictationButton: (props: Control) => {
   state.controls[props.kind] = props;
@@ -34,7 +35,7 @@ vi.mock('./native/aiConsent', () => ({ ensureAiConsent: async () => true }));
 vi.mock('./utils/supabaseClient', () => ({ supabase: null, cloudEnabled: false }));
 vi.mock('./hooks/useProfile', async original => {
   const actual = await original<typeof import('./hooks/useProfile')>();
-  return { ...actual, useProfile: () => ({ ...actual.useProfile(), loaded: state.profileLoaded, practiceKnown: state.profileLoaded, aiEnabled: state.aiEnabled, gpExamEnabled: state.gpExamEnabled, consultationEnabled: state.consultationEnabled, ownerReportEnabled: state.ownerReportEnabled }) };
+  return { ...actual, useProfile: () => ({ ...actual.useProfile(), loaded: state.profileLoaded, practiceKnown: state.profileLoaded, practiceId: 'practice-1', maxImages: 10, aiEnabled: state.aiEnabled, gpExamEnabled: state.gpExamEnabled, consultationEnabled: state.consultationEnabled, ownerReportEnabled: state.ownerReportEnabled }) };
 });
 const cloud = vi.hoisted(() => ({ enabled: true, status: 'saved', dirty: false, online: true, saveError: '', awaitingClinical: false,
   lastSavedAt: '', listCharts: vi.fn(async () => ({ rows: [], hasMore: false })), listPatientVisits: vi.fn(async (): Promise<{ id: string; patient_number: string; patient_name: string; chart_date: string; updated_at: string }[]> => []),
@@ -49,11 +50,15 @@ vi.stubGlobal('localStorage', storage()); vi.stubGlobal('sessionStorage', storag
 import EntryGrid from './EntryGrid';
 import { DialogHost } from './components/ui/dialogs';
 const CHART_ID = '33333333-3333-4333-8333-333333333333';
-const source = (overrides: Partial<ClinicalDictationSource> = {}): ClinicalDictationSource => ({ id: 'clinical-source-1', kind: 'gp-visit', language: 'en', transcript: 'Weight 4.2 kg. Possible fracture at 108.', recordedAt: '2026-11-18T15:00:00.000Z', fields: ['gpVitals'], ...overrides });
-const live = (kind: ClinicalDictationKind = 'gp-visit') => state.controls[kind]!;
+const source = (overrides: Partial<ClinicalDictationSource> = {}): ClinicalDictationSource => ({ id: 'clinical-source-1', kind: 'dental-visit', language: 'en', transcript: 'Blood glucose 6.2 mmol/L. CT: possible fracture at 108.', recordedAt: '2026-11-18T15:00:00.000Z', fields: ['gpDiagnostics'], ...overrides });
+const live = (kind: ClinicalDictationKind = 'dental-visit') => state.controls[kind]!;
 const persisted = () => JSON.parse(localStorage.getItem('vibing-dental.chart.patientInfo.v1')!);
 const storedSources = () => JSON.parse(localStorage.getItem('vibing-dental.chart.clinicalDictations.v1')!);
 const mount = () => render(<><EntryGrid /><DialogHost /></>);
+const openConsultation = () => {
+  localStorage.setItem('vibing-dental.chart.patientInfo.v1', JSON.stringify({ ...persisted(), visitType: 'consultation' }));
+  window.history.replaceState(null, '', `/#/chart/${CHART_ID}/consultation`);
+};
 const navigateSection = (section: string) => act(() => {
   window.history.replaceState(null, '', `/#/chart/${CHART_ID}/${section}`);
   window.dispatchEvent(new HashChangeEvent('hashchange'));
@@ -74,34 +79,94 @@ beforeEach(() => {
   localStorage.setItem('vibing-dental.chart.patientInfo.v1', JSON.stringify({ ...sampleOwnerReportSnapshot().patientInfo, patientName: 'Milo', patientNumber: '7', date: localDateISO(), radiologyReport: 'Independent X-ray report.', radiographicFindings: 'Independent X-ray findings.', ctReport: 'Existing CT context.' }));
   window.history.replaceState(null, '', `/#/chart/${CHART_ID}/gp-exam`);
 });
-it('applies all eleven GP clinical fields and persists transcript provenance with the actual chart', async () => {
-  mount(); await waitFor(() => expect(live()).toBeDefined());
-  const changes = { complaint: 'Vomiting', consultationHistory: 'Less appetite for 2 days', consultationAssessment: 'Possible gastritis', consultationPlan: 'Abdominal ultrasound planned', gpVitals: 'Weight 4.2 kg', gpPhysicalExam: 'Heart sounds normal', gpDiagnostics: 'Glucose 6.2 mmol/L', treatmentReport: 'Wound irrigated', dischargeMedications: 'Amoxicillin 50 mg PO twice daily for 5 days', dischargeInstructions: 'Keep the wound dry', dischargeFollowUp: 'Recheck in 7 days' };
+it('uses one dental recorder from all dental sections and passes its complete transcript and language to the supplemental review', async () => {
+  mount();
+  for (const section of ['exam', 'anesthesia', 'charting', 'diagnosis', 'procedure', 'imaging', 'discharge']) {
+    navigateSection(section);
+    await waitFor(() => expect(document.querySelector('.sidebar-layout__main')).toHaveAttribute('data-active-section', section));
+    expect(state.voice?.contextualDestination).toEqual({ label: 'Dictate dental visit' });
+  }
+  const transcript = 'CT: possible fracture at 108. Blood glucose 6.2 mmol/L.';
+  act(() => state.voice?.onDictationComplete?.('fr', transcript));
+  expect(live().openRequest).toEqual(expect.any(Number));
+  expect(live().seededTranscript).toEqual({ text: transcript, language: 'fr' });
+});
+
+it('writes a batch of dental findings into multiple sections while viewing Imaging', async () => {
+  mount();
+  navigateSection('imaging');
+  await waitFor(() => expect(document.querySelector('.sidebar-layout__main')).toHaveAttribute('data-active-section', 'imaging'));
+  const actions = [
+    { name: 'set_patient_field', input: { field: 'complaint', value: 'Difficulty chewing' } },
+    { name: 'set_exam_finding', input: { area: 'tongue', status: 'abnormal', comment: 'Focal redness' } },
+    { name: 'set_nerve_block', input: { site: 'infraorbitalRight', mL: '0.3' } },
+    { name: 'set_anesthetic_drug', input: { drug: 'bupivacaine', concentration: '0.5' } },
+    { name: 'set_tooth_field', input: { triadan: 108, field: 'pocket', value: 'D4' } },
+    { name: 'add_comment', input: { diagram: 'pre', triadan: 108, text: 'Crown fracture' } },
+    { name: 'set_tooth_mark', input: { diagram: 'post', triadan: 109, mark: 'extracted' } },
+    { name: 'append_treatment_report', input: { text: 'Scaling completed.' } },
+    { name: 'append_radiographic_findings', input: { text: '108: distal bone loss.' } },
+  ];
+  act(() => expect(applyAiActions(actions, state.voice!.handlers, 'en')).toHaveLength(actions.length));
+  expect(persisted()).toMatchObject({
+    complaint: 'Difficulty chewing',
+    exam: { tongue: { status: 'abnormal', comment: 'Focal redness' } },
+    nerveBlocks: { infraorbitalRight: '0.3', drugs: [{ name: 'bupivacaine', concentration: '0.5' }] },
+    treatmentReport: expect.stringContaining('Scaling completed.'),
+    radiographicFindings: expect.stringContaining('108: distal bone loss.'),
+  });
+  const read = (key: string) => JSON.parse(localStorage.getItem(`vibing-dental.chart.${key}.v1`)!);
+  expect(read('toothData')).toEqual(expect.arrayContaining([expect.objectContaining({ triadan: 108, pocket: 'D4' })]));
+  expect(read('preComments')).toEqual(expect.arrayContaining([expect.objectContaining({ anchorTriadan: 108, text: 'Crown fracture' })]));
+  expect(read('postMarks')).toMatchObject({ 109: 'extracted' });
+});
+
+it('persists diagnostics, CT and discharge in the same dental visit, with transcript provenance', async () => {
+  mount();
+  const changes = { gpDiagnostics: 'Glucose 6.2 mmol/L', ctReport: 'CT: possible fracture at 108.',
+    dischargeMedications: 'Recorded medication instructions', dischargeInstructions: 'Keep the wound dry', dischargeFollowUp: 'Recheck in 7 days' };
   const provenance = source({ fields: Object.keys(changes) as ClinicalDictationSource['fields'] });
   act(() => live().onApply(changes, provenance));
-  await waitFor(() => expect(live().snapshot.patientInfo).toMatchObject(changes));
-  expect(persisted()).toMatchObject(changes); expect(live().snapshot.clinicalDictations).toEqual([provenance]); expect(storedSources()).toEqual([provenance]);
-  expect(screen.getByLabelText('Vital signs')).toHaveValue(changes.gpVitals);
-  expect(state.refine).not.toHaveBeenCalled();
+  await waitFor(() => expect(persisted()).toMatchObject(changes));
+  expect(persisted().ctReportLanguage).toBe('en');
+  expect(storedSources()).toEqual([provenance]);
+  navigateSection('imaging');
+  expect(await screen.findByRole('textbox', { name: 'Diagnostics' })).toHaveValue(changes.gpDiagnostics);
 });
-it('opens clinical history from Patient information on a finalized chart', async () => {
+
+it('does not allow the supplement to write standard dental fields or Consultation fields', async () => {
+  mount();
+  const previous = persisted();
+  expect(() => act(() => live().onApply({ consultationAssessment: 'Unwanted' },
+    source({ fields: ['consultationAssessment'] })))).toThrow(LocalizedError);
+  expect(() => act(() => live().onApply({ complaint: 'Unwanted' }, source({ fields: ['complaint'] })))).toThrow(LocalizedError);
+  expect(persisted()).toEqual(previous);
+  expect(live().snapshot.clinicalDictations ?? []).toEqual([]);
+});
+
+it('rejects duplicate or overflowing sources before touching any supplemental fields', async () => {
+  const sources = Array.from({ length: 20 }, (_, index) => source({ id: `source-${index}` }));
+  localStorage.setItem('vibing-dental.chart.clinicalDictations.v1', JSON.stringify(sources));
+  mount();
+  const previous = persisted();
+  expect(() => act(() => live().onApply({ gpDiagnostics: 'Unwanted' }, sources[0]))).toThrow(LocalizedError);
+  expect(() => act(() => live().onApply({ gpDiagnostics: 'Unwanted' }, source()))).toThrow(LocalizedError);
+  expect(persisted()).toEqual(previous);
+  expect(storedSources()).toEqual(sources);
+});
+
+it('opens clinical history from a finalized patient visit', async () => {
   localStorage.setItem('vibing-dental.chart.finalizedAt.v1', JSON.stringify('2026-11-18T12:00:00Z'));
   cloud.listPatientVisits.mockResolvedValue([{ id: 'prior', patient_number: '7', patient_name: 'Milo', chart_date: '2025-11-10', updated_at: '2025-11-10T00:00:00Z' }]);
-  mount(); await waitFor(() => expect(live()).toBeDefined());
-  navigateSection('consultation');
-  const nav = screen.getAllByRole('button').find(button => button.querySelector('.sidebar-layout__nav-label')?.textContent === 'GP examination');
-  expect(nav).toBeDefined();fireEvent.click(nav!);
-  await waitFor(() => expect(window.location.hash).toBe(`#/chart/${CHART_ID}/gp-exam`));
-  const section = document.querySelector('[data-section-id="gp-exam"]') as HTMLElement;
-  expect(section).toBeVisible(); expect(within(section).queryByRole('button', { name: 'View visit history' })).not.toBeInTheDocument();
-  expect(document.querySelector('.sidebar-layout__main')).toHaveAttribute('data-active-section', 'gp-exam');
+  mount();
   navigateSection('patient');
   expect(document.querySelector('[data-section-id="patient"] [data-tour="patient-name"]')).toBeDisabled();
   fireEvent.click(await screen.findByRole('button', { name: 'View visit history' }));
-  expect(await screen.findByRole('dialog',{name:/Historical patient records/})).toBeVisible();
-
+  expect(await screen.findByRole('dialog', { name: /Historical patient records/ })).toBeVisible();
+  expect(() => act(() => live().onApply({ gpDiagnostics: 'Unwanted' }, source()))).toThrow(LocalizedError);
 });
-it.each(['discharge', 'imaging'])('opens visit documents from %s', async section => {
+
+it.each(['discharge', 'imaging'])('opens dental documents from %s', async section => {
   mount();
   navigateSection(section);
   await waitFor(() => expect(document.querySelector('.sidebar-layout__main')).toHaveAttribute('data-active-section', section));
@@ -109,140 +174,111 @@ it.each(['discharge', 'imaging'])('opens visit documents from %s', async section
   expect(await screen.findByRole('dialog', { name: /Mock document/ })).toBeVisible();
 });
 
-it('opens dictation according to the active section', async () => {
+it('opens the separate Consultation workspace and its record note without mounting a dental diagram', async () => {
+  openConsultation();
   mount();
-  navigateSection('imaging');
-  await waitFor(() => expect(state.voice?.contextualDestination?.label).toBe('Imaging'));
-  fireEvent.focus(screen.getByRole('textbox', { name: 'CT report' }));
-  act(() => state.voice?.contextualDestination?.onOpen?.());
-  expect(live('imaging').imagingFocus).toBe('ctReport');
-  expect(live('imaging').openRequest).toEqual(expect.any(Number));
-  expect(live('discharge').openRequest).toBeNull();
-
-  navigateSection('discharge');
-  await waitFor(() => expect(state.voice?.contextualDestination?.label).toBe('Discharge'));
-  act(() => state.voice?.contextualDestination?.onOpen?.());
-  expect(live('imaging').openRequest).toBeNull();
-  expect(live('discharge').openRequest).toEqual(expect.any(Number));
-});
-
-it('refines the proposed CT and radiographic reports independently', async () => {
-  mount();
-  navigateSection('imaging');
-  await waitFor(() => expect(live('imaging')).toBeDefined());
-  const provenance = source({ kind: 'imaging', fields: ['ctReport', 'radiographicFindings'], language: 'fr' });
-  const ctReport = 'Existing CT context. 108: possible fracture.';
-  const radiographicFindings = 'Independent X-ray findings. 307: tooth resorption.';
-  act(() => live('imaging').onApply({ ctReport, radiographicFindings }, provenance));
-  await waitFor(() => expect(state.refine).toHaveBeenCalledTimes(2));
-  expect(state.refine).toHaveBeenCalledWith(expect.objectContaining({ patientInfo: expect.objectContaining({ radiologyReport: ctReport }) }), 'fr', 'ct');
-  expect(state.refine).toHaveBeenCalledWith(expect.objectContaining({ patientInfo: expect.objectContaining({ radiologyReport: radiographicFindings }) }), 'fr');
-  expect(storedSources()).toEqual([provenance]);
-});
-it('rejects a duplicate source before changing any clinical field', async () => {
-  mount(); await waitFor(() => expect(live()).toBeDefined());
-  const provenance = source();act(() => live().onApply({gpVitals:'4.2 kg'},provenance));
-  await waitFor(() => expect(live().snapshot.patientInfo.gpVitals).toBe('4.2 kg'));
-  expect(() => act(() => live().onApply({gpVitals:'999 kg'},provenance))).toThrow(LocalizedError);
-  expect(live().snapshot.patientInfo.gpVitals).toBe('4.2 kg');expect(persisted().gpVitals).toBe('4.2 kg');expect(storedSources()).toEqual([provenance]);
-});
-it('rejects source storage overflow before applying any proposed values', async () => {
-  const sources = Array.from({length:20},(_,index)=>source({id:`source-${index}`}));
-  localStorage.setItem('vibing-dental.chart.clinicalDictations.v1',JSON.stringify(sources));
-  mount();await waitFor(()=>expect(live()).toBeDefined());const previous=live().snapshot.patientInfo;
-  expect(()=>act(()=>live().onApply({gpVitals:'999 kg',consultationAssessment:'Unwanted assessment'},source()))).toThrow(LocalizedError);
-  expect(live().snapshot.patientInfo).toEqual(previous);expect(storedSources()).toEqual(sources);
-});
-it('rejects patch fields outside the source kind before changing fields or sources', async () => {
-  mount();await waitFor(()=>expect(live('consultation')).toBeDefined());const previous=live().snapshot.patientInfo;
-  expect(()=>act(()=>live('consultation').onApply({gpVitals:'999 kg'},source({kind:'consultation',fields:['gpVitals']})))).toThrow(LocalizedError);
-  expect(live().snapshot.patientInfo).toEqual(previous);expect(live().snapshot.clinicalDictations??[]).toEqual([]);
-});
-it('blocks root application when an existing visit is read only', async () => {
-  localStorage.setItem('vibing-dental.chart.openedExisting.v1','true');
-  localStorage.setItem('vibing-dental.chart.finalizedAt.v1', JSON.stringify('2026-11-18T12:00:00Z'));
-  const info=persisted();info.date='2020-01-01';localStorage.setItem('vibing-dental.chart.patientInfo.v1',JSON.stringify(info));
-  mount();await waitFor(()=>expect(live()?.readOnly).toBe(true));const previous=live().snapshot.patientInfo;
-  expect(()=>act(()=>live().onApply({gpVitals:'999 kg'},source()))).toThrow(LocalizedError);
-  expect(live().snapshot.patientInfo).toEqual(previous);expect(live().snapshot.clinicalDictations??[]).toEqual([]);
-});
-it.each(['ai','cloud'] as const)('hides clinical controls and rejects retained callbacks when %s access is removed',async gate=>{
-  const view=mount();await waitFor(()=>expect(live()).toBeDefined());
-  const retained=live(), previous=retained.snapshot.patientInfo;
-  if(gate==='ai') state.aiEnabled=false;else cloud.enabled=false;
-  view.rerender(<><EntryGrid/><DialogHost/></>);
-  expect(screen.queryByRole('button',{name:'Mock gp-visit dictation',hidden:true})).toBeNull();
-  expect(()=>act(()=>retained.onApply({gpVitals:'999 kg'},source()))).toThrow(LocalizedError);
-  expect(persisted()).toEqual(previous);
-});
-
-it.each(['gp-exam', 'consultation'] as const)('preserves an enabled %s deep link while the practice loads', async (section) => {
-  state.profileLoaded = false;
-  state.gpExamEnabled = false;
-  state.consultationEnabled = false;
-  const hash = `#/chart/${CHART_ID}/${section}`;
-  window.history.replaceState(null, '', hash);
-  const view = mount();
-  expect(document.querySelector(`[data-section-id="${section}"]`)).toBeNull();
-  expect(window.location.hash).toBe(hash);
-  state.profileLoaded = true;
-  state.gpExamEnabled = true;
-  state.consultationEnabled = true;
-  view.rerender(<><EntryGrid /><DialogHost /></>);
-  await waitFor(() => expect(document.querySelector(`[data-section-id="${section}"]`)).toBeVisible());
-  expect(window.location.hash).toBe(hash);
-});
-
-it('canonicalizes a pending GP link to Patient once the loaded flag is disabled', async () => {
-  state.profileLoaded = false;
-  state.gpExamEnabled = false;
-  const view = mount();
-  expect(window.location.hash).toBe(`#/chart/${CHART_ID}/gp-exam`);
-  state.profileLoaded = true;
-  view.rerender(<><EntryGrid /><DialogHost /></>);
-  await waitFor(() => expect(window.location.hash).toBe(`#/chart/${CHART_ID}/patient`));
+  expect(document.querySelector('[data-section-id="consultation"]')).toBeVisible();
+  expect(document.querySelector('[data-section-id="exam"]')).toBeNull();
   expect(document.querySelector('[data-section-id="gp-exam"]')).toBeNull();
+  expect(live()).toBeUndefined();
+  act(() => state.voice?.contextualDestination?.onOpen?.());
+  expect(live('consultation').openRequest).toEqual(expect.any(Number));
+  fireEvent.click(screen.getByRole('button', { name: 'Review clinical record' }));
+  expect(await screen.findByRole('dialog', { name: 'Mock document note' })).toBeVisible();
 });
 
-it('hides GP exam and falls back to Patient when a disabled practice opens a GP link', async () => {
-  state.gpExamEnabled = false;
+it('shows editable objective fields and a visit image uploader with every consultation template', async () => {
+  openConsultation();
   mount();
-  await waitFor(() => expect(document.querySelector('.sidebar-layout__main')).toHaveAttribute('data-active-section', 'patient'));
-  expect(screen.queryByRole('button', { name: /GP examination/ })).not.toBeInTheDocument();
-  expect(document.querySelector('[data-section-id="gp-exam"]')).toBeNull();
-  navigateSection('consultation');
-  await waitFor(() => expect(live('consultation')).toBeDefined());
-  expect(() => act(() => live('consultation').onApply({ gpVitals: '4 kg' }, source()))).toThrow(LocalizedError);
-  expect(persisted().gpVitals).toBeUndefined();
+  const exam = await screen.findByRole('textbox', { name: 'Physical examination' });
+  fireEvent.change(exam, { target: { value: 'Focal redness.' } });
+  expect(persisted().gpPhysicalExam).toBe('Focal redness.');
+  expect(screen.getByRole('textbox', { name: 'Vital signs' })).toHaveValue('');
+  expect(screen.getByRole('textbox', { name: 'Diagnostics' })).toHaveValue('');
+  expect(screen.getByRole('heading', { name: 'Images' })).toBeVisible();
+  expect(screen.getByRole('button', { name: 'Add images' })).toBeEnabled();
+  fireEvent.click(screen.getByRole('button', { name: 'General SOAP' }));
+  expect(screen.getByRole('textbox', { name: 'Physical examination' })).toHaveValue('Focal redness.');
+  expect(screen.getByRole('heading', { name: 'Images' })).toBeVisible();
+  expect(screen.getByRole('button', { name: 'Add images' })).toBeEnabled();
 });
 
-it('hides Consultation and falls back to Patient for a disabled practice', async () => {
-  state.consultationEnabled = false;
-  window.history.replaceState(null, '', `/#/chart/${CHART_ID}/consultation`);
+it('applies reviewed medication facts to the active consultation and keeps them through template changes', async () => {
+  openConsultation();
   mount();
-  await waitFor(() => expect(document.querySelector('.sidebar-layout__main')).toHaveAttribute('data-active-section', 'patient'));
-  expect(document.querySelector('[data-section-id="consultation"]')).toBeNull();
-  expect(screen.queryByRole('button', { name: /^Consultation$/ })).not.toBeInTheDocument();
-  expect(window.location.hash).toMatch(/\/patient$/);
-  navigateSection('gp-exam');
-  await waitFor(() => expect(live()).toBeDefined());
-  expect(() => act(() => live().onApply({ consultationAssessment: 'Unwanted' }, source({ fields: ['consultationAssessment'] })))).toThrow(LocalizedError);
-  act(() => live().onApply({ complaint: 'Reduced appetite' }, source({ fields: ['complaint'] })));
-  expect(persisted()).toMatchObject({ complaint: 'Reduced appetite' });
+  const current = await screen.findByRole('textbox', { name: 'Current medications' });
+  expect(current).toHaveValue('');
+  const changes = {
+    consultationCurrentMedications: 'The owner reports medicine A.',
+    consultationAdministeredMedications: 'Medicine B was given.',
+    consultationMedicationPlan: 'May stop medicine C.',
+  };
+  const transcript = Object.values(changes).join(' ');
+  const fields = Object.keys(changes) as ClinicalDictationSource['fields'];
+  act(() => live('consultation').onApply(changes, source({ kind: 'consultation', transcript, fields })));
+  expect(storedSources()).toEqual([expect.objectContaining({ fields, transcript })]);
+  fireEvent.click(screen.getByRole('button', { name: 'General SOAP' }));
+  expect(screen.getByRole('textbox', { name: 'Current medications' })).toHaveValue(changes.consultationCurrentMedications);
+  expect(screen.getByRole('textbox', { name: 'Medications given during this visit' })).toHaveValue(changes.consultationAdministeredMedications);
+  expect(screen.getByRole('textbox', { name: 'Medication changes and prescriptions' })).toHaveValue(changes.consultationMedicationPlan);
 });
 
-it('rejects retained Consultation dictation when the practice disables the feature', async () => {
+it('finds the prior consultation and copies its reviewed list without copying prior decisions or replacing edits', async () => {
+  openConsultation();
+  const row = { id: 'medication-prior', practice_id: 'practice-1', patient_number: '7', patient_name: 'Milo',
+    chart_date: '2025-10-10', updated_at: '2025-10-10T13:00:00Z', species: 'canine', visit_type: 'consultation' };
+  cloud.listPatientVisits.mockResolvedValue([row]);
+  const currentMedications = 'Owner reported Medication A.';
+  const recordedChanges = 'Consider stopping Medication A after a recheck.';
+  const previous = sampleOwnerReportSnapshot();
+  previous.patientInfo = { ...previous.patientInfo, patientName: 'Milo', patientNumber: '7',
+    visitType: 'consultation', date: row.chart_date, consultationCurrentMedications: currentMedications,
+    consultationMedicationPlan: recordedChanges };
+  cloud.fetchChart.mockResolvedValue(previous);
+  mount();
+  const input = await screen.findByRole('textbox', { name: 'Current medications' });
+  const summary = await screen.findByText(/Previous medication list/);
+  expect(cloud.fetchChart).toHaveBeenCalledWith(row.id, row.practice_id);
+  expect(input).toHaveValue('');
+  fireEvent.click(summary);
+  expect(screen.getByText(recordedChanges)).toBeVisible();
+  fireEvent.change(input, { target: { value: 'Medication B today.' } });
+  expect(screen.queryByRole('button', { name: 'Copy to current medications' })).toBeNull();
+  fireEvent.change(input, { target: { value: '' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Copy to current medications' }));
+  expect(input).toHaveValue(currentMedications);
+  expect(screen.getByRole('textbox', { name: 'Medication changes and prescriptions' })).toHaveValue('');
+});
+
+it('keeps the Consultation record readable when the practice disables new consultations', async () => {
+  openConsultation();
   const view = mount();
-  navigateSection('consultation');
-  await waitFor(() => expect(document.querySelector('[data-section-id="consultation"]')).toBeVisible());
   const retained = live('consultation');
   state.consultationEnabled = false;
   view.rerender(<><EntryGrid /><DialogHost /></>);
-  expect(document.querySelector('[data-section-id="consultation"]')).toBeNull();
-  expect(() => act(() => retained.onApply({ complaint: 'Unwanted' }, source({ kind: 'consultation', fields: ['complaint'] })))).toThrow(LocalizedError);
+  expect(document.querySelector('[data-section-id="consultation"]')).toBeVisible();
+  expect(() => act(() => retained.onApply({ complaint: 'Unwanted' },
+    source({ kind: 'consultation', fields: ['complaint'] })))).toThrow(LocalizedError);
 });
 
-it('hides clinical-record review without an earlier saved visit', async () => {
+it('falls back to Patient on retired GP and legacy Consultation links to a dental visit', async () => {
+  mount();
+  for (const section of ['gp-exam', 'consultation']) {
+    navigateSection(section);
+    await waitFor(() => expect(window.location.hash).toBe(`#/chart/${CHART_ID}/patient`));
+    expect(document.querySelector(`[data-section-id="${section}"]`)).toBeNull();
+  }
+});
+
+it.each(['ai', 'cloud'] as const)('rejects a retained dental supplement when %s access is removed', async gate => {
+  const view = mount(), retained = live();
+  if (gate === 'ai') state.aiEnabled = false; else cloud.enabled = false;
+  view.rerender(<><EntryGrid /><DialogHost /></>);
+  expect(() => act(() => retained.onApply({ gpDiagnostics: 'Unwanted' }, source()))).toThrow(LocalizedError);
+  expect(persisted().gpDiagnostics).toBeUndefined();
+});
+
+it('hides clinical-record history without an earlier saved visit', async () => {
   mount();
   navigateSection('patient');
   await waitFor(() => expect(cloud.listPatientVisits).toHaveBeenCalled());
@@ -278,4 +314,17 @@ it('jumps from Edit the wording to the owner report itself', async () => {
   const editor = screen.getByRole('region', { name: 'Owner report' });
   await waitFor(() => expect(editor).toHaveFocus());
   expect(editor.closest('[data-section-id]')).toHaveAttribute('data-section-id', 'discharge');
+});
+
+it('starts a separate consultation for a new patient from the Patients dialog', async () => {
+  mount();
+  fireEvent.click(await screen.findByRole('button', { name: 'Open another animal' }));
+  fireEvent.click(await screen.findByRole('button', { name: 'New patient' }));
+  const chooser = await screen.findByRole('dialog', { name: 'New visit' });
+  expect(within(chooser).getByRole('radio', { name: /Dental procedure/ })).toBeChecked();
+  fireEvent.click(within(chooser).getByRole('radio', { name: /Consultation/ }));
+  fireEvent.click(within(chooser).getByRole('button', { name: 'Start visit' }));
+  expect(await screen.findByRole('button', { name: 'Review clinical record' })).toBeVisible();
+  expect(persisted().visitType).toBe('consultation');
+  expect(window.location.hash).toMatch(/^#\/chart\/[^/]+\/consultation$/);
 });

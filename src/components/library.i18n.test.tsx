@@ -117,7 +117,7 @@ describe('ChartLibrary', () => {
     team.value = { ...team.value, members: [{ userId: 'u1', doctorName: 'Tim', email: 't@x.co' }, { userId: 'u2', doctorName: 'Dr Kaser', email: 'k@x.co' }] };
     const { container } = library([
       meta('a1', 'Bella', '11', '2026-11-12', { recall_date: '2020-01-01', created_by: 'u2' }),
-      meta('b1', 'Max', '22', '2026-11-12'),
+      meta('b1', 'Max', '22', '2026-11-12', { visit_type: 'consultation' }),
       meta('b2', 'Max', '22', '2026-10-01', { created_by: 'u2' }),
       meta('c1', '', '', '', { created_by: 'u1', updated_at: '2026-09-01T12:00:00Z' }),
     ], true);
@@ -136,6 +136,7 @@ describe('ChartLibrary', () => {
     fireEvent.click(screen.getByTitle('⟦2 visits — expand⟧'));
     expect(screen.getAllByText(/⟦Updated ⟦.*⟧⟧$/).length).toBe(2);
     expect(screen.getAllByTitle('⟦Open the 2026-10-01 visit⟧')).toHaveLength(1);
+    expect(screen.getByText(/· ⟦Consultation⟧$/)).toBeInTheDocument();
     expect(findUntranslated(container, ALLOW)).toEqual([]);
     // the Due toggle shows a count; a filter that matches nothing explains itself
     fireEvent.change(screen.getByLabelText('⟦Search charts⟧'), { target: { value: 'zzz' } });

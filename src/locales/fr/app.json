@@ -492,5 +492,16 @@
       "model": "Modèle",
       "day": "Jour"
     }
+  },
+  "visitTypes": {
+    "choose": "Nouvelle visite",
+    "dental": "Intervention dentaire",
+    "dentalDescription": "Examen dentaire, relevé dentaire, imagerie et traitement.",
+    "consultation": "Consultation",
+    "consultationDescription": "Antécédents, évaluation, plan et dictée.",
+    "start": "Démarrer la visite",
+    "dictateDental": "Dicter la visite dentaire",
+    "dentalAdditions": "Constatations dentaires complémentaires",
+    "dentalAdditionsHelp": "Relisez les résultats diagnostiques, les constatations au scanner et les consignes de sortie issus du même enregistrement."
   }
 }

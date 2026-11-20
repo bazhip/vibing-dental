@@ -118,6 +118,8 @@
       "back": "← Înapoi la fișe",
       "loading": "Se deschide fișa…",
       "noteLabel": "Notă pentru dosarul medical",
+      "openConsultation": "Deschideți consultația",
+      "reloadSavedNote": "Reîncărcați nota salvată",
       "flagLoading": "Se verifică dacă trimiterea este activată pentru cabinet…",
       "flagFailed": "Nu s-a putut verifica dacă trimiterea în PIMS este activată pentru cabinetul dumneavoastră.",
       "sendOff": "Trimiterea în PIMS nu este activată pentru cabinetul dumneavoastră.",

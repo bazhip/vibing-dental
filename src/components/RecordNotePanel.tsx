@@ -1,6 +1,7 @@
 import { RefineTextAction } from './RefineTextAction';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { documentationUrl } from '../help/openDocumentation';
 import type { AppLanguage } from '../i18n/config';
 import type { ChartSnapshot, StoredRecordNote } from '../types';
 import {
@@ -16,6 +17,8 @@ import { usePimsExtension } from '../hooks/usePimsExtension';
 import { toast } from './ui/dialogs';
 import type { ChartSnapshot as PreviewSnapshot } from './PdfPreviewModal';
 import { SendToEzyvetDialog } from './SendToEzyvetDialog';
+import { ConsultationNotePdfButton } from './ConsultationNotePdfButton';
+import { visitTypeOf } from '../utils/visitTypes';
 
 
 /** Send to ezyVet (Chrome extension). Omitted = no button. */
@@ -36,6 +39,7 @@ interface RecordNotePanelProps {
   snapshot: ChartSnapshot;
   /** The edited / AI note on the chart (null = generated live). */
   stored: StoredRecordNote | null;
+  showConsultationGuide?: boolean;
   onChange: (note: StoredRecordNote | null) => void;
   /** Saved chart not unlocked: copy only. */
   readOnly: boolean;
@@ -51,10 +55,11 @@ interface RecordNotePanelProps {
  * the chart has changed since.
  */
 export const RecordNotePanel: React.FC<RecordNotePanelProps> = ({
-  snapshot, stored, onChange, readOnly, pims, chartSnapshot = null,
+  snapshot, stored, onChange, readOnly, pims, showConsultationGuide, chartSnapshot = null,
 }) => {
-  const { t, i18n } = useTranslation('media');
+  const { t, i18n } = useTranslation(['media', 'help']);
   const lng = i18n.language as AppLanguage;
+  const consultation = visitTypeOf(snapshot.patientInfo.visitType) === 'consultation';
 
   const note = React.useMemo(() => buildRecordNote(snapshot, recordNoteT(lng)), [snapshot, lng]);
   const basis = React.useMemo(() => recordNoteBasis(snapshot), [snapshot]);
@@ -87,6 +92,10 @@ export const RecordNotePanel: React.FC<RecordNotePanelProps> = ({
       <aside className="pdf-preview-styles">
         <ul className="pdf-preview-notes">
           <li>{t('recordNote.hint')}</li>
+          {showConsultationGuide && <li><a className="visit-documentation__guide"
+            href={documentationUrl(lng, 'consultation-transfer')} target="_blank" rel="noopener noreferrer">
+            {t('help:articles.consultation-transfer.title')}
+          </a></li>}
         </ul>
         {readOnly && <p className="pdf-preview-hint" role="note">{t('recordNote.unlockHint')}</p>}
         {stale && (
@@ -97,9 +106,16 @@ export const RecordNotePanel: React.FC<RecordNotePanelProps> = ({
             {t('recordNote.rebuild')}
           </button>
         )}
-        <button type="button" className="pdf-preview-download" onClick={copy}>
-          {t('recordNote.copy')}
-        </button>
+        {consultation ? (
+          <div className="record-note__actions">
+            <ConsultationNotePdfButton text={text} language={stored?.lng ?? lng} />
+            <button type="button" className="pdf-preview-secondary" onClick={copy}>
+              {t('recordNote.copy')}
+            </button>
+          </div>
+        ) : (
+          <button type="button" className="pdf-preview-download" onClick={copy}>{t('recordNote.copy')}</button>
+        )}
         {canSend && pims && (
           <button type="button" className="pdf-preview-secondary" onClick={() => setSendOpen(true)}>
             {t('dialog.open', { ns: 'pims' })}

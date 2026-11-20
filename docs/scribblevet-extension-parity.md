@@ -380,3 +380,7 @@ Instinct capture checks its in-memory bearer/practice/API witness before and aft
 Evidence: selected inert source ranges in `pulse.b8ec9667.js:139–240,313–347,434–495`, `oldPulse.0d5ec2ea.js:133–201`, `rhapsody.76fff428.js:181–228,471–492`, `vetspire.da474192.js:136–197,443–460`; fresh REA bounded parent `ev_98fb210e2c2f7e1ad69354394d46752df41c2128d8f83f8caacbfa093e1ca550`. Private backend calls were not reproduced as vendor services.
 
 Independent reviews passed for helper/transport, configured Instinct sync and UI. Review reproduced and fixed stale-helper recovery, rejected-request session invalidation, and selected-section removal after manual edits. Final integration checks and exact visual coverage are recorded in `docs/superpowers/plans/2026-11-18-remaining-extension-parity.md`.
+
+## Consultation handoff
+
+In a saved visit, the extension’s **Open consultation** action opens that visit in ToothOps. Use **Reload saved note** inside **Record note** after saving changes in the visit. The refresh keeps transfer warnings visible and checks the saved visit before the note can be transferred again. Preview, copy, and mapped transfer use the saved consultation layout in the same order as the web record note. Mapping still uses the clinical section identifiers, so template names and layout changes do not require mapping fields again.

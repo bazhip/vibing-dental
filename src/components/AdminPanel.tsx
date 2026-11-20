@@ -478,6 +478,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose, presentat
   const featureLabel = (id: string) => {
     switch (id) {
       case 'refine_text': return t('aiMetrics.refineText');
+      case 'dental-visit': return t('visitTypes.dentalAdditions');
       case 'ct_report': return t('ctReport.title');
       case 'gp-visit': case 'gp-exam': case 'consultation': case 'discharge':
         return t(`voice:clinical.kinds.${id}`);

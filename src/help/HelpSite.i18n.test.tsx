@@ -54,3 +54,44 @@ it('features numbered charting and links to the settings reference', () => {
   expect(within(main).getByText('Imaging and PDF', { selector: 'dt' })).toBeInTheDocument();
   expect(within(main).getByRole('img', { name: /report language and default PDF/ })).toBeInTheDocument();
 });
+
+it('finds the template guide by task and follows a link to the consultation transfer guide', () => {
+  render(<HelpSite />);
+  const main = screen.getByRole('main');
+  fireEvent.change(screen.getByRole('searchbox', { name: 'Search documentation' }), { target: { value: 'archive template' } });
+  fireEvent.click(within(main).getByRole('link', { name: 'Customize consultation templates' }));
+  expect(location.hash).toBe('#consultation-templates');
+  expect(within(main).getByRole('img', { name: /fictional consultation preview/ })).toBeInTheDocument();
+
+  fireEvent.click(within(main).getByRole('link', { name: 'Review and transfer a consultation note' }));
+  expect(location.hash).toBe('#consultation-transfer');
+  expect(within(main).getByRole('img', { name: /Download PDF and Copy/ })).toBeInTheDocument();
+  expect(within(main).getByText(/Select Download PDF to save a standalone PDF/)).toBeInTheDocument();
+});
+
+it('explains how to distinguish same-day visits in patient history and links to consultation setup', () => {
+  window.history.replaceState(null, '', '/help/#patients/third');
+  render(<HelpSite />);
+  const main = screen.getByRole('main');
+  expect(within(main).getByText(/Two visits on the same date can have different types/)).toBeInTheDocument();
+  fireEvent.click(within(main).getByRole('link', { name: 'Document a consultation' }));
+  expect(location.hash).toBe('#consultation');
+  expect(within(main).getByText(/select it and choose Start visit/)).toBeInTheDocument();
+});
+
+it('documents a single recording across the dental visit', () => {
+  window.history.replaceState(null, '', '/help/#dictation/first');
+  render(<HelpSite />);
+  const main = screen.getByRole('main');
+  expect(within(main).getByText(/any tab of a dental procedure/)).toBeInTheDocument();
+  expect(within(main).getByText(/the same recording can propose CT/)).toBeInTheDocument();
+});
+
+it('localizes the consultation image instructions and screenshot at the direct link', async () => {
+  await act(() => installPseudoLocale());
+  window.history.replaceState(null, '', '/help/#consultation/second');
+  const { container } = render(<HelpSite />);
+  const image = screen.getByRole('img', { name: /Images section in a consultation/ });
+  expect(image).toHaveAttribute('src', '/help/screenshots/consultation-review.jpg');
+  expect(findUntranslated(container, Object.values(LANGUAGE_NAMES))).toEqual([]);
+});

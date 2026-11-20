@@ -25,6 +25,8 @@
 .animal-tabs__details > span { min-width: 0; }
 .animal-tabs__number { flex: none; font-variant-numeric: tabular-nums; }
 .animal-tabs__date-compact { display: none; }
+.animal-tabs__details--typed .animal-tabs__date { display: none; }
+.animal-tabs__details--typed .animal-tabs__date-compact { display: inline; }
 .animal-tabs__details > span + span::before { content: "·"; margin-inline-end: 6px; }
 .animal-tabs__item--active strong { color: var(--primary); }
 .animal-tabs__close { flex: 0 0 36px; align-self: center; height: 36px; font-size: 22px !important; border-radius: var(--radius-sm); margin-right: 4px; }
@@ -90,6 +92,7 @@
 @media (max-width: 600px) {
   .entry-grid__topbar .animal-tabs__select {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     grid-template-rows: 44px auto;
     align-items: center;
     position: relative;
@@ -98,6 +101,8 @@
   .entry-grid__topbar .animal-tabs__heading { padding-inline-end: 44px; }
   .entry-grid__topbar .animal-tabs__item:has(> .animal-tabs__visit) .animal-tabs__heading { padding-inline-end: 88px; }
   .entry-grid__topbar .animal-tabs__details { margin-top: 0; }
+  .entry-grid__topbar .animal-tabs__details--typed .animal-tabs__number { display: none; }
+  .entry-grid__topbar .animal-tabs__details--typed .animal-tabs__number + span::before { content: none; }
   .entry-grid__topbar .animal-tabs__indicators { position: absolute; inset-inline-start: 7px; inset-block-start: 34px; }
   .entry-grid__topbar .animal-tabs__editing { display: none; }
   .entry-grid__topbar .animal-tabs__save {
@@ -112,8 +117,27 @@
   .entry-grid__topbar .animal-tabs__visit { inset-inline-end: 44px; }
 }
 @media (max-width: 360px) {
+  .entry-grid__topbar .animal-tabs__item {
+    width: min(calc(100cqi - var(--animal-tabs-controls-width)), var(--animal-tab-max));
+  }
+  .entry-grid__topbar .animal-tabs__item:has(> .animal-tabs__visit) .animal-tabs__select {
+    grid-template-rows: 24px 20px 44px;
+    padding-block: 0;
+  }
+  .entry-grid__topbar .animal-tabs__item:has(> .animal-tabs__visit) .animal-tabs__heading {
+    padding-inline-end: 12px;
+  }
+  .entry-grid__topbar .animal-tabs__item:has(> .animal-tabs__visit) .animal-tabs__indicators {
+    inset-inline: auto 7px;
+    inset-block-start: 10px;
+  }
+  .entry-grid__topbar .animal-tabs__item:has(> .animal-tabs__visit) > :is(.animal-tabs__visit, .animal-tabs__close) {
+    inset-block-start: 44px;
+  }
   .entry-grid__topbar .animal-tabs__details { font-size: 11px; gap: 4px; }
   .entry-grid__topbar .animal-tabs__details > span + span::before { margin-inline-end: 4px; }
+  .entry-grid__topbar .animal-tabs__details--typed > span:has(.animal-tabs__date) { display: none; }
+  .entry-grid__topbar .animal-tabs__details--typed .animal-tabs__type::before { content: none; }
   .animal-tabs__date { display: none; }
   .animal-tabs__date-compact { display: inline; }
 }

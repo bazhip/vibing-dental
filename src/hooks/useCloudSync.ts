@@ -1,6 +1,7 @@
 import { ctRecordedText } from '../utils/ctReportState';
 import { radiologyRecordedText } from '../utils/radiologyReportState';
 import { hasVisitDocumentation } from '../utils/visitDocumentation';
+import { visitTypeOf } from '../utils/visitTypes';
 import React from 'react';
 import { reservePatientNumber } from '../utils/patientNumberAllocation';
 import { isGeneratedPatientNumber } from '../utils/patientIds';
@@ -102,7 +103,7 @@ export interface UseCloudSyncReturn {
   /** Browser connectivity. */
   online: boolean;
   /** Fetch a chart's full snapshot (for "new visit from this patient"). */
-  fetchChart: (id: string) => Promise<ChartSnapshot>;
+  fetchChart: (id: string, practiceId?: string) => Promise<ChartSnapshot>;
   /** Chart history: save an earlier version as the current one (recorded
    *  as a new revision by you), then reload it. False if cancelled. */
   restoreRevision: (id: string, snapshot: ChartSnapshot) => Promise<boolean>;
@@ -189,6 +190,12 @@ function describeSaveError(err: unknown): string {
 function saveFailure(key: 'sync.changedByOther' | 'sync.notSavedConflict' | 'sync.noPermission' | 'sync.practiceUnknown', english: string): SaveFailure {
   const t = i18n.getFixedT(null, 'app');
   return new SaveFailure(english, t('sync.saveFailed', { message: t(key) }));
+}
+
+function isSameVisit(visit: CloudChartMeta, snapshot: ChartSnapshot, excludedId: string): boolean {
+  return visit.id !== excludedId && visit.chart_date === snapshot.patientInfo.date
+    && visit.species === speciesBase(snapshot.species)
+    && visitTypeOf(visit.visit_type) === visitTypeOf(snapshot.patientInfo.visitType);
 }
 
 function todayIso(): string {
@@ -567,7 +574,7 @@ export function useCloudSync(
   }, []);
 
   // Same-day duplicate guard. Before a brand-new chart's FIRST save, look
-  // for another visit of the same patient on the same visit date (people
+  // for another visit of the same type, patient, and date (people
   // re-starting a patient instead of reopening this morning's chart left
   // many same-day duplicates). Asked once per chart.
   const listPatientVisitsRef = React.useRef<(n: string, name: string, patientId?: string) => Promise<CloudChartMeta[]>>(async () => []);
@@ -593,8 +600,7 @@ export function useCloudSync(
     } catch {
       return true; // can't check (offline etc.) — never block a save on it
     }
-    const base = speciesBase(snap.species);
-    const same = visits.find((v) => v.id !== id && v.chart_date === p.date && v.species === base);
+    const same = visits.find(visit => isSameVisit(visit, snap, id));
     dupAnsweredRef.current = id;
     if (!same) return true;
     const t = i18n.getFixedT(null, 'app');
@@ -877,7 +883,7 @@ export function useCloudSync(
       }
       if (workspace.duplicateAnswered !== id && workspace.skipDuplicate !== id) {
         const visits = await listPatientVisitsRef.current(patient.patientNumber, patient.patientName, patient.patientId);
-        if (visits.some(visit => visit.id !== id && visit.chart_date === patient.date && visit.species === speciesBase(snapshot.species))) return null;
+        if (visits.some(visit => isSameVisit(visit, snapshot, id))) return null;
       }
     }
     if (!stillOwned()) return null;
@@ -968,9 +974,11 @@ export function useCloudSync(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [upsertChart]);
 
-  const fetchChart = React.useCallback(async (id: string): Promise<ChartSnapshot> => {
+  const fetchChart = React.useCallback(async (id: string, practiceId?: string): Promise<ChartSnapshot> => {
     if (!supabase) throw new LocalizedError(i18n.t('sync.cloudNotConfigured', { ns: 'app' }));
-    const { data, error } = await supabase.from('charts').select('data').eq('id', id).single();
+    let query = supabase.from('charts').select('data').eq('id', id);
+    if (practiceId) query = query.eq('practice_id', practiceId);
+    const { data, error } = await query.single();
     if (error) throw new Error(error.message);
     return data.data as ChartSnapshot;
   }, []);

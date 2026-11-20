@@ -1654,6 +1654,11 @@
 .pdf-style-sheet .pdf-style-list { gap: 6px; }
 
 /* Documents → Record note: the note sits where the PDF preview does. */
+.record-note__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 .record-note__text {
   flex: 1 1 auto;
   min-height: 60vh;

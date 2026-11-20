@@ -42,3 +42,20 @@ it('places the discharge dictation control in the section title action slot', ()
   const dictation = screen.getByRole('button', { name: 'Dictate discharge instructions' });
   expect(heading.parentElement?.querySelector('.section-header__title-action')).toContainElement(dictation);
 });
+
+it('selects a consult template without changing any clinical fields', () => {
+  const onChange = vi.fn();
+  render(<VisitDocumentationSection kind="consultation" patientInfo={patient} onChange={onChange} />);
+  fireEvent.click(screen.getByRole('button', { name: 'Dental consultation', pressed: true }));
+  expect(onChange).not.toHaveBeenCalled();
+  fireEvent.click(screen.getByRole('button', { name: 'General SOAP', pressed: false }));
+  expect(onChange).toHaveBeenCalledWith({ consultationLayout: expect.objectContaining({ id: 'soap-v1' }) });
+  expect(screen.getByRole('textbox', { name: 'Reason for visit' })).toHaveValue('Reason');
+});
+
+it('keeps a saved consult template visible and protects its sources when locked', () => {
+  render(<VisitDocumentationSection kind="consultation" patientInfo={patient} onChange={vi.fn()} readOnly />);
+  expect(screen.getByText('Dental consultation')).toBeVisible();
+  expect(screen.queryByRole('group', { name: 'Note template' })).not.toBeInTheDocument();
+  expect(screen.getByRole('textbox', { name: 'Reason for visit' })).toHaveAttribute('readonly');
+});

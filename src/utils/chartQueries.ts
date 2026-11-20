@@ -10,6 +10,8 @@ import { LocalizedError, describeError, detailOnly } from './apiErrors';
 export interface CloudChartMeta {
   finalized_at?: string | null;
   patient_id?: string;
+  practice_id?: string | null;
+  visit_type?: string | null;
   id: string;
   patient_name: string;
   patient_number: string;
@@ -51,7 +53,7 @@ export interface ChartListPage {
 }
 
 export const CHART_META_COLUMNS =
-  'finalized_at:data->>finalizedAt, patient_id:data->patientInfo->>patientId, id, patient_name, patient_number, owner_name, owner_phone, owner_email, species, dentition, chart_date, recall_date, updated_at, created_by';
+  'finalized_at:data->>finalizedAt, patient_id:data->patientInfo->>patientId, visit_type:data->patientInfo->>visitType, id, practice_id, patient_name, patient_number, owner_name, owner_phone, owner_email, species, dentition, chart_date, recall_date, updated_at, created_by';
 
 const DEFAULT_PAGE_SIZE = 200;
 

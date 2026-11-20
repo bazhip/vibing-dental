@@ -1636,6 +1636,9 @@ export async function drawImagePage(
 /** Print recorded fields, without the underlying dictation transcript. */
 export function visitDocumentationContinuations(patient: PatientInfo, lng: string, kind: 'gp-exam' | 'discharge'): ClinicalContinuation[] {
   const t = i18n.getFixedT(lng, 'visitDocumentation');
+  if (kind === 'gp-exam' && !patient.gpVitals?.trim() && !patient.gpPhysicalExam?.trim() && patient.gpDiagnostics?.trim()) {
+    return [{ title: t('fields.gpDiagnostics.label'), paragraphs: [patient.gpDiagnostics] }];
+  }
   const paragraphs = VISIT_DOCUMENT_TEMPLATES[kind].fields.flatMap(field => {
     const value = patient[field.id];
     return value?.trim() ? [`${t(field.labelKey)}\n${value}`] : [];

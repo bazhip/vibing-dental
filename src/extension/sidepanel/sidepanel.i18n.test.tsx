@@ -1,4 +1,4 @@
-vi.mock('../../hooks/useProfile', () => ({ useProfile: () => ({ loaded: true, aiEnabled: false }) }));
+vi.mock('../../hooks/useProfile', () => ({ useProfile: () => ({ loaded: true, aiEnabled: false, consultationEnabled: true }) }));
 import { vi } from 'vitest';
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 
@@ -49,7 +49,7 @@ vi.mock('./OffscreenChartPicture', () => ({
   useOffscreenChartPicture: () => ({ element: null, render: async () => null, hasDiagrams: false }),
 }));
 vi.mock('../../hooks/usePimsFieldMap', () => ({
-  usePimsFieldMap: () => ({ map: { header: null, anesthesia: 'Plan', exam: 'Plan', findings: 'Plan', procedures: 'Plan', radiographs: 'Plan', ct: 'Plan', treatment: 'Plan', recheck: 'Plan', chart: null }, save: async () => {}, reset: async () => {} }),
+  usePimsFieldMap: () => ({ map: { header: null, anesthesia: 'Plan', exam: 'Plan', findings: 'Plan', procedures: 'Plan', radiographs: 'Plan', ct: 'Plan', treatment: 'Plan', recheck: 'Plan', chart: null, consultationPlan: 'Plan' }, save: async () => {}, reset: async () => {} }),
 }));
 vi.mock('../../utils/edgeFunctions', () => ({ markPimsSent: async () => ({ sentAt: '2026-11-15T10:00:00Z' }) }));
 vi.mock('../../utils/chartQueries', async () => {
@@ -65,7 +65,7 @@ vi.mock('../../utils/chartQueries', async () => {
     loadChartSnapshot: async () => ({
       snapshot: normalizeSnapshot({
         patientInfo: {
-          patientName: 'Bella', patientNumber: '1', doctor: '', tech: '', date: '2026-11-11', treatmentReport: 'Scaled.',
+          patientName: 'Bella', patientNumber: '1', doctor: '', tech: '', date: '2026-11-11', visitType: 'consultation', consultationPlan: 'Planned.',
           nerveBlocks: { ...EMPTY_NERVE_BLOCKS }, exam: { ...EMPTY_EXAM_FINDINGS },
         },
         toothData: [], species: 'canine', logo: 'socal',
@@ -146,7 +146,10 @@ describe('side panel (pseudo-locale)', () => {
     await waitFor(() => expect(document.querySelector('.sp-primary')).not.toBeNull());
     const send = document.querySelector('.sp-primary') as HTMLButtonElement;
     expect(document.querySelector('textarea')).not.toBeNull();
-    expect(findUntranslated(document.body, [/Bella/, /Scaled/, /Consult/, /Plan/, /Smith/])).toEqual([]);
+    expect(screen.getByRole('button', { name: /Open consultation/ })).toBeInTheDocument();
+    fireEvent.click(document.querySelector('.sp-note-preview summary') as HTMLElement);
+    expect(screen.getByRole('button', { name: /Reload saved note/ })).toBeInTheDocument();
+    expect(findUntranslated(document.body, [/Bella/, /Planned/, /Consult/, /Plan/, /Smith/])).toEqual([]);
     await waitFor(() => expect(send).toBeEnabled());
     // The mismatch-free path goes straight to the results.
     await act(async () => { fireEvent.click(send); });

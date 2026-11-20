@@ -4,6 +4,7 @@ import type { InspectResult } from '../protocol';
 import { listChartsPage, type CloudChartMeta } from '../../utils/chartQueries';
 import { patientsMatch, patientsMatchStrict, samePatientNumber } from '../../utils/pims/patientMatch';
 import { friendlyError } from '../../components/ui/dialogs';
+import { visitTypeOf } from '../../utils/visitTypes';
 
 export const PAGE_SIZE = 20;
 export const SEARCH_DEBOUNCE_MS = 300;
@@ -44,7 +45,7 @@ interface ChartListProps {
 /** The practice's charts, newest first: search, 20 per page, and the chart that matches the open
  *  ezyVet consult pinned at the top (or, failing an exact match, a possible match beside the ezyVet name). */
 export const ChartList: React.FC<ChartListProps> = ({ inspect, onPick }) => {
-  const { t } = useTranslation(['pims', 'common']);
+  const { t } = useTranslation(['pims', 'common', 'app']);
   const [query, setQuery] = React.useState('');
   const [search, setSearch] = React.useState('');
   const [rows, setRows] = React.useState<CloudChartMeta[]>([]);
@@ -91,7 +92,7 @@ export const ChartList: React.FC<ChartListProps> = ({ inspect, onPick }) => {
     <li key={c.id}>
       <button type="button" className="sp-chart" onClick={() => onPick(c)}>
         <span className="sp-chart__name">{c.patient_name || t('pims:panel.list.unnamed')}</span>
-        <span className="sp-chart__meta">{[c.owner_name, c.chart_date].filter(Boolean).join(' · ')}</span>
+        <span className="sp-chart__meta">{[c.owner_name, c.chart_date, t(`app:visitTypes.${visitTypeOf(c.visit_type)}`)].filter(Boolean).join(' · ')}</span>
       </button>
     </li>
   );

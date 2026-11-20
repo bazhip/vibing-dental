@@ -4,6 +4,7 @@ import type { ClinicalDictationSource } from '../types';
 import { normalizeClinicalDictations, appendClinicalDictationSource } from '../utils/clinicalDictationSources';
 import { createPatientIdentity, patientNumberOf } from '../utils/patientIds';
 import { normalizeVisitDocumentation } from '../utils/visitDocumentation';
+import { isVisitType, visitTypeOf, type VisitType } from '../utils/visitTypes';
 import { normalizeCustomAnesthesia } from '../utils/customAnesthesia';
 import { normalizeCustomExam } from '../utils/customExam';
 import { localDateISO } from '../utils/localDate';
@@ -100,13 +101,13 @@ export interface UseChartStateReturn {
    *  board selection (different key prefix). New patient. */
   resetChart: () => void;
   /** Start a fresh dated visit for a patient: keeps identity, blanks all
-   *  clinical data EXCEPT that teeth which were missing or extracted last
-   *  time carry over as "missing" (they're already gone), and mints a new
-   *  cloud row. With no args, derives from the currently-open chart; the
-   *  library passes an explicit prior snapshot's identity + gone teeth. */
+   *  clinical data, and mints a new cloud row. A dental visit may carry
+   *  over teeth missing or extracted at a previous dental visit. The
+   *  library may pass a specific prior patient's identity and gone teeth. */
   startNewVisit: (opts?: {
     identity?: { patientId?: string; generatedPatientNumber?: string; patientName: string; patientNumber: string; ownerName: string; ownerPhone: string; ownerEmail: string; species: Species };
     goneTeeth?: number[];
+    visitType?: VisitType;
   }) => string; // the new visit's cloud id
 
   // ----- Cloud sync ------------------------------------------------------
@@ -223,10 +224,16 @@ function normalizeRadiologyInfo(info: PatientInfo): PatientInfo {
   return result;
 }
 
+function normalizePatientDocumentation(info: PatientInfo): PatientInfo {
+  const patient = normalizeVisitDocumentation(info);
+  if (!isVisitType(patient.visitType)) delete patient.visitType;
+  return patient;
+}
+
 export function normalizeSnapshot(s: ChartSnapshot): ChartSnapshot {
   const { clinicalDictations: rawDictations, ...chart } = s;
   const clinicalDictations = normalizeClinicalDictations(rawDictations);
-  const patient = normalizeVisitDocumentation(normalizeRadiologyInfo(s.patientInfo));
+  const patient = normalizePatientDocumentation(normalizeRadiologyInfo(s.patientInfo));
   return {
     ...chart,
     ...(clinicalDictations.length ? { clinicalDictations } : {}),
@@ -282,6 +289,7 @@ export function useChartState(): UseChartStateReturn {
     'chart.patientInfo', 1,
     () => ({
       patientName: '',
+      visitType: 'dental',
       ...createPatientIdentity(),
       ownerName: '',
       ownerPhone: '',
@@ -297,7 +305,7 @@ export function useChartState(): UseChartStateReturn {
     }),
     // Pre-multi-drug builds stored a single `drug` string.
     (stored) => ({
-      ...normalizeVisitDocumentation(stored),
+      ...normalizePatientDocumentation(stored),
       nerveBlocks: normalizeNerveBlocks(stored.nerveBlocks),
       ...(stored.secondNerveBlocks ? { secondNerveBlocks: normalizeNerveBlocks(stored.secondNerveBlocks) } : {}),
     })
@@ -570,19 +578,22 @@ export function useChartState(): UseChartStateReturn {
   const startNewVisit = (opts?: {
     identity?: { patientId?: string; generatedPatientNumber?: string; patientName: string; patientNumber: string; ownerName: string; ownerPhone: string; ownerEmail: string; species: Species };
     goneTeeth?: number[];
+    visitType?: VisitType;
   }) => {
     const identity = opts?.identity;
-    // Teeth that are already gone at the start of this visit: anything
-    // missing OR extracted last time. Derive from the current chart when
-    // not supplied (menu "New visit" on the open patient).
-    const gone =
-      opts?.goneTeeth ??
-      (() => {
-        const set = new Set<number>();
-        for (const [k, v] of Object.entries(preToothMarks)) if (v === 'missing') set.add(Number(k));
-        for (const [k, v] of Object.entries(postToothMarks)) if (v === 'extracted') set.add(Number(k));
-        return Array.from(set);
-      })();
+    const visitType = visitTypeOf(opts?.visitType);
+    // A dental procedure carries forward already missing and extracted
+    // teeth. Without an explicit source, only the current dental visit
+    // can supply those marks.
+    const missing: ToothMarks = {};
+    if (visitType === 'dental') {
+      if (opts?.goneTeeth) {
+        for (const tooth of opts.goneTeeth) missing[tooth] = 'missing';
+      } else if (visitTypeOf(patientInfo.visitType) === 'dental') {
+        for (const [tooth, mark] of Object.entries(preToothMarks)) if (mark === 'missing') missing[Number(tooth)] = 'missing';
+        for (const [tooth, mark] of Object.entries(postToothMarks)) if (mark === 'extracted') missing[Number(tooth)] = 'missing';
+      }
+    }
 
     const keep = {
       patientName: identity ? identity.patientName : patientInfo.patientName,
@@ -605,16 +616,13 @@ export function useChartState(): UseChartStateReturn {
     setRecordNote(null);
     setClinicalDictations([]);
     setPlannedExtractions([]);
-    setPatientInfo(blankPatientInfo(keep.patientName.trim() || keep.patientNumber.trim() || keep.patientId ? keep : undefined));
+    const retainedIdentity = keep.patientName.trim() || keep.patientNumber.trim() || keep.patientId ? keep : undefined;
+    setPatientInfo(blankPatientInfo({ ...retainedIdentity, visitType }));
     if (identity) {
       setSpecies(sp);
       switchSpecies(sp);
     }
     setToothDataDirectly(getInitialToothData(sp));
-    // Gone teeth start the new visit already marked missing; nothing else
-    // carries over (no comments, strokes, or measurements).
-    const missing: ToothMarks = {};
-    for (const t of gone) missing[t] = 'missing';
     setPreToothMarks(missing);
     setPreDiagramComments([]);
     setPreDiagramStrokes([]);

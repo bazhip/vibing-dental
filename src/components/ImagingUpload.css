@@ -45,3 +45,23 @@
   .imaging-upload__dropzone { min-height: 0; padding: 20px 16px 12px; }
   .imaging-upload__actions button { flex: 1 1 115px; }
 }
+
+.imaging--compact {
+  padding-block-start: 16px;
+  border-block-start: 1px solid var(--border);
+}
+.imaging--compact .imaging-upload {
+  margin-block-end: 12px;
+}
+.imaging--compact .imaging-upload__dropzone {
+  min-height: 44px;
+  gap: 4px;
+  padding: 12px;
+}
+.imaging--compact .imaging-upload__title {
+  font-size: 14px;
+  color: var(--primary);
+}
+.imaging--compact .imaging-upload__formats {
+  margin-block: 0 12px;
+}

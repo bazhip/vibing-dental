@@ -88,3 +88,33 @@ it('preserves legacy photo inclusion and saves explicit image choices independen
   expect(next.result.current.getSnapshot().ownerReportImageInclusion).toBeUndefined();
   expect(next.result.current.imageRoles).toEqual({});
 });
+
+it('starts a separate consultation without dental carryover and restores its type', () => {
+  const first = renderHook(() => useChartState());
+  act(() => {
+    first.result.current.handlePatientInfoChange('patientName', 'Milo');
+    first.result.current.setPreToothMarks({ 108: 'missing' });
+  });
+  act(() => first.result.current.startNewVisit({ visitType: 'consultation', goneTeeth: [108] }));
+  expect(first.result.current.patientInfo).toMatchObject({ patientName: 'Milo', visitType: 'consultation' });
+  expect(first.result.current.getSnapshot().preMarks).toEqual({});
+  const saved = first.result.current.getSnapshot();
+  first.unmount();
+
+  const restored = renderHook(() => useChartState());
+  expect(restored.result.current.getSnapshot().patientInfo.visitType).toBe('consultation');
+  act(() => restored.result.current.startNewVisit());
+  expect(restored.result.current.getSnapshot().patientInfo.visitType).toBe('dental');
+  act(() => restored.result.current.applySnapshot(saved, 'saved-consultation'));
+  expect(restored.result.current.getSnapshot().patientInfo.visitType).toBe('consultation');
+});
+
+it('preserves untyped history and rejects a malformed visit type in imported snapshots', () => {
+  const { result } = renderHook(() => useChartState());
+  const saved = result.current.getSnapshot();
+  const legacy = { ...saved, patientInfo: { ...saved.patientInfo } };
+  delete legacy.patientInfo.visitType;
+  expect(normalizeSnapshot(legacy).patientInfo).not.toHaveProperty('visitType');
+  const malformed = { ...saved, patientInfo: { ...saved.patientInfo, visitType: 'phone' } };
+  expect(normalizeSnapshot(malformed as never).patientInfo).not.toHaveProperty('visitType');
+});

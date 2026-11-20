@@ -1,5 +1,7 @@
+import { CONSULTATION_FIELDS, DENTAL_CONSULTATION, consultationDocumentFields } from './consultationTemplates';
 import { ctRecordedText } from './ctReportState';
 import { radiologyRecordedText } from './radiologyReportState';
+import { visitTypeOf } from './visitTypes';
 import type { TFunction } from 'i18next';
 import i18n from '../i18n';
 import type { AppLanguage } from '../i18n/config';
@@ -20,7 +22,7 @@ import {
  * restates what was charted, in the language of the `t` it is given.
  */
 
-const NS = ['media', 'forms', 'chart', 'app'] as const;
+const NS = ['media', 'forms', 'chart', 'app', 'visitDocumentation'] as const;
 export type RecordNoteT = TFunction<typeof NS>;
 
 /** The fixed-language t the builder takes. */
@@ -57,6 +59,9 @@ export const HEADING_KEYS = {
   consultationHistory: 'media:recordNote.h.consultationHistory',
   consultationAssessment: 'media:recordNote.h.consultationAssessment',
   consultationPlan: 'media:recordNote.h.consultationPlan',
+  consultationCurrentMedications: 'visitDocumentation:fields.consultationCurrentMedications.label',
+  consultationAdministeredMedications: 'visitDocumentation:fields.consultationAdministeredMedications.label',
+  consultationMedicationPlan: 'visitDocumentation:fields.consultationMedicationPlan.label',
   gpVitals: 'media:recordNote.h.gpVitals',
   gpPhysicalExam: 'media:recordNote.h.gpPhysicalExam',
   gpDiagnostics: 'media:recordNote.h.gpDiagnostics',
@@ -80,6 +85,8 @@ export const RECORD_NOTE_KEYS = Object.keys(HEADING_KEYS) as RecordNoteKey[];
 const clean = (s: string | undefined | null) => (s ?? '').trim();
 const textLines = (s: string | undefined) => clean(s).split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
 const isGridMirror = (c: DiagramComment) => c.id.startsWith('grid-');
+const consultationFields = (info: ChartSnapshot['patientInfo']) => info.consultationLayout?.fields ?? CONSULTATION_FIELDS;
+const consultationNoteFields = (info: ChartSnapshot['patientInfo']) => consultationDocumentFields(info.consultationLayout?.fields ?? DENTAL_CONSULTATION.fields);
 
 function commentsByTooth(comments: DiagramComment[]) {
   const pinned = new Map<number, string[]>();
@@ -108,6 +115,7 @@ function examLine(label: string, v: ExamItemValue | undefined, t: RecordNoteT): 
 
 export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): RecordNote {
   const info = snapshot.patientInfo;
+  const consultation = visitTypeOf(info.visitType) === 'consultation';
   const sections: RecordNoteSection[] = [];
   const add = (key: RecordNoteKey, lines: (string | null | false | undefined)[], heading = t(HEADING_KEYS[key])) => {
     const kept = lines.filter((l): l is string => !!l);
@@ -121,15 +129,17 @@ export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): Record
     clean(info.date),
     clean(info.doctor) && `${t('media:recordNote.doctor')}: ${clean(info.doctor)}`,
     clean(info.tech) && `${t('forms:patient.tech')}: ${clean(info.tech)}`,
-  ]);
+  ], consultation ? t('visitDocumentation:consultation.title') : undefined);
 
-  add('complaint', textLines(info.complaint));
-  add('consultationHistory', textLines(info.consultationHistory));
-  add('consultationAssessment', textLines(info.consultationAssessment));
-  add('consultationPlan', textLines(info.consultationPlan));
-  add('gpVitals', textLines(info.gpVitals));
-  add('gpPhysicalExam', textLines(info.gpPhysicalExam));
-  add('gpDiagnostics', textLines(info.gpDiagnostics));
+  for (const field of consultation ? consultationNoteFields(info) : consultationFields(info)) {
+    add(field, textLines(info[field]));
+  }
+
+  if (consultation) {
+    add('dischargeFollowUp', textLines(info.dischargeFollowUp));
+    add('recheck', [clean(info.recallDate)]);
+    return { sections };
+  }
 
   // 2. Anesthesia
   const nb = info.nerveBlocks;
@@ -253,6 +263,19 @@ function hashStr(s: string): string {
  *  language), so a stored note can tell when the chart moved on. */
 export function recordNoteBasis(snapshot: ChartSnapshot): string {
   const i = snapshot.patientInfo;
+  if (visitTypeOf(i.visitType) === 'consultation') {
+    return hashStr(JSON.stringify([
+      'consultation', snapshot.species, i.patientName, i.patientNumber, i.date, i.doctor, i.tech,
+      consultationNoteFields(i).flatMap(field => {
+        const lines = textLines(i[field]);
+        return lines.length ? [[field, lines]] : [];
+      }),
+      textLines(i.dischargeFollowUp), clean(i.recallDate),
+    ]));
+  }
+  const recordedFields = CONSULTATION_FIELDS.filter(field => textLines(i[field]).length);
+  const templateOrder = i.consultationLayout?.fields.filter(field => recordedFields.includes(field));
+  const reordered = templateOrder?.some((field, index) => field !== recordedFields[index]);
   return hashStr(JSON.stringify([
     snapshot.species, snapshot.logo,
     i.patientName, i.patientNumber, i.date, i.doctor, i.tech, i.complaint,
@@ -260,6 +283,7 @@ export function recordNoteBasis(snapshot: ChartSnapshot): string {
     radiologyRecordedText(i), i.ctReport ?? '', i.treatmentReport, i.recallDate,
     ...([i.consultationHistory, i.consultationAssessment, i.consultationPlan, i.dischargeMedications, i.dischargeInstructions, i.dischargeFollowUp, i.gpVitals, i.gpPhysicalExam, i.gpDiagnostics].some(value => value?.trim())
       ? [i.consultationHistory ?? '', i.consultationAssessment ?? '', i.consultationPlan ?? '', i.dischargeMedications ?? '', i.dischargeInstructions ?? '', i.dischargeFollowUp ?? '', i.gpVitals ?? '', i.gpPhysicalExam ?? '', i.gpDiagnostics ?? ''] : []),
+    ...(reordered ? [templateOrder] : []),
     snapshot.toothData.map((td) => GRID_FIELDS.map((f) => td[f] ?? '')),
     snapshot.preMarks, snapshot.postMarks,
     (snapshot.preComments ?? []).map((c) => [c.id, c.text, c.anchorTriadan]),

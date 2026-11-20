@@ -11,11 +11,14 @@ import type { ChartSnapshot } from '../types';
 import { useOffscreenChartPicture } from '../extension/sidepanel/OffscreenChartPicture';
 import { PdfPreviewModal, type ChartSnapshot as PdfSnapshot } from './PdfPreviewModal';
 import { buildRecordNote, recordNoteT, recordNoteText } from '../utils/recordNote';
+import { visitTypeOf, type VisitType } from '../utils/visitTypes';
+import { ConsultationNotePdfButton } from './ConsultationNotePdfButton';
 import './PatientRecordHistory.css';
 
 export interface HistoryVisit {
   id: string;
   chart_date: string;
+  visitType?: VisitType;
 }
 
 interface Props {
@@ -30,7 +33,7 @@ interface Props {
 const modes = ['pdf', 'note'] as const;
 
 export function PatientRecordHistory({ current, currentId, listVisits, fetchVisit, branding, onClose }: Props) {
-  const { t, i18n } = useTranslation(['media', 'common', 'library', 'pdfui']);
+  const { t, i18n } = useTranslation(['media', 'common', 'library', 'pdfui', 'app']);
   const native = isNativeApp();
   const focusRef = useModalFocus<HTMLDivElement>(!native);
   const backdrop = useBackdropDismiss(onClose);
@@ -41,6 +44,9 @@ export function PatientRecordHistory({ current, currentId, listVisits, fetchVisi
   const [mode, setMode] = React.useState<'note' | 'pdf'>('pdf');
   const [result, setResult] = React.useState<{ id: string; snapshot: ChartSnapshot | null }>();
   const selected = selectedId ? (result?.id === selectedId ? result.snapshot : undefined) : current;
+  const isConsultation = visitTypeOf(selected?.patientInfo.visitType) === 'consultation';
+  const selectedNote = selected && (mode === 'note' || isConsultation)
+    ? selected.recordNote?.text ?? recordNoteText(buildRecordNote(selected, recordNoteT(i18n.language))) : '';
 
   React.useEffect(() => {
     if (!listVisits) return;
@@ -77,7 +83,7 @@ export function PatientRecordHistory({ current, currentId, listVisits, fetchVisi
     <div className="patient-record-history">
       <div className="patient-record-history__controls">
         <div className="patient-record-history__visits" role="group" aria-label={t('patientRecord.visit')}>
-          {[{ id: '', chart_date: current.patientInfo.date }, ...visits].map((visit, index) => (
+          {[{ id: '', chart_date: current.patientInfo.date, visitType: current.patientInfo.visitType }, ...visits].map((visit, index) => (
             <button key={visit.id} type="button" className="diagram-view__action" aria-pressed={selectedId === visit.id}
               onClick={() => {
                 if (selectedId === visit.id) return;
@@ -85,9 +91,11 @@ export function PatientRecordHistory({ current, currentId, listVisits, fetchVisi
                 selectId(visit.id);
               }}>
               {selectedId === visit.id && <span aria-hidden="true">✓ </span>}
-              {index === 0 ? t('patientRecord.currentVisit') : null}
-              {index === 0 && visit.chart_date ? ' · ' : null}
-              {visit.chart_date ? dateLabel(visit.chart_date) : index > 0 ? t('patientRecord.undatedVisit') : null}
+              {[
+                index === 0 ? t('patientRecord.currentVisit') : null,
+                visit.chart_date ? dateLabel(visit.chart_date) : index > 0 ? t('patientRecord.undatedVisit') : null,
+                t(`app:visitTypes.${visitTypeOf(visit.visitType)}`),
+              ].filter(Boolean).join(' · ')}
             </button>
           ))}
         </div>
@@ -116,12 +124,12 @@ export function PatientRecordHistory({ current, currentId, listVisits, fetchVisi
       {selected === null && <p role="alert">{t('patientRecord.visitFailed')}</p>}
       <div role="tabpanel" id={`${titleId}-panel`} aria-labelledby={`${titleId}-${mode}`} tabIndex={0}>
         {selected && mode === 'note' && (
-          <div className="patient-record-history__note">
-            {selected.recordNote?.text ?? recordNoteText(buildRecordNote(selected, recordNoteT(i18n.language)))}
-          </div>
+          <div className="patient-record-history__note">{selectedNote}</div>
         )}
         {selected && mode === 'pdf' && (
-          <VisitPdf key={selectedId} snapshot={selected} chartId={selectedId || currentId} branding={branding} onClose={onClose} />
+          isConsultation
+            ? <ConsultationNotePdfButton text={selectedNote} language={selected.recordNote?.lng ?? i18n.language} className="pdf-preview-download" />
+            : <VisitPdf key={selectedId} snapshot={selected} chartId={selectedId || currentId} branding={branding} onClose={onClose} />
         )}
       </div>
     </div>

@@ -4,11 +4,16 @@ import type { FieldInfo } from './mapping';
 /** Note destinations only: these labels never create native measurements, prescriptions or orders. */
 const EXAM = [['Physical Exam', 'Physical examination', 'Exam'], ['Objective > Notes'], ['Objective']] as const;
 const DISCHARGE = [['Discharge Summary', 'Discharge notes', 'Discharge instructions'], ['Plan'], ['Plan > Notes']] as const;
+const HISTORY = [['History'], ['Subjective > Notes'], ['Subjective']] as const;
+const PLAN = [['Plan'], ['Plan > Notes']] as const;
 const SOAP_DESTINATIONS = {
-  complaint: [['History'], ['Subjective > Notes'], ['Subjective']],
-  consultationHistory: [['History'], ['Subjective > Notes'], ['Subjective']],
+  complaint: HISTORY,
+  consultationHistory: HISTORY,
+  consultationCurrentMedications: HISTORY,
   consultationAssessment: [['Assessment'], ['Assessment > Diagnosis']],
-  consultationPlan: [['Plan'], ['Plan > Notes']],
+  consultationPlan: PLAN,
+  consultationAdministeredMedications: PLAN,
+  consultationMedicationPlan: PLAN,
   gpVitals: [['Vitals', 'Vital signs'], ...EXAM],
   gpPhysicalExam: EXAM,
   gpDiagnostics: [['Diagnostics', 'Diagnostic results'], ...EXAM],
@@ -21,6 +26,7 @@ export type ClinicalMappingDefaults = Record<ClinicalMappingKey, string | null>;
 export const EZYVET_CLINICAL_DEFAULTS: ClinicalMappingDefaults = {
   complaint: 'History',
   consultationHistory: 'History', consultationAssessment: 'Assessment', consultationPlan: 'Plan',
+  consultationCurrentMedications: 'History', consultationAdministeredMedications: 'Plan', consultationMedicationPlan: 'Plan',
   gpVitals: 'Physical Exam', gpPhysicalExam: 'Physical Exam', gpDiagnostics: 'Physical Exam', ct: 'Physical Exam',
   dischargeMedications: 'Discharge Summary', dischargeInstructions: 'Discharge Summary', dischargeFollowUp: 'Discharge Summary',
 };

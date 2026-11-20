@@ -47,6 +47,7 @@ interface DocumentsModalProps {
   recordNote?: {
     snapshot: ChartSnapshot;
     stored: StoredRecordNote | null;
+    showConsultationGuide?: boolean;
     onChange: (note: StoredRecordNote | null) => void;
     readOnly: boolean;
     /** Send to ezyVet (omitted = no button). */
@@ -81,7 +82,11 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
       return saved === 'owner' || saved === 'note' ? saved : 'chart';
     } catch { return 'chart'; }
   };
-  const tabs: DocumentTab[] = ['chart', ...(ownerReport ? ['owner' as const] : []), ...(recordNote ? ['note' as const] : [])];
+  const tabs: DocumentTab[] = [
+    ...(chartSnapshot ? ['chart' as const] : []),
+    ...(ownerReport ? ['owner' as const] : []),
+    ...(recordNote ? ['note' as const] : []),
+  ];
   const available = (id: DocumentTab) => tabs.includes(id);
   const [tab, setTab] = React.useState<DocumentTab>(() => initialTab ?? readSaved());
   // Previews mount on first visit and stay mounted, so flipping back and
@@ -96,7 +101,8 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
   React.useEffect(() => {
     if (!open) return;
     const wanted = initialTab ?? readSaved();
-    const next = available(wanted) ? wanted : 'chart';
+    const next = available(wanted) ? wanted : tabs[0];
+    if (!next) return;
     setTab(next);
     setVisited(new Set([next]));
     closeRef.current?.focus();
@@ -123,7 +129,8 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
     ) : preview;
   }
 
-  const active = available(tab) ? tab : 'chart';
+  const active = available(tab) ? tab : tabs[0];
+  if (!active) return null;
   const select = (id: DocumentTab) => {
     setTab(id);
     setVisited((v) => new Set(v).add(id));
@@ -142,10 +149,10 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
     select(target);
     document.getElementById(`documents-tab-${target}`)?.focus();
   };
-  const chartVisited = visited.has('chart');
-  const ownerVisited = visited.has('owner');
-  const noteVisited = visited.has('note');
-  const patient = chartSnapshot?.patientInfo ?? ownerReport?.snapshot.patientInfo;
+  const chartVisited = active === 'chart' || visited.has('chart');
+  const ownerVisited = active === 'owner' || visited.has('owner');
+  const noteVisited = active === 'note' || visited.has('note');
+  const patient = chartSnapshot?.patientInfo ?? ownerReport?.snapshot.patientInfo ?? recordNote?.snapshot.patientInfo;
   const subtitle = [patient?.patientName, patient?.date].filter(Boolean).join(' · ');
   const who = t(TAB_WHO[active]);
   const chartControlsHost = native ? undefined : active === 'chart' ? controlsHost : null;
@@ -153,7 +160,7 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
 
   const panels = (
     <>
-      <div
+      {chartSnapshot && <div
         className="documents-modal__panel"
         role="tabpanel"
         id="documents-panel-chart"
@@ -161,7 +168,7 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
         hidden={active !== 'chart'}
       >
         {chartVisited && <PdfPreviewModal open={open} bare onClose={onClose} snapshot={chartSnapshot} lifecycle={chartLifecycle} options={chartOptions} controlsHost={chartControlsHost} />}
-      </div>
+      </div>}
       {ownerReport && (
         <div
           className="documents-modal__panel"
@@ -200,13 +207,15 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
           className="documents-modal__panel"
           role="tabpanel"
           id="documents-panel-note"
-          aria-labelledby="documents-tab-note"
+          aria-labelledby={tabs.length > 1 ? 'documents-tab-note' : undefined}
+          aria-label={tabs.length === 1 ? t(TAB_LABEL.note) : undefined}
           hidden={active !== 'note'}
         >
           {noteVisited && (
             <RecordNotePanel
               snapshot={recordNote.snapshot}
               stored={recordNote.stored}
+              showConsultationGuide={recordNote.showConsultationGuide}
               onChange={recordNote.onChange}
               readOnly={recordNote.readOnly}
               pims={recordNote.pims}
@@ -263,7 +272,7 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
           </button>
         </header>
 
-        <div className="documents-modal__bar">
+        {(tabs.length > 1 || active !== 'note') && <div className="documents-modal__bar">
           {tabs.length > 1 && (
             <div className="documents-modal__tabs" role="tablist" aria-label={t('documents.tablist')}>
               {tabs.map((id) => (
@@ -285,7 +294,7 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
             </div>
           )}
           <div className="documents-modal__controls" ref={setControlsHost} />
-        </div>
+        </div>}
 
         {panels}
       </div>

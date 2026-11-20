@@ -1,7 +1,7 @@
 {
   "site": {
     "title": "ToothOps Súgóközpont",
-    "intro": "Gyakorlati útmutatók a fogászati vizit minden lépéséhez, a páciens megnyitásától a lelet elküldéséig.",
+    "intro": "Gyakorlati útmutatók fogászati beavatkozásokhoz és konzultációkhoz, a vizit megnyitásától a dokumentáció megosztásáig.",
     "search": "Keresés a dokumentációban",
     "searchHint": "Keressen témákra, műveletekre vagy beállításokra",
     "topics": "Témák",
@@ -24,20 +24,25 @@
     "practice": "Rendelő és támogatás"
   },
   "images": {
+    "consultationMedicationHistory": "Jelenlegi gyógyszerek az alkalmazásban megjelenő állatgyógyászati tájékoztatóval és a teljes forrás hivatkozásával.",
+    "consultationMedicationReview": "A konzultációs diktálás áttekintése külön gyógyszerjavaslatokkal és az átirat megfelelő részleteivel.",
     "charting": "Minta fogászati lap számozott fogakkal és a leletek táblázatával.",
     "imaging": "A Képalkotás szakasz külön mezőkkel a röntgen- és a CT-lelethez.",
-    "dictation": "A diktálás áttekintése, amely ugyanabból az átiratból külön röntgen- és CT-javaslatokat mutat.",
+    "dictation": "Fogászati felvételből származó kiegészítő leletek áttekintése.",
     "owner": "A Gazdinak szóló lelet kezelőelemei és egy adott vizithez készült bevezető összefoglaló.",
     "export": "A klinikai fogászati lap PDF-előnézete egy mintakitöltéssel.",
     "start": "Minta páciensnézet a vizit fülével, a szakaszok menüjével és a páciens adataival.",
-    "patients": "Korábbi vizitek az előzményekben, az egyik kórlap szöveges jegyzetével.",
+    "patients": "Korábbi fogászati beavatkozások és konzultációk a beteg közös előzményeiben, egy kiválasztott vizittel.",
     "exam": "A szájüregi vizsgálat táblázata Normális és Rendellenes választással, valamint megjegyzéssel.",
     "viewer": "Képnézegető ablak- és szintbeállításokkal, illetve letöltéssel egy szintetikus DICOM-fájlon.",
     "treatment": "Kezelési jelentés a mentett sablonokkal és alattuk a szerkeszthető jelentéssel.",
     "preferences": "Kórlapbeállítások az elrendezéssel, az automatikus mentéssel és a tasakmélység rögzítésével.",
     "help-tools": "A Súgó menü a súgóközponttal, a bemutatóval, az újdonságokkal és a visszajelzéssel.",
     "by-number": "A Foganként nézet számozott diagramján a 108-as Triadan-számú fog van kijelölve, mellette az adott foghoz tartozó leletek láthatók.",
-    "imagingSettings": "A Képalkotás és PDF beállításai a lelet nyelvével és a PDF-be kerülő elemek alapbeállításaival."
+    "imagingSettings": "A Képalkotás és PDF beállításai a lelet nyelvével és a PDF-be kerülő elemek alapbeállításaival.",
+    "consultationReview": "A konzultáció Képek szakasza a Képek hozzáadása vezérlővel és egy példaminiatűrrel.",
+    "consultationTemplatePreview": "Sablontár egy fiktív konzultáció előnézetével, a választott szakaszsorrendben.",
+    "consultationRecordNote": "Konzultációs jegyzet a PDF letöltése és a Másolás gombbal."
   },
   "articles": {
     "start": {
@@ -46,7 +51,7 @@
       "sections": {
         "first": {
           "title": "Páciens megnyitása vagy létrehozása",
-          "text": "Használja a plusz gombot vagy az „Állat megnyitása” lehetőséget. Új páciens létrehozása előtt keressen név vagy páciensazonosító alapján. A „Páciens” szakaszban ellenőrizze a nevet, az állatfajt, a páciensazonosítót és a vizit dátumát."
+          "text": "Használja a plusz gombot vagy az Állat megnyitása lehetőséget. Új beteg létrehozása előtt keressen név vagy azonosító alapján. Ha megjelenik az Új vizit, válassza a Fogászati beavatkozás, majd a Vizit megkezdése lehetőséget. Ellenőrizze a beteg nevét, faját, azonosítóját és a dátumot a Beteg lapon."
         },
         "second": {
           "title": "Az ellátás dokumentálása menet közben",
@@ -64,15 +69,15 @@
       "sections": {
         "first": {
           "title": "Páciens keresése",
-          "text": "A webes alkalmazásban a plusz gombbal nyissa meg a páciensválasztót. Azonos nevű pácienseknél ellenőrizze a páciensazonosítót. A folytatáshoz válasszon egy meglévő vizitet, új időponthoz pedig indítson új vizitet."
+          "text": "A plusz gombbal nyissa meg a betegválasztót. Azonos nevek esetén ellenőrizze a beteg azonosítóját. Folytasson egy meglévő vizitet, vagy válassza az Új vizit lehetőséget, és a kezdés előtt ellenőrizze a típust."
         },
         "second": {
           "title": "Váltás a vizitek és a pácienslapok között",
-          "text": "A lapfülön a páciens és a vizit dátuma látható. Több mentett vizit esetén használja a lapfül vizitválasztóját. Másik páciens megnyitásához nyomja meg a plusz gombot. A lapfül bezárása nem törli a pácienst. Számítógépen ellenőrizze a név alatti páciensszámot, és a dátum melletti nyíllal váltson vizitet."
+          "text": "A lapon a beteg, valamint a vizit dátuma és típusa látható. A vizitválasztóval nyisson meg egy másik mentett vizitet. Két azonos dátumú vizit típusa eltérhet. A lap bezárása után a beteg és a vizitjei megmaradnak az előzményekben."
         },
         "third": {
           "title": "Korábbi bejegyzések áttekintése",
-          "text": "A „Páciens” szakaszban válassza a „Vizitelőzmények megtekintése” lehetőséget, ha vannak korábbi vizitek. Válasszon egy dátumot, majd nézze át a PDF-eket vagy a szöveges feljegyzéseket. Egy korábbi fogászati lap módosításához az adott dátumú vizitet nyissa meg."
+          "text": "A Beteg lapon válassza a Vizitelőzmények megtekintése lehetőséget, ha vannak korábbi vizitek. Válassza ki a dátumot és a típust, majd tekintse át a jegyzetet, vagy exportálja a vizitet. Szerkesztéshez a vizitválasztóval nyissa meg újra a vizitet."
         }
       }
     },
@@ -107,8 +112,8 @@
           "text": "Nyissa meg az „Érzéstelenítés” szakaszt, adja meg az alkalmazott szereket, majd rögzítse az elvégzett idegblokádok helyét és térfogatát. Lezárás előtt ellenőrizze az oldalt és a mértékegységeket az eredeti adatok alapján. Ha külön adott be másik érzéstelenítőt, válassza a „Második idegblokád-sorozat hozzáadása” lehetőséget. A második sorozatban rögzítse a nevét, koncentrációját és az egyes helyeken beadott térfogatot."
         },
         "third": {
-          "title": "Választható vizitszakaszok használata",
-          "text": "Ha a rendelő engedélyezte a „Konzultáció” vagy az „Általános állatorvosi vizsgálat” szakaszt, az megjelenik a fogászati lap navigációjában. Ezekben rögzítse a vonatkozó kórelőzményt, az állapotértékelést, a tervet és a vizsgálat részleteit."
+          "title": "A rögzített leletek ellenőrzése",
+          "text": "A diktálás után ellenőrizze a leleteket a Vizsgálat lapon, valamint a blokkok helyét és a gyógyszereket az Anesztézia lapon. A fogászati vizit lezárása előtt javítsa a hiányos vagy bizonytalan bejegyzéseket."
         }
       }
     },
@@ -126,25 +131,25 @@
         },
         "third": {
           "title": "Képalkotó leletek írása",
-          "text": "A megfigyeléseket a „Röntgenlelet” vagy a „CT-lelet” mezőben rögzítse. Diktáláshoz a „Képalkotás” szakaszban válassza a „Diktálás” lehetőséget, és nevezze meg a vizsgálat típusát, ha az nem egyértelmű. Alkalmazás előtt ellenőrizze, melyik lelethez kerülne az egyes javaslatok szövege. Gépelt szöveghez használhatja a „Finomítás” lehetőséget."
+          "text": "A képalkotó leleteket a Röntgenlelet vagy a CT-lelet mezőben rögzítse. A többi eredmény és a függő vizsgálatok a Diagnosztika mezőbe kerülnek. Mindezt ugyanabban a fogászati felvételben diktálhatja. Mondja ki a képalkotás módját, és alkalmazás előtt ellenőrizze a javasolt mezőket."
         }
       }
     },
     "dictation": {
       "title": "Diktálás és MI-javaslatok ellenőrzése",
-      "intro": "Diktáljon abból a szakaszból, amelyen dolgozik, és ellenőrizze, hová kerülnek a leletek.",
+      "intro": "Készítsen egyetlen felvételt a fogászati vizitről, és ellenőrizze, hová kerültek a leletek.",
       "sections": {
         "first": {
-          "title": "Indítás az aktuális szakaszból",
-          "text": "Nyissa meg a megfelelő szakaszt, válassza a „Diktálás”, majd a „Diktálás indítása” lehetőséget. Ha az alkalmazás kéri, engedélyezze a mikrofon használatát. Ha számít, nevezze meg a fogat, az oldalt, a mértékegységet és a képalkotó vizsgálat típusát."
+          "title": "A fogászati felvétel indítása",
+          "text": "A fogászati beavatkozás bármelyik lapján válassza a Diktálás lehetőséget, majd indítsa el a felvételt. Ha szükséges, engedélyezze a mikrofon használatát. Adja meg a fogszámokat, az oldalt, a mértékegységeket és a képalkotási módot, ahol ez számít."
         },
         "second": {
           "title": "Az átirat és a javaslatok ellenőrzése",
-          "text": "A beszédfelismerés elkészíti az átiratot. Az MI az átiratból leleteket vagy szöveges piszkozatot készít. A nem egyértelmű megfogalmazások értelmezésében az aktív szakasz segít. Egyértelmű leletek másik támogatott szakaszba is kerülhetnek."
+          "text": "Az egyértelmű leletek diktálás közben a megfelelő lapokra kerülhetnek, például a Vizsgálat, az Anesztézia, a Fogászati karton, a Diagnózis vagy a Beavatkozás lapra. Az aktív lap segít értelmezni a kétértelmű megfogalmazást. A végén állítsa le a felvételt, és ellenőrizze a leiratot és a kartont."
         },
         "third": {
           "title": "Javítások áttekintése alkalmazás előtt",
-          "text": "Az „Ellenőrzést igényel” részen hasonlítsa össze a jelenlegi értéket és a javasolt módosítást. Csak akkor alkalmazza a javaslatot, ha az átirat alátámasztja. Egyébként tartsa meg a jelenlegi értéket. A leleteknél és a vizit egyéb szakaszainál olvassa át a javasolt szöveget, és válassza ki az alkalmazni kívánt szakaszokat."
+          "text": "Az Ellenőrizendő részen hasonlítsa össze a javaslatokat a meglévő értékekkel, és tartsa meg az alátámasztott megfogalmazást. Ugyanez a felvétel CT-leleteket, egyéb diagnosztikai eredményeket és hazabocsátási részleteket is javasolhat. Ellenőrizze a bizonyítékokat, majd jelölje ki az alkalmazandó részeket."
         }
       }
     },
@@ -190,7 +195,7 @@
       "sections": {
         "first": {
           "title": "Dokumentum kiválasztása",
-          "text": "Nyissa meg az „Áttekintés és exportálás” felületet. A „Klinikai fogászati lap” a teljes fogászati lap PDF-változata. A „Gazdinak szóló lelet” a hazavihető PDF, ahol a funkció engedélyezett. A „Kórlapi feljegyzés” a kórlaphoz használható szöveges változat."
+          "text": "A kiválasztott viziten nyissa meg az Ellenőrzés és exportálás lehetőséget. Fogászati beavatkozás esetén válassza a Klinikai kartont a PDF-hez, a Gazdinak szóló jelentést az elérhető tájékoztatóhoz vagy a Kórlapjegyzetet a szöveghez. Konzultációnál a Kórlapjegyzetből töltheti le vagy másolhatja ki a vizit jegyzetét."
         },
         "second": {
           "title": "A klinikai PDF testreszabása",
@@ -397,6 +402,60 @@
         "third": {
           "title": "Váltás a nézetek között vagy lelet diktálása a fog számával",
           "text": "A „Táblázat” és a „Foganként” nézet ugyanazt a fogászati lapot szerkeszti. A számozott szerkesztőben bevitt mérések a táblázatban is megjelennek. A diagnosztikai és beavatkozási megjegyzések és jelölések a megfelelő diagramokon jelennek meg. Az adatok ellenőrzéséhez bármikor válthat nézetet.\n\nDiktáláshoz maradjon a „Fogászati lap kitöltése” szakaszban, válassza a „Diktálás” lehetőséget, majd indítsa el a felvételt. Mondja ki a teljes fogszámot és a leletet, például „száznyolc, disztális tasak öt milliméter”. Ellenőrizze, hogy az adat a megfelelő foghoz és a megfelelő tasakmezőbe került-e. Ha a javasolt módosítás eltér egy már rögzített értéktől, alkalmazás előtt ellenőrizze."
+        }
+      }
+    },
+    "consultation": {
+      "title": "Konzultáció dokumentálása",
+      "intro": "Készítsen és ellenőrizzen jegyzetet a páciens vizitjén belül.",
+      "sections": {
+        "first": {
+          "title": "Válasszon sablont",
+          "text": "A betegnél válassza az Új vizit lehetőséget. Ha elérhető a Konzultáció, válassza ezt, majd a Vizit megkezdése lehetőséget. A Jegyzetsablon alatt válasszon a látható sablonok közül. Ellenőrizze a kijelölt sablont és a szakaszok sorrendjét. A sablonváltás megtartja a beírt szöveget."
+        },
+        "second": {
+          "title": "A vizit rögzítése vagy diktálása",
+          "text": "Rögzítse a vizit okát, az előzményeket, az értékelést és a tervet. Ha elérhető a diktálás, alkalmazás előtt hasonlítsa össze a javaslatokat a bizonyítékokkal. A felvétel leiratát a Mentett leiratok részben, a dátum kiválasztásával nyithatja meg. A dokumentált életjeleket, vizsgálati leleteket és diagnosztikai eredményeket írja a megfelelő mezőkbe. Ha nincs rögzíthető lelet, hagyja üresen az adott mezőt. A jegyzet mezői alatt a Képek szakaszban válassza a Képek hozzáadása lehetőséget. Válassza ki, húzza oda vagy illessze be a fájlokat. Várja meg a miniatűrök megjelenését, majd nyisson meg egyet ellenőrzésre. A képek a vizithez maradnak csatolva, és nem kerülnek bele a jegyzet önálló PDF-fájljába. A Jelenlegi gyógyszerek mezőben a beszámolt szedést, A viziten beadott gyógyszerek mezőben a tényleges adagokat, a Gyógyszerváltoztatások és rendelések mezőben a tervet rögzítse. Diktáláskor nevezze meg a kategóriát, majd elfogadás előtt ellenőrizze az idézett részleteket. A Jelenlegi gyógyszerek alatt nyissa meg a Korábbi gyógyszerlistát az utolsó korábbi konzultáció és a változtatások áttekintéséhez. Ellenőrizze, mi maradt aktuális, majd üres mező esetén válassza a Másolás a jelenlegi gyógyszerekhez lehetőséget. A Gyógyszer keresése mezőbe írt név megnyitja a DailyMed keresését. Válassza a Terméktájékoztatók keresése lehetőséget, majd a pontos állatgyógyászati készítményt. A DailyMed teljes tájékoztatójában ellenőrizze a hatáserősséget, az útmutatót és a figyelmeztetéseket."
+        },
+        "third": {
+          "title": "A jegyzet ellenőrzése",
+          "text": "Válassza a(z) Klinikai dokumentáció áttekintése gombot a vizit kórlapi feljegyzésének megnyitásához. Továbbítás előtt ellenőrizze, hogy a dokumentált leletek szerepelnek-e benne, a várt sorrendben."
+        }
+      }
+    },
+    "consultation-templates": {
+      "title": "Konzultációs sablonok testreszabása",
+      "intro": "Állítson be egységes sorrendet a praxisban.",
+      "sections": {
+        "first": {
+          "title": "Kezdés meglévő sablonnal",
+          "text": "A(z) Konzultáció részből nyissa meg a(z) Sablonok kezelése ablakot. A praxis tulajdonosai kiválaszthatnak egy kiinduló vagy egy meglévő sablont, majd a(z) Másolat készítése gombbal szerkeszthető másolatot készíthetnek."
+        },
+        "second": {
+          "title": "Szakaszok rendezése és előnézete",
+          "text": "Töltse ki a(z) Sablon neve mezőt. A szakaszok melletti nyilakkal módosítsa a sorrendet. Válassza a(z) Minta előnézete gombot az új sorrend ellenőrzéséhez egy fiktív viziten. A szerkesztéshez válassza ismét ugyanezt a gombot. Minden sablonban megtalálható a Képek szakasz a jegyzet alatt. A képek a vizithez tartoznak, és sablonváltáskor megmaradnak."
+        },
+        "third": {
+          "title": "Mentés vagy archiválás",
+          "text": "Nyissa meg a(z) További lehetőségek menüt, és válassza a(z) Beállítás a praxis alapértelmezéseként lehetőséget, hogy az új konzultációk ezzel a sablonnal induljanak. A saját sablon elrejtéséhez válassza a(z) Sablon archiválása lehetőséget. Visszaállításhoz kapcsolja be a(z) Archivált sablonok megjelenítése beállítást, válassza ki a sablont, majd válassza a(z) Sablon visszaállítása lehetőséget. A változtatások alkalmazásához válassza a(z) Mentés gombot. A mentett vizitek megőrzik a kiválasztott elrendezést."
+        }
+      }
+    },
+    "consultation-transfer": {
+      "title": "Konzultációs jegyzet ellenőrzése és továbbítása",
+      "intro": "Ellenőrizze a klinikai dokumentációt letöltés, másolás vagy küldés előtt.",
+      "sections": {
+        "first": {
+          "title": "A klinikai jegyzet megnyitása",
+          "text": "A(z) Konzultáció részen válassza a(z) Klinikai dokumentáció áttekintése gombot. Megnyílik a vizit leleteit tartalmazó kórlapi feljegyzés. Tekintse át, és szerkesztésre megnyitott vizitnél módosítsa a megfogalmazást."
+        },
+        "second": {
+          "title": "Friss leletek ellenőrzése",
+          "text": "Ha figyelmeztetés jelzi, hogy a fogászati lap módosult a feljegyzés szerkesztése óta, hasonlítsa össze a feljegyzést az aktuális vizittel. Mentse a szükséges kézi megfogalmazásokat, mielőtt a(z) Újraépítés a fogászati lapból műveletet választja. Ez az aktuális laptartalomra cseréli a szerkesztett feljegyzést."
+        },
+        "third": {
+          "title": "Letöltés, másolás vagy küldés",
+          "text": "A PDF letöltése külön konzultációs PDF-et ment, a Kórlapjegyzet módosításaival együtt. A Másolás gombbal illessze be a jegyzetet a megfelelő kartonba, vagy használja az elérhető beépített átvitelt. Ellenőrizze a beteget, a vizit dátumát és a tartalmat a célhelyen."
         }
       }
     }

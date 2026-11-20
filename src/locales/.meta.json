@@ -1872,6 +1872,42 @@
       "hash": "a07f43f3e3b2",
       "status": "machine"
     },
+    "app:visitTypes.choose": {
+      "hash": "448d75b89b4d",
+      "status": "machine"
+    },
+    "app:visitTypes.consultation": {
+      "hash": "537a956d9fb9",
+      "status": "machine"
+    },
+    "app:visitTypes.consultationDescription": {
+      "hash": "2458715cb362",
+      "status": "machine"
+    },
+    "app:visitTypes.dental": {
+      "hash": "8567c5651088",
+      "status": "machine"
+    },
+    "app:visitTypes.dentalAdditions": {
+      "hash": "7496580a5c09",
+      "status": "machine"
+    },
+    "app:visitTypes.dentalAdditionsHelp": {
+      "hash": "738383d0828f",
+      "status": "machine"
+    },
+    "app:visitTypes.dentalDescription": {
+      "hash": "6a41488e83e7",
+      "status": "machine"
+    },
+    "app:visitTypes.dictateDental": {
+      "hash": "ac460f66d315",
+      "status": "machine"
+    },
+    "app:visitTypes.start": {
+      "hash": "61a20ad71d86",
+      "status": "machine"
+    },
     "app:workspace.account": {
       "hash": "dbb5f6371b6a",
       "status": "machine"
@@ -7244,20 +7280,116 @@
       "hash": "242583caf70f",
       "status": "machine"
     },
+    "help:articles.consultation-templates.intro": {
+      "hash": "6f73d228d11d",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.first.text": {
+      "hash": "864b5a82c53b",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.first.title": {
+      "hash": "247573f51490",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.second.text": {
+      "hash": "18c7d1775ea8",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.second.title": {
+      "hash": "7c8d4f37c45f",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.third.text": {
+      "hash": "5138335fee80",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.third.title": {
+      "hash": "9808b44bec79",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.title": {
+      "hash": "3125a9011494",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.intro": {
+      "hash": "81f722b9b58e",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.first.text": {
+      "hash": "f9e6bbf06d34",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.first.title": {
+      "hash": "4ae8b583e2b1",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.second.text": {
+      "hash": "a2a4f39cc6a5",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.second.title": {
+      "hash": "c08e2e9710eb",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.third.text": {
+      "hash": "892fd90e6135",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.third.title": {
+      "hash": "abe17c4c5f6d",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.title": {
+      "hash": "328159257b12",
+      "status": "machine"
+    },
+    "help:articles.consultation.intro": {
+      "hash": "536b2d2ce055",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.first.text": {
+      "hash": "9f6fc10afcaa",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.first.title": {
+      "hash": "329a8ef36e36",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.second.text": {
+      "hash": "247b346361ce",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.second.title": {
+      "hash": "c39e8ee3b6d8",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.third.text": {
+      "hash": "d864398aa032",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.third.title": {
+      "hash": "2508eacf6788",
+      "status": "machine"
+    },
+    "help:articles.consultation.title": {
+      "hash": "f1e4055f609b",
+      "status": "machine"
+    },
     "help:articles.dictation.intro": {
-      "hash": "6dade1c35960",
+      "hash": "194d3216dcd4",
       "status": "machine"
     },
     "help:articles.dictation.sections.first.text": {
-      "hash": "b084f9c2ff3b",
+      "hash": "2927120cd615",
       "status": "machine"
     },
     "help:articles.dictation.sections.first.title": {
-      "hash": "581f9e763a92",
+      "hash": "2acf054f7f20",
       "status": "machine"
     },
     "help:articles.dictation.sections.second.text": {
-      "hash": "72595eb109ec",
+      "hash": "50ba6962c1d3",
       "status": "machine"
     },
     "help:articles.dictation.sections.second.title": {
@@ -7265,7 +7397,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.third.text": {
-      "hash": "c15ac32ed1c7",
+      "hash": "2f4c289ee78b",
       "status": "machine"
     },
     "help:articles.dictation.sections.third.title": {
@@ -7329,11 +7461,11 @@
       "status": "machine"
     },
     "help:articles.exam.sections.third.text": {
-      "hash": "91a34bb0da67",
+      "hash": "d11414ec9f75",
       "status": "machine"
     },
     "help:articles.exam.sections.third.title": {
-      "hash": "14d973c0faa1",
+      "hash": "241839ac0920",
       "status": "machine"
     },
     "help:articles.exam.title": {
@@ -7345,7 +7477,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.first.text": {
-      "hash": "a5256e265fb8",
+      "hash": "ef424ff29496",
       "status": "machine"
     },
     "help:articles.export.sections.first.title": {
@@ -7425,7 +7557,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.third.text": {
-      "hash": "59a201add8de",
+      "hash": "a7e9636b7ecc",
       "status": "machine"
     },
     "help:articles.imaging.sections.third.title": {
@@ -7441,7 +7573,7 @@
       "status": "machine"
     },
     "help:articles.patients.sections.first.text": {
-      "hash": "bbe15840cec1",
+      "hash": "dcbd9b754c3f",
       "status": "machine"
     },
     "help:articles.patients.sections.first.title": {
@@ -7449,7 +7581,7 @@
       "status": "machine"
     },
     "help:articles.patients.sections.second.text": {
-      "hash": "90b8dfaae008",
+      "hash": "25594d14ec38",
       "status": "machine"
     },
     "help:articles.patients.sections.second.title": {
@@ -7457,7 +7589,7 @@
       "status": "machine"
     },
     "help:articles.patients.sections.third.text": {
-      "hash": "c10338e6f89a",
+      "hash": "d035e6c44493",
       "status": "machine"
     },
     "help:articles.patients.sections.third.title": {
@@ -7601,7 +7733,7 @@
       "status": "machine"
     },
     "help:articles.start.sections.first.text": {
-      "hash": "4761935fed4e",
+      "hash": "9a404fbc7a9d",
       "status": "machine"
     },
     "help:articles.start.sections.first.title": {
@@ -7780,8 +7912,28 @@
       "hash": "5c70ddbcedfa",
       "status": "machine"
     },
+    "help:images.consultationMedicationHistory": {
+      "hash": "cdd671258b98",
+      "status": "machine"
+    },
+    "help:images.consultationMedicationReview": {
+      "hash": "5697264435b5",
+      "status": "machine"
+    },
+    "help:images.consultationRecordNote": {
+      "hash": "7200f7caa728",
+      "status": "machine"
+    },
+    "help:images.consultationReview": {
+      "hash": "e344df0ffc7c",
+      "status": "machine"
+    },
+    "help:images.consultationTemplatePreview": {
+      "hash": "3262593f547f",
+      "status": "machine"
+    },
     "help:images.dictation": {
-      "hash": "0991bf45c72b",
+      "hash": "3331c33a8ed5",
       "status": "machine"
     },
     "help:images.exam": {
@@ -7809,7 +7961,7 @@
       "status": "machine"
     },
     "help:images.patients": {
-      "hash": "b81a9b0aa7fc",
+      "hash": "db82ffbdefca",
       "status": "machine"
     },
     "help:images.preferences": {
@@ -7849,7 +8001,7 @@
       "status": "machine"
     },
     "help:site.intro": {
-      "hash": "8ed81321d20f",
+      "hash": "e5d3e5b63c02",
       "status": "machine"
     },
     "help:site.language": {
@@ -11584,6 +11736,14 @@
       "hash": "b3e012490052",
       "status": "machine"
     },
+    "pims:panel.chart.openConsultation": {
+      "hash": "4950fb56452b",
+      "status": "machine"
+    },
+    "pims:panel.chart.reloadSavedNote": {
+      "hash": "146817e12ecf",
+      "status": "machine"
+    },
     "pims:panel.chart.sendOff": {
       "hash": "576f91f18411",
       "status": "machine"
@@ -14932,16 +15092,248 @@
       "hash": "56b564b75c7f",
       "status": "machine"
     },
+    "visitDocumentation:consultation.guide": {
+      "hash": "776ee8ac3073",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.complexSection": {
+      "hash": "86c573c53100",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.copy": {
+      "hash": "38adf15952d8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.drugName": {
+      "hash": "45397540ec3c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.externalSearch": {
+      "hash": "3c833e4c01f4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.fullLabel": {
+      "hash": "1c3f467b6f68",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.labelError": {
+      "hash": "93802307a347",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.labelScope": {
+      "hash": "9e658ce75f48",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.loadingLabel": {
+      "hash": "839b02e0f518",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.lookup": {
+      "hash": "0c0e57cd5dfa",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.noProducts": {
+      "hash": "5110d14f655e",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.noSections": {
+      "hash": "6207c35eca6d",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.previous": {
+      "hash": "ddd09871a69c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.results": {
+      "hash": "7b345d3f70b5",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.search": {
+      "hash": "70b7a667aecd",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.searchError": {
+      "hash": "d36ccfa008ef",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.searching": {
+      "hash": "8295ecbc21f3",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.strengths": {
+      "hash": "dc18a5176843",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.useSelection": {
+      "hash": "5f1768786ec7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.verify": {
+      "hash": "05945c0d1847",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.openExam": {
+      "hash": "c0bc85815ff1",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.purpose": {
-      "hash": "b50269a58823",
+      "hash": "0828e5ab517f",
       "status": "machine"
     },
     "visitDocumentation:consultation.review": {
       "hash": "503e3b0167f5",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.archive": {
+      "hash": "2083a59398a7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.archived": {
+      "hash": "bdb86505f806",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.conflict": {
+      "hash": "f007e14a6785",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.default": {
+      "hash": "cd156225a9ef",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.discard": {
+      "hash": "5220f15390e9",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.help": {
+      "hash": "4ce246df1a46",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.intro": {
+      "hash": "38c59e47e3a6",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.label": {
+      "hash": "c65e91fbf880",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.loadFailed": {
+      "hash": "2b49d53f1708",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.loading": {
+      "hash": "734ca404e036",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.manage": {
+      "hash": "cb930c763b0b",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.moveDown": {
+      "hash": "118df9bd43d7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.moveUp": {
+      "hash": "bb04b0b2d06c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.options": {
+      "hash": "bc79cdffbaa8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.preview": {
+      "hash": "39d399369a10",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.restore": {
+      "hash": "3d08259f8eea",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.sampleNotice": {
+      "hash": "f969464e2010",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.complaint": {
+      "hash": "0019f19dce67",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationAdministeredMedications": {
+      "hash": "ba931436f2fb",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationAssessment": {
+      "hash": "a8c1fa2ce42c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationCurrentMedications": {
+      "hash": "d0f36ac54bfb",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationHistory": {
+      "hash": "0d4334679d43",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationMedicationPlan": {
+      "hash": "5c8f2b141dc4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationPlan": {
+      "hash": "ada6b80fe834",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.gpDiagnostics": {
+      "hash": "d4fcc5961d54",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.gpPhysicalExam": {
+      "hash": "2d9fa89fdee4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.gpVitals": {
+      "hash": "098611a6165d",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.saveFailed": {
+      "hash": "53c5c31e3b0c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.saved": {
+      "hash": "c632e750ac72",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.setDefault": {
+      "hash": "83fed7cc69a1",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.showArchived": {
+      "hash": "a5c73dbe44b8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.dental-v1": {
+      "hash": "f3d2f78dfaf7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.recheck-v1": {
+      "hash": "1f47d8366934",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.soap-v1": {
+      "hash": "c9efa9457d3b",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.title": {
+      "hash": "1b6ffdcbefb8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.untitled": {
+      "hash": "1be215111c62",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.title": {
       "hash": "537a956d9fb9",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.transcripts": {
+      "hash": "53657123bc77",
       "status": "machine"
     },
     "visitDocumentation:discharge.purpose": {
@@ -14964,6 +15356,14 @@
       "hash": "d960170cd423",
       "status": "machine"
     },
+    "visitDocumentation:fields.consultationAdministeredMedications.helper": {
+      "hash": "cd5e79073e0b",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationAdministeredMedications.label": {
+      "hash": "1fc425522068",
+      "status": "machine"
+    },
     "visitDocumentation:fields.consultationAssessment.helper": {
       "hash": "60dbb79f165c",
       "status": "machine"
@@ -14972,12 +15372,28 @@
       "hash": "7808eeeb45df",
       "status": "machine"
     },
+    "visitDocumentation:fields.consultationCurrentMedications.helper": {
+      "hash": "4f7b29896b01",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationCurrentMedications.label": {
+      "hash": "a2f1d5b4781a",
+      "status": "machine"
+    },
     "visitDocumentation:fields.consultationHistory.helper": {
       "hash": "946db2520f54",
       "status": "machine"
     },
     "visitDocumentation:fields.consultationHistory.label": {
       "hash": "0e7696009337",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationMedicationPlan.helper": {
+      "hash": "3be7fb5f0894",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationMedicationPlan.label": {
+      "hash": "f6bfa6a70c9d",
       "status": "machine"
     },
     "visitDocumentation:fields.consultationPlan.helper": {
@@ -17826,6 +18242,42 @@
       "hash": "a07f43f3e3b2",
       "status": "machine"
     },
+    "app:visitTypes.choose": {
+      "hash": "448d75b89b4d",
+      "status": "machine"
+    },
+    "app:visitTypes.consultation": {
+      "hash": "537a956d9fb9",
+      "status": "machine"
+    },
+    "app:visitTypes.consultationDescription": {
+      "hash": "2458715cb362",
+      "status": "machine"
+    },
+    "app:visitTypes.dental": {
+      "hash": "8567c5651088",
+      "status": "machine"
+    },
+    "app:visitTypes.dentalAdditions": {
+      "hash": "7496580a5c09",
+      "status": "machine"
+    },
+    "app:visitTypes.dentalAdditionsHelp": {
+      "hash": "738383d0828f",
+      "status": "machine"
+    },
+    "app:visitTypes.dentalDescription": {
+      "hash": "6a41488e83e7",
+      "status": "machine"
+    },
+    "app:visitTypes.dictateDental": {
+      "hash": "ac460f66d315",
+      "status": "machine"
+    },
+    "app:visitTypes.start": {
+      "hash": "61a20ad71d86",
+      "status": "machine"
+    },
     "app:workspace.account": {
       "hash": "dbb5f6371b6a",
       "status": "machine"
@@ -23014,20 +23466,116 @@
       "hash": "242583caf70f",
       "status": "machine"
     },
+    "help:articles.consultation-templates.intro": {
+      "hash": "6f73d228d11d",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.first.text": {
+      "hash": "864b5a82c53b",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.first.title": {
+      "hash": "247573f51490",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.second.text": {
+      "hash": "18c7d1775ea8",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.second.title": {
+      "hash": "7c8d4f37c45f",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.third.text": {
+      "hash": "5138335fee80",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.third.title": {
+      "hash": "9808b44bec79",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.title": {
+      "hash": "3125a9011494",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.intro": {
+      "hash": "81f722b9b58e",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.first.text": {
+      "hash": "f9e6bbf06d34",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.first.title": {
+      "hash": "4ae8b583e2b1",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.second.text": {
+      "hash": "a2a4f39cc6a5",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.second.title": {
+      "hash": "c08e2e9710eb",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.third.text": {
+      "hash": "892fd90e6135",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.third.title": {
+      "hash": "abe17c4c5f6d",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.title": {
+      "hash": "328159257b12",
+      "status": "machine"
+    },
+    "help:articles.consultation.intro": {
+      "hash": "536b2d2ce055",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.first.text": {
+      "hash": "9f6fc10afcaa",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.first.title": {
+      "hash": "329a8ef36e36",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.second.text": {
+      "hash": "247b346361ce",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.second.title": {
+      "hash": "c39e8ee3b6d8",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.third.text": {
+      "hash": "d864398aa032",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.third.title": {
+      "hash": "2508eacf6788",
+      "status": "machine"
+    },
+    "help:articles.consultation.title": {
+      "hash": "f1e4055f609b",
+      "status": "machine"
+    },
     "help:articles.dictation.intro": {
-      "hash": "6dade1c35960",
+      "hash": "194d3216dcd4",
       "status": "machine"
     },
     "help:articles.dictation.sections.first.text": {
-      "hash": "b084f9c2ff3b",
+      "hash": "2927120cd615",
       "status": "machine"
     },
     "help:articles.dictation.sections.first.title": {
-      "hash": "581f9e763a92",
+      "hash": "2acf054f7f20",
       "status": "machine"
     },
     "help:articles.dictation.sections.second.text": {
-      "hash": "72595eb109ec",
+      "hash": "50ba6962c1d3",
       "status": "machine"
     },
     "help:articles.dictation.sections.second.title": {
@@ -23035,7 +23583,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.third.text": {
-      "hash": "c15ac32ed1c7",
+      "hash": "2f4c289ee78b",
       "status": "machine"
     },
     "help:articles.dictation.sections.third.title": {
@@ -23099,11 +23647,11 @@
       "status": "machine"
     },
     "help:articles.exam.sections.third.text": {
-      "hash": "91a34bb0da67",
+      "hash": "d11414ec9f75",
       "status": "machine"
     },
     "help:articles.exam.sections.third.title": {
-      "hash": "14d973c0faa1",
+      "hash": "241839ac0920",
       "status": "machine"
     },
     "help:articles.exam.title": {
@@ -23115,7 +23663,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.first.text": {
-      "hash": "a5256e265fb8",
+      "hash": "ef424ff29496",
       "status": "machine"
     },
     "help:articles.export.sections.first.title": {
@@ -23195,7 +23743,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.third.text": {
-      "hash": "59a201add8de",
+      "hash": "a7e9636b7ecc",
       "status": "machine"
     },
     "help:articles.imaging.sections.third.title": {
@@ -23211,7 +23759,7 @@
       "status": "machine"
     },
     "help:articles.patients.sections.first.text": {
-      "hash": "bbe15840cec1",
+      "hash": "dcbd9b754c3f",
       "status": "machine"
     },
     "help:articles.patients.sections.first.title": {
@@ -23219,7 +23767,7 @@
       "status": "machine"
     },
     "help:articles.patients.sections.second.text": {
-      "hash": "90b8dfaae008",
+      "hash": "25594d14ec38",
       "status": "machine"
     },
     "help:articles.patients.sections.second.title": {
@@ -23227,7 +23775,7 @@
       "status": "machine"
     },
     "help:articles.patients.sections.third.text": {
-      "hash": "c10338e6f89a",
+      "hash": "d035e6c44493",
       "status": "machine"
     },
     "help:articles.patients.sections.third.title": {
@@ -23371,7 +23919,7 @@
       "status": "machine"
     },
     "help:articles.start.sections.first.text": {
-      "hash": "4761935fed4e",
+      "hash": "9a404fbc7a9d",
       "status": "machine"
     },
     "help:articles.start.sections.first.title": {
@@ -23550,8 +24098,28 @@
       "hash": "5c70ddbcedfa",
       "status": "machine"
     },
+    "help:images.consultationMedicationHistory": {
+      "hash": "cdd671258b98",
+      "status": "machine"
+    },
+    "help:images.consultationMedicationReview": {
+      "hash": "5697264435b5",
+      "status": "machine"
+    },
+    "help:images.consultationRecordNote": {
+      "hash": "7200f7caa728",
+      "status": "machine"
+    },
+    "help:images.consultationReview": {
+      "hash": "e344df0ffc7c",
+      "status": "machine"
+    },
+    "help:images.consultationTemplatePreview": {
+      "hash": "3262593f547f",
+      "status": "machine"
+    },
     "help:images.dictation": {
-      "hash": "0991bf45c72b",
+      "hash": "3331c33a8ed5",
       "status": "machine"
     },
     "help:images.exam": {
@@ -23579,7 +24147,7 @@
       "status": "machine"
     },
     "help:images.patients": {
-      "hash": "b81a9b0aa7fc",
+      "hash": "db82ffbdefca",
       "status": "machine"
     },
     "help:images.preferences": {
@@ -23619,7 +24187,7 @@
       "status": "machine"
     },
     "help:site.intro": {
-      "hash": "8ed81321d20f",
+      "hash": "e5d3e5b63c02",
       "status": "machine"
     },
     "help:site.language": {
@@ -27318,6 +27886,14 @@
       "hash": "b3e012490052",
       "status": "machine"
     },
+    "pims:panel.chart.openConsultation": {
+      "hash": "4950fb56452b",
+      "status": "machine"
+    },
+    "pims:panel.chart.reloadSavedNote": {
+      "hash": "146817e12ecf",
+      "status": "machine"
+    },
     "pims:panel.chart.sendOff": {
       "hash": "576f91f18411",
       "status": "machine"
@@ -30638,16 +31214,248 @@
       "hash": "56b564b75c7f",
       "status": "machine"
     },
+    "visitDocumentation:consultation.guide": {
+      "hash": "776ee8ac3073",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.complexSection": {
+      "hash": "86c573c53100",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.copy": {
+      "hash": "38adf15952d8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.drugName": {
+      "hash": "45397540ec3c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.externalSearch": {
+      "hash": "3c833e4c01f4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.fullLabel": {
+      "hash": "1c3f467b6f68",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.labelError": {
+      "hash": "93802307a347",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.labelScope": {
+      "hash": "9e658ce75f48",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.loadingLabel": {
+      "hash": "839b02e0f518",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.lookup": {
+      "hash": "0c0e57cd5dfa",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.noProducts": {
+      "hash": "5110d14f655e",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.noSections": {
+      "hash": "6207c35eca6d",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.previous": {
+      "hash": "ddd09871a69c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.results": {
+      "hash": "7b345d3f70b5",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.search": {
+      "hash": "70b7a667aecd",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.searchError": {
+      "hash": "d36ccfa008ef",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.searching": {
+      "hash": "8295ecbc21f3",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.strengths": {
+      "hash": "dc18a5176843",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.useSelection": {
+      "hash": "5f1768786ec7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.verify": {
+      "hash": "05945c0d1847",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.openExam": {
+      "hash": "c0bc85815ff1",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.purpose": {
-      "hash": "b50269a58823",
+      "hash": "0828e5ab517f",
       "status": "machine"
     },
     "visitDocumentation:consultation.review": {
       "hash": "503e3b0167f5",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.archive": {
+      "hash": "2083a59398a7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.archived": {
+      "hash": "bdb86505f806",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.conflict": {
+      "hash": "f007e14a6785",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.default": {
+      "hash": "cd156225a9ef",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.discard": {
+      "hash": "5220f15390e9",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.help": {
+      "hash": "4ce246df1a46",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.intro": {
+      "hash": "38c59e47e3a6",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.label": {
+      "hash": "c65e91fbf880",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.loadFailed": {
+      "hash": "2b49d53f1708",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.loading": {
+      "hash": "734ca404e036",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.manage": {
+      "hash": "cb930c763b0b",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.moveDown": {
+      "hash": "118df9bd43d7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.moveUp": {
+      "hash": "bb04b0b2d06c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.options": {
+      "hash": "bc79cdffbaa8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.preview": {
+      "hash": "39d399369a10",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.restore": {
+      "hash": "3d08259f8eea",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.sampleNotice": {
+      "hash": "f969464e2010",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.complaint": {
+      "hash": "0019f19dce67",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationAdministeredMedications": {
+      "hash": "ba931436f2fb",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationAssessment": {
+      "hash": "a8c1fa2ce42c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationCurrentMedications": {
+      "hash": "d0f36ac54bfb",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationHistory": {
+      "hash": "0d4334679d43",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationMedicationPlan": {
+      "hash": "5c8f2b141dc4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationPlan": {
+      "hash": "ada6b80fe834",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.gpDiagnostics": {
+      "hash": "d4fcc5961d54",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.gpPhysicalExam": {
+      "hash": "2d9fa89fdee4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.gpVitals": {
+      "hash": "098611a6165d",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.saveFailed": {
+      "hash": "53c5c31e3b0c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.saved": {
+      "hash": "c632e750ac72",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.setDefault": {
+      "hash": "83fed7cc69a1",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.showArchived": {
+      "hash": "a5c73dbe44b8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.dental-v1": {
+      "hash": "f3d2f78dfaf7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.recheck-v1": {
+      "hash": "1f47d8366934",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.soap-v1": {
+      "hash": "c9efa9457d3b",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.title": {
+      "hash": "1b6ffdcbefb8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.untitled": {
+      "hash": "1be215111c62",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.title": {
       "hash": "537a956d9fb9",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.transcripts": {
+      "hash": "53657123bc77",
       "status": "machine"
     },
     "visitDocumentation:discharge.purpose": {
@@ -30670,6 +31478,14 @@
       "hash": "d960170cd423",
       "status": "machine"
     },
+    "visitDocumentation:fields.consultationAdministeredMedications.helper": {
+      "hash": "cd5e79073e0b",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationAdministeredMedications.label": {
+      "hash": "1fc425522068",
+      "status": "machine"
+    },
     "visitDocumentation:fields.consultationAssessment.helper": {
       "hash": "60dbb79f165c",
       "status": "machine"
@@ -30678,12 +31494,28 @@
       "hash": "7808eeeb45df",
       "status": "machine"
     },
+    "visitDocumentation:fields.consultationCurrentMedications.helper": {
+      "hash": "4f7b29896b01",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationCurrentMedications.label": {
+      "hash": "a2f1d5b4781a",
+      "status": "machine"
+    },
     "visitDocumentation:fields.consultationHistory.helper": {
       "hash": "946db2520f54",
       "status": "machine"
     },
     "visitDocumentation:fields.consultationHistory.label": {
       "hash": "0e7696009337",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationMedicationPlan.helper": {
+      "hash": "3be7fb5f0894",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationMedicationPlan.label": {
+      "hash": "f6bfa6a70c9d",
       "status": "machine"
     },
     "visitDocumentation:fields.consultationPlan.helper": {
@@ -33446,6 +34278,42 @@
     },
     "app:trialSignIn.title": {
       "hash": "a07f43f3e3b2",
+      "status": "machine"
+    },
+    "app:visitTypes.choose": {
+      "hash": "448d75b89b4d",
+      "status": "machine"
+    },
+    "app:visitTypes.consultation": {
+      "hash": "537a956d9fb9",
+      "status": "machine"
+    },
+    "app:visitTypes.consultationDescription": {
+      "hash": "2458715cb362",
+      "status": "machine"
+    },
+    "app:visitTypes.dental": {
+      "hash": "8567c5651088",
+      "status": "machine"
+    },
+    "app:visitTypes.dentalAdditions": {
+      "hash": "7496580a5c09",
+      "status": "machine"
+    },
+    "app:visitTypes.dentalAdditionsHelp": {
+      "hash": "738383d0828f",
+      "status": "machine"
+    },
+    "app:visitTypes.dentalDescription": {
+      "hash": "6a41488e83e7",
+      "status": "machine"
+    },
+    "app:visitTypes.dictateDental": {
+      "hash": "ac460f66d315",
+      "status": "machine"
+    },
+    "app:visitTypes.start": {
+      "hash": "61a20ad71d86",
       "status": "machine"
     },
     "app:workspace.account": {
@@ -38684,20 +39552,116 @@
       "hash": "242583caf70f",
       "status": "machine"
     },
+    "help:articles.consultation-templates.intro": {
+      "hash": "6f73d228d11d",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.first.text": {
+      "hash": "864b5a82c53b",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.first.title": {
+      "hash": "247573f51490",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.second.text": {
+      "hash": "18c7d1775ea8",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.second.title": {
+      "hash": "7c8d4f37c45f",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.third.text": {
+      "hash": "5138335fee80",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.third.title": {
+      "hash": "9808b44bec79",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.title": {
+      "hash": "3125a9011494",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.intro": {
+      "hash": "81f722b9b58e",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.first.text": {
+      "hash": "f9e6bbf06d34",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.first.title": {
+      "hash": "4ae8b583e2b1",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.second.text": {
+      "hash": "a2a4f39cc6a5",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.second.title": {
+      "hash": "c08e2e9710eb",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.third.text": {
+      "hash": "892fd90e6135",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.third.title": {
+      "hash": "abe17c4c5f6d",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.title": {
+      "hash": "328159257b12",
+      "status": "machine"
+    },
+    "help:articles.consultation.intro": {
+      "hash": "536b2d2ce055",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.first.text": {
+      "hash": "9f6fc10afcaa",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.first.title": {
+      "hash": "329a8ef36e36",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.second.text": {
+      "hash": "247b346361ce",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.second.title": {
+      "hash": "c39e8ee3b6d8",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.third.text": {
+      "hash": "d864398aa032",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.third.title": {
+      "hash": "2508eacf6788",
+      "status": "machine"
+    },
+    "help:articles.consultation.title": {
+      "hash": "f1e4055f609b",
+      "status": "machine"
+    },
     "help:articles.dictation.intro": {
-      "hash": "6dade1c35960",
+      "hash": "194d3216dcd4",
       "status": "machine"
     },
     "help:articles.dictation.sections.first.text": {
-      "hash": "b084f9c2ff3b",
+      "hash": "2927120cd615",
       "status": "machine"
     },
     "help:articles.dictation.sections.first.title": {
-      "hash": "581f9e763a92",
+      "hash": "2acf054f7f20",
       "status": "machine"
     },
     "help:articles.dictation.sections.second.text": {
-      "hash": "72595eb109ec",
+      "hash": "50ba6962c1d3",
       "status": "machine"
     },
     "help:articles.dictation.sections.second.title": {
@@ -38705,7 +39669,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.third.text": {
-      "hash": "c15ac32ed1c7",
+      "hash": "2f4c289ee78b",
       "status": "machine"
     },
     "help:articles.dictation.sections.third.title": {
@@ -38769,11 +39733,11 @@
       "status": "machine"
     },
     "help:articles.exam.sections.third.text": {
-      "hash": "91a34bb0da67",
+      "hash": "d11414ec9f75",
       "status": "machine"
     },
     "help:articles.exam.sections.third.title": {
-      "hash": "14d973c0faa1",
+      "hash": "241839ac0920",
       "status": "machine"
     },
     "help:articles.exam.title": {
@@ -38785,7 +39749,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.first.text": {
-      "hash": "a5256e265fb8",
+      "hash": "ef424ff29496",
       "status": "machine"
     },
     "help:articles.export.sections.first.title": {
@@ -38865,7 +39829,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.third.text": {
-      "hash": "59a201add8de",
+      "hash": "a7e9636b7ecc",
       "status": "machine"
     },
     "help:articles.imaging.sections.third.title": {
@@ -38881,7 +39845,7 @@
       "status": "machine"
     },
     "help:articles.patients.sections.first.text": {
-      "hash": "bbe15840cec1",
+      "hash": "dcbd9b754c3f",
       "status": "machine"
     },
     "help:articles.patients.sections.first.title": {
@@ -38889,7 +39853,7 @@
       "status": "machine"
     },
     "help:articles.patients.sections.second.text": {
-      "hash": "90b8dfaae008",
+      "hash": "25594d14ec38",
       "status": "machine"
     },
     "help:articles.patients.sections.second.title": {
@@ -38897,7 +39861,7 @@
       "status": "machine"
     },
     "help:articles.patients.sections.third.text": {
-      "hash": "c10338e6f89a",
+      "hash": "d035e6c44493",
       "status": "machine"
     },
     "help:articles.patients.sections.third.title": {
@@ -39041,7 +40005,7 @@
       "status": "machine"
     },
     "help:articles.start.sections.first.text": {
-      "hash": "4761935fed4e",
+      "hash": "9a404fbc7a9d",
       "status": "machine"
     },
     "help:articles.start.sections.first.title": {
@@ -39220,8 +40184,28 @@
       "hash": "5c70ddbcedfa",
       "status": "machine"
     },
+    "help:images.consultationMedicationHistory": {
+      "hash": "cdd671258b98",
+      "status": "machine"
+    },
+    "help:images.consultationMedicationReview": {
+      "hash": "5697264435b5",
+      "status": "machine"
+    },
+    "help:images.consultationRecordNote": {
+      "hash": "7200f7caa728",
+      "status": "machine"
+    },
+    "help:images.consultationReview": {
+      "hash": "e344df0ffc7c",
+      "status": "machine"
+    },
+    "help:images.consultationTemplatePreview": {
+      "hash": "3262593f547f",
+      "status": "machine"
+    },
     "help:images.dictation": {
-      "hash": "0991bf45c72b",
+      "hash": "3331c33a8ed5",
       "status": "machine"
     },
     "help:images.exam": {
@@ -39249,7 +40233,7 @@
       "status": "machine"
     },
     "help:images.patients": {
-      "hash": "b81a9b0aa7fc",
+      "hash": "db82ffbdefca",
       "status": "machine"
     },
     "help:images.preferences": {
@@ -39289,7 +40273,7 @@
       "status": "machine"
     },
     "help:site.intro": {
-      "hash": "8ed81321d20f",
+      "hash": "e5d3e5b63c02",
       "status": "machine"
     },
     "help:site.language": {
@@ -43012,6 +43996,14 @@
       "hash": "b3e012490052",
       "status": "machine"
     },
+    "pims:panel.chart.openConsultation": {
+      "hash": "4950fb56452b",
+      "status": "machine"
+    },
+    "pims:panel.chart.reloadSavedNote": {
+      "hash": "146817e12ecf",
+      "status": "machine"
+    },
     "pims:panel.chart.sendOff": {
       "hash": "576f91f18411",
       "status": "machine"
@@ -46340,16 +47332,248 @@
       "hash": "56b564b75c7f",
       "status": "machine"
     },
+    "visitDocumentation:consultation.guide": {
+      "hash": "776ee8ac3073",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.complexSection": {
+      "hash": "86c573c53100",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.copy": {
+      "hash": "38adf15952d8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.drugName": {
+      "hash": "45397540ec3c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.externalSearch": {
+      "hash": "3c833e4c01f4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.fullLabel": {
+      "hash": "1c3f467b6f68",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.labelError": {
+      "hash": "93802307a347",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.labelScope": {
+      "hash": "9e658ce75f48",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.loadingLabel": {
+      "hash": "839b02e0f518",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.lookup": {
+      "hash": "0c0e57cd5dfa",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.noProducts": {
+      "hash": "5110d14f655e",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.noSections": {
+      "hash": "6207c35eca6d",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.previous": {
+      "hash": "ddd09871a69c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.results": {
+      "hash": "7b345d3f70b5",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.search": {
+      "hash": "70b7a667aecd",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.searchError": {
+      "hash": "d36ccfa008ef",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.searching": {
+      "hash": "8295ecbc21f3",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.strengths": {
+      "hash": "dc18a5176843",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.useSelection": {
+      "hash": "5f1768786ec7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.verify": {
+      "hash": "05945c0d1847",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.openExam": {
+      "hash": "c0bc85815ff1",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.purpose": {
-      "hash": "b50269a58823",
+      "hash": "0828e5ab517f",
       "status": "machine"
     },
     "visitDocumentation:consultation.review": {
       "hash": "503e3b0167f5",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.archive": {
+      "hash": "2083a59398a7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.archived": {
+      "hash": "bdb86505f806",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.conflict": {
+      "hash": "f007e14a6785",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.default": {
+      "hash": "cd156225a9ef",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.discard": {
+      "hash": "5220f15390e9",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.help": {
+      "hash": "4ce246df1a46",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.intro": {
+      "hash": "38c59e47e3a6",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.label": {
+      "hash": "c65e91fbf880",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.loadFailed": {
+      "hash": "2b49d53f1708",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.loading": {
+      "hash": "734ca404e036",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.manage": {
+      "hash": "cb930c763b0b",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.moveDown": {
+      "hash": "118df9bd43d7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.moveUp": {
+      "hash": "bb04b0b2d06c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.options": {
+      "hash": "bc79cdffbaa8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.preview": {
+      "hash": "39d399369a10",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.restore": {
+      "hash": "3d08259f8eea",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.sampleNotice": {
+      "hash": "f969464e2010",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.complaint": {
+      "hash": "0019f19dce67",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationAdministeredMedications": {
+      "hash": "ba931436f2fb",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationAssessment": {
+      "hash": "a8c1fa2ce42c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationCurrentMedications": {
+      "hash": "d0f36ac54bfb",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationHistory": {
+      "hash": "0d4334679d43",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationMedicationPlan": {
+      "hash": "5c8f2b141dc4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationPlan": {
+      "hash": "ada6b80fe834",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.gpDiagnostics": {
+      "hash": "d4fcc5961d54",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.gpPhysicalExam": {
+      "hash": "2d9fa89fdee4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.gpVitals": {
+      "hash": "098611a6165d",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.saveFailed": {
+      "hash": "53c5c31e3b0c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.saved": {
+      "hash": "c632e750ac72",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.setDefault": {
+      "hash": "83fed7cc69a1",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.showArchived": {
+      "hash": "a5c73dbe44b8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.dental-v1": {
+      "hash": "f3d2f78dfaf7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.recheck-v1": {
+      "hash": "1f47d8366934",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.soap-v1": {
+      "hash": "c9efa9457d3b",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.title": {
+      "hash": "1b6ffdcbefb8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.untitled": {
+      "hash": "1be215111c62",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.title": {
       "hash": "537a956d9fb9",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.transcripts": {
+      "hash": "53657123bc77",
       "status": "machine"
     },
     "visitDocumentation:discharge.purpose": {
@@ -46372,6 +47596,14 @@
       "hash": "d960170cd423",
       "status": "machine"
     },
+    "visitDocumentation:fields.consultationAdministeredMedications.helper": {
+      "hash": "cd5e79073e0b",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationAdministeredMedications.label": {
+      "hash": "1fc425522068",
+      "status": "machine"
+    },
     "visitDocumentation:fields.consultationAssessment.helper": {
       "hash": "60dbb79f165c",
       "status": "machine"
@@ -46380,12 +47612,28 @@
       "hash": "7808eeeb45df",
       "status": "machine"
     },
+    "visitDocumentation:fields.consultationCurrentMedications.helper": {
+      "hash": "4f7b29896b01",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationCurrentMedications.label": {
+      "hash": "a2f1d5b4781a",
+      "status": "machine"
+    },
     "visitDocumentation:fields.consultationHistory.helper": {
       "hash": "946db2520f54",
       "status": "machine"
     },
     "visitDocumentation:fields.consultationHistory.label": {
       "hash": "0e7696009337",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationMedicationPlan.helper": {
+      "hash": "3be7fb5f0894",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationMedicationPlan.label": {
+      "hash": "f6bfa6a70c9d",
       "status": "machine"
     },
     "visitDocumentation:fields.consultationPlan.helper": {
@@ -49174,6 +50422,42 @@
       "hash": "a07f43f3e3b2",
       "status": "machine"
     },
+    "app:visitTypes.choose": {
+      "hash": "448d75b89b4d",
+      "status": "machine"
+    },
+    "app:visitTypes.consultation": {
+      "hash": "537a956d9fb9",
+      "status": "machine"
+    },
+    "app:visitTypes.consultationDescription": {
+      "hash": "2458715cb362",
+      "status": "machine"
+    },
+    "app:visitTypes.dental": {
+      "hash": "8567c5651088",
+      "status": "machine"
+    },
+    "app:visitTypes.dentalAdditions": {
+      "hash": "7496580a5c09",
+      "status": "machine"
+    },
+    "app:visitTypes.dentalAdditionsHelp": {
+      "hash": "738383d0828f",
+      "status": "machine"
+    },
+    "app:visitTypes.dentalDescription": {
+      "hash": "6a41488e83e7",
+      "status": "machine"
+    },
+    "app:visitTypes.dictateDental": {
+      "hash": "ac460f66d315",
+      "status": "machine"
+    },
+    "app:visitTypes.start": {
+      "hash": "61a20ad71d86",
+      "status": "machine"
+    },
     "app:workspace.account": {
       "hash": "dbb5f6371b6a",
       "status": "machine"
@@ -54410,20 +55694,116 @@
       "hash": "242583caf70f",
       "status": "machine"
     },
+    "help:articles.consultation-templates.intro": {
+      "hash": "6f73d228d11d",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.first.text": {
+      "hash": "864b5a82c53b",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.first.title": {
+      "hash": "247573f51490",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.second.text": {
+      "hash": "18c7d1775ea8",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.second.title": {
+      "hash": "7c8d4f37c45f",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.third.text": {
+      "hash": "5138335fee80",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.third.title": {
+      "hash": "9808b44bec79",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.title": {
+      "hash": "3125a9011494",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.intro": {
+      "hash": "81f722b9b58e",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.first.text": {
+      "hash": "f9e6bbf06d34",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.first.title": {
+      "hash": "4ae8b583e2b1",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.second.text": {
+      "hash": "a2a4f39cc6a5",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.second.title": {
+      "hash": "c08e2e9710eb",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.third.text": {
+      "hash": "892fd90e6135",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.third.title": {
+      "hash": "abe17c4c5f6d",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.title": {
+      "hash": "328159257b12",
+      "status": "machine"
+    },
+    "help:articles.consultation.intro": {
+      "hash": "536b2d2ce055",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.first.text": {
+      "hash": "9f6fc10afcaa",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.first.title": {
+      "hash": "329a8ef36e36",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.second.text": {
+      "hash": "247b346361ce",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.second.title": {
+      "hash": "c39e8ee3b6d8",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.third.text": {
+      "hash": "d864398aa032",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.third.title": {
+      "hash": "2508eacf6788",
+      "status": "machine"
+    },
+    "help:articles.consultation.title": {
+      "hash": "f1e4055f609b",
+      "status": "machine"
+    },
     "help:articles.dictation.intro": {
-      "hash": "6dade1c35960",
+      "hash": "194d3216dcd4",
       "status": "machine"
     },
     "help:articles.dictation.sections.first.text": {
-      "hash": "b084f9c2ff3b",
+      "hash": "2927120cd615",
       "status": "machine"
     },
     "help:articles.dictation.sections.first.title": {
-      "hash": "581f9e763a92",
+      "hash": "2acf054f7f20",
       "status": "machine"
     },
     "help:articles.dictation.sections.second.text": {
-      "hash": "72595eb109ec",
+      "hash": "50ba6962c1d3",
       "status": "machine"
     },
     "help:articles.dictation.sections.second.title": {
@@ -54431,7 +55811,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.third.text": {
-      "hash": "c15ac32ed1c7",
+      "hash": "2f4c289ee78b",
       "status": "machine"
     },
     "help:articles.dictation.sections.third.title": {
@@ -54495,11 +55875,11 @@
       "status": "machine"
     },
     "help:articles.exam.sections.third.text": {
-      "hash": "91a34bb0da67",
+      "hash": "d11414ec9f75",
       "status": "machine"
     },
     "help:articles.exam.sections.third.title": {
-      "hash": "14d973c0faa1",
+      "hash": "241839ac0920",
       "status": "machine"
     },
     "help:articles.exam.title": {
@@ -54511,7 +55891,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.first.text": {
-      "hash": "a5256e265fb8",
+      "hash": "ef424ff29496",
       "status": "machine"
     },
     "help:articles.export.sections.first.title": {
@@ -54591,7 +55971,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.third.text": {
-      "hash": "59a201add8de",
+      "hash": "a7e9636b7ecc",
       "status": "machine"
     },
     "help:articles.imaging.sections.third.title": {
@@ -54607,7 +55987,7 @@
       "status": "machine"
     },
     "help:articles.patients.sections.first.text": {
-      "hash": "bbe15840cec1",
+      "hash": "dcbd9b754c3f",
       "status": "machine"
     },
     "help:articles.patients.sections.first.title": {
@@ -54615,7 +55995,7 @@
       "status": "machine"
     },
     "help:articles.patients.sections.second.text": {
-      "hash": "90b8dfaae008",
+      "hash": "25594d14ec38",
       "status": "machine"
     },
     "help:articles.patients.sections.second.title": {
@@ -54623,7 +56003,7 @@
       "status": "machine"
     },
     "help:articles.patients.sections.third.text": {
-      "hash": "c10338e6f89a",
+      "hash": "d035e6c44493",
       "status": "machine"
     },
     "help:articles.patients.sections.third.title": {
@@ -54767,7 +56147,7 @@
       "status": "machine"
     },
     "help:articles.start.sections.first.text": {
-      "hash": "4761935fed4e",
+      "hash": "9a404fbc7a9d",
       "status": "machine"
     },
     "help:articles.start.sections.first.title": {
@@ -54946,8 +56326,28 @@
       "hash": "5c70ddbcedfa",
       "status": "machine"
     },
+    "help:images.consultationMedicationHistory": {
+      "hash": "cdd671258b98",
+      "status": "machine"
+    },
+    "help:images.consultationMedicationReview": {
+      "hash": "5697264435b5",
+      "status": "machine"
+    },
+    "help:images.consultationRecordNote": {
+      "hash": "7200f7caa728",
+      "status": "machine"
+    },
+    "help:images.consultationReview": {
+      "hash": "e344df0ffc7c",
+      "status": "machine"
+    },
+    "help:images.consultationTemplatePreview": {
+      "hash": "3262593f547f",
+      "status": "machine"
+    },
     "help:images.dictation": {
-      "hash": "0991bf45c72b",
+      "hash": "3331c33a8ed5",
       "status": "machine"
     },
     "help:images.exam": {
@@ -54975,7 +56375,7 @@
       "status": "machine"
     },
     "help:images.patients": {
-      "hash": "b81a9b0aa7fc",
+      "hash": "db82ffbdefca",
       "status": "machine"
     },
     "help:images.preferences": {
@@ -55015,7 +56415,7 @@
       "status": "machine"
     },
     "help:site.intro": {
-      "hash": "8ed81321d20f",
+      "hash": "e5d3e5b63c02",
       "status": "machine"
     },
     "help:site.language": {
@@ -58738,6 +60138,14 @@
       "hash": "b3e012490052",
       "status": "machine"
     },
+    "pims:panel.chart.openConsultation": {
+      "hash": "4950fb56452b",
+      "status": "machine"
+    },
+    "pims:panel.chart.reloadSavedNote": {
+      "hash": "146817e12ecf",
+      "status": "machine"
+    },
     "pims:panel.chart.sendOff": {
       "hash": "576f91f18411",
       "status": "machine"
@@ -62066,16 +63474,248 @@
       "hash": "56b564b75c7f",
       "status": "machine"
     },
+    "visitDocumentation:consultation.guide": {
+      "hash": "776ee8ac3073",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.complexSection": {
+      "hash": "86c573c53100",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.copy": {
+      "hash": "38adf15952d8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.drugName": {
+      "hash": "45397540ec3c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.externalSearch": {
+      "hash": "3c833e4c01f4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.fullLabel": {
+      "hash": "1c3f467b6f68",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.labelError": {
+      "hash": "93802307a347",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.labelScope": {
+      "hash": "9e658ce75f48",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.loadingLabel": {
+      "hash": "839b02e0f518",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.lookup": {
+      "hash": "0c0e57cd5dfa",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.noProducts": {
+      "hash": "5110d14f655e",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.noSections": {
+      "hash": "6207c35eca6d",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.previous": {
+      "hash": "ddd09871a69c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.results": {
+      "hash": "7b345d3f70b5",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.search": {
+      "hash": "70b7a667aecd",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.searchError": {
+      "hash": "d36ccfa008ef",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.searching": {
+      "hash": "8295ecbc21f3",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.strengths": {
+      "hash": "dc18a5176843",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.useSelection": {
+      "hash": "5f1768786ec7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.verify": {
+      "hash": "05945c0d1847",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.openExam": {
+      "hash": "c0bc85815ff1",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.purpose": {
-      "hash": "b50269a58823",
+      "hash": "0828e5ab517f",
       "status": "machine"
     },
     "visitDocumentation:consultation.review": {
       "hash": "503e3b0167f5",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.archive": {
+      "hash": "2083a59398a7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.archived": {
+      "hash": "bdb86505f806",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.conflict": {
+      "hash": "f007e14a6785",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.default": {
+      "hash": "cd156225a9ef",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.discard": {
+      "hash": "5220f15390e9",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.help": {
+      "hash": "4ce246df1a46",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.intro": {
+      "hash": "38c59e47e3a6",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.label": {
+      "hash": "c65e91fbf880",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.loadFailed": {
+      "hash": "2b49d53f1708",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.loading": {
+      "hash": "734ca404e036",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.manage": {
+      "hash": "cb930c763b0b",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.moveDown": {
+      "hash": "118df9bd43d7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.moveUp": {
+      "hash": "bb04b0b2d06c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.options": {
+      "hash": "bc79cdffbaa8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.preview": {
+      "hash": "39d399369a10",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.restore": {
+      "hash": "3d08259f8eea",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.sampleNotice": {
+      "hash": "f969464e2010",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.complaint": {
+      "hash": "0019f19dce67",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationAdministeredMedications": {
+      "hash": "ba931436f2fb",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationAssessment": {
+      "hash": "a8c1fa2ce42c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationCurrentMedications": {
+      "hash": "d0f36ac54bfb",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationHistory": {
+      "hash": "0d4334679d43",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationMedicationPlan": {
+      "hash": "5c8f2b141dc4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationPlan": {
+      "hash": "ada6b80fe834",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.gpDiagnostics": {
+      "hash": "d4fcc5961d54",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.gpPhysicalExam": {
+      "hash": "2d9fa89fdee4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.gpVitals": {
+      "hash": "098611a6165d",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.saveFailed": {
+      "hash": "53c5c31e3b0c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.saved": {
+      "hash": "c632e750ac72",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.setDefault": {
+      "hash": "83fed7cc69a1",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.showArchived": {
+      "hash": "a5c73dbe44b8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.dental-v1": {
+      "hash": "f3d2f78dfaf7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.recheck-v1": {
+      "hash": "1f47d8366934",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.soap-v1": {
+      "hash": "c9efa9457d3b",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.title": {
+      "hash": "1b6ffdcbefb8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.untitled": {
+      "hash": "1be215111c62",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.title": {
       "hash": "537a956d9fb9",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.transcripts": {
+      "hash": "53657123bc77",
       "status": "machine"
     },
     "visitDocumentation:discharge.purpose": {
@@ -62098,6 +63738,14 @@
       "hash": "d960170cd423",
       "status": "machine"
     },
+    "visitDocumentation:fields.consultationAdministeredMedications.helper": {
+      "hash": "cd5e79073e0b",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationAdministeredMedications.label": {
+      "hash": "1fc425522068",
+      "status": "machine"
+    },
     "visitDocumentation:fields.consultationAssessment.helper": {
       "hash": "60dbb79f165c",
       "status": "machine"
@@ -62106,12 +63754,28 @@
       "hash": "7808eeeb45df",
       "status": "machine"
     },
+    "visitDocumentation:fields.consultationCurrentMedications.helper": {
+      "hash": "4f7b29896b01",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationCurrentMedications.label": {
+      "hash": "a2f1d5b4781a",
+      "status": "machine"
+    },
     "visitDocumentation:fields.consultationHistory.helper": {
       "hash": "946db2520f54",
       "status": "machine"
     },
     "visitDocumentation:fields.consultationHistory.label": {
       "hash": "0e7696009337",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationMedicationPlan.helper": {
+      "hash": "3be7fb5f0894",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationMedicationPlan.label": {
+      "hash": "f6bfa6a70c9d",
       "status": "machine"
     },
     "visitDocumentation:fields.consultationPlan.helper": {
@@ -64888,6 +66552,42 @@
       "hash": "a07f43f3e3b2",
       "status": "machine"
     },
+    "app:visitTypes.choose": {
+      "hash": "448d75b89b4d",
+      "status": "machine"
+    },
+    "app:visitTypes.consultation": {
+      "hash": "537a956d9fb9",
+      "status": "machine"
+    },
+    "app:visitTypes.consultationDescription": {
+      "hash": "2458715cb362",
+      "status": "machine"
+    },
+    "app:visitTypes.dental": {
+      "hash": "8567c5651088",
+      "status": "machine"
+    },
+    "app:visitTypes.dentalAdditions": {
+      "hash": "7496580a5c09",
+      "status": "machine"
+    },
+    "app:visitTypes.dentalAdditionsHelp": {
+      "hash": "738383d0828f",
+      "status": "machine"
+    },
+    "app:visitTypes.dentalDescription": {
+      "hash": "6a41488e83e7",
+      "status": "machine"
+    },
+    "app:visitTypes.dictateDental": {
+      "hash": "ac460f66d315",
+      "status": "machine"
+    },
+    "app:visitTypes.start": {
+      "hash": "61a20ad71d86",
+      "status": "machine"
+    },
     "app:workspace.account": {
       "hash": "dbb5f6371b6a",
       "status": "machine"
@@ -70068,20 +71768,116 @@
       "hash": "242583caf70f",
       "status": "machine"
     },
+    "help:articles.consultation-templates.intro": {
+      "hash": "6f73d228d11d",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.first.text": {
+      "hash": "864b5a82c53b",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.first.title": {
+      "hash": "247573f51490",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.second.text": {
+      "hash": "18c7d1775ea8",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.second.title": {
+      "hash": "7c8d4f37c45f",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.third.text": {
+      "hash": "5138335fee80",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.third.title": {
+      "hash": "9808b44bec79",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.title": {
+      "hash": "3125a9011494",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.intro": {
+      "hash": "81f722b9b58e",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.first.text": {
+      "hash": "f9e6bbf06d34",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.first.title": {
+      "hash": "4ae8b583e2b1",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.second.text": {
+      "hash": "a2a4f39cc6a5",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.second.title": {
+      "hash": "c08e2e9710eb",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.third.text": {
+      "hash": "892fd90e6135",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.third.title": {
+      "hash": "abe17c4c5f6d",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.title": {
+      "hash": "328159257b12",
+      "status": "machine"
+    },
+    "help:articles.consultation.intro": {
+      "hash": "536b2d2ce055",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.first.text": {
+      "hash": "9f6fc10afcaa",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.first.title": {
+      "hash": "329a8ef36e36",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.second.text": {
+      "hash": "247b346361ce",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.second.title": {
+      "hash": "c39e8ee3b6d8",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.third.text": {
+      "hash": "d864398aa032",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.third.title": {
+      "hash": "2508eacf6788",
+      "status": "machine"
+    },
+    "help:articles.consultation.title": {
+      "hash": "f1e4055f609b",
+      "status": "machine"
+    },
     "help:articles.dictation.intro": {
-      "hash": "6dade1c35960",
+      "hash": "194d3216dcd4",
       "status": "machine"
     },
     "help:articles.dictation.sections.first.text": {
-      "hash": "b084f9c2ff3b",
+      "hash": "2927120cd615",
       "status": "machine"
     },
     "help:articles.dictation.sections.first.title": {
-      "hash": "581f9e763a92",
+      "hash": "2acf054f7f20",
       "status": "machine"
     },
     "help:articles.dictation.sections.second.text": {
-      "hash": "72595eb109ec",
+      "hash": "50ba6962c1d3",
       "status": "machine"
     },
     "help:articles.dictation.sections.second.title": {
@@ -70089,7 +71885,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.third.text": {
-      "hash": "c15ac32ed1c7",
+      "hash": "2f4c289ee78b",
       "status": "machine"
     },
     "help:articles.dictation.sections.third.title": {
@@ -70153,11 +71949,11 @@
       "status": "machine"
     },
     "help:articles.exam.sections.third.text": {
-      "hash": "91a34bb0da67",
+      "hash": "d11414ec9f75",
       "status": "machine"
     },
     "help:articles.exam.sections.third.title": {
-      "hash": "14d973c0faa1",
+      "hash": "241839ac0920",
       "status": "machine"
     },
     "help:articles.exam.title": {
@@ -70169,7 +71965,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.first.text": {
-      "hash": "a5256e265fb8",
+      "hash": "ef424ff29496",
       "status": "machine"
     },
     "help:articles.export.sections.first.title": {
@@ -70249,7 +72045,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.third.text": {
-      "hash": "59a201add8de",
+      "hash": "a7e9636b7ecc",
       "status": "machine"
     },
     "help:articles.imaging.sections.third.title": {
@@ -70265,7 +72061,7 @@
       "status": "machine"
     },
     "help:articles.patients.sections.first.text": {
-      "hash": "bbe15840cec1",
+      "hash": "dcbd9b754c3f",
       "status": "machine"
     },
     "help:articles.patients.sections.first.title": {
@@ -70273,7 +72069,7 @@
       "status": "machine"
     },
     "help:articles.patients.sections.second.text": {
-      "hash": "90b8dfaae008",
+      "hash": "25594d14ec38",
       "status": "machine"
     },
     "help:articles.patients.sections.second.title": {
@@ -70281,7 +72077,7 @@
       "status": "machine"
     },
     "help:articles.patients.sections.third.text": {
-      "hash": "c10338e6f89a",
+      "hash": "d035e6c44493",
       "status": "machine"
     },
     "help:articles.patients.sections.third.title": {
@@ -70425,7 +72221,7 @@
       "status": "machine"
     },
     "help:articles.start.sections.first.text": {
-      "hash": "4761935fed4e",
+      "hash": "9a404fbc7a9d",
       "status": "machine"
     },
     "help:articles.start.sections.first.title": {
@@ -70604,8 +72400,28 @@
       "hash": "5c70ddbcedfa",
       "status": "machine"
     },
+    "help:images.consultationMedicationHistory": {
+      "hash": "cdd671258b98",
+      "status": "machine"
+    },
+    "help:images.consultationMedicationReview": {
+      "hash": "5697264435b5",
+      "status": "machine"
+    },
+    "help:images.consultationRecordNote": {
+      "hash": "7200f7caa728",
+      "status": "machine"
+    },
+    "help:images.consultationReview": {
+      "hash": "e344df0ffc7c",
+      "status": "machine"
+    },
+    "help:images.consultationTemplatePreview": {
+      "hash": "3262593f547f",
+      "status": "machine"
+    },
     "help:images.dictation": {
-      "hash": "0991bf45c72b",
+      "hash": "3331c33a8ed5",
       "status": "machine"
     },
     "help:images.exam": {
@@ -70633,7 +72449,7 @@
       "status": "machine"
     },
     "help:images.patients": {
-      "hash": "b81a9b0aa7fc",
+      "hash": "db82ffbdefca",
       "status": "machine"
     },
     "help:images.preferences": {
@@ -70673,7 +72489,7 @@
       "status": "machine"
     },
     "help:site.intro": {
-      "hash": "8ed81321d20f",
+      "hash": "e5d3e5b63c02",
       "status": "machine"
     },
     "help:site.language": {
@@ -74312,6 +76128,14 @@
       "hash": "b3e012490052",
       "status": "machine"
     },
+    "pims:panel.chart.openConsultation": {
+      "hash": "4950fb56452b",
+      "status": "machine"
+    },
+    "pims:panel.chart.reloadSavedNote": {
+      "hash": "146817e12ecf",
+      "status": "machine"
+    },
     "pims:panel.chart.sendOff": {
       "hash": "576f91f18411",
       "status": "machine"
@@ -77628,16 +79452,248 @@
       "hash": "56b564b75c7f",
       "status": "machine"
     },
+    "visitDocumentation:consultation.guide": {
+      "hash": "776ee8ac3073",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.complexSection": {
+      "hash": "86c573c53100",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.copy": {
+      "hash": "38adf15952d8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.drugName": {
+      "hash": "45397540ec3c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.externalSearch": {
+      "hash": "3c833e4c01f4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.fullLabel": {
+      "hash": "1c3f467b6f68",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.labelError": {
+      "hash": "93802307a347",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.labelScope": {
+      "hash": "9e658ce75f48",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.loadingLabel": {
+      "hash": "839b02e0f518",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.lookup": {
+      "hash": "0c0e57cd5dfa",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.noProducts": {
+      "hash": "5110d14f655e",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.noSections": {
+      "hash": "6207c35eca6d",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.previous": {
+      "hash": "ddd09871a69c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.results": {
+      "hash": "7b345d3f70b5",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.search": {
+      "hash": "70b7a667aecd",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.searchError": {
+      "hash": "d36ccfa008ef",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.searching": {
+      "hash": "8295ecbc21f3",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.strengths": {
+      "hash": "dc18a5176843",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.useSelection": {
+      "hash": "5f1768786ec7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.verify": {
+      "hash": "05945c0d1847",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.openExam": {
+      "hash": "c0bc85815ff1",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.purpose": {
-      "hash": "b50269a58823",
+      "hash": "0828e5ab517f",
       "status": "machine"
     },
     "visitDocumentation:consultation.review": {
       "hash": "503e3b0167f5",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.archive": {
+      "hash": "2083a59398a7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.archived": {
+      "hash": "bdb86505f806",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.conflict": {
+      "hash": "f007e14a6785",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.default": {
+      "hash": "cd156225a9ef",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.discard": {
+      "hash": "5220f15390e9",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.help": {
+      "hash": "4ce246df1a46",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.intro": {
+      "hash": "38c59e47e3a6",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.label": {
+      "hash": "c65e91fbf880",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.loadFailed": {
+      "hash": "2b49d53f1708",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.loading": {
+      "hash": "734ca404e036",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.manage": {
+      "hash": "cb930c763b0b",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.moveDown": {
+      "hash": "118df9bd43d7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.moveUp": {
+      "hash": "bb04b0b2d06c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.options": {
+      "hash": "bc79cdffbaa8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.preview": {
+      "hash": "39d399369a10",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.restore": {
+      "hash": "3d08259f8eea",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.sampleNotice": {
+      "hash": "f969464e2010",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.complaint": {
+      "hash": "0019f19dce67",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationAdministeredMedications": {
+      "hash": "ba931436f2fb",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationAssessment": {
+      "hash": "a8c1fa2ce42c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationCurrentMedications": {
+      "hash": "d0f36ac54bfb",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationHistory": {
+      "hash": "0d4334679d43",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationMedicationPlan": {
+      "hash": "5c8f2b141dc4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationPlan": {
+      "hash": "ada6b80fe834",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.gpDiagnostics": {
+      "hash": "d4fcc5961d54",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.gpPhysicalExam": {
+      "hash": "2d9fa89fdee4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.gpVitals": {
+      "hash": "098611a6165d",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.saveFailed": {
+      "hash": "53c5c31e3b0c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.saved": {
+      "hash": "c632e750ac72",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.setDefault": {
+      "hash": "83fed7cc69a1",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.showArchived": {
+      "hash": "a5c73dbe44b8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.dental-v1": {
+      "hash": "f3d2f78dfaf7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.recheck-v1": {
+      "hash": "1f47d8366934",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.soap-v1": {
+      "hash": "c9efa9457d3b",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.title": {
+      "hash": "1b6ffdcbefb8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.untitled": {
+      "hash": "1be215111c62",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.title": {
       "hash": "537a956d9fb9",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.transcripts": {
+      "hash": "53657123bc77",
       "status": "machine"
     },
     "visitDocumentation:discharge.purpose": {
@@ -77660,6 +79716,14 @@
       "hash": "d960170cd423",
       "status": "machine"
     },
+    "visitDocumentation:fields.consultationAdministeredMedications.helper": {
+      "hash": "cd5e79073e0b",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationAdministeredMedications.label": {
+      "hash": "1fc425522068",
+      "status": "machine"
+    },
     "visitDocumentation:fields.consultationAssessment.helper": {
       "hash": "60dbb79f165c",
       "status": "machine"
@@ -77668,12 +79732,28 @@
       "hash": "7808eeeb45df",
       "status": "machine"
     },
+    "visitDocumentation:fields.consultationCurrentMedications.helper": {
+      "hash": "4f7b29896b01",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationCurrentMedications.label": {
+      "hash": "a2f1d5b4781a",
+      "status": "machine"
+    },
     "visitDocumentation:fields.consultationHistory.helper": {
       "hash": "946db2520f54",
       "status": "machine"
     },
     "visitDocumentation:fields.consultationHistory.label": {
       "hash": "0e7696009337",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationMedicationPlan.helper": {
+      "hash": "3be7fb5f0894",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationMedicationPlan.label": {
+      "hash": "f6bfa6a70c9d",
       "status": "machine"
     },
     "visitDocumentation:fields.consultationPlan.helper": {
@@ -80436,6 +82516,42 @@
     },
     "app:trialSignIn.title": {
       "hash": "a07f43f3e3b2",
+      "status": "machine"
+    },
+    "app:visitTypes.choose": {
+      "hash": "448d75b89b4d",
+      "status": "machine"
+    },
+    "app:visitTypes.consultation": {
+      "hash": "537a956d9fb9",
+      "status": "machine"
+    },
+    "app:visitTypes.consultationDescription": {
+      "hash": "2458715cb362",
+      "status": "machine"
+    },
+    "app:visitTypes.dental": {
+      "hash": "8567c5651088",
+      "status": "machine"
+    },
+    "app:visitTypes.dentalAdditions": {
+      "hash": "7496580a5c09",
+      "status": "machine"
+    },
+    "app:visitTypes.dentalAdditionsHelp": {
+      "hash": "738383d0828f",
+      "status": "machine"
+    },
+    "app:visitTypes.dentalDescription": {
+      "hash": "6a41488e83e7",
+      "status": "machine"
+    },
+    "app:visitTypes.dictateDental": {
+      "hash": "ac460f66d315",
+      "status": "machine"
+    },
+    "app:visitTypes.start": {
+      "hash": "61a20ad71d86",
       "status": "machine"
     },
     "app:workspace.account": {
@@ -85674,20 +87790,116 @@
       "hash": "242583caf70f",
       "status": "machine"
     },
+    "help:articles.consultation-templates.intro": {
+      "hash": "6f73d228d11d",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.first.text": {
+      "hash": "864b5a82c53b",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.first.title": {
+      "hash": "247573f51490",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.second.text": {
+      "hash": "18c7d1775ea8",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.second.title": {
+      "hash": "7c8d4f37c45f",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.third.text": {
+      "hash": "5138335fee80",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.third.title": {
+      "hash": "9808b44bec79",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.title": {
+      "hash": "3125a9011494",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.intro": {
+      "hash": "81f722b9b58e",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.first.text": {
+      "hash": "f9e6bbf06d34",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.first.title": {
+      "hash": "4ae8b583e2b1",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.second.text": {
+      "hash": "a2a4f39cc6a5",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.second.title": {
+      "hash": "c08e2e9710eb",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.third.text": {
+      "hash": "892fd90e6135",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.third.title": {
+      "hash": "abe17c4c5f6d",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.title": {
+      "hash": "328159257b12",
+      "status": "machine"
+    },
+    "help:articles.consultation.intro": {
+      "hash": "536b2d2ce055",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.first.text": {
+      "hash": "9f6fc10afcaa",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.first.title": {
+      "hash": "329a8ef36e36",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.second.text": {
+      "hash": "247b346361ce",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.second.title": {
+      "hash": "c39e8ee3b6d8",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.third.text": {
+      "hash": "d864398aa032",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.third.title": {
+      "hash": "2508eacf6788",
+      "status": "machine"
+    },
+    "help:articles.consultation.title": {
+      "hash": "f1e4055f609b",
+      "status": "machine"
+    },
     "help:articles.dictation.intro": {
-      "hash": "6dade1c35960",
+      "hash": "194d3216dcd4",
       "status": "machine"
     },
     "help:articles.dictation.sections.first.text": {
-      "hash": "b084f9c2ff3b",
+      "hash": "2927120cd615",
       "status": "machine"
     },
     "help:articles.dictation.sections.first.title": {
-      "hash": "581f9e763a92",
+      "hash": "2acf054f7f20",
       "status": "machine"
     },
     "help:articles.dictation.sections.second.text": {
-      "hash": "72595eb109ec",
+      "hash": "50ba6962c1d3",
       "status": "machine"
     },
     "help:articles.dictation.sections.second.title": {
@@ -85695,7 +87907,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.third.text": {
-      "hash": "c15ac32ed1c7",
+      "hash": "2f4c289ee78b",
       "status": "machine"
     },
     "help:articles.dictation.sections.third.title": {
@@ -85759,11 +87971,11 @@
       "status": "machine"
     },
     "help:articles.exam.sections.third.text": {
-      "hash": "91a34bb0da67",
+      "hash": "d11414ec9f75",
       "status": "machine"
     },
     "help:articles.exam.sections.third.title": {
-      "hash": "14d973c0faa1",
+      "hash": "241839ac0920",
       "status": "machine"
     },
     "help:articles.exam.title": {
@@ -85775,7 +87987,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.first.text": {
-      "hash": "a5256e265fb8",
+      "hash": "ef424ff29496",
       "status": "machine"
     },
     "help:articles.export.sections.first.title": {
@@ -85855,7 +88067,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.third.text": {
-      "hash": "59a201add8de",
+      "hash": "a7e9636b7ecc",
       "status": "machine"
     },
     "help:articles.imaging.sections.third.title": {
@@ -85871,7 +88083,7 @@
       "status": "machine"
     },
     "help:articles.patients.sections.first.text": {
-      "hash": "bbe15840cec1",
+      "hash": "dcbd9b754c3f",
       "status": "machine"
     },
     "help:articles.patients.sections.first.title": {
@@ -85879,7 +88091,7 @@
       "status": "machine"
     },
     "help:articles.patients.sections.second.text": {
-      "hash": "90b8dfaae008",
+      "hash": "25594d14ec38",
       "status": "machine"
     },
     "help:articles.patients.sections.second.title": {
@@ -85887,7 +88099,7 @@
       "status": "machine"
     },
     "help:articles.patients.sections.third.text": {
-      "hash": "c10338e6f89a",
+      "hash": "d035e6c44493",
       "status": "machine"
     },
     "help:articles.patients.sections.third.title": {
@@ -86031,7 +88243,7 @@
       "status": "machine"
     },
     "help:articles.start.sections.first.text": {
-      "hash": "4761935fed4e",
+      "hash": "9a404fbc7a9d",
       "status": "machine"
     },
     "help:articles.start.sections.first.title": {
@@ -86210,8 +88422,28 @@
       "hash": "5c70ddbcedfa",
       "status": "machine"
     },
+    "help:images.consultationMedicationHistory": {
+      "hash": "cdd671258b98",
+      "status": "machine"
+    },
+    "help:images.consultationMedicationReview": {
+      "hash": "5697264435b5",
+      "status": "machine"
+    },
+    "help:images.consultationRecordNote": {
+      "hash": "7200f7caa728",
+      "status": "machine"
+    },
+    "help:images.consultationReview": {
+      "hash": "e344df0ffc7c",
+      "status": "machine"
+    },
+    "help:images.consultationTemplatePreview": {
+      "hash": "3262593f547f",
+      "status": "machine"
+    },
     "help:images.dictation": {
-      "hash": "0991bf45c72b",
+      "hash": "3331c33a8ed5",
       "status": "machine"
     },
     "help:images.exam": {
@@ -86239,7 +88471,7 @@
       "status": "machine"
     },
     "help:images.patients": {
-      "hash": "b81a9b0aa7fc",
+      "hash": "db82ffbdefca",
       "status": "machine"
     },
     "help:images.preferences": {
@@ -86279,7 +88511,7 @@
       "status": "machine"
     },
     "help:site.intro": {
-      "hash": "8ed81321d20f",
+      "hash": "e5d3e5b63c02",
       "status": "machine"
     },
     "help:site.language": {
@@ -90002,6 +92234,14 @@
       "hash": "b3e012490052",
       "status": "machine"
     },
+    "pims:panel.chart.openConsultation": {
+      "hash": "4950fb56452b",
+      "status": "machine"
+    },
+    "pims:panel.chart.reloadSavedNote": {
+      "hash": "146817e12ecf",
+      "status": "machine"
+    },
     "pims:panel.chart.sendOff": {
       "hash": "576f91f18411",
       "status": "machine"
@@ -93330,16 +95570,248 @@
       "hash": "56b564b75c7f",
       "status": "machine"
     },
+    "visitDocumentation:consultation.guide": {
+      "hash": "776ee8ac3073",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.complexSection": {
+      "hash": "86c573c53100",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.copy": {
+      "hash": "38adf15952d8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.drugName": {
+      "hash": "45397540ec3c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.externalSearch": {
+      "hash": "3c833e4c01f4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.fullLabel": {
+      "hash": "1c3f467b6f68",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.labelError": {
+      "hash": "93802307a347",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.labelScope": {
+      "hash": "9e658ce75f48",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.loadingLabel": {
+      "hash": "839b02e0f518",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.lookup": {
+      "hash": "0c0e57cd5dfa",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.noProducts": {
+      "hash": "5110d14f655e",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.noSections": {
+      "hash": "6207c35eca6d",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.previous": {
+      "hash": "ddd09871a69c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.results": {
+      "hash": "7b345d3f70b5",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.search": {
+      "hash": "70b7a667aecd",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.searchError": {
+      "hash": "d36ccfa008ef",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.searching": {
+      "hash": "8295ecbc21f3",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.strengths": {
+      "hash": "dc18a5176843",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.useSelection": {
+      "hash": "5f1768786ec7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.verify": {
+      "hash": "05945c0d1847",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.openExam": {
+      "hash": "c0bc85815ff1",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.purpose": {
-      "hash": "b50269a58823",
+      "hash": "0828e5ab517f",
       "status": "machine"
     },
     "visitDocumentation:consultation.review": {
       "hash": "503e3b0167f5",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.archive": {
+      "hash": "2083a59398a7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.archived": {
+      "hash": "bdb86505f806",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.conflict": {
+      "hash": "f007e14a6785",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.default": {
+      "hash": "cd156225a9ef",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.discard": {
+      "hash": "5220f15390e9",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.help": {
+      "hash": "4ce246df1a46",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.intro": {
+      "hash": "38c59e47e3a6",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.label": {
+      "hash": "c65e91fbf880",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.loadFailed": {
+      "hash": "2b49d53f1708",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.loading": {
+      "hash": "734ca404e036",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.manage": {
+      "hash": "cb930c763b0b",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.moveDown": {
+      "hash": "118df9bd43d7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.moveUp": {
+      "hash": "bb04b0b2d06c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.options": {
+      "hash": "bc79cdffbaa8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.preview": {
+      "hash": "39d399369a10",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.restore": {
+      "hash": "3d08259f8eea",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.sampleNotice": {
+      "hash": "f969464e2010",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.complaint": {
+      "hash": "0019f19dce67",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationAdministeredMedications": {
+      "hash": "ba931436f2fb",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationAssessment": {
+      "hash": "a8c1fa2ce42c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationCurrentMedications": {
+      "hash": "d0f36ac54bfb",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationHistory": {
+      "hash": "0d4334679d43",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationMedicationPlan": {
+      "hash": "5c8f2b141dc4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationPlan": {
+      "hash": "ada6b80fe834",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.gpDiagnostics": {
+      "hash": "d4fcc5961d54",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.gpPhysicalExam": {
+      "hash": "2d9fa89fdee4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.gpVitals": {
+      "hash": "098611a6165d",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.saveFailed": {
+      "hash": "53c5c31e3b0c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.saved": {
+      "hash": "c632e750ac72",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.setDefault": {
+      "hash": "83fed7cc69a1",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.showArchived": {
+      "hash": "a5c73dbe44b8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.dental-v1": {
+      "hash": "f3d2f78dfaf7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.recheck-v1": {
+      "hash": "1f47d8366934",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.soap-v1": {
+      "hash": "c9efa9457d3b",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.title": {
+      "hash": "1b6ffdcbefb8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.untitled": {
+      "hash": "1be215111c62",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.title": {
       "hash": "537a956d9fb9",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.transcripts": {
+      "hash": "53657123bc77",
       "status": "machine"
     },
     "visitDocumentation:discharge.purpose": {
@@ -93362,6 +95834,14 @@
       "hash": "d960170cd423",
       "status": "machine"
     },
+    "visitDocumentation:fields.consultationAdministeredMedications.helper": {
+      "hash": "cd5e79073e0b",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationAdministeredMedications.label": {
+      "hash": "1fc425522068",
+      "status": "machine"
+    },
     "visitDocumentation:fields.consultationAssessment.helper": {
       "hash": "60dbb79f165c",
       "status": "machine"
@@ -93370,12 +95850,28 @@
       "hash": "7808eeeb45df",
       "status": "machine"
     },
+    "visitDocumentation:fields.consultationCurrentMedications.helper": {
+      "hash": "4f7b29896b01",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationCurrentMedications.label": {
+      "hash": "a2f1d5b4781a",
+      "status": "machine"
+    },
     "visitDocumentation:fields.consultationHistory.helper": {
       "hash": "946db2520f54",
       "status": "machine"
     },
     "visitDocumentation:fields.consultationHistory.label": {
       "hash": "0e7696009337",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationMedicationPlan.helper": {
+      "hash": "3be7fb5f0894",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationMedicationPlan.label": {
+      "hash": "f6bfa6a70c9d",
       "status": "machine"
     },
     "visitDocumentation:fields.consultationPlan.helper": {
@@ -96756,6 +99252,42 @@
     },
     "app:trialSignIn.title": {
       "hash": "a07f43f3e3b2",
+      "status": "machine"
+    },
+    "app:visitTypes.choose": {
+      "hash": "448d75b89b4d",
+      "status": "machine"
+    },
+    "app:visitTypes.consultation": {
+      "hash": "537a956d9fb9",
+      "status": "machine"
+    },
+    "app:visitTypes.consultationDescription": {
+      "hash": "2458715cb362",
+      "status": "machine"
+    },
+    "app:visitTypes.dental": {
+      "hash": "8567c5651088",
+      "status": "machine"
+    },
+    "app:visitTypes.dentalAdditions": {
+      "hash": "7496580a5c09",
+      "status": "machine"
+    },
+    "app:visitTypes.dentalAdditionsHelp": {
+      "hash": "738383d0828f",
+      "status": "machine"
+    },
+    "app:visitTypes.dentalDescription": {
+      "hash": "6a41488e83e7",
+      "status": "machine"
+    },
+    "app:visitTypes.dictateDental": {
+      "hash": "ac460f66d315",
+      "status": "machine"
+    },
+    "app:visitTypes.start": {
+      "hash": "61a20ad71d86",
       "status": "machine"
     },
     "app:workspace.account": {
@@ -101986,20 +104518,116 @@
       "hash": "242583caf70f",
       "status": "machine"
     },
+    "help:articles.consultation-templates.intro": {
+      "hash": "6f73d228d11d",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.first.text": {
+      "hash": "864b5a82c53b",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.first.title": {
+      "hash": "247573f51490",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.second.text": {
+      "hash": "18c7d1775ea8",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.second.title": {
+      "hash": "7c8d4f37c45f",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.third.text": {
+      "hash": "5138335fee80",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.third.title": {
+      "hash": "9808b44bec79",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.title": {
+      "hash": "3125a9011494",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.intro": {
+      "hash": "81f722b9b58e",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.first.text": {
+      "hash": "f9e6bbf06d34",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.first.title": {
+      "hash": "4ae8b583e2b1",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.second.text": {
+      "hash": "a2a4f39cc6a5",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.second.title": {
+      "hash": "c08e2e9710eb",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.third.text": {
+      "hash": "892fd90e6135",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.third.title": {
+      "hash": "abe17c4c5f6d",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.title": {
+      "hash": "328159257b12",
+      "status": "machine"
+    },
+    "help:articles.consultation.intro": {
+      "hash": "536b2d2ce055",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.first.text": {
+      "hash": "9f6fc10afcaa",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.first.title": {
+      "hash": "329a8ef36e36",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.second.text": {
+      "hash": "247b346361ce",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.second.title": {
+      "hash": "c39e8ee3b6d8",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.third.text": {
+      "hash": "d864398aa032",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.third.title": {
+      "hash": "2508eacf6788",
+      "status": "machine"
+    },
+    "help:articles.consultation.title": {
+      "hash": "f1e4055f609b",
+      "status": "machine"
+    },
     "help:articles.dictation.intro": {
-      "hash": "6dade1c35960",
+      "hash": "194d3216dcd4",
       "status": "machine"
     },
     "help:articles.dictation.sections.first.text": {
-      "hash": "b084f9c2ff3b",
+      "hash": "2927120cd615",
       "status": "machine"
     },
     "help:articles.dictation.sections.first.title": {
-      "hash": "581f9e763a92",
+      "hash": "2acf054f7f20",
       "status": "machine"
     },
     "help:articles.dictation.sections.second.text": {
-      "hash": "72595eb109ec",
+      "hash": "50ba6962c1d3",
       "status": "machine"
     },
     "help:articles.dictation.sections.second.title": {
@@ -102007,7 +104635,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.third.text": {
-      "hash": "c15ac32ed1c7",
+      "hash": "2f4c289ee78b",
       "status": "machine"
     },
     "help:articles.dictation.sections.third.title": {
@@ -102071,11 +104699,11 @@
       "status": "machine"
     },
     "help:articles.exam.sections.third.text": {
-      "hash": "91a34bb0da67",
+      "hash": "d11414ec9f75",
       "status": "machine"
     },
     "help:articles.exam.sections.third.title": {
-      "hash": "14d973c0faa1",
+      "hash": "241839ac0920",
       "status": "machine"
     },
     "help:articles.exam.title": {
@@ -102087,7 +104715,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.first.text": {
-      "hash": "a5256e265fb8",
+      "hash": "ef424ff29496",
       "status": "machine"
     },
     "help:articles.export.sections.first.title": {
@@ -102167,7 +104795,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.third.text": {
-      "hash": "59a201add8de",
+      "hash": "a7e9636b7ecc",
       "status": "machine"
     },
     "help:articles.imaging.sections.third.title": {
@@ -102183,7 +104811,7 @@
       "status": "machine"
     },
     "help:articles.patients.sections.first.text": {
-      "hash": "bbe15840cec1",
+      "hash": "dcbd9b754c3f",
       "status": "machine"
     },
     "help:articles.patients.sections.first.title": {
@@ -102191,7 +104819,7 @@
       "status": "machine"
     },
     "help:articles.patients.sections.second.text": {
-      "hash": "90b8dfaae008",
+      "hash": "25594d14ec38",
       "status": "machine"
     },
     "help:articles.patients.sections.second.title": {
@@ -102199,7 +104827,7 @@
       "status": "machine"
     },
     "help:articles.patients.sections.third.text": {
-      "hash": "c10338e6f89a",
+      "hash": "d035e6c44493",
       "status": "machine"
     },
     "help:articles.patients.sections.third.title": {
@@ -102343,7 +104971,7 @@
       "status": "machine"
     },
     "help:articles.start.sections.first.text": {
-      "hash": "4761935fed4e",
+      "hash": "9a404fbc7a9d",
       "status": "machine"
     },
     "help:articles.start.sections.first.title": {
@@ -102522,8 +105150,28 @@
       "hash": "5c70ddbcedfa",
       "status": "machine"
     },
+    "help:images.consultationMedicationHistory": {
+      "hash": "cdd671258b98",
+      "status": "machine"
+    },
+    "help:images.consultationMedicationReview": {
+      "hash": "5697264435b5",
+      "status": "machine"
+    },
+    "help:images.consultationRecordNote": {
+      "hash": "7200f7caa728",
+      "status": "machine"
+    },
+    "help:images.consultationReview": {
+      "hash": "e344df0ffc7c",
+      "status": "machine"
+    },
+    "help:images.consultationTemplatePreview": {
+      "hash": "3262593f547f",
+      "status": "machine"
+    },
     "help:images.dictation": {
-      "hash": "0991bf45c72b",
+      "hash": "3331c33a8ed5",
       "status": "machine"
     },
     "help:images.exam": {
@@ -102551,7 +105199,7 @@
       "status": "machine"
     },
     "help:images.patients": {
-      "hash": "b81a9b0aa7fc",
+      "hash": "db82ffbdefca",
       "status": "machine"
     },
     "help:images.preferences": {
@@ -102591,7 +105239,7 @@
       "status": "machine"
     },
     "help:site.intro": {
-      "hash": "8ed81321d20f",
+      "hash": "e5d3e5b63c02",
       "status": "machine"
     },
     "help:site.language": {
@@ -106254,6 +108902,14 @@
       "hash": "b3e012490052",
       "status": "machine"
     },
+    "pims:panel.chart.openConsultation": {
+      "hash": "4950fb56452b",
+      "status": "machine"
+    },
+    "pims:panel.chart.reloadSavedNote": {
+      "hash": "146817e12ecf",
+      "status": "machine"
+    },
     "pims:panel.chart.sendOff": {
       "hash": "576f91f18411",
       "status": "machine"
@@ -109578,16 +112234,248 @@
       "hash": "56b564b75c7f",
       "status": "machine"
     },
+    "visitDocumentation:consultation.guide": {
+      "hash": "776ee8ac3073",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.complexSection": {
+      "hash": "86c573c53100",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.copy": {
+      "hash": "38adf15952d8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.drugName": {
+      "hash": "45397540ec3c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.externalSearch": {
+      "hash": "3c833e4c01f4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.fullLabel": {
+      "hash": "1c3f467b6f68",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.labelError": {
+      "hash": "93802307a347",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.labelScope": {
+      "hash": "9e658ce75f48",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.loadingLabel": {
+      "hash": "839b02e0f518",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.lookup": {
+      "hash": "0c0e57cd5dfa",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.noProducts": {
+      "hash": "5110d14f655e",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.noSections": {
+      "hash": "6207c35eca6d",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.previous": {
+      "hash": "ddd09871a69c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.results": {
+      "hash": "7b345d3f70b5",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.search": {
+      "hash": "70b7a667aecd",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.searchError": {
+      "hash": "d36ccfa008ef",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.searching": {
+      "hash": "8295ecbc21f3",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.strengths": {
+      "hash": "dc18a5176843",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.useSelection": {
+      "hash": "5f1768786ec7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.verify": {
+      "hash": "05945c0d1847",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.openExam": {
+      "hash": "c0bc85815ff1",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.purpose": {
-      "hash": "b50269a58823",
+      "hash": "0828e5ab517f",
       "status": "machine"
     },
     "visitDocumentation:consultation.review": {
       "hash": "503e3b0167f5",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.archive": {
+      "hash": "2083a59398a7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.archived": {
+      "hash": "bdb86505f806",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.conflict": {
+      "hash": "f007e14a6785",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.default": {
+      "hash": "cd156225a9ef",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.discard": {
+      "hash": "5220f15390e9",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.help": {
+      "hash": "4ce246df1a46",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.intro": {
+      "hash": "38c59e47e3a6",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.label": {
+      "hash": "c65e91fbf880",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.loadFailed": {
+      "hash": "2b49d53f1708",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.loading": {
+      "hash": "734ca404e036",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.manage": {
+      "hash": "cb930c763b0b",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.moveDown": {
+      "hash": "118df9bd43d7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.moveUp": {
+      "hash": "bb04b0b2d06c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.options": {
+      "hash": "bc79cdffbaa8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.preview": {
+      "hash": "39d399369a10",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.restore": {
+      "hash": "3d08259f8eea",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.sampleNotice": {
+      "hash": "f969464e2010",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.complaint": {
+      "hash": "0019f19dce67",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationAdministeredMedications": {
+      "hash": "ba931436f2fb",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationAssessment": {
+      "hash": "a8c1fa2ce42c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationCurrentMedications": {
+      "hash": "d0f36ac54bfb",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationHistory": {
+      "hash": "0d4334679d43",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationMedicationPlan": {
+      "hash": "5c8f2b141dc4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationPlan": {
+      "hash": "ada6b80fe834",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.gpDiagnostics": {
+      "hash": "d4fcc5961d54",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.gpPhysicalExam": {
+      "hash": "2d9fa89fdee4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.gpVitals": {
+      "hash": "098611a6165d",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.saveFailed": {
+      "hash": "53c5c31e3b0c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.saved": {
+      "hash": "c632e750ac72",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.setDefault": {
+      "hash": "83fed7cc69a1",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.showArchived": {
+      "hash": "a5c73dbe44b8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.dental-v1": {
+      "hash": "f3d2f78dfaf7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.recheck-v1": {
+      "hash": "1f47d8366934",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.soap-v1": {
+      "hash": "c9efa9457d3b",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.title": {
+      "hash": "1b6ffdcbefb8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.untitled": {
+      "hash": "1be215111c62",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.title": {
       "hash": "537a956d9fb9",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.transcripts": {
+      "hash": "53657123bc77",
       "status": "machine"
     },
     "visitDocumentation:discharge.purpose": {
@@ -109610,6 +112498,14 @@
       "hash": "d960170cd423",
       "status": "machine"
     },
+    "visitDocumentation:fields.consultationAdministeredMedications.helper": {
+      "hash": "cd5e79073e0b",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationAdministeredMedications.label": {
+      "hash": "1fc425522068",
+      "status": "machine"
+    },
     "visitDocumentation:fields.consultationAssessment.helper": {
       "hash": "60dbb79f165c",
       "status": "machine"
@@ -109618,12 +112514,28 @@
       "hash": "7808eeeb45df",
       "status": "machine"
     },
+    "visitDocumentation:fields.consultationCurrentMedications.helper": {
+      "hash": "4f7b29896b01",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationCurrentMedications.label": {
+      "hash": "a2f1d5b4781a",
+      "status": "machine"
+    },
     "visitDocumentation:fields.consultationHistory.helper": {
       "hash": "946db2520f54",
       "status": "machine"
     },
     "visitDocumentation:fields.consultationHistory.label": {
       "hash": "0e7696009337",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationMedicationPlan.helper": {
+      "hash": "3be7fb5f0894",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationMedicationPlan.label": {
+      "hash": "f6bfa6a70c9d",
       "status": "machine"
     },
     "visitDocumentation:fields.consultationPlan.helper": {
@@ -112398,6 +115310,42 @@
     },
     "app:trialSignIn.title": {
       "hash": "a07f43f3e3b2",
+      "status": "machine"
+    },
+    "app:visitTypes.choose": {
+      "hash": "448d75b89b4d",
+      "status": "machine"
+    },
+    "app:visitTypes.consultation": {
+      "hash": "537a956d9fb9",
+      "status": "machine"
+    },
+    "app:visitTypes.consultationDescription": {
+      "hash": "2458715cb362",
+      "status": "machine"
+    },
+    "app:visitTypes.dental": {
+      "hash": "8567c5651088",
+      "status": "machine"
+    },
+    "app:visitTypes.dentalAdditions": {
+      "hash": "7496580a5c09",
+      "status": "machine"
+    },
+    "app:visitTypes.dentalAdditionsHelp": {
+      "hash": "738383d0828f",
+      "status": "machine"
+    },
+    "app:visitTypes.dentalDescription": {
+      "hash": "6a41488e83e7",
+      "status": "machine"
+    },
+    "app:visitTypes.dictateDental": {
+      "hash": "ac460f66d315",
+      "status": "machine"
+    },
+    "app:visitTypes.start": {
+      "hash": "61a20ad71d86",
       "status": "machine"
     },
     "app:workspace.account": {
@@ -117580,20 +120528,116 @@
       "hash": "242583caf70f",
       "status": "machine"
     },
+    "help:articles.consultation-templates.intro": {
+      "hash": "6f73d228d11d",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.first.text": {
+      "hash": "864b5a82c53b",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.first.title": {
+      "hash": "247573f51490",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.second.text": {
+      "hash": "18c7d1775ea8",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.second.title": {
+      "hash": "7c8d4f37c45f",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.third.text": {
+      "hash": "5138335fee80",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.sections.third.title": {
+      "hash": "9808b44bec79",
+      "status": "machine"
+    },
+    "help:articles.consultation-templates.title": {
+      "hash": "3125a9011494",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.intro": {
+      "hash": "81f722b9b58e",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.first.text": {
+      "hash": "f9e6bbf06d34",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.first.title": {
+      "hash": "4ae8b583e2b1",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.second.text": {
+      "hash": "a2a4f39cc6a5",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.second.title": {
+      "hash": "c08e2e9710eb",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.third.text": {
+      "hash": "892fd90e6135",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.sections.third.title": {
+      "hash": "abe17c4c5f6d",
+      "status": "machine"
+    },
+    "help:articles.consultation-transfer.title": {
+      "hash": "328159257b12",
+      "status": "machine"
+    },
+    "help:articles.consultation.intro": {
+      "hash": "536b2d2ce055",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.first.text": {
+      "hash": "9f6fc10afcaa",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.first.title": {
+      "hash": "329a8ef36e36",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.second.text": {
+      "hash": "247b346361ce",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.second.title": {
+      "hash": "c39e8ee3b6d8",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.third.text": {
+      "hash": "d864398aa032",
+      "status": "machine"
+    },
+    "help:articles.consultation.sections.third.title": {
+      "hash": "2508eacf6788",
+      "status": "machine"
+    },
+    "help:articles.consultation.title": {
+      "hash": "f1e4055f609b",
+      "status": "machine"
+    },
     "help:articles.dictation.intro": {
-      "hash": "6dade1c35960",
+      "hash": "194d3216dcd4",
       "status": "machine"
     },
     "help:articles.dictation.sections.first.text": {
-      "hash": "b084f9c2ff3b",
+      "hash": "2927120cd615",
       "status": "machine"
     },
     "help:articles.dictation.sections.first.title": {
-      "hash": "581f9e763a92",
+      "hash": "2acf054f7f20",
       "status": "machine"
     },
     "help:articles.dictation.sections.second.text": {
-      "hash": "72595eb109ec",
+      "hash": "50ba6962c1d3",
       "status": "machine"
     },
     "help:articles.dictation.sections.second.title": {
@@ -117601,7 +120645,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.third.text": {
-      "hash": "c15ac32ed1c7",
+      "hash": "2f4c289ee78b",
       "status": "machine"
     },
     "help:articles.dictation.sections.third.title": {
@@ -117665,11 +120709,11 @@
       "status": "machine"
     },
     "help:articles.exam.sections.third.text": {
-      "hash": "91a34bb0da67",
+      "hash": "d11414ec9f75",
       "status": "machine"
     },
     "help:articles.exam.sections.third.title": {
-      "hash": "14d973c0faa1",
+      "hash": "241839ac0920",
       "status": "machine"
     },
     "help:articles.exam.title": {
@@ -117681,7 +120725,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.first.text": {
-      "hash": "a5256e265fb8",
+      "hash": "ef424ff29496",
       "status": "machine"
     },
     "help:articles.export.sections.first.title": {
@@ -117761,7 +120805,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.third.text": {
-      "hash": "59a201add8de",
+      "hash": "a7e9636b7ecc",
       "status": "machine"
     },
     "help:articles.imaging.sections.third.title": {
@@ -117777,7 +120821,7 @@
       "status": "machine"
     },
     "help:articles.patients.sections.first.text": {
-      "hash": "bbe15840cec1",
+      "hash": "dcbd9b754c3f",
       "status": "machine"
     },
     "help:articles.patients.sections.first.title": {
@@ -117785,7 +120829,7 @@
       "status": "machine"
     },
     "help:articles.patients.sections.second.text": {
-      "hash": "90b8dfaae008",
+      "hash": "25594d14ec38",
       "status": "machine"
     },
     "help:articles.patients.sections.second.title": {
@@ -117793,7 +120837,7 @@
       "status": "machine"
     },
     "help:articles.patients.sections.third.text": {
-      "hash": "c10338e6f89a",
+      "hash": "d035e6c44493",
       "status": "machine"
     },
     "help:articles.patients.sections.third.title": {
@@ -117937,7 +120981,7 @@
       "status": "machine"
     },
     "help:articles.start.sections.first.text": {
-      "hash": "4761935fed4e",
+      "hash": "9a404fbc7a9d",
       "status": "machine"
     },
     "help:articles.start.sections.first.title": {
@@ -118116,8 +121160,28 @@
       "hash": "5c70ddbcedfa",
       "status": "machine"
     },
+    "help:images.consultationMedicationHistory": {
+      "hash": "cdd671258b98",
+      "status": "machine"
+    },
+    "help:images.consultationMedicationReview": {
+      "hash": "5697264435b5",
+      "status": "machine"
+    },
+    "help:images.consultationRecordNote": {
+      "hash": "7200f7caa728",
+      "status": "machine"
+    },
+    "help:images.consultationReview": {
+      "hash": "e344df0ffc7c",
+      "status": "machine"
+    },
+    "help:images.consultationTemplatePreview": {
+      "hash": "3262593f547f",
+      "status": "machine"
+    },
     "help:images.dictation": {
-      "hash": "0991bf45c72b",
+      "hash": "3331c33a8ed5",
       "status": "machine"
     },
     "help:images.exam": {
@@ -118145,7 +121209,7 @@
       "status": "machine"
     },
     "help:images.patients": {
-      "hash": "b81a9b0aa7fc",
+      "hash": "db82ffbdefca",
       "status": "machine"
     },
     "help:images.preferences": {
@@ -118185,7 +121249,7 @@
       "status": "machine"
     },
     "help:site.intro": {
-      "hash": "8ed81321d20f",
+      "hash": "e5d3e5b63c02",
       "status": "machine"
     },
     "help:site.language": {
@@ -121824,6 +124888,14 @@
       "hash": "b3e012490052",
       "status": "machine"
     },
+    "pims:panel.chart.openConsultation": {
+      "hash": "4950fb56452b",
+      "status": "machine"
+    },
+    "pims:panel.chart.reloadSavedNote": {
+      "hash": "146817e12ecf",
+      "status": "machine"
+    },
     "pims:panel.chart.sendOff": {
       "hash": "576f91f18411",
       "status": "machine"
@@ -125140,16 +128212,248 @@
       "hash": "56b564b75c7f",
       "status": "machine"
     },
+    "visitDocumentation:consultation.guide": {
+      "hash": "776ee8ac3073",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.complexSection": {
+      "hash": "86c573c53100",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.copy": {
+      "hash": "38adf15952d8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.drugName": {
+      "hash": "45397540ec3c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.externalSearch": {
+      "hash": "3c833e4c01f4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.fullLabel": {
+      "hash": "1c3f467b6f68",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.labelError": {
+      "hash": "93802307a347",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.labelScope": {
+      "hash": "9e658ce75f48",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.loadingLabel": {
+      "hash": "839b02e0f518",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.lookup": {
+      "hash": "0c0e57cd5dfa",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.noProducts": {
+      "hash": "5110d14f655e",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.noSections": {
+      "hash": "6207c35eca6d",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.previous": {
+      "hash": "ddd09871a69c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.results": {
+      "hash": "7b345d3f70b5",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.search": {
+      "hash": "70b7a667aecd",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.searchError": {
+      "hash": "d36ccfa008ef",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.searching": {
+      "hash": "8295ecbc21f3",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.strengths": {
+      "hash": "dc18a5176843",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.useSelection": {
+      "hash": "5f1768786ec7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.medications.verify": {
+      "hash": "05945c0d1847",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.openExam": {
+      "hash": "c0bc85815ff1",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.purpose": {
-      "hash": "b50269a58823",
+      "hash": "0828e5ab517f",
       "status": "machine"
     },
     "visitDocumentation:consultation.review": {
       "hash": "503e3b0167f5",
       "status": "machine"
     },
+    "visitDocumentation:consultation.templates.archive": {
+      "hash": "2083a59398a7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.archived": {
+      "hash": "bdb86505f806",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.conflict": {
+      "hash": "f007e14a6785",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.default": {
+      "hash": "cd156225a9ef",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.discard": {
+      "hash": "5220f15390e9",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.help": {
+      "hash": "4ce246df1a46",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.intro": {
+      "hash": "38c59e47e3a6",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.label": {
+      "hash": "c65e91fbf880",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.loadFailed": {
+      "hash": "2b49d53f1708",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.loading": {
+      "hash": "734ca404e036",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.manage": {
+      "hash": "cb930c763b0b",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.moveDown": {
+      "hash": "118df9bd43d7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.moveUp": {
+      "hash": "bb04b0b2d06c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.options": {
+      "hash": "bc79cdffbaa8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.preview": {
+      "hash": "39d399369a10",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.restore": {
+      "hash": "3d08259f8eea",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.sampleNotice": {
+      "hash": "f969464e2010",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.complaint": {
+      "hash": "0019f19dce67",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationAdministeredMedications": {
+      "hash": "ba931436f2fb",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationAssessment": {
+      "hash": "a8c1fa2ce42c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationCurrentMedications": {
+      "hash": "d0f36ac54bfb",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationHistory": {
+      "hash": "0d4334679d43",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationMedicationPlan": {
+      "hash": "5c8f2b141dc4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.consultationPlan": {
+      "hash": "ada6b80fe834",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.gpDiagnostics": {
+      "hash": "d4fcc5961d54",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.gpPhysicalExam": {
+      "hash": "2d9fa89fdee4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.samples.gpVitals": {
+      "hash": "098611a6165d",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.saveFailed": {
+      "hash": "53c5c31e3b0c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.saved": {
+      "hash": "c632e750ac72",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.setDefault": {
+      "hash": "83fed7cc69a1",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.showArchived": {
+      "hash": "a5c73dbe44b8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.dental-v1": {
+      "hash": "f3d2f78dfaf7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.recheck-v1": {
+      "hash": "1f47d8366934",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.soap-v1": {
+      "hash": "c9efa9457d3b",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.title": {
+      "hash": "1b6ffdcbefb8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.untitled": {
+      "hash": "1be215111c62",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.title": {
       "hash": "537a956d9fb9",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.transcripts": {
+      "hash": "53657123bc77",
       "status": "machine"
     },
     "visitDocumentation:discharge.purpose": {
@@ -125172,6 +128476,14 @@
       "hash": "d960170cd423",
       "status": "machine"
     },
+    "visitDocumentation:fields.consultationAdministeredMedications.helper": {
+      "hash": "cd5e79073e0b",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationAdministeredMedications.label": {
+      "hash": "1fc425522068",
+      "status": "machine"
+    },
     "visitDocumentation:fields.consultationAssessment.helper": {
       "hash": "60dbb79f165c",
       "status": "machine"
@@ -125180,12 +128492,28 @@
       "hash": "7808eeeb45df",
       "status": "machine"
     },
+    "visitDocumentation:fields.consultationCurrentMedications.helper": {
+      "hash": "4f7b29896b01",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationCurrentMedications.label": {
+      "hash": "a2f1d5b4781a",
+      "status": "machine"
+    },
     "visitDocumentation:fields.consultationHistory.helper": {
       "hash": "946db2520f54",
       "status": "machine"
     },
     "visitDocumentation:fields.consultationHistory.label": {
       "hash": "0e7696009337",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationMedicationPlan.helper": {
+      "hash": "3be7fb5f0894",
+      "status": "machine"
+    },
+    "visitDocumentation:fields.consultationMedicationPlan.label": {
+      "hash": "f6bfa6a70c9d",
       "status": "machine"
     },
     "visitDocumentation:fields.consultationPlan.helper": {

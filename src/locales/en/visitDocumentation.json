@@ -1,8 +1,74 @@
 {
   "consultation": {
+    "medications": {
+      "lookup": "Look up a drug",
+      "drugName": "Drug name",
+      "search": "Search labels",
+      "useSelection": "Use selected name",
+      "labelScope": "U.S. veterinary labels from DailyMed. Check the product and strength against the full label.",
+      "searching": "Searching DailyMed…",
+      "searchError": "Could not search DailyMed. Try again or open the search on DailyMed.",
+      "noProducts": "No U.S. veterinary labels found for that name.",
+      "results": "Veterinary products",
+      "externalSearch": "Open search on DailyMed",
+      "fullLabel": "Open full label on DailyMed",
+      "loadingLabel": "Loading product label…",
+      "labelError": "Could not load this label here. Select the product to retry or open the full label.",
+      "strengths": "Labeled strengths",
+      "complexSection": "Read this section on DailyMed to see its full layout and context.",
+      "noSections": "Open the full label to review the product instructions.",
+      "previous": "Previous medication list · {{date}}",
+      "verify": "Check the list and any recorded changes against today’s information before copying.",
+      "copy": "Copy to current medications"
+    },
     "title": "Consultation",
-    "purpose": "Record the reason for the visit, history, assessment, and plan alongside the shared examination and chart.",
-    "review": "Review clinical record"
+    "purpose": "Record the reason for the visit, history, assessment, and plan.",
+    "review": "Review clinical record",
+    "guide": "Consult guide",
+    "openExam": "Open dental exam",
+    "transcripts": "Saved transcripts",
+    "templates": {
+      "label": "Note template",
+      "saved": "{{name}} (saved version)",
+      "manage": "Manage templates",
+      "title": "Consultation templates",
+      "intro": "Choose how sections appear in a consultation note.",
+      "help": "How templates work",
+      "loading": "Loading practice templates…",
+      "loadFailed": "Couldn’t load practice templates. Starter templates are available.",
+      "saveFailed": "Couldn’t save the templates. Please try again.",
+      "conflict": "The practice templates changed elsewhere. Close and reopen the library to load the latest version.",
+      "untitled": "Untitled template",
+      "discard": "Discard template changes?",
+      "default": "Practice default",
+      "archived": "Archived",
+      "showArchived": "Show archived templates",
+      "preview": "Sample preview",
+      "options": "More options",
+      "setDefault": "Set as practice default",
+      "restore": "Restore template",
+      "archive": "Archive template",
+      "sampleNotice": "Fictional example for preview.",
+      "moveUp": "Move {{field}} up",
+      "moveDown": "Move {{field}} down",
+      "starters": {
+        "dental-v1": "Dental consultation",
+        "soap-v1": "General SOAP",
+        "recheck-v1": "Recheck"
+      },
+      "samples": {
+        "consultationCurrentMedications": "The owner reported one ongoing medication.",
+        "consultationAdministeredMedications": "One medication was given during the visit.",
+        "consultationMedicationPlan": "A medication change was discussed pending results.",
+        "complaint": "Follow-up for discomfort while eating.",
+        "consultationHistory": "The owner reports that eating has improved.",
+        "consultationAssessment": "The clinician will reassess after reviewing the recorded findings.",
+        "consultationPlan": "Discuss the next steps with the owner.",
+        "gpVitals": "Weight recorded at this visit.",
+        "gpPhysicalExam": "Examination findings were recorded.",
+        "gpDiagnostics": "Previous imaging is available for review."
+      }
+    }
   },
   "discharge": {
     "title": "Discharge",
@@ -13,6 +79,18 @@
   "treatmentRecap": "Treatment report",
   "noTreatment": "No treatment report recorded.",
   "fields": {
+    "consultationCurrentMedications": {
+      "label": "Current medications",
+      "helper": "List medications already being taken. Note who reported them and any uncertainty."
+    },
+    "consultationAdministeredMedications": {
+      "label": "Medications given during this visit",
+      "helper": "Record what was actually given, with dose, route, and timing when known."
+    },
+    "consultationMedicationPlan": {
+      "label": "Medication changes and prescriptions",
+      "helper": "Record prescriptions and decisions to start, continue, hold, stop, or change medication. Keep tentative plans conditional."
+    },
     "complaint": {
       "label": "Reason for visit",
       "helper": "Shared with the patient details for this visit."

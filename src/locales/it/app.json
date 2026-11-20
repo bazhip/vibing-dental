@@ -492,5 +492,16 @@
       "model": "Modello",
       "day": "Giorno"
     }
+  },
+  "visitTypes": {
+    "choose": "Nuova visita",
+    "dental": "Procedura odontoiatrica",
+    "dentalDescription": "Esame dentale, cartella odontoiatrica, diagnostica per immagini e trattamento.",
+    "consultation": "Visita",
+    "consultationDescription": "Anamnesi, valutazione, piano e dettatura.",
+    "start": "Inizia la visita",
+    "dictateDental": "Detta la visita odontoiatrica",
+    "dentalAdditions": "Ulteriori rilievi odontoiatrici",
+    "dentalAdditionsHelp": "Riveda i risultati diagnostici, i rilievi della TC e le istruzioni di dimissione dello stesso audio."
   }
 }

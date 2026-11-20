@@ -106,14 +106,14 @@ interface VoiceInputButtonProps {
   /** Called with each batch of applied actions so the app can focus the
    *  section + highlight the fields the AI just edited. */
   /** After pending chunks and the final check have landed for this session. */
-  onDictationComplete?: (lng: AppLanguage) => void;
+  onDictationComplete?: (lng: AppLanguage, transcript: string) => void;
   onBusyChange?: (busy: boolean) => void;
-  /** Open the recorder for the chart section on screen. */
+  /** Describe the visit or open its dedicated recorder. */
   contextualDestination?: { label: string; onOpen?: () => void };
   triggerHidden?: boolean;
   onActivity?: (actions: AiAction[], lng: AppLanguage) => void;
   onShowAction?: (section: string) => void;
-  /** Chart section on screen — dictation fills this section. */
+  /** Chart section on screen, used as context for ambiguous findings. */
   activeSection?: string;
   /** Identifies the open chart. When it changes, the dictation (transcript
    *  + activity) starts over so nothing carries into another patient. */
@@ -659,13 +659,13 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     onActivityRef.current?.([a], lng);
   };
 
-  const onStop = React.useCallback(async (_t: string) => {
+  const onStop = React.useCallback(async (transcript: string) => {
     const gen = sessionGenRef.current, key = currentSessionRef.current;
     const lng = voiceRef.current?.lng ?? 'en';
     setFinishing(true);
     try {
       await runFinalCheck(); // drains every pending chunk first
-      if (gen === sessionGenRef.current && key === currentSessionRef.current && canEdit()) onDictationCompleteRef.current?.(lng);
+      if (gen === sessionGenRef.current && key === currentSessionRef.current && canEdit()) onDictationCompleteRef.current?.(lng, transcript);
     } finally {
       if (key === currentSessionRef.current) setFinishing(false);
     }
@@ -690,7 +690,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     window.clearTimeout(quietTimerRef.current);
     window.clearTimeout(maxTimerRef.current);
   }, []);
-  const voice = useVoiceCapture({ onStop, onSegment });
+  const voice = useVoiceCapture({ onStop, onSegment, ignoreStaleStopCallbacks: true });
   voiceRef.current = voice;
   // Keep the screen on while dictating: on a phone, the screen sleeping
   // cuts the mic and ends the session.

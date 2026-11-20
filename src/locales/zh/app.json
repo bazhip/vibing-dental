@@ -490,5 +490,16 @@
       "model": "模型",
       "day": "按天"
     }
+  },
+  "visitTypes": {
+    "choose": "新建就诊",
+    "dental": "牙科操作",
+    "dentalDescription": "牙科检查、牙科图表、影像及治疗。",
+    "consultation": "诊疗",
+    "consultationDescription": "病史、评估、计划与听写。",
+    "start": "开始就诊",
+    "dictateDental": "口述牙科就诊",
+    "dentalAdditions": "其他牙科所见",
+    "dentalAdditionsHelp": "核对同一段录音中的诊断结果、CT 所见和离院说明。"
   }
 }

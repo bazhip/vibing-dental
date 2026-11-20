@@ -146,7 +146,7 @@ describe('VoiceInputButton — stopping', () => {
     expect(deltas).toEqual(['104 GI 2', '105 missing']);
     expect(reviewFullTranscript).toHaveBeenCalledTimes(1);
     expect(vi.mocked(reviewFullTranscript).mock.calls[0][0].transcript).toBe('104 GI 2\n105 missing');
-    expect(finished).toHaveBeenCalledExactlyOnceWith('en');
+    expect(finished).toHaveBeenCalledExactlyOnceWith('en', '104 GI 2 105 missing');
   });
 
   it('a result that returns after switching charts is dropped', async () => {
