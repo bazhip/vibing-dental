@@ -1,0 +1,74 @@
+{
+  "title": "Pacjenci",
+  "search": {
+    "placeholder": "Szukaj",
+    "label": "Szukaj pacjentów według imienia, numeru lub opiekuna",
+    "clear": "Wyczyść wyszukiwanie"
+  },
+  "signIn": "Zaloguj się, aby zobaczyć zapisane karty.",
+  "unnamed": "Pacjent bez imienia",
+  "empty": "Nie ma jeszcze zapisanych kart. Zapisują się automatycznie podczas pracy.",
+  "retry": "Spróbuj ponownie",
+  "loadMore": "Wczytaj więcej",
+  "filter": {
+    "button": "Filtruj i sortuj",
+    "sortBy": "Sortuj według",
+    "sortPatient": "Imię",
+    "sortUpdated": "Ostatnia aktualizacja",
+    "sortRecall": "Termin kontroli",
+    "order": "Kolejność",
+    "patientAsc": "Od A do Z",
+    "patientDesc": "Od Z do A",
+    "updatedDesc": "Od najnowszych",
+    "updatedAsc": "Od najstarszych",
+    "recallAsc": "Od najbliższego terminu",
+    "recallDesc": "Od najpóźniejszego terminu",
+    "species": "Gatunek",
+    "allSpecies": "Wszystkie gatunki",
+    "doctor": "Lekarz",
+    "allDoctors": "Wszyscy lekarze",
+    "due": "Wymaga kontroli",
+    "dueCount": "Wymaga kontroli ({{count}})"
+  },
+  "add": {
+    "button": "Dodaj",
+    "newPatient": "Nowy pacjent"
+  },
+  "row": {
+    "number": "#{{number}}",
+    "visits_one": "{{count}} wizyta",
+    "visits_other": "{{count}} wizyty",
+    "visits_few": "{{count}} wizyty",
+    "visits_many": "{{count}} wizyt",
+    "updated": "Zaktualizowano {{date}}"
+  },
+  "recall": {
+    "overdue": "Po terminie · {{date}}",
+    "today": "Termin dzisiaj",
+    "upcoming": "Kontrola {{date}}"
+  },
+  "actions": {
+    "open": "Otwórz",
+    "delete": "Usuń",
+    "newVisit": "Nowa wizyta"
+  },
+  "confirmDelete": {
+    "title": "Usunąć „{{name}}”?",
+    "titleDated": "Usunąć „{{name}}” ({{date}})?",
+    "confirm": "Usuń wizytę"
+  },
+  "visits": {
+    "undated": "Wizyta bez daty",
+    "byDoctor": "{{doctor}} · Zaktualizowano {{date}}",
+    "updated": "Zaktualizowano {{date}}",
+    "empty": "Brak wizyt.",
+    "historyLabel": "{{name}} · {{date}}"
+  },
+  "rechecks": {
+    "title": "Wizyty kontrolne",
+    "overdue": "Po terminie",
+    "today": "Termin dzisiaj",
+    "empty": "Brak wizyt kontrolnych do przeprowadzenia",
+    "emptyHint": "Pacjenci pojawiają się tutaj w dniu zaplanowanej kontroli."
+  }
+}

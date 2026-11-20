@@ -51,14 +51,14 @@ describe.skipIf(!container)('practice note fields', () => {
       'scripts/pims/bootstrap.sql',
       'supabase/migrations/20261215_consultation_templates.sql',
       'supabase/migrations/20261216_custom_consultation_sections.sql',
-      'supabase/migrations/20261219_discharge_templates.sql',
+      'supabase/migrations/20261222_discharge_templates.sql',
     ]) sql(readFileSync(file, 'utf8'));
     sql(`insert into auth.users values ('${owner}');
       insert into public.practices (id, owner) values ('${practice}', '${owner}');
       insert into public.practice_members (practice_id, user_id, role) values ('${practice}', '${owner}', 'owner');`);
     asOwner(insert(consult.table, { defaultId: 'dental-v1', templates: [] }));
     asOwner(insert(discharge.table, starter(discharge.starterId)));
-    sql(readFileSync('supabase/migrations/20261220_practice_note_fields.sql', 'utf8'));
+    sql(readFileSync('supabase/migrations/20261223_practice_note_fields.sql', 'utf8'));
   }, 20_000);
 
   beforeEach(() => {

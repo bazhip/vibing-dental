@@ -13,10 +13,11 @@ interface Term {
   ro: string;
   zh: string;
   ar: string;
+  pl: string;
   note?: string;
 }
 
-const LANGS = ['en', 'fr', 'de', 'it', 'es', 'pt', 'hu', 'ro', 'zh', 'ar'] as const;
+const LANGS = ['en', 'fr', 'de', 'it', 'es', 'pt', 'hu', 'ro', 'zh', 'ar', 'pl'] as const;
 
 const REQUIRED_IDS = [
   'mobility', 'recession', 'pocket', 'furcation', 'hyperplasia', 'calculus',

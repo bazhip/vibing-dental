@@ -1,0 +1,251 @@
+{
+  "consultation": {
+    "medications": {
+      "lookup": "Wyszukaj lek",
+      "drugName": "Nazwa leku",
+      "search": "Szukaj informacji o lekach",
+      "useSelection": "Użyj wybranej nazwy",
+      "labelScope": "Informacje o lekach weterynaryjnych z amerykańskiej bazy DailyMed. Sprawdź produkt i jego moc w pełnej dokumentacji.",
+      "searching": "Wyszukiwanie w DailyMed…",
+      "searchError": "Nie udało się przeszukać DailyMed. Spróbuj ponownie lub otwórz wyszukiwarkę w DailyMed.",
+      "noProducts": "Nie znaleziono w USA dokumentacji leku weterynaryjnego pod tą nazwą.",
+      "results": "Produkty weterynaryjne",
+      "externalSearch": "Otwórz wyszukiwarkę DailyMed",
+      "fullLabel": "Otwórz pełną dokumentację w DailyMed",
+      "loadingLabel": "Wczytywanie dokumentacji produktu…",
+      "labelError": "Nie udało się wczytać dokumentacji. Wybierz produkt, aby spróbować ponownie, lub otwórz pełną dokumentację.",
+      "strengths": "Dostępne moce leku",
+      "complexSection": "Przeczytaj tę sekcję w DailyMed, aby zobaczyć pełny układ i kontekst.",
+      "noSections": "Otwórz pełną dokumentację, aby sprawdzić instrukcje dotyczące produktu.",
+      "previous": "Poprzednia lista leków · {{date}}",
+      "verify": "Przed skopiowaniem porównaj listę i zapisane zmiany z aktualnymi informacjami.",
+      "copy": "Skopiuj do bieżących leków"
+    },
+    "title": "Konsultacja",
+    "purpose": "Zapisz powód wizyty, wywiad, ocenę i plan.",
+    "review": "Sprawdź dokumentację kliniczną",
+    "guide": "Poradnik konsultacji",
+    "openExam": "Otwórz badanie stomatologiczne",
+    "transcripts": "Zapisane transkrypcje",
+    "templates": {
+      "label": "Szablon notatki",
+      "saved": "{{name}} (zapisana wersja)",
+      "manage": "Zarządzaj szablonami",
+      "title": "Szablony konsultacji",
+      "intro": "Ustal, jak mają wyglądać sekcje notatki z konsultacji.",
+      "help": "Jak działają szablony",
+      "loading": "Wczytywanie szablonów placówki…",
+      "loadFailed": "Nie udało się wczytać szablonów placówki. Dostępne są szablony startowe.",
+      "saveFailed": "Nie udało się zapisać szablonów. Spróbuj ponownie.",
+      "conflict": "Szablony placówki zmieniono w innym miejscu. Zamknij i ponownie otwórz bibliotekę, aby wczytać najnowszą wersję.",
+      "untitled": "Szablon bez nazwy",
+      "discard": "Odrzucić zmiany szablonu?",
+      "default": "Domyślny szablon placówki",
+      "archived": "Zarchiwizowany",
+      "showArchived": "Pokaż zarchiwizowane szablony",
+      "preview": "Podgląd przykładu",
+      "options": "Więcej opcji",
+      "setDefault": "Ustaw jako domyślny dla placówki",
+      "restore": "Przywróć szablon",
+      "archive": "Archiwizuj szablon",
+      "sampleNotice": "Fikcyjny przykład do podglądu.",
+      "moveUp": "Przenieś sekcję „{{field}}” wyżej",
+      "moveDown": "Przenieś sekcję „{{field}}” niżej",
+      "starters": {
+        "dental-v1": "Konsultacja stomatologiczna (pierwotna)",
+        "soap-v1": "Ogólna notatka SOAP",
+        "recheck-v1": "Wizyta kontrolna",
+        "dental-v2": "Konsultacja stomatologiczna"
+      },
+      "samples": {
+        "consultationCurrentMedications": "Opiekun zgłosił stosowanie jednego leku.",
+        "consultationAdministeredMedications": "Podczas wizyty podano jeden lek.",
+        "consultationMedicationPlan": "Omówiono zmianę leczenia farmakologicznego zależnie od wyników.",
+        "complaint": "Wizyta kontrolna z powodu dyskomfortu podczas jedzenia.",
+        "consultationHistory": "Opiekun zgłasza poprawę apetytu.",
+        "consultationAssessment": "Lekarz ponownie oceni stan pacjenta po zapoznaniu się z zapisanymi wynikami.",
+        "consultationPlan": "Omówienie kolejnych kroków z opiekunem.",
+        "gpVitals": "Podczas wizyty zapisano masę ciała.",
+        "gpPhysicalExam": "Zapisano wyniki badania.",
+        "gpDiagnostics": "Można sprawdzić wcześniejsze badania obrazowe."
+      },
+      "builder": {
+        "addSection": "Dodaj sekcję",
+        "chooseSection": "Wybierz sekcję",
+        "customSection": "Własna sekcja",
+        "sectionLabel": "Etykieta sekcji",
+        "removeSection": "Usuń sekcję",
+        "guidance": "Wskazówki dotyczące pola",
+        "example": "Przykładowe sformułowanie",
+        "suggestedText": "Sugerowana treść",
+        "useSuggested": "Użyj sugerowanej treści",
+        "format": "Format tekstu",
+        "paragraph": "Akapit",
+        "bullets": "Lista punktowana",
+        "dictation": "Ustawienia dyktowania",
+        "instructions": "Instrukcje dotyczące zapisu",
+        "detail": "Poziom szczegółowości",
+        "standard": "Standardowy",
+        "concise": "Zwięzły",
+        "detailed": "Szczegółowy",
+        "earlier": "Przenieś szablon wyżej",
+        "later": "Przenieś szablon niżej",
+        "importTitle": "Utwórz z przykładowej notatki",
+        "importHelp": "Wklej zanonimizowany przykład z nagłówkami Markdown lub etykietami zakończonymi dwukropkiem. Sprawdź nagłówki przed zapisaniem szablonu.",
+        "createTemplate": "Utwórz szablon",
+        "subsection": "Użyj jako podsekcji",
+        "libraryTooLarge": "Biblioteka szablonów jest za duża. Skróć przykłady, sugerowane treści lub instrukcje dotyczące zapisu.",
+        "searchSections": "Szukaj sekcji",
+        "practiceFields": "Pola placówki",
+        "builtInFields": "Pola wbudowane",
+        "createField": "Utwórz pole",
+        "manageFields": "Zarządzaj polami placówki",
+        "noFields": "Brak pasujących sekcji",
+        "alreadyAdded": "Już dodano",
+        "dragField": "Zmień kolejność pola „{{field}}”",
+        "removeNamed": "Usuń „{{field}}”",
+        "fieldRemoved": "Usunięto pole „{{field}}”",
+        "undoRemove": "Cofnij",
+        "archiveField": "Archiwizuj pole",
+        "restoreField": "Przywróć pole",
+        "fieldsFromOtherTemplates": "Pola z innych szablonów",
+        "sectionMoved": "Pole „{{field}}” przeniesiono na pozycję {{position}}",
+        "fieldName": "Nazwa pola",
+        "noPracticeFields": "Brak pól placówki"
+      }
+    },
+    "dental": {
+      "awakeOralExam": {
+        "label": "Badanie jamy ustnej bez znieczulenia",
+        "helper": "Zapisz widoczne zmiany i obszary, których nie udało się ocenić u przytomnego pacjenta.",
+        "sample": "Widoczne niewielkie zaczerwienienie dziąseł. Nie udało się ocenić tylnej części jamy ustnej."
+      },
+      "preanesthetic": {
+        "label": "Ocena przed znieczuleniem",
+        "helper": "Zapisz istotne czynniki ryzyka, problemy podczas poprzednich znieczuleń i omówione badania lub konsultacje.",
+        "sample": "Zapoznano się z historią znieczuleń. Omówiono badania przed znieczuleniem."
+      },
+      "clientDiscussion": {
+        "label": "Rozmowa z opiekunem i decyzje",
+        "helper": "Zapisz dostępne opcje, szacowany koszt, stan zgody i świadczenia odroczone lub odrzucone. Zaznacz, które decyzje zależą od dalszej oceny.",
+        "sample": "Omówiono wstępny kosztorys. Opiekun podejmie decyzję po jego sprawdzeniu."
+      },
+      "homeCare": {
+        "label": "Domowa pielęgnacja zębów",
+        "helper": "Zapisz omówione zalecenia domowe i ewentualne ograniczenia w ich stosowaniu.",
+        "sample": "Opiekun zapytał o sposoby domowej pielęgnacji zębów."
+      },
+      "followUp": {
+        "label": "Dalsze postępowanie i terminy",
+        "helper": "Zapisz uzgodniony kolejny krok, termin i powody ewentualnego wcześniejszego kontaktu z placówką.",
+        "sample": "Opiekun skontaktuje się z placówką, aby umówić wizytę."
+      }
+    }
+  },
+  "discharge": {
+    "title": "Wypis",
+    "purpose": "Zapisz leki, zalecenia dotyczące opieki i dalsze postępowanie omówione podczas wizyty.",
+    "review": "Sprawdź raport dla opiekuna",
+    "templates": {
+      "title": "Szablony wypisu",
+      "starter": "Standardowy wypis",
+      "help": "Jak działają szablony wypisu",
+      "ownerReport": "Uwzględnij w raporcie dla opiekuna",
+      "intro": "Ustal, jak mają wyglądać sekcje notatki wypisowej.",
+      "samples": {
+        "dischargeMedications": "Z opiekunem omówiono zalecenia dotyczące leków.",
+        "dischargeInstructions": "Podawać miękką karmę zgodnie z ustaleniami.",
+        "dischargeFollowUp": "Omówiono wizytę kontrolną."
+      },
+      "recovery": "Rekonwalescencja po zabiegu stomatologicznym",
+      "activity": {
+        "label": "Aktywność",
+        "helper": "Proszę zapisać omówione ograniczenia aktywności.",
+        "sample": "Omówiono ograniczenia aktywności."
+      },
+      "deleteMessage": "Po zapisaniu szablon zniknie z listy placówki. Zapisane wizyty zachowają swój szablon i treść.",
+      "dragTemplate": "Zmień kolejność szablonu „{{template}}”",
+      "templateMoved": "Szablon „{{template}}” jest teraz na pozycji {{position}}"
+    }
+  },
+  "sourceNotice": "Zapisana treść pozostaje w oryginalnym brzmieniu. Przed udostępnieniem sprawdź język komunikacji z opiekunem.",
+  "treatmentRecap": "Raport z leczenia",
+  "noTreatment": "Brak zapisanego raportu z leczenia.",
+  "fields": {
+    "consultationCurrentMedications": {
+      "label": "Aktualnie stosowane leki",
+      "helper": "Wypisz aktualnie stosowane leki. Zaznacz, kto przekazał informacje, i wskaż ewentualne wątpliwości."
+    },
+    "consultationAdministeredMedications": {
+      "label": "Leki podane podczas wizyty",
+      "helper": "Zapisz, które leki faktycznie podano. Uwzględnij dawkę, drogę i czas podania, jeśli są znane."
+    },
+    "consultationMedicationPlan": {
+      "label": "Zmiany leczenia farmakologicznego i recepty",
+      "helper": "Zapisz recepty oraz decyzje o rozpoczęciu, kontynuowaniu, wstrzymaniu, zakończeniu lub zmianie leczenia. Plany wstępne zapisz z warunkami ich realizacji."
+    },
+    "complaint": {
+      "label": "Powód wizyty",
+      "helper": "To pole jest wspólne z danymi pacjenta na tej wizycie."
+    },
+    "consultationHistory": {
+      "label": "Wywiad",
+      "helper": "Zapisz uzyskane informacje z wywiadu i istotne okoliczności."
+    },
+    "consultationAssessment": {
+      "label": "Ocena",
+      "helper": "Zapisz swoją ocenę, w tym wszelkie wątpliwości."
+    },
+    "consultationPlan": {
+      "label": "Plan",
+      "helper": "Zapisz uzgodniony plan. Wyraźnie rozróżnij zaplanowane i wykonane czynności."
+    },
+    "dischargeMedications": {
+      "label": "Leki",
+      "helper": "Wpisz jeden lek w wierszu. Podaj nazwę, dawkę, sposób i pory podawania oraz czas leczenia."
+    },
+    "dischargeInstructions": {
+      "label": "Zalecenia",
+      "helper": "Opisz opiekę domową, ewentualne ograniczenia aktywności lub żywienia oraz sytuacje wymagające kontaktu z placówką."
+    },
+    "dischargeFollowUp": {
+      "label": "Dalsze postępowanie",
+      "helper": "Podaj kolejne kroki i terminy. Uzgodniony termin kontroli wpisz w polu Termin kontroli w sekcji Pacjent."
+    },
+    "gpVitals": {
+      "label": "Parametry życiowe",
+      "helper": "Zapisz zmierzone wartości wraz z jednostkami i zaznacz ewentualne wątpliwości."
+    },
+    "gpPhysicalExam": {
+      "label": "Badanie fizykalne",
+      "helper": "Zapisz wyłącznie zaobserwowane lub zgłoszone wyniki badania."
+    },
+    "gpDiagnostics": {
+      "label": "Diagnostyka",
+      "helper": "Zapisz wyniki diagnostyczne i oczekujące badania. Zaznacz, co pozostaje niepewne."
+    }
+  },
+  "gp-exam": {
+    "title": "Badanie ogólne",
+    "purpose": "Zapisz parametry życiowe, wyniki badania fizykalnego i ustalenia diagnostyczne z tej wizyty.",
+    "review": "Sprawdź dokumentację kliniczną"
+  },
+  "imaging": {
+    "templates": {
+      "title": "Szablony raportów obrazowania",
+      "starter": "Raport standardowy",
+      "intro": "Twórz konspekty raportów RTG i TK.",
+      "label": "Szablon raportu",
+      "insert": "Wstaw konspekt",
+      "inserted": "Wstawiono konspekt raportu.",
+      "tooLong": "Wstawienie konspektu przekroczyłoby limit długości raportu.",
+      "settings": "Ustawienia obrazowania i PDF",
+      "help": "Jak działają szablony obrazowania"
+    },
+    "sections": {
+      "technique": "Technika badania",
+      "findings": "Wyniki badania",
+      "impression": "Wnioski"
+    }
+  }
+}

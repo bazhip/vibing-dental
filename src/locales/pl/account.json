@@ -1,0 +1,119 @@
+{
+  "title": "Ustawienia konta",
+  "doctor": {
+    "heading": "Imię i nazwisko lekarza",
+    "blurb": "Wyświetla się pod logo na każdej utworzonej karcie.",
+    "placeholder": "np. lek. wet. Anna Kowalska",
+    "save": "Zapisz dane lekarza",
+    "saving": "Zapisywanie…",
+    "saved": "Zapisano dane lekarza.",
+    "saveFailed": "Nie udało się zapisać danych lekarza."
+  },
+  "language": {
+    "heading": "Język"
+  },
+  "email": {
+    "heading": "E-mail",
+    "label": "Adres e-mail do logowania",
+    "change": "Zmień adres e-mail",
+    "sending": "Wysyłanie…",
+    "invalid": "Wprowadź prawidłowy adres e-mail.",
+    "sent": "Wysłano wiadomości z potwierdzeniem.",
+    "changeFailed": "Nie udało się zmienić adresu e-mail.",
+    "pending": "Sprawdź pocztę i potwierdź zmianę na obu adresach: {{current}} i {{requested}}. Do tego czasu loguj się za pomocą {{current}}."
+  },
+  "password": {
+    "heading": "Hasło",
+    "newLabel": "Nowe hasło",
+    "confirmLabel": "Potwierdź nowe hasło",
+    "placeholder": "Co najmniej {{min}} znaków",
+    "hideAll": "Ukryj hasła",
+    "showAll": "Pokaż hasła",
+    "hide": "Ukryj",
+    "show": "Pokaż",
+    "hintShort": "Co najmniej {{min}} znaków · {{current}}/{{min}}",
+    "hintMismatch": "Hasła jeszcze się nie zgadzają.",
+    "update": "Zmień hasło",
+    "updating": "Aktualizowanie…",
+    "tooShort": "Użyj co najmniej {{min}} znaków.",
+    "mismatch": "Hasła się nie zgadzają.",
+    "updated": "Zmieniono hasło.",
+    "updateFailed": "Nie udało się zmienić hasła."
+  },
+  "delete": {
+    "heading": "Usuń konto",
+    "blurb": "Trwale usuwa konto, prywatne karty i ich zdjęcia. Karty udostępnione placówce pozostają w tej placówce.",
+    "button": "Usuń konto…"
+  },
+  "done": "Gotowe",
+  "unsaved": {
+    "title": "Odrzucić niezapisane zmiany?",
+    "message_one": "Nie zapisano zmiany w polu {{list}}.",
+    "message_other": "Nie zapisano zmian w polach: {{list}}.",
+    "message_few": "Nie zapisano zmian w polach: {{list}}.",
+    "message_many": "Nie zapisano zmian w polach: {{list}}.",
+    "confirm": "Odrzuć",
+    "cancel": "Kontynuuj edycję",
+    "field": {
+      "doctor": "dane lekarza",
+      "email": "e-mail",
+      "password": "hasło"
+    }
+  },
+  "deletion": {
+    "account": {
+      "confirmTitle": "Usunąć konto?",
+      "confirmMessage": "Spowoduje to trwałe usunięcie konta, prywatnych kart oraz ich zdjęć i radiogramów. Karty udostępnione placówce pozostaną w tej placówce. Jeśli jesteś jedyną osobą w placówce, zostanie ona usunięta razem ze wszystkimi jej kartami, a subskrypcja zostanie anulowana. Tej operacji nie można cofnąć.",
+      "continue": "Kontynuuj",
+      "promptTitle": "Potwierdź usunięcie konta",
+      "promptMessage": "Wpisz swój adres e-mail ({{email}}), aby trwale usunąć konto.",
+      "emailLabel": "E-mail",
+      "confirmButton": "Usuń moje konto",
+      "mismatch": "Wpisz dokładny adres e-mail.",
+      "failed": "Nie udało się usunąć konta.",
+      "done": "Konto zostało usunięte."
+    },
+    "practice": {
+      "confirmTitle": "Usunąć „{{name}}”?",
+      "confirmTitleUnnamed": "Usunąć tę placówkę?",
+      "confirmMessage": "Spowoduje to trwałe usunięcie placówki i wszystkich udostępnionych jej kart, również kart utworzonych przez członków zespołu, wraz ze zdjęciami i radiogramami. Subskrypcja zostanie natychmiast anulowana. Członkowie zespołu zachowają swoje konta i prywatne karty. Tej operacji nie można cofnąć.",
+      "continue": "Kontynuuj",
+      "promptTitle": "Potwierdź usunięcie placówki",
+      "promptMessage": "Wpisz nazwę placówki ({{name}}), aby trwale ją usunąć.",
+      "promptMessageUnnamed": "Wpisz DELETE, aby trwale usunąć tę placówkę.",
+      "nameLabel": "Nazwa placówki",
+      "confirmationLabel": "Potwierdzenie",
+      "confirmButton": "Usuń placówkę",
+      "mismatch": "Wpisz dokładną nazwę placówki.",
+      "mismatchUnnamed": "Wpisz DELETE.",
+      "failed": "Nie udało się usunąć placówki.",
+      "done": "Placówka została usunięta."
+    }
+  },
+  "auth": {
+    "apple": {
+      "continue": "Kontynuuj z Apple",
+      "signUp": "Zarejestruj się przez Apple",
+      "busy": "Logowanie przez Apple…",
+      "failed": "Nie udało się zalogować przez Apple.",
+      "hint": "Masz już konto lub zaproszenie? Zaloguj się za pomocą adresu e-mail."
+    },
+    "signUpOnWeb": "Nie masz jeszcze konta ToothOps? Zarejestruj się na toothops.app",
+    "incomplete": "Logowanie nie zostało ukończone. Spróbuj ponownie."
+  },
+  "plan": {
+    "inactive": {
+      "title": "Twój plan jest nieaktywny",
+      "manage": "Zarządzaj nim na stronie toothops.app."
+    }
+  },
+  "lock": {
+    "title": "ToothOps jest zablokowany",
+    "prompt": "Odblokuj aplikację, aby uzyskać dostęp do chronionej dokumentacji pacjentów.",
+    "unavailable": "Face ID i kod blokady są niedostępne na tym urządzeniu. Aby odblokować ToothOps, ustaw kod w aplikacji Ustawienia i stuknij Spróbuj ponownie. Możesz też się wylogować.",
+    "reason": "Odblokuj ToothOps"
+  },
+  "team": {
+    "seatLimit": "Ta placówka osiągnęła limit członków zespołu."
+  }
+}

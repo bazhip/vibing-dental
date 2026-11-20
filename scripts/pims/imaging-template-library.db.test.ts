@@ -50,9 +50,9 @@ describe.skipIf(!container)('practice Imaging template libraries', () => {
       'scripts/pims/bootstrap.sql',
       'supabase/migrations/20261215_consultation_templates.sql',
       'supabase/migrations/20261216_custom_consultation_sections.sql',
-      'supabase/migrations/20261219_discharge_templates.sql',
-      'supabase/migrations/20261220_practice_note_fields.sql',
-      'supabase/migrations/20261221_imaging_template_library.sql',
+      'supabase/migrations/20261222_discharge_templates.sql',
+      'supabase/migrations/20261223_practice_note_fields.sql',
+      'supabase/migrations/20261224_imaging_template_library.sql',
     ]) sql(readFileSync(file, 'utf8'));
     sql(`insert into auth.users values ('${owner}'), ('${coOwner}'), ('${member}'), ('${outsider}');
       insert into public.practices (id, owner) values ('${practice}', '${owner}');

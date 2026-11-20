@@ -1,0 +1,47 @@
+{
+  "settings": {
+    "aria": "Przypomnienia o kontroli",
+    "title": "Przypomnienia o kontroli",
+    "blurb": "Wyślij e-mail do opiekuna, gdy zbliża się termin wizyty kontrolnej. Dostępne pola:",
+    "blurbTail": "Przypomnienie dla jednego pacjenta można wysłać z sekcji <strong>Pacjenci</strong>.",
+    "loading": "Wczytywanie…",
+    "notSetUp": "Konfigurowanie placówki. Odśwież stronę za chwilę.",
+    "ownerOnly": "Tylko właściciel placówki może zmienić szablon przypomnienia.",
+    "auto": "Wysyłaj e-maile do opiekunów automatycznie",
+    "send": "Wyślij",
+    "lead": {
+      "onDate": "W dniu kontroli",
+      "days3": "3 dni wcześniej",
+      "week1": "1 tydzień wcześniej",
+      "weeks2": "2 tygodnie wcześniej",
+      "month1": "1 miesiąc wcześniej"
+    },
+    "subject": "Temat",
+    "message": "Wiadomość",
+    "done": "Gotowe",
+    "saving": "Zapisywanie…",
+    "saved": "Zapisano ustawienia przypomnień.",
+    "saveFailed": "Nie udało się zapisać ustawień przypomnień.",
+    "noPractice": "Brak placówki, dla której można zapisać ustawienia.",
+    "discard": {
+      "title": "Odrzucić zmiany przypomnień?",
+      "message": "Zmiany w ustawieniach przypomnień nie zostały zapisane.",
+      "confirm": "Odrzuć",
+      "cancel": "Kontynuuj edycję"
+    }
+  },
+  "composer": {
+    "aria": "Wyślij przypomnienie o kontroli",
+    "title": "Wyślij przypomnienie o kontroli",
+    "loading": "Wczytywanie…",
+    "to": "Do",
+    "toTitle": "Przypomnienia są wysyłane na adres e-mail opiekuna zapisany w karcie. Adres można zmienić w karcie.",
+    "toHint": "Przypomnienie trafi na adres opiekuna z tej karty. Aby podać inny adres, zmień go w karcie.",
+    "subject": "Temat",
+    "message": "Wiadomość",
+    "sent": "Wysłano przypomnienie.",
+    "sendFailed": "Nie udało się wysłać przypomnienia.",
+    "send": "Wyślij przypomnienie",
+    "sending": "Wysyłanie…"
+  }
+}

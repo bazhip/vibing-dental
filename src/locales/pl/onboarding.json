@@ -1,0 +1,121 @@
+{
+  "walkthrough": {
+    "aria": "Pierwsze kroki",
+    "progress": "{{current}} z {{total}}",
+    "skip": "Pomiń",
+    "back": "Wstecz",
+    "next": "Dalej",
+    "finish": "Rozpocznij pracę",
+    "steps": {
+      "firstPatient": {
+        "title": "Wprowadź dane pacjenta",
+        "body": "Proszę wpisać imię pacjenta i wybrać gatunek oraz rodzaj uzębienia. W razie potrzeby można dodać dane opiekuna oraz wizyty."
+      },
+      "firstFinding": {
+        "title": "Zapisz wynik badania",
+        "body": "Proszę wybrać ząb i wpisać pomiar lub wynik badania. Zmiany zapisują się automatycznie. Więcej szczegółów można dodać po zakończeniu przewodnika."
+      },
+      "firstOutput": {
+        "title": "Sprawdź dokument",
+        "body": "Przed udostępnieniem proszę otworzyć podgląd PDF i sprawdzić informacje o wizycie. Pełny przewodnik po obszarze roboczym jest w menu Pomoc → Pierwsze kroki."
+      },
+      "welcome": {
+        "title": "Witamy w ToothOps",
+        "body": "Krótki przewodnik po obszarze roboczym. Można do niego wrócić w menu Pomoc → Pierwsze kroki."
+      },
+      "sections": {
+        "title": "Cała wizyta w jednym miejscu",
+        "body": "Sekcje prowadzą od pierwszego badania do raportu z leczenia. Można przejść przez nie po kolei lub od razu otworzyć potrzebną sekcję. Karta zapisuje się automatycznie."
+      },
+      "patient": {
+        "title": "Pacjent i opiekun",
+        "body": "Proszę zacząć od imienia pacjenta. Dane opiekuna można uzupełnić później. Wybór gatunku i rodzaju uzębienia automatycznie dostosuje układ zębów."
+      },
+      "species": {
+        "title": "Gatunek i uzębienie",
+        "body": "Układ zębów dostosowuje się do gatunku i rodzaju uzębienia. Konia i królika można znaleźć w kategorii „Inne”."
+      },
+      "grid": {
+        "title": "Dokumentacja w wybranym układzie",
+        "body": "Tabela pokazuje całą jamę ustną i pozwala wpisywać pomiary oraz oceny. Tab przechodzi do kolejnego pola w wierszu, a Enter do kolejnego wiersza. Można zaznaczyć kilka numerów zębów, aby nadać im tę samą ocenę."
+      },
+      "diagrams": {
+        "title": "Schematy",
+        "body": "Kliknięcie zęba pozwala go oznaczyć, dodać komentarz lub rysunek. Obok schematów Rozpoznanie i Zabieg można wyszukiwać kody AVDC. Skrót ⌘Z cofa zmianę."
+      },
+      "codes": {
+        "title": "Wykaz kodów",
+        "body": "Można tu przeszukiwać pełny zestaw kodów AVDC. Wykaz pozostaje widoczny podczas przewijania schematu."
+      },
+      "treatment": {
+        "title": "Raport z leczenia i szablony",
+        "body": "Można napisać raport lub wstawić zapisany szablon z listy. Nowe szablony można zapisać do ponownego użycia."
+      },
+      "library": {
+        "title": "Pacjenci",
+        "body": "Można wyszukiwać pacjentów i otwierać ich wizyty. Przycisk „Nowy pacjent” otwiera pustą kartę. Menu działań wizyty pozwala rozpocząć następną wizytę obecnego pacjenta lub wyświetlić historię wersji."
+      },
+      "dictate": {
+        "title": "Dyktowanie",
+        "body": "Proszę wybrać „Dyktuj” na dowolnej stronie i opowiedzieć o wynikach badania. Wyniki trafią do odpowiednich pól, a panel pokaże każdą zmianę i pozwoli ją cofnąć."
+      },
+      "settings": {
+        "title": "Ustawienia placówki",
+        "body": "Tutaj można zarządzać placówką, zespołem, szablonami i przypomnieniami. Ustawienia osobiste są w sekcji „Twoje konto”, a poradniki i opinie w menu „Pomoc”."
+      },
+      "pdf": {
+        "title": "Podgląd i pobieranie PDF",
+        "body": "W dowolnej chwili można przygotować kartę PDF z logo placówki, gotową do przekazania opiekunowi."
+      },
+      "byTooth": {
+        "title": "Jeden ząb na raz",
+        "body": "Proszę otworzyć widok poszczególnych zębów i kliknąć ząb na schemacie. W jednym miejscu można zapisać jego pomiary, rozpoznanie i zabieg, a potem przejść do następnego zęba. Oba widoki korzystają z tych samych danych."
+      },
+      "customize": {
+        "title": "Dostosuj widok",
+        "body": "Przycisk „Dostosuj” znajduje się w sekcjach Pacjent, Badanie, Znieczulenie, Karta, Rozpoznanie i Obrazy. Można wybrać kolumny, sposób zapisu głębokości kieszonek dla zęba, korzenia lub miejsca, szybkie kody i inne ustawienia. Po zalogowaniu preferencje są dostępne na każdym urządzeniu."
+      },
+      "images": {
+        "title": "Zdjęcia i radiogramy",
+        "body": "Tutaj można przechowywać obrazy z wizyty i opisywać wyniki radiologiczne. Można także wybrać obrazy do umieszczenia w karcie PDF."
+      },
+      "ownerReport": {
+        "title": "Raport do zabrania do domu",
+        "body": "Raport dla opiekuna zawiera przystępne podsumowanie i zalecenia opieki domowej. Przed udostępnieniem proszę go sprawdzić. W sekcji „Dostosuj” można zmienić układ, treść i język dla opiekuna."
+      }
+    }
+  },
+  "finishSetup": {
+    "title": "Zakończ konfigurację",
+    "both": "Nazwa placówki oraz imię i nazwisko lekarza pojawią się na każdej drukowanej karcie.",
+    "practiceOnly": "Nazwa placówki pojawi się na każdej drukowanej karcie.",
+    "doctorOnly": "Imię i nazwisko lekarza pojawią się na każdej drukowanej karcie.",
+    "practiceName": "Nazwa placówki",
+    "doctorName": "Imię i nazwisko lekarza",
+    "doctorPlaceholder": "np. lek. wet. Joanna Kowalska",
+    "logoOptional": "Logo placówki (opcjonalnie)",
+    "logoNamed": "Logo: {{name}}",
+    "logoHint": "Logo drukuje się u góry kart. Obsługiwane formaty to PNG, JPG i WebP.",
+    "later": "Później",
+    "save": "Zapisz",
+    "saving": "Zapisywanie…",
+    "namesNeeded": "Obie nazwy są wymagane, ponieważ pojawiają się na kartach.",
+    "logoFailed": "Zapisano nazwę placówki i dane lekarza. Nie udało się przesłać logo. Można je dodać później w ustawieniach placówki.",
+    "allSet": "Konfiguracja zakończona.",
+    "saveFailed": "Nie udało się zapisać."
+  },
+  "join": {
+    "title": "Dołączyć do placówki {{practice}}?",
+    "invitation": "Zaproszenie do placówki",
+    "checking": "Sprawdzanie zaproszenia…",
+    "thisPractice": "ta placówka",
+    "alreadyMember": "Konto już należy do placówki {{practice}}.",
+    "leaves": "Dołączenie spowoduje opuszczenie placówki {{practice}} i utratę dostępu do jej kart.",
+    "invited": "Otrzymano zaproszenie do placówki <strong>{{practice}}</strong> w ToothOps. Członkowie współdzielą karty, szablony raportów i listę kontroli. Nowo zapisane karty będą dostępne dla zespołu.",
+    "shareExisting": "Udostępnij także wcześniej utworzone karty",
+    "close": "Zamknij",
+    "notNow": "Nie teraz",
+    "joining": "Dołączanie…",
+    "joinButton": "Dołącz do placówki {{practice}}"
+  }
+}

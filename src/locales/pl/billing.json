@@ -1,0 +1,114 @@
+{
+  "features": {
+    "fullCharting": "Pełna dokumentacja stomatologiczna, schematy i pliki PDF z logo",
+    "photos_one": "Zdjęcia i radiogramy · {{count}} obraz na kartę",
+    "photos_other": "Zdjęcia i radiogramy · {{count}} obrazu na kartę",
+    "visitHistory": "Historia wizyt i przypomnienia o kontrolach",
+    "users_one": "{{count}} użytkownik",
+    "users_other": "{{count}} użytkownika",
+    "everythingIn": "Wszystkie funkcje planu {{plan}}",
+    "aiAutofill": "Uzupełnianie karty przez AI podczas dyktowania",
+    "imagesPerChart_one": "{{count}} obraz na kartę",
+    "imagesPerChart_other": "{{count}} obrazu na kartę",
+    "teamMembers_one": "Do {{count}} członka zespołu",
+    "teamMembers_other": "Do {{count}} członka zespołu",
+    "sharedCharts": "Wspólne karty, szablony i logo placówki",
+    "teamRoles": "Role w zespole i przekazanie własności",
+    "aiAutofillTeam": "Uzupełnianie karty przez AI dla całego zespołu",
+    "photos_few": "Zdjęcia i radiogramy · {{count}} obrazy na kartę",
+    "photos_many": "Zdjęcia i radiogramy · {{count}} obrazów na kartę",
+    "users_few": "{{count}} użytkowników",
+    "users_many": "{{count}} użytkowników",
+    "imagesPerChart_few": "{{count}} obrazy na kartę",
+    "imagesPerChart_many": "{{count}} obrazów na kartę",
+    "teamMembers_few": "Do {{count}} członków zespołu",
+    "teamMembers_many": "Do {{count}} członków zespołu"
+  },
+  "plans": {
+    "individual_basic": {
+      "name": "Indywidualny",
+      "tagline": "Dla jednej osoby"
+    },
+    "individual_pro": {
+      "name": "Indywidualny Pro",
+      "tagline": "Dla jednej osoby z dyktowaniem AI"
+    },
+    "practice_basic": {
+      "name": "Placówka",
+      "tagline": "Wspólna dokumentacja całego zespołu"
+    },
+    "practice_pro": {
+      "name": "Placówka Pro",
+      "tagline": "Dokumentacja głosowa dla całej placówki"
+    }
+  },
+  "perMonth": "/mies.",
+  "gate": {
+    "settingUpTitle": "Konfigurowanie subskrypcji…",
+    "settingUpSub": "Płatność potwierdzona. Trwa odblokowywanie konta.",
+    "loading": "Wczytywanie",
+    "checkFailedTitle": "Nie udało się sprawdzić subskrypcji",
+    "checkFailed": "Nie udało się sprawdzić subskrypcji.",
+    "tryAgain": "Spróbuj ponownie",
+    "memberTitle": "Placówka {{practice}} potrzebuje subskrypcji",
+    "yourPractice": "Państwa placówka",
+    "memberNone": "Subskrypcja placówki nie jest jeszcze skonfigurowana. Proszę poprosić o skonfigurowanie płatności osobę zarządzającą placówką (<strong>{{owner}}</strong>). Po konfiguracji dostęp zostanie przywrócony.",
+    "yourOwner": "właściciel placówki",
+    "opening": "Otwieranie…",
+    "chooseTitle": "Wybierz plan",
+    "trialSub": "Każdy plan zaczyna się od bezpłatnego okresu próbnego ({{days}} dni). Można zrezygnować w dowolnej chwili.",
+    "openingCheckout": "Otwieranie płatności…",
+    "startTrial": "Rozpocznij bezpłatny okres próbny ({{days}} dni), potem {{price}}/mies.",
+    "pickPlan": "Wybierz plan powyżej",
+    "checkoutFailed": "Nie udało się rozpocząć płatności.",
+    "larger": "Ponad 5 osób w zespole lub kilka placówek? <a>Prosimy o kontakt</a> w sprawie indywidualnej wyceny.",
+    "slowConfirm": "Płatność przyjęto, ale potwierdzenie trwa dłużej niż zwykle. Proszę odświeżyć za minutę lub skontaktować się z nami, jeśli problem się powtarza."
+  },
+  "settings": {
+    "title": "Rozliczenia",
+    "loading": "Wczytywanie rozliczeń…",
+    "loadFailed": "Nie udało się wczytać rozliczeń.",
+    "retry": "Spróbuj ponownie",
+    "comped": "Placówka ma bezpłatny dostęp i nie potrzebuje subskrypcji.",
+    "lapsed": "Subskrypcja wygasła. Placówka korzysta teraz z planu bezpłatnego. Wszystkie karty zostały zachowane.",
+    "resubscribe": "Odnów subskrypcję",
+    "freeBeta": "<strong>Bezpłatna wersja beta</strong> · Liczba miejsc: {{seats}} · Obrazy na kartę: {{images}} · Dyktowanie AI w cenie",
+    "noCard": "W wersji beta karta płatnicza nie jest wymagana.",
+    "seatsInUse": "Zajęte miejsca: {{used}} z {{seats}}.",
+    "needMoreBeta": "Potrzeba więcej niż {{seats}} miejsc? <a>Prosimy o kontakt</a>.",
+    "history": "Historia rozliczeń",
+    "noPlan": "Brak planu",
+    "seatsUsed": "{{used}}/{{seats}} miejsc",
+    "changePlan": "Zmień plan",
+    "planOption": "{{name}} · {{price}}/mies.",
+    "manage": "Zarządzaj rozliczeniami",
+    "hintStripe": "Przycisk zarządzania rozliczeniami otwiera Stripe, gdzie można zmienić kartę, pobrać faktury i zrezygnować.",
+    "hintNoStripe": "Gdy dostęp będzie wymagał planu, poprosimy o jego wybranie.",
+    "needMore": "Potrzeba więcej niż 5 miejsc? <a>Prosimy o kontakt</a>.",
+    "managedBy": "Za rozliczenia odpowiada {{owner}}.",
+    "theOwner": "właściciel placówki",
+    "planUpdated": "Zaktualizowano plan.",
+    "switchTitle": "Zmienić plan na {{plan}}?",
+    "switchMessage": "{{price}} miesięcznie. Różnicę rozliczymy proporcjonalnie na następnej fakturze.",
+    "switchConfirm": "Zmień plan",
+    "changeFailed": "Nie udało się zmienić planu.",
+    "portalFailed": "Nie udało się otworzyć portalu rozliczeń.",
+    "status": {
+      "trialing": "okres próbny",
+      "trialingDate": "okres próbny · pierwsza płatność {{date}}",
+      "active": "aktywna",
+      "activeDate": "aktywna · odnowienie {{date}}",
+      "past_due": "płatność nie powiodła się · zaktualizuj kartę",
+      "none": "brak subskrypcji",
+      "canceled": "anulowana",
+      "incomplete": "nieukończona",
+      "incomplete_expired": "nieukończona i wygasła",
+      "unpaid": "nieopłacona",
+      "paused": "wstrzymana"
+    }
+  },
+  "errors": {
+    "checkoutLink": "Stripe nie zwrócił linku do płatności.",
+    "portalLink": "Stripe nie zwrócił linku do portalu."
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "gotIt": "Rozumiem",
+  "groups": {
+    "dictation": "Dyktowanie",
+    "charting": "Dokumentacja",
+    "records": "Karty",
+    "ownerReport": "Raport dla opiekuna",
+    "everyday": "Codzienna praca"
+  },
+  "intro": "Wprowadziliśmy wiele zmian, w większości na podstawie Państwa uwag. Dziękujemy!",
+  "title": "Co nowego w ToothOps",
+  "dictateAnywhere": {
+    "title": "Dyktowanie z dowolnej strony",
+    "body": "Przycisk nazywa się teraz 🎤 Dyktuj. Wyniki można dyktować z dowolnej strony, a każdy trafi do odpowiedniego pola."
+  },
+  "finalCheck": {
+    "title": "Dokładniejsze wyniki dzięki końcowej weryfikacji",
+    "body": "Aplikacja wychwytuje wyniki rozdzielone przerwami i uwzględnia poprawki. Po wybraniu „Zatrzymaj” ponownie analizuje całe dyktowanie i pokazuje niepewne wpisy w sekcji „Do sprawdzenia”."
+  },
+  "phones": {
+    "title": "Wygodniej na telefonie",
+    "body": "Dyktowanie otwiera się w widoku pełnoekranowym i zapobiega wygaszeniu ekranu."
+  },
+  "understandsMore": {
+    "title": "Więcej rozpoznawanych informacji",
+    "body": "„GE 3” oznacza powiększenie dziąsła. Aplikacja rozpoznaje też głębokość kieszonek przy poszczególnych korzeniach, doogonową blokadę szczękową i wyniki radiologiczne."
+  },
+  "pocketPerRoot": {
+    "title": "Głębokość kieszonek przy każdym korzeniu",
+    "body": "Karta → Dostosuj → Pomiar dla każdego korzenia. Każdy korzeń zęba ma opisane pole (M / D lub MB / MP / D)."
+  },
+  "severalTeeth": {
+    "title": "Ustaw wartość dla kilku zębów naraz",
+    "body": "Proszę kliknąć numery zębów w tabeli (Shift i kliknięcie zaznaczają zakres), a następnie nadać wszystkim tę samą ocenę."
+  },
+  "makeItYours": {
+    "title": "Dostosuj aplikację do pracy",
+    "body": "Na każdej stronie przycisk „Dostosuj” pozwala ukryć kolumny, zmienić informacje obok zębów i wybrać działanie spacji. Ustawienia konta są dostępne na każdym urządzeniu."
+  },
+  "radiographicFindings": {
+    "title": "Wyniki radiologiczne",
+    "body": "Na stronie „Obrazy” jest osobne pole na wyniki radiologiczne. Na wydruku PDF pojawia się nad raportem z leczenia."
+  },
+  "anesthesia": {
+    "title": "Znieczulenie",
+    "body": "Dodaliśmy doogonową blokadę szczękową. Można ukryć nieużywane blokady i zapisać domyślny środek znieczulający do szybkiego wstawienia."
+  },
+  "skipRecheck": {
+    "title": "Zrezygnuj z pola terminu kontroli",
+    "body": "Jeśli placówka nie korzysta z przypomnień, można ukryć pole terminu kontroli w sekcji Pacjent → Dostosuj."
+  },
+  "writeWithAi": {
+    "title": "✨ Napisz z AI",
+    "body": "Na podstawie danych z karty aplikacja przygotowuje podsumowanie i zalecenia opieki domowej. Przed wydrukiem można przejrzeć treść."
+  },
+  "customizeReport": {
+    "title": "Dostosuj raport",
+    "body": "Układ, treść i język można zmienić bezpośrednio na stronie „Raport dla opiekuna”."
+  },
+  "startsWhereLeft": {
+    "title": "Wróć do ostatniej pracy",
+    "body": "Po otwarciu ToothOps pojawi się lista pacjentów, chyba że dzisiejsza wizyta nadal jest otwarta. Dzisiejszą wizytę można od razu edytować."
+  },
+  "sendFeedback": {
+    "title": "Prześlij opinię w dwóch krokach",
+    "body": "Proszę wybrać Pomoc → Prześlij opinię. Opinia z panelu dyktowania może też zawierać transkrypcję."
+  }
+}

@@ -1,0 +1,467 @@
+{
+  "site": {
+    "title": "Centrum pomocy ToothOps",
+    "intro": "Praktyczne instrukcje dotyczące zabiegów i konsultacji stomatologicznych, od otwarcia wizyty po udostępnienie jej dokumentacji.",
+    "search": "Przeszukaj dokumentację",
+    "searchHint": "Szukaj tematów, czynności lub ustawień",
+    "topics": "Tematy",
+    "onPage": "Na tej stronie",
+    "openApp": "Otwórz ToothOps",
+    "home": "Strona główna pomocy",
+    "skip": "Przejdź do artykułu",
+    "results": "Wyniki wyszukiwania",
+    "empty": "Brak pasujących instrukcji. Proszę wpisać krótszą frazę lub przejrzeć tematy.",
+    "clear": "Wyczyść wyszukiwanie",
+    "related": "Powiązane instrukcje",
+    "language": "Język dokumentacji",
+    "contact": "Prześlij opinię",
+    "guide": "Przeczytaj instrukcję"
+  },
+  "groups": {
+    "start": "Pierwsze kroki",
+    "clinical": "Przebieg pracy klinicznej",
+    "output": "Raporty i wizyty kontrolne",
+    "practice": "Placówka i pomoc"
+  },
+  "images": {
+    "consultationMedicationHistory": "Aktualnie stosowane leki z dostępną w aplikacji weterynaryjną etykietą leku i linkiem do pełnego źródła.",
+    "consultationMedicationReview": "Przegląd dyktowanej konsultacji z oddzielnymi sugestiami dotyczącymi leków i fragmentami transkrypcji.",
+    "charting": "Przykładowa karta stomatologiczna z ponumerowanymi zębami i tabelą wyników.",
+    "imaging": "Sekcja „Obrazowanie” z oddzielnymi polami opisu RTG i TK.",
+    "dictation": "Przegląd dodatkowych wyników z nagrania stomatologicznego.",
+    "owner": "Opcje raportu dla opiekuna i wstępne podsumowanie wizyty.",
+    "export": "Podgląd klinicznego pliku PDF z przykładową kartą stomatologiczną.",
+    "start": "Przykładowy obszar roboczy pacjenta z kartą wizyty, nawigacją po sekcjach i danymi pacjenta.",
+    "patients": "Historia pacjenta z wcześniejszymi zabiegami i konsultacjami stomatologicznymi oraz wybraną wizytą.",
+    "exam": "Tabela wyników badania jamy ustnej z opcjami „W normie” i „Nieprawidłowe” oraz komentarzem.",
+    "viewer": "Przeglądarka obrazów z ustawieniami szerokości i poziomu okna oraz opcją pobrania przykładowego pliku DICOM.",
+    "treatment": "Raport z leczenia z zapisanymi szablonami i edytowalną treścią poniżej.",
+    "preferences": "Ustawienia karty z opcjami układu, automatycznego zapisu i zapisu głębokości kieszonek.",
+    "help-tools": "Menu „Pomoc” z Centrum pomocy, przewodnikiem, informacjami o zmianach i opcją przesłania opinii.",
+    "by-number": "Widok karty według zębów z zaznaczonym na diagramie zębem 108 w numeracji Triadan i otwartymi wynikami.",
+    "imagingSettings": "Ustawienia obrazowania i PDF z językiem opisu i domyślnymi opcjami uwzględniania treści.",
+    "consultationReview": "Sekcja „Obrazy” w konsultacji z przyciskiem „Dodaj obrazy” i przykładową miniaturą.",
+    "consultationTemplatePreview": "Edytor szablonu konsultacji z otwartą listą „Dodaj sekcję” na fikcyjnej wizycie.",
+    "consultationRecordNote": "Notatka z konsultacji z przyciskami „Pobierz PDF” i „Kopiuj”.",
+    "dentalConsultation": "Pole „Badanie jamy ustnej bez znieczulenia” w przykładowej konsultacji stomatologicznej.",
+    "dictationCheck": "Panel dyktowania zatrzymuje nagrywanie na krótko przed sprawdzeniem karty. Opcja „Wznów” pozwala kontynuować to samo dyktowanie.",
+    "imagingTemplates": "Opcje szablonu raportu obrazowania nad fikcyjnym raportem radiograficznym.",
+    "dischargeTemplates": "Edytor szablonu wypisu z otwartą listą „Dodaj sekcję” na fikcyjnej wizycie."
+  },
+  "articles": {
+    "start": {
+      "title": "Pierwsza wizyta stomatologiczna",
+      "intro": "Proszę prześledzić przebieg wizyty od nowej karty do gotowej dokumentacji.",
+      "sections": {
+        "first": {
+          "title": "Otwieranie lub tworzenie kartoteki pacjenta",
+          "text": "Proszę użyć przycisku plusa lub opcji „Otwórz pacjenta”. Przed utworzeniem kartoteki proszę wyszukać pacjenta po imieniu lub numerze. Jeśli otworzy się okno „Nowa wizyta”, proszę wybrać „Zabieg stomatologiczny”, a następnie „Rozpocznij wizytę”. W sekcji „Pacjent” proszę sprawdzić imię, gatunek, numer i datę wizyty."
+        },
+        "second": {
+          "title": "Dokumentowanie w trakcie wizyty",
+          "text": "Proszę zapisywać obserwacje w sekcjach „Badanie” i „Znieczulenie”, pomiary zębów w sekcji „Karta zębowa”, rozpoznane zmiany w sekcji „Rozpoznanie”, a wykonane czynności w sekcji „Zabieg”. Obrazy i ich interpretację proszę dodać w sekcji „Obrazowanie”. Leczenie i zalecenia wypisowe mają oddzielne sekcje."
+        },
+        "third": {
+          "title": "Sprawdzanie, zapisywanie i udostępnianie",
+          "text": "Karta kliniczna i raport dla opiekuna są dostępne do sprawdzenia w sekcji „Sprawdź i eksportuj”. Gdy dokumentacja jest gotowa, proszę wybrać „Zatwierdź”. Przed opuszczeniem karty pacjenta proszę sprawdzić status zapisu. Zapisana wizyta jest dostępna do poprawek po wybraniu opcji „Edytuj kartę”."
+        }
+      }
+    },
+    "patients": {
+      "title": "Pacjenci i historia wizyt",
+      "intro": "Proszę otworzyć wizytę z właściwą datą i porównać wcześniejsze zapisy.",
+      "sections": {
+        "first": {
+          "title": "Wyszukiwanie pacjenta",
+          "text": "Przycisk plusa otwiera wybór pacjenta. Jeśli imiona są takie same, proszę sprawdzić numer pacjenta. Proszę wybrać istniejącą wizytę, aby ją kontynuować, lub opcję „Nowa wizyta” i sprawdzić typ wizyty przed rozpoczęciem."
+        },
+        "second": {
+          "title": "Przełączanie wizyt i kart pacjentów",
+          "text": "Karta pokazuje pacjenta, datę i typ wizyty. Przełącznik wizyt pozwala otworzyć inną zapisaną wizytę. Dwie wizyty z tej samej daty mogą mieć różne typy. Po zamknięciu karty pacjent i jego wizyty pozostają w historii obszaru roboczego."
+        },
+        "third": {
+          "title": "Przegląd wcześniejszej dokumentacji",
+          "text": "Jeśli są wcześniejsze wizyty, w sekcji „Pacjent” proszę wybrać „Wyświetl historię wizyt”. Po wybraniu daty i typu można przejrzeć notatkę lub wyeksportować wizytę. Aby ponownie otworzyć wizytę do edycji, proszę użyć przełącznika wizyt."
+        }
+      }
+    },
+    "charting": {
+      "title": "Karta stomatologiczna, rozpoznanie i zabieg",
+      "intro": "Proszę zapisywać pomiary oraz oddzielnie dokumentować rozpoznane zmiany i wykonane czynności.",
+      "sections": {
+        "first": {
+          "title": "Zapisywanie pomiarów zębów",
+          "text": "W sekcji „Karta zębowa” proszę wybrać widok „Tabela” lub „Według zęba”. Pomiary przyzębia wprowadza się przy odpowiednich numerach zębów. Opcja „Dostosuj” pozwala wybrać widoczne kolumny i sposób wpisywania pomiarów kieszonek.\n\nW widoku „Według zęba” wybranie numeru na diagramie otwiera pomiary i notatki danego zęba. W widoku „Tabela” można wybrać kilka zębów po numerach. Kliknięcie z klawiszem Shift zaznacza zakres. Pomiary są wspólne dla obu widoków."
+        },
+        "second": {
+          "title": "Dokumentowanie zmian w sekcji „Rozpoznanie”",
+          "text": "Proszę wybrać właściwy ząb i zaznaczyć zmiany stwierdzone przed zabiegiem lub brakujące wcześniej zęby. W razie potrzeby można dodać kody stomatologiczne i krótkie notatki. Znaczenie kodu można sprawdzić w wykazie kodów. Nazwy narzędzi są widoczne pod ikonami. Opcja „Komentarz” dołącza notatkę do zęba, a opcja „Komentarz w dowolnym miejscu” pozwala ją umieścić w dowolnym miejscu diagramu. Przy ograniczonej ilości miejsca pasek narzędzi pokazuje skróconą etykietę „Dowolny”."
+        },
+        "third": {
+          "title": "Dokumentowanie wykonanych czynności w sekcji „Zabieg”",
+          "text": "Sekcja „Zabieg” służy do zapisu czynności wykonanych podczas wizyty, w tym zakończonych ekstrakcji. Szczegółowy opis należy wpisać w sekcji „Raport z leczenia”. Planowane zabiegi pozostają w dokumentacji jako plan do momentu ich wykonania."
+        }
+      }
+    },
+    "exam": {
+      "title": "Badanie i znieczulenie",
+      "intro": "Proszę zapisywać obserwacje i szczegóły znieczulenia w odpowiednich sekcjach.",
+      "sections": {
+        "first": {
+          "title": "Dokumentowanie badania",
+          "text": "W sekcji „Badanie” proszę zapisać stan i uwagi dla ocenionych obszarów. Obszary, których nie oceniono, można pozostawić puste. Opcja „Dostosuj” pozwala zarządzać listą obszarów. W polu „Diagnostyka” pod wynikami badania można zapisać wyniki badań innych niż obrazowe oraz badania w toku."
+        },
+        "second": {
+          "title": "Zapisywanie środków znieczulających i blokad",
+          "text": "W sekcji „Znieczulenie” proszę wpisać podane leki oraz miejsca i objętości wykonanych blokad. Przed zakończeniem wizyty proszę porównać strony i jednostki z dokumentacją źródłową. Jeśli osobno podano inny środek znieczulający, proszę wybrać „Dodaj drugi zestaw blokad nerwów”. W drugim zestawie proszę wpisać nazwę leku, stężenie i objętość podaną w każdym miejscu."
+        },
+        "third": {
+          "title": "Przegląd zapisanych wyników",
+          "text": "Po zakończeniu dyktowania proszę sprawdzić wyniki w sekcji „Badanie”, a miejsca blokad i leki w sekcji „Znieczulenie”. Przed zakończeniem wizyty stomatologicznej proszę uzupełnić lub poprawić niepełne i niepewne wpisy."
+        }
+      }
+    },
+    "imaging": {
+      "title": "Obrazowanie i opisy badań",
+      "intro": "Proszę zarządzać obrazami klinicznymi, zdjęciami RTG i wynikami TK dla bieżącej wizyty.",
+      "sections": {
+        "first": {
+          "title": "Dodawanie obrazów i przegląd historii",
+          "text": "Na stronie internetowej opcja „Dodaj obrazy” pozwala wybrać, przeciągnąć lub wkleić pliki. W przypadku obsługiwanych plików DICOM można pobrać oryginał. Aby przejrzeć wcześniejsze obrazy, proszę rozwinąć pozycję w sekcji „Historia obrazów” lub otworzyć wcześniejszą wizytę."
+        },
+        "second": {
+          "title": "Wybór obrazów do raportu",
+          "text": "Dla każdego obrazu proszę określić typ oraz, w razie potrzeby, ząb i opis. Proszę wybrać, czy obraz ma trafić do klinicznego pliku PDF lub raportu dla opiekuna. Oznaczenia „Przed” i „Po” pomagają wyjaśnić, kiedy wykonano obraz. Przycisk „Popraw tekst” znajduje się w dolnym rogu pola tekstowego."
+        },
+        "third": {
+          "title": "Sporządzanie opisów badań obrazowych",
+          "text": "Proszę zapisać wyniki w polu „Raport radiograficzny” lub „Raport TK”. Inne wyniki i badania w toku można zapisać w polu „Diagnostyka” w sekcji „Badanie”. Wszystkie te informacje można podyktować w jednym nagraniu stomatologicznym. Proszę podawać rodzaj badania podczas opisywania obrazów i sprawdzić proponowane pola przed zastosowaniem zmian.\n\nNad dowolnym raportem proszę wybrać „Szablon raportu”, a następnie „Wstaw konspekt”. ToothOps dodaje brakujące nagłówki na końcu raportu i zachowuje dotychczasowy tekst. Przed wpisaniem wyników proszę sprawdzić nagłówki.\n\nW sekcji „Obrazowanie” proszę wybrać „Dostosuj”, aby otworzyć edytor szablonów. Można w nim wyświetlić podgląd konspektów i zarządzać konspektami placówki. Aby zmienić język raportu lub domyślny zakres pliku PDF, proszę wybrać „Ustawienia obrazowania i PDF”."
+        }
+      }
+    },
+    "dictation": {
+      "title": "Dyktowanie i przegląd sugestii AI",
+      "intro": "Jedno nagranie wystarczy do udokumentowania wizyty stomatologicznej. Proszę sprawdzić, jak wyniki zostały zapisane.",
+      "sections": {
+        "first": {
+          "title": "Rozpoczynanie nagrania stomatologicznego",
+          "text": "Na dowolnej karcie zabiegu stomatologicznego proszę wybrać „Dyktuj”, a następnie rozpocząć nagrywanie. Jeśli pojawi się prośba o dostęp do mikrofonu, proszę ją zaakceptować. Podczas wizyty warto podawać numery zębów, strony, jednostki i rodzaje badań obrazowych, gdy mają znaczenie."
+        },
+        "second": {
+          "title": "Sprawdzanie transkrypcji i sugestii",
+          "text": "Jednoznaczne wyniki mogą podczas mówienia trafiać bezpośrednio do odpowiednich kart, takich jak „Badanie”, „Znieczulenie”, „Karta zębowa”, „Rozpoznanie” i „Zabieg”. W przypadku niejednoznacznego sformułowania otwarta karta dostarcza kontekstu. Po zakończeniu proszę zatrzymać nagranie i sprawdzić transkrypcję oraz kartę pacjenta."
+        },
+        "third": {
+          "title": "Przegląd poprawek przed zastosowaniem",
+          "text": "Podczas dyktowania można śledzić wpisy w części „Aktywność” na karcie stomatologicznej. Jednoznaczne wyniki liczbowe mogą wyświetlać się jako „Zapisano bezpośrednio w karcie”, na przykład po podaniu numeru zęba i stopnia jego ruchomości. Przycisk „Zatrzymaj dyktowanie” wstrzymuje pracę mikrofonu. Gdy panel pokazuje „Wstrzymano dyktowanie”, można nacisnąć „Wznów”, aby dodać więcej informacji.\n\nEtap „Sprawdzanie karty” uruchamia się automatycznie i porównuje transkrypcję z kartą. Po pojawieniu się komunikatu „Sprawdzono kartę” proszę poszukać pozycji w części „Do weryfikacji”. Proszę porównać proponowane zmiany z zapisanymi wartościami i wybrać brzmienie zgodne z nagraniem. Na końcu to samo nagranie może dostarczyć sugestii dotyczących TK, pozostałych wyników diagnostycznych i zaleceń wypisowych. Proszę porównać propozycje z fragmentami transkrypcji i wybrać te, które mają zostać zastosowane."
+        }
+      }
+    },
+    "treatment": {
+      "title": "Raporty z leczenia i szablony",
+      "intro": "Szablony pozwalają korzystać z powtarzalnych zapisów przy opisywaniu wykonanych czynności.",
+      "sections": {
+        "first": {
+          "title": "Sporządzanie raportu z leczenia",
+          "text": "W sekcji „Raport z leczenia” proszę opisać wykonane zabiegi, istotne wyniki i szczegóły potrzebne w dokumentacji. Dyktowanie uwzględnia kontekst otwartej sekcji."
+        },
+        "second": {
+          "title": "Korzystanie z zapisanego szablonu",
+          "text": "Proszę wybrać szablon z listy „Zapisane szablony” i sprawdzić wstawiony tekst przed zapisaniem. Raport można nadal edytować. Opcja „Popraw tekst” w dolnym rogu pola tekstowego pozwala uzyskać propozycję poprawionej wersji do przejrzenia."
+        },
+        "third": {
+          "title": "Tworzenie szablonu do wielokrotnego użycia",
+          "text": "Proszę wybrać „Nowy szablon”, nadać mu rozpoznawalną nazwę i wpisać tekst do wielokrotnego użycia. W edytorze szablonu wpisanie znaku { wyświetla dostępne pola do uzupełnienia. Przykładowo pole {pet} wstawia imię pacjenta. Po wybraniu zapisanego szablonu ToothOps uzupełnia dane z karty i prosi o podanie brakujących wartości."
+        }
+      }
+    },
+    "discharge": {
+      "title": "Wypis i raport dla opiekuna",
+      "intro": "Na podstawie zapisanej wizyty można przygotować dokument dla opiekuna do zabrania do domu.",
+      "sections": {
+        "first": {
+          "title": "Zapisywanie zaleceń wypisowych",
+          "text": "Dla nowych wizyt wybierany jest szablon „Rekonwalescencja po zabiegu stomatologicznym”, chyba że placówka ustawiła inny szablon domyślny. W sekcji „Wypis” dostępne opcje znajdują się pod etykietą „Szablon notatki”. Zmiana szablonu zachowuje dotychczasowe wpisy. Po zmianie szablonu proszę rozwinąć „Pola z innych szablonów” pod aktualnymi polami, aby odszukać wpisy z pól pominiętych w wybranym szablonie.\n\nW sekcji „Wypis” proszę wpisać po jednym leku w wierszu wraz z dawką, sposobem podawania i czasem stosowania. Proszę dodać zalecenia dotyczące opieki w domu i kontroli oraz sprawdzić szczegóły przed udostępnieniem.\n\nObok listy proszę wybrać „Zarządzaj szablonami”. Właściciele placówki mogą edytować wszystkie szablony, w tym „Rekonwalescencja po zabiegu stomatologicznym” i „Standardowy wypis”. Opcja „Nowy szablon” tworzy szablon ze standardowymi sekcjami. Proszę nadać mu nazwę. W menu „Więcej opcji” można wybrać „Duplikuj”, aby skopiować szablon, lub „Ustaw jako domyślny dla placówki”, aby wybierać go podczas nowych wizyt. Opcja „Usuń szablon” usuwa go z listy placówki. Proszę zachować co najmniej jeden aktywny szablon. Zapisane wizyty zachowują swój układ i treść.\n\nAby zmienić kolejność szablonów, proszę przeciągnąć szablon za uchwyt obok nazwy. Można też przejść do uchwytu i użyć strzałki w górę lub w dół. Proszę wybrać „Zapisz”, aby zastosować kolejność.\n\nProszę wybrać „Dodaj sekcję” i użyć opcji „Szukaj sekcji”, aby znaleźć pole wbudowane lub pole wielokrotnego użytku w grupie „Pola placówki”. Jeśli brakuje potrzebnego pola, proszę wybrać „Utwórz pole” i wpisać jego nazwę. Aby skorzystać z pola w kolejnym szablonie, proszę wybrać je z grupy „Pola placówki” w tym szablonie. Opcja „Zarządzaj polami placówki” umożliwia archiwizowanie i przywracanie pól.\n\nAby zmienić kolejność pól, proszę przeciągnąć pole za uchwyt. Przycisk X usuwa pole z aktualnego szablonu, a przycisk „Cofnij” je przywraca. Nazwa pola otwiera jego ustawienia. Aby udostępnić treść pola niestandardowego, proszę włączyć opcję „Uwzględnij w raporcie dla opiekuna” w danym szablonie. Gdy pole jest używane w innym szablonie, tę opcję ustawia się osobno.\n\nW opcji „Podgląd przykładu” można sprawdzić układ sekcji na fikcyjnych danych. Proszę wybrać „Zapisz” i wybrać szablon na wizycie. Następnie w menu „Sprawdź i eksportuj” proszę otworzyć „Notatka do dokumentacji” i sprawdzić treść kliniczną."
+        },
+        "second": {
+          "title": "Przygotowywanie raportu dla opiekuna",
+          "text": "W sekcji „Raport dla opiekuna” proszę wybrać szablon raportu. Język wygenerowanej treści zależy od wybranego szablonu. Dla pojedynczej wizyty można wybrać szablon w języku opiekuna, jeśli taki szablon jest dostępny. Właściciel placówki może utworzyć go za pomocą przycisku „Dostosuj” i opcji „Język raportu”. Opcja „Napisz z pomocą AI” przygotowuje wstępne podsumowanie i zalecenia domowe na podstawie wizyty. Proszę sprawdzić język nagłówków i zaleceń w podglądzie oraz poprawić tekst, jeśli to potrzebne. Opcja „Przywróć wygenerowany tekst” przywraca zapisany projekt po edycji."
+        },
+        "third": {
+          "title": "Podgląd i udostępnianie",
+          "text": "Opcja „Podgląd” obok „Dostosuj” otwiera plik PDF dla opiekuna. Obrazy do raportu można wybrać w sekcji „Obrazowanie”. Po sprawdzeniu odbiorcy i treści dokumentu w sekcji „Sprawdź i eksportuj” można pobrać raport lub wysłać go e-mailem, jeśli ta opcja jest dostępna. Nad podglądem na karcie „Raport dla opiekuna” znajdują się przyciski „Dostosuj”, „Pobierz PDF” i, jeśli dostępny, „Wyślij do opiekuna”."
+        }
+      }
+    },
+    "export": {
+      "title": "Przegląd, eksport i zakończenie wizyty",
+      "intro": "Przed udostępnieniem proszę sprawdzić właściwy dokument i zakończyć wizytę, gdy jest gotowa.",
+      "sections": {
+        "first": {
+          "title": "Wybór dokumentu",
+          "text": "Proszę otworzyć sekcję „Sprawdź i eksportuj” dla wybranej wizyty. W przypadku zabiegu stomatologicznego „Karta kliniczna” otwiera PDF z kartą, „Raport dla opiekuna” otwiera PDF do zabrania do domu, jeśli ta funkcja jest dostępna, a „Notatka do dokumentacji” wyświetla tekst. W przypadku konsultacji opcja „Notatka do dokumentacji” pozwala pobrać lub skopiować notatkę z wizyty."
+        },
+        "second": {
+          "title": "Dostosowywanie klinicznego pliku PDF",
+          "text": "Na karcie „Karta kliniczna” proszę wybrać „Dostosuj”, aby ustawić kolory i sekcje do uwzględnienia, takie jak obrazy, opisy badań i „Użyte kody”. Po zmianie opcji proszę sprawdzić podgląd i pobrać gotowy dokument. Sekcje wypisowe są domyślnie widoczne pod opisami badań obrazowych. Wyłączenie tej opcji ukrywa je w wydruku. Przyciski „Dostosuj” i „Pobierz PDF” znajdują się obok kart dokumentów."
+        },
+        "third": {
+          "title": "Zakończenie lub ponowne otwarcie wizyty",
+          "text": "Proszę wybrać „Zatwierdź” i potwierdzić, aby zapisać wizytę i przełączyć ją w tryb tylko do odczytu. Aby wprowadzić zmianę w zapisanej wizycie, proszę ją otworzyć, wybrać „Edytuj kartę”, wprowadzić zmianę i wybrać „Zakończ edycję”. Przed wprowadzeniem poprawek proszę potwierdzić pacjenta i datę wizyty."
+        }
+      }
+    },
+    "rechecks": {
+      "title": "Wizyty kontrolne i przypomnienia",
+      "intro": "Proszę zapisać termin kolejnej kontroli i śledzić nadchodzące wizyty.",
+      "sections": {
+        "first": {
+          "title": "Zapisywanie terminu kontroli",
+          "text": "Po ustaleniu terminu proszę ustawić „Termin kontroli” w sekcji „Pacjent”. W razie potrzeby zalecenia można dodać w sekcji „Wypis”. Jeśli będą wysyłane przypomnienia, proszę potwierdzić dane kontaktowe opiekuna."
+        },
+        "second": {
+          "title": "Przegląd listy kontroli",
+          "text": "Sekcja „Wizyty kontrolne” pokazuje zaplanowane kontrole. W razie potrzeby można otworzyć kartę pacjenta lub wcześniejszą wizytę i sprawdzić kontekst kliniczny. Zrealizowane pozycje można usunąć z listy."
+        },
+        "third": {
+          "title": "Konfigurowanie przypomnień",
+          "text": "Opcje wysyłki są dostępne w sekcji „Przypomnienia o kontroli” w ustawieniach placówki lub aplikacji. Przed wysłaniem przypomnienia proszę sprawdzić odbiorcę i termin."
+        }
+      }
+    },
+    "settings": {
+      "title": "Ustawienia konta i placówki",
+      "intro": "Proszę skonfigurować kartę dla zespołu oraz ustawić oddzielnie własne preferencje i ustawienia wspólne.",
+      "sections": {
+        "first": {
+          "title": "Ustawianie własnych preferencji",
+          "text": "Aby zmienić język interfejsu, proszę otworzyć „Konto”, a następnie w sekcji „Język” wybrać na przykład „Polski”. Po zmianie proszę sprawdzić język menu aplikacji. W sekcji „Ustawienia karty” lub za pomocą przycisku „Dostosuj” w danej sekcji można ustawić układ karty, pomiary, obrazowanie i opcje wyświetlania w pliku PDF."
+        },
+        "second": {
+          "title": "Zarządzanie wspólnymi ustawieniami placówki",
+          "text": "Właściciele placówki mogą zarządzać nazwą i logo, dostępem zespołu oraz wspólnymi szablonami raportów. Aby ustawić domyślny język materiałów dla opiekunów, proszę otworzyć „Ustawienia placówki” i w sekcji „Język dla opiekunów zwierząt” wybrać na przykład „Polski”. To ustawienie jest niezależne od języka interfejsu. W podglądzie raportu dla opiekuna można sprawdzić domyślną treść i nagłówki."
+        },
+        "third": {
+          "title": "Sprawdzanie dostępności funkcji",
+          "text": "Niektóre sekcje kliniczne, narzędzia AI i opcje raportów zależą od ustawień placówki, uprawnień i roli. Jeśli narzędzie jest niewidoczne, proszę sprawdzić, czy otwarto właściwą placówkę i wizytę, którą można edytować."
+        }
+      }
+    },
+    "troubleshooting": {
+      "title": "Rozwiązywanie problemów",
+      "intro": "Instrukcje rozwiązywania częstych problemów z zapisem, nagrywaniem, obrazami i eksportem.",
+      "sections": {
+        "first": {
+          "title": "Nie można zapisać wizyty",
+          "text": "Proszę sprawdzić wskaźnik zapisu i połączenie. Proszę też potwierdzić, że w wizycie podano imię pacjenta i treść kliniczną. Można skorzystać z opcji ponowienia lub zapisu ręcznego. Karta powinna pozostać otwarta do potwierdzenia zapisu."
+        },
+        "second": {
+          "title": "Mikrofon lub AI są niedostępne",
+          "text": "Proszę zezwolić na dostęp do mikrofonu w ustawieniach przeglądarki lub urządzenia, zamknąć inne sesje nagrywania i sprawdzić połączenie. Proszę otworzyć kartę, którą można edytować, i wybrać „Rozpocznij dyktowanie”. Jeśli wynik budzi wątpliwości, proszę zachować zapisaną wartość i przejrzeć transkrypcję."
+        },
+        "third": {
+          "title": "W raporcie brakuje treści",
+          "text": "Proszę potwierdzić właściwą wizytę i kartę dokumentu. Następnie proszę sprawdzić szablon raportu, opcje uwzględniania treści w PDF i wybór poszczególnych obrazów. Jeśli problem się powtarza, można przesłać opinię przez menu „Pomoc” i opisać oczekiwany oraz rzeczywisty wynik."
+        }
+      }
+    },
+    "account": {
+      "title": "Logowanie i zarządzanie kontem",
+      "intro": "Proszę skonfigurować dostęp, odzyskać hasło lub zaktualizować profil.",
+      "sections": {
+        "first": {
+          "title": "Logowanie i przyjmowanie zaproszenia",
+          "text": "Proszę się zalogować przy użyciu adresu e-mail konta. Przy tworzeniu konta proszę otworzyć link potwierdzający przesłany na skrzynkę pocztową. Jeśli placówka wysłała zaproszenie, proszę użyć tego przesłanego na adres e-mail, który będzie służył do logowania w ToothOps."
+        },
+        "second": {
+          "title": "Odzyskiwanie dostępu",
+          "text": "Na ekranie logowania proszę wybrać „Nie pamiętam hasła” i otworzyć link z wiadomości. Jeśli sesja wygaśnie podczas uzupełniania karty, proszę zalogować się ponownie, aby wznowić zapis w chmurze. Przed kontynuowaniem proszę sprawdzić, czy otwarta jest właściwa wizyta."
+        },
+        "third": {
+          "title": "Aktualizowanie profilu i danych logowania",
+          "text": "Sekcja „Konto” pozwala zmienić nazwę wyświetlaną, adres e-mail, hasło i język aplikacji. Proszę wykonać czynności potwierdzające wskazane w danej sekcji."
+        }
+      }
+    },
+    "viewer": {
+      "title": "Przegląd obrazów i plików DICOM",
+      "intro": "Przeglądarka obrazów pozwala sprawdzić załącznik i pobrać jego oryginał.",
+      "sections": {
+        "first": {
+          "title": "Otwieranie przeglądarki obrazów",
+          "text": "Proszę wybrać obraz w sekcji „Obrazowanie” lub we wcześniejszej wizycie. Elementy sterujące pozwalają powiększyć, dopasować lub przesuwać obraz. W razie potrzeby proszę porównać szczegóły z oryginalnym badaniem."
+        },
+        "second": {
+          "title": "Dostosowywanie sposobu wyświetlania",
+          "text": "W obsługiwanych oryginalnych plikach DICOM opcja „Szerokość i poziom okna” umożliwia pracę z danymi źródłowymi. Na komputerze proszę przytrzymać Shift i przeciągnąć w poziomie, aby zmienić szerokość okna, lub w pionie, aby zmienić poziom. Jeśli te opcje są niedostępne, można użyć ustawień jasności i kontrastu."
+        },
+        "third": {
+          "title": "Pobieranie oryginału",
+          "text": "Jeśli oryginał jest dostępny, w opcjach obrazu można wybrać „Pobierz oryginalny plik DICOM”. Jeśli plik jest nieczytelny, proszę spróbować użyć nieskompresowanego pliku DICOM lub obsługiwanego formatu obrazu wyeksportowanego z programu źródłowego."
+        }
+      }
+    },
+    "recovery": {
+      "title": "Zapisane wizyty, wersje i import PDF",
+      "intro": "Można odzyskać zapisaną wersję lub wznowić pracę z kartą zapisaną w pliku PDF ToothOps.",
+      "sections": {
+        "first": {
+          "title": "Sprawdzanie statusu zapisu",
+          "text": "Proszę sprawdzić wskaźnik zapisu na aktywnej karcie pacjenta. Zmiany wprowadzone bez połączenia mogą pozostać na urządzeniu do jego przywrócenia. Jeśli ToothOps zgłosi nowszy zapis z innego urządzenia lub od innego członka zespołu, proszę porównać go z bieżącą kartą przed potwierdzeniem zastąpienia zmian."
+        },
+        "second": {
+          "title": "Przeglądanie lub przywracanie wcześniejszej wersji",
+          "text": "„Historia wersji” pozwala porównać zapisy tej samej wizyty. Proszę wybrać wersję, aby zobaczyć zapisaną treść. Aby ją przywrócić, proszę otworzyć wizytę do edycji, wybrać „Przywróć tę wersję” i potwierdzić. Wersja sprzed przywrócenia pozostaje w historii."
+        },
+        "third": {
+          "title": "Importowanie karty z pliku PDF",
+          "text": "W kartotece pacjentów proszę wybrać „Importuj kartę z PDF” i wskazać plik wyeksportowany wcześniej z ToothOps. Jeśli pojawi się pytanie o aktualnie otwartą kartę, proszę potwierdzić wybór, a następnie sprawdzić pacjenta i datę wizyty. Plik PDF z innego źródła może nie zawierać edytowalnej karty ToothOps."
+        }
+      }
+    },
+    "preferences": {
+      "title": "Dostosowywanie ToothOps",
+      "intro": "Proszę wybrać odpowiednią opcję „Dostosuj” dla wprowadzania danych w karcie, domyślnych ustawień diagramu, szablonów raportów lub plików PDF.",
+      "sections": {
+        "first": {
+          "title": "Wyszukiwanie odpowiednich ustawień",
+          "text": "W nagłówku sekcji „Pacjent”, „Badanie”, „Znieczulenie”, „Karta zębowa”, „Rozpoznanie”, „Zabieg” proszę wybrać „Dostosuj”. Ustawienia karty otworzą się na odpowiedniej kategorii. Na liście po lewej można wybrać inny obszar bez zamykania okna. Preferencje osobiste zapisują się automatycznie na koncie, jeśli dostępna jest synchronizacja, albo w bieżącej przeglądarce.\n\nW sekcji „Obrazowanie” proszę wybrać „Dostosuj”, aby otworzyć edytor szablonów. Można w nim wyświetlić podgląd konspektów i zarządzać konspektami placówki. Aby zmienić język raportu lub domyślny zakres pliku PDF, proszę wybrać „Ustawienia obrazowania i PDF”.\n\nPrzycisk „Dostosuj” w sekcji „Raport z leczenia” otwiera szablony leczenia. Przycisk „Dostosuj” obok opcji „Podgląd” w sekcji „Raport dla opiekuna” otwiera szablony raportów dla opiekuna. Te edytory służą do zarządzania powtarzalną treścią i układem raportów placówki. Przed wprowadzeniem zmian proszę sprawdzić wybrany szablon."
+        },
+        "second": {
+          "title": "Kategorie w ustawieniach karty",
+          "text": "Pasek boczny grupuje opcje według sekcji wizyty. Na przykład w sekcji „Karta zębowa” można wybrać widok „Tabela” lub „Według zęba”, tryb pomiaru głębokości kieszonek, widoczne pomiary oraz działanie po wpisaniu oceny. Skróty sekcji „Rozpoznanie” i „Zabieg” konfiguruje się osobno, ponieważ dotyczą różnych diagramów.\n\nOpcje widoczności pól i wyglądu diagramu pozwalają skupić uwagę na potrzebnych danych. Przed eksportem proszę sprawdzić wpisane wyniki w dokumentacji pacjenta."
+        },
+        "third": {
+          "title": "Domyślne ustawienia obrazowania i opcje eksportu",
+          "text": "W sekcji „Obrazowanie” proszę wybrać „Dostosuj”, aby otworzyć edytor szablonów, a potem „Ustawienia obrazowania i PDF”, aby ustawić język opisu i domyślną zawartość dokumentu. Można uwzględnić obrazy, opisy RTG i TK oraz sekcję „Użyte kody”. Po wyłączeniu wyników na diagramie tabela karty pozostaje wymagana, aby wyniki pomiarów były widoczne w dokumencie klinicznym.\n\nDla konkretnego eksportu proszę otworzyć „Sprawdź i eksportuj”, wybrać „Karta kliniczna”, a następnie „Dostosuj”. Proszę wybrać kolor klinicznego PDF i sekcje do uwzględnienia, a następnie sprawdzić podgląd. Aby przygotować dokument dla opiekuna, proszę wybrać szablon raportu dla opiekuna i obrazy w sekcji „Obrazowanie”. Wybór szablonu dla opiekuna jest niezależny od koloru klinicznego pliku PDF."
+        }
+      }
+    },
+    "team": {
+      "title": "Konfiguracja placówki i dostęp zespołu",
+      "intro": "Proszę zarządzać nazwą i logo placówki, dostępem zespołu oraz szablonami raportów.",
+      "sections": {
+        "first": {
+          "title": "Ustawianie danych i logo placówki",
+          "text": "W ustawieniach placówki można zmienić jej nazwę i logo zgodnie z posiadanymi uprawnieniami. W podglądzie PDF można sprawdzić, jak będą się wyświetlać dane placówki. Ustawienie „Język dla opiekunów zwierząt” określa domyślny język treści dla opiekunów."
+        },
+        "second": {
+          "title": "Zapraszanie współpracowników i zarządzanie dostępem",
+          "text": "W ustawieniach placówki proszę otworzyć sekcję „Zespół”. Proszę zapraszać współpracowników na adres e-mail, którego będą używać do logowania. Oczekujące zaproszenia można sprawdzić, ponowić lub anulować. Właściciel placówki może zarządzać dostępem członków zespołu i prawami właściciela."
+        },
+        "third": {
+          "title": "Zarządzanie wspólnymi szablonami",
+          "text": "Proszę otworzyć „Szablony” w ustawieniach placówki lub wybrać „Dostosuj” obok danego raportu. Właściciele placówki mogą zmieniać układ i treść raportów dla opiekunów oraz wybierać domyślny szablon placówki. Przed zapisaniem zmian w istniejącym szablonie proszę sprawdzić przykładowy podgląd."
+        }
+      }
+    },
+    "billing": {
+      "title": "Subskrypcja i rozliczenia",
+      "intro": "Opcje subskrypcji i płatności są dostępne w ustawieniach placówki.",
+      "sections": {
+        "first": {
+          "title": "Sprawdzanie subskrypcji",
+          "text": "W przeglądarce proszę otworzyć ustawienia placówki w ToothOps i wybrać „Rozliczenia”. Na stronie wyświetlą się dostępne informacje o subskrypcji placówki. Jeśli nie ma dostępu do rozliczeń, proszę zwrócić się do właściciela placówki."
+        },
+        "second": {
+          "title": "Zarządzanie płatnościami i fakturami",
+          "text": "Opcja „Zarządzaj rozliczeniami”, jeśli jest dostępna, otwiera portal Stripe. W portalu można przejrzeć faktury, zmienić metodę płatności i zarządzać subskrypcją. Proszę upewnić się, że wybrano właściwą placówkę."
+        },
+        "third": {
+          "title": "Rozwiązywanie problemów z dostępem",
+          "text": "Jeśli pojawi się powiadomienie dotyczące rozliczeń lub dostępu do placówki, proszę wykonać czynność wskazaną w aplikacji internetowej. Jeśli status płatności lub subskrypcji wydaje się nieprawidłowy, proszę skontaktować się z obsługą za pomocą menu „Pomoc”."
+        }
+      }
+    },
+    "help-tools": {
+      "title": "Pomoc i informacje o zmianach",
+      "intro": "Przewodnik, informacje o zmianach i formularz opinii są dostępne w aplikacji.",
+      "sections": {
+        "first": {
+          "title": "Otwieranie przewodnika",
+          "text": "W menu „Pomoc” proszę wybrać „Pierwsze kroki”. Przewodnik pokazuje elementy sterujące aplikacji i można go otworzyć ponownie w dowolnym momencie. Na wąskim ekranie te narzędzia można znaleźć w menu obok nazwy lub logo placówki."
+        },
+        "second": {
+          "title": "Przeglądanie ostatnich zmian",
+          "text": "Aby przejrzeć ostatnie zmiany, proszę wybrać „Co nowego” w menu „Pomoc”. Instrukcje dotyczące nowych funkcji są dostępne w Centrum pomocy."
+        },
+        "third": {
+          "title": "Przesyłanie przydatnej opinii",
+          "text": "Aby zgłosić problem lub pomysł, proszę wybrać „Prześlij opinię” w menu „Pomoc”. Proszę opisać wykonaną czynność, rzeczywisty wynik oraz oczekiwane działanie. Przed dołączeniem zrzutu ekranu proszę usunąć dane pacjenta i opiekuna."
+        }
+      }
+    },
+    "by-number": {
+      "title": "Uzupełnianie karty według numeru zęba",
+      "intro": "Ponumerowany diagram pozwala dokumentować pomiary, rozpoznanie oraz notatki zabiegowe dla poszczególnych zębów.",
+      "sections": {
+        "first": {
+          "title": "Otwieranie widoku „Według zęba” i wybór numeru",
+          "text": "W sekcji „Karta zębowa” proszę wybrać „Według zęba” obok opcji „Tabela”, a następnie numer zęba na diagramie. Numer w systemie Triadan i nazwa zęba w nagłówku edytora pozwalają potwierdzić wybór przed wprowadzeniem wyniku. Na przykład 108 to czwarty prawy górny ząb przedtrzonowy u dorosłego psa. Numeracja zależy od gatunku i uzębienia wybranych w sekcji „Pacjent”.\n\nJeśli diagram jest zwinięty w wąskim oknie przeglądarki, proszę wybrać „Mapa zębów”, wskazać kwadrant i wybrać numer. Przyciski poprzedniego i następnego zęba pozwalają przechodzić przez całe uzębienie bez ponownego otwierania mapy."
+        },
+        "second": {
+          "title": "Zapisywanie wyników i notatek oraz oznaczanie ekstrakcji",
+          "text": "Proszę wpisywać pomiary w sekcji „Wyniki badania”. Głębokość kieszonki można zapisać jako jeden pomiar, po jednym pomiarze dla każdego korzenia lub sześć pomiarów w określonych miejscach. Opcja „Dostosuj” na karcie stomatologicznej pozwala wybrać tryb i wyświetlane pomiary. Opcję „Brak (sprzed tej wizyty)” należy zaznaczać tylko dla zębów, których już wcześniej brakowało.\n\nRozpoznane zmiany proszę zapisać w polu „Notatka diagnostyczna”, w razie potrzeby używając skonfigurowanych szybkich kodów. Wykonane czynności proszę zapisać w polu „Notatka z zabiegu”. Dla planowanej ekstrakcji proszę użyć opcji „Zaplanuj ekstrakcję”. Po wykonaniu ekstrakcji proszę oznaczyć ząb jako usunięty. Legenda odróżnia zapisane wyniki, planowane i wykonane ekstrakcje oraz brakujące zęby."
+        },
+        "third": {
+          "title": "Zmiana widoku lub dyktowanie wyniku według numeru",
+          "text": "Widoki „Tabela” i „Według zęba” edytują tę samą kartę. Pomiary wpisane w edytorze poszczególnych zębów pojawiają się także w tabeli. Oznaczenia i notatki dotyczące rozpoznania i zabiegu pojawiają się na odpowiednich diagramach. Widok można zmienić w dowolnym momencie, aby sprawdzić wpisy.\n\nAby dyktować, proszę pozostać na karcie stomatologicznej, wybrać „Dyktuj” i rozpocząć nagrywanie. Proszę podać pełny numer i wynik, na przykład „108, kieszonka dystalna pięć milimetrów”. Proszę sprawdzić, czy wynik zapisano przy odpowiednim zębie i w odpowiednim polu pomiaru kieszonki. Jeśli propozycja zmiany jest niezgodna z zapisaną wartością, proszę ją sprawdzić przed zastosowaniem."
+        }
+      }
+    },
+    "consultation": {
+      "title": "Dokumentowanie konsultacji",
+      "intro": "Notatkę z konsultacji można wprowadzić i przejrzeć bezpośrednio w wizycie pacjenta.",
+      "sections": {
+        "first": {
+          "title": "Wybór szablonu",
+          "text": "W kartotece pacjenta proszę wybrać „Nowa wizyta”. Jeśli opcja „Konsultacja” jest dostępna, proszę ją wybrać i kliknąć „Rozpocznij wizytę”. W sekcji „Szablon notatki” proszę wybrać jedną z widocznych opcji i sprawdzić wyróżniony wybór oraz kolejność sekcji. Zmiana szablonu zachowuje wprowadzony tekst."
+        },
+        "second": {
+          "title": "Wprowadzanie lub dyktowanie treści wizyty",
+          "text": "Dla wizyty przed zabiegiem proszę wybrać „Konsultacja stomatologiczna”. W polu „Badanie jamy ustnej bez znieczulenia” proszę zapisać widoczne zmiany i obszary, których nie udało się ocenić. Istotne czynniki ryzyka proszę zapisać w polu „Ocena przed znieczuleniem”. W części „Rozmowa z opiekunem i decyzje” proszę odnotować przedstawione możliwości, koszty orientacyjne, stan zgody i czynności odroczone lub oczekujące. Domową higienę jamy ustnej i ustalone kontrole proszę zapisywać w oddzielnych sekcjach. Jeżeli szablon zawiera „Sugerowana treść”, proszę go sprawdzić i wybrać „Użyj sugerowanej treści” tylko wtedy, gdy dotyczy tej wizyty.\n\nProszę zapisać powód wizyty, wywiad, ocenę i plan. Jeśli dostępne jest dyktowanie, proszę porównać propozycje z odpowiednimi fragmentami transkrypcji przed zastosowaniem. Aby wrócić do transkrypcji, proszę otworzyć „Zapisane transkrypcje” i wybrać datę nagrania. Udokumentowane parametry życiowe, wyniki badania i diagnostyki proszę wpisać w odpowiadających im polach. W razie braku wyników pola mogą pozostać puste. Pod sekcją „Plan” i pozostałymi polami notatki proszę rozwinąć „Obrazy” i wybrać „Dodaj obrazy”. Pliki można wybrać, przeciągnąć lub wkleić. Po pojawieniu się miniatur proszę otworzyć jedną do sprawdzenia. Obrazy pozostają załącznikami wizyty i nie są widoczne w osobnym pliku PDF z notatką. W polu „Aktualnie stosowane leki” proszę zapisać leki podane w wywiadzie, w polu „Leki podane podczas wizyty” faktycznie podane dawki, a w polu „Zmiany leczenia farmakologicznego i recepty” plan farmakoterapii. Przy dyktowaniu proszę wskazać kategorię każdego leku i sprawdzić cytowany fragment przed zastosowaniem. Opcja „Poprzednia lista leków” w sekcji „Aktualnie stosowane leki” pokazuje dane z ostatniej wcześniejszej konsultacji oraz zapisane zmiany. Proszę sprawdzić, które dane są aktualne. Gdy pole jest puste, można wybrać „Skopiuj do bieżących leków”. Opcja „Wyszukaj lek” pozwala wpisać nazwę leku i otworzyć wyszukiwarkę etykiet DailyMed. Po wybraniu „Szukaj informacji o lekach” proszę wskazać dokładny produkt weterynaryjny. Opcja „Otwórz pełną dokumentację w DailyMed” pozwala zweryfikować stężenie, sposób stosowania i ostrzeżenia."
+        },
+        "third": {
+          "title": "Przegląd notatki",
+          "text": "Opcja „Sprawdź dokumentację kliniczną” otwiera notatkę do dokumentacji dla tej wizyty. Przed przekazaniem notatki proszę sprawdzić, czy zawiera zapisane wyniki we właściwej kolejności."
+        }
+      }
+    },
+    "consultation-templates": {
+      "title": "Dostosowywanie szablonów konsultacji",
+      "intro": "Szablony pomagają zachować spójną kolejność wpisów w dokumentacji placówki.",
+      "sections": {
+        "first": {
+          "title": "Tworzenie na podstawie istniejącego szablonu",
+          "text": "W sekcji „Konsultacja” proszę otworzyć „Zarządzaj szablonami”. Właściciel placówki może wybrać szablon początkowy lub istniejący i użyć opcji „Duplikuj”, aby utworzyć edytowalną kopię.\n\nW menu „Więcej opcji” można wybrać „Utwórz z przykładowej notatki” i wkleić zanonimizowany przykład. Nagłówki należy zapisać w formacie Markdown lub jako etykiety zakończone dwukropkiem. Po wybraniu „Utwórz szablon” proszę sprawdzić zaimportowane nagłówki. Szablon zawiera same nagłówki bez treści przykładowej notatki."
+        },
+        "second": {
+          "title": "Porządkowanie i podgląd sekcji",
+          "text": "Proszę wybrać „Dodaj sekcję” i użyć opcji „Szukaj sekcji”, aby znaleźć pole wbudowane lub pole wielokrotnego użytku w grupie „Pola placówki”. Jeśli brakuje potrzebnego pola, proszę wybrać „Utwórz pole” i wpisać jego nazwę. Aby skorzystać z pola w kolejnym szablonie, proszę wybrać je z grupy „Pola placówki” w tym szablonie. Opcja „Zarządzaj polami placówki” umożliwia archiwizowanie i przywracanie pól.\n\nPo wybraniu nazwy pola można zmienić etykietę, wskazówki, przykładowe sformułowanie, sugerowaną treść, format tekstu i ustawienie podsekcji. W „Ustawieniach dyktowania” można określić instrukcje dotyczące zapisu oraz poziom szczegółowości. Przed użyciem sugerowanej treści proszę sprawdzić jej zgodność z bieżącą wizytą. Aby zmienić kolejność pól, proszę przeciągnąć pole za uchwyt. Przycisk X usuwa pole z aktualnego szablonu, a przycisk „Cofnij” je przywraca.\n\nProszę wpisać nazwę szablonu. Opcja „Podgląd przykładu” pozwala sprawdzić kolejność pól na fikcyjnych danych. Ponowne jej wybranie przywraca tryb edycji. Obrazy pojawiają się pod notatką i pozostają przypisane do wizyty po zmianie szablonu.\n\nPo zmianie szablonu proszę rozwinąć „Pola z innych szablonów” pod aktualnymi polami, aby odszukać wpisy z pól pominiętych w wybranym szablonie."
+        },
+        "third": {
+          "title": "Zapisywanie lub archiwizowanie",
+          "text": "W menu „Więcej opcji” można wybrać „Ustaw jako domyślny dla placówki”, aby używać tego szablonu przy nowych konsultacjach. Opcja „Archiwizuj szablon” ukrywa własny szablon na liście wyboru wizyty. Aby go przywrócić, proszę włączyć „Pokaż zarchiwizowane szablony”, wybrać szablon i kliknąć „Przywróć szablon”. Proszę wybrać „Zapisz”, aby zastosować zmiany. Zapisane wizyty zachowują wybrany układ.\n\nOpcje „Przenieś szablon wyżej” i „Przenieś szablon niżej” w menu „Więcej opcji” zmieniają kolejność szablonów widoczną przy nowych konsultacjach."
+        }
+      }
+    },
+    "consultation-transfer": {
+      "title": "Przeglądanie i przekazywanie notatki z konsultacji",
+      "intro": "Przed pobraniem, skopiowaniem lub wysłaniem proszę sprawdzić dokumentację kliniczną.",
+      "sections": {
+        "first": {
+          "title": "Otwieranie notatki do dokumentacji",
+          "text": "W sekcji „Konsultacja” proszę wybrać „Sprawdź dokumentację kliniczną”. Otworzy się notatka zawierająca wyniki wizyty. Proszę sprawdzić tekst i w razie potrzeby zmienić brzmienie, jeśli wizyta jest otwarta do edycji."
+        },
+        "second": {
+          "title": "Sprawdzanie zmian wyników",
+          "text": "Jeśli komunikat informuje o zmianie w karcie po edycji notatki, proszę porównać notatkę z aktualną wizytą. Przed wybraniem opcji „Odtwórz na podstawie karty” proszę zachować potrzebne zapisy wprowadzone ręcznie. Ta opcja zastępuje edytowaną notatkę aktualną treścią karty."
+        },
+        "third": {
+          "title": "Pobieranie, kopiowanie lub przesyłanie",
+          "text": "Opcja „Pobierz PDF” zapisuje konsultację w osobnym pliku PDF z uwzględnieniem zmian w polu „Notatka do dokumentacji”. Można użyć opcji „Kopiuj”, aby wkleić notatkę do właściwego rekordu, lub skorzystać z wbudowanej funkcji przesyłania, jeśli jest dostępna. W miejscu docelowym proszę potwierdzić pacjenta, datę wizyty i treść."
+        }
+      }
+    }
+  }
+}

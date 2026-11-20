@@ -1,4 +1,4 @@
-export const APP_LANGUAGES = ['en', 'fr', 'de', 'it', 'es', 'hu', 'ro', 'zh', 'ar'] as const;
+export const APP_LANGUAGES = ['en', 'fr', 'de', 'it', 'es', 'hu', 'ro', 'zh', 'ar', 'pl'] as const;
 export type AppLanguage = (typeof APP_LANGUAGES)[number];
 
 /** Endonyms: each language is named in itself, so these are never translated. */
@@ -12,6 +12,7 @@ export const LANGUAGE_NAMES: Record<AppLanguage, string> = {
   ro: 'Română',
   zh: '简体中文',
   ar: 'العربية',
+  pl: 'Polski',
 };
 
 // Append new namespaces here (and in i18next.d.ts).

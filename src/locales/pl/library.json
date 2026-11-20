@@ -1,0 +1,158 @@
+{
+  "rechecks": {
+    "title": "Wizyty kontrolne",
+    "description": "Pacjenci, których kontrola przypada dzisiaj lub jest po terminie. Tutaj można otworzyć wizytę, wysłać przypomnienie lub usunąć termin zakończonej kontroli."
+  },
+  "openLatest": "Otwórz ostatnią wizytę pacjenta „{{name}}”",
+  "title": "Pacjenci",
+  "unnamedPatient": "Pacjent bez imienia",
+  "search": {
+    "placeholder": "Szukaj pacjentów lub opiekunów…",
+    "aria": "Szukaj kart"
+  },
+  "filters": {
+    "speciesAria": "Filtruj według gatunku",
+    "allSpecies": "Wszystkie gatunki",
+    "doctorAria": "Filtruj według lekarza",
+    "allDoctors": "Wszyscy lekarze"
+  },
+  "importPdf": "Importuj kartę z PDF",
+  "importPdfTitle": "Otwórz PDF karty utworzonej w tej aplikacji, aby kontynuować jej edycję",
+  "newPatient": "Nowy pacjent",
+  "newPatientTitle": "Wyczyść bieżącą kartę i dodaj nowego pacjenta",
+  "loading": "Wczytywanie…",
+  "empty": "Nie ma jeszcze zapisanych kart. Zapisują się automatycznie podczas pracy.",
+  "noMatch": {
+    "search": "Nie znaleziono pacjentów pasujących do wyszukiwania.",
+    "due": "Żaden pacjent nie wymaga kontroli.",
+    "filters": "Żadna karta nie pasuje do tych filtrów."
+  },
+  "table": {
+    "aria": "Pacjenci",
+    "patient": "Pacjent",
+    "number": "Nr pacjenta",
+    "species": "Gatunek",
+    "visits": "Wizyty",
+    "updated": "Aktualizacja",
+    "recheck": "Kontrola",
+    "finalized": "Zatwierdzone"
+  },
+  "due": "Kontrole do wykonania",
+  "dueCount": "Kontrole do wykonania ({{n}})",
+  "dueTitle": "Pokaż tylko pacjentów, których kontrola przypada dzisiaj lub jest po terminie",
+  "recall": {
+    "overdue": "{{date}} · po terminie",
+    "today": "{{date}} · dzisiaj"
+  },
+  "deciduousSuffix": "{{species}} · uzębienie mleczne",
+  "visits_one": "{{count}} wizyta",
+  "visits_other": "{{count}} wizyty",
+  "visits_few": "{{count}} wizyty",
+  "visits_many": "{{count}} wizyt",
+  "visitsExpand_one": "{{count}} wizyta – rozwiń",
+  "visitsExpand_other": "{{count}} wizyty – rozwiń",
+  "visitsExpand_few": "{{count}} wizyty – rozwiń",
+  "visitsExpand_many": "{{count}} wizyt – rozwiń",
+  "openPatient": "Otwórz kartę pacjenta „{{name}}”",
+  "visit": {
+    "undated": "Wizyta bez daty",
+    "openDated": "Otwórz wizytę z dnia {{date}}",
+    "openUndated": "Otwórz wizytę bez daty",
+    "deleteDated": "Usuń wizytę pacjenta „{{name}}” z dnia {{date}}",
+    "deleteUndated": "Usuń wizytę bez daty pacjenta „{{name}}”",
+    "updated": "Zaktualizowano {{when}}"
+  },
+  "actions": {
+    "menu": "Czynności",
+    "reminder": "Przypomnienie",
+    "reminderTitle": "Wyślij przypomnienie o kontroli do „{{who}}”",
+    "clearRecall": "Usuń przypomnienie o kontroli pacjenta „{{name}}”",
+    "clearRecallTitle": "Usuń przypomnienie o kontroli pacjenta „{{name}}”, np. po kontroli, dla której nie utworzono karty",
+    "newVisit": "Nowa wizyta",
+    "newVisitTitle": "Rozpocznij nową wizytę pacjenta „{{name}}”",
+    "history": "Historia wersji",
+    "historyChartTitle": "Kto i kiedy zapisał kartę pacjenta „{{name}}”",
+    "historyVisitTitle": "Kto i kiedy zapisał tę wizytę",
+    "deleteChart": "Usuń kartę pacjenta „{{name}}”",
+    "loadMore": "Wczytaj więcej kart",
+    "clearRecallShort": "Usuń termin kontroli"
+  },
+  "errors": {
+    "load": "Nie udało się wczytać kart. {{error}}",
+    "loadMore": "Nie udało się wczytać kolejnych kart. {{error}}",
+    "open": "Nie udało się otworzyć tej karty. {{error}}",
+    "delete": "Nie udało się usunąć tej wizyty. {{error}}",
+    "clearRecall": "Nie udało się usunąć terminu tej kontroli. {{error}}"
+  },
+  "deleteDialog": {
+    "title": "Usunąć wizytę pacjenta „{{name}}”{{when}}?",
+    "titleUnnamed": "Usunąć tę kartę{{when}}?",
+    "message": "Ta wizyta zostanie usunięta z chmury wszystkim osobom w placówce. Tej operacji nie można cofnąć.",
+    "confirm": "Usuń wizytę"
+  },
+  "clearDialog": {
+    "title": "Usunąć termin kontroli pacjenta „{{name}}”?",
+    "message": "Użyj tej opcji, jeśli kontrola się odbyła bez tworzenia nowej karty albo nie jest już potrzebna. Pacjent zniknie z listy kontroli do wykonania.",
+    "confirm": "Usuń termin kontroli"
+  },
+  "history": {
+    "aria": "Historia karty",
+    "title": "Historia karty",
+    "titleWith": "Historia – {{label}}",
+    "openVisit": "Otwórz tę wizytę",
+    "loading": "Wczytywanie…",
+    "empty": "Brak zapisanych wersji. Historia rozpoczyna się od pierwszego zapisu.",
+    "pick": "Wybierz wersję, aby ją wyświetlić.",
+    "loadingVersion": "Wczytywanie wersji…",
+    "current": "Bieżąca",
+    "outside": "Osoba spoza placówki",
+    "automatic": "ToothOps (automatycznie)",
+    "baseline": "Sprzed rozpoczęcia historii · ostatni zapis {{when}}",
+    "range": "{{start}} – {{end}}",
+    "restore": "Przywróć tę wersję",
+    "restoring": "Przywracanie…",
+    "restoreHint": "Wybierz Edytuj kartę, aby przywrócić wcześniejszą wersję.",
+    "loadFailed": "Nie udało się wczytać tej wersji. {{error}}",
+    "restoreFailed": "Nie udało się przywrócić wersji. {{error}}",
+    "restored": "Przywrócono wersję.",
+    "confirmTitle": "Przywrócić tę wersję?",
+    "confirmMessage": "Karta wróci do stanu zapisanego {{when}}. Dzisiejsza wersja pozostanie w historii, więc będzie można do niej wrócić.",
+    "confirmButton": "Przywróć"
+  },
+  "templates": {
+    "chartCodes": "Kody karty",
+    "chartCodeHelp": "Wpisz {, aby zobaczyć podpowiedzi, lub wybierz kod poniżej. Kody wstawiają wartości zapisane w karcie i proszą o uzupełnienie brakujących danych. Inne nazwy w nawiasach klamrowych stają się polami do samodzielnego uzupełnienia.",
+    "fieldExamples": "Przykładowe pola do uzupełnienia: {Numery zębów}, {Szczegóły zabiegu} i {Termin kontroli}.",
+    "fieldsInTemplate": "Pola w tym szablonie",
+    "fieldHelp": "Aby utworzyć pole do uzupełnienia, wpisz krótką instrukcję w nawiasach klamrowych, np. {Wprowadź numery zębów}. Przy użyciu szablonu aplikacja poprosi o podanie wartości.",
+    "aria": "Szablony raportów",
+    "title": "Szablony raportów",
+    "saved": "Zapisane szablony",
+    "new": "Nowy szablon",
+    "empty": "Brak szablonów. Utwórz szablon poniżej lub wybierz Nowy szablon w raporcie z leczenia.",
+    "untitled": "Bez tytułu",
+    "nameLabel": "Nazwa szablonu",
+    "namePlaceholder": "np. Rutynowe czyszczenie (kot)",
+    "bodyLabel": "Tekst raportu",
+    "bodyPlaceholder": "Tekst do wstawienia w raporcie z leczenia i zabiegu…",
+    "nameRequired": "Nadaj szablonowi nazwę, która będzie wyświetlana w menu wstawiania.",
+    "saveFailed": "Nie udało się zapisać szablonu.",
+    "deleteFailed": "Nie udało się usunąć szablonu.",
+    "cloudOff": "Nie skonfigurowano dostępu do chmury.",
+    "deleteTitle": "Usunąć „{{name}}”?",
+    "deleteMessage": "Ten szablon zostanie usunięty wszystkim osobom w placówce. Tej operacji nie można cofnąć.",
+    "deleteConfirm": "Usuń szablon",
+    "saving": "Zapisywanie…",
+    "saveChanges": "Zapisz zmiany",
+    "saveTemplate": "Zapisz szablon"
+  },
+  "workspace": {
+    "description": "Przeszukuj dokumentację pacjentów, przeglądaj wizyty i zarządzaj kontrolami.",
+    "backToVisit": "Wróć do bieżącej wizyty"
+  },
+  "finalized": {
+    "yes": "Tak",
+    "no": "Nie",
+    "count": "{{n}} z {{total}}"
+  }
+}

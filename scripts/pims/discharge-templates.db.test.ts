@@ -52,7 +52,7 @@ describe.skipIf(!container)('practice discharge template libraries', () => {
       'scripts/pims/bootstrap.sql',
       'supabase/migrations/20261215_consultation_templates.sql',
       'supabase/migrations/20261216_custom_consultation_sections.sql',
-      'supabase/migrations/20261219_discharge_templates.sql',
+      'supabase/migrations/20261222_discharge_templates.sql',
     ]) sql(readFileSync(file, 'utf8'));
   }, 20_000);
 

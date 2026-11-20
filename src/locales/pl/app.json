@@ -1,0 +1,509 @@
+{
+  "refinement": {
+    "noChanges": "Brak sugerowanych zmian. Tekst pozostał bez zmian.",
+    "applied": "Zastosowano poprawki.",
+    "kept": "Zachowano pierwotną treść.",
+    "consentRequired": "Włącz przetwarzanie przez AI, aby poprawić ten tekst.",
+    "fieldChanged": "Tekst zmienił się podczas opracowywania poprawek. Wybierz Popraw tekst, aby spróbować ponownie.",
+    "enterText": "Wprowadź tekst do poprawy.",
+    "tooLong": "Ten tekst jest za długi, aby poprawić go w całości.",
+    "action": "Popraw tekst",
+    "modes": {
+      "clean": "Popraw styl",
+      "concise": "Skróć tekst",
+      "organize": "Uporządkuj"
+    },
+    "review": "Sprawdź poprawki",
+    "original": "Oryginał",
+    "proposed": "Proponowane brzmienie",
+    "apply": "Zastosuj poprawki",
+    "failed": "Nie udało się poprawić tekstu.",
+    "changedFacts": "W propozycji zmieniono liczbę, jednostkę lub pole do uzupełnienia. Zachowano pierwotny tekst."
+  },
+  "brand": "ToothOps – karta stomatologiczna",
+  "brandTrial": "ToothOps – karta stomatologiczna · wersja próbna",
+  "skipLink": "Przejdź do głównej treści",
+  "sections": {
+    "patient": "Pacjent",
+    "exam": "Badanie",
+    "anesthesia": "Znieczulenie",
+    "charting": "Karta zębowa",
+    "diagnosis": "Rozpoznanie",
+    "procedure": "Zabieg",
+    "images": "Obrazowanie",
+    "treatment": "Raport z leczenia",
+    "ownerReport": "Raport dla opiekuna",
+    "menuFallback": "Sekcje",
+    "nav": "Sekcje karty"
+  },
+  "species": {
+    "feline": "Kot",
+    "canine": "Pies",
+    "felineDeciduous": "Kot · uzębienie mleczne",
+    "canineDeciduous": "Pies · uzębienie mleczne",
+    "equine": "Koń",
+    "rabbit": "Królik"
+  },
+  "chartingView": {
+    "label": "Widok karty zębowej",
+    "grid": "Tabela",
+    "tooth": "Według zęba",
+    "gridHint": "Tabela z pomiarami poszczególnych zębów",
+    "toothHint": "Wybierz ząb na ponumerowanym schemacie, aby zapisać wyniki, uwagi oraz planowane i wykonane ekstrakcje"
+  },
+  "customize": {
+    "label": "Dostosuj",
+    "hint": "Kieszonki na korzeń, kolumny, informacje widoczne obok zębów i opcje PDF"
+  },
+  "radiographic": {
+    "title": "Raport radiograficzny",
+    "placeholder": "np. 108: pionowy ubytek kości przy korzeniu dystalnym, odsłonięcie furkacji. 307: resorpcja zęba typu 2.",
+    "hint": "W pliku PDF pojawia się poniżej raportu z leczenia."
+  },
+  "ct": {
+    "title": "Raport TK",
+    "placeholder": "np. Prawa część doogonowa szczęki: bez osteolizy. 108: przejaśnienie okołowierzchołkowe przy korzeniu mezjalnym. Stawy skroniowo-żuchwowe w normie.",
+    "hint": "W pliku PDF pojawia się poniżej raportu radiograficznego."
+  },
+  "lock": {
+    "title": "Tylko do odczytu. Wybierz Edytuj kartę, aby wprowadzić zmiany.",
+    "description": "Edycja tej zapisanej wizyty jest wyłączona."
+  },
+  "topbar": {
+    "patientEmpty": "Brak pacjenta. Dodaj pacjenta w sekcji Pacjent.",
+    "visitSwitchTitle": "Historia wizyt · liczba wizyt: {{n}}. Wybierz wizytę, aby ją wyświetlić.",
+    "visitSwitchLabel": "Historia wizyt · wybierz wizytę z {{n}} dostępnych dla tego pacjenta",
+    "undatedVisit": "Wizyta bez daty",
+    "visitLatest": "{{date}} · najnowsza",
+    "visitEarlier": "{{date}} · wcześniejsza",
+    "editingShort": "Edycja",
+    "editingTitle": "Edycja zapisanej wizyty. Zmiany zapisują się automatycznie.",
+    "signIn": "Zaloguj się",
+    "signInHint": "Masz już konto placówki? Zaloguj się",
+    "signUp": "Utwórz bezpłatne konto",
+    "signUpHint": "Utwórz konto placówki, aby zapisywać karty w chmurze oraz drukować nazwę i logo placówki w plikach PDF",
+    "myCharts": "Pacjenci",
+    "myChartsShort": "Pacjenci",
+    "editChart": "Edytuj kartę",
+    "editChartShort": "Edytuj",
+    "undo": "Cofnij zmiany",
+    "undoTitle": "Przywróć stan karty sprzed wybrania opcji Edytuj kartę",
+    "doneEditing": "Zakończ edycję",
+    "viewOnlyChipTitle": "Tryb tylko do odczytu chroni zapisaną wizytę przed przypadkowymi zmianami. Wybierz Edytuj kartę, aby wprowadzić zmiany.",
+    "newPatient": "Nowy pacjent",
+    "newPatientShort": "Nowy",
+    "newPatientTitle": "Utwórz pustą kartę dla nowego pacjenta",
+    "doneEditingShort": "Gotowe",
+    "addLogo": "Dodaj logo"
+  },
+  "status": {
+    "waitingToChart": "Ta wizyta jest na tym urządzeniu. Zapisze się w chmurze, gdy zaczniesz uzupełniać kartę.",
+    "autosaveOff": "Zapis automatyczny jest wyłączony. Zapisz wizytę, aby zsynchronizować ją z chmurą.",
+    "srSaving": "Zapisywanie karty",
+    "srSaved": "Zapisano kartę",
+    "srNotSaved": "Nie zapisano karty",
+    "saving": "Zapisywanie…",
+    "notSavedRetry": "Nie zapisano · ponów próbę",
+    "retryTitle": "Spróbuj ponownie zapisać kartę",
+    "notSaved": "Nie zapisano",
+    "viewOnly": "Tylko do odczytu",
+    "viewOnlyTitle": "Zapisane wizyty otwierają się w trybie tylko do odczytu. Wybierz Edytuj kartę, aby wprowadzić zmiany.",
+    "offline": "Offline · zapisano na tym urządzeniu",
+    "offlineTitle": "Zmiany są przechowywane na tym urządzeniu i zapiszą się w chmurze po odzyskaniu połączenia",
+    "needsName": "Podaj imię pacjenta, aby zapisać kartę",
+    "needsNameTitle": "Karta zostanie zapisana po podaniu imienia pacjenta",
+    "saveTitle": "Karta jest obecnie przechowywana na tym urządzeniu. Zapisze się automatycznie po rozpoczęciu pracy. Zapisz ją teraz, aby otworzyć na innym urządzeniu.",
+    "unsaved": "Niezapisane zmiany",
+    "unsavedTitle": "Zapisywanie automatyczne…",
+    "savedTitle": "Zapisano w chmurze {{when}}",
+    "local": "Tylko na tym urządzeniu",
+    "localTitle": "Karty z wersji próbnej pozostają w tej przeglądarce. Utwórz bezpłatne konto, aby zapisywać je w chmurze.",
+    "saveHint": "Przed zapisaniem podaj imię pacjenta. Ułatwi to odnalezienie karty.",
+    "savedRich": "<word>Zapisano · </word>{{when}}",
+    "saved": "Zapisano"
+  },
+  "otherTab": {
+    "text": "Ta karta jest otwarta w innej karcie lub w innym oknie. W obu miejscach edytujesz ten sam projekt. Zamknij jedną kartę, aby uniknąć nadpisania zmian."
+  },
+  "footer": {
+    "feedback": "Coś nie działa lub masz pomysł? <a>Prześlij opinię</a>"
+  },
+  "fab": {
+    "preview": "Podgląd PDF",
+    "download": "Pobierz pliki PDF",
+    "previewAria": "Wyświetl podgląd i pobierz kartę w formacie PDF",
+    "downloadAria": "Wyświetl podgląd i pobierz kartę kliniczną oraz raport dla opiekuna",
+    "review": "Sprawdź i eksportuj",
+    "reviewHint": "Wyświetl podgląd, pobierz lub udostępnij dokumenty wizyty."
+  },
+  "errors": {
+    "setting": "Nie udało się zapisać tego ustawienia. {{error}}",
+    "openVisit": "Nie udało się otworzyć tej wizyty. {{error}}",
+    "loadCharts": "Nie udało się wczytać kart. {{error}}",
+    "newVisit": "Nie udało się rozpocząć nowej wizyty. {{error}}",
+    "signOut": "Nie udało się wylogować. {{error}}",
+    "preview": "Schematy nadal się wczytują, więc nie można jeszcze przygotować podglądu. Spróbuj ponownie za chwilę.",
+    "damagedChart": "Ta karta jest uszkodzona i nie można jej otworzyć.",
+    "pdfImport": "Nie udało się odczytać tego pliku PDF. Użyj pliku PDF karty pobranego z ToothOps."
+  },
+  "toasts": {
+    "reverted": "Cofnięto zmiany.",
+    "pdfImported": "Zaimportowano z PDF jako nową kartę.",
+    "pdfImportedNamed": "Zaimportowano kartę pacjenta „{{name}}” z PDF jako nową kartę.",
+    "visitStarted": "Rozpoczęto nową wizytę.",
+    "visitStartedFor": "Rozpoczęto nową wizytę pacjenta „{{name}}”.",
+    "visitStartedCarried_one": "Rozpoczęto nową wizytę. Przeniesiono {{count}} brakujący lub usunięty ząb.",
+    "visitStartedCarried_other": "Rozpoczęto nową wizytę. Liczba przeniesionych braków lub ekstrakcji: {{count}}.",
+    "visitStartedCarried_few": "Rozpoczęto nową wizytę. Przeniesiono {{count}} brakujące lub usunięte zęby.",
+    "visitStartedCarried_many": "Rozpoczęto nową wizytę. Przeniesiono {{count}} brakujących lub usuniętych zębów.",
+    "visitStartedForCarried_one": "Rozpoczęto nową wizytę pacjenta „{{name}}”. Przeniesiono {{count}} brakujący lub usunięty ząb.",
+    "visitStartedForCarried_other": "Rozpoczęto nową wizytę pacjenta „{{name}}”. Liczba przeniesionych braków lub ekstrakcji: {{count}}.",
+    "visitStartedForCarried_few": "Rozpoczęto nową wizytę pacjenta „{{name}}”. Przeniesiono {{count}} brakujące lub usunięte zęby.",
+    "visitStartedForCarried_many": "Rozpoczęto nową wizytę pacjenta „{{name}}”. Przeniesiono {{count}} brakujących lub usuniętych zębów."
+  },
+  "revert": {
+    "title": "Cofnąć zmiany?",
+    "message": "Karta zostanie przywrócona do stanu sprzed wybrania opcji Edytuj kartę. Ta wersja zostanie zapisana.",
+    "confirm": "Cofnij zmiany"
+  },
+  "todaysVisit": {
+    "message": "Otworzyć dzisiejszą wizytę zamiast rozpoczynać drugą?",
+    "confirm": "Otwórz dzisiejszą wizytę",
+    "cancel": "Rozpocznij drugą wizytę"
+  },
+  "historyRestoreHint": "Otwórz tę wizytę, aby przywrócić wcześniejszą wersję.",
+  "feedbackMail": {
+    "doing": "Wykonywane czynności:",
+    "expected": "Oczekiwany wynik:",
+    "actual": "Rzeczywisty wynik:",
+    "involved": "Gatunek / ząb / sekcja (jeśli dotyczy):",
+    "browser": "Przeglądarka i urządzenie:",
+    "screenshot": "Jeśli zrzut ekranu pomoże wyjaśnić problem, dołącz go do wiadomości."
+  },
+  "menu": {
+    "open": "Otwórz menu ustawień",
+    "trigger": "Ustawienia",
+    "signedInAs": "Zalogowano jako <strong>{{email}}</strong>",
+    "heads": {
+      "practice": "Placówka",
+      "account": "Konto",
+      "admin": "Administracja",
+      "app": "Aplikacja"
+    },
+    "practiceSettings": {
+      "label": "Ustawienia placówki",
+      "sub": "Nazwa, logo, zespół i rozliczenia."
+    },
+    "reminders": {
+      "label": "Przypomnienia o kontrolach",
+      "sub": "Szablon wiadomości dla opiekuna i harmonogram automatycznej wysyłki."
+    },
+    "account": {
+      "label": "Ustawienia konta",
+      "sub": "Imię i nazwisko lekarza, adres e-mail i hasło."
+    },
+    "admin": {
+      "label": "Panel administracyjny",
+      "sub": "Zarządzaj użytkownikami, placówkami i planami."
+    },
+    "chartSettings": {
+      "label": "Ustawienia karty",
+      "sub": "Kieszonki na korzeń, kolumny tabeli i informacje widoczne obok zębów."
+    },
+    "feedback": {
+      "label": "Prześlij opinię",
+      "sub": "Zgłoś problem lub zaproponuj usprawnienie."
+    },
+    "whatsNew": {
+      "label": "Co nowego",
+      "sub": "Najnowsze funkcje i usprawnienia."
+    },
+    "gettingStarted": {
+      "label": "Pierwsze kroki",
+      "sub": "Wyświetl ponownie instruktaż po wszystkich częściach aplikacji."
+    },
+    "homepage": {
+      "label": "Strona ToothOps",
+      "sub": "Informacje o produkcie, ceny i dane kontaktowe."
+    },
+    "signOut": {
+      "label": "Wyloguj się",
+      "sub": "Zakończ sesję."
+    }
+  },
+  "trialSignIn": {
+    "title": "Zalogować się i wyczyścić kartę próbną?",
+    "message": "Zalogowanie się do istniejącego konta spowoduje wyczyszczenie karty próbnej na tym urządzeniu. Aby ją zachować, pobierz najpierw plik PDF lub utwórz bezpłatne konto.",
+    "confirm": "Wyczyść i zaloguj się",
+    "cancel": "Kontynuuj dokumentowanie"
+  },
+  "speciesChange": {
+    "title": "Zmienić gatunek lub uzębienie?",
+    "messageGrid": "U kotów, psów i w uzębieniu mlecznym stosuje się odmienną numerację zębów. Zmiana wyczyści tabelę karty zębowej. Dane pacjenta i wyniki badania zostaną zachowane.",
+    "messageDiagram": "U kotów, psów i w uzębieniu mlecznym stosuje się odmienną numerację zębów. Zmiana usunie oznaczenia, uwagi i rysunki na schemacie. Dane pacjenta i wyniki badania zostaną zachowane.",
+    "messageBoth": "U kotów, psów i w uzębieniu mlecznym stosuje się odmienną numerację zębów. Zmiana wyczyści tabelę karty zębowej oraz usunie oznaczenia, uwagi i rysunki na schemacie. Dane pacjenta i wyniki badania zostaną zachowane.",
+    "confirm": "Zmień i wyczyść"
+  },
+  "sync": {
+    "cloudNotConfigured": "Nie skonfigurowano dostępu do chmury.",
+    "historyNotSetUp": "Historia kart nie jest jeszcze skonfigurowana na serwerze.",
+    "sessionExpired": "Sesja wygasła. Zaloguj się ponownie i zapisz kartę. Nadal jest dostępna na tym urządzeniu.",
+    "notAllowed": "Nie udało się zapisać karty na Twoim koncie. Jeśli problem się powtarza, skontaktuj się z właścicielem placówki.",
+    "tooLarge": "Karta jest za duża, aby ją zapisać. Przyczyną może być zbyt wiele obrazów lub ich rozmiar. Usuń załącznik i spróbuj ponownie.",
+    "offline": "Nie udało się połączyć z serwerem. Sprawdź połączenie i spróbuj ponownie. Karta nadal jest na tym urządzeniu.",
+    "saveFailed": "Zapis nie powiódł się: {{message}}. Karta nadal jest na tym urządzeniu. Spróbuj ponownie za chwilę.",
+    "unknownError": "nieznany błąd",
+    "changedByOther": "Ktoś inny zmienił tę kartę. Otwórz ją ponownie z widoku Pacjenci, aby zobaczyć zmienioną wersję.",
+    "notSavedConflict": "Nie zapisano. Ktoś inny zmienił tę kartę. Otwórz ją ponownie z widoku Pacjenci, aby zobaczyć zmienioną wersję.",
+    "noPermission": "Nie masz uprawnień do zapisywania zmian w tej karcie. Zwróć się do właściciela placówki lub rozpocznij nową wizytę.",
+    "noDeletePermission": "Nie masz uprawnień do usunięcia tej karty. Zwróć się do właściciela placówki.",
+    "practiceUnknown": "Dane placówki nie zostały jeszcze wczytane, dlatego nie można w niej zapisać nowej karty. Sprawdź połączenie i odśwież stronę. Karta nadal jest na tym urządzeniu.",
+    "conflict": {
+      "title": "Tę kartę zmieniono w innym miejscu",
+      "message": "Po otwarciu karty ktoś z zespołu zapisał ją lub zapisano ją na innym urządzeniu ({{when}}). Zapisanie jej teraz zastąpi tamte zmiany Twoimi.",
+      "confirm": "Zapisz moją wersję",
+      "cancel": "Zachowaj zapisaną wersję"
+    },
+    "duplicate": {
+      "titleToday": "Pacjent „{{name}}” ma już dzisiaj wizytę",
+      "titleOn": "Pacjent „{{name}}” ma już wizytę w dniu {{date}}",
+      "patient": "Ten pacjent",
+      "message": "Ta karta byłaby drugą wizytą tego samego dnia. Otworzyć istniejącą wizytę czy zachować obie? Otwarcie istniejącej wizyty odrzuci informacje wprowadzone w nowej karcie.",
+      "confirm": "Otwórz istniejącą wizytę",
+      "cancel": "Zachowaj obie"
+    },
+    "discard": {
+      "title": "Odrzucić niezapisane zmiany?",
+      "openOther": {
+        "message": "Zmiany w tej karcie nie zostały jeszcze zapisane w chmurze. Otworzyć mimo to inną kartę? Aby zachować zmiany, najpierw anuluj i wybierz Zapisz.",
+        "confirm": "Odrzuć i otwórz inną kartę"
+      },
+      "restore": {
+        "message": "Zmiany w tej karcie nie zostały jeszcze zapisane w chmurze. Przywrócić mimo to tę wersję? Aby zachować zmiany, najpierw anuluj i wybierz Zapisz.",
+        "confirm": "Odrzuć i przywróć tę wersję"
+      },
+      "signOut": {
+        "message": "Zmiany w tej karcie nie zostały jeszcze zapisane w chmurze. Wylogować się mimo to? Aby zachować zmiany, najpierw anuluj i wybierz Zapisz.",
+        "confirm": "Odrzuć i wyloguj się"
+      },
+      "newVisit": {
+        "message": "Zmiany w tej karcie nie zostały jeszcze zapisane w chmurze. Rozpocząć mimo to nową wizytę? Aby zachować zmiany, najpierw anuluj i wybierz Zapisz.",
+        "confirm": "Odrzuć i rozpocznij nową wizytę"
+      },
+      "newPatient": {
+        "message": "Zmiany w tej karcie nie zostały jeszcze zapisane w chmurze. Dodać mimo to nowego pacjenta? Aby zachować zmiany, najpierw anuluj i wybierz Zapisz.",
+        "confirm": "Odrzuć i dodaj nowego pacjenta"
+      },
+      "importPdf": {
+        "message": "Zmiany w tej karcie nie zostały jeszcze zapisane w chmurze. Zaimportować mimo to plik PDF? Aby zachować zmiany, najpierw anuluj i wybierz Zapisz.",
+        "confirm": "Odrzuć i zaimportuj ten plik PDF"
+      }
+    },
+    "identity": {
+      "title": "Czy te dane dotyczą tego samego pacjenta?",
+      "message": "Zapisane dane: {{saved}}\nZmienione dane: {{proposed}}\n\nZapisanie zmieni dane pacjenta w tej karcie. Dotychczasowe wyniki i obrazy pozostaną dołączone.\n\nJeśli dane dotyczą innego pacjenta, anuluj i wybierz Nowy pacjent.",
+      "confirm": "Potwierdź korektę",
+      "blank": "Brak imienia lub numeru pacjenta",
+      "paused": "Dane pacjenta zostały zmienione. Zapisywanie zostało wstrzymane. Zapisz ponownie, aby potwierdzić korektę, lub wybierz Nowy pacjent, jeśli wprowadzasz dane innego pacjenta.",
+      "changed": "Pacjent zmienił się podczas sprawdzania zapisu. Sprawdź dane i zapisz ponownie."
+    },
+    "patientNumberFailed": "Nie udało się nadać numeru pacjenta. Spróbuj ponownie po połączeniu z internetem lub wprowadź numer ręcznie."
+  },
+  "storage": {
+    "full": "Pamięć tej przeglądarki jest pełna. Ostatnie zmiany mogą się nie zapisać na tym urządzeniu. Zapisz kartę lub pobierz ją w formacie PDF."
+  },
+  "chartsMenu": {
+    "thisPatient": "Ten pacjent",
+    "newVisit": "Nowa wizyta",
+    "newVisitHint": "Nowa wizyta z datą. Zachowuje dane pacjenta i informacje o wcześniej brakujących lub usuniętych zębach.",
+    "history": "Historia wersji",
+    "historyHint": "Każda zapisana wersja karty wraz z informacją, kto i kiedy ją zapisał.",
+    "allPatients": "Wszyscy pacjenci",
+    "openLibrary": "Pokaż pacjentów",
+    "openLibraryHint": "Wyszukuj i otwieraj karty wszystkich pacjentów."
+  },
+  "workspace": {
+    "rechecks": "Wizyty kontrolne",
+    "help": "Pomoc",
+    "account": "Twoje konto",
+    "visitActions": "Czynności dotyczące wizyty",
+    "practice": "Ustawienia placówki",
+    "currentVisit": "Bieżąca wizyta",
+    "navigation": "Nawigacja w obszarze roboczym",
+    "patientContext": "Bieżący pacjent i jego wizyta",
+    "more": "Więcej",
+    "patientNumber": "Numer pacjenta {{number}}",
+    "visitDate": "Wizyta: {{date}}"
+  },
+  "animalTabs": {
+    "label": "Otwarci pacjenci",
+    "unnamed": "Nowy pacjent",
+    "ownerUnknown": "Nie podano opiekuna",
+    "close": "Zamknij kartę pacjenta „{{name}}”",
+    "closeHint": "Zamknij kartę bez usuwania pacjenta",
+    "add": "Otwórz innego pacjenta",
+    "emptyTitle": "Brak otwartego pacjenta",
+    "emptyBody": "Otwórz pacjenta, aby zacząć uzupełniać kartę.",
+    "open": "Otwórz pacjenta",
+    "saveFirst": "Zapisz bieżącą kartę przed przełączeniem pacjenta. Jeśli brakuje imienia pacjenta, podaj je.",
+    "pid": "Nr pacjenta {{number}}",
+    "noPid": "Brak numeru pacjenta",
+    "previous": "Poprzedni pacjenci",
+    "next": "Następni pacjenci",
+    "closeUnsaved": "Ta karta nadal zawiera niezapisane zmiany. Otwórz ją i zapisz przed zamknięciem.",
+    "summary": "{{name}} · {{details}}",
+    "imageCheckFailed": "Nie udało się sprawdzić obrazów w karcie. Pozostaw kartę otwartą i spróbuj ponownie.",
+    "uploadPending": "Poczekaj na zakończenie przesyłania obrazu i zamknij kartę.",
+    "imagesRecovered": "Odzyskano obrazy przesłane w kartach bez nazwy. Potwierdź dane pacjenta przed zapisaniem.",
+    "closeConfirmTitle": "Zamknąć bez zapisywania?",
+    "closeConfirmMessage": "Niezapisane zmiany w tej karcie zostaną odrzucone. Przesłane obrazy pozostaną zachowane.",
+    "closeConfirm": "Zamknij bez zapisywania",
+    "keepOpen": "Pozostaw kartę otwartą",
+    "closeImageDraftMessage": "Karta nie została zapisana. Zamknięcie spowoduje odrzucenie jej zawartości i trwałe usunięcie przesłanych obrazów.",
+    "draftAlreadySaved": "Kartę zapisano w innym miejscu. Otwórz ją ponownie przed odrzuceniem projektu.",
+    "closeTitle": "Niezapisane zmiany",
+    "saveAndClose": "Zapisz i zamknij",
+    "closeChoiceMessage": "Zapisz zmiany przed zamknięciem lub zamknij bez zapisywania, aby je odrzucić. Obrazy przesłane w zapisanych kartach pozostaną zachowane.",
+    "closeImageChoiceMessage": "Zapisz kartę przed zamknięciem. Zamknięcie bez zapisywania spowoduje odrzucenie zawartości karty i trwałe usunięcie przesłanych obrazów."
+  },
+  "finalization": {
+    "confirmTitle": "Zatwierdzić tę wizytę?",
+    "confirmMessage": "Wizyta zostanie zapisana w trybie tylko do odczytu. Aby później wprowadzić zmiany, wybierz {{edit}}.",
+    "finalize": "Zatwierdź",
+    "finalized": "Zatwierdzono",
+    "description": "Ten wpis został zatwierdzony. Wybierz Edytuj kartę, aby wprowadzić zmiany.",
+    "failed": "Nie udało się zmienić stanu zatwierdzenia wpisu. {{error}}"
+  },
+  "radiologyReport": {
+    "automaticLanguage": "Automatyczny",
+    "languageTip": "Język tekstu AI: {{language}}. Zmień go w menu Dostosuj.",
+    "dictate": "Dyktuj wyniki RTG",
+    "title": "Raport radiologiczny",
+    "description": "Utwórz wersję roboczą raportu na podstawie zapisanych wyników. Obrazy nie są analizowane.",
+    "context": "Dodatkowe informacje o badaniu (opcjonalnie)",
+    "radiologyHistory": "Istotne informacje z wywiadu",
+    "radiologyTechnique": "Technika i zakres badania",
+    "radiologyQuestion": "Pytanie kliniczne lub przyczyna skierowania",
+    "missingContext": "Podaj technikę badania i pytanie kliniczne, jeśli są znane. Wersja robocza pominie brakujące informacje.",
+    "language": "Język wersji roboczej",
+    "generate": "Wygeneruj wersję roboczą",
+    "generating": "Generowanie wersji roboczej…",
+    "aiUnavailable": "Zaloguj się na konto z dostępem do AI, aby wygenerować wersję roboczą. Nadal możesz napisać raport ręcznie.",
+    "preview": "Wygenerowana wersja robocza",
+    "previewStale": "Karta lub raport uległy zmianie. Przed użyciem tego podglądu wygeneruj nową wersję roboczą.",
+    "use": "Użyj wersji roboczej",
+    "discard": "Odrzuć wersję roboczą",
+    "body": "Tekst raportu",
+    "reviewed": "Sprawdzono pod kątem zgodności z bieżącą kartą.",
+    "stale": "Od utworzenia wersji roboczej karta uległa zmianie. Zaktualizuj raport lub sprawdź go z bieżącą kartą.",
+    "unreviewed": "Wersja robocza · sprawdź przed eksportem.",
+    "checked": "Sprawdziłem(-am) zgodność raportu z bieżącą kartą.",
+    "copy": "Kopiuj raport",
+    "pdf": "Pobierz PDF",
+    "undo": "Cofnij zastąpienie",
+    "copied": "Skopiowano raport.",
+    "downloaded": "Pobrano raport w formacie PDF.",
+    "shared": "Udostępniono raport w formacie PDF.",
+    "copyPromptShown": "Tekst raportu można skopiować z okna dialogowego.",
+    "copyPrompt": "Skopiuj sprawdzony raport radiologiczny:",
+    "filename": "ToothOps-raport-radiologiczny.pdf",
+    "generateFailed": "Nie udało się wygenerować raportu. Dotychczasowy raport został zachowany.",
+    "exportFailed": "Nie udało się wyeksportować raportu. Spróbuj ponownie lub skopiuj sprawdzony tekst.",
+    "pdfFont": "Plik PDF nie może wyświetlić jednego ze znaków raportu. Zmień tekst lub go skopiuj.",
+    "pdfLimit": "Raport jest za długi, aby zapisać go w PDF. Skróć go lub skopiuj.",
+    "pdfUnsupported": "Ta przeglądarka nie mogła pobrać pliku PDF. Skopiuj sprawdzony raport.",
+    "headingHistory": "Wywiad kliniczny",
+    "headingTechnique": "Technika badania",
+    "headingFindings": "Opisane wyniki badania RTG",
+    "headingImpression": "Zapisane wnioski",
+    "headingRecommendations": "Zapisane zalecenia",
+    "headingQuestion": "Pytanie kliniczne",
+    "notRecorded": "Nie odnotowano",
+    "attribution": "Pacjent: {{patient}} · Nr pacjenta: {{number}} · Data karty: {{date}}",
+    "draftEmpty": "Wygenerowany raport był pusty lub nieczytelny. Spróbuj ponownie.",
+    "sourceRequired": "Dodaj wyniki badania RTG przed wygenerowaniem raportu.",
+    "sourceTooLarge": "Karta zawiera zbyt dużo tekstu do wygenerowania pojedynczego raportu. Skróć opis i spróbuj ponownie.",
+    "aiFeatureLabel": "Wersje robocze raportów radiologicznych",
+    "aiFeatureHint": "Jedno żądanie na raport radiologiczny, przygotowywany do weryfikacji klinicznej na podstawie wyników zapisanych w karcie.",
+    "modelLabel": "Model do opracowywania raportów radiologicznych",
+    "modelUpdated": "Do opracowywania raportów radiologicznych używany jest teraz model {{model}}.",
+    "findingsPlaceholder": "Opisz widoczne zmiany, uwzględniając numery zębów, lokalizację, pomiary i niepewność. Możesz również podać technikę badania i wnioski kliniczne.",
+    "manual": "Napisz raport ręcznie",
+    "outputTitle": "Raport",
+    "radiologyHistoryHelp": "Opcjonalnie: w razie potrzeby podaj wywiad dotyczący tego badania. W przeciwnym razie użyty zostanie wywiad z konsultacji.",
+    "radiologyTechniqueHelp": "Opcjonalnie: projekcje, technika i zakres badania udokumentowane przez lekarza.",
+    "radiologyQuestionHelp": "Opcjonalnie: pytanie, na które ma odpowiedzieć badanie.",
+    "previewHelp": "Sprawdź i edytuj wersję roboczą. Zapisany raport zmieni się po wybraniu opcji Użyj wersji roboczej.",
+    "editorHelp": "Wpisz lub podyktuj wyniki, a następnie popraw tekst za pomocą AI. Sprawdź go przed udostępnieniem. Obrazy nie są analizowane.",
+    "editorPlaceholder": "Wywiad kliniczny / pytanie\nTechnika i zakres badania\nWyniki: ząb lub miejsce, pomiary, niepewność\nWnioski kliniczne\nZalecenia",
+    "refine": "Popraw tekst za pomocą AI",
+    "refining": "Opracowywanie poprawek…",
+    "undoRefine": "Cofnij poprawki",
+    "editorLanguage": "Język raportu",
+    "refineUnavailable": "Zaloguj się na konto z dostępem do AI, aby poprawić tekst. Nadal możesz wpisywać i edytować raport.",
+    "refineFailed": "Nie udało się poprawić raportu. Twój tekst został zachowany."
+  },
+  "ctReport": {
+    "title": "Raport TK",
+    "editorHelp": "Opisz wyniki TK, a następnie popraw tekst za pomocą AI. Sprawdź go przed udostępnieniem. Obrazy TK nie są analizowane.",
+    "editorPlaceholder": "Wywiad kliniczny / pytanie\nTechnika TK, badany obszar, zakres, informacja o kontraście, jeśli ją odnotowano\nWyniki: lokalizacja, strona, pomiary\nWnioski i niepewność\nZalecenia",
+    "filename": "ToothOps-raport-TK.pdf",
+    "copyPrompt": "Skopiuj sprawdzony raport TK:",
+    "headingTechnique": "Technika TK",
+    "headingFindings": "Wyniki TK"
+  },
+  "aiMetrics": {
+    "legacyNotice": "Wyświetlane są dane z całego okresu. Filtry będą dostępne po aktualizacji systemu statystyk.",
+    "legacyBreakdown": "Ostatnie 30 dni według funkcji i modelu",
+    "title": "Wykorzystanie AI",
+    "range": "Zakres dat",
+    "from": "Data początkowa",
+    "to": "Data końcowa",
+    "workflow": "Funkcja",
+    "allWorkflows": "Wszystkie funkcje",
+    "model": "Model",
+    "allModels": "Wszystkie modele",
+    "groupBy": "Grupuj według",
+    "apply": "Zastosuj",
+    "dateHint": "Zakres obejmuje obie daty i jest podany w czasie UTC.",
+    "loading": "Wczytywanie danych o wykorzystaniu AI…",
+    "failed": "Nie udało się wczytać danych o wykorzystaniu AI. Zastosuj filtry ponownie.",
+    "calls": "Żądania",
+    "input": "Tokeny wejściowe",
+    "output": "Tokeny wyjściowe",
+    "cache": "Odczyty z pamięci podręcznej",
+    "cost": "Szac. koszt",
+    "empty": "Brak żądań do AI pasujących do tych filtrów.",
+    "breakdown": "Zestawienie",
+    "date": "Data",
+    "perCall": "Koszt żądania",
+    "byAccount": "Wykorzystanie według konta",
+    "account": "Konto",
+    "refineText": "Poprawianie tekstu",
+    "warmup": "Wstępne zasilanie pamięci podręcznej",
+    "presets": {
+      "7": "Ostatnie 7 dni",
+      "30": "Ostatnie 30 dni",
+      "90": "Ostatnie 90 dni",
+      "all": "Cały okres",
+      "custom": "Własny zakres"
+    },
+    "groups": {
+      "workflow_model": "Funkcja i model",
+      "workflow": "Funkcja",
+      "model": "Model",
+      "day": "Dzień"
+    }
+  },
+  "visitTypes": {
+    "choose": "Nowa wizyta",
+    "dental": "Zabieg stomatologiczny",
+    "dentalDescription": "Badanie stomatologiczne, karta zębowa, obrazowanie i leczenie.",
+    "consultation": "Konsultacja",
+    "consultationDescription": "Wywiad, ocena, plan i dyktowanie.",
+    "start": "Rozpocznij wizytę",
+    "dictateDental": "Dyktuj wizytę stomatologiczną",
+    "dentalAdditions": "Dodatkowe wyniki badania stomatologicznego",
+    "dentalAdditionsHelp": "Sprawdź wyniki diagnostyki, opis TK i zalecenia przy wypisie zapisane na podstawie tego samego nagrania."
+  }
+}

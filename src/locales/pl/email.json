@@ -1,0 +1,44 @@
+{
+  "common": {
+    "setPasswordButton": "Ustaw hasło i dołącz"
+  },
+  "invite": {
+    "body1": "{{who}} zaprasza do swojego zespołu w ToothOps, aplikacji do prowadzenia weterynaryjnej dokumentacji stomatologicznej podczas zabiegów.",
+    "body2": "Aby aktywować konto i uzyskać dostęp do kart placówki, prosimy ustawić hasło.",
+    "fallback": {
+      "preheader": "placówka",
+      "title": "placówka",
+      "who": "Placówka"
+    },
+    "footnote": "Jeśli nie oczekują Państwo zaproszenia, można zignorować tę wiadomość.",
+    "preheader": "Prosimy ustawić hasło, aby dołączyć do zespołu {{practice}} w ToothOps.",
+    "subject": "Zaproszenie do ToothOps od {{who}}",
+    "title": "Zaproszenie do zespołu {{practice}}"
+  },
+  "join": {
+    "body1": "{{name}} zaprasza do swojego zespołu w ToothOps. Aby przyjąć zaproszenie, prosimy zalogować się na swoje konto.",
+    "body2": "Zmiany zostaną wprowadzone dopiero po przyjęciu zaproszenia. Przy dołączaniu można osobno zdecydować, czy udostępnić placówce dotychczasowe karty.",
+    "button": "Otwórz zaproszenie",
+    "fallback": "placówka",
+    "footnote": "Link jest ważny przez 14 dni. Jeśli nie oczekują Państwo zaproszenia, można zignorować tę wiadomość.",
+    "preheader": "{{name}} zaprasza do swojego zespołu w ToothOps.",
+    "subject": "Zaproszenie do zespołu {{name}} w ToothOps",
+    "title": "Czy chcą Państwo dołączyć do zespołu {{name}}?"
+  },
+  "layout": {
+    "linkFallback": "Jeśli przycisk nie działa, prosimy skopiować ten link do przeglądarki:",
+    "tagline": "Weterynaryjna dokumentacja stomatologiczna"
+  },
+  "reminder": {
+    "body1": "{{who}} zaprasza do ToothOps, aplikacji do prowadzenia weterynaryjnej dokumentacji stomatologicznej. Konto jest gotowe. Aby rozpocząć, wystarczy ustawić hasło.",
+    "body2": "Poniższy link jest ważny przez 24 godziny.",
+    "fallback": "Państwa placówka",
+    "footnote": "Jeśli nie oczekują Państwo zaproszenia lub nie chcą dołączyć, można zignorować tę wiadomość. Wyślemy najwyżej jedno kolejne przypomnienie.",
+    "footnoteFinal": "To ostatnie przypomnienie. Jeśli do {{date}} nie przyjmą Państwo zaproszenia, wygaśnie ono, a oczekujące konto zostanie usunięte. {{who}} może w dowolnej chwili zaprosić Państwa ponownie.",
+    "preheader": "{{who}} czeka na Państwa w ToothOps. Prosimy ustawić hasło, aby dołączyć.",
+    "subject": "Przypomnienie o zaproszeniu do ToothOps od {{who}}",
+    "subjectFinal": "Ostatnie przypomnienie o zaproszeniu do zespołu {{who}} w ToothOps",
+    "title": "Zaproszenie do zespołu {{who}}",
+    "titleFinal": "Zaproszenie nadal czeka na przyjęcie"
+  }
+}

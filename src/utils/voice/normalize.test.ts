@@ -17,7 +17,7 @@ import aiAutofillTestSource from '../aiAutofill.test.ts?raw';
 import type { AppLanguage } from '../../i18n/config';
 
 // Space-delimited native-language fixtures; complex scripts have dedicated suites.
-type Lng = Exclude<AppLanguage, 'en' | 'zh' | 'ar'>;
+type Lng = Exclude<AppLanguage, 'en' | 'zh' | 'ar' | 'pl'>;
 
 // ----- English: byte-identical ---------------------------------------------
 

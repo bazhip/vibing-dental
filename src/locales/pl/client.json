@@ -1,0 +1,20 @@
+{
+  "reminder": {
+    "body": "{{owner}},\n\nprzypominamy o zalecanej kontroli uzębienia.\n\nPacjent: {{patient}}\n\nProsimy o telefon w celu umówienia wizyty.\n\nZ poważaniem\n{{practice}}",
+    "fallback": {
+      "owner": "Szanowni Państwo",
+      "pet": "Państwa zwierzę",
+      "practice": "Państwa placówka weterynaryjna"
+    },
+    "subject": "Kontrola uzębienia — {{patient}}"
+  },
+  "sample": {
+    "buccalComment": "Niewielkie zaczerwienienie po lewej stronie błony śluzowej policzka",
+    "extraNotes": "Przez najbliższe 10 dni prosimy podawać miękką karmę, aby miejsce po usunięciu zęba mogło się zagoić.",
+    "postComment": "Drobny odprysk na wierzchołku zęba. Krawędź jest gładka i nie wymaga leczenia."
+  },
+  "ownerReportEmail": {
+    "subject": "Raport stomatologiczny — {{pet}}",
+    "body": "{{owner}},\n\nw załączniku przesyłamy raport stomatologiczny z dzisiejszej wizyty.\n\nPacjent: {{pet}}\n\nW razie pytań prosimy o kontakt.\n\nZ poważaniem\n{{practice}}"
+  }
+}

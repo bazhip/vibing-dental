@@ -8,7 +8,7 @@ test('Hungarian and Romanian remain supported by the database client-language co
   for (const sql of [schema, migration]) {
     const constraint = sql.match(/check \(client_language is null or client_language in \(([^)]+)\)\)/)?.[1];
     expect(constraint).toBeDefined();
-    for (const lng of [...APP_LANGUAGES.filter((l) => sql === schema || (l !== 'zh' && l !== 'ar')), 'pt']) expect(constraint).toContain(`'${lng}'`);
+    for (const lng of [...APP_LANGUAGES.filter((l) => sql === schema || (l !== 'zh' && l !== 'ar' && l !== 'pl')), 'pt']) expect(constraint).toContain(`'${lng}'`);
   }
   // Patch the installed function instead of replacing its patient-matching logic.
   expect(migration).toContain("pg_get_functiondef('public.send_due_reminders'::regproc)");
