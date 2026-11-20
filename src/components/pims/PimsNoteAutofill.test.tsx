@@ -20,7 +20,8 @@ function setup(outcome = 'filled') {
 }
 async function prepare() {
   fireEvent.click(await screen.findByRole('button', { name: 'Fill an open PIMS note' }));
-  fireEvent.change(await screen.findByLabelText('Destination tab'), { target: { value: '7' } });
+  await screen.findByRole('option', { name: /Patient encounter/ });
+  fireEvent.change(screen.getByLabelText('Destination tab'), { target: { value: '7' } });
   await screen.findByRole('option', { name: 'Notes' });
   fireEvent.change(screen.getByLabelText('Open field'), { target: { value: 'Notes' } });
   fireEvent.click(screen.getByRole('button', { name: 'Prepare autofill' }));

@@ -194,8 +194,11 @@ function EnabledPimsSetup({ practiceId, members = [], backend = defaultBackend }
             <p>{t(configured ? 'setup.configuredHint' : 'setup.syncHint')}</p>
             {configured && <button type="button" disabled={disabled || current.state === 'disabled'} onClick={() => void reviewPimsTab()}>{t('setup.reviewTab')}</button>}
             {configured && reviewedTab && <p>{t('setup.reviewedTab', { title: reviewedTab.title })}</p>}
-            {configured && <label className="pims-setup__check"><input type="checkbox" checked={userConfirmed} disabled={disabled || current.state === 'disabled' || !reviewedTab}
-              onChange={(event) => setUserConfirmed(event.target.checked)} />{t('setup.configuredChecked')}</label>}
+            {configured && <label className="choice-row">
+              <input type="checkbox" checked={userConfirmed} disabled={disabled || current.state === 'disabled' || !reviewedTab}
+                onChange={(event) => setUserConfirmed(event.target.checked)} />
+              <span>{t('setup.configuredChecked')}</span>
+            </label>}
             {configured ? !configuredActive && <button type="button" className="pims-setup__primary" disabled={disabled || !supabase || !userConfirmed || !reviewedTab || current.state === 'disabled'} onClick={() => void browserSync(true)}>{t('setup.confirmConfigured')}</button>
               : <button type="button" disabled={disabled || !supabase} onClick={() => void browserSync(true)}>{t('setup.verifyBrowser')}</button>}
             <label>{t('setup.syncDate')}<input type="date" value={syncDate} disabled={disabled} onChange={(event) => { setSyncDate(event.target.value); setSyncNotice(null); setUserConfirmed(false); setReviewedTab(null); }} /></label>

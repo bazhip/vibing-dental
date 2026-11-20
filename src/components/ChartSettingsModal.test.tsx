@@ -86,7 +86,7 @@ describe('ChartSettingsModal — opened from the Anesthesia page', () => {
 });
 
 describe('ChartSettingsModal — each page\'s Customize shows only its settings', () => {
-  const present = (name: string, role: 'checkbox' | 'radio' = 'checkbox') => screen.queryAllByRole(role, { name }).length > 0;
+  const present = (name: string, role: 'checkbox' | 'radio' | 'switch' = 'checkbox') => screen.queryAllByRole(role, { name }).length > 0;
   const open = (section: 'patient' | 'anesthesia' | 'charting' | 'diagnosis' | 'images') =>
     render(<ChartSettingsModal onClose={() => {}} prefs={{ ...DEFAULT_CHART_PREFS, mirrorToDiagnosis: true }} followsAccount onChange={() => {}} section={section} />);
 
@@ -94,7 +94,7 @@ describe('ChartSettingsModal — each page\'s Customize shows only its settings'
     open('charting');
     expect(screen.getByRole('heading', { name: 'Charting settings' })).toBeInTheDocument();
     expect(present('One per tooth', 'radio')).toBe(true);
-    expect(present('Show findings on the Diagnosis diagram (and in the PDF)')).toBe(false);
+    expect(present('Show findings on the Diagnosis diagram', 'switch')).toBe(false);
     expect(present('Charting grid Required when diagram findings are off, so recorded measurements remain in the PDF.')).toBe(false);
     expect(present('Caudal maxillary')).toBe(false);
     expect(present('Hide the Recheck due field')).toBe(false);
@@ -114,7 +114,7 @@ describe('ChartSettingsModal — each page\'s Customize shows only its settings'
 
   it('Diagnosis: just beside the teeth', () => {
     open('diagnosis');
-    expect(present('Show findings on the Diagnosis diagram (and in the PDF)')).toBe(true);
+    expect(present('Show findings on the Diagnosis diagram', 'switch')).toBe(true);
     expect(present('One per tooth', 'radio')).toBe(false);
     expect(present('Charting grid Required when diagram findings are off, so recorded measurements remain in the PDF.')).toBe(false);
   });
@@ -193,7 +193,7 @@ it('procedure customization edits its own quick codes without changing diagnosis
 
 it('defaults autosave on and lets the user switch to manual saving', () => {
   const { onChange } = setup();
-  const toggle = screen.getByRole('checkbox', { name: 'Autosave' });
+  const toggle = screen.getByRole('switch', { name: 'Autosave' });
   expect(toggle).toBeChecked();
   fireEvent.click(toggle);
   expect(onChange).toHaveBeenCalledWith({ autosave: false });

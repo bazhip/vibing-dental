@@ -232,18 +232,19 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
     const due = recall <= today;
     return (
       <span
-        data-label={t('table.recheck')}
         className={
           due
             ? `chart-library__cell chart-library__cell--recall chart-library__recall--${overdue ? 'overdue' : 'due'}`
             : 'chart-library__cell chart-library__cell--recall'
         }
       >
-        <span className="chart-library__recall-date">{overdue
-          ? t('recall.overdue', { date: formatChartDate(recall) })
-          : due
-          ? t('recall.today', { date: formatChartDate(recall) })
-          : formatChartDate(recall)}</span>
+        <span className="chart-library__recall-date" data-label={t('table.recheck')}>
+          {overdue
+            ? t('recall.overdue', { date: formatChartDate(recall) })
+            : due
+            ? t('recall.today', { date: formatChartDate(recall) })
+            : formatChartDate(recall)}
+        </span>
         <button type="button" className="chart-library__remove-recheck"
           onClick={() => handleClearRecalls(group)} disabled={busyId !== null}
           aria-label={t('actions.clearRecall', { name: group.name })}
@@ -306,19 +307,19 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
               ))}
             </select>
             {rechecksOnly ? (
-              <span className="chart-library__due-toggle chart-library__due-toggle--on">
+              <span className="chart-library__due-status" role="status">
                 {dueCount > 0 ? t('dueCount', { n: dueCount }) : t('due')}
               </span>
             ) : (
-            <button
-              type="button"
-              className={dueOnly ? 'chart-library__due-toggle chart-library__due-toggle--on' : 'chart-library__due-toggle'}
-              onClick={() => setDueOnly((v) => !v)}
-              aria-pressed={dueOnly}
-              title={t('dueTitle')}
-            >
-              {dueCount > 0 ? t('dueCount', { n: dueCount }) : t('due')}
-            </button>
+              <button
+                type="button"
+                className="chart-library__filter chart-library__due-toggle"
+                onClick={() => setDueOnly((v) => !v)}
+                aria-pressed={dueOnly}
+                title={t('dueTitle')}
+              >
+                {dueCount > 0 ? t('dueCount', { n: dueCount }) : t('due')}
+              </button>
             )}
             {showDoctors && (
               <select
@@ -365,192 +366,194 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
           )}
 
           {groups !== null && (groups.length > 0 || filtered) && (
-            <div className="chart-library__table" role="table" aria-label={t('table.aria')}>
-              {/* Header uses the exact same row/row-main structure as the
-                  data rows so the six columns line up pixel-for-pixel. */}
-              <div className="chart-library__row chart-library__head-row" role="row">
-                <div className="chart-library__row-main chart-library__head-main">
-                  {heads.patient}
-                  <span role="columnheader">{t('table.number')}</span>
-                  <span role="columnheader">{t('table.species')}</span>
-                  <span role="columnheader">{t('table.visits')}</span>
-                  <span role="columnheader">{t('table.finalized')}</span>
-                  {heads.updated}
-                  {heads.recall}
-                </div>
-                <span className="chart-library__row-actions">
-
-                </span>
-              </div>
-              <div className="chart-library__scroll">
-                {groups.length === 0 && (
-                  <div className="chart-library__empty chart-library__empty--filtered">
-                    <div role="status">{query ? t('noMatch.search') : doctorFilter || speciesFilter ? t('noMatch.filters') : t('noMatch.due')}</div>
-                    <button type="button" className="chart-library__filter" onClick={clearFilters}>{t('filters.clear')}</button>
+            <div className="chart-library__table">
+              <div className="chart-library__table-content" role="table" aria-label={t('table.aria')}>
+                {/* Header uses the exact same row/row-main structure as the
+                    data rows so the six columns line up pixel-for-pixel. */}
+                <div className="chart-library__row chart-library__head-row" role="row">
+                  <div className="chart-library__row-main chart-library__head-main">
+                    {heads.patient}
+                    <span role="columnheader">{t('table.number')}</span>
+                    <span role="columnheader">{t('table.species')}</span>
+                    <span role="columnheader">{t('table.visits')}</span>
+                    <span role="columnheader">{t('table.finalized')}</span>
+                    {heads.updated}
+                    {heads.recall}
                   </div>
-                )}
-                {groups.map((g) => {
-                  const multi = g.visits.length > 1;
-                  const isOpen = expanded.has(g.key);
-                  const only = g.visits[0];
-                  return (
-                    <React.Fragment key={g.key}>
-                      <div className="chart-library__row" role="row">
-                        <div className="chart-library__row-main chart-library__group-main" onClick={(event) => {
-                          if (busyId !== null || (event.target as HTMLElement).closest('button, a, input, select, textarea, summary')) return;
-                          void handleOpen(only.id);
-                        }}>
-                          <span role="cell" className="chart-library__patient">
-                            <button type="button" className="chart-library__patient-main chart-library__open-patient"
-                              onClick={() => handleOpen(only.id)} disabled={busyId === only.id}
-                              title={t('openLatest', { name: g.name })}>
-                              {g.name}
-                              {(() => {
-                                // Owner, plus the doctor for single-visit
-                                // rows (multi-visit patients can have a
-                                // different doctor per visit — those are
-                                // labeled on the expanded visit rows).
-                                const dr = showDoctors && !multi ? doctorById.get(only.created_by) : '';
-                                const type = !multi && visitTypeOf(only.visit_type) === 'consultation' ? typeLabel(only) : '';
-                                const sub = [type, g.owner, dr].filter(Boolean).join(' · ');
-                                return sub ? <span className="chart-library__owner">{sub}</span> : null;
-                              })()}
-                            </button>
-                          </span>
-                          <span role="cell" className={`chart-library__cell chart-library__cell--number${g.number ? '' : ' chart-library__cell--empty'}`}>{g.number || '—'}</span>
-                          <span role="cell" className="chart-library__cell chart-library__cell--species">
-                            {g.dentition === 'deciduous'
-                              ? t('deciduousSuffix', { species: speciesLabel(g.species) })
-                              : speciesLabel(g.species)}
-                          </span>
-                          <span role="cell" className="chart-library__cell chart-library__cell--visits">
-                            {t('visits', { count: g.visits.length })}
-                          </span>
-                          <span role="cell" data-label={t('table.finalized')} className="chart-library__cell chart-library__cell--finalized">
-                            {multi ? t('finalized.count', { n: g.visits.filter(v => !!v.finalized_at).length, total: g.visits.length }) : t(only.finalized_at ? 'finalized.yes' : 'finalized.no')}
-                          </span>
-                          <span role="cell" data-label={t('table.updated')} className="chart-library__cell chart-library__cell--date">
-                            {formatDate(g.latestUpdated)}
-                          </span>
-                          {recallCell(g)}
-                        </div>
-                        <span className="chart-library__row-actions">
+                  <span className="chart-library__row-actions">
 
-                          <button
-                            type="button"
-                            className="chart-library__act chart-library__new-visit"
-                            onClick={() => onNewVisit(g.visits[0].id)}
-                            title={t('actions.newVisitTitle', { name: g.name })}
-                          >
-                            {t('actions.newVisit')}
-                          </button>
-                          {multi && (
-                            <button type="button" className="chart-library__act" aria-expanded={isOpen}
-                              title={t('visitsExpand', { count: g.visits.length })}
-                              onClick={() => toggle(g.key)}>
-                              {t('visits', { count: g.visits.length })} <span aria-hidden="true">{isOpen ? '▾' : '▸'}</span>
-                            </button>
-                          )}
-                          {(!multi || (g.ownerEmail && g.reminderChart)) && <RowActions>
-                          {g.ownerEmail && g.reminderChart && (
-                            <button
-                              type="button"
-                              className="chart-library__act"
-                              onClick={() => onSendReminder(g.reminderChart!)}
-                              title={t('actions.reminderTitle', { who: g.owner || g.ownerEmail })}
-                            >
-                              {t('actions.reminder')}
-                            </button>
-                          )}
-                          {!multi && onOpenHistory && (
-                            <button
-                              type="button"
-                              className="chart-library__act chart-library__history"
-                              onClick={() => onOpenHistory(only.id, `${g.name} · ${visitLabel(only)}`)}
-                              title={t('actions.historyChartTitle', { name: g.name })}
-                            >
-                              {t('actions.history')}
-                            </button>
-                          )}
-                          {!multi && (
-                            <button
-                              type="button"
-                              className="chart-library__delete"
-                              onClick={() => handleDelete(only)}
-                              disabled={busyId === only.id}
-                              aria-label={t('actions.deleteChart', { name: g.name })}
-                            >
-                              {t('actions.delete', { ns: 'common' })}
-                            </button>
-                          )}
-                          </RowActions>}
-                        </span>
-                      </div>
+                  </span>
+                </div>
+                <div className="chart-library__scroll" role="rowgroup">
+                  {groups.map((g) => {
+                    const multi = g.visits.length > 1;
+                    const isOpen = expanded.has(g.key);
+                    const only = g.visits[0];
+                    return (
+                      <React.Fragment key={g.key}>
+                        <div className="chart-library__row" role="row">
+                          <div className="chart-library__row-main chart-library__group-main" onClick={(event) => {
+                            if (busyId !== null || (event.target as HTMLElement).closest('button, a, input, select, textarea, summary')) return;
+                            void handleOpen(only.id);
+                          }}>
+                            <span role="cell" className="chart-library__patient">
+                              <button type="button" className="chart-library__patient-main chart-library__open-patient"
+                                onClick={() => handleOpen(only.id)} disabled={busyId === only.id}
+                                title={t('openLatest', { name: g.name })}>
+                                {g.name}
+                                {(() => {
+                                  // Owner, plus the doctor for single-visit
+                                  // rows (multi-visit patients can have a
+                                  // different doctor per visit — those are
+                                  // labeled on the expanded visit rows).
+                                  const dr = showDoctors && !multi ? doctorById.get(only.created_by) : '';
+                                  const type = !multi && visitTypeOf(only.visit_type) === 'consultation' ? typeLabel(only) : '';
+                                  const sub = [type, g.owner, dr].filter(Boolean).join(' · ');
+                                  return sub ? <span className="chart-library__owner">{sub}</span> : null;
+                                })()}
+                              </button>
+                            </span>
+                            <span role="cell" className={`chart-library__cell chart-library__cell--number${g.number ? '' : ' chart-library__cell--empty'}`}>{g.number || '—'}</span>
+                            <span role="cell" className="chart-library__cell chart-library__cell--species">
+                              {g.dentition === 'deciduous'
+                                ? t('deciduousSuffix', { species: speciesLabel(g.species) })
+                                : speciesLabel(g.species)}
+                            </span>
+                            <span role="cell" className="chart-library__cell chart-library__cell--visits">
+                              {t('visits', { count: g.visits.length })}
+                            </span>
+                            <span role="cell" data-label={t('table.finalized')} className="chart-library__cell chart-library__cell--finalized">
+                              {multi ? t('finalized.count', { n: g.visits.filter(v => !!v.finalized_at).length, total: g.visits.length }) : t(only.finalized_at ? 'finalized.yes' : 'finalized.no')}
+                            </span>
+                            <span role="cell" data-label={t('table.updated')} className="chart-library__cell chart-library__cell--date">
+                              {formatDate(g.latestUpdated)}
+                            </span>
+                            {recallCell(g)}
+                          </div>
+                          <span className="chart-library__row-actions">
 
-                      {multi && isOpen &&
-                        g.visits.map((v) => (
-                          <div className="chart-library__row chart-library__visit" role="row" key={v.id}>
                             <button
                               type="button"
-                              className="chart-library__row-main chart-library__visit-main"
-                              onClick={() => handleOpen(v.id)}
-                              disabled={busyId === v.id}
-                              title={v.chart_date ? t('visit.openDated', { date: v.chart_date }) : t('visit.openUndated')}
+                              className="chart-library__act chart-library__new-visit"
+                              onClick={() => onNewVisit(g.visits[0].id)}
+                              title={t('actions.newVisitTitle', { name: g.name })}
                             >
-                              <span role="cell" className="chart-library__visit-date">
-                                {visitLabel(v)}
-                              </span>
-                              <span role="cell" data-label={t('table.finalized')} className="chart-library__cell chart-library__cell--finalized">
-                                {t(v.finalized_at ? 'finalized.yes' : 'finalized.no')}
-                              </span>
-                              <span role="cell" className="chart-library__cell">
-                                {showDoctors && doctorById.get(v.created_by) && (
-                                  <>{doctorById.get(v.created_by)} · </>
-                                )}
-                                {t('visit.updated', { when: formatDateTime(v.updated_at, lng, { dateStyle: 'medium', timeStyle: 'short' }) })}
-                              </span>
+                              {t('actions.newVisit')}
                             </button>
-                            <span className="chart-library__row-actions">
-                              <RowActions>
-                              {onOpenHistory && (
-                                <button
-                                  type="button"
-                                  className="chart-library__act chart-library__history"
-                                  onClick={() => onOpenHistory(v.id, `${g.name} · ${visitLabel(v)}`)}
-                                  title={t('actions.historyVisitTitle')}
-                                >
-                                  {t('actions.history')}
-                                </button>
-                              )}
+                            {multi && (
+                              <button type="button" className="chart-library__act" aria-expanded={isOpen}
+                                title={t('visitsExpand', { count: g.visits.length })}
+                                onClick={() => toggle(g.key)}>
+                                {t('visits', { count: g.visits.length })} <span aria-hidden="true">{isOpen ? '▾' : '▸'}</span>
+                              </button>
+                            )}
+                            {(!multi || (g.ownerEmail && g.reminderChart)) && <RowActions>
+                            {g.ownerEmail && g.reminderChart && (
+                              <button
+                                type="button"
+                                className="chart-library__act"
+                                onClick={() => onSendReminder(g.reminderChart!)}
+                                title={t('actions.reminderTitle', { who: g.owner || g.ownerEmail })}
+                              >
+                                {t('actions.reminder')}
+                              </button>
+                            )}
+                            {!multi && onOpenHistory && (
+                              <button
+                                type="button"
+                                className="chart-library__act chart-library__history"
+                                onClick={() => onOpenHistory(only.id, `${g.name} · ${visitLabel(only)}`)}
+                                title={t('actions.historyChartTitle', { name: g.name })}
+                              >
+                                {t('actions.history')}
+                              </button>
+                            )}
+                            {!multi && (
                               <button
                                 type="button"
                                 className="chart-library__delete"
-                                onClick={() => handleDelete(v)}
-                                disabled={busyId === v.id}
-                                aria-label={v.chart_date ? t('visit.deleteDated', { date: v.chart_date, name: g.name }) : t('visit.deleteUndated', { name: g.name })}
+                                onClick={() => handleDelete(only)}
+                                disabled={busyId === only.id}
+                                aria-label={t('actions.deleteChart', { name: g.name })}
                               >
                                 {t('actions.delete', { ns: 'common' })}
                               </button>
-                              </RowActions>
-                            </span>
-                          </div>
-                        ))}
-                    </React.Fragment>
-                  );
-                })}
-                {hasMore && (
-                  <div className="chart-library__more">
-                    <button
-                      type="button"
-                      className="chart-library__filter"
-                      onClick={loadMore}
-                      disabled={loadingMore}
-                    >
-                      {loadingMore ? t('loading') : t('actions.loadMore')}
-                    </button>
-                  </div>
-                )}
+                            )}
+                            </RowActions>}
+                          </span>
+                        </div>
+
+                        {multi && isOpen &&
+                          g.visits.map((v) => (
+                            <div className="chart-library__row chart-library__visit" role="row" key={v.id}>
+                              <button
+                                type="button"
+                                className="chart-library__row-main chart-library__visit-main"
+                                onClick={() => handleOpen(v.id)}
+                                disabled={busyId === v.id}
+                                title={v.chart_date ? t('visit.openDated', { date: v.chart_date }) : t('visit.openUndated')}
+                              >
+                                <span role="cell" className="chart-library__visit-date">
+                                  {visitLabel(v)}
+                                </span>
+                                <span role="cell" data-label={t('table.finalized')} className="chart-library__cell chart-library__cell--finalized">
+                                  {t(v.finalized_at ? 'finalized.yes' : 'finalized.no')}
+                                </span>
+                                <span role="cell" className="chart-library__cell">
+                                  {showDoctors && doctorById.get(v.created_by) && (
+                                    <>{doctorById.get(v.created_by)} · </>
+                                  )}
+                                  {t('visit.updated', { when: formatDateTime(v.updated_at, lng, { dateStyle: 'medium', timeStyle: 'short' }) })}
+                                </span>
+                              </button>
+                              <span className="chart-library__row-actions">
+                                <RowActions>
+                                {onOpenHistory && (
+                                  <button
+                                    type="button"
+                                    className="chart-library__act chart-library__history"
+                                    onClick={() => onOpenHistory(v.id, `${g.name} · ${visitLabel(v)}`)}
+                                    title={t('actions.historyVisitTitle')}
+                                  >
+                                    {t('actions.history')}
+                                  </button>
+                                )}
+                                <button
+                                  type="button"
+                                  className="chart-library__delete"
+                                  onClick={() => handleDelete(v)}
+                                  disabled={busyId === v.id}
+                                  aria-label={v.chart_date ? t('visit.deleteDated', { date: v.chart_date, name: g.name }) : t('visit.deleteUndated', { name: g.name })}
+                                >
+                                  {t('actions.delete', { ns: 'common' })}
+                                </button>
+                                </RowActions>
+                              </span>
+                            </div>
+                          ))}
+                      </React.Fragment>
+                    );
+                  })}
+                </div>
               </div>
+              {groups.length === 0 && (
+                <div className="chart-library__empty chart-library__empty--filtered">
+                  <div role="status">{query ? t('noMatch.search') : doctorFilter || speciesFilter ? t('noMatch.filters') : t('noMatch.due')}</div>
+                  <button type="button" className="chart-library__filter" onClick={clearFilters}>{t('filters.clear')}</button>
+                </div>
+              )}
+              {hasMore && (
+                <div className="chart-library__more">
+                  <button
+                    type="button"
+                    className="chart-library__filter"
+                    onClick={loadMore}
+                    disabled={loadingMore}
+                  >
+                    {loadingMore ? t('loading') : t('actions.loadMore')}
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>

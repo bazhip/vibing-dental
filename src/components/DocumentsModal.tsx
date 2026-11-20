@@ -247,6 +247,8 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
                   id={`documents-tab-${id}`}
                   aria-selected={active === id}
                   aria-controls={`documents-panel-${id}`}
+                  tabIndex={active === id ? 0 : -1}
+                  onKeyDown={(event) => onTabKeyDown(event, id)}
                   className={`ios-segmented__segment${active === id ? ' ios-segmented__segment--on' : ''}`}
                   onClick={() => select(id)}
                 >

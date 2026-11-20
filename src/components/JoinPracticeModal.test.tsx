@@ -18,7 +18,7 @@ beforeEach(() => {
   invoke.mockClear();
 });
 
-describe('JoinPracticeModal — website (unchanged)', () => {
+describe('JoinPracticeModal — website', () => {
   it('is the centred modal with Not now / Join in the footer', async () => {
     render(<JoinPracticeModal token="t1" onDone={vi.fn()} />);
     expect(await screen.findByRole('heading', { name: 'Join SoCal Vet?' })).toBeInTheDocument();
@@ -32,14 +32,14 @@ describe('JoinPracticeModal — website (unchanged)', () => {
 describe('JoinPracticeModal — iOS app', () => {
   beforeEach(() => { flags.native = true; });
 
-  it('is a sheet: Not now leading, Join trailing, the share choice as a switch', async () => {
+  it('is a sheet: Not now leading, Join trailing, the share choice as a checkbox', async () => {
     const onDone = vi.fn();
     render(<JoinPracticeModal token="t1" onDone={onDone} />);
     const sheet = await screen.findByRole('dialog', { name: 'Join SoCal Vet?' });
     expect(sheet).toHaveClass('ios-sheet');
     expect(document.querySelector('.ios-sheet__grabber')).not.toBeNull();
     expect(document.querySelector('.ai-settings-footer')).toBeNull();
-    fireEvent.click(screen.getByRole('switch', { name: 'Also share the charts I’ve already made' }));
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Also share the charts I’ve already made' }));
     fireEvent.click(screen.getByRole('button', { name: 'Join' }));
     await waitFor(() => expect(onDone).toHaveBeenCalledWith(true));
     expect(invoke).toHaveBeenLastCalledWith('team-api', { body: { action: 'accept_invite', token: 't1', shareExisting: true } });

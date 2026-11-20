@@ -262,7 +262,11 @@ function PatientsList({ library }: { library: AppLibrary }) {
           );
         })}
         {list.hasMore && (
-          <ListRow title={list.loadingMore ? t('loading', { ns: 'library' }) : t('loadMore')} onClick={() => void list.loadMore()} />
+          <ListRow
+            title={list.loadingMore ? t('loading', { ns: 'library' }) : t('loadMore')}
+            onClick={() => void list.loadMore()}
+            disabled={list.loadingMore}
+          />
         )}
       </ListSection>
     );

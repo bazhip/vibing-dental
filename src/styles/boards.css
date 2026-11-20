@@ -755,6 +755,13 @@
   overflow: hidden;
 }
 
+.chart-library__table-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
 /* The header shares .chart-library__row / __row-main with the data rows
    (identical grids) so columns align exactly; this only restyles it. */
 .chart-library__head-row {
@@ -778,32 +785,31 @@
   background: transparent;
 }
 
-/* "Due for recheck" filter — lives in the green header banner beside the
-   Recheck column; a pill that reads on the green and inverts when on. */
-.chart-library__due-toggle {
-  font: inherit;
-  font-size: 0.72rem;
-  font-weight: 600;
-  padding: 0.25rem 0.55rem;
-  border-radius: 999px;
-  border: 1px solid var(--ios-on-tint-hairline, rgba(255, 255, 255, 0.55));
-  background: var(--ios-on-tint-fill, rgba(255, 255, 255, 0.14));
-  color: var(--ios-on-tint, #fff);
-  cursor: pointer;
-  white-space: nowrap;
+.chart-library__due-toggle[aria-pressed='true'] {
+  background: color-mix(in srgb, var(--primary) 8%, var(--surface));
+  border-color: var(--primary);
 }
-.chart-library__due-toggle:hover { background: var(--ios-on-tint-fill, rgba(255, 255, 255, 0.26)); }
-.chart-library__due-toggle--on {
-  background: var(--ios-on-tint, #fff);
-  color: var(--primary);
-  border-color: var(--ios-on-tint, #fff);
+
+.chart-library__due-status {
+  align-self: center;
+  justify-self: start;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-alt);
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
 }
 
 .chart-library__more {
   display: flex;
   justify-content: center;
-  padding: 0.75rem 0 0.25rem;
+  padding: 0.75rem;
 }
+
+.chart-library__more .chart-library__filter,
+.chart-library__empty--filtered .chart-library__filter { min-height: 44px; }
 
 .chart-library__head-row [role='columnheader'] {
   color: var(--ios-on-tint-2, rgba(255, 255, 255, 0.92));
@@ -1514,7 +1520,7 @@
   .chart-library-modal:not(.admin-panel) .chart-library__cell--number::before { content: '#'; }
   .chart-library-modal:not(.admin-panel) .chart-library__cell--date::before,
   .chart-library-modal:not(.admin-panel) .chart-library__cell--finalized::before { content: attr(data-label) ' '; }
-  .chart-library-modal:not(.admin-panel) .chart-library__cell--recall::before { content: 'Recheck '; }
+  .chart-library-modal:not(.admin-panel) .chart-library__recall-date::before { content: attr(data-label) ' '; }
   .chart-library-modal:not(.admin-panel) .chart-library__row-actions {
     justify-content: flex-start;
     flex-wrap: wrap;

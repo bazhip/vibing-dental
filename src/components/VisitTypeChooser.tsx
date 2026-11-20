@@ -23,7 +23,7 @@ export function VisitTypeChooser({ open, onChoose }: { open: boolean; onChoose: 
   const choices = (
     <div role="radiogroup" aria-label={title} className="visit-type-chooser__choices">
       {VISIT_TYPES.map(type => (
-        <label className="visit-type-chooser__option" key={type}>
+        <label className="choice-row visit-type-chooser__option" key={type}>
           <input type="radio" name={id} checked={selected === type} onChange={() => setSelected(type)} />
           <span>
             <strong>{t(`visitTypes.${type}` as const)}</strong>

@@ -211,11 +211,11 @@ export function RadiologyReportSection({ snapshot: originalSnapshot, chartEditor
     {!!draft.trim() && <>
     {stale && <p role="status" className="patient-form__hint">{t('radiologyReport.stale')}</p>}
     <div className="radiology-report__review">
-    <label className="radiology-report__check"><input type="checkbox" disabled={readOnly || busy || !draft.trim()} checked={reviewed} onChange={event => {
+    <label className="choice-row radiology-report__check"><input type="checkbox" disabled={readOnly || busy || !draft.trim()} checked={reviewed} onChange={event => {
       if (readOnly || busy) return;
       invalidate(); onChange({ radiologyReport: draft, radiologyReportBasis: source, radiologyReportLanguage: storedLanguage,
         radiologyReviewedBasis: event.target.checked ? radiologyReviewBasis({ ...snapshot, patientInfo: { ...info, radiologyReport: draft } }, storedLanguage) : '' });
-    }} />{t('radiologyReport.checked')}</label>
+    }} /><span>{t('radiologyReport.checked')}</span></label>
     <div className="radiology-report__actions">
       <button type="button" className={reviewed ? 'entry-grid__button entry-grid__button--topbar radiology-report__primary' : 'diagram-view__action'} disabled={!reviewed || busy} onClick={() => void transfer('copy')}>{t('radiologyReport.copy')}</button>
       <button type="button" className="diagram-view__action" disabled={!reviewed || busy} onClick={() => void transfer('pdf')}>{t('radiologyReport.pdf')}</button>

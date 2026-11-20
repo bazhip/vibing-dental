@@ -116,14 +116,11 @@
 .chart-customization .chart-customization__module:last-child { border-block-end: 0; }
 .chart-customization__module .chart-settings__note { line-height: 1.5; }
 .chart-customization__choices .chart-settings__choice {
-  justify-content: space-between;
-  overflow-wrap: anywhere;
+  display: grid;
   padding: 6px 8px;
 }
 .chart-customization__choices .chart-settings__choice + .chart-settings__choice { border-block-start: 1px solid var(--border); }
 .chart-customization__choices .chart-settings__choice:hover { background: var(--surface-alt); }
-.chart-customization__choices .chart-settings__choice input { order: 1; flex: none; accent-color: var(--primary); }
-.chart-customization__choices .chart-settings__choice:focus-within { outline: 2px solid var(--primary); outline-offset: -2px; }
 .chart-customization .chart-customization__module .chart-settings__drug { margin: 4px 0 0; }
 
 .anesthesia-definitions .anesthesia-drug__add { align-self: flex-start; min-height: 44px; }
@@ -218,8 +215,7 @@
 .chart-customization .chart-settings__drug .anesthesia-unit__suffix { top: 50%; }
 
 /* Keep explanatory copy below the option, never in a competing narrow column. */
-.chart-customization .chart-settings__choice:has(.chart-settings__hint) { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; column-gap: 8px; row-gap: 2px; }
-.chart-customization .chart-settings__choice:has(.chart-settings__hint) > input { margin-top: 4px; }
+.chart-customization .chart-settings__choice:has(.chart-settings__hint) { row-gap: 2px; }
 .chart-customization .chart-settings__choice > .chart-settings__hint { grid-column: 2; }
 
 .chart-settings__imaging-language {
@@ -231,3 +227,18 @@
 }
 .chart-settings__imaging-language select { min-height: 44px; }
 .ios-chart-settings .chart-settings__imaging-language { padding-inline: 16px; }
+
+.chart-settings__switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-block-size: 44px;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+.chart-settings__switch > span {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+.chart-settings__switch .chart-settings__hint { display: block; }

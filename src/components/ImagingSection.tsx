@@ -97,6 +97,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
   const [dragging, setDragging] = React.useState(false);
   const [viewing, setViewing] = React.useState<number | null>(null);
   const uploadHelpId = React.useId();
+  const pdfOptionId = React.useId();
   const fileRef = React.useRef<HTMLInputElement>(null);
   const cameraRef = React.useRef<HTMLInputElement>(null);
   const chartIdRef = React.useRef(chartId);
@@ -106,6 +107,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
   const teeth = React.useMemo(() => imageTeeth(species), [species]);
   const toothLabel = React.useCallback((triadan: number) => imageToothLabel(triadan), []);
   const canUpload = cloudActive && store.maxImages > 0 && !readOnly;
+  const showPdfCount = includeInPdf && store.items.length > 0;
 
   // A chart switch closes the viewer and forgets the last chart's queue.
   React.useEffect(() => {
@@ -224,8 +226,6 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
       }
     : {};
   // The web keeps its wording; the app states the limit as a plain fact.
-  // The iOS app: yes/no options are switches.
-  const switchProps = isNativeApp() ? { role: 'switch', className: 'ios-switch' } : {};
   const limitMessage = isNativeApp()
     ? t('imaging.limitReached', { ns: 'chart', count: store.maxImages })
     : t('imaging.limitReached', { max: store.maxImages });
@@ -261,22 +261,25 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
 
       {onIncludeInPdfChange && (store.maxImages > 0 || store.items.length > 0) && (
         <label
-          className="dental-grid__option imaging__pdf-option"
+          className="imaging__pdf-option"
           title={t('imaging.pdfOptionTitle')}
         >
+          <span className="imaging__pdf-copy">
+            <span id={pdfOptionId}>{t('imaging.pdfOption')}</span>
+            {showPdfCount && <span id={`${pdfOptionId}-count`} className="patient-form__hint">
+              {t('imaging.pdfSelected', { selected: store.items.filter((a) => !pdfExcludedImages.includes(a.id)).length, total: store.items.length })}
+            </span>}
+          </span>
           <input
             type="checkbox"
-            {...switchProps}
+            role="switch"
+            className="ios-switch"
+            aria-labelledby={pdfOptionId}
+            aria-describedby={showPdfCount ? `${pdfOptionId}-count` : undefined}
             disabled={readOnly}
             checked={includeInPdf}
             onChange={(e) => onIncludeInPdfChange(e.target.checked)}
           />
-          {t('imaging.pdfOption')}
-          {includeInPdf && store.items.length > 0 && (
-            <span className="patient-form__hint">
-              {t('imaging.pdfSelected', { selected: store.items.filter((a) => !pdfExcludedImages.includes(a.id)).length, total: store.items.length })}
-            </span>
-          )}
         </label>
       )}
 
@@ -499,27 +502,25 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                     <legend>{t('imaging.reportInclusion')}</legend>
                     <div className="imaging__output-fields">
                       {onImageInPdfChange && includeInPdf && (
-                        <label className="imaging__in-pdf" title={t('imaging.inPdfTitle')}>
+                        <label className="choice-row imaging__in-pdf" title={t('imaging.inPdfTitle')}>
                           <input
                             type="checkbox"
-                            {...switchProps}
                             disabled={readOnly}
                             checked={!pdfExcludedImages.includes(a.id)}
                             onChange={(e) => onImageInPdfChange(a.id, e.target.checked)}
                           />
-                          {t('imaging.inPdf')}
+                          <span>{t('imaging.inPdf')}</span>
                         </label>
                       )}
                       {onOwnerReportImageChange && (
-                        <label className="imaging__in-pdf">
+                        <label className="choice-row imaging__in-pdf">
                           <input
                             type="checkbox"
-                            {...switchProps}
                             disabled={readOnly}
                             checked={ownerReportImageInclusion[a.id] ?? Boolean(imageRoles[a.id])}
                             onChange={(e) => onOwnerReportImageChange(a.id, e.target.checked)}
                           />
-                          {t('imaging.inOwnerReport')}
+                          <span>{t('imaging.inOwnerReport')}</span>
                         </label>
                       )}
                       {onImageRoleChange && (

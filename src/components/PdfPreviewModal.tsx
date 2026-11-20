@@ -444,10 +444,10 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
             {options && <section className="document-toolbar__group">
               <h3>{t('documents.included', { ns: 'media' })}</h3>
               <div className="document-toolbar__options">
-                {included.map(({ key, label, value, disabled, hint }) => <label key={key} title={hint}>
+                {included.map(({ key, label, value, disabled, hint }) => <label key={key} className="choice-row" title={hint}>
                   <input type="checkbox" checked={!!value} disabled={disabled}
                     onChange={event => options.onChange(key, event.target.checked)} />
-                  {t(label, { ns: 'settings' })}
+                  <span>{t(label, { ns: 'settings' })}</span>
                 </label>)}
               </div>
             </section>}

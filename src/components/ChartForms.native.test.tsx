@@ -2,9 +2,7 @@ import React from 'react';
 import { describe, it, expect, vi, beforeAll, beforeEach } from 'vitest';
 import { fireEvent, render, screen, within } from '@testing-library/react';
 
-// The chart's form sections in the iOS app (inset-grouped label/value
-// rows, segmented choices, switches for booleans) and on the website
-// (unchanged markup).
+// Compare chart forms across the website and the iOS app.
 const flags = vi.hoisted(() => ({ native: false }));
 vi.mock('../native/platform', () => ({ isNativeApp: () => flags.native }));
 vi.mock('../native/haptics', () => ({ hapticSelection: vi.fn(), hapticTap: vi.fn(), hapticImpact: vi.fn(), hapticSuccess: vi.fn() }));
@@ -133,13 +131,13 @@ describe('AnesthesiaForm', () => {
   const base = { onNerveBlockChange: () => {}, onDrugsChange: () => {}, logo: 'socal' as const, nerveBlocks: { ...EMPTY_NERVE_BLOCKS } };
   const fields = [{ id: 'c', label: 'IV catheter', type: 'checkbox' as const }];
 
-  it('app: a yes/no field is a switch', () => {
-    flags.native = true;
+  it.each([true, false])('uses a leading checkbox for a clinical yes/no field (native: %s)', (native) => {
+    flags.native = native;
     const onCustomValuesChange = vi.fn();
     render(<AnesthesiaForm {...base} customFieldDefs={fields} onCustomValuesChange={onCustomValuesChange} />);
-    const sw = screen.getByRole('switch', { name: 'IV catheter' });
-    expect(sw).toHaveClass('ios-switch');
-    fireEvent.click(sw);
+    const checkbox = screen.getByRole('checkbox', { name: 'IV catheter' });
+    expect(checkbox.parentElement?.firstElementChild).toBe(checkbox);
+    fireEvent.click(checkbox);
     expect(onCustomValuesChange).toHaveBeenLastCalledWith({ blocks: [], fields: [{ id: 'c', label: 'IV catheter', type: 'checkbox', value: 'yes' }] });
   });
 
@@ -181,10 +179,8 @@ describe('AnesthesiaForm', () => {
     expect(screen.getAllByRole('textbox', { name: 'Mental right (mL)' })[0]).toHaveValue('0.2');
   });
 
-  it('website: checkbox and text glyphs as before', () => {
-    render(<AnesthesiaForm {...base} customFieldDefs={fields} nerveBlocks={{ ...EMPTY_NERVE_BLOCKS, drugs: [{ name: 'A', concentration: '' }, { name: 'B', concentration: '' }] }} />);
-    expect(screen.getByRole('checkbox', { name: 'IV catheter' })).not.toHaveClass('ios-switch');
-    expect(screen.queryByRole('switch')).toBeNull();
+  it('website: Add anesthetic and Remove use text glyphs', () => {
+    render(<AnesthesiaForm {...base} nerveBlocks={{ ...EMPTY_NERVE_BLOCKS, drugs: [{ name: 'A', concentration: '' }, { name: 'B', concentration: '' }] }} />);
     expect(screen.getByRole('button', { name: 'Remove A' }).textContent).toBe('×');
     expect(screen.getByRole('button', { name: /Add anesthetic/ }).textContent).toBe('+ Add anesthetic');
     expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Anesthesia');
@@ -192,16 +188,15 @@ describe('AnesthesiaForm', () => {
 });
 
 describe('ImagingSection', () => {
-  const renderIt = () => render(<ImagingSection chartId="c1" cloudActive onIncludeInPdfChange={vi.fn()} includeInPdf={false} />);
-  it('app: "Add images to the PDF" is a switch', () => {
-    flags.native = true;
-    renderIt();
-    expect(screen.getByRole('switch', { name: /Add images to the PDF/ })).toHaveClass('ios-switch');
-  });
-  it('website: a checkbox', () => {
-    renderIt();
-    expect(screen.getByRole('checkbox', { name: /Add images to the PDF/ })).toBeInTheDocument();
-    expect(screen.queryByRole('switch')).toBeNull();
+  it.each([true, false])('uses a switch for including images in the PDF (native: %s)', (native) => {
+    flags.native = native;
+    const onIncludeInPdfChange = vi.fn();
+    render(<ImagingSection chartId="c1" cloudActive onIncludeInPdfChange={onIncludeInPdfChange} includeInPdf={false} />);
+    const setting = screen.getByRole('switch', { name: 'Add images to the PDF (4 per page)' });
+    expect(setting).toHaveClass('ios-switch');
+    expect(setting).not.toBeChecked();
+    fireEvent.click(setting);
+    expect(onIncludeInPdfChange).toHaveBeenCalledWith(true);
   });
 });
 

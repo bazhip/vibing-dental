@@ -125,7 +125,10 @@ function EnabledUploadReview({ chartId, disabled = false, kind = 'pdf', backend 
         <label>{t('uploadReview.note')}
           <textarea rows={2} maxLength={200} value={note} onChange={event => { setNote(event.target.value); setChecked(false); setSaved(false); }} />
         </label>
-        <label className="pims-drafts__check"><input type="checkbox" checked={checked} onChange={event => setChecked(event.target.checked)} />{t('uploadReview.acknowledge')}</label>
+        <label className="choice-row">
+          <input type="checkbox" checked={checked} onChange={event => setChecked(event.target.checked)} />
+          <span>{t('uploadReview.acknowledge')}</span>
+        </label>
         <button type="button" className="pims-drafts__primary" disabled={blocked || !checked || !validNote} onClick={() => void save()}>{t('uploadReview.save')}</button>
       </fieldset>}
     </>}

@@ -40,8 +40,6 @@
   gap: 8px 16px;
   min-width: 0;
 }
-.document-toolbar__options label { display: inline-flex; gap: 7px; align-items: center; }
-.document-toolbar__options input[type="checkbox"] { flex: none; accent-color: var(--primary); }
 .document-toolbar__notices:empty { display: none; }
 .document-toolbar__notices { padding: 0 16px 8px; }
 .document-toolbar__note { font-size: .82rem; color: var(--text-muted); margin: 0; }
@@ -52,6 +50,7 @@
 .pdf-preview-body--toolbar .pdf-preview-iframe-wrap { flex: 1 1 auto; }
 @media (max-width: 800px) {
   .document-toolbar__row, .document-toolbar__settings { padding-inline: 10px; }
+  .document-toolbar__settings { max-height: 40dvh; }
   .documents-modal__controls .document-toolbar__row { flex-wrap: nowrap; align-items: stretch; }
   .documents-modal__controls .document-toolbar__actions { display: contents; }
   .documents-modal__controls .document-toolbar__row .ui-btn {
@@ -64,6 +63,13 @@
   }
   .documents-modal__controls .document-toolbar__row > .ui-btn { flex-shrink: 0; max-width: 45%; }
   .document-toolbar__group { flex: 1 1 100%; }
-  .document-toolbar__options :is(select, label) { min-height: 44px; }
+  .document-toolbar__options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+    gap: 0 12px;
+  }
+  .document-toolbar__options .choice-row { align-content: start; padding-block: 10px; }
+  .document-toolbar__options select { min-height: 44px; }
   .pdf-style-inline input[type="color"] { width: 44px; height: 44px; }
 }

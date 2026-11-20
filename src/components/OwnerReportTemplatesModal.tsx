@@ -569,7 +569,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
             <p className="patient-form__hint">
               {t('templates.languageHint')}
             </p>
-            <label className="report-templates__check">
+            <label className="choice-row report-templates__check">
               <input
                 type="checkbox"
                 checked={selected.showToothNumbers}
@@ -585,7 +585,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
                 </span>
               </span>
             </label>
-            <label className="report-templates__check">
+            <label className="choice-row report-templates__check">
               <input
                 type="checkbox"
                 checked={selected.showGrades}
@@ -662,7 +662,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
                     <div className="report-templates__section-head">
                       <ReorderHandle index={index} reorder={sectionOrder} disabled={!canEdit || busy || selected.sections.length < 2}
                         label={t('visitDocumentation:consultation.templates.builder.dragField', { field: name })} />
-                      <label className="report-templates__check report-templates__check--inline">
+                      <label className="choice-row report-templates__check report-templates__check--inline">
                         <input
                           type="checkbox"
                           checked={section.enabled}

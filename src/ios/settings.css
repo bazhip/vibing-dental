@@ -197,11 +197,6 @@ html.native-ios .ios-settings-page .entry-grid__button:disabled {
   background: var(--ios-fill);
   color: var(--ios-label-3);
 }
-html.native-ios .ios-settings-page input[type='checkbox']:not(.ios-switch) {
-  width: 22px;
-  height: 22px;
-  accent-color: var(--ios-tint);
-}
 html.native-ios .ios-settings-page .settings-msg { border-radius: 12px; }
 html.native-ios .ios-settings-page a { color: var(--ios-link, var(--ios-tint)); }
 html.native-ios .ios-settings-page__actions {

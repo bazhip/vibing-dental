@@ -46,6 +46,7 @@ export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = (props) =>
 /** The app: an iOS sheet holding the settings list. */
 function ChartSettingsSheet({ onClose, prefs, followsAccount, onChange, onCustomizeExam, section }: ChartSettingsModalProps) {
   const { t } = useTranslation(['settings', 'app']);
+  const settingsId = React.useId();
   const [only, setOnly] = React.useState<SettingsSection | null>(section ?? null);
   return (
     <Sheet
@@ -65,6 +66,7 @@ function ChartSettingsSheet({ onClose, prefs, followsAccount, onChange, onCustom
 /** The website's dialog. */
 const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs, followsAccount, onChange, onCustomizeExam, section }) => {
   const { t } = useTranslation(['settings', 'app']);
+  const settingsId = React.useId();
   const [only, setOnly] = React.useState<SettingsSection>(section ?? 'charting');
   const contentRef = React.useRef<HTMLDivElement>(null);
   const categories: SettingsSection[] = ['patient', 'exam', 'anesthesia', 'charting', 'diagnosis', 'procedure', 'images'];
@@ -145,18 +147,18 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
 
           <section className="chart-settings__group" hidden={!show.charting}>
             <h3 className="ai-settings-subhead">{t('chart.customization.layout')}</h3>
-            <label className="chart-settings__choice">
-              <input type="checkbox" checked={prefs.autosave} onChange={(e) => onChange({ autosave: e.target.checked })} />
-              {t('chart.autosave.label')}
+            <label className="chart-settings__switch">
+              <span><span id={`${settingsId}-autosave-label`}>{t('chart.autosave.label')}</span> <span className="chart-settings__hint" id={`${settingsId}-autosave-hint`}>{t('chart.autosave.hint')}</span></span>
+              <input type="checkbox" role="switch" className="ios-switch" aria-labelledby={`${settingsId}-autosave-label`} aria-describedby={`${settingsId}-autosave-hint`}
+                checked={prefs.autosave} onChange={(e) => onChange({ autosave: e.target.checked })} />
             </label>
-            <p className="chart-settings__hint">{t('chart.autosave.hint')}</p>
             <fieldset className="chart-settings__field">
               <legend>{t('chart.charting.view')}</legend>
-              <label className="chart-settings__choice">
+              <label className="chart-settings__choice choice-row">
                 <input type="radio" name="chartingView" checked={prefs.chartingView === 'grid'} onChange={() => onChange({ chartingView: 'grid' })} />
                 {t('chart.charting.grid')}
               </label>
-              <label className="chart-settings__choice">
+              <label className="chart-settings__choice choice-row">
                 <input type="radio" name="chartingView" checked={prefs.chartingView === 'tooth'} onChange={() => onChange({ chartingView: 'tooth' })} />
                 {t('chart.charting.byTooth')}
               </label>
@@ -164,17 +166,17 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
 
             <fieldset className="chart-settings__field">
               <legend>{t('chart.charting.pocket')}</legend>
-              <label className="chart-settings__choice">
+              <label className="chart-settings__choice choice-row">
                 <input type="radio" name="pocketMode" checked={prefs.pocketMode === 'tooth'} onChange={() => onChange({ pocketMode: 'tooth' })} />
                 {t('chart.charting.pocketTooth')}
               </label>
-              <label className="chart-settings__choice">
+              <label className="chart-settings__choice choice-row">
                 <input type="radio" name="pocketMode" checked={prefs.pocketMode === 'root'} onChange={() => onChange({ pocketMode: 'root' })} />
-                {t('chart.charting.pocketRoot')} <span className="chart-settings__hint">{t('chart.charting.pocketRootHint')}</span>
+                <span>{t('chart.charting.pocketRoot')} <span className="chart-settings__hint">{t('chart.charting.pocketRootHint')}</span></span>
               </label>
-              <label className="chart-settings__choice">
+              <label className="chart-settings__choice choice-row">
                 <input type="radio" name="pocketMode" checked={prefs.pocketMode === 'site'} onChange={() => onChange({ pocketMode: 'site' })} />
-                {t('chart.charting.pocketSite')} <span className="chart-settings__hint">{t('chart.charting.pocketSiteHint')}</span>
+                <span>{t('chart.charting.pocketSite')} <span className="chart-settings__hint">{t('chart.charting.pocketSiteHint')}</span></span>
               </label>
             </fieldset>
 
@@ -185,7 +187,7 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
                 {PERIO_FIELDS.map((f) => {
                   const shown = !prefs.hiddenColumns.includes(f.key);
                   return (
-                    <label key={f.key} className="chart-settings__choice">
+                    <label key={f.key} className="chart-settings__choice choice-row">
                       <input
                         type="checkbox"
                         checked={shown}
@@ -203,11 +205,11 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
             <h3 className="ai-settings-subhead chart-customization__subheading">{t('chart.customization.input')}</h3>
             <fieldset className="chart-settings__field">
               <legend>{t('chart.charting.space')}</legend>
-              <label className="chart-settings__choice">
+              <label className="chart-settings__choice choice-row">
                 <input type="radio" name="spaceKey" checked={prefs.spaceMovesDown} onChange={() => onChange({ spaceMovesDown: true })} />
-                {t('chart.charting.spaceDown')} <span className="chart-settings__hint">{t('chart.charting.spaceDownHint')}</span>
+                <span>{t('chart.charting.spaceDown')} <span className="chart-settings__hint">{t('chart.charting.spaceDownHint')}</span></span>
               </label>
-              <label className="chart-settings__choice">
+              <label className="chart-settings__choice choice-row">
                 <input type="radio" name="spaceKey" checked={!prefs.spaceMovesDown} onChange={() => onChange({ spaceMovesDown: false })} />
                 {t('chart.charting.spaceType')}
               </label>
@@ -216,7 +218,7 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
             <fieldset className="chart-settings__field">
               <legend>{t('chart.charting.scorePicker')}</legend>
               {SCORE_PICKER_OPTIONS.map((value) => (
-                <label key={value} className="chart-settings__choice">
+                <label key={value} className="chart-settings__choice choice-row">
                   <input type="radio" name="scorePicker" checked={prefs.scorePicker === value} onChange={() => onChange({ scorePicker: value })} />
                   {t(`chart.charting.scorePickerOptions.${value}`)}
                 </label>
@@ -225,15 +227,15 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
 
             <fieldset className="chart-settings__field">
               <legend>{t('chart.charting.scoreTap')}</legend>
-              <label className="chart-settings__choice">
+              <label className="chart-settings__choice choice-row">
                 <input type="radio" name="scoreTapMoves" checked={prefs.scoreTapMoves === 'finding'} onChange={() => onChange({ scoreTapMoves: 'finding' })} />
-                {t('chart.charting.scoreFinding')} <span className="chart-settings__hint">{t('chart.charting.scoreFindingHint')}</span>
+                <span>{t('chart.charting.scoreFinding')} <span className="chart-settings__hint">{t('chart.charting.scoreFindingHint')}</span></span>
               </label>
-              <label className="chart-settings__choice">
+              <label className="chart-settings__choice choice-row">
                 <input type="radio" name="scoreTapMoves" checked={prefs.scoreTapMoves === 'tooth'} onChange={() => onChange({ scoreTapMoves: 'tooth' })} />
-                {t('chart.charting.scoreTooth')} <span className="chart-settings__hint">{t('chart.charting.scoreToothHint')}</span>
+                <span>{t('chart.charting.scoreTooth')} <span className="chart-settings__hint">{t('chart.charting.scoreToothHint')}</span></span>
               </label>
-              <label className="chart-settings__choice">
+              <label className="chart-settings__choice choice-row">
                 <input type="radio" name="scoreTapMoves" checked={prefs.scoreTapMoves === 'stay'} onChange={() => onChange({ scoreTapMoves: 'stay' })} />
                 {t('chart.charting.scoreStay')}
               </label>
@@ -244,15 +246,16 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
 
           <section className="chart-settings__group" hidden={!show.beside}>
             <h3 className="ai-settings-subhead">{t('chart.beside.title')}</h3>
-            <label className="chart-settings__choice">
-              <input type="checkbox" checked={prefs.mirrorToDiagnosis} onChange={(e) => onChange({ mirrorToDiagnosis: e.target.checked })} />
-              {t('chart.beside.show')} <span className="chart-settings__hint">{t('chart.beside.showHint')}</span>
+            <label className="chart-settings__switch">
+              <span><span id={`${settingsId}-mirror-label`}>{t('chart.beside.show')}</span> <span className="chart-settings__hint" id={`${settingsId}-mirror-hint`}>{t('chart.beside.showHint')}</span></span>
+              <input type="checkbox" role="switch" className="ios-switch" aria-labelledby={`${settingsId}-mirror-label`} aria-describedby={`${settingsId}-mirror-hint`}
+                checked={prefs.mirrorToDiagnosis} onChange={(e) => onChange({ mirrorToDiagnosis: e.target.checked })} />
             </label>
             <fieldset className="chart-settings__field" disabled={!prefs.mirrorToDiagnosis}>
               <legend>{t('chart.beside.include')}</legend>
               <div className="chart-settings__grid">
                 {shownColumns.map((f) => (
-                  <label key={f.key} className="chart-settings__choice">
+                  <label key={f.key} className="chart-settings__choice choice-row">
                     <input
                       type="checkbox"
                       checked={prefs.besideTeeth.includes(f.key)}
@@ -293,7 +296,7 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
               <p className="chart-settings__note">{t('chart.anesthesia.blocksNote')}</p>
               <div className="chart-customization__choices">
                 {BLOCK_ROW_OPTIONS.map((b) => (
-                  <label key={b.id} className="chart-settings__choice">
+                  <label key={b.id} className="chart-settings__choice choice-row">
                     <input
                       type="checkbox"
                       checked={!prefs.hiddenBlocks.includes(b.id)}
@@ -390,13 +393,13 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
                 <legend>{t(`patient.${group}`, { ns: 'forms' })}</legend>
                 <div className="chart-customization__choices">
                   {fields.map((field) => (
-                    <label key={field} className="chart-settings__choice">
+                    <label key={field} className="chart-settings__choice choice-row">
                       <input type="checkbox" checked={!prefs.hiddenPatientFields.includes(field)} onChange={(e) => onChange({ hiddenPatientFields: toggleField(prefs.hiddenPatientFields, field, !e.target.checked) })} />
                       {t(`patient.${field}`, { ns: 'forms' })}
                     </label>
                   ))}
                   {group === 'visitGroup' && (
-                    <label className="chart-settings__choice">
+                    <label className="chart-settings__choice choice-row">
                       <input type="checkbox" checked={!prefs.hideRecheck} onChange={(e) => onChange({ hideRecheck: !e.target.checked })} />
                       {t('chart.customization.showRecheck')}
                     </label>
@@ -424,42 +427,42 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
           <section className="chart-settings__group" hidden={!(show.pdfGrid || show.pdfImages)}>
             <h3 className="ai-settings-subhead">{t('chart.pdf.title')}</h3>
             {show.pdfGrid && (
-            <label className="chart-settings__choice">
+            <label className="chart-settings__choice choice-row">
               <input
                 type="checkbox"
                 checked={!prefs.mirrorToDiagnosis || prefs.pdfIncludeGrid}
                 disabled={!prefs.mirrorToDiagnosis}
                 onChange={(e) => onChange({ pdfIncludeGrid: e.target.checked })}
               />
-              {t('chart.pdf.grid')} <span className="chart-settings__hint">{t('chart.pdf.gridHint')}</span>
+              <span>{t('chart.pdf.grid')} <span className="chart-settings__hint">{t('chart.pdf.gridHint')}</span></span>
             </label>
             )}
             {show.pdfImages && (
-            <label className="chart-settings__choice">
+            <label className="chart-settings__choice choice-row">
               <input type="checkbox" checked={prefs.pdfIncludeImages} onChange={(e) => onChange({ pdfIncludeImages: e.target.checked })} />
-              {t('chart.pdf.images')} <span className="chart-settings__hint">{t('chart.pdf.imagesHint')}</span>
+              <span>{t('chart.pdf.images')} <span className="chart-settings__hint">{t('chart.pdf.imagesHint')}</span></span>
             </label>
             )}
             {show.pdfImages && (
-            <label className="chart-settings__choice">
+            <label className="chart-settings__choice choice-row">
               <input type="checkbox" checked={prefs.pdfIncludeRadiographicReport} onChange={(e) => onChange({ pdfIncludeRadiographicReport: e.target.checked })} />
               {t('chart.pdf.radiographicReport')}
             </label>
             )}
             {show.pdfImages && (
-            <label className="chart-settings__choice">
+            <label className="chart-settings__choice choice-row">
               <input type="checkbox" checked={prefs.pdfIncludeCtReport} onChange={(e) => onChange({ pdfIncludeCtReport: e.target.checked })} />
               {t('chart.pdf.ctReport')}
             </label>
             )}
             {show.pdfImages && (
-            <label className="chart-settings__choice">
+            <label className="chart-settings__choice choice-row">
               <input type="checkbox" checked={prefs.pdfIncludeDischarge} onChange={(e) => onChange({ pdfIncludeDischarge: e.target.checked })} />
               {t('chart.pdf.dischargeSections')}
             </label>
             )}
             {show.pdfImages && (
-            <label className="chart-settings__choice">
+            <label className="chart-settings__choice choice-row">
               <input type="checkbox" checked={prefs.pdfIncludeCodesUsed} onChange={(e) => onChange({ pdfIncludeCodesUsed: e.target.checked })} />
               {t('chart.pdf.codesUsed')}
             </label>

@@ -58,7 +58,7 @@ function VisitChoiceField({ id, describedBy, options, type, value, readOnly, onC
         const next = single ? option : checked
           ? lines.filter(line => line !== option).join('\n')
           : [value, option].filter(Boolean).join('\n');
-        return <label className="visit-documentation__option" key={option}>
+        return <label className="choice-row visit-documentation__option" key={option}>
           <input type={single ? 'radio' : 'checkbox'} name={id} checked={checked}
             disabled={next.length > VISIT_DOCUMENT_MAX_LENGTH}
             onChange={() => { if (!selectionDisabled && next.length <= VISIT_DOCUMENT_MAX_LENGTH) onChange(next); }} />

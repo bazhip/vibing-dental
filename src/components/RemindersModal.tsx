@@ -123,16 +123,16 @@ export const RemindersModal: React.FC<RemindersModalProps> = ({ open, onClose, p
         </p>
 
         {!team.loaded ? (
-          <p className="practice-logo-empty">{t('settings.loading')}</p>
+          <p className="practice-logo-empty" role="status">{t('settings.loading')}</p>
         ) : !team.practice ? (
           <p className="practice-logo-empty">{asScreen ? t('reminders.settingUp', { ns: 'settings' }) : t('settings.notSetUp')}</p>
         ) : !isOwner ? (
           <p className="practice-logo-empty">{t('settings.ownerOnly')}</p>
         ) : (
           <>
-            <label className="patient-form__label" style={{ flexDirection: 'row', alignItems: 'center', gap: '0.5rem' }}>
+            <label className="choice-row">
               <input type="checkbox" checked={auto} onChange={(e) => setAuto(e.target.checked)} />
-              {t('settings.auto')}
+              <span>{t('settings.auto')}</span>
             </label>
             <label className="patient-form__label" style={{ marginTop: '0.6rem' }}>
               {t('settings.send')}

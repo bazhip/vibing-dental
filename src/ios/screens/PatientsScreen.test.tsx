@@ -16,7 +16,7 @@ vi.mock('../../hooks/useTeam', () => ({
 }));
 
 import { fakeLibrary, meta, panel, renderShell } from './testHarness';
-import type { ChartListQuery } from '../../hooks/useCloudSync';
+import type { ChartListPage, ChartListQuery } from '../../hooks/useCloudSync';
 
 const ROWS = [
   meta({ id: 'a1', owner_name: 'Ann', owner_email: 'ann@x.test', recall_date: '2026-11-01' }),
@@ -57,6 +57,29 @@ describe('PatientsScreen', () => {
     expect(within(p).getByRole('heading', { level: 1, name: 'Patients' })).toBeInTheDocument();
     expect(within(p).getByRole('searchbox', { name: /Search patients/ })).toBeInTheDocument();
     expect(p.querySelector('.ios-navbar__leading')?.childElementCount).toBe(0);
+  });
+
+  it('disables Load more while the next page is pending', async () => {
+    let finish!: () => void;
+    const nextPage = new Promise<ChartListPage>((resolve) => {
+      finish = () => resolve({ rows: [ROWS[3]], hasMore: false });
+    });
+    const listCharts = vi.fn(async (query: ChartListQuery = {}) => {
+      if (query.offset) return nextPage;
+      return { rows: ROWS.slice(0, 3), hasMore: true };
+    });
+    renderShell(fakeLibrary(ROWS, '2026-11-13', { listCharts }), 'patients');
+    const list = within(panel('patients'));
+
+    fireEvent.click(await list.findByRole('button', { name: 'Load more' }));
+    const pending = list.getByRole('button', { name: 'Loading…' });
+    expect(pending).toBeDisabled();
+    fireEvent.click(pending);
+    expect(queries(listCharts).filter((query) => query.offset)).toHaveLength(1);
+
+    await act(async () => finish());
+    expect(list.getByText('Coco')).toBeInTheDocument();
+    expect(list.queryByRole('button', { name: 'Load more' })).toBeNull();
   });
 
   it('lists patients grouped, with #PID · visits · Updated and a recheck label', async () => {

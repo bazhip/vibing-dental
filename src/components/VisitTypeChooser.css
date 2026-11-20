@@ -7,12 +7,7 @@
   gap: 8px;
   margin-block-start: 16px;
 }
-.visit-type-chooser__option {
-  display: flex;
-  align-items: start;
-  gap: 10px;
-  min-height: 44px;
-  box-sizing: border-box;
+.visit-type-chooser__option.choice-row {
   padding: 12px;
   border: 1px solid var(--action-border);
   border-radius: 8px;
@@ -22,14 +17,6 @@
 .visit-type-chooser__option:has(input:checked) {
   border-color: var(--primary);
   background: var(--action-tint);
-}
-.visit-type-chooser__option:focus-within {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
-}
-.visit-type-chooser__option input {
-  accent-color: var(--primary);
-  margin-block-start: 3px;
 }
 .visit-type-chooser__description {
   display: block;

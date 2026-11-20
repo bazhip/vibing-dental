@@ -5,7 +5,7 @@ import { useModalFocus } from '../hooks/useModalFocus';
 import { friendlyError } from './ui/dialogs';
 import { isNativeApp } from '../native/platform';
 import { Sheet, type SheetDetent } from '../ios/Sheet';
-import { List, ListSection, SwitchRow } from '../ios/List';
+import { List, ListSection } from '../ios/List';
 
 /** The sheet opens at half height and can be pulled to full. */
 const HALF_OR_FULL: SheetDetent[] = ['medium', 'large'];
@@ -68,6 +68,13 @@ export const JoinPracticeModal: React.FC<JoinPracticeModalProps> = ({ token, onD
 
   const name = practiceName || t('join.thisPractice');
 
+  const shareConsent = (
+    <label className="choice-row">
+      <input type="checkbox" checked={shareExisting} disabled={busy} onChange={(e) => setShareExisting(e.target.checked)} />
+      <span>{t('join.shareExisting')}</span>
+    </label>
+  );
+
   if (native) {
     // A sheet: Not now (or swiping it away) declines, Join accepts.
     const canJoin = loaded && !alreadyMember && !error;
@@ -84,7 +91,7 @@ export const JoinPracticeModal: React.FC<JoinPracticeModalProps> = ({ token, onD
         detents={HALF_OR_FULL}
       >
         <div className="ios-form">
-          {!loaded && !error && <p className="ios-form-text">{t('join.checking')}</p>}
+          {!loaded && !error && <p className="ios-form-text" role="status">{t('join.checking')}</p>}
           {loaded && alreadyMember && <p className="ios-form-text">{t('join.alreadyMember', { practice: name })}</p>}
           {canJoin && (
             <p className="ios-form-text">
@@ -97,12 +104,11 @@ export const JoinPracticeModal: React.FC<JoinPracticeModalProps> = ({ token, onD
         {canJoin && (
           <List>
             <ListSection>
-              <SwitchRow
-                title={t('join.shareExisting')}
-                checked={shareExisting}
-                onChange={setShareExisting}
-                disabled={busy}
-              />
+              <div role="listitem" className="ios-list__item">
+                <div className="ios-row">
+                  <div className="ios-row__main">{shareConsent}</div>
+                </div>
+              </div>
             </ListSection>
           </List>
         )}
@@ -117,7 +123,7 @@ export const JoinPracticeModal: React.FC<JoinPracticeModalProps> = ({ token, onD
           <h2 id="join-title">{loaded ? t('join.title', { practice: name }) : t('join.invitation')}</h2>
         </header>
         <div className="ai-settings-body">
-          {!loaded && !error && <p>{t('join.checking')}</p>}
+          {!loaded && !error && <p role="status">{t('join.checking')}</p>}
           {loaded && alreadyMember && <p>{t('join.alreadyMember', { practice: name })}</p>}
           {loaded && !alreadyMember && (
             <>
@@ -125,10 +131,7 @@ export const JoinPracticeModal: React.FC<JoinPracticeModalProps> = ({ token, onD
                 <Trans t={t} i18nKey="join.invited" values={{ practice: name }} components={{ strong: <strong /> }} />
               </p>
               {leavingPractice && <p>{t('join.leaves', { practice: leavingPractice })}</p>}
-              <label className="dental-grid__option" style={{ marginTop: '0.75rem' }}>
-                <input type="checkbox" checked={shareExisting} onChange={(e) => setShareExisting(e.target.checked)} />
-                {t('join.shareExisting')}
-              </label>
+              {shareConsent}
             </>
           )}
           {(error || joinError) && <p className="login-error" role="alert">{error || joinError}</p>}
