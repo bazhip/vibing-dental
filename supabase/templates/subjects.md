@@ -32,6 +32,7 @@ Confirm your ToothOps account
 | ro | Confirmați contul dumneavoastră ToothOps |
 | zh | 确认您的 ToothOps 账户 |
 | ar | تأكيد حسابكم في ToothOps |
+| pl | Potwierdzenie konta ToothOps |
 
 ## Reset password (`reset-password.html`)
 
@@ -52,6 +53,7 @@ Reset your ToothOps password
 | ro | Resetați parola ToothOps |
 | zh | 重置您的 ToothOps 密码 |
 | ar | إعادة تعيين كلمة مرور ToothOps |
+| pl | Resetowanie hasła do ToothOps |
 
 ## Change email address (`change-email.html`)
 
@@ -72,3 +74,4 @@ Confirm your new email for ToothOps
 | ro | Confirmați noua adresă de e-mail pentru ToothOps |
 | zh | 确认您的 ToothOps 新邮箱 |
 | ar | تأكيد بريدكم الجديد في ToothOps |
+| pl | Potwierdzenie nowego adresu e-mail w ToothOps |

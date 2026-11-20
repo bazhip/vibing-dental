@@ -1,0 +1,74 @@
+{
+  "style": {
+    "label": "Styl PDF",
+    "done": "Gotowe",
+    "custom": "Własny kolor",
+    "customShort": "Własny",
+    "customDesc": "Dowolny kolor dla układu „{{layout}}”.",
+    "currentLayout": "Bieżący",
+    "chooseColor": "Wybierz własny kolor"
+  },
+  "presets": {
+    "clinic": {
+      "name": "Kliniczny turkus",
+      "description": "W stylu aplikacji: turkusowe nagłówki, czerwone oznaczenia zmian i zaokrąglone karty."
+    },
+    "classic-blue": {
+      "name": "Klasyczny błękit",
+      "description": "Tradycyjny błękit dokumentacji medycznej i jednolite tło nagłówków."
+    },
+    "slate": {
+      "name": "Grafit",
+      "description": "Neutralny grafit, czytelny także w druku czarno-białym."
+    },
+    "iris": {
+      "name": "Irys",
+      "description": "Delikatne akcenty w kolorze indygo i zwarte nagłówki pisane wersalikami."
+    },
+    "journal": {
+      "name": "Czasopismo",
+      "description": "Klasyczna czcionka szeryfowa, ciemnoczerwone akcenty i ciepły odcień papieru."
+    }
+  },
+  "preview": {
+    "retryImages": "Wczytaj zdjęcia ponownie",
+    "withoutImages": "Pobierz bez zdjęć",
+    "title": "Karta kliniczna",
+    "subtitle": "Do dokumentacji i skierowań. Wybierz styl lub własny kolor. Podgląd aktualizuje się na bieżąco.",
+    "closeAria": "Zamknij podgląd",
+    "download": "Pobierz PDF",
+    "loadingImages": "Wczytywanie zdjęć…",
+    "generating": "Tworzenie podglądu…",
+    "buildFailed": "Nie udało się utworzyć podglądu. Szczegóły są dostępne w konsoli.",
+    "imagesFailed": "Nie udało się wczytać zdjęć z karty. Spróbuj ponownie lub pobierz PDF bez zdjęć.",
+    "imagesPartial": "Nie udało się wczytać części zdjęć. Spróbuj ponownie lub pobierz PDF bez zdjęć.",
+    "frameTitle": "Podgląd karty klinicznej"
+  },
+  "link": {
+    "preparing": "Przygotowywanie linku do pobrania…",
+    "open": "Dotknij, aby pobrać PDF",
+    "copy": "Skopiuj link",
+    "copied": "Skopiowano link. Wklej go w Chrome, aby pobrać plik.",
+    "copyPrompt": "Skopiuj link i otwórz go w Chrome:",
+    "note": "Przeglądarka tej aplikacji nie może bezpośrednio zapisać PDF. Link jest ważny przez {{minutes}} min. Jeśli pobieranie się nie rozpocznie, skopiuj link do Chrome."
+  },
+  "pages": {
+    "pageAria": "{{title}}, strona {{n}} z {{total}}",
+    "failed": "Nie udało się wyświetlić podglądu. Plik nadal można pobrać."
+  },
+  "hints": {
+    "firefoxAndroid": "Firefox otwiera PDF w nowej karcie. Dotknij Pobierz u góry tej karty, aby zapisać plik.",
+    "inAppBrowser": "Wbudowana przeglądarka tej aplikacji może nie obsługiwać zapisywania plików. Dotknij Pobierz, aby uzyskać link, lub otwórz ToothOps w Chrome (menu ⋮ → „Otwórz w przeglądarce”).",
+    "inAppBrowserMessage": "Wbudowana przeglądarka tej aplikacji nie zapisuje plików. Aby pobrać PDF, otwórz ToothOps w Chrome (menu ⋮ → „Otwórz w przeglądarce”)."
+  },
+  "exportWarning": {
+    "title": "Przed pobraniem",
+    "both": "Karta zawiera niezapisane zmiany i nie została zamknięta.",
+    "unsaved": "Karta zawiera niezapisane zmiany.",
+    "unfinalized": "Karta nie została zamknięta.",
+    "finalize": "Zamknij kartę i pobierz",
+    "anyway": "Pobierz mimo to",
+    "finalizing": "Zamykanie karty…",
+    "failed": "Nie udało się zamknąć karty. Spróbuj ponownie lub pobierz plik mimo to."
+  }
+}

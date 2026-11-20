@@ -29,6 +29,7 @@ export const SPOKEN_SYNONYMS: Record<AppLanguage, string[]> = {
   ar: ['تخلخل', 'حركة', 'جيب', 'انحسار', 'تفرع الجذور', 'قلح', 'جير', 'مرحلة', 'درجة', 'تصنيف'],
   hu: ['mobilitás', 'tasak', 'recesszió', 'furkáció', 'stádium', 'fok', 'fokozat', 'osztály'],
   ro: ['mobilitate', 'pungă', 'recesiune', 'furcație', 'tartru', 'stadiu', 'grad', 'clasă'],
+  pl: ['ruchomość', 'kieszonka', 'recesja', 'furkacja', 'kamień', 'przerost dziąsła', 'stopień', 'stadium', 'klasa'],
 
   en: [], // English keeps its own SCORE_TERMS list in numbers.ts.
   fr: [
@@ -89,6 +90,7 @@ export const AND_WORDS: Record<AppLanguage, string[]> = {
   ar: ['و', 'ثم'],
   hu: ['és'],
   ro: ['și'],
+  pl: ['i', 'oraz'],
 
   en: [], // English keeps "and" in DANGLING_RE.
   fr: ['et'],
@@ -126,6 +128,7 @@ export const UNIT_WORDS: Record<AppLanguage, string[]> = {
   ar: ['mm', 'مم', 'مليمتر', 'مليمترات', 'ملليمتر', 'ملليمترات'],
   hu: ['mm', 'milliméter', 'milliméteres'],
   ro: ['mm', 'milimetru', 'milimetri'],
+  pl: ['mm', 'milimetr', 'milimetry', 'milimetrów', 'milimetra'],
 
   en: [], // English keeps its own unit pattern in numbers.ts.
   fr: ['mm', 'millimètre', 'millimètres'],
@@ -140,6 +143,7 @@ export const SLASH_WORDS: Record<AppLanguage, string[]> = {
   ar: ['شرطة مائلة', 'سلاش', 'slash'],
   hu: ['per', 'törtvonal', 'slash'],
   ro: ['bară oblică', 'bară', 'slash'],
+  pl: ['ukośnik', 'slash'],
 
   en: ['slash'],
   fr: ['barre oblique', 'slash'],
@@ -159,6 +163,7 @@ export const SPELLED_LETTERS: Record<AppLanguage, Record<string, string>> = {
   ar: { 'جي آي': 'GI', 'جي اي': 'GI', 'بي دي': 'PD', 'إف': 'F', 'اف': 'F', ...ENGLISH_LETTER_NAMES },
   hu: { 'gé i': 'GI', 'gé-i': 'GI', 'pé dé': 'PD', 'ef': 'F', ...ENGLISH_LETTER_NAMES },
   ro: { 'ge i': 'GI', 'ge-i': 'GI', 'pe de': 'PD', 'ef': 'F', 'efe': 'F', ...ENGLISH_LETTER_NAMES },
+  pl: { 'gie i': 'GI', 'pe de': 'PD', ef: 'F', ...ENGLISH_LETTER_NAMES },
 
   en: {}, // English keeps its own letter passes in normalizeTranscript.
   fr: { 'gé i': 'GI', 'gé-i': 'GI', 'pé dé': 'PD', 'effe': 'F', 'èf': 'F', ...ENGLISH_LETTER_NAMES },
@@ -175,6 +180,7 @@ export const FILLER_WORDS: Record<AppLanguage, string[]> = {
   ar: ['نعم', 'حسنا', 'حسنًا', 'شكرا', 'شكرًا', 'تمام', 'حاضر', 'آه', 'إذن'],
   hu: ['öö', 'öhm', 'igen', 'nem', 'rendben', 'jó', 'köszönöm', 'tehát', 'és'],
   ro: ['ăă', 'ăhm', 'da', 'nu', 'bine', 'mulțumesc', 'deci', 'și'],
+  pl: ['eee', 'yyy', 'mhm', 'tak', 'dobrze', 'dziękuję', 'więc', 'i'],
 
   en: [], // English keeps its own FILLER_WORDS set in aiAutofill.ts.
   fr: ['euh', 'hein', 'bon', 'voilà', "d'accord", 'ok', 'merci', 'oui', 'non', 'alors', 'donc', 'et'],
@@ -192,6 +198,7 @@ export const SCORE_LINK_WORDS: Record<AppLanguage, string[]> = {
   ar: ['درجة', 'بدرجة', 'بمقدار', 'هو', 'هي'],
   hu: ['értéke', 'foka'],
   ro: ['de', 'este'],
+  pl: ['stopnia', 'wynosi', 'jest'],
 
   en: [],
   fr: ['de', 'à'],

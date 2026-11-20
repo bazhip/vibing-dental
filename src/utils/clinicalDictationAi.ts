@@ -41,7 +41,7 @@ const FIELDS = {
   discharge: Object.freeze(DISCHARGE),
   imaging: Object.freeze(['radiographicFindings', 'ctReport'] as const),
 } satisfies Record<Exclude<ClinicalDictationKind, 'ct'>, readonly ClinicalDictationField[]>;
-const LANGUAGE_NAMES: Record<AppLanguage, string> = { en: 'English', fr: 'French', de: 'German', it: 'Italian', es: 'Spanish', hu: 'Hungarian', ro: 'Romanian', zh: 'Simplified Chinese', ar: 'Arabic' };
+const LANGUAGE_NAMES: Record<AppLanguage, string> = { en: 'English', fr: 'French', de: 'German', it: 'Italian', es: 'Spanish', hu: 'Hungarian', ro: 'Romanian', zh: 'Simplified Chinese', ar: 'Arabic', pl: 'Polish' };
 const MAX_TRANSCRIPT = 40000, MAX_FIELD = 20000, MAX_REQUEST = 110000;
 const CONTROLS = /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f-\u009f]/;
 const object = (value: unknown): value is Record<string, unknown> => !!value && typeof value === 'object' && !Array.isArray(value);

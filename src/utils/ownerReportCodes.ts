@@ -1,8 +1,6 @@
 import { codeDefinition, findCodesInText } from '../constants/dentalCodes';
+import { isAppLanguage } from '../i18n/config';
 import { ReportLocale, reportStrings } from './ownerReportI18n';
-
-/** Report languages with an AVDC definitions catalog (locales/<lng>/codes.json). */
-const CODE_CATALOG_LOCALES: ReadonlySet<ReportLocale> = new Set(['en', 'fr', 'de', 'it', 'es', 'hu', 'ro', 'zh', 'ar']);
 
 const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -22,7 +20,7 @@ export function ownerFriendlyText(text: string, locale: ReportLocale, species?: 
   let out = text;
   // Longest first, so T/FX/CCF is replaced before T/FX could be.
   for (const { code } of [...codes].sort((a, b) => b.code.length - a.code.length)) {
-    const phrase = t.plainCode(code) ?? (CODE_CATALOG_LOCALES.has(locale) ? codeDefinition(code, locale) : code);
+    const phrase = t.plainCode(code) ?? (isAppLanguage(locale) ? codeDefinition(code, locale) : code);
     if (code.length === 1) {
       // One-letter codes (X, B) count only as a whole list item, so only
       // those items change — never the X of "X-ray".

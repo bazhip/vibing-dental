@@ -1,0 +1,203 @@
+{
+  "wordmark": "ToothOps Charting",
+  "nav": {
+    "pricing": "Cennik",
+    "backToApp": "Wróć do aplikacji",
+    "signIn": "Zaloguj się",
+    "getStarted": "Rozpocznij"
+  },
+  "hero": {
+    "eyebrow": "Weterynaryjna dokumentacja stomatologiczna z AI",
+    "betaPill": "Bezpłatna wersja beta",
+    "headlineLine1": "Wystarczy dyktować.",
+    "headlineLine2": "Karta uzupełnia się sama.",
+    "sub": "Podczas dyktowania AI wpisuje wyniki do pełnej karty Triadana z kodami AVDC, pomiarami dla każdego zęba i schematami. Można dodać zdjęcia i radiogramy, przeglądać historię wizyt, wysyłać przypomnienia i po zakończeniu od razu przygotować plik PDF z logo dla opiekuna.",
+    "ctaTrial": "Rozpocznij bezpłatny okres próbny ({{days}} dni)",
+    "ctaFree": "Utwórz bezpłatne konto",
+    "tryFree": "Wypróbuj bezpłatnie bez konta",
+    "openApp": "Otwórz aplikację",
+    "notePricing": "Plany od {{price}}/mies. · Bezpłatny okres próbny ({{days}} dni) · Rezygnacja w dowolnej chwili",
+    "noteTrial": "Bezpłatny okres próbny ({{days}} dni) · Rezygnacja w dowolnej chwili",
+    "noteBeta": "Bezpłatnie w wersji beta · Dyktowanie AI w cenie · Bez karty płatniczej",
+    "noteNoAccount": "Wersja bez konta nie obejmuje dyktowania AI i oznacza pliki PDF jako PRÓBNE"
+  },
+  "demo": {
+    "meta": "Kot · {{date}}",
+    "stepChart": "Karta",
+    "stepDiagram": "Schemat",
+    "stepExport": "Eksport",
+    "colTooth": "Ząb",
+    "colMobility": "Ruch.",
+    "colPocket": "Kiesz.",
+    "colGingivitis": "Zap. dz.",
+    "captionChart": "Tab i Enter pozwalają pracować jak w arkuszu",
+    "captionDiagram": "Jedno oznaczenie aktualizuje tabelę, schemat i PDF",
+    "captionExport": "Logo placówki i dane lekarza na każdej stronie",
+    "comment": "T/FX/CC · odsłonięta miazga",
+    "voice": "„jeden zero cztery, powikłane złamanie korony, odsłonięta miazga…”",
+    "pause": "❚❚ Wstrzymaj animację",
+    "play": "▶ Odtwórz animację"
+  },
+  "features": {
+    "seeIt": "Zobacz →",
+    "previous": "← Poprzednie",
+    "next": "Dalej →",
+    "voiceResult1": "104 · komentarz „CCF, odsłonięta miazga”",
+    "voiceResult2": "104 · stadium choroby przyzębia → PD3",
+    "voiceResult3": "Schemat zabiegu · 104 oznaczony do usunięcia",
+    "grid": {
+      "title": "Karta działa jak arkusz",
+      "blurb": "Pełne tabele Triadana dla uzębienia kotów, psów i uzębienia mlecznego. Kliknięcie pozwala wpisać pomiar, a Tab, Enter i spacja ułatwiają nawigację.",
+      "lead": "Tabela działa tak, jak znane zespołowi arkusze. Wystarczy kliknąć pole i wpisać głębokość sondowania, skupiając się na pacjencie.",
+      "imageAlt": "Tabela stomatologiczna z ocenami zapalenia dziąseł, kamienia, głębokości kieszonek, furkacji i ruchomości oraz przekreślonym brakującym zębem 106",
+      "points": {
+        "p1": "Aby wpisać pomiar, proszę kliknąć dowolne pole.",
+        "p2": "Tab, Enter i spacja pozwalają przechodzić między polami podczas zapisu pomiarów.",
+        "p3": "Oceny całej jamy ustnej jednym działaniem: nagłówek kolumny pozwala ustawić kamień lub zapalenie dziąseł dla wszystkich zębów.",
+        "p4": "Pole „Brak” przekreśla wiersz i wypełnia ząb na schemacie. Oba widoki korzystają z tych samych danych.",
+        "p5": "Podczas kolejnej wizyty puste pola pokazują dyskretne podpowiedzi z poprzednimi wartościami, bez otwierania starej karty.",
+        "p6": "Uzębienie kotów, psów, szczeniąt i kociąt z numeracją Triadana."
+      }
+    },
+    "voice": {
+      "title": "Wbudowane uzupełnianie karty głosem z AI",
+      "tag": "AI · Bezpłatna wersja beta",
+      "blurb": "Wystarczy powiedzieć „104, powikłane złamanie korony”. Wynik zostanie zapisany przy zębie bez odrywania rąk od pacjenta.",
+      "lead": "Podczas pracy model rozpoznaje mowę, a AI wpisuje wyniki przy właściwym zębie, schemacie i polu.",
+      "points": {
+        "p1": "Rozpoznawanie mowy dostosowane do terminologii stomatologii weterynaryjnej.",
+        "p2": "Wyniki trafiają do odpowiednich pól, oznaczeń i komentarzy na karcie.",
+        "p3": "Panel transkrypcji na bieżąco pokazuje każde działanie i podświetla ząb, którego dotyczy.",
+        "p4": "Wpisy AI można cofać tak samo jak własne zmiany.",
+        "p5": "Przy niepewnym wyniku aplikacja oznacza wpis i po przerwie odczytuje alert, np. „Sprawdź 109”.",
+        "p6": "Bez kluczy API i dodatkowej konfiguracji. Bezpłatnie w wersji beta."
+      }
+    },
+    "diagrams": {
+      "title": "Zsynchronizowane schematy",
+      "blurb": "Schematy rozpoznania i zabiegu korzystają z danych tabeli. Jedno oznaczenie zęba aktualizuje całą dokumentację aż po PDF.",
+      "lead": "Anatomiczne schematy rozpoznania i zabiegu, z wynikami zsynchronizowanymi między tabelą i wydrukiem.",
+      "imageAlt": "Schemat rozpoznania z oznaczonymi brakami i kodami AVDC T/FX, T/FX/CCF, TR, AB, AT przypiętymi do zębów",
+      "points": {
+        "p1": "Brak lub usunięcie zęba można zaznaczyć kliknięciem lub klawiaturą.",
+        "p2": "Komentarz przypięty do zęba wskazuje ten ząb. Komentarze ogólne można umieścić w dowolnym miejscu.",
+        "p3": "Rysowanie odręczne w pięciu kolorach pozwala oznaczyć szczegóły, których kod nie opisuje.",
+        "p4": "Powiększanie i przesuwanie ułatwia pracę na ciasnych schematach uzębienia kotów.",
+        "p5": "Ząb oznaczony jako brakujący w rozpoznaniu zostaje zablokowany na schemacie zabiegu, aby wykluczyć ponowne oznaczenie usunięcia.",
+        "p6": "Każdy schemat ma własną historię cofania. Skrót ⌘Z działa w ostatnio używanym schemacie."
+      }
+    },
+    "avdc": {
+      "title": "Standard AVDC",
+      "blurb": "Pełny zestaw skrótów AVDC, z wyszukiwarką obok schematów i legendą drukowaną na każdej karcie.",
+      "lead": "Standardowa terminologia w całej dokumentacji i wykaz kodów dostępny podczas pracy.",
+      "imageAlt": "Panel wyszukiwania kodów AVDC",
+      "points": {
+        "p1": "Pełny zestaw skrótów AVDC dotyczących patologii i zabiegów.",
+        "p2": "Wykaz z wyszukiwarką jest obok każdego schematu i pozostaje dostępny także na zablokowanych kartach.",
+        "p3": "Każdy kod użyty na karcie drukuje się z objaśnieniem w legendzie PDF.",
+        "p4": "Podpowiedzi kodów stomatologicznych podczas pisania komentarzy."
+      }
+    },
+    "pdf": {
+      "title": "Pliki PDF dla opiekunów",
+      "blurb": "Karta z logo placówki gotowa zaraz po zakończeniu pracy. Plik PDF można zaimportować ponownie i odtworzyć kartę.",
+      "lead": "Jedno kliknięcie tworzy dokument z nazwą placówki, danymi lekarza i logo.",
+      "imageAlt": "Kliniczny PDF karty stomatologicznej psa ze schematami, wynikami badania i tabelami łuków zębowych",
+      "points": {
+        "p1": "Dwie strony: schematy, badanie jamy ustnej, tabele łuków, raport z leczenia i legenda kodów.",
+        "p2": "Kilka stylów dokumentu. Styl można wybrać przy pobieraniu i od razu sprawdzić w podglądzie.",
+        "p3": "Pełna karta jest zapisana w PDF. Można ją później zaimportować i kontynuować pracę także na innym komputerze.",
+        "p4": "Raport dla opiekuna (beta) to osobne, przystępne podsumowanie ze zdjęciami przed i po zabiegu. Powstaje automatycznie i można je edytować przed wydrukiem."
+      }
+    },
+    "photos": {
+      "title": "Zdjęcia i radiogramy",
+      "blurb": "Zdjęcia wewnątrzustne i radiogramy można dodać do dowolnej karty, opisać i przypiąć do zęba. Są przechowywane prywatnie wraz z kartą.",
+      "lead": "Obrazy są dostępne na karcie, przy zębach, których dotyczą.",
+      "points": {
+        "p1": "Zdjęcia wewnątrzustne i radiogramy z podpisami i przypisaniem do zębów.",
+        "p2": "Prywatne przechowywanie i podpisane linki o krótkiej ważności.",
+        "p3": "Zdjęcia z telefonu są automatycznie zmniejszane, aby karta wczytywała się szybko.",
+        "p4": "Oznaczenia „Przed” i „Po” dodają zdjęcia do raportu dla opiekuna (beta)."
+      }
+    },
+    "history": {
+      "title": "Wszystkie wizyty pacjenta w jednym miejscu",
+      "blurb": "Karty są pogrupowane według pacjentów. Całą historię widać po jednym kliknięciu, a kolejna wizyta zaczyna się od wcześniej zapisanych danych.",
+      "lead": "Wizyty pacjenta są w jednym miejscu, a potrzebne wyniki przechodzą do następnej wizyty.",
+      "points": {
+        "p1": "Przełącznik wizyt na górnym pasku pozwala przeglądać karty według dat.",
+        "p2": "Brakujące i usunięte zęby przechodzą do nowej wizyty i są oznaczone jako dane z poprzedniej wizyty.",
+        "p3": "Pomiary z poprzedniej wizyty pojawiają się jako podpowiedzi, ułatwiając porównanie w trakcie badania.",
+        "p4": "Historia karty pokazuje, kto i kiedy zapisał każdą zmianę.",
+        "p5": "Poprzednie wizyty otwierają się tylko do odczytu, dopóki nie zostaną odblokowane. Dzisiejsza wizyta jest od razu dostępna do edycji."
+      }
+    },
+    "recall": {
+      "title": "Wbudowane przypomnienia o kontrolach",
+      "blurb": "Termin kontroli można ustawić podczas prowadzenia karty. Lista pacjentów pokazuje wizyty do umówienia i zaległe kontrole.",
+      "lead": "Terminy kontroli i przypomnienia pomagają zaplanować dalszą opiekę w obszarze roboczym pacjenta.",
+      "points": {
+        "p1": "Termin kontroli na karcie umieszcza pacjenta na liście zaplanowanych lub zaległych kontroli.",
+        "p2": "Z listy pacjentów można wysłać opiekunowi przypomnienie e-mailem.",
+        "p3": "Po kontroli bez nowej karty można usunąć termin jednym kliknięciem, aby zdjąć pacjenta z listy.",
+        "p4": "Filtr zaplanowanych kontroli ułatwia zaplanowanie telefonów na dany tydzień."
+      }
+    },
+    "team": {
+      "title": "Wspólna dokumentacja całego zespołu",
+      "blurb": "Członkowie placówki współdzielą karty, szablony i obrazy. Każda osoba korzysta z własnego konta.",
+      "lead": "Jedna dokumentacja placówki, osobne konta i przypisanie lekarza do każdej wizyty.",
+      "points": {
+        "p1": "Do pięciu miejsc w placówce w bezpłatnej wersji beta. Każdy członek korzysta z własnego loginu.",
+        "p2": "Karty, szablony raportów, obrazy i logo placówki są udostępniane automatycznie.",
+        "p3": "Każda wizyta ma przypisanego autora. Kartoteki można filtrować według lekarza.",
+        "p4": "Ustawienia właściciela pozwalają zmienić nazwę placówki i zarządzać zespołem."
+      }
+    },
+    "offline": {
+      "title": "Przy pacjencie i w chmurze",
+      "blurb": "Karty zapisują się automatycznie w chmurze, a lokalna kopia jest dostępna także po utracie połączenia.",
+      "lead": "Można kontynuować pracę podczas przerwy w połączeniu i sprawdzić stan zapisu przed opuszczeniem wizyty.",
+      "points": {
+        "p1": "Wprowadzane zmiany są zachowywane na tym urządzeniu.",
+        "p2": "Nowe karty zapisują się w chmurze, a nieudany zapis ponawia się automatycznie po powrocie połączenia.",
+        "p3": "Jeśli sesja wygaśnie w trakcie zabiegu, karta pozostanie otwarta. Można zalogować się ponownie bez zamykania karty.",
+        "p4": "Szablony raportów wielokrotnego użytku oszczędzają czas przy każdym COHAT."
+      }
+    }
+  },
+  "pricing": {
+    "title": "Proste ceny miesięczne",
+    "sub": "Każdy plan zaczyna się od bezpłatnego okresu próbnego ({{days}} dni). W każdej chwili można przejść na plan bezpłatny i zachować wszystkie karty.",
+    "mostPopular": "Najpopularniejszy",
+    "perMonth": "/mies.",
+    "startTrial": "Rozpocznij bezpłatny okres próbny",
+    "contact": "Większy zespół, kilka placówek lub program uczelni? <a>Prosimy o kontakt</a> w sprawie ceny dla ponad 5 osób."
+  },
+  "paper": {
+    "title": "Karta, którą opiekun może zabrać do domu",
+    "body": "Jedno kliknięcie tworzy czytelny dwustronicowy PDF z logo i danymi lekarza, tabelami całego uzębienia, oboma schematami, wynikami badania i legendą użytych kodów AVDC.",
+    "point1": "Pięć profesjonalnych stylów dokumentu",
+    "point2": "Dane pacjenta na każdej stronie",
+    "point3": "Karta jest zapisana w PDF i można ją ponownie otworzyć w aplikacji",
+    "page1Label": "Wyświetl pierwszą stronę przykładowej karty w pełnym rozmiarze",
+    "page1Zoom": "Pierwsza strona przykładowej karty w pełnym rozmiarze",
+    "page1Alt": "Pierwsza strona karty stomatologicznej PDF z logo placówki, danymi lekarza, schematem rozpoznania z komentarzami, wynikami badania jamy ustnej, tabelami sondowania w systemie Triadana i legendą kodów AVDC",
+    "page2Label": "Wyświetl drugą stronę przykładowej karty w pełnym rozmiarze",
+    "page2Zoom": "Druga strona przykładowej karty w pełnym rozmiarze",
+    "page2Alt": "Druga strona tej samej karty z dawkami do blokad nerwów, schematem zabiegu z oznaczonymi ekstrakcjami, raportem leczenia i zabiegu oraz użytymi kodami"
+  },
+  "closer": {
+    "title": "Czas zastąpić papierową kartę?"
+  },
+  "lightboxClose": "Zamknij widok pełnowymiarowy",
+  "footer": {
+    "tagline": "ToothOps Charting powstał we współpracy ze stomatologami weterynaryjnymi.",
+    "privacy": "Prywatność",
+    "terms": "Regulamin",
+    "dpa": "Umowa powierzenia danych",
+    "contact": "Kontakt"
+  }
+}

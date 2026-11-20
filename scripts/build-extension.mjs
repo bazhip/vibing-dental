@@ -11,7 +11,7 @@ const storeAt = process.argv.indexOf('--store');
 const store = storeAt >= 0;
 const out = store ? process.argv[storeAt + 1] : 'build-extension';
 if (!out) throw new Error('--store needs an output directory');
-const LANGS = ['en', 'fr', 'de', 'it', 'es', 'hu', 'ro', 'zh', 'ar'];
+const LANGS = ['en', 'fr', 'de', 'it', 'es', 'hu', 'ro', 'zh', 'ar', 'pl'];
 const DEV_ONLY_MATCH = 'http://localhost:5173/*';
 
 // src/extension/version.ts reads this at build time.

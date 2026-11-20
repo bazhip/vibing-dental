@@ -1,0 +1,362 @@
+{
+  "done": "Gotowe",
+  "saving": "Zapisywanie…",
+  "practice": {
+    "title": "Ustawienia placówki",
+    "profile": "Profil",
+    "nameLabel": "Nazwa placówki",
+    "namePlaceholder": "Widoczna w aplikacji i na każdej karcie",
+    "nameLockedLoading": "Nazwę placówki można zmienić po wczytaniu zespołu. Spróbuj ponownie poniżej.",
+    "nameLockedShared": "Nazwa placówki jest wspólna dla całego zespołu. Może ją zmienić wyłącznie główny właściciel.",
+    "nameSaved": "Zapisano nazwę placówki.",
+    "nameSaveFailed": "Nie udało się zapisać nazwy placówki.",
+    "discard": {
+      "title": "Odrzucić zmianę nazwy placówki?",
+      "message": "Nie zapisano nowej nazwy placówki.",
+      "confirm": "Odrzuć",
+      "cancel": "Kontynuuj edycję"
+    },
+    "logo": {
+      "label": "Logo placówki",
+      "alt": "Logo placówki",
+      "replace": "Zastąp",
+      "remove": "Usuń",
+      "working": "Przetwarzanie…",
+      "empty": "Brak przesłanego logo. Na kartach wyświetla się znak wbudowany w szablon.",
+      "upload": "Prześlij logo",
+      "uploading": "Przesyłanie…",
+      "choose": "Wybierz plik z logo",
+      "updated": "Zaktualizowano logo.",
+      "uploadFailed": "Nie udało się przesłać logo.",
+      "removed": "Usunięto logo.",
+      "removeFailed": "Nie udało się usunąć logo.",
+      "removeTitle": "Usunąć logo placówki?",
+      "removeMessage": "Na nowych kartach i w plikach PDF będzie widoczny znak wbudowany w szablon do czasu przesłania nowego logo.",
+      "removeConfirm": "Usuń logo"
+    },
+    "team": {
+      "title": "Zespół",
+      "loading": "Wczytywanie zespołu…",
+      "settingUp": "Konfiguracja placówki nadal trwa.",
+      "checkAgain": "Sprawdź ponownie",
+      "checking": "Sprawdzanie…",
+      "retry": "Spróbuj ponownie",
+      "retrying": "Ponawianie…",
+      "loadError": "Nie udało się wczytać zespołu. {{error}}",
+      "ownerBlurb": "Dodane osoby współdzielą karty, szablony i obrazy tej placówki.",
+      "memberBlurb": "Należysz do placówki {{practice}} i masz dostęp do jej wspólnych kart.",
+      "you": "(Ty)",
+      "pending": "Oczekujące zaproszenie",
+      "roles": {
+        "primaryOwner": "Główny właściciel",
+        "owner": "Właściciel",
+        "member": "Członek"
+      },
+      "resend": "Wyślij zaproszenie ponownie",
+      "makeOwner": "Nadaj rolę właściciela",
+      "makeMember": "Nadaj rolę członka",
+      "transfer": "Przekaż prawo własności",
+      "remove": "Usuń",
+      "emailLabel": "Adres e-mail zapraszanej osoby",
+      "add": "Dodaj",
+      "adding": "Dodawanie…",
+      "inviteHint": "Zapraszana osoba nie ma jeszcze konta? Wyślemy jej zaproszenie do ustawienia hasła i dołączenia do placówki.",
+      "invalidEmail": "Wprowadź prawidłowy adres e-mail.",
+      "invited": "Wysłano zaproszenie na adres {{email}}. Osoba dołączy po ustawieniu hasła.",
+      "existingAccount": "Istnieje już konto ToothOps z adresem {{email}}. Wysłaliśmy link do przyjęcia zaproszenia. Osoba pojawi się tutaj po dołączeniu.",
+      "addFailed": "Nie udało się dodać tej osoby.",
+      "failed": "Operacja się nie powiodła. Spróbuj ponownie.",
+      "loadFailed": "Nie udało się wczytać zespołu.",
+      "transferTitle": "Nadać osobie z adresem {{email}} rolę głównego właściciela?",
+      "transferMessage": "Główny właściciel zarządza rozliczeniami i nazwą placówki. Zachowasz rolę właściciela placówki.",
+      "transferConfirm": "Przekaż prawo własności",
+      "transferred": "Przekazano prawo własności.",
+      "removeTitle": "Usunąć osobę z adresem {{email}} z placówki?",
+      "removePendingMessage": "Zaproszenie zostanie anulowane.",
+      "removeMessage": "Ta osoba straci dostęp do wspólnych kart placówki, ale zachowa swoje prywatne karty.",
+      "cancelInvite": "Anuluj zaproszenie",
+      "removeConfirm": "Usuń",
+      "keep": "Zachowaj",
+      "inviteCancelled": "Anulowano zaproszenie.",
+      "memberRemoved": "Usunięto członka zespołu.",
+      "inviteResent": "Ponownie wysłano zaproszenie na adres {{email}}.",
+      "nowOwner": "Osoba z adresem {{email}} ma teraz rolę właściciela.",
+      "nowMember": "Osoba z adresem {{email}} ma teraz rolę członka zespołu."
+    },
+    "ownerReport": {
+      "title": "Raport dla opiekuna",
+      "blurb": "Raport, który opiekun otrzymuje po wizycie stomatologicznej. Ustaw sekcje, nagłówki, treść, język oraz domyślny układ wspólny dla placówki.",
+      "customize": "Dostosuj raport dla opiekuna"
+    },
+    "clientLanguage": {
+      "title": "Język dla opiekunów zwierząt",
+      "blurb": "Język materiałów przekazywanych opiekunom, np. domyślnej treści raportu dla opiekuna. Tekst wpisany ręcznie nie jest tłumaczony.",
+      "saveFailed": "Nie udało się zapisać języka."
+    },
+    "deletion": {
+      "title": "Usuń placówkę",
+      "blurb": "Trwale usuwa placówkę i wszystkie udostępnione jej karty, w tym karty zespołu, oraz anuluje subskrypcję. Członkowie zespołu zachowują swoje konta i prywatne karty.",
+      "button": "Usuń placówkę…"
+    },
+    "treatmentReport": {
+      "title": "Raport z leczenia",
+      "blurb": "Zapisane teksty dotyczące typowych zabiegów, gotowe do wstawienia w raporcie z leczenia.",
+      "customize": "Dostosuj raport z leczenia"
+    }
+  },
+  "logoErrors": {
+    "unreadable": "Nie udało się odczytać tego obrazu.",
+    "canvas": "Obszar rysowania jest niedostępny",
+    "convert": "Nie udało się przekonwertować obrazu.",
+    "tooLarge": "Obraz jest za duży. Plik z logo musi mieć mniej niż 10 MB.",
+    "reportTooLarge": "Ustawienia raportu dla opiekuna przekraczają limit 50 KB. Skróć część tekstu lub usuń szablon.",
+    "reportNotLoaded": "Zapisane szablony raportu dla opiekuna nie zostały wczytane, więc zapisanie zmian mogłoby je nadpisać. Odśwież stronę i spróbuj ponownie."
+  },
+  "chart": {
+    "title": "Ustawienia karty",
+    "sections": {
+      "patient": "Ustawienia strony pacjenta",
+      "anesthesia": "Ustawienia znieczulenia",
+      "charting": "Ustawienia dokumentowania",
+      "diagnosis": "Ustawienia rozpoznania",
+      "images": "Ustawienia obrazowania",
+      "exam": "Ustawienia badania",
+      "procedure": "Ustawienia zabiegów"
+    },
+    "noteAccount": "Osobiste preferencje są powiązane z kontem i dostępne na każdym urządzeniu. Zmiany zapisują się automatycznie.",
+    "noteBrowser": "Osobiste preferencje zapisują się automatycznie w tej przeglądarce.",
+    "all": "Wszystkie ustawienia karty",
+    "charting": {
+      "title": "Karta zębowa",
+      "view": "Układ karty",
+      "grid": "Tabela",
+      "byTooth": "Według zęba",
+      "pocket": "Zapis głębokości kieszonek",
+      "pocketTooth": "Jeden pomiar na ząb",
+      "pocketRoot": "Jeden pomiar na korzeń",
+      "pocketRootHint": "M / D lub MB / MP / D w zębach trójkorzeniowych",
+      "pocketSite": "Sześć miejsc na ząb",
+      "pocketSiteHint": "MB / B / DB / ML / L / DL",
+      "space": "Spacja w tabeli",
+      "spaceDown": "Przechodzi w dół do kolejnego zęba",
+      "spaceDownHint": "ułatwia szybkie wprowadzanie kolejnych głębokości",
+      "spaceType": "Wpisuje spację",
+      "scoreTap": "Po wybraniu wartości w tabeli",
+      "scoreFinding": "Przejdź do kolejnego parametru tego samego zęba",
+      "scoreFindingHint": "ruchomość → recesja → … w badaniu ząb po zębie",
+      "scoreTooth": "Przejdź w dół do kolejnego zęba",
+      "scoreToothHint": "przy ocenie jednego parametru we wszystkich zębach",
+      "scoreStay": "Pozostaw zaznaczenie w bieżącej komórce",
+      "columns": "Widoczne pomiary",
+      "scorePicker": "Przyciski z wartościami w tabeli",
+      "scorePickerOptions": {
+        "touch": "Tylko na ekranach dotykowych",
+        "always": "Zawsze pokazuj",
+        "never": "Nigdy nie pokazuj"
+      }
+    },
+    "beside": {
+      "title": "Wyniki na schemacie",
+      "show": "Pokaż wyniki na schemacie rozpoznania",
+      "showHint": "(i w pliku PDF)",
+      "include": "Wyniki do wyświetlenia"
+    },
+    "anesthesia": {
+      "title": "Znieczulenie",
+      "blocks": "Wyświetlane blokady nerwowe",
+      "blocksNote": "Ukryta blokada nadal będzie widoczna w karcie z zapisaną dawką.",
+      "blockNames": {
+        "infraorbital": "Nerw podoczodołowy",
+        "caudalMaxillary": "Nerw szczękowy (doogonowo)",
+        "inferiorAlveolar": "Nerw zębodołowy dolny",
+        "mental": "Nerw bródkowy",
+        "other": "Inne"
+      },
+      "usual": "Preferowany środek do znieczulenia miejscowego",
+      "usualNote": "Skrót jest dostępny, gdy nie zapisano żadnego środka znieczulającego. Możesz go użyć w wybranym momencie.",
+      "drugPlaceholder": "np. bupiwakaina",
+      "drugAria": "Preferowany środek do znieczulenia miejscowego",
+      "strengthAria": "Stężenie środka do znieczulenia miejscowego (%)",
+      "adjunct": "Dodatkowy lek",
+      "adjunctNote": "Opcjonalny lek zapisywany z preferowanym środkiem znieczulającym. Użycie skrótu zapisuje oba leki.",
+      "adjunctPlaceholder": "np. buprenorfina",
+      "adjunctAria": "Dodatkowy lek",
+      "adjunctStrengthAria": "Stężenie dodatkowego leku"
+    },
+    "patient": {
+      "title": "Strona pacjenta",
+      "hideRecheck": "Ukryj pole Termin kontroli",
+      "visibilityNote": "Wybierz pola wyświetlane w pustych wizytach. Pola zawierające dane pozostają widoczne."
+    },
+    "pdf": {
+      "title": "PDF",
+      "grid": "Tabela karty zębowej",
+      "gridHint": "Wymagana, gdy wyniki na schemacie są wyłączone, aby pomiary pozostały w pliku PDF.",
+      "images": "Obrazy",
+      "imagesHint": "(po 4 na stronie, po karcie)",
+      "radiographicReport": "Raport radiograficzny",
+      "ctReport": "Raport TK",
+      "dischargeSections": "Sekcje zaleceń przy wypisie",
+      "codesUsed": "Użyte kody"
+    },
+    "noteDevice": "Osobiste preferencje zapisują się automatycznie na tym urządzeniu.",
+    "spaceMovesDownHint": "Ułatwia szybkie wprowadzanie kolejnych głębokości",
+    "scoreTapFindingHint": "Ruchomość → recesja → … w badaniu ząb po zębie",
+    "scoreTapToothHint": "Przy ocenie jednego parametru we wszystkich zębach",
+    "columnsFooter": "Kolumny wyświetlane w tabeli karty zębowej. Co najmniej jedna kolumna pozostaje widoczna.",
+    "mirrorHint": "Również w pliku PDF",
+    "drugName": "Lek",
+    "drugStrength": "Stężenie",
+    "pdfGridHint": "Wymagana, gdy wyniki na schemacie są wyłączone, aby pomiary pozostały w pliku PDF.",
+    "pdfImagesHint": "Po 4 na stronie, po karcie",
+    "quickCodes": {
+      "title": "Skróty rozpoznań",
+      "note": "Dodaj kody AVDC lub własne kody do notatek przy zębach i schematu rozpoznania. Kolejność na tej liście ustala kolejność skrótów.",
+      "remove": "Usuń",
+      "removeAria": "Usuń {{code}}",
+      "placeholder": "Kod, np. T/SR",
+      "addAria": "Kod do dodania",
+      "add": "Dodaj",
+      "duplicate": "Ten kod jest już na liście skrótów."
+    },
+    "exam": {
+      "title": "Badanie",
+      "areas": "Obszary badania",
+      "areasNote": "Wybierz obszary wyświetlane na stronie Badanie. Obszary z zapisanymi wynikami pozostają widoczne również po odznaczeniu. Własne obszary są wyświetlane w kolejności poniżej.",
+      "areaPlaceholder": "np. wargi",
+      "areaAria": "Nazwa obszaru badania nr {{n}}",
+      "areaN": "obszar nr {{n}}",
+      "remove": "Usuń",
+      "removeAria": "Usuń „{{name}}”",
+      "add": "Dodaj obszar",
+      "addPreset": "Dodaj sugerowane obszary",
+      "presets": {
+        "lips": "Wargi / połączenie skórno-śluzówkowe",
+        "gingiva": "Dziąsła / granica śluzówkowo-dziąsłowa",
+        "salivary": "Ujścia przewodów ślinowych",
+        "floor": "Dno jamy ustnej / wędzidełko"
+      },
+      "suggestions": "Sugerowane obszary",
+      "showArea": "Pokaż „{{name}}”",
+      "customCount": "Dodane własne obszary: {{used}} · Limit: {{max}}"
+    },
+    "customization": {
+      "navigation": "Kategorie ustawień karty",
+      "categories": {
+        "patient": "Dane pacjenta",
+        "exam": "Badanie jamy ustnej",
+        "diagnosis": "Rozpoznanie",
+        "images": "Obrazowanie i PDF",
+        "procedure": "Zabieg"
+      },
+      "descriptions": {
+        "patient": "Wybierz, czy na stronie Pacjent ma być widoczny termin kontroli.",
+        "exam": "Wybierz dodatkowe obszary uwzględniane podczas badania jamy ustnej.",
+        "anesthesia": "Ustaw blokady nerwowe, własne pola i zwykle stosowane leki.",
+        "charting": "Ustaw układ karty, pomiary i sposób wprowadzania danych.",
+        "diagnosis": "Wybierz wyniki wyświetlane na schemacie rozpoznania i ustaw skróty kodów.",
+        "images": "Wybierz elementy karty i obrazy uwzględniane w generowanych plikach PDF.",
+        "procedure": "Wybierz skróty kodów dostępne na schemacie zabiegów."
+      },
+      "showRecheck": "Pokaż pole Termin kontroli",
+      "layout": "Układ i pomiary",
+      "input": "Wprowadzanie danych"
+    },
+    "procedureQuickCodes": {
+      "title": "Skróty zabiegów",
+      "note": "Dodaj kody często zapisywanych zabiegów. Te skróty są widoczne tylko na schemacie zabiegów. Skróty rozpoznań są dostępne osobno.",
+      "placeholder": "Kod, np. XSS"
+    },
+    "list": {
+      "moveUp": "Przesuń „{{name}}” w górę",
+      "moveDown": "Przesuń „{{name}}” w dół",
+      "count": "Skonfigurowano {{used}} z {{max}}",
+      "limit": "Osiągnięto limit. Usuń pozycję, aby dodać następną."
+    },
+    "autosave": {
+      "label": "Zapis automatyczny",
+      "hint": "Automatycznie zapisuje zmiany w karcie. Wyłącz, aby zapisywać ręcznie."
+    }
+  },
+  "feedback": {
+    "title": "Prześlij opinię",
+    "kinds": {
+      "bug": "Coś nie działa",
+      "idea": "Pomysł",
+      "other": "Inne"
+    },
+    "kindsAria": "Rodzaj opinii",
+    "promptBug": "Co się stało?",
+    "promptIdea": "Co mogłoby pomóc?",
+    "promptOther": "Twoja wiadomość",
+    "bugPlaceholder": "Co zrobiono, jakiego wyniku oczekiwano i co stało się zamiast tego…",
+    "attach": "Dołącz transkrypcję mojego dyktowania",
+    "note": "Wiadomość trafi bezpośrednio do twórcy ToothOps, który odpowie na podany adres e-mail.",
+    "sent": "Dziękujemy za przesłanie opinii.",
+    "sendFailed": "Nie udało się wysłać opinii. Spróbuj ponownie.",
+    "needsAccount": "Przesłanie opinii wymaga konta.",
+    "send": "Wyślij",
+    "sending": "Wysyłanie…"
+  },
+  "gettingStarted": {
+    "takeTour": "Pokaż instruktaż",
+    "tourFooter": "Krótki instruktaż pokazujący, gdzie znajdują się elementy karty.",
+    "chartParts": "Sekcje karty"
+  },
+  "tour": {
+    "steps": {
+      "sections": {
+        "body": "Dokumentacja stomatologiczna od góry do dołu. Stuknij tytuł karty, aby przejść do wybranej sekcji. Zmiany zapisują się automatycznie."
+      },
+      "grid": {
+        "body": "Pomiary dla poszczególnych zębów. Stuknij komórkę i wpisz dane lub wybierz wartość, aby dokumentować badanie bez odrywania wzroku."
+      },
+      "diagrams": {
+        "body": "Stuknij ząb, aby go oznaczyć, dodać uwagę lub coś narysować. Wyszukuj kody AVDC obok schematów rozpoznania i zabiegów. Na pasku narzędzi schematu możesz cofać i ponawiać zmiany."
+      },
+      "codes": {
+        "body": "Tutaj, tuż obok schematu, możesz przeszukać pełny zestaw kodów AVDC."
+      },
+      "treatment": {
+        "body": "Napisz raport lub wstaw zapisany szablon. Nowe szablony możesz zapisać do ponownego użycia."
+      },
+      "patients": {
+        "title": "Pacjenci",
+        "body": "Wszystkie wizyty każdego pacjenta. Zapisane wizyty otwierają się w trybie tylko do odczytu do chwili wybrania opcji Edytuj. Na liście Wizyty kontrolne znajdziesz pacjentów wymagających kontroli."
+      },
+      "share": {
+        "title": "Udostępnij PDF",
+        "body": "Utwórz PDF karty z logo placówki, gotowy do przekazania opiekunowi. Udostępnij go lub zapisz w dowolnym momencie."
+      },
+      "byTooth": {
+        "body": "Przełącz widok na Według zęba i stuknij ząb na schemacie. Zapisz jego pomiary, rozpoznanie i zabieg, a następnie przejdź do kolejnego zęba. Widoki Tabela i Według zęba pokazują te same wyniki."
+      },
+      "customize": {
+        "body": "Otwórz menu Więcej w karcie i wybierz Dostosuj na bieżącej stronie. Ustaw kolumny, głębokości kieszonek dla zęba, korzenia lub miejsca, skróty kodów i inne opcje. Po zalogowaniu preferencje są powiązane z kontem."
+      }
+    }
+  },
+  "whatsNew": {
+    "severalTeeth": "Stuknij numery kilku zębów w tabeli, aby je zaznaczyć, a następnie ustaw dla nich jedną wartość.",
+    "customize": "Każda strona ma opcję Dostosuj w menu Więcej. Umożliwia ona m.in. ukrywanie kolumn i wybieranie wyników widocznych obok zębów. Ustawienia konta są dostępne na wszystkich urządzeniach.",
+    "leftOff": "Po ponownym uruchomieniu ToothOps otwiera widok Pacjenci, chyba że nadal jest otwarta dzisiejsza wizyta. Dzisiejsza wizyta otwiera się w trybie edycji."
+  },
+  "reminders": {
+    "sendFrom": "Wyślij przypomnienie dotyczące jednego pacjenta z widoku Pacjenci lub Wizyty kontrolne.",
+    "settingUp": "Trwa konfiguracja placówki. Sprawdź ponownie za chwilę."
+  },
+  "workspace": {
+    "personalScope": "Osobiste preferencje karty dotyczą wyłącznie Twojego konta.",
+    "accountScope": "Te ustawienia są przypisane do Twojego konta. Zapisz każdą sekcję osobno. Zmiana adresu e-mail i hasła wymaga osobnego potwierdzenia.",
+    "languageImmediate": "Zmiana języka obowiązuje natychmiast.",
+    "general": "Ogólne",
+    "team": "Zespół",
+    "templates": "Szablony",
+    "billing": "Rozliczenia",
+    "reminders": "Przypomnienia o kontrolach",
+    "charting": "Preferencje dokumentowania",
+    "back": "Wróć do bieżącej wizyty",
+    "scope": "Zarządzaj ustawieniami wspólnymi dla placówki.",
+    "saveHint": "Zapisz zmiany nazwy placówki. Pozostałe ustawienia obowiązują natychmiast."
+  }
+}
