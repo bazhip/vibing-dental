@@ -9,7 +9,8 @@ as $$
 declare
   -- ECMAScript WhiteSpace and LineTerminator characters used by String.trim().
   trim_characters constant text := U&'\0009\000A\000B\000C\000D\0020\00A0\1680\2000\2001\2002\2003\2004\2005\2006\2007\2008\2009\200A\2028\2029\202F\205F\3000\FEFF';
-  starter_id constant text := 'discharge-v1';
+  starter_ids constant text[] := array['discharge-v1', 'dental-recovery-v1'];
+  custom_count integer := 0;
   standard_fields constant text[] := array[
     'dischargeMedications', 'dischargeInstructions', 'dischargeFollowUp'
   ];
@@ -34,12 +35,12 @@ begin
     or jsonb_typeof(config->'templates') is distinct from 'array' then
     return false;
   end if;
-  if jsonb_array_length(config->'templates') > 24 then
+  if jsonb_array_length(config->'templates') > 26 then
     return false;
   end if;
 
   default_id := config->>'defaultId';
-  has_default := default_id = starter_id;
+  has_default := default_id = any(starter_ids);
 
   for template in select value from jsonb_array_elements(config->'templates') loop
     if jsonb_typeof(template) <> 'object' then
@@ -55,12 +56,16 @@ begin
     end if;
 
     template_id := template->>'id';
-    if template_id !~ '^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$'
+    if (not (template_id = any(starter_ids)) and template_id !~ '^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$')
       or template_id = any(seen_ids)
       or char_length(template->>'name') > 100
       or btrim(template->>'name', trim_characters) = ''
       or jsonb_array_length(template->'sections') not between 1 and 24 then
       return false;
+    end if;
+    if not (template_id = any(starter_ids)) then
+      custom_count := custom_count + 1;
+      if custom_count > 24 then return false; end if;
     end if;
     if (template ? 'instructions' and (jsonb_typeof(template->'instructions') <> 'string'
       or char_length(template->>'instructions') > 2000)) or
@@ -83,7 +88,7 @@ begin
       custom_section := section_id ~ '^dischargeCustom_[a-z0-9-]{1,50}$';
       if section_id = any(seen_sections)
         or (not custom_section and not (section_id = any(standard_fields)))
-        or (custom_section and not (section ? 'label'))
+        or (custom_section and section_id <> 'dischargeCustom_recovery-activity' and not (section ? 'label'))
         or (section ? 'label' and (jsonb_typeof(section->'label') <> 'string'
           or char_length(section->>'label') > 100 or btrim(section->>'label', trim_characters) = ''))
         or (section ? 'guidance' and (jsonb_typeof(section->'guidance') <> 'string'
@@ -103,14 +108,16 @@ begin
     end loop;
 
     seen_ids := array_append(seen_ids, template_id);
-    has_default := has_default or (template_id = default_id and template->'archived' is distinct from 'true'::jsonb);
+    if template_id = default_id then
+      has_default := template->'archived' is distinct from 'true'::jsonb;
+    end if;
   end loop;
 
   if config ? 'order' then
     if jsonb_typeof(config->'order') <> 'array' then
       return false;
     end if;
-    if jsonb_array_length(config->'order') > 25 then
+    if jsonb_array_length(config->'order') > 26 then
       return false;
     end if;
     for order_id in select value from jsonb_array_elements(config->'order') loop
@@ -118,7 +125,7 @@ begin
         return false;
       end if;
       template_id := order_id #>> '{}';
-      if template_id = any(ordered_ids) or not (template_id = any(array_append(seen_ids, starter_id))) then
+      if template_id = any(ordered_ids) or not (template_id = any(seen_ids || starter_ids)) then
         return false;
       end if;
       ordered_ids := array_append(ordered_ids, template_id);

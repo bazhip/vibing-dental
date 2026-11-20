@@ -174,7 +174,14 @@
         "dischargeMedications": "Die Hinweise zur Medikamentengabe wurden mit dem Besitzer besprochen.",
         "dischargeInstructions": "Bieten Sie wie besprochen weiches Futter an.",
         "dischargeFollowUp": "Ein Kontrolltermin wurde besprochen."
-      }
+      },
+      "recovery": "Erholung nach Zahnbehandlung",
+      "activity": {
+        "label": "Aktivität",
+        "helper": "Halten Sie die besprochenen Aktivitätseinschränkungen fest.",
+        "sample": "Aktivitätseinschränkungen wurden besprochen."
+      },
+      "deleteMessage": "Beim Speichern wird die Vorlage aus der Praxisliste entfernt. Gespeicherte Besuche behalten ihre Vorlage und ihren Text."
     }
   },
   "sourceNotice": "Die eingegebene Formulierung bleibt erhalten. Prüfen Sie vor dem Teilen die Sprache des Tierhalters.",

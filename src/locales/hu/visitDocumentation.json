@@ -174,7 +174,14 @@
         "dischargeMedications": "A gyógyszerek beadására vonatkozó utasításokat átbeszéltük a gazdival.",
         "dischargeInstructions": "A megbeszéltek szerint adjon puha eledelt.",
         "dischargeFollowUp": "A kontrollvizitről egyeztettünk."
-      }
+      },
+      "recovery": "Felépülés fogászati kezelés után",
+      "activity": {
+        "label": "Tevékenység",
+        "helper": "Jegyezze fel a megbeszélt mozgáskorlátozásokat.",
+        "sample": "A mozgáskorlátozásokat megbeszélték."
+      },
+      "deleteMessage": "Mentéskor a sablon eltűnik a rendelő listájából. A mentett vizitek megőrzik sablonjukat és szövegüket."
     }
   },
   "sourceNotice": "A rögzített megfogalmazás a beírt formában marad. Megosztás előtt ellenőrizze az ügyfél nyelvét.",

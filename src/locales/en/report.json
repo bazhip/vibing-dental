@@ -168,7 +168,8 @@
   "dischargeSource": {
     "dischargeMedications": "Discharge medications",
     "dischargeInstructions": "Discharge instructions",
-    "dischargeFollowUp": "Discharge follow-up"
+    "dischargeFollowUp": "Discharge follow-up",
+    "activity": "Activity"
   },
   "homecareTipsRabbit": {
     "hay": "Offer unlimited grass hay to support normal tooth wear, following your veterinary team’s feeding instructions after treatment.",

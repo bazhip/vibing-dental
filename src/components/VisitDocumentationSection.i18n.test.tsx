@@ -1,10 +1,11 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeAll, afterAll, expect, it, vi } from 'vitest';
 import { installPseudoLocale, restoreLocale, findUntranslated } from '../i18n/testing/pseudo';
 import { EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS, type PatientInfo } from '../types';
 import { VisitDocumentationSection } from './VisitDocumentationSection';
+import { DialogHost } from './ui/dialogs';
 import { ConsultationTemplatesDialog } from './ConsultationTemplatesDialog';
-import { CONSULTATION_FIELDS, EMPTY_CONSULTATION_LIBRARY } from '../utils/consultationTemplates';
+import { CONSULTATION_FIELDS, EMPTY_CONSULTATION_LIBRARY, EMPTY_DISCHARGE_LIBRARY } from '../utils/consultationTemplates';
 const patient: PatientInfo = { patientName: '', patientNumber: '', ownerName: '', ownerPhone: '', ownerEmail: '', doctor: '', tech: '', date: '', complaint: '', treatmentReport: '', recallDate: '', nerveBlocks: { ...EMPTY_NERVE_BLOCKS }, exam: { ...EMPTY_EXAM_FINDINGS } };
 beforeAll(() => installPseudoLocale());
 afterAll(() => restoreLocale());
@@ -129,4 +130,42 @@ it('keeps pre-library custom fields in the practice picker when their last place
   expect(screen.getByRole('button', { name: 'Activity' })).toBeEnabled();
   fireEvent.click(screen.getByRole('button', { name: /Save/ }));
   expect(onSave.mock.lastCall?.[0].practiceFields).toEqual([expect.objectContaining({ label: 'Activity' })]);
+});
+
+it('creates, edits, and deletes discharge templates while preserving the practice default', async () => {
+  const onSave = vi.fn();
+  render(<><ConsultationTemplatesDialog kind="discharge" initial={EMPTY_DISCHARGE_LIBRARY} status="ready" canEdit
+    onSave={onSave} onReload={vi.fn()} onClose={vi.fn()} /><DialogHost /></>);
+  const panel = screen.getByRole('dialog');
+  expect(findUntranslated(panel)).toEqual([]);
+  expect(screen.getByRole('button', { name: /Dental recovery.*Practice default/ })).toHaveAttribute('aria-current', 'true');
+
+  fireEvent.click(screen.getByRole('button', { name: /Standard discharge/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Remove.*Medications/ }));
+  fireEvent.click(screen.getByRole('button', { name: /New template/ }));
+  fireEvent.change(screen.getByRole('textbox', { name: /Template name/ }), { target: { value: 'Postoperative call' } });
+  fireEvent.click(screen.getByRole('button', { name: /Remove.*Follow-up/ }));
+  expect(screen.getByRole('button', { name: 'Postoperative call' })).toHaveAttribute('aria-current', 'true');
+
+  fireEvent.click(screen.getByRole('button', { name: /Dental recovery.*Practice default/ }));
+  const options = screen.getByText(/More options/);
+  options.closest('details')!.open = true;
+  fireEvent.click(screen.getByRole('button', { name: /Delete template/ }));
+  expect(screen.getByRole('alertdialog')).toHaveAccessibleName(/Delete.*Dental recovery/);
+  fireEvent.click(screen.getByRole('button', { name: /Cancel/ }));
+  await waitFor(() => expect(screen.queryByRole('alertdialog')).toBeNull());
+  expect(screen.getByRole('button', { name: /Dental recovery.*Practice default/ })).toBeVisible();
+  fireEvent.click(screen.getByRole('button', { name: /Delete template/ }));
+  fireEvent.click(screen.getByRole('button', { name: /^⟦Delete⟧$/ }));
+  await waitFor(() => expect(screen.queryByRole('button', { name: /Dental recovery/ })).toBeNull());
+
+  fireEvent.click(screen.getByRole('button', { name: /Save/ }));
+  expect(onSave.mock.lastCall?.[0]).toMatchObject({
+    defaultId: 'discharge-v1',
+    templates: expect.arrayContaining([
+      expect.objectContaining({ id: 'discharge-v1', sections: [{ id: 'dischargeInstructions' }, { id: 'dischargeFollowUp' }] }),
+      expect.objectContaining({ name: 'Postoperative call', sections: [{ id: 'dischargeMedications' }, { id: 'dischargeInstructions' }] }),
+      expect.objectContaining({ id: 'dental-recovery-v1', archived: true }),
+    ]),
+  });
 });

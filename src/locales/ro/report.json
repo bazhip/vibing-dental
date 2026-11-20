@@ -168,7 +168,8 @@
   "dischargeSource": {
     "dischargeMedications": "Medicamente la externare",
     "dischargeInstructions": "Instrucțiuni la externare",
-    "dischargeFollowUp": "Monitorizare după externare"
+    "dischargeFollowUp": "Monitorizare după externare",
+    "activity": "Activitate"
   },
   "homecareTipsRabbit": {
     "hay": "Oferiți fân de graminee la discreție pentru a susține uzura normală a dinților și urmați instrucțiunile de hrănire ale echipei veterinare după tratament.",

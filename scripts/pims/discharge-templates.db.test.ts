@@ -65,6 +65,17 @@ describe.skipIf(!container)('practice discharge template libraries', () => {
         ('${practice}', '${member}', 'member');`);
   });
 
+  it('validates edited and removed presets and preserves a valid active default', () => {
+    const recovery = { id: 'dental-recovery-v1', name: 'Dental recovery', fields: [],
+      sections: [{ id: 'dischargeCustom_recovery-activity' }], archived: true };
+    const standard = { id: 'discharge-v1', name: 'Routine discharge', fields: [],
+      sections: [{ id: 'dischargeFollowUp' }] };
+    const draft = { version: 2, defaultId: standard.id, order: [standard.id], templates: [standard, recovery] };
+    expect(asUser(owner, insert(draft))).toBe(revision);
+    expect(() => asUser(owner, `update ${table} set config = ${json({ ...draft, defaultId: recovery.id })}`))
+      .toThrow(/discharge_template_libraries_config_check/);
+  });
+
   it('lets practice members read and practice owners save versioned templates', () => {
     const update = `update ${table} set revision = '${nextRevision}' where revision = '${revision}' returning revision`;
     expect(() => asUser(member, insert(config))).toThrow(/row-level security/);

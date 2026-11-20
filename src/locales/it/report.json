@@ -168,7 +168,8 @@
   "dischargeSource": {
     "dischargeMedications": "Farmaci alla dimissione",
     "dischargeInstructions": "Istruzioni alla dimissione",
-    "dischargeFollowUp": "Controllo dopo la dimissione"
+    "dischargeFollowUp": "Controllo dopo la dimissione",
+    "activity": "Attività"
   },
   "homecareTipsRabbit": {
     "hay": "Offra fieno di graminacee a volontà per favorire la normale usura dei denti, seguendo le istruzioni alimentari della Sua équipe veterinaria dopo il trattamento.",

@@ -174,7 +174,14 @@
         "dischargeMedications": "已与宠主核对用药说明。",
         "dischargeInstructions": "按沟通内容提供软质食物。",
         "dischargeFollowUp": "已讨论复查安排。"
-      }
+      },
+      "recovery": "牙科术后恢复",
+      "activity": {
+        "label": "活动",
+        "helper": "记录讨论过的活动限制。",
+        "sample": "已讨论活动限制。"
+      },
+      "deleteMessage": "保存后，该模板将从诊所列表中移除。已保存的就诊仍保留原模板和文字。"
     }
   },
   "sourceNotice": "记录的措辞将保留原样。分享前，请检查面向客户的语言。",

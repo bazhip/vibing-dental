@@ -174,7 +174,14 @@
         "dischargeMedications": "Se revisaron las instrucciones de medicación con el propietario.",
         "dischargeInstructions": "Ofrézcale comida blanda según lo acordado.",
         "dischargeFollowUp": "Se habló de una cita de seguimiento."
-      }
+      },
+      "recovery": "Recuperación dental",
+      "activity": {
+        "label": "Actividad",
+        "helper": "Anote las restricciones de actividad que se hayan comentado.",
+        "sample": "Se comentaron las restricciones de actividad."
+      },
+      "deleteMessage": "Al guardar, se retirará la plantilla de la lista de la clínica. Las visitas guardadas conservan su plantilla y su texto."
     }
   },
   "sourceNotice": "El texto registrado se conserva tal como se ha introducido. Revise el idioma del cliente antes de compartirlo.",

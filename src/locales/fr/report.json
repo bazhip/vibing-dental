@@ -168,7 +168,8 @@
   "dischargeSource": {
     "dischargeMedications": "Médicaments de sortie",
     "dischargeInstructions": "Consignes de sortie",
-    "dischargeFollowUp": "Suivi après la sortie"
+    "dischargeFollowUp": "Suivi après la sortie",
+    "activity": "Activité"
   },
   "homecareTipsRabbit": {
     "hay": "Proposez du foin de graminées à volonté pour favoriser une usure normale des dents, en suivant les consignes alimentaires de votre équipe vétérinaire après le traitement.",

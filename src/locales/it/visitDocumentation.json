@@ -174,7 +174,14 @@
         "dischargeMedications": "Le istruzioni per la somministrazione dei farmaci sono state riesaminate con il proprietario.",
         "dischargeInstructions": "Offra cibo morbido come concordato.",
         "dischargeFollowUp": "È stato discusso un appuntamento di controllo."
-      }
+      },
+      "recovery": "Recupero dopo le cure dentali",
+      "activity": {
+        "label": "Attività",
+        "helper": "Annoti le eventuali limitazioni dell’attività concordate.",
+        "sample": "Sono state discusse le limitazioni dell’attività."
+      },
+      "deleteMessage": "Al salvataggio il modello verrà rimosso dall’elenco della clinica. Le visite salvate conservano il modello e il testo."
     }
   },
   "sourceNotice": "Il testo registrato rimane come inserito. Verifichi la lingua del cliente prima della condivisione.",

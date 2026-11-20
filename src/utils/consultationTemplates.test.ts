@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CONSULTATION_FIELDS, STANDARD_DISCHARGE, changeConsultationLayout, insertImagingOutline, updatePracticeNoteField, consultationVisitSections, consultationChoices, consultationHeadings, consultationLayoutFor, normalizeConsultationLayout, parseConsultationLibrary } from './consultationTemplates';
+import { CONSULTATION_FIELDS, STANDARD_DISCHARGE, dischargeLayoutFor, changeConsultationLayout, insertImagingOutline, updatePracticeNoteField, consultationVisitSections, consultationChoices, consultationHeadings, consultationLayoutFor, normalizeConsultationLayout, parseConsultationLibrary } from './consultationTemplates';
 import { normalizeVisitDocumentation } from './visitDocumentation';
 
 const custom = { id: '11111111-1111-4111-8111-111111111111', name: 'Practice consult', fields: [...CONSULTATION_FIELDS].reverse() };
@@ -108,4 +108,23 @@ it('applies shared metadata edits to existing placements even when the field is 
     expect.objectContaining({ id, label: 'Feeding', ownerReport: true }),
     expect.objectContaining({ id, label: 'Feeding', format: 'bullets' }),
   ]);
+});
+
+it('defaults new discharge notes to Dental recovery and keeps legacy visits on Standard discharge', () => {
+  expect(dischargeLayoutFor({}).id).toBe('dental-recovery-v1');
+  expect(dischargeLayoutFor({}, undefined, true)).toEqual(STANDARD_DISCHARGE);
+  expect(dischargeLayoutFor({}, { defaultId: 'discharge-v1', templates: [] })).toEqual(STANDARD_DISCHARGE);
+});
+
+it('reads edited Discharge starters and hides deleted starters without changing a pinned layout', () => {
+  const standard = { ...STANDARD_DISCHARGE, name: 'Routine care', sections: [{ id: 'dischargeFollowUp' as const }] };
+  const recovery = { id: 'dental-recovery-v1', name: 'Dental recovery', fields: [], sections: STANDARD_DISCHARGE.sections, archived: true };
+  const raw = { version: 2, defaultId: standard.id, templates: [standard, recovery] };
+  const library = parseConsultationLibrary(raw, 'discharge');
+  expect(library).toBeDefined();
+  expect(consultationChoices(library!, 'discharge')).toEqual([standard]);
+  expect(dischargeLayoutFor({}, library)).toEqual(standard);
+  expect(dischargeLayoutFor({ dischargeLayout: STANDARD_DISCHARGE }, library)).toEqual(STANDARD_DISCHARGE);
+  expect(normalizeConsultationLayout(standard, 'discharge')).toEqual(standard);
+  expect(parseConsultationLibrary({ ...raw, defaultId: recovery.id }, 'discharge')).toBeUndefined();
 });

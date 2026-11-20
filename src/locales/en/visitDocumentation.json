@@ -174,7 +174,14 @@
         "dischargeMedications": "Medication instructions reviewed with the owner.",
         "dischargeInstructions": "Offer soft food as discussed.",
         "dischargeFollowUp": "Follow-up appointment discussed."
-      }
+      },
+      "recovery": "Dental recovery",
+      "activity": {
+        "label": "Activity",
+        "helper": "Record any activity restrictions discussed.",
+        "sample": "Activity restrictions were discussed."
+      },
+      "deleteMessage": "The template will be removed from the practice list when you save. Saved visits keep their template and wording."
     }
   },
   "sourceNotice": "Recorded wording stays as entered. Review the client language before sharing.",

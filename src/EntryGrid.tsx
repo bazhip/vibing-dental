@@ -1,7 +1,7 @@
 import { VisitTypeChooser } from './components/VisitTypeChooser';
 import { visitTypeOf, type VisitType } from './utils/visitTypes';
 import { useConsultationLibrary } from './hooks/useConsultationLibrary';
-import { CONSULTATION_FIELDS, STANDARD_DISCHARGE, consultationLayoutFor, dischargeLayoutFor, isCustomConsultationField, isCustomDischargeField } from './utils/consultationTemplates';
+import { CONSULTATION_FIELDS, isUnmodifiedStandardDischarge, consultationLayoutFor, dischargeLayoutFor, isCustomConsultationField, isCustomDischargeField } from './utils/consultationTemplates';
 import { ConsultationTemplatesDialog } from './components/ConsultationTemplatesDialog';
 import { Icon } from './ios/icons';
 import { useTeam } from './hooks/useTeam';
@@ -379,7 +379,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   }, [pinInitialConsultationLayout, chart.chartSession, chart.setPatientInfo, consultationLibrary.config]);
   const defaultDischargeLayout = dischargeLayoutFor(chart.patientInfo, dischargeLibrary.config, chart.openedExisting);
   const pinDischargeLayout = dischargeTemplatesAvailable && dischargeLibrary.resolved && !readOnly
-    && !chart.openedExisting && !chart.patientInfo.dischargeLayout && defaultDischargeLayout.id !== STANDARD_DISCHARGE.id;
+    && !chart.openedExisting && !chart.patientInfo.dischargeLayout && (!isUnmodifiedStandardDischarge(defaultDischargeLayout) || !!defaultDischargeLayout.name);
   React.useEffect(() => {
     if (!pinDischargeLayout) return;
     chart.setPatientInfo(previous => previous.dischargeLayout ? previous : { ...previous, dischargeLayout: defaultDischargeLayout });

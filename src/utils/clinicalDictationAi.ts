@@ -4,7 +4,7 @@ import { isAppLanguage, type AppLanguage } from '../i18n/config';
 import type { ClinicalDictationField, ClinicalDictationKind, PatientInfo } from '../types';
 import { sendAutofill, type AutofillRequest } from './aiAutofill';
 import { LocalizedError } from './apiErrors';
-import { CONSULTATION_MEDICATION_FIELDS, DISCHARGE_FIELDS, consultationSections, consultationSectionKey, type ConsultationLayout } from './consultationTemplates';
+import { CONSULTATION_MEDICATION_FIELDS, DISCHARGE_FIELDS, isUnmodifiedStandardDischarge, consultationSections, consultationSectionKey, type ConsultationLayout } from './consultationTemplates';
 import { DENTAL_SUPPLEMENT_FIELDS } from './clinicalDictationSources';
 
 export interface ClinicalDictationInput {
@@ -55,7 +55,8 @@ function fail(language: AppLanguage, key: ErrorKey): never {
 export function clinicalDictationLayout(kind: ClinicalDictationKind, info: PatientInfo): ConsultationLayout | undefined {
   if (kind === 'consultation') return info.consultationLayout;
   if (kind === 'dental-visit' || kind === 'discharge') {
-    return info.dischargeLayout?.id === 'discharge-v1' ? undefined : info.dischargeLayout;
+    const layout = info.dischargeLayout;
+    return layout && !isUnmodifiedStandardDischarge(layout) ? layout : undefined;
   }
   return undefined;
 }
@@ -154,7 +155,7 @@ export function buildClinicalDictationRequest(input: ClinicalDictationInput): Au
     sections: consultationSections(layout).map(section => {
       const key = consultationSectionKey(section);
       return { id: section.id, label: section.label ?? (key ? localized(`${key}.label`) : undefined),
-        guidance: section.guidance ?? (key?.startsWith('consultation.dental.') ? localized(`${key}.helper`) : undefined),
+        guidance: section.guidance ?? (key && (key.startsWith('consultation.dental.') || key === 'discharge.templates.activity') ? localized(`${key}.helper`) : undefined),
         example: section.example, format: section.format };
     }),
   } : undefined;

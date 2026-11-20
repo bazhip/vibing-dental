@@ -228,7 +228,7 @@ function recordedDischargeNotes(info: ChartSnapshot['patientInfo'], locale: Repo
   const t = i18n.getFixedT(locale, 'report');
   const standard = (['dischargeMedications', 'dischargeInstructions', 'dischargeFollowUp'] as const).map(key =>
     info[key]?.trim() ? `${t(`dischargeSource.${key}`)}:\n${info[key]}` : '');
-  const custom = dischargeOwnerReportFields(info).map(field => `${field.label}:\n${field.value}`);
+  const custom = dischargeOwnerReportFields(info, t('dischargeSource.activity')).map(field => `${field.label}:\n${field.value}`);
   return [...standard, ...custom].filter(Boolean).join('\n\n');
 }
 

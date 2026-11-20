@@ -168,7 +168,8 @@
   "dischargeSource": {
     "dischargeMedications": "出院用药",
     "dischargeInstructions": "出院指导",
-    "dischargeFollowUp": "出院随访"
+    "dischargeFollowUp": "出院随访",
+    "activity": "活动"
   },
   "homecareTipsRabbit": {
     "hay": "无限量提供禾本科干草，帮助牙齿正常磨耗；治疗后请遵循兽医团队的喂食指导。",

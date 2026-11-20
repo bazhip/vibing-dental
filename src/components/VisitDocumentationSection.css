@@ -135,6 +135,8 @@
   color: var(--text);
   margin-block-start: 0;
 }
+/* Keep shared confirmation dialogs above the template editor. */
+.ui-dialog-overlay.consultation-library-overlay { z-index: 1150; }
 .ui-dialog.consultation-library {
   --ui-dialog-max-width: 52rem;
   max-height: calc(100dvh - 2rem);
@@ -190,8 +192,11 @@
 }
 .consultation-library__list li button:is([aria-current], :hover) { background: var(--action-tint); color: var(--primary); }
 .consultation-library__list--scroll { max-block-size: 18rem; overflow-y: auto; }
+.consultation-library__new { inline-size: 100%; margin-block-start: 8px; }
+.consultation-library__new span { margin-inline-end: 4px; }
 .consultation-library__archived { display: flex; align-items: center; gap: 8px; min-height: 44px; font-size: 0.875rem; }
 .consultation-library__editor { padding: 12px 16px; min-width: 0; }
+.consultation-library__editor > .ui-dialog__label { gap: 6px; }
 .consultation-library__heading,
 .consultation-library__tools,
 .consultation-library__menu { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
@@ -199,6 +204,47 @@
 .consultation-library__tools { margin-block: 10px; }
 .consultation-library__tools summary { font-size: 0.875rem; }
 .consultation-library__menu { margin-block-end: 8px; }
+.consultation-library__tools--discharge summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-block-size: 40px;
+  padding-inline: 8px;
+  border-radius: 6px;
+}
+.consultation-library__tools--discharge summary::before { content: '▸'; }
+.consultation-library__tools--discharge details[open] summary::before { content: '▾'; }
+.consultation-library__tools--discharge details[open] { flex-basis: 100%; }
+.consultation-library__menu--discharge {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: 2px 8px;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-alt);
+}
+.consultation-library__menu--discharge button {
+  min-block-size: 44px;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  box-shadow: none;
+  color: var(--primary);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-align: start;
+  cursor: pointer;
+}
+.consultation-library__menu--discharge button:not(:disabled):hover,
+.consultation-library__tools--discharge summary:hover { background: var(--action-tint); }
+.consultation-library__menu--discharge button:disabled { opacity: 0.55; cursor: default; }
+.consultation-library__menu--discharge .consultation-library__delete {
+  grid-column: 1 / -1;
+  color: var(--ios-danger, #b91c1c);
+}
 .consultation-library__sections > li {
   display: grid;
   align-content: center;

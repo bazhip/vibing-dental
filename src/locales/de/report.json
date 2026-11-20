@@ -168,7 +168,8 @@
   "dischargeSource": {
     "dischargeMedications": "Medikamente bei Entlassung",
     "dischargeInstructions": "Entlassungshinweise",
-    "dischargeFollowUp": "Nachsorge nach Entlassung"
+    "dischargeFollowUp": "Nachsorge nach Entlassung",
+    "activity": "Aktivität"
   },
   "homecareTipsRabbit": {
     "hay": "Bieten Sie unbegrenzt Grasheu an, um den normalen Zahnabrieb zu unterstützen, und befolgen Sie nach der Behandlung die Fütterungsanweisungen Ihres Praxisteams.",

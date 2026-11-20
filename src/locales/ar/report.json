@@ -168,7 +168,8 @@
   "dischargeSource": {
     "dischargeMedications": "أدوية الخروج",
     "dischargeInstructions": "تعليمات الخروج",
-    "dischargeFollowUp": "المتابعة بعد الخروج"
+    "dischargeFollowUp": "المتابعة بعد الخروج",
+    "activity": "النشاط"
   },
   "homecareTipsRabbit": {
     "hay": "قدّموا تبن الأعشاب بكميات غير محدودة لدعم التآكل الطبيعي للأسنان، واتبعوا تعليمات فريقكم البيطري بشأن التغذية بعد العلاج.",

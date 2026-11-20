@@ -168,7 +168,8 @@
   "dischargeSource": {
     "dischargeMedications": "Medicamentos al alta",
     "dischargeInstructions": "Instrucciones al alta",
-    "dischargeFollowUp": "Seguimiento tras el alta"
+    "dischargeFollowUp": "Seguimiento tras el alta",
+    "activity": "Actividad"
   },
   "homecareTipsRabbit": {
     "hay": "Ofrezca heno de gramíneas sin límite para favorecer el desgaste dental normal y siga las instrucciones de alimentación de su equipo veterinario después del tratamiento.",

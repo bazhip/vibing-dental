@@ -38,6 +38,7 @@ begin
 
     field_id := field_def->>'id';
     if field_id !~ id_pattern or field_id = any(seen_ids)
+      or (discharge and field_id = 'dischargeCustom_recovery-activity')
       or (not discharge and field_id = any(dental_fields))
       or char_length(field_def->>'label') > 100
       or btrim(field_def->>'label', trim_characters) = ''

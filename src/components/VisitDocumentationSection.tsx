@@ -1,7 +1,7 @@
 import { useId, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ClinicalDictationSource, PatientInfo } from '../types';
-import { changeConsultationLayout, consultationChoices, consultationSectionKey, consultationSections, consultationVisitSections, consultationLayoutFor, dischargeLayoutFor, EMPTY_CONSULTATION_LIBRARY, EMPTY_DISCHARGE_LIBRARY, isConsultationStarter, type ConsultationLibrary, type ConsultationSection } from '../utils/consultationTemplates';
+import { changeConsultationLayout, consultationChoices, consultationSectionKey, consultationSections, consultationVisitSections, consultationLayoutFor, dischargeLayoutFor, dischargeStarterNameKey, EMPTY_CONSULTATION_LIBRARY, EMPTY_DISCHARGE_LIBRARY, isConsultationStarter, type ConsultationLibrary, type ConsultationSection } from '../utils/consultationTemplates';
 import { documentationUrl } from '../help/openDocumentation';
 import { formatDate, formatDateTime } from '../i18n/format';
 import { VISIT_DOCUMENT_MAX_LENGTH, VISIT_DOCUMENT_TEMPLATES, type VisitDocumentKind } from '../utils/visitDocumentation';
@@ -53,8 +53,10 @@ export function VisitDocumentationSection({ kind, patientInfo, onChange, readOnl
     && JSON.stringify(choice.fields) === JSON.stringify(layout.fields)
     && JSON.stringify(choice.sections) === JSON.stringify(layout.sections)
     && choice.instructions === layout.instructions && choice.detail === layout.detail);
-  const layoutName = (option: typeof layout) =>
-    isDischarge && option.id === 'discharge-v1' ? t('discharge.templates.starter') : isConsultationStarter(option.id) ? t(`consultation.templates.starters.${option.id}`) : option.name;
+  const layoutName = (option: typeof layout) => {
+    const dischargeKey = isDischarge && dischargeStarterNameKey(option);
+    return dischargeKey ? t(dischargeKey) : isConsultationStarter(option.id) ? t(`consultation.templates.starters.${option.id}`) : option.name;
+  };
   const update = (patch: Partial<PatientInfo>) => {
     if (!readOnly) onChange(patch);
   };
