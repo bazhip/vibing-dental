@@ -1,7 +1,7 @@
 {
   "site": {
     "title": "ToothOps Help Center",
-    "intro": "Practical guides for every step of a dental visit, from opening the patient to sending the report.",
+    "intro": "Practical guides for dental procedures and consultations, from opening a visit to sharing its record.",
     "search": "Search documentation",
     "searchHint": "Search topics, tasks, or settings",
     "topics": "Topics",
@@ -24,13 +24,15 @@
     "practice": "Practice and support"
   },
   "images": {
+    "consultationMedicationHistory": "Current medications with an in-app veterinary label and a link to the full source.",
+    "consultationMedicationReview": "Consultation dictation review with separate medication suggestions and their transcript excerpts.",
     "charting": "A sample dental chart with numbered teeth and a findings grid.",
     "imaging": "The Imaging section with separate radiographic and CT report fields.",
-    "dictation": "A dictation review showing separate X-ray and CT proposals from one transcript.",
+    "dictation": "Review of additional findings taken from a dental recording.",
     "owner": "The Owner report controls and a visit-specific opening summary.",
     "export": "The clinical chart PDF preview with a sample dental chart.",
     "start": "Sample patient workspace with the visit tab, section navigation, and Patient information.",
-    "patients": "Earlier visits in Historical patient records, with the text of one record selected.",
+    "patients": "Earlier dental procedures and consultations in one patient history, with a visit selected.",
     "exam": "Oral Exam findings grid with Normal and Abnormal choices and a comment.",
     "viewer": "Image viewer showing window, level, and download controls on a synthetic DICOM file.",
     "treatment": "Treatment report with saved templates and the editable report below.",
@@ -38,9 +40,9 @@
     "help-tools": "The Help menu with the Help Center, walkthrough, release notes, and feedback.",
     "by-number": "The By tooth chart with Triadan 108 selected on the numbered diagram and its findings open.",
     "imagingSettings": "Imaging and PDF settings showing the report language and default PDF inclusion choices.",
-    "consultationReview": "Consultation editor with the selected template marked and the Review clinical record button above the visit fields.",
+    "consultationReview": "The Images section in a consultation, with the Add images control and a sample thumbnail.",
     "consultationTemplatePreview": "Template library with a fictional consultation preview showing the sections in the selected order.",
-    "consultationRecordNote": "Visit record note with the editable clinical text and the Copy button."
+    "consultationRecordNote": "A consultation’s record note with the Download PDF and Copy controls."
   },
   "articles": {
     "start": {
@@ -49,7 +51,7 @@
       "sections": {
         "first": {
           "title": "Open or create a patient",
-          "text": "Use the plus button or Open an animal. Search by name or patient number before creating a patient. Check the name, species, patient number, and visit date in Patient."
+          "text": "Use the plus button or Open an animal. Search by name or patient number before creating a patient. If the New visit chooser appears, select Dental procedure and choose Start visit. Check the patient name, species, number and visit date in Patient."
         },
         "second": {
           "title": "Document care as you go",
@@ -67,15 +69,15 @@
       "sections": {
         "first": {
           "title": "Find a patient",
-          "text": "On the web, open the patient picker with the plus button. Verify the patient number when names match. Pick an existing visit to continue it, or start a new visit for a new appointment."
+          "text": "Open the patient picker with the plus button. Verify the patient number when names match. Choose an existing visit to continue it, or choose New visit and check the visit type before starting."
         },
         "second": {
           "title": "Switch visits and patient tabs",
-          "text": "The tab shows the patient and visit date. Use its visit switcher when there are multiple saved visits, or open another patient with the plus button. Closing a tab does not delete the patient. On desktop, check the patient number under the name and use the arrow beside the date to switch visits."
+          "text": "The tab shows the patient, visit date and type. Use the visit switcher to open another saved visit. Two visits on the same date can have different types. Closing a tab keeps the patient and their visits in the workspace history."
         },
         "third": {
           "title": "Review earlier records",
-          "text": "In Patient, choose View visit history when prior visits are available. Select a date and review the PDFs or text notes. Open the dated visit itself if you need to amend the historical chart."
+          "text": "In Patient, choose View visit history when prior visits are available. Select the date and type, then review the note or export that visit. Use the visit switcher to reopen a visit for editing."
         }
       }
     },
@@ -110,8 +112,8 @@
           "text": "Open Anesthesia, enter the anesthetic drugs, and record site and volume for the blocks performed. Check sides and units against your source before finalizing. Use Add a second nerve-block set when you gave a different anesthetic separately. Record its name, strength, and site volumes in the second set."
         },
         "third": {
-          "title": "Use optional visit sections",
-          "text": "If your practice has enabled Consultation or GP examination, those sections appear in the chart navigation. Use them for the relevant history, assessment, plan, and examination details."
+          "title": "Review the recorded findings",
+          "text": "After dictation, check the findings in Exam and the block sites and drugs in Anesthesia. Correct incomplete or uncertain entries before you finalize the dental visit."
         }
       }
     },
@@ -129,25 +131,25 @@
         },
         "third": {
           "title": "Write the imaging reports",
-          "text": "Enter findings in Radiographic report or CT report. To speak your findings, open Dictate from Imaging and name the modality if it is unclear. Review the proposed destinations before applying them. Refine is available for typed text."
+          "text": "Enter findings in Radiographic report or CT report. Use Diagnostics for other results and pending tests. You can dictate all of these in the same dental recording. Name the modality when describing imaging and check the proposed destinations before applying them."
         }
       }
     },
     "dictation": {
       "title": "Dictation and AI review",
-      "intro": "Speak from the section you are working in and review where the findings go.",
+      "intro": "Use one recording for the dental visit and review how the findings are applied.",
       "sections": {
         "first": {
-          "title": "Start from the current section",
-          "text": "Open the relevant chart section, choose Dictate, then Start dictation. Allow microphone access if prompted. Name the tooth, side, units, and modality when those details matter."
+          "title": "Start the dental recording",
+          "text": "Choose Dictate from any tab of a dental procedure, then start recording. Allow microphone access if prompted. As you work through the visit, name tooth numbers, sides, units and imaging modalities where they matter."
         },
         "second": {
           "title": "Check the transcript and proposals",
-          "text": "Speech recognition produces the transcript. AI organizes it into chart findings or draft wording. The active section gives context to ambiguous wording. Clear findings may go to another supported section."
+          "text": "Clear findings can fill the matching tabs while you speak, including Exam, Anesthesia, Charting, Diagnosis and Procedure. The active tab gives context to ambiguous wording. Stop when you finish and review the transcript and chart."
         },
         "third": {
           "title": "Review corrections before applying",
-          "text": "In Needs review, compare the current value and proposed change. Apply a suggestion only when the transcript supports it, or keep the current value. For report or visit sections, review the proposed wording and select the sections to apply."
+          "text": "In Needs review, compare proposed changes with existing values and keep the supported wording. At the end, the same recording can propose CT, other diagnostic results and discharge details. Compare the proposed sections with their evidence and select the ones to apply."
         }
       }
     },
@@ -193,7 +195,7 @@
       "sections": {
         "first": {
           "title": "Choose a document",
-          "text": "Open Review and export. Clinical chart is the complete chart PDF. Owner report is the take-home PDF where enabled. Record note provides the text version for the medical record."
+          "text": "Open Review and export for the selected visit. For a dental procedure, choose Clinical chart for the chart PDF, Owner report for the take-home PDF where enabled, or Record note for text. For a consultation, use Record note to download or copy that visit’s note."
         },
         "second": {
           "title": "Customize the clinical PDF",
@@ -409,11 +411,11 @@
       "sections": {
         "first": {
           "title": "Choose a template",
-          "text": "Open the patient’s visit and select Consultation. Under Note template, choose one of the visible templates. Check the highlighted choice and section order. Choosing a different template rearranges fields and keeps the text you entered."
+          "text": "From the patient, choose New visit. If Consultation is available, select it and choose Start visit. Under Note template, pick one of the visible choices. Check the highlighted choice and section order. Changing templates keeps the text you entered."
         },
         "second": {
           "title": "Enter or dictate the visit",
-          "text": "Record the reason for the visit, history, assessment and plan. If dictation is available, compare each proposed section with its source before applying it. To revisit a transcript, open Saved transcripts and select the recording date. Use Open dental exam to jump to the dental exam in the same visit."
+          "text": "Record the reason for the visit, history, assessment and plan. If dictation is available, compare the proposed sections with their evidence before applying them. To revisit a transcript, open Saved transcripts and select the recording date. Record vital signs, examination and diagnostics under their own fields when those findings were documented. Leave fields blank when you have no findings to enter. Below Plan and the other note fields, open Images and choose Add images. Select files, or drop or paste them into the visit. Wait for thumbnails to appear and open one to check it. Images stay attached to this visit and do not appear in the standalone note PDF. Use Current medications for reported use, Medications given during this visit for doses actually given, and Medication changes and prescriptions for the plan. During dictation, say which category each medication belongs to and review the quoted evidence before applying. In Current medications, open Previous medication list to see the most recent earlier consultation and any recorded changes. Check what is still current, then choose Copy to current medications if the field is empty. Use Look up a drug to enter a drug name and open the DailyMed label search. Select Search labels, then choose the exact veterinary product. Use Open full label on DailyMed to verify the strength, directions and warnings."
         },
         "third": {
           "title": "Review the note",
@@ -431,7 +433,7 @@
         },
         "second": {
           "title": "Arrange and preview sections",
-          "text": "Enter a Template name. Use the up and down arrows beside each section to change its order. Select Sample preview to check the new order with fictional visit details. Select it again to return to editing."
+          "text": "Enter a Template name. Use the up and down arrows beside each section to change its order. Select Sample preview to check the new order with fictional visit details. Select it again to return to editing. Every template includes Images below the note. Images belong to the visit and are kept when you switch templates."
         },
         "third": {
           "title": "Save or archive",
@@ -441,7 +443,7 @@
     },
     "consultation-transfer": {
       "title": "Review and transfer a consultation note",
-      "intro": "Check the clinical record before copying or sending it.",
+      "intro": "Check the clinical record before downloading, copying or sending it.",
       "sections": {
         "first": {
           "title": "Open the record note",
@@ -452,8 +454,8 @@
           "text": "If a notice says the chart changed after the note was edited, compare the note with the current visit. Keep any manual wording you need before selecting Rebuild from chart, which replaces the edited note with the current chart content."
         },
         "third": {
-          "title": "Copy or send",
-          "text": "Select Copy and paste into the intended patient record, or use the built-in transfer if it is available. Confirm the patient and visit at the destination and check the pasted or transferred text."
+          "title": "Download, copy or send",
+          "text": "Select Download PDF to save a standalone PDF of the consultation, including any edits in Record note. Use Copy to paste the note into the intended record, or use the built-in transfer when available. Confirm the patient, visit date and content at the destination."
         }
       }
     }

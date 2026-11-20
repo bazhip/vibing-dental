@@ -34,6 +34,30 @@ describe('record note builder', () => {
     expect(buildRecordNote(snap(), en()).sections.map((s) => s.heading)).toEqual(['Dental procedure']);
   });
 
+  it('gives a typed consultation its own heading and exports only its note fields', () => {
+    const consultation = snap({ preMarks: { 108: 'missing' }, postMarks: { 109: 'extracted' } }, {
+      visitType: 'consultation',
+      complaint: 'Check appetite',
+      consultationHistory: 'Breakfast unfinished',
+      consultationAssessment: 'Observation needed',
+      consultationPlan: 'Follow up in two weeks',
+      treatmentReport: 'Prior dental procedure',
+      gpPhysicalExam: 'Focal redness',
+      dischargeFollowUp: 'Appointment booked',
+      recallDate: '2026-12-11',
+    });
+    const note = buildRecordNote(consultation, en());
+    expect(note.sections[0].heading).toBe('Consultation');
+    expect(note.sections.map(({ key }) => key)).toEqual([
+      'header', 'complaint', 'consultationHistory', 'gpPhysicalExam', 'consultationAssessment', 'consultationPlan', 'dischargeFollowUp', 'recheck',
+    ]);
+    expect(recordNoteBasis(consultation)).toBe(recordNoteBasis({
+      ...consultation,
+      preMarks: {},
+      patientInfo: { ...consultation.patientInfo, treatmentReport: 'An unrelated edit' },
+    }));
+  });
+
   it('orders teeth by Triadan', () => {
     const toothData = getInitialToothData('canine').map((t) =>
       t.triadan === 409 ? { ...t, pocket: '5' } : t.triadan === 104 ? { ...t, mobility: '1' } : t);
@@ -169,5 +193,20 @@ it('keeps stable clinical section keys and follows the pinned consultation order
   expect(buildRecordNote(legacy, en()).sections.map(section => section.key))
     .toEqual(['header', 'consultationHistory', 'consultationAssessment', 'gpVitals']);
   expect(recordNoteBasis(soap)).not.toBe(recordNoteBasis(legacy));
-  expect(recordNoteBasis(snap({}, { ...patientInfo, consultationLayout: DENTAL_CONSULTATION }))).toBe(recordNoteBasis(legacy));
+  expect(recordNoteBasis(snap({}, { ...patientInfo, consultationLayout: DENTAL_CONSULTATION }))).not.toBe(recordNoteBasis(legacy));
+});
+
+it('exports current, administered and planned medications as separate consultation sections', () => {
+  const consultation = snap({}, { visitType: 'consultation',
+    consultationCurrentMedications: 'Owner reports medicine A.',
+    consultationAdministeredMedications: 'Medicine B was given.',
+    consultationMedicationPlan: 'May stop medicine C after the test.',
+  });
+  const sections = buildRecordNote(consultation, en()).sections;
+  expect(sections.slice(1).map(section => section.key)).toEqual([
+    'consultationCurrentMedications', 'consultationAdministeredMedications', 'consultationMedicationPlan',
+  ]);
+  expect(recordNoteBasis(consultation)).not.toBe(recordNoteBasis({
+    ...consultation, patientInfo: { ...consultation.patientInfo, consultationMedicationPlan: 'Decision pending.' },
+  }));
 });

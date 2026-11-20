@@ -65,14 +65,33 @@ it('finds the template guide by task and follows a link to the consultation tran
 
   fireEvent.click(within(main).getByRole('link', { name: 'Review and transfer a consultation note' }));
   expect(location.hash).toBe('#consultation-transfer');
-  expect(within(main).getByRole('img', { name: /Copy button/ })).toBeInTheDocument();
+  expect(within(main).getByRole('img', { name: /Download PDF and Copy/ })).toBeInTheDocument();
+  expect(within(main).getByText(/Select Download PDF to save a standalone PDF/)).toBeInTheDocument();
 });
 
-it('localizes the consultation review step and its screenshot at the direct link', async () => {
+it('explains how to distinguish same-day visits in patient history and links to consultation setup', () => {
+  window.history.replaceState(null, '', '/help/#patients/third');
+  render(<HelpSite />);
+  const main = screen.getByRole('main');
+  expect(within(main).getByText(/Two visits on the same date can have different types/)).toBeInTheDocument();
+  fireEvent.click(within(main).getByRole('link', { name: 'Document a consultation' }));
+  expect(location.hash).toBe('#consultation');
+  expect(within(main).getByText(/select it and choose Start visit/)).toBeInTheDocument();
+});
+
+it('documents a single recording across the dental visit', () => {
+  window.history.replaceState(null, '', '/help/#dictation/first');
+  render(<HelpSite />);
+  const main = screen.getByRole('main');
+  expect(within(main).getByText(/any tab of a dental procedure/)).toBeInTheDocument();
+  expect(within(main).getByText(/the same recording can propose CT/)).toBeInTheDocument();
+});
+
+it('localizes the consultation image instructions and screenshot at the direct link', async () => {
   await act(() => installPseudoLocale());
-  window.history.replaceState(null, '', '/help/#consultation/third');
+  window.history.replaceState(null, '', '/help/#consultation/second');
   const { container } = render(<HelpSite />);
-  const image = screen.getByRole('img', { name: /Review clinical record/ });
+  const image = screen.getByRole('img', { name: /Images section in a consultation/ });
   expect(image).toHaveAttribute('src', '/help/screenshots/consultation-review.jpg');
   expect(findUntranslated(container, Object.values(LANGUAGE_NAMES))).toEqual([]);
 });

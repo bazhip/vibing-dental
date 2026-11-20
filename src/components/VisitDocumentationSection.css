@@ -231,3 +231,77 @@
   .visit-documentation__transcripts summary,
   .consultation-library__tools summary { min-height: 44px; box-sizing: border-box; }
 }
+
+.visit-documentation__medication-tools {
+  margin-block-end: 8px;
+}
+.visit-documentation__medication-tools .visit-documentation__transcripts {
+  margin: 0;
+  padding: 0;
+}
+.visit-documentation__medication-tools p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin-block-end: 6px;
+}
+.visit-documentation__lookup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-block: 4px 8px;
+}
+.visit-documentation__lookup input {
+  flex: 1 1 10rem;
+  min-width: 0;
+}
+.visit-documentation__lookup .diagram-view__action {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+}
+.visit-documentation__lookup a[aria-disabled="true"] {
+  opacity: 0.55;
+}
+@media (max-width: 640px) {
+  .visit-documentation__medication-tools :is(summary, .diagram-view__action, input) {
+    min-height: 44px;
+  }
+}
+
+.drug-reference .drug-reference__results {
+  list-style: none;
+  padding: 0;
+  margin-block: 8px;
+  display: grid;
+  gap: 4px;
+  max-height: 15rem;
+  overflow-y: auto;
+}
+.drug-reference__results button {
+  width: 100%;
+  text-align: start;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.drug-reference__results button[aria-pressed=true] {
+  border-color: var(--primary);
+  background: var(--action-tint);
+}
+.drug-reference__label {
+  margin-block: 8px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.drug-reference__label h3 {
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
+  margin-block: 0 8px;
+}
+.drug-reference__label > :is(a, p) {
+  margin-block-end: 8px;
+}
+.drug-reference__label details p {
+  white-space: pre-wrap;
+}

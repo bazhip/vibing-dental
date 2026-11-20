@@ -1,7 +1,28 @@
 {
   "consultation": {
+    "medications": {
+      "lookup": "Medikament nachschlagen",
+      "drugName": "Medikamentenname",
+      "search": "Produktinformationen suchen",
+      "useSelection": "Ausgewählten Namen verwenden",
+      "labelScope": "US-Tierarzneimittelinformationen von DailyMed. Prüfen Sie Produkt und Stärke in der vollständigen Information.",
+      "searching": "DailyMed wird durchsucht…",
+      "searchError": "Die Suche ist fehlgeschlagen. Versuchen Sie es erneut oder öffnen Sie die Suche in DailyMed.",
+      "noProducts": "Für diesen Namen wurden keine US-Tierarzneimittelinformationen gefunden.",
+      "results": "Tierarzneimittel",
+      "externalSearch": "Suche in DailyMed öffnen",
+      "fullLabel": "Vollständige Information in DailyMed öffnen",
+      "loadingLabel": "Produktinformation wird geladen…",
+      "labelError": "Die Produktinformation konnte hier nicht geladen werden. Wählen Sie das Produkt erneut oder öffnen Sie die vollständige Information.",
+      "strengths": "Angegebene Wirkstärken",
+      "complexSection": "Lesen Sie diesen Abschnitt in DailyMed mit vollständiger Darstellung und Kontext.",
+      "noSections": "Öffnen Sie die vollständige Information, um die Anwendungshinweise zu lesen.",
+      "previous": "Frühere Medikamentenliste · {{date}}",
+      "verify": "Gleichen Sie die Liste und dokumentierte Änderungen vor dem Kopieren mit den heutigen Angaben ab.",
+      "copy": "In aktuelle Medikation kopieren"
+    },
     "title": "Konsultation",
-    "purpose": "Dokumentieren Sie Vorstellungsgrund, Anamnese, Beurteilung und Plan zusammen mit der gemeinsamen Untersuchung und Patientenakte.",
+    "purpose": "Dokumentieren Sie den Vorstellungsgrund, die Anamnese, die Beurteilung und den Plan.",
     "review": "Klinische Dokumentation prüfen",
     "guide": "Leitfaden zur Konsultation",
     "openExam": "Zahnuntersuchung öffnen",
@@ -36,6 +57,9 @@
         "recheck-v1": "Nachkontrolle"
       },
       "samples": {
+        "consultationCurrentMedications": "Die Halterin berichtet von einem laufenden Medikament.",
+        "consultationAdministeredMedications": "Bei diesem Besuch wurde ein Medikament verabreicht.",
+        "consultationMedicationPlan": "Eine Änderung wurde vorbehaltlich der Ergebnisse besprochen.",
         "complaint": "Nachkontrolle wegen Beschwerden beim Fressen.",
         "consultationHistory": "Der Tierhalter berichtet, dass das Tier besser frisst.",
         "consultationAssessment": "Der Tierarzt beurteilt den Fall nach Durchsicht der dokumentierten Befunde erneut.",
@@ -55,6 +79,18 @@
   "treatmentRecap": "Behandlungsbericht",
   "noTreatment": "Kein Behandlungsbericht dokumentiert.",
   "fields": {
+    "consultationCurrentMedications": {
+      "label": "Aktuelle Medikation",
+      "helper": "Erfassen Sie bereits eingenommene Medikamente. Halten Sie die Auskunftsquelle und Unsicherheiten fest."
+    },
+    "consultationAdministeredMedications": {
+      "label": "Bei diesem Besuch verabreichte Medikamente",
+      "helper": "Erfassen Sie tatsächlich verabreichte Medikamente mit Dosis, Verabreichungsweg und Zeitpunkt, soweit bekannt."
+    },
+    "consultationMedicationPlan": {
+      "label": "Medikationsänderungen und Verordnungen",
+      "helper": "Erfassen Sie Verordnungen und Entscheidungen zu Beginn, Fortsetzung, Unterbrechung, Absetzen oder Änderung. Kennzeichnen Sie vorläufige Pläne weiterhin als bedingt."
+    },
     "complaint": {
       "label": "Vorstellungsgrund",
       "helper": "Wird mit den Patientendaten dieses Besuchs gemeinsam verwendet."

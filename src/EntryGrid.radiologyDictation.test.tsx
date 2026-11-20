@@ -47,15 +47,15 @@ it('appends radiology dictation to the visible text and refines after completion
   expect(state.refine).not.toHaveBeenCalled();
   expect(state.voice!.context.patientInfo.radiologyReportLanguage).toBe('fr');
   expect(state.voice!.context.patientInfo.radiographicFindings).toBe('Typed clinical context.\n409: possible resorption.');
-  act(() => state.voice!.onDictationComplete?.('fr'));
+  act(() => state.voice!.onDictationComplete?.('fr', ''));
   await waitFor(() => expect(screen.getByRole('textbox', { name: /Radiographic report/i })).toHaveValue('Refined: 409 possible resorption.'));
   expect(state.refine).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ patientInfo: expect.objectContaining({ radiologyReport: 'Typed clinical context.\n409: possible resorption.' }) }), 'fr');
-  act(() => state.voice!.onDictationComplete?.('fr'));
+  act(() => state.voice!.onDictationComplete?.('fr', ''));
   expect(state.refine).toHaveBeenCalledOnce();
 });
 it('does not refine when a dictation completes without adding radiology text', async () => {
   render(<><EntryGrid /><DialogHost /></>);
   await waitFor(() => expect(state.voice).not.toBeNull());
-  act(() => state.voice!.onDictationComplete?.('en'));
+  act(() => state.voice!.onDictationComplete?.('en', ''));
   expect(state.refine).not.toHaveBeenCalled();
 });

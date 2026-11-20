@@ -1,10 +1,11 @@
 import type { PatientInfo } from '../types';
-import { normalizeConsultationLayout } from './consultationTemplates';
+import { CONSULTATION_MEDICATION_FIELDS, normalizeConsultationLayout } from './consultationTemplates';
 
 export const VISIT_DOCUMENT_MAX_LENGTH = 20000;
 export const VISIT_DOCUMENT_FIELDS = [
   'gpVitals', 'gpPhysicalExam', 'gpDiagnostics',
   'consultationHistory', 'consultationAssessment', 'consultationPlan',
+  ...CONSULTATION_MEDICATION_FIELDS,
   'dischargeMedications', 'dischargeInstructions', 'dischargeFollowUp',
 ] as const satisfies readonly (keyof PatientInfo)[];
 export type VisitDocumentField = typeof VISIT_DOCUMENT_FIELDS[number];

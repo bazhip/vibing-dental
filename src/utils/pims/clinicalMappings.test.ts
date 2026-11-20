@@ -58,3 +58,16 @@ it('keeps legacy CT destinations and skips while preferring an explicit main CT 
   expect(effectiveMap({ ctReport: 'Custom CT' } as never).ct).toBe('Custom CT');
   expect(effectiveMap({ ct: null, ctReport: 'Legacy CT' } as never).ct).toBeNull();
 });
+
+it('routes consultation medication documentation to note fields', () => {
+  expect(clinicalMappingDefaults('ezyvet', fields('History', 'Plan', 'Medications', 'Prescriptions'))).toMatchObject({
+    consultationCurrentMedications: 'History',
+    consultationAdministeredMedications: 'Plan',
+    consultationMedicationPlan: 'Plan',
+  });
+  expect(clinicalMappingDefaults('ezyvet', fields('Medications', 'Prescriptions'))).toMatchObject({
+    consultationCurrentMedications: null,
+    consultationAdministeredMedications: null,
+    consultationMedicationPlan: null,
+  });
+});

@@ -27,6 +27,20 @@ it('keeps saving feedback on the active patient tab when multiple animals are op
   expect(screen.queryByText('Saving…')).toBeNull();
 });
 
+it('distinguishes different visit types on the same day in the visit picker', () => {
+  const onVisit = vi.fn();
+  render(<AnimalTabs tabs={tabs} activeId="a" activeVisitType="consultation" busy={false} onAdd={vi.fn()}
+    onClose={vi.fn()} onSelect={vi.fn()} onVisit={onVisit} visits={[
+      { id: 'a', date: '2026-11-17', visitType: 'consultation' },
+      { id: 'dental', date: '2026-11-17' },
+    ]} />);
+  expect(screen.getByRole('tab', { name: /a.*Consultation/ })).toBeInTheDocument();
+  expect(screen.getByRole('option', { name: /Nov 17, 2026.*Consultation/ })).toBeInTheDocument();
+  expect(screen.getByRole('option', { name: /Nov 17, 2026.*Dental procedure/ })).toBeInTheDocument();
+  fireEvent.change(screen.getByRole('combobox'), { target: { value: 'dental' } });
+  expect(onVisit).toHaveBeenCalledWith('dental');
+});
+
 it.each([false, true])('scrolls the overflow arrows with the motion preference (%s)', (reducedMotion) => {
   vi.stubGlobal('matchMedia', () => ({ matches: reducedMotion }));
   const props = { tabs, activeId: 'a', busy: false, onSelect: vi.fn(), onClose: vi.fn(), onAdd: vi.fn() };

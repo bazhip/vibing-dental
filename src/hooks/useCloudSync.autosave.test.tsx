@@ -362,6 +362,44 @@ describe('same-day duplicate guard', () => {
     expect(db.upserts).toHaveLength(1);
   });
 
+  it('allows a named consultation and legacy dental procedure on the same day', async () => {
+    db.visits = [sameDay];
+    const snapshot = snap({});
+    snapshot.patientInfo = { ...snapshot.patientInfo, visitType: 'consultation', consultationPlan: 'Discuss options' };
+    renderHook(() => useCloudSync(fakeChart(snapshot)));
+    await flush();
+    expect(choose).not.toHaveBeenCalled();
+    expect(db.upserts).toHaveLength(1);
+    expect((db.upserts[0].data as ChartSnapshot).patientInfo.visitType).toBe('consultation');
+  });
+
+  it('only offers to reopen the other record of the same type', async () => {
+    db.visits = [sameDay, { ...sameDay, id: 'same-consultation', visit_type: 'consultation' }];
+    const snapshot = snap({});
+    snapshot.patientInfo = { ...snapshot.patientInfo, visitType: 'consultation', consultationPlan: 'Discuss options' };
+    choose.mockResolvedValue('open');
+    renderHook(() => useCloudSync(fakeChart(snapshot)));
+    await flush();
+    expect(choose).toHaveBeenCalledTimes(1);
+    expect(db.opened).toEqual(['same-consultation']);
+    expect(db.upserts).toHaveLength(0);
+  });
+
+  it('writes a parked consultation only if there is no saved consultation on that date', async () => {
+    vi.useRealTimers();
+    store.set('vibing-dental.chart.owner.v1', JSON.stringify('u1'));
+    const snapshot = snap({});
+    snapshot.patientInfo = { ...snapshot.patientInfo, visitType: 'consultation', consultationPlan: 'Discuss options' };
+    const { result } = renderHook(() => useCloudSync(fakeChart(snapshot)));
+    const parked = await result.current.captureWorkspace!();
+    db.visits = [sameDay, { ...sameDay, id: 'same-consultation', visit_type: 'consultation' }];
+    await expect(result.current.syncWorkspace!(parked)).resolves.toBeNull();
+    expect(db.upserts).toHaveLength(0);
+    db.visits = [sameDay];
+    await expect(result.current.syncWorkspace!(parked)).resolves.toMatchObject({ dirty: false });
+    expect(db.upserts).toHaveLength(1);
+  });
+
   it('skips the question when it was already answered (new visit)', async () => {
     db.visits = [sameDay];
     const { result } = renderHook(() => useCloudSync(fakeChart(snap({}))));

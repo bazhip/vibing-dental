@@ -1,7 +1,28 @@
 {
   "consultation": {
+    "medications": {
+      "lookup": "Gyógyszer keresése",
+      "drugName": "Gyógyszer neve",
+      "search": "Terméktájékoztatók keresése",
+      "useSelection": "Kijelölt név használata",
+      "labelScope": "A DailyMed amerikai állatgyógyászati terméktájékoztatói. Ellenőrizze a készítményt és a hatáserősséget a teljes tájékoztatóban.",
+      "searching": "Keresés a DailyMed adatbázisában…",
+      "searchError": "A keresés sikertelen. Próbálja újra, vagy nyissa meg a keresést a DailyMedben.",
+      "noProducts": "Ehhez a névhez nem található amerikai állatgyógyászati tájékoztató.",
+      "results": "Állatgyógyászati készítmények",
+      "externalSearch": "Keresés megnyitása a DailyMedben",
+      "fullLabel": "Teljes tájékoztató megnyitása a DailyMedben",
+      "loadingLabel": "Terméktájékoztató betöltése…",
+      "labelError": "A tájékoztató itt nem tölthető be. Válassza ki a készítményt újra, vagy nyissa meg a teljes tájékoztatót.",
+      "strengths": "Feltüntetett hatáserősségek",
+      "complexSection": "A teljes megjelenítésért és összefüggésekért olvassa el ezt a részt a DailyMedben.",
+      "noSections": "A használati útmutatóhoz nyissa meg a teljes tájékoztatót.",
+      "previous": "Korábbi gyógyszerlista · {{date}}",
+      "verify": "Másolás előtt vesse össze a listát és a rögzített változtatásokat a mai adatokkal.",
+      "copy": "Másolás a jelenlegi gyógyszerekhez"
+    },
     "title": "Konzultáció",
-    "purpose": "Rögzítse a vizit okát, a kórelőzményt, az állapotértékelést és a tervet a közös vizsgálat és fogászati lap mellett.",
+    "purpose": "Rögzítse a vizit okát, a kórelőzményt, az állapotértékelést és a tervet.",
     "review": "Klinikai dokumentáció áttekintése",
     "guide": "Konzultációs útmutató",
     "openExam": "Fogászati vizsgálat megnyitása",
@@ -36,6 +57,9 @@
         "recheck-v1": "Kontrollvizsgálat"
       },
       "samples": {
+        "consultationCurrentMedications": "A gazda egy jelenleg szedett gyógyszerről számolt be.",
+        "consultationAdministeredMedications": "A vizit során egy gyógyszert adtak be.",
+        "consultationMedicationPlan": "Az eredményektől függő módosítást megbeszélték.",
         "complaint": "Kontrollvizsgálat evés közbeni kellemetlenség miatt.",
         "consultationHistory": "A gazdi szerint az állat jobban eszik.",
         "consultationAssessment": "Az állatorvos a rögzített leletek áttekintése után újraértékeli az esetet.",
@@ -55,6 +79,18 @@
   "treatmentRecap": "Kezelési jelentés",
   "noTreatment": "Nincs rögzített kezelési jelentés.",
   "fields": {
+    "consultationCurrentMedications": {
+      "label": "Jelenlegi gyógyszerek",
+      "helper": "Sorolja fel a már szedett gyógyszereket. Jegyezze fel, ki számolt be róluk, és mi bizonytalan."
+    },
+    "consultationAdministeredMedications": {
+      "label": "A viziten beadott gyógyszerek",
+      "helper": "Rögzítse a ténylegesen beadott gyógyszereket az adaggal, a beadás módjával és idejével, ha ismertek."
+    },
+    "consultationMedicationPlan": {
+      "label": "Gyógyszerváltoztatások és rendelések",
+      "helper": "Rögzítse a rendeléseket és a kezdésre, folytatásra, szüneteltetésre, leállításra vagy módosításra vonatkozó döntéseket. A feltételes terveket jelölje feltételesként."
+    },
     "complaint": {
       "label": "Vizit oka",
       "helper": "A vizit páciensadataival közösen tárolva."

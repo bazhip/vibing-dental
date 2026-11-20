@@ -492,5 +492,16 @@
       "model": "Model",
       "day": "Zi"
     }
+  },
+  "visitTypes": {
+    "choose": "Vizită nouă",
+    "dental": "Procedură stomatologică",
+    "dentalDescription": "Examinare dentară, fișă dentară, imagistică și tratament.",
+    "consultation": "Consultație",
+    "consultationDescription": "Istoric, evaluare, plan și dictare.",
+    "start": "Începeți vizita",
+    "dictateDental": "Dictați vizita dentară",
+    "dentalAdditions": "Constatări dentare suplimentare",
+    "dentalAdditionsHelp": "Verificați rezultatele de diagnostic, constatările CT și indicațiile de externare din aceeași înregistrare."
   }
 }

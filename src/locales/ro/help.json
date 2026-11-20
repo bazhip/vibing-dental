@@ -1,7 +1,7 @@
 {
   "site": {
     "title": "Centrul de ajutor ToothOps",
-    "intro": "Ghiduri practice pentru fiecare etapă a unei vizite stomatologice, de la deschiderea fișei pacientului până la trimiterea raportului.",
+    "intro": "Ghiduri practice pentru proceduri dentare și consultații, de la deschiderea vizitei până la partajarea fișei.",
     "search": "Căutați în documentație",
     "searchHint": "Căutați subiecte, acțiuni sau setări",
     "topics": "Subiecte",
@@ -24,13 +24,15 @@
     "practice": "Cabinet și asistență"
   },
   "images": {
+    "consultationMedicationHistory": "Medicația curentă cu un prospect veterinar în aplicație și un link către sursa completă.",
+    "consultationMedicationReview": "Verificarea dictării unei consultații, cu propuneri separate pentru medicamente și fragmentele corespunzătoare din transcriere.",
     "charting": "Exemplu de fișă dentară cu dinți numerotați și o grilă de constatări.",
     "imaging": "Secțiunea Imagistică, cu câmpuri separate pentru raportul radiografic și raportul CT.",
-    "dictation": "Verificarea unei dictări, cu propuneri separate pentru radiografii și CT din aceeași transcriere.",
+    "dictation": "Verificarea constatărilor suplimentare dintr-o înregistrare a vizitei dentare.",
     "owner": "Comenzile raportului pentru proprietar și rezumatul introductiv al unei vizite.",
     "export": "Previzualizarea PDF a unei fișe clinice cu un exemplu de fișă dentară.",
     "start": "Spațiu de lucru de exemplu cu fila vizitei, navigarea între secțiuni și datele pacientului.",
-    "patients": "Vizite anterioare în istoricul pacientului, cu o notă clinică selectată.",
+    "patients": "Proceduri dentare și consultații anterioare în același istoric, cu o vizită selectată.",
     "exam": "Tabelul examinării orale cu opțiunile Normal și Anormal și un comentariu.",
     "viewer": "Vizualizator cu setările de fereastră și nivel și butonul de descărcare pentru un DICOM sintetic.",
     "treatment": "Raportul tratamentului cu șabloanele salvate și textul editabil dedesubt.",
@@ -38,9 +40,9 @@
     "help-tools": "Meniul Ajutor cu centrul de ajutor, turul, noutățile și trimiterea feedbackului.",
     "by-number": "Vizualizarea Pe dinte, cu dintele 108 în sistemul Triadan selectat în diagrama numerotată și constatările sale deschise.",
     "imagingSettings": "Setările Imagini și PDF, cu limba raportului și opțiunile implicite de includere în PDF.",
-    "consultationReview": "Editorul consultației cu șablonul ales evidențiat și butonul Verificați dosarul clinic deasupra câmpurilor vizitei.",
+    "consultationReview": "Secțiunea Imagini a unei consultații, cu opțiunea Adăugați imagini și o miniatură de exemplu.",
     "consultationTemplatePreview": "Biblioteca de șabloane cu previzualizarea unei consultații fictive și secțiunile în ordinea aleasă.",
-    "consultationRecordNote": "Nota vizitei cu textul clinic editabil și butonul Copiați."
+    "consultationRecordNote": "Nota consultației cu comenzile Descărcați PDF și Copiați."
   },
   "articles": {
     "start": {
@@ -49,7 +51,7 @@
       "sections": {
         "first": {
           "title": "Deschideți sau creați fișa unui pacient",
-          "text": "Folosiți butonul plus sau opțiunea „Deschideți un animal”. Căutați după nume sau numărul pacientului înainte de a crea o fișă nouă. În „Pacient”, verificați numele, specia, numărul pacientului și data vizitei."
+          "text": "Folosiți butonul plus sau Deschideți un animal. Căutați după nume sau număr înainte de a crea un pacient. Dacă apare Vizită nouă, selectați Procedură dentară și Începeți vizita. Verificați numele, specia, numărul pacientului și data în Pacient."
         },
         "second": {
           "title": "Documentați îngrijirea pe parcurs",
@@ -67,15 +69,15 @@
       "sections": {
         "first": {
           "title": "Găsiți un pacient",
-          "text": "În aplicația web, deschideți lista de pacienți cu butonul plus. Dacă numele coincid, verificați numărul pacientului. Selectați o vizită existentă pentru a o continua sau creați o vizită nouă pentru o programare nouă."
+          "text": "Deschideți selectorul de pacienți cu butonul plus. Verificați numărul când numele coincid. Continuați o vizită existentă sau alegeți Vizită nouă și verificați tipul înainte de a începe."
         },
         "second": {
           "title": "Comutați între vizite și filele pacienților",
-          "text": "Fila afișează pacientul și data vizitei. Dacă există mai multe vizite salvate, alegeți-o pe cea dorită din selectorul de vizite. Pentru a deschide alt pacient, folosiți butonul plus. Închiderea filei nu șterge pacientul. Pe computer, verificați numărul pacientului sub nume și folosiți săgeata de lângă dată pentru a schimba vizita."
+          "text": "Fila indică pacientul, data și tipul vizitei. Folosiți selectorul de vizite pentru a deschide altă vizită salvată. Două vizite din aceeași zi pot avea tipuri diferite. Închiderea filei păstrează pacientul și vizitele sale în istoric."
         },
         "third": {
           "title": "Consultați documentele anterioare",
-          "text": "În „Pacient”, alegeți „Vizualizați istoricul consultațiilor” când există vizite anterioare. Selectați o dată și consultați PDF-urile sau notele text. Pentru a modifica fișa unei vizite anterioare, deschideți direct vizita de la data respectivă."
+          "text": "În Pacient, alegeți Vedeți istoricul vizitelor când există vizite anterioare. Selectați data și tipul, apoi verificați nota sau exportați vizita. Folosiți selectorul de vizite pentru a redeschide o vizită pentru editare."
         }
       }
     },
@@ -110,8 +112,8 @@
           "text": "Deschideți „Anestezie”, introduceți agenții anestezici și consemnați locul și volumul pentru blocurile efectuate. Înainte de finalizare, verificați în documentele sursă părțile și unitățile de măsură. Dacă ați administrat separat alt anestezic, selectați „Adaugă un al doilea set de blocuri nervoase”. Notați în al doilea set denumirea, concentrația și volumele pe locuri."
         },
         "third": {
-          "title": "Folosiți secțiunile opționale ale vizitei",
-          "text": "Dacă ați activat în cabinet „Consultație” sau „Examinare de medicină generală”, aceste secțiuni apar în meniul fișei. Folosiți-le pentru anamneză, evaluare, plan și detaliile relevante ale examenului."
+          "title": "Verificați constatările consemnate",
+          "text": "După dictare, verificați constatările în Examinare, precum și locurile blocajelor și medicamentele în Anestezie. Corectați datele incomplete sau incerte înainte de a finaliza vizita dentară."
         }
       }
     },
@@ -129,25 +131,25 @@
         },
         "third": {
           "title": "Redactați rapoartele imagistice",
-          "text": "Consemnați constatările în „Raport radiografic” sau „Raport CT”. Pentru a le dicta, alegeți „Dictați” din „Imagistică” și precizați metoda imagistică dacă nu este clară. Verificați în ce rapoarte vor fi introduse propunerile înainte de a le aplica. Puteți folosi „Rafinați” pentru textul tastat."
+          "text": "Introduceți constatările în Raport radiografic sau Raport CT. Folosiți Diagnostice pentru celelalte rezultate și testele în așteptare. Le puteți dicta în aceeași înregistrare dentară. Precizați modalitatea imagistică și verificați destinațiile propuse înainte de aplicare."
         }
       }
     },
     "dictation": {
       "title": "Dictare și verificare cu IA",
-      "intro": "Dictați din secțiunea în care lucrați și verificați unde vor fi consemnate constatările.",
+      "intro": "Folosiți o singură înregistrare pentru vizita dentară și verificați unde sunt aplicate constatările.",
       "sections": {
         "first": {
-          "title": "Începeți din secțiunea curentă",
-          "text": "Deschideți secțiunea relevantă a fișei, alegeți „Dictați”, apoi „Începeți dictarea”. Permiteți accesul la microfon dacă vi se solicită. Precizați dintele, partea, unitățile și metoda imagistică atunci când aceste detalii sunt importante."
+          "title": "Porniți înregistrarea dentară",
+          "text": "Alegeți Dictați din orice filă a unei proceduri dentare, apoi porniți înregistrarea. Permiteți accesul la microfon dacă vi se cere. Menționați numerele dinților, părțile, unitățile și modalitățile imagistice când sunt relevante."
         },
         "second": {
           "title": "Verificați transcrierea și propunerile",
-          "text": "Recunoașterea vocală generează transcrierea. IA o organizează în constatări pentru fișă sau într-un text provizoriu. Secțiunea activă oferă context pentru formulările ambigue. Constatările clare pot fi direcționate către altă secțiune compatibilă."
+          "text": "Constatările clare pot completa filele potrivite în timp ce dictați, inclusiv Examinare, Anestezie, Fișă dentară, Diagnostic și Procedură. Fila activă oferă context formulărilor ambigue. Opriți înregistrarea la final și verificați transcrierea și fișa."
         },
         "third": {
           "title": "Verificați corecțiile înainte de a le aplica",
-          "text": "În „Necesită verificare”, comparați valoarea curentă și modificarea propusă. Aplicați sugestia numai dacă este susținută de transcriere. Altfel, păstrați valoarea curentă. Pentru rapoarte și secțiuni ale vizitei, verificați textul propus și selectați secțiunile în care doriți să îl aplicați."
+          "text": "În De verificat, comparați propunerile cu valorile existente și păstrați formulările susținute. Aceeași înregistrare poate propune constatări CT, alte rezultate diagnostice și detalii de externare. Verificați dovezile și selectați secțiunile de aplicat."
         }
       }
     },
@@ -193,7 +195,7 @@
       "sections": {
         "first": {
           "title": "Alegeți documentul",
-          "text": "Deschideți „Verificați și exportați”. „Fișă clinică” este PDF-ul complet al fișei. „Raport pentru proprietar” este PDF-ul pentru acasă, unde această funcție este activată. „Notă pentru dosarul medical” oferă versiunea text pentru dosar."
+          "text": "Deschideți Verificați și exportați pentru vizita selectată. La o procedură dentară, alegeți Fișă clinică pentru PDF, Raportul proprietarului dacă este disponibil sau Notă clinică pentru text. La o consultație, folosiți Nota clinică pentru a descărca sau copia nota vizitei."
         },
         "second": {
           "title": "Personalizați PDF-ul clinic",
@@ -409,11 +411,11 @@
       "sections": {
         "first": {
           "title": "Alegeți un șablon",
-          "text": "Deschideți vizita pacientului și selectați Consultație. La Șablonul notei, alegeți unul dintre șabloanele afișate. Verificați opțiunea evidențiată și ordinea secțiunilor. Schimbarea șablonului rearanjează câmpurile și păstrează textul introdus."
+          "text": "Din fișa pacientului, alegeți Vizită nouă. Dacă este disponibilă Consultație, selectați acest tip și Începeți vizita. În Șablonul notei, alegeți o opțiune vizibilă. Verificați șablonul evidențiat și ordinea secțiunilor. Schimbarea șablonului păstrează textul introdus."
         },
         "second": {
           "title": "Completați sau dictați vizita",
-          "text": "Consemnați motivul vizitei, istoricul, evaluarea și planul. Dacă dictarea este disponibilă, comparați fiecare secțiune propusă cu sursa înainte de a o aplica. Pentru a reciti o transcriere, deschideți Transcrieri salvate și alegeți data înregistrării. Folosiți Deschideți examinarea dentară pentru a ajunge la examinarea dentară din aceeași vizită."
+          "text": "Consemnați motivul vizitei, antecedentele, evaluarea și planul. Dacă dictarea este disponibilă, comparați propunerile cu dovezile înainte de aplicare. Pentru a reciti o transcriere, deschideți Transcrieri salvate și selectați data înregistrării. Introduceți semnele vitale, rezultatele examinării și investigațiilor în câmpurile lor când sunt documentate. Lăsați necompletate câmpurile pentru care nu aveți date. Sub câmpurile notei, deschideți Imagini și alegeți Adăugați imagini. Selectați, trageți sau lipiți fișierele. Așteptați apariția miniaturilor și deschideți una pentru verificare. Imaginile rămân atașate vizitei și nu apar în PDF-ul separat al notei. Folosiți Medicație curentă pentru tratamentele raportate, Medicamente administrate în timpul vizitei pentru dozele administrate efectiv și Modificări ale medicației și prescripții pentru plan. La dictare, precizați categoria și verificați fragmentele citate înainte de aplicare. În Medicație curentă, deschideți Lista anterioară de medicamente pentru a vedea consultația precedentă cea mai recentă și modificările documentate. Verificați ce mai este actual, apoi selectați Copiați în Medicație curentă dacă este gol câmpul. Folosiți Căutați un medicament pentru a introduce numele și a deschide căutarea DailyMed. Alegeți Căutați prospecte, apoi produsul veterinar exact. Deschideți prospectul complet în DailyMed pentru verificarea concentrației, instrucțiunilor și avertismentelor."
         },
         "third": {
           "title": "Verificați nota",
@@ -431,7 +433,7 @@
         },
         "second": {
           "title": "Ordonați și previzualizați secțiunile",
-          "text": "Completați Numele șablonului. Folosiți săgețile de lângă secțiuni pentru a le schimba ordinea. Selectați Previzualizați exemplul pentru a verifica noua ordine pe baza unei vizite fictive. Selectați din nou același buton pentru a reveni la editare."
+          "text": "Completați Numele șablonului. Folosiți săgețile de lângă secțiuni pentru a le schimba ordinea. Selectați Previzualizați exemplul pentru a verifica noua ordine pe baza unei vizite fictive. Selectați din nou același buton pentru a reveni la editare. Fiecare șablon include secțiunea Imagini sub notă. Imaginile aparțin vizitei și se păstrează când schimbați șablonul."
         },
         "third": {
           "title": "Salvați sau arhivați",
@@ -441,7 +443,7 @@
     },
     "consultation-transfer": {
       "title": "Verificați și transferați nota de consultație",
-      "intro": "Verificați fișa clinică înainte de a o copia sau trimite.",
+      "intro": "Verificați fișa clinică înainte de a o descărca, copia sau trimite.",
       "sections": {
         "first": {
           "title": "Deschideți nota clinică",
@@ -452,8 +454,8 @@
           "text": "Dacă un mesaj indică faptul că fișa s-a schimbat de la editarea notei, comparați nota cu vizita curentă. Păstrați formulările manuale necesare înainte de a selecta Regenerați din fișă. Această acțiune înlocuiește nota editată cu informațiile actuale din fișă."
         },
         "third": {
-          "title": "Copiați sau trimiteți",
-          "text": "Selectați Copiați și lipiți nota în dosarul pacientului corespunzător sau folosiți transferul integrat, dacă este disponibil. Verificați pacientul și vizita de destinație, precum și textul lipit sau transferat."
+          "title": "Descărcați, copiați sau trimiteți",
+          "text": "Alegeți Descărcați PDF pentru un PDF separat al consultației, inclusiv modificările din Nota clinică. Folosiți Copiați pentru a lipi nota în fișa potrivită sau folosiți transferul integrat dacă este disponibil. Verificați pacientul, data și conținutul la destinație."
         }
       }
     }

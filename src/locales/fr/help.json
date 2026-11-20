@@ -1,7 +1,7 @@
 {
   "site": {
     "title": "Centre d’aide ToothOps",
-    "intro": "Des guides pratiques pour chaque étape d’une consultation dentaire, de l’ouverture du dossier à l’envoi du compte rendu.",
+    "intro": "Des guides pratiques sur les interventions dentaires et les consultations, de l’ouverture d’une visite au partage de son dossier.",
     "search": "Rechercher dans la documentation",
     "searchHint": "Rechercher une rubrique, une tâche ou un réglage",
     "topics": "Rubriques",
@@ -24,13 +24,15 @@
     "practice": "Cabinet et assistance"
   },
   "images": {
+    "consultationMedicationHistory": "Traitements en cours avec une notice vétérinaire dans l’application et un lien vers la source complète.",
+    "consultationMedicationReview": "Vérification de la dictée de consultation avec des propositions distinctes pour les médicaments et leurs extraits de transcription.",
     "charting": "Exemple de schéma dentaire avec des dents numérotées et une grille de constatations.",
     "imaging": "La section Imagerie avec des champs distincts pour les comptes rendus radiographique et de scanner.",
-    "dictation": "Un écran de vérification de la dictée avec des propositions distinctes pour la radiographie et le scanner, issues d’une même transcription.",
+    "dictation": "Révision des constatations complémentaires extraites d’un enregistrement dentaire.",
     "owner": "Les commandes du compte rendu pour le propriétaire et un résumé d’ouverture propre à la consultation.",
     "export": "Aperçu PDF du dossier clinique avec un exemple de schéma dentaire.",
     "start": "Espace de travail d’un patient fictif avec l’onglet de consultation, la navigation et les informations du patient.",
-    "patients": "Consultations précédentes dans les dossiers historiques, avec une note clinique sélectionnée.",
+    "patients": "Interventions dentaires et consultations antérieures réunies dans l’historique du patient, avec une visite sélectionnée.",
     "exam": "Grille d’examen oral avec les choix Normal et Anormal et un commentaire.",
     "viewer": "Visionneuse d’images avec les réglages de fenêtre et de niveau et le téléchargement d’un DICOM fictif.",
     "treatment": "Compte rendu de traitement avec les modèles enregistrés et la zone de texte modifiable.",
@@ -38,9 +40,9 @@
     "help-tools": "Menu Aide avec le centre d’aide, la visite guidée, les nouveautés et les commentaires.",
     "by-number": "Vue « Par dent » avec la dent 108 sélectionnée sur le schéma numéroté et ses observations affichées.",
     "imagingSettings": "Réglages « Imagerie et PDF » avec la langue des comptes rendus et le contenu inclus par défaut dans le PDF.",
-    "consultationReview": "Éditeur de consultation avec le modèle sélectionné mis en évidence et le bouton Vérifier le dossier clinique au-dessus des champs de la visite.",
+    "consultationReview": "La section Images d’une consultation, avec la commande Ajouter des images et une miniature d’exemple.",
     "consultationTemplatePreview": "Bibliothèque de modèles avec un aperçu de consultation fictive présentant les rubriques dans l’ordre choisi.",
-    "consultationRecordNote": "Note du dossier de la visite avec le texte clinique modifiable et le bouton Copier."
+    "consultationRecordNote": "Note de consultation avec les commandes Télécharger le PDF et Copier."
   },
   "articles": {
     "start": {
@@ -49,7 +51,7 @@
       "sections": {
         "first": {
           "title": "Ouvrir ou créer un dossier patient",
-          "text": "Utilisez le bouton plus ou choisissez « Ouvrir un animal ». Avant de créer un dossier patient, recherchez l’animal par nom ou par numéro. Dans « Patient », vérifiez le nom, l’espèce, le numéro du patient et la date de la consultation."
+          "text": "Utilisez le bouton plus ou Ouvrir un animal. Recherchez le patient par son nom ou son numéro avant de le créer. Si le sélecteur Nouvelle visite apparaît, sélectionnez Intervention dentaire puis Démarrer la visite. Vérifiez le nom, l’espèce, le numéro du patient et la date dans Patient."
         },
         "second": {
           "title": "Documenter les soins au fil de la consultation",
@@ -67,15 +69,15 @@
       "sections": {
         "first": {
           "title": "Trouver un patient",
-          "text": "Sur le Web, ouvrez le sélecteur de patients avec le bouton plus. Si plusieurs animaux portent le même nom, vérifiez le numéro du patient. Sélectionnez une consultation existante pour la poursuivre ou créez-en une pour un nouveau rendez-vous."
+          "text": "Ouvrez le sélecteur de patients avec le bouton plus. Vérifiez le numéro du patient si plusieurs noms correspondent. Reprenez une visite existante ou choisissez Nouvelle visite et vérifiez le type avant de commencer."
         },
         "second": {
           "title": "Changer de consultation ou d’onglet patient",
-          "text": "L’onglet affiche le patient et la date de la consultation. Si plusieurs consultations sont enregistrées, utilisez le sélecteur de l’onglet. Pour ouvrir un autre patient, utilisez le bouton plus. Le dossier du patient est conservé lorsque vous fermez un onglet. Sur ordinateur, vérifiez le numéro du patient sous son nom et utilisez la flèche à côté de la date pour changer de visite."
+          "text": "L’onglet indique le patient, la date et le type de visite. Utilisez le sélecteur de visites pour ouvrir une autre visite enregistrée. Deux visites de la même date peuvent avoir des types différents. La fermeture d’un onglet conserve le patient et ses visites dans l’historique."
         },
         "third": {
           "title": "Consulter les dossiers antérieurs",
-          "text": "Dans « Patient », choisissez « Voir l’historique des consultations » si des consultations antérieures sont disponibles. Sélectionnez une date, puis consultez les PDF ou les notes cliniques. Pour corriger le dossier, ouvrez la consultation correspondante."
+          "text": "Dans Patient, choisissez Voir l’historique des visites si des visites antérieures sont disponibles. Sélectionnez la date et le type, puis consultez la note ou exportez cette visite. Utilisez le sélecteur de visites pour rouvrir une visite et la modifier."
         }
       }
     },
@@ -110,8 +112,8 @@
           "text": "Ouvrez « Anesthésie », renseignez les médicaments anesthésiques et notez le site et le volume de chaque bloc réalisé. Avant de finaliser, vérifiez le côté et les unités par rapport à la source. Sélectionnez « Ajouter une deuxième série de blocs nerveux » si vous avez administré un autre anesthésique séparément. Notez son nom, sa concentration et les volumes par site dans la deuxième série."
         },
         "third": {
-          "title": "Utiliser les sections facultatives",
-          "text": "Si votre cabinet a activé « Consultation » ou « Examen général », ces sections figurent dans la navigation du dossier. Renseignez-y les antécédents, l’évaluation, le plan et les éléments pertinents de l’examen."
+          "title": "Vérifier les constatations enregistrées",
+          "text": "Après la dictée, vérifiez les constatations dans Examen et les sites des blocs et médicaments dans Anesthésie. Corrigez les renseignements incomplets ou incertains avant de finaliser la visite dentaire."
         }
       }
     },
@@ -129,25 +131,25 @@
         },
         "third": {
           "title": "Rédiger les comptes rendus d’imagerie",
-          "text": "Saisissez vos constatations dans « Compte rendu radiographique » ou « Compte rendu de scanner ». Pour les dicter, ouvrez « Dicter » depuis « Imagerie » et précisez la modalité en cas d’ambiguïté. Vérifiez la répartition proposée avant d’appliquer les changements. L’action « Affiner » est disponible pour le texte saisi."
+          "text": "Saisissez les constatations dans Rapport radiographique ou Rapport CT. Utilisez Examens complémentaires pour les autres résultats et les tests en attente. Vous pouvez tout dicter dans le même enregistrement dentaire. Précisez la modalité et vérifiez les destinations proposées avant d’appliquer les modifications."
         }
       }
     },
     "dictation": {
       "title": "Dictée et vérification des suggestions de l’IA",
-      "intro": "Dictez depuis la section en cours et vérifiez où les constatations seront ajoutées.",
+      "intro": "Utilisez un seul enregistrement pour la visite dentaire et vérifiez où les constatations sont renseignées.",
       "sections": {
         "first": {
-          "title": "Démarrer depuis la section en cours",
-          "text": "Ouvrez la section pertinente du dossier, choisissez « Dicter », puis « Démarrer la dictée ». Autorisez l’accès au microphone si une demande s’affiche. Précisez la dent, le côté, les unités et la modalité chaque fois que ces détails comptent."
+          "title": "Démarrer l’enregistrement dentaire",
+          "text": "Choisissez Dicter depuis n’importe quel onglet d’une intervention dentaire, puis démarrez l’enregistrement. Autorisez l’accès au microphone si nécessaire. Précisez les numéros dentaires, les côtés, les unités et les modalités d’imagerie."
         },
         "second": {
           "title": "Vérifier la transcription et les propositions",
-          "text": "La reconnaissance vocale produit la transcription. L’IA en tire des constatations pour le dossier ou des propositions de texte. La section active aide à interpréter les formulations ambiguës. Les constatations explicites peuvent être dirigées vers une autre section compatible."
+          "text": "Les constatations claires peuvent renseigner les onglets correspondants pendant la dictée, notamment Examen, Anesthésie, Relevé dentaire, Diagnostic et Intervention. L’onglet actif aide à interpréter les formulations ambiguës. Arrêtez l’enregistrement à la fin, puis vérifiez la transcription et le dossier."
         },
         "third": {
           "title": "Vérifier les corrections avant de les appliquer",
-          "text": "Dans « À vérifier », comparez la valeur actuelle à la modification proposée. Appliquez une suggestion si la transcription la confirme. Dans le cas contraire, conservez la valeur actuelle. Pour les comptes rendus et les sections de consultation, relisez le texte proposé et sélectionnez les sections à appliquer."
+          "text": "Dans À vérifier, comparez les modifications proposées aux valeurs existantes et conservez le texte justifié. Le même enregistrement peut proposer des constatations CT, d’autres résultats et des détails de sortie. Vérifiez les éléments justificatifs et sélectionnez les rubriques à appliquer."
         }
       }
     },
@@ -193,7 +195,7 @@
       "sections": {
         "first": {
           "title": "Choisir un document",
-          "text": "Ouvrez « Vérifier et exporter ». « Dossier clinique » contient le PDF complet. « Compte rendu pour le propriétaire » propose le PDF à remettre au propriétaire lorsque la fonctionnalité est activée. « Note du dossier » fournit une version texte pour le dossier médical."
+          "text": "Ouvrez Vérifier et exporter pour la visite sélectionnée. Pour une intervention dentaire, choisissez Dossier clinique pour le PDF complet, Rapport au propriétaire s’il est disponible ou Note clinique pour le texte. Pour une consultation, ouvrez Note clinique pour télécharger ou copier la note de la visite."
         },
         "second": {
           "title": "Personnaliser le PDF clinique",
@@ -409,11 +411,11 @@
       "sections": {
         "first": {
           "title": "Choisissez un modèle",
-          "text": "Ouvrez la visite du patient et sélectionnez Consultation. Sous Modèle de note, choisissez l’un des modèles affichés. Vérifiez le choix mis en évidence et l’ordre des rubriques. Changer de modèle réorganise les champs et conserve le texte déjà saisi."
+          "text": "Depuis le dossier du patient, choisissez Nouvelle visite. Si Consultation est proposée, sélectionnez-la puis choisissez Démarrer la visite. Choisissez un modèle visible sous Modèle de note. Vérifiez le choix en surbrillance et l’ordre des rubriques. Le changement de modèle conserve le texte saisi."
         },
         "second": {
           "title": "Saisir ou dicter la visite",
-          "text": "Consignez le motif de la visite, les antécédents, l’évaluation et le plan. Si la dictée est disponible, comparez chaque rubrique proposée à sa source avant de l’appliquer. Pour relire une transcription, ouvrez Transcriptions enregistrées et sélectionnez la date de l’enregistrement. Utilisez Ouvrir l’examen dentaire pour accéder à l’examen dentaire de cette même visite."
+          "text": "Notez le motif de la visite, les antécédents, l’évaluation et le plan. Si la dictée est disponible, comparez les rubriques proposées à leurs éléments justificatifs avant de les appliquer. Pour revoir une transcription, ouvrez Transcriptions enregistrées et sélectionnez la date. Consignez les constantes, l’examen et les résultats diagnostiques dans leurs champs respectifs lorsqu’ils ont été documentés. Laissez les champs vides si vous n’avez rien à y consigner. Sous les champs de la note, ouvrez Images et choisissez Ajouter des images. Sélectionnez, déposez ou collez vos fichiers. Attendez l’affichage des miniatures, puis ouvrez-en une pour la vérifier. Les images restent jointes à cette visite et ne figurent pas dans le PDF autonome de la note. Utilisez Traitements en cours pour les médicaments signalés, Médicaments administrés pendant la visite pour les doses réellement données, et Modifications du traitement et ordonnances pour le plan. En dictant, indiquez la catégorie de chaque médicament et vérifiez les extraits cités avant de les appliquer. Dans Traitements en cours, ouvrez Liste précédente des médicaments pour consulter la dernière consultation antérieure et les changements consignés. Vérifiez les traitements encore en cours, puis choisissez Copier dans Traitements en cours si le champ est vide. Avec Rechercher un médicament, saisissez son nom pour ouvrir la recherche DailyMed. Sélectionnez Rechercher des notices, puis le produit vétérinaire exact. Utilisez Ouvrir la notice complète dans DailyMed pour vérifier le dosage, les instructions et les avertissements."
         },
         "third": {
           "title": "Relire la note",
@@ -431,7 +433,7 @@
         },
         "second": {
           "title": "Organiser et prévisualiser les rubriques",
-          "text": "Renseignez le champ Nom du modèle. Utilisez les flèches vers le haut et le bas à côté de chaque rubrique pour modifier son emplacement. Sélectionnez Aperçu d’un exemple pour vérifier le nouvel ordre à partir d’une visite fictive. Sélectionnez de nouveau ce bouton pour reprendre la modification."
+          "text": "Renseignez le champ Nom du modèle. Utilisez les flèches vers le haut et le bas à côté de chaque rubrique pour modifier son emplacement. Sélectionnez Aperçu d’un exemple pour vérifier le nouvel ordre à partir d’une visite fictive. Sélectionnez de nouveau ce bouton pour reprendre la modification. Chaque modèle comprend la section Images sous la note. Les images sont jointes à la visite et restent en place si vous changez de modèle."
         },
         "third": {
           "title": "Enregistrer ou archiver",
@@ -441,7 +443,7 @@
     },
     "consultation-transfer": {
       "title": "Relire et transférer une note de consultation",
-      "intro": "Vérifiez le dossier clinique avant de le copier ou de l’envoyer.",
+      "intro": "Vérifiez le dossier clinique avant de le télécharger, de le copier ou de l’envoyer.",
       "sections": {
         "first": {
           "title": "Ouvrir la note clinique",
@@ -452,8 +454,8 @@
           "text": "Si un message indique que le dossier a changé depuis la modification de la note, comparez la note à la visite actuelle. Conservez les formulations manuelles utiles avant de choisir Régénérer depuis le dossier. Cette action remplace la note modifiée par le contenu actuel du dossier."
         },
         "third": {
-          "title": "Copier ou envoyer",
-          "text": "Sélectionnez Copier et collez la note dans le dossier du patient concerné, ou utilisez le transfert intégré s’il est disponible. Vérifiez le patient et la visite de destination, puis relisez le texte collé ou transféré."
+          "title": "Télécharger, copier ou envoyer",
+          "text": "Sélectionnez Télécharger le PDF pour enregistrer un PDF autonome de la consultation avec les modifications apportées dans Note clinique. Utilisez Copier pour coller la note dans le dossier prévu ou utilisez le transfert intégré s’il est disponible. Vérifiez le patient, la date et le contenu à destination."
         }
       }
     }

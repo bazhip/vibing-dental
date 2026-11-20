@@ -14,3 +14,8 @@ it('rejects unsupported glyphs instead of silently removing clinical text', asyn
 it('bounds pagination rather than returning a partial report', async () => {
  await expect(renderClinicalTextPdf('108\n'.repeat(12000),'Report')).rejects.toEqual({code:'limit'});
 });
+
+it('opts consultation notes into Unicode, including mixed names in an English note', async () => {
+  const bytes = await renderClinicalTextPdf('Consultation\n小雪 / قمر\nFollow-up: șase săptămâni', 'Consultation', 'en');
+  expect((await PDFDocument.load(bytes)).getPageCount()).toBe(1);
+});

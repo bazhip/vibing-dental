@@ -492,5 +492,16 @@
       "model": "Modelo",
       "day": "Día"
     }
+  },
+  "visitTypes": {
+    "choose": "Nueva visita",
+    "dental": "Procedimiento dental",
+    "dentalDescription": "Exploración dental, odontograma, imagen y tratamiento.",
+    "consultation": "Consulta",
+    "consultationDescription": "Antecedentes, evaluación, plan y dictado.",
+    "start": "Iniciar visita",
+    "dictateDental": "Dictar la visita dental",
+    "dentalAdditions": "Hallazgos dentales adicionales",
+    "dentalAdditionsHelp": "Revise los resultados diagnósticos, los hallazgos de TC y los datos del alta de la misma grabación."
   }
 }

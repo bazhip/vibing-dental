@@ -10,6 +10,13 @@ describe('clinical dictation sources', () => {
     expect(normalizeClinicalDictations([{ ...source, kind: 'ct', fields: ['ctReport'] }])).toEqual([{ ...source, kind: 'ct', fields: ['ctReport'] }]);
     expect(normalizeClinicalDictations([{ ...source, transcript: 'x'.repeat(40001) }])).toEqual([]);
   });
+  it('preserves a dental visit transcript with only its supplemental fields', () => {
+    const dental = { ...source, kind: 'dental-visit' as const, transcript: 'CBC pending.', fields: ['gpDiagnostics' as const] };
+    expect(normalizeClinicalDictations([dental])).toEqual([dental]);
+    expect(appendClinicalDictationSource([], dental)).toEqual([dental]);
+    expect(normalizeClinicalDictations([{ ...dental, fields: ['consultationAssessment'] }])).toEqual([]);
+  });
+
   it('rejects count, individual and aggregate limits without truncating existing sources', () => {
     const full = Array.from({ length: 20 }, (_, i) => ({ ...source, id: String(i) }));
     expect(() => appendClinicalDictationSource(full, source)).toThrow();

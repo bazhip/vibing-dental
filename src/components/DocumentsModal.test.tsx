@@ -47,6 +47,23 @@ const recordNote = {
 };
 
 describe('DocumentsModal — record note tab', () => {
+  it('opens a standalone note when the last selection was a dental PDF', () => {
+    window.sessionStorage.setItem('documents.tab', 'chart');
+    render(<DocumentsModal open onClose={vi.fn()} chartSnapshot={null} recordNote={recordNote} />);
+    expect(screen.getByRole('heading', { name: /Review and export.*Biscuit/ })).toBeInTheDocument();
+    expect(screen.getByText('note-panel')).toBeVisible();
+    expect(screen.queryByText('chart-preview')).not.toBeInTheDocument();
+    expect(screen.queryByRole('tab')).not.toBeInTheDocument();
+  });
+
+  it('opens a standalone note in the native documents sheet', () => {
+    flags.native = true;
+    render(<DocumentsModal open onClose={vi.fn()} initialTab="chart" chartSnapshot={null} recordNote={recordNote} />);
+    expect(screen.getByRole('dialog', { name: 'Documents' })).toHaveTextContent('Biscuit');
+    expect(screen.getByText('note-panel')).toBeVisible();
+    expect(screen.queryByText('chart-preview')).not.toBeInTheDocument();
+  });
+
   it('has a record note tab even without the owner report', () => {
     render(<DocumentsModal open onClose={vi.fn()} chartSnapshot={chartSnapshot} recordNote={recordNote} />);
     expect(screen.getAllByRole('tab')).toHaveLength(2);

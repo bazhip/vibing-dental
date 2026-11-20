@@ -50,6 +50,17 @@ describe('ImagingSection camera button', () => {
     expect(screen.queryByRole('textbox', { name: 'Image description (optional)' })).toBeNull();
   });
 
+  it('uploads from the compact consultation Images section', async () => {
+    const { container } = render(<ImagingSection chartId="consultation-1" cloudActive compact />);
+    const file = new File(['photo'], 'visit.jpg', { type: 'image/jpeg' });
+    const input = container.querySelector('input[type="file"]')!;
+    expect(screen.getByRole('heading', { name: 'Images' })).toBeVisible();
+    expect(screen.getAllByRole('button', { name: 'Add images' })).toHaveLength(1);
+    store.upload.mockClear();
+    fireEvent.change(input, { target: { files: [file] } });
+    await waitFor(() => expect(store.upload).toHaveBeenCalledExactlyOnceWith(file, 'photo', ''));
+  });
+
   it('offers the device camera on touch browsers without using the native bridge', () => {
     touchDevice = true;
     const { container } = renderIt();

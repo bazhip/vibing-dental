@@ -1,7 +1,28 @@
 {
   "consultation": {
+    "medications": {
+      "lookup": "Căutați un medicament",
+      "drugName": "Numele medicamentului",
+      "search": "Căutați prospecte",
+      "useSelection": "Folosiți numele selectat",
+      "labelScope": "Prospecte veterinare din SUA, furnizate de DailyMed. Verificați produsul și concentrația în prospectul complet.",
+      "searching": "Se caută în DailyMed…",
+      "searchError": "Căutarea a eșuat. Încercați din nou sau deschideți căutarea în DailyMed.",
+      "noProducts": "Nu s-au găsit prospecte veterinare din SUA pentru acest nume.",
+      "results": "Produse veterinare",
+      "externalSearch": "Deschideți căutarea în DailyMed",
+      "fullLabel": "Deschideți prospectul complet în DailyMed",
+      "loadingLabel": "Se încarcă prospectul…",
+      "labelError": "Prospectul nu s-a putut încărca aici. Selectați produsul pentru a reîncerca sau deschideți prospectul complet.",
+      "strengths": "Concentrații declarate",
+      "complexSection": "Citiți secțiunea în DailyMed pentru a vedea formatul și contextul complet.",
+      "noSections": "Deschideți prospectul complet pentru a consulta instrucțiunile prospectului.",
+      "previous": "Lista anterioară de medicamente · {{date}}",
+      "verify": "Înainte de copiere, comparați lista și modificările înregistrate cu informațiile de astăzi.",
+      "copy": "Copiați în Medicație curentă"
+    },
     "title": "Consultație",
-    "purpose": "Înregistrați motivul vizitei, anamneza, evaluarea și planul alături de examinarea și fișa comune.",
+    "purpose": "Înregistrați motivul vizitei, anamneza, evaluarea și planul.",
     "review": "Verificați dosarul clinic",
     "guide": "Ghid de consultație",
     "openExam": "Deschideți examinarea dentară",
@@ -36,6 +57,9 @@
         "recheck-v1": "Control"
       },
       "samples": {
+        "consultationCurrentMedications": "Proprietarul a menționat un medicament utilizat în prezent.",
+        "consultationAdministeredMedications": "În timpul vizitei s-a administrat un medicament.",
+        "consultationMedicationPlan": "S-a discutat o modificare în așteptarea rezultatelor.",
         "complaint": "Control pentru disconfort la hrănire.",
         "consultationHistory": "Proprietarul spune că animalul mănâncă mai bine.",
         "consultationAssessment": "Medicul va reevalua cazul după ce verifică constatările consemnate.",
@@ -55,6 +79,18 @@
   "treatmentRecap": "Raport de tratament",
   "noTreatment": "Nu există niciun raport de tratament înregistrat.",
   "fields": {
+    "consultationCurrentMedications": {
+      "label": "Medicație curentă",
+      "helper": "Enumerați medicamentele administrate deja în mod curent. Indicați sursa informației și orice incertitudine."
+    },
+    "consultationAdministeredMedications": {
+      "label": "Medicamente administrate în timpul vizitei",
+      "helper": "Notați ce s-a administrat efectiv, cu doza, calea și ora, dacă sunt cunoscute."
+    },
+    "consultationMedicationPlan": {
+      "label": "Modificări ale medicației și prescripții",
+      "helper": "Notați prescripțiile și deciziile de a începe, continua, întrerupe temporar, opri sau modifica medicația. Păstrați caracterul condiționat al planurilor provizorii."
+    },
     "complaint": {
       "label": "Motivul vizitei",
       "helper": "Partajat cu datele pacientului pentru această vizită."

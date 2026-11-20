@@ -1,5 +1,9 @@
 import type { ConsultationLayout } from '../utils/consultationTemplates';
 import type { AppLanguage } from '../i18n/config';
+import type { VisitType } from '../utils/visitTypes';
+
+export type { VisitType } from '../utils/visitTypes';
+
 /**
  * Type definitions for the Dental Charting Application
  */
@@ -266,6 +270,8 @@ export interface CustomAnesthesia {
 }
 
 export interface PatientInfo {
+  /** Workflow for this dated visit. Absent on older dental procedure records. */
+  visitType?: VisitType;
   /** Permanent identity for new patients; legacy records may not have one. */
   patientId?: string;
   generatedPatientNumber?: string;
@@ -291,6 +297,9 @@ export interface PatientInfo {
   consultationHistory?: string;
   consultationAssessment?: string;
   consultationPlan?: string;
+  consultationCurrentMedications?: string;
+  consultationAdministeredMedications?: string;
+  consultationMedicationPlan?: string;
   dischargeMedications?: string;
   dischargeInstructions?: string;
   dischargeFollowUp?: string;
@@ -442,9 +451,10 @@ export interface OwnerReportOverrides {
   templateId?: string;
 }
 
-export type ClinicalDictationKind = 'gp-visit' | 'consultation' | 'gp-exam' | 'discharge' | 'ct' | 'imaging';
+export type ClinicalDictationKind = 'dental-visit' | 'gp-visit' | 'consultation' | 'gp-exam' | 'discharge' | 'ct' | 'imaging';
 export type ClinicalDictationField =
   | 'complaint' | 'consultationHistory' | 'consultationAssessment' | 'consultationPlan'
+  | 'consultationCurrentMedications' | 'consultationAdministeredMedications' | 'consultationMedicationPlan'
   | 'gpVitals' | 'gpPhysicalExam' | 'gpDiagnostics' | 'treatmentReport' | 'ctReport' | 'radiographicFindings'
   | 'dischargeMedications' | 'dischargeInstructions' | 'dischargeFollowUp';
 export interface ClinicalDictationSource {

@@ -209,3 +209,32 @@ it('omits Consultation from dictation targets when only GP examination is enable
   fireEvent.click(screen.getByRole('button'));
   expect(screen.getAllByRole('option').map(option => (option as HTMLOptionElement).value)).toEqual(['gp-visit', 'gp-exam', 'discharge']);
 });
+
+it('reviews additional dental findings using the completed recording without restarting the microphone', async () => {
+  const onApply = vi.fn();
+  const seededTranscript = { text: 'CT: possible fracture at 108.', language: 'fr' as const };
+  const proposal = { field: 'ctReport', value: seededTranscript.text, evidence: seededTranscript.text };
+  mocks.extract.mockResolvedValue([proposal]);
+  const props = { kind: 'dental-visit' as const, snapshot: sampleOwnerReportSnapshot(), chartId: 'chart', chartSession: 1, aiEnabled: true,
+    seededTranscript, strictTarget: true, openRequest: 1, onApply };
+  const view = render(<ClinicalDictationButton {...props} disabled />);
+  expect(mocks.extract).not.toHaveBeenCalled();
+  view.rerender(<ClinicalDictationButton {...props} />);
+  expect(await screen.findByRole('dialog', { name: 'Additional dental findings' })).toBeVisible();
+  expect(mocks.extract).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ kind: 'dental-visit', transcript: seededTranscript.text, language: 'fr' }));
+  expect(mocks.start).not.toHaveBeenCalled();
+  expect(screen.queryByRole('button', { name: label('start') })).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: label('apply') }));
+  expect(onApply).toHaveBeenCalledExactlyOnceWith({ ctReport: proposal.value }, expect.objectContaining({ language: 'fr', fields: ['ctReport'] }));
+});
+
+it('does not open an extra dialog when the completed dental recording has no supplemental fields', async () => {
+  const onApply = vi.fn();
+  const onOpenChange = vi.fn();
+  mocks.extract.mockResolvedValue([]);
+  render(<ClinicalDictationButton kind="dental-visit" snapshot={sampleOwnerReportSnapshot()} chartId="chart" chartSession={1} aiEnabled
+    seededTranscript={{ text: 'Tooth 108 pocket four.', language: 'en' }} strictTarget openRequest={1} onApply={onApply} onOpenChange={onOpenChange} />);
+  await waitFor(() => expect(onOpenChange.mock.calls).toEqual([[true], [false]]));
+  expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  expect(onApply).not.toHaveBeenCalled();
+});

@@ -3,9 +3,20 @@ import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import { configDefaults } from 'vitest/config';
 import react from '@vitejs/plugin-react';
+import drugReference from './api/drug-reference.mjs';
+
+const drugReferencePlugin = {
+  name: 'toothops-drug-reference',
+  configureServer(server) {
+    server.middlewares.use('/api/drug-reference', drugReference);
+  },
+  configurePreviewServer(server) {
+    server.middlewares.use('/api/drug-reference', drugReference);
+  },
+};
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), drugReferencePlugin],
   build: {
     // Vercel's project settings predate the Vite migration and serve the
     // CRA-era directory; keep emitting there rather than `dist`.

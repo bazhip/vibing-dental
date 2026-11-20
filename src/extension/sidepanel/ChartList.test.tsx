@@ -63,6 +63,18 @@ describe('ChartList', () => {
     expect(onPick).toHaveBeenCalledWith(expect.objectContaining({ id: 'b' }));
   });
 
+  it('distinguishes a consultation from the same patient’s dental procedure on the same date', async () => {
+    const dental = chart('dental', 'Bella', '2026-11-10');
+    const consultation = { ...dental, id: 'consultation', visit_type: 'consultation' };
+    list.fn.mockResolvedValue({ rows: [dental, consultation], hasMore: false });
+    const onPick = vi.fn();
+    render(<ChartList inspect={null} onPick={onPick} />);
+    await flush();
+    expect(screen.getByRole('button', { name: /Bella.*2026-11-01.*Dental procedure/ })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /Bella.*2026-11-01.*Consultation/ }));
+    expect(onPick).toHaveBeenCalledWith(consultation);
+  });
+
   it('pins the chart whose name equals the consult patient', async () => {
     render(<ChartList inspect={writable('Bella')} onPick={vi.fn()} />);
     await flush();

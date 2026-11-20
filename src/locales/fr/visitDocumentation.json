@@ -1,7 +1,28 @@
 {
   "consultation": {
+    "medications": {
+      "lookup": "Rechercher un médicament",
+      "drugName": "Nom du médicament",
+      "search": "Rechercher des notices",
+      "useSelection": "Utiliser le nom sélectionné",
+      "labelScope": "Notices vétérinaires américaines de DailyMed. Vérifiez le produit et le dosage dans la notice complète.",
+      "searching": "Recherche dans DailyMed…",
+      "searchError": "La recherche a échoué. Réessayez ou ouvrez la recherche dans DailyMed.",
+      "noProducts": "Aucune notice vétérinaire américaine trouvée pour ce nom.",
+      "results": "Produits vétérinaires",
+      "externalSearch": "Ouvrir la recherche dans DailyMed",
+      "fullLabel": "Ouvrir la notice complète dans DailyMed",
+      "loadingLabel": "Chargement de la notice…",
+      "labelError": "La notice n’a pas pu être chargée ici. Sélectionnez le produit pour réessayer ou ouvrez la notice complète.",
+      "strengths": "Dosages indiqués",
+      "complexSection": "Consultez cette section sur DailyMed pour voir sa présentation et son contexte complets.",
+      "noSections": "Ouvrez la notice complète pour consulter les instructions du produit.",
+      "previous": "Liste précédente des médicaments · {{date}}",
+      "verify": "Vérifiez la liste et les changements consignés avec les informations du jour avant de copier.",
+      "copy": "Copier dans Traitements en cours"
+    },
     "title": "Consultation",
-    "purpose": "Consignez le motif de consultation, les antécédents, l’évaluation et le plan avec l’examen et le dossier partagés.",
+    "purpose": "Consignez le motif de consultation, les antécédents, l’évaluation et le plan.",
     "review": "Vérifier le dossier clinique",
     "guide": "Guide de consultation",
     "openExam": "Ouvrir l’examen dentaire",
@@ -36,6 +57,9 @@
         "recheck-v1": "Contrôle"
       },
       "samples": {
+        "consultationCurrentMedications": "Le propriétaire a signalé un traitement en cours.",
+        "consultationAdministeredMedications": "Un médicament a été administré pendant la visite.",
+        "consultationMedicationPlan": "Une modification a été envisagée dans l’attente des résultats.",
         "complaint": "Contrôle pour une gêne pendant les repas.",
         "consultationHistory": "Le propriétaire signale que l’animal mange mieux.",
         "consultationAssessment": "Le vétérinaire réévaluera la situation après avoir relu les constatations.",
@@ -55,6 +79,18 @@
   "treatmentRecap": "Compte rendu de traitement",
   "noTreatment": "Aucun compte rendu de traitement consigné.",
   "fields": {
+    "consultationCurrentMedications": {
+      "label": "Traitements en cours",
+      "helper": "Indiquez les médicaments déjà pris. Précisez qui les a signalés et toute incertitude."
+    },
+    "consultationAdministeredMedications": {
+      "label": "Médicaments administrés pendant la visite",
+      "helper": "Consignez les médicaments effectivement administrés, avec la dose, la voie et l’heure si elles sont connues."
+    },
+    "consultationMedicationPlan": {
+      "label": "Modifications du traitement et ordonnances",
+      "helper": "Consignez les ordonnances et les décisions de commencer, poursuivre, suspendre, arrêter ou modifier un traitement. Gardez les décisions provisoires au conditionnel."
+    },
     "complaint": {
       "label": "Motif de consultation",
       "helper": "Partagé avec les informations du patient pour cette visite."

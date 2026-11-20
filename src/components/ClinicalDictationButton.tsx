@@ -27,6 +27,8 @@ interface Props {
   readOnly?: boolean;
   aiEnabled?: boolean;
   gpExamEnabled?: boolean;
+  strictTarget?: boolean;
+  seededTranscript?: { text: string; language: AppLanguage };
   consultationEnabled?: boolean;
   /** Blocks opening when another dictation owns the microphone. */
   disabled?: boolean;
@@ -67,11 +69,14 @@ export function ClinicalDictationButton(props: Props) {
   const identity = JSON.stringify([props.chartId, props.chartSession, props.kind]);
   const current = React.useRef({ props, basis, target, transcript, identity });
   current.current = { props, basis, target, transcript, identity };
+  const prepareRef = React.useRef<(text: string) => void>(() => {});
   const stopHandler = React.useRef<(text: string) => void>(() => {});
   const capture = useVoiceCapture({ ignoreStaleStopCallbacks: true, onStop: text => stopHandler.current(text) });
   const captureRef = React.useRef(capture); captureRef.current = capture;
   const native = isNativeApp();
-  const modalRef = useModalFocus<HTMLDivElement>(open && !native);
+  const seeded = props.seededTranscript;
+  const visible = open && (!seeded || !!error || !!proposals?.length || !!status);
+  const modalRef = useModalFocus<HTMLDivElement>(visible && !native);
   const heading = React.useId();
 
   const invalidate = React.useCallback(() => {
@@ -101,12 +106,6 @@ export function ClinicalDictationButton(props: Props) {
     close(); setTranscript(''); setTarget(props.kind); sessionLanguage.current = null; captureRef.current.clear();
   }, [props.chartId, props.chartSession, props.kind, close]);
   React.useEffect(() => {
-    const request = props.openRequest;
-    if (request == null || request === handledOpen.current) return;
-    handledOpen.current = request;
-    show();
-  }, [props.openRequest, show]);
-  React.useEffect(() => {
     if (!props.readOnly && props.aiEnabled) return;
     epoch.current++; locked.current = false; reviewToken.current = null;
     setBusy(false); setProposals(null); setReviewBasis(null); captureRef.current.stop();
@@ -121,11 +120,11 @@ export function ClinicalDictationButton(props: Props) {
     return () => subscription?.data.subscription.unsubscribe();
   }, [close]);
   React.useEffect(() => {
-    if (!open || native) return;
+    if (!visible || native) return;
     const onKey = (event: KeyboardEvent) => { if (event.key === 'Escape') { event.stopImmediatePropagation(); close(); } };
     document.addEventListener('keydown', onKey, true);
     return () => document.removeEventListener('keydown', onKey, true);
-  }, [open, native, close]);
+  }, [visible, native, close]);
   // Chart edits invalidate in-flight extraction immediately, while preserving review text.
   React.useEffect(() => {
     if (!locked.current && !mic.current) return;
@@ -133,6 +132,17 @@ export function ClinicalDictationButton(props: Props) {
     captureRef.current.stop(); setBusy(false); setError(translate.current('clinical.stale'));
   }, [basis]);
 
+  React.useEffect(() => {
+    const request = props.openRequest;
+    if (request == null || request === handledOpen.current || props.disabled || props.readOnly || !props.aiEnabled) return;
+    handledOpen.current = request;
+    show();
+    if (seeded && opened.current) {
+      sessionLanguage.current = seeded.language;
+      setTranscript(seeded.text);
+      prepareRef.current(seeded.text);
+    }
+  }, [props.openRequest, props.disabled, props.readOnly, props.aiEnabled, seeded, show]);
   // Failed starts do not always emit onStop. Each attempt must release its own
   // ownership even when a repeated failure has the same error and recording state.
   React.useEffect(() => {
@@ -154,7 +164,7 @@ export function ClinicalDictationButton(props: Props) {
   const commit = (changes: Partial<PatientInfo>, source: ClinicalDictationSource) => {
     // Validate the entire addition before the parent mutates either clinical text or provenance.
     appendClinicalDictationSource(current.current.props.snapshot.clinicalDictations ?? [], source);
-    if (managed && source.kind !== 'ct') current.current.props.onApply(changes, source, true);
+    if (managed && !current.current.props.strictTarget && source.kind !== 'ct') current.current.props.onApply(changes, source, true);
     else current.current.props.onApply(changes, source);
     reviewToken.current = null;
     setProposals(null); setReviewBasis(null); setTranscript(''); sessionLanguage.current = null;
@@ -177,20 +187,24 @@ export function ClinicalDictationButton(props: Props) {
         commit({ ctReport: result, ctReportLanguage: source.language, ctReviewedBasis: '' }, source); close();
       } else {
         const consultationEnabled = now.consultationEnabled ?? now.kind === 'consultation';
-        const routedGpExamEnabled = managed ? !!now.gpExamEnabled : undefined;
+        const structuredConsultation = !!now.strictTarget && selectedTarget === 'consultation';
+        const routedGpExamEnabled = managed && !now.strictTarget ? !!now.gpExamEnabled : undefined;
         const result = await extractClinicalDictation({ kind: selectedTarget, transcript: raw, language: sessionLanguage.current,
           patientInfo: now.snapshot.patientInfo, consultationEnabled, imagingFocus: now.imagingFocus,
-          ...(managed ? { routedGpExamEnabled } : {}) });
+          ...(structuredConsultation ? { structuredConsultation } : {}),
+          ...(routedGpExamEnabled === undefined ? {} : { routedGpExamEnabled }) });
         if (!valid(token, sourceBasis, selectedTarget)) return;
-        const fields = allowedClinicalFields(selectedTarget, consultationEnabled, routedGpExamEnabled), seen = new Set<string>();
+        const fields = allowedClinicalFields(selectedTarget, consultationEnabled, routedGpExamEnabled, structuredConsultation), seen = new Set<string>();
         if (!Array.isArray(result) || result.some(p => !p || !fields.includes(p.field) || seen.has(p.field)
           || (seen.add(p.field), typeof p.value !== 'string') || !p.value.trim() || p.value.length > 20000
           || typeof p.evidence !== 'string' || !p.evidence.trim() || !normalized(raw).includes(normalized(p.evidence)))) {
           setError(t('clinical.invalidResponse')); return;
         }
+        const changed = result.filter(p => normalized(p.value) !== normalized(now.snapshot.patientInfo[p.field] ?? ''));
+        if (now.seededTranscript && !changed.length) { close(); return; }
         reviewToken.current = token;
         setReviewBasis(sourceBasis);
-        setProposals(result.filter(p => normalized(p.value) !== normalized(now.snapshot.patientInfo[p.field] ?? '')).map(p => {
+        setProposals(changed.map(p => {
           const existing = normalized(now.snapshot.patientInfo[p.field] ?? '');
           return { ...p, selected: !managed || !existing || normalized(p.value).includes(existing) };
         }));
@@ -198,6 +212,7 @@ export function ClinicalDictationButton(props: Props) {
     } catch (cause) { if (valid(token, sourceBasis, selectedTarget)) setError(friendlyError(cause, t('clinical.failed'))); }
     finally { if (token === epoch.current && mounted.current) { locked.current = false; setBusy(false); } }
   };
+  prepareRef.current = text => { void prepare(text); };
   stopHandler.current = finalText => {
     const owner = mic.current;
     if (!owner) return;
@@ -248,7 +263,8 @@ export function ClinicalDictationButton(props: Props) {
   };
   const stale = reviewBasis !== null && reviewBasis !== basis;
   const restricted = !!props.readOnly || !props.aiEnabled;
-  const targetName = (kind: ClinicalDictationKind) => kind === 'imaging' ? t('app:sections.images') : t(`clinical.kinds.${kind}`);
+  const targetName = (kind: ClinicalDictationKind) => kind === 'imaging' ? t('app:sections.images')
+    : kind === 'dental-visit' ? t('app:visitTypes.dentalAdditions') : t(`clinical.kinds.${kind}`);
   const targetLabel = targetName(target);
   const title = managed ? target === 'discharge' || target === 'consultation'
     ? t(`visitDocumentation:${target}.title`)
@@ -258,7 +274,7 @@ export function ClinicalDictationButton(props: Props) {
   const liveText = capture.recording || draining ? [mic.current?.prefix, capture.transcript].filter(Boolean).join('\n\n') : transcript;
   const content = <>
     <div className="ai-settings-body clinical-dictation__body">
-      <p className="ai-settings-blurb">{t(target === 'ct' ? 'clinical.ctHelp' : target === 'imaging' ? 'clinical.imagingHelp' : 'clinical.help')}</p>
+      <p className="ai-settings-blurb">{t(seeded ? 'app:visitTypes.dentalAdditionsHelp' : target === 'ct' ? 'clinical.ctHelp' : target === 'imaging' ? 'clinical.imagingHelp' : 'clinical.help')}</p>
       {!managed && props.kind !== 'ct' && <label className="clinical-dictation__label">{t('clinical.target')}<select value={target} disabled={capture.recording || draining || restricted} onChange={event => {
         if (mic.current) return;
         invalidate(); setTarget(event.target.value as ClinicalDictationKind); setError(null); setStatus(null);
@@ -267,20 +283,20 @@ export function ClinicalDictationButton(props: Props) {
         return kind === 'consultation' ? props.consultationEnabled : props.gpExamEnabled;
       }).map(kind => <option key={kind} value={kind}>{t(`clinical.kinds.${kind}`)}</option>)}</select></label>}
       <div className="clinical-dictation__tools">
-        <button type="button" className={`clinical-dictation__record${capture.recording ? ' clinical-dictation__record--live' : ''}`}
+        {!seeded && <button type="button" className={`clinical-dictation__record${capture.recording ? ' clinical-dictation__record--live' : ''}`}
           disabled={restricted || busy || draining || !capture.supported} onClick={() => capture.recording ? capture.stop() : void start()}>
           <Icon name={MIC_ICON} filled size={16} />{t(capture.recording ? 'clinical.stop' : 'clinical.start')}
-        </button>
+        </button>}
         <button type="button" disabled={!liveText} onClick={() => void copy(liveText)}>{t('clinical.copyTranscript')}</button>
         <span role="status">{t(draining || busy ? 'status.finishing' : capture.recording
           ? capture.ready ? 'status.listening' : 'status.connecting'
           : liveText ? 'status.stopped' : 'status.idle')}</span>
       </div>
-      <label className="clinical-dictation__label">{t('clinical.transcript')}<textarea rows={7} value={liveText} readOnly={capture.recording || draining || restricted} onChange={event => {
+      {!seeded && <label className="clinical-dictation__label">{t('clinical.transcript')}<textarea rows={7} value={liveText} readOnly={capture.recording || draining || restricted} onChange={event => {
         if (mic.current) return;
         invalidate(); sessionLanguage.current = event.target.value ? sessionLanguage.current ?? language() : null; setTranscript(event.target.value); setStatus(null); setError(null);
-      }}/></label>
-      {!capture.supported && <p role="note">{t('errors.unsupported')}</p>}
+      }}/></label>}
+      {!seeded && !capture.supported && <p role="note">{t('errors.unsupported')}</p>}
       {(error || capture.error) && <p className="clinical-dictation__error" role="alert">{error || capture.error}</p>}
       {status && <p role="status">{status}</p>}
       {stale && <p role="alert">{t('clinical.stale')}</p>}
@@ -310,7 +326,7 @@ export function ClinicalDictationButton(props: Props) {
       <Icon name={MIC_ICON} filled size={native ? 20 : 16} />
       <span>{t('clinical.dictate', { target: targetName(props.kind) })}</span>
     </button>}
-    {open && (native ? <Sheet open onClose={close} title={title} className="clinical-dictation">{content}</Sheet>
+    {visible && (native ? <Sheet open onClose={close} title={title} className="clinical-dictation">{content}</Sheet>
       : ReactDOM.createPortal(<div className="ai-settings-overlay" {...backdrop} role="dialog" aria-modal="true" aria-labelledby={heading}>
         <div className="ai-settings-modal clinical-dictation" ref={modalRef} tabIndex={-1}>
           <header className="ai-settings-header"><h2 id={heading}>{title}</h2><button type="button" className="ai-settings-close" onClick={close} aria-label={t('common:actions.close')}>×</button></header>

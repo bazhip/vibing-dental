@@ -5,8 +5,12 @@ import { EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS, ChartSnapshot, StoredRecordNot
 
 const mocks = vi.hoisted(() => ({
   copy: vi.fn(async () => 'rich' as const),
+  renderPdf: vi.fn(async (_text: string, _title: string, _language?: string) => new Uint8Array([37, 80, 68, 70])),
+  savePdf: vi.fn(async (_blob: Blob, _filename: string) => 'downloaded' as const),
 }));
 vi.mock('../utils/clipboard', () => ({ copyRichText: mocks.copy }));
+vi.mock('../utils/textPdf', () => ({ renderClinicalTextPdf: mocks.renderPdf }));
+vi.mock('../utils/savePdf', () => ({ savePdf: mocks.savePdf }));
 
 import { RecordNotePanel } from './RecordNotePanel';
 
@@ -36,6 +40,30 @@ describe('RecordNotePanel', () => {
     setup();
     expect(textarea().value).toContain('DENTAL PROCEDURE');
     expect(textarea().value).toContain('Done');
+    expect(screen.queryByRole('button', { name: 'Download PDF' })).not.toBeInTheDocument();
+  });
+
+  it('downloads the exact visible edited consultation note even when locked', async () => {
+    const stored: StoredRecordNote = { text: '    Advised testing\n\n— Recheck in two weeks.', source: 'edited', lng: 'en', basedOn: 'old' };
+    setup({ snapshot: { ...snapshot, patientInfo: { ...snapshot.patientInfo, visitType: 'consultation' } }, stored, readOnly: true });
+    const download = screen.getByRole('button', { name: 'Download PDF' });
+    await waitFor(() => expect(download).toBeEnabled());
+    expect(mocks.renderPdf).toHaveBeenCalledWith(textarea().value, 'Consultation', 'en');
+    fireEvent.click(download);
+    expect(mocks.savePdf).toHaveBeenCalledWith(expect.any(Blob), 'Consultation.pdf');
+  });
+
+  it('waits for a new PDF after the displayed note changes', async () => {
+    const consultation: ChartSnapshot = { ...snapshot, patientInfo: { ...snapshot.patientInfo, visitType: 'consultation' } };
+    const stored: StoredRecordNote = { text: 'First draft', source: 'edited', lng: 'en', basedOn: 'old' };
+    const onChange = vi.fn();
+    const { rerender } = render(<RecordNotePanel snapshot={consultation} stored={stored} onChange={onChange} readOnly={false} />);
+    const download = screen.getByRole('button', { name: 'Download PDF' });
+    await waitFor(() => expect(download).toBeEnabled());
+    rerender(<RecordNotePanel snapshot={consultation} stored={{ ...stored, text: 'Edited draft' }} onChange={onChange} readOnly={false} />);
+    expect(download).toBeDisabled();
+    await waitFor(() => expect(download).toBeEnabled());
+    expect(mocks.renderPdf).toHaveBeenLastCalledWith('Edited draft', 'Consultation', 'en');
   });
 
   it('editing stores an edited note', () => {

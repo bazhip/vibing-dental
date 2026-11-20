@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { PatientInfo } from '../types';
 import { LocalizedError } from './apiErrors';
@@ -92,4 +93,92 @@ it('provides only independent imaging fields and carries the focused report as c
   });
   expect(request.system[0].text).toContain('Use explicit modality from the spoken wording first');
   expect(allowedClinicalFields('imaging', false, false)).toEqual(['radiographicFindings', 'ctReport']);
+});
+
+it('keeps the existing English clinical request bytes stable', () => {
+  const existingRequests = [
+    input({ kind: 'gp-visit' }),
+    input({ kind: 'gp-visit', consultationEnabled: false }),
+    input({ kind: 'gp-exam' }),
+    input({ kind: 'consultation' }),
+    input({ kind: 'consultation', routedGpExamEnabled: true }),
+    input({ kind: 'discharge' }),
+    input({ kind: 'discharge', consultationEnabled: false, routedGpExamEnabled: false }),
+    input({ kind: 'imaging', imagingFocus: 'ctReport' }),
+  ];
+  expect(existingRequests.map(request =>
+    createHash('sha256').update(JSON.stringify(buildClinicalDictationRequest(request))).digest('hex'),
+  )).toMatchInlineSnapshot(`
+    [
+      "a5257e8355a652616231e1d3db5dcf49ebe28521cc5c64952200729aeae8e629",
+      "ea47ecaa02bb0fdbe31c7fb22e785fe6b5dddf4f11847c0053c7c6c83b5de51d",
+      "8042dd460118afa32485819007224539cbae13e6e8a05bdfd7418b8bb9b92d7e",
+      "9197bcf08fa2f84ee484580300c54dcfe5d78ba360038f1588c05f3140d56eba",
+      "edc255b51b708ee646becd489b9c6cf526cbf28a94efa33e2376926b1345ebf7",
+      "2e5d71279df4ce585bb00273065a7788989f70590b5a0e7465face9954175d4e",
+      "85495ebbb55d60d2b4c1504ee399a78229d5455769cebaef9e2b5999c63986c8",
+      "f42b16f9be7cc36d2a1cbf11d82d4bc2875ed94c9be761d5b379f17315e2e41e",
+    ]
+  `);
+});
+
+describe('whole dental visit supplemental extraction', () => {
+  const dentalFields = ['gpDiagnostics', 'ctReport', 'dischargeMedications', 'dischargeInstructions', 'dischargeFollowUp'];
+  const transcript = 'CBC results are pending. CT shows a possible fracture at 108. Continue the previously prescribed medication. Offer the prescribed soft diet. Recheck on Friday.';
+  const source = () => input({ kind: 'dental-visit', transcript, consultationEnabled: false, routedGpExamEnabled: false });
+
+  it('keeps supplemental fields independent of other workspaces and omits patient details', () => {
+    expect(allowedClinicalFields('dental-visit', false, false)).toEqual(dentalFields);
+    expect(allowedClinicalFields('dental-visit', true, true)).toEqual(dentalFields);
+    const request = buildClinicalDictationRequest(source());
+    expect(request).toMatchObject({ kind: 'dental-visit', mode: 'review' });
+    expect(JSON.parse(request.messages[0].content[0].text)).toEqual({
+      kind: 'dental-visit', language: 'en', allowed_fields: dentalFields,
+      current_values: Object.fromEntries(dentalFields.map(field => [field, ''])), transcript,
+    });
+    expect(request.system[0].text).toMatch(/non-imaging diagnostic/i);
+    expect(request.system[0].text).toMatch(/explicitly identified as CT/i);
+    expect(request.system[0].text).toMatch(/explicitly dictated discharge/i);
+    for (const identifier of ['Private Owner', '555-1234', 'private@example.test', 'Private Patient', 'PRIVATE-1', 'Private Doctor']) {
+      expect(JSON.stringify(request)).not.toContain(identifier);
+    }
+  });
+
+  it('validates evidence before returning the supplemental findings', async () => {
+    const sections = [
+      { field: 'gpDiagnostics', value: 'CBC results pending.', evidence: 'CBC results are pending.' },
+      { field: 'ctReport', value: 'Possible fracture at 108.', evidence: 'CT shows a possible fracture at 108.' },
+      { field: 'dischargeInstructions', value: 'Offer the prescribed soft diet.', evidence: 'Offer the prescribed soft diet.' },
+      { field: 'dischargeFollowUp', value: 'Recheck on Friday.', evidence: 'Recheck on Friday.' },
+    ];
+    send.mockResolvedValue([tool(sections)]);
+    await expect(extractClinicalDictation(source())).resolves.toEqual(sections);
+    expect(send).toHaveBeenCalledWith(expect.objectContaining({ kind: 'dental-visit', mode: 'review' }));
+    expect(() => parseClinicalDictationProposal([tool([{ ...sections[0], evidence: 'CBC is normal.' }])], source())).toThrow(LocalizedError);
+  });
+
+  it.each(['radiographicFindings', 'consultationPlan', 'gpPhysicalExam', 'treatmentReport', 'gpVitals'])('rejects %s from the supplemental response', field => {
+    expect(() => parseClinicalDictationProposal([tool([{ field, value: 'CBC results are pending.', evidence: 'CBC results are pending.' }])], source())).toThrow(LocalizedError);
+  });
+});
+
+
+it('routes explicit consultation observations to the objective fields in the SOAP workflow', () => {
+  const soap = input({ kind: 'consultation', structuredConsultation: true });
+  const exam = { field: 'gpVitals', value: 'Temperature 38.5 °C.', evidence: 'Temperature 38.5 °C.' };
+  expect(parseClinicalDictationProposal([tool([exam])], soap)).toEqual([exam]);
+  expect(() => parseClinicalDictationProposal([tool([exam])], { ...soap, structuredConsultation: false })).toThrow(LocalizedError);
+});
+
+it('separates reported, administered and planned medication details in consultation review', () => {
+  const transcript = 'The owner reports taking medicine A. We gave medicine B during the visit. We may stop medicine C after the test.';
+  const consultation = input({ kind: 'consultation', structuredConsultation: true, transcript });
+  const sections = [
+    { field: 'consultationCurrentMedications', value: 'Owner reports medicine A.', evidence: 'The owner reports taking medicine A.' },
+    { field: 'consultationAdministeredMedications', value: 'Medicine B was given.', evidence: 'We gave medicine B during the visit.' },
+    { field: 'consultationMedicationPlan', value: 'May stop medicine C after the test.', evidence: 'We may stop medicine C after the test.' },
+  ];
+  expect(parseClinicalDictationProposal([tool(sections)], consultation)).toEqual(sections);
+  expect(() => parseClinicalDictationProposal([tool(sections)], { ...consultation, kind: 'dental-visit' })).toThrow(LocalizedError);
+  expect(() => parseClinicalDictationProposal([tool([{ ...sections[0], evidence: 'A dose not stated.' }])], consultation)).toThrow(LocalizedError);
 });

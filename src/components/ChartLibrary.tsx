@@ -12,6 +12,7 @@ import { confirmDialog, friendlyDetail } from './ui/dialogs';
 import { CloudChartMeta, ChartListQuery, ChartListPage } from '../hooks/useCloudSync';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useTeam } from '../hooks/useTeam';
+import { visitTypeOf } from '../utils/visitTypes';
 import { todayIso, useChartLibraryList, type LibraryError, type PatientGroup, type SortKey, type ChartLibraryViewState } from './chartLibraryData';
 
 /** Native disclosure keeps secondary actions in the tab order when open. */
@@ -144,8 +145,10 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
   viewState,
 }) => {
   const asPage = presentation === 'page';
-  const { t } = useTranslation('library');
+  const { t } = useTranslation(['library', 'app']);
   const lng = i18n.language;
+  const typeLabel = (visit: CloudChartMeta) => t(`app:visitTypes.${visitTypeOf(visit.visit_type)}`);
+  const visitLabel = (visit: CloudChartMeta) => `${visit.chart_date ? formatChartDate(visit.chart_date) : t('visit.undated')} · ${typeLabel(visit)}`;
   const pdfInputRef = React.useRef<HTMLInputElement>(null);
   const {
     query, setQuery,
@@ -206,7 +209,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
 
   const handleDelete = (c: CloudChartMeta) => {
     const name = c.patient_name.trim();
-    const when = c.chart_date ? ` (${formatChartDate(c.chart_date)})` : '';
+    const when = ` (${visitLabel(c)})`;
     return deleteVisit(c, () => confirmDialog({
       title: name ? t('deleteDialog.title', { name, when }) : t('deleteDialog.titleUnnamed', { when }),
       message: t('deleteDialog.message'),
@@ -406,7 +409,8 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                                 // different doctor per visit — those are
                                 // labeled on the expanded visit rows).
                                 const dr = showDoctors && !multi ? doctorById.get(only.created_by) : '';
-                                const sub = [g.owner, dr].filter(Boolean).join(' · ');
+                                const type = !multi && visitTypeOf(only.visit_type) === 'consultation' ? typeLabel(only) : '';
+                                const sub = [type, g.owner, dr].filter(Boolean).join(' · ');
                                 return sub ? <span className="chart-library__owner">{sub}</span> : null;
                               })()}
                             </button>
@@ -460,7 +464,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                             <button
                               type="button"
                               className="chart-library__act chart-library__history"
-                              onClick={() => onOpenHistory(only.id, `${g.name}${only.chart_date ? ` · ${formatChartDate(only.chart_date)}` : ''}`)}
+                              onClick={() => onOpenHistory(only.id, `${g.name} · ${visitLabel(only)}`)}
                               title={t('actions.historyChartTitle', { name: g.name })}
                             >
                               {t('actions.history')}
@@ -492,7 +496,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                               title={v.chart_date ? t('visit.openDated', { date: v.chart_date }) : t('visit.openUndated')}
                             >
                               <span role="cell" className="chart-library__visit-date">
-                                {v.chart_date ? formatChartDate(v.chart_date) : t('visit.undated')}
+                                {visitLabel(v)}
                               </span>
                               <span role="cell" data-label={t('table.finalized')} className="chart-library__cell chart-library__cell--finalized">
                                 {t(v.finalized_at ? 'finalized.yes' : 'finalized.no')}
@@ -510,7 +514,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                                 <button
                                   type="button"
                                   className="chart-library__act chart-library__history"
-                                  onClick={() => onOpenHistory(v.id, `${g.name} · ${v.chart_date ? formatChartDate(v.chart_date) : t('visit.undated')}`)}
+                                  onClick={() => onOpenHistory(v.id, `${g.name} · ${visitLabel(v)}`)}
                                   title={t('actions.historyVisitTitle')}
                                 >
                                   {t('actions.history')}

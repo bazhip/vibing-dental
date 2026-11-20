@@ -1,7 +1,7 @@
 {
   "site": {
     "title": "Centro assistenza ToothOps",
-    "intro": "Guide pratiche per ogni fase della visita odontoiatrica, dall’apertura della cartella del paziente all’invio del referto.",
+    "intro": "Guide pratiche per le procedure odontoiatriche e le consultazioni, dall’apertura della visita alla condivisione della cartella.",
     "search": "Cerca nella documentazione",
     "searchHint": "Cerchi argomenti, operazioni o impostazioni",
     "topics": "Argomenti",
@@ -24,13 +24,15 @@
     "practice": "Studio e assistenza"
   },
   "images": {
+    "consultationMedicationHistory": "Farmaci in uso con una scheda veterinaria nell’app e un collegamento alla fonte completa.",
+    "consultationMedicationReview": "Revisione della dettatura della visita con proposte separate per i farmaci e i relativi estratti.",
     "charting": "Esempio di odontogramma con denti numerati e griglia dei reperti.",
     "imaging": "Sezione Diagnostica per immagini con campi separati per il referto radiografico e il referto TC.",
-    "dictation": "Revisione della dettatura con proposte separate per radiografia e TC a partire da una sola trascrizione.",
+    "dictation": "Revisione dei rilievi aggiuntivi ricavati da una registrazione odontoiatrica.",
     "owner": "Comandi del referto per il proprietario e riepilogo iniziale specifico della visita.",
     "export": "Anteprima del PDF della cartella clinica con un odontogramma di esempio.",
     "start": "Area di lavoro di esempio con la linguetta della visita, la navigazione e le informazioni del paziente.",
-    "patients": "Visite precedenti nello storico del paziente con una nota clinica selezionata.",
+    "patients": "Procedure odontoiatriche e consultazioni precedenti nello stesso storico, con una visita selezionata.",
     "exam": "Griglia dell’esame orale con le opzioni Normale e Anomalo e un commento.",
     "viewer": "Visualizzatore con i comandi di finestra, livello e download per un DICOM sintetico.",
     "treatment": "Referto del trattamento con i modelli salvati e il testo modificabile sottostante.",
@@ -38,9 +40,9 @@
     "help-tools": "Menu Aiuto con il centro assistenza, la guida introduttiva, le novità e il feedback.",
     "by-number": "Vista Per dente con il 108 Triadan selezionato sul diagramma numerato e i relativi reperti aperti.",
     "imagingSettings": "Impostazioni di diagnostica per immagini e PDF con la lingua dei referti e le opzioni di inclusione predefinite nel PDF.",
-    "consultationReview": "Editor della visita con il modello selezionato evidenziato e il pulsante Verifichi la cartella clinica sopra i campi.",
+    "consultationReview": "La sezione Immagini di una visita, con il comando Aggiungi immagini e una miniatura di esempio.",
     "consultationTemplatePreview": "Raccolta dei modelli con l’anteprima di una visita fittizia e le sezioni nell’ordine scelto.",
-    "consultationRecordNote": "Nota di cartella della visita con il testo clinico modificabile e il pulsante Copia."
+    "consultationRecordNote": "Nota della consultazione con i comandi Scarica PDF e Copia."
   },
   "articles": {
     "start": {
@@ -49,7 +51,7 @@
       "sections": {
         "first": {
           "title": "Aprire o creare un paziente",
-          "text": "Usi il pulsante con il segno più o «Aprire un animale». Prima di creare un paziente, lo cerchi per nome o numero identificativo. In «Paziente», verifichi nome, specie, numero identificativo e data della visita."
+          "text": "Usi il pulsante più o Apri un animale. Cerchi il paziente per nome o numero prima di crearlo. Se compare Nuova visita, selezioni Procedura odontoiatrica e scelga Inizia la visita. Controlli nome, specie, numero e data in Paziente."
         },
         "second": {
           "title": "Documentare le cure durante la visita",
@@ -67,15 +69,15 @@
       "sections": {
         "first": {
           "title": "Trovare un paziente",
-          "text": "Sul web, apra il selettore dei pazienti con il pulsante con il segno più. Se i nomi coincidono, verifichi il numero identificativo. Selezioni una visita esistente per continuarla o ne inizi una nuova per un nuovo appuntamento."
+          "text": "Apra il selettore dei pazienti con il pulsante più. In caso di omonimia, controlli il numero del paziente. Riprenda una visita esistente oppure scelga Nuova visita e verifichi il tipo prima di iniziare."
         },
         "second": {
           "title": "Passare da una visita o da un paziente all’altro",
-          "text": "La scheda mostra il paziente e la data della visita. Se sono presenti più visite salvate, usi il selettore delle visite nella scheda. Per aprire un altro paziente, usi il pulsante con il segno più. La chiusura di una scheda non elimina il paziente. Sul computer, controlli il numero del paziente sotto il nome e usi la freccia accanto alla data per passare a un’altra visita."
+          "text": "La scheda mostra il paziente, la data e il tipo di visita. Usi il selettore delle visite per aprirne un’altra. Due visite nello stesso giorno possono essere di tipo diverso. La chiusura di una scheda conserva il paziente e le visite nello storico."
         },
         "third": {
           "title": "Consultare le cartelle precedenti",
-          "text": "In «Paziente», scelga «Visualizza lo storico delle visite» quando sono disponibili visite precedenti. Selezioni una data e consulti i PDF o le note cliniche. Per correggere una cartella precedente, apra la visita corrispondente."
+          "text": "In Paziente, scelga Visualizza storico delle visite quando sono disponibili visite precedenti. Selezioni la data e il tipo, poi consulti la nota o esporti la visita. Utilizzi il selettore delle visite per riaprire una visita e modificarla."
         }
       }
     },
@@ -110,8 +112,8 @@
           "text": "Apra «Anestesia», inserisca i farmaci anestetici e registri il sito e il volume dei blocchi eseguiti. Prima di finalizzare, confronti i lati e le unità di misura con la documentazione di origine. Se ha somministrato separatamente un altro anestetico, selezioni «Aggiungi una seconda serie di blocchi nervosi». Indichi nome, concentrazione e volumi per sede nella seconda serie."
         },
         "third": {
-          "title": "Utilizzare le sezioni facoltative della visita",
-          "text": "Se il Suo studio ha attivato «Visita» o «Visita generale», queste sezioni compaiono nel menu della cartella. Le usi per registrare anamnesi, valutazione, piano e dettagli dell’esame pertinenti."
+          "title": "Controllare i rilievi registrati",
+          "text": "Dopo la dettatura, controlli i rilievi in Esame e i siti dei blocchi e i farmaci in Anestesia. Corregga i dati incompleti o incerti prima di finalizzare la visita odontoiatrica."
         }
       }
     },
@@ -129,25 +131,25 @@
         },
         "third": {
           "title": "Redigere i referti di diagnostica per immagini",
-          "text": "Inserisca i reperti in «Referto radiografico» o «Referto TC». Per dettarli, scelga «Detta» in «Diagnostica per immagini» e specifichi la metodica se non è chiara. Verifichi i referti di destinazione proposti prima di applicare il testo. Per il testo digitato può usare «Rifinisci»."
+          "text": "Inserisca i rilievi in Referto radiografico o Referto TC. Usi Diagnostica per altri risultati ed esami in attesa. Può dettare tutto nella stessa registrazione odontoiatrica. Indichi la modalità di imaging e verifichi le destinazioni proposte prima di applicarle."
         }
       }
     },
     "dictation": {
       "title": "Dettatura e revisione dei risultati dell’IA",
-      "intro": "Detti nella sezione in cui sta lavorando e verifichi dove vengono inseriti i reperti.",
+      "intro": "Usi un’unica registrazione per la visita odontoiatrica e controlli dove vengono inseriti i rilievi.",
       "sections": {
         "first": {
-          "title": "Iniziare dalla sezione corrente",
-          "text": "Apra la sezione pertinente della cartella, scelga «Detta» e poi «Avvia la dettatura». Consenta l’accesso al microfono se richiesto. Indichi dente, lato, unità di misura e metodica quando questi dettagli sono rilevanti."
+          "title": "Avviare la registrazione odontoiatrica",
+          "text": "Scelga Detta da qualsiasi scheda di una procedura odontoiatrica e avvii la registrazione. Consenta l’accesso al microfono se richiesto. Specifichi quando serve il numero del dente, il lato, le unità e la modalità di imaging."
         },
         "second": {
           "title": "Controllare la trascrizione e le proposte",
-          "text": "Il riconoscimento vocale produce la trascrizione. L’IA la organizza in reperti da inserire nella cartella o in una bozza di testo. La sezione attiva aiuta a interpretare le formulazioni ambigue. I reperti non ambigui possono essere assegnati a un’altra sezione supportata."
+          "text": "I rilievi chiari possono compilare le sezioni corrispondenti durante la dettatura, tra cui Esame, Anestesia, Odontogramma, Diagnosi e Procedura. La sezione attiva aiuta a interpretare le formulazioni ambigue. Al termine interrompa la registrazione e controlli la trascrizione e la cartella."
         },
         "third": {
           "title": "Verificare le correzioni prima di applicarle",
-          "text": "In «Da verificare», confronti il valore attuale con la modifica proposta. Applichi il suggerimento solo se è confermato dalla trascrizione. Altrimenti, mantenga il valore attuale. Per i referti o le sezioni della visita, controlli il testo proposto e selezioni le sezioni da applicare."
+          "text": "In Da verificare, confronti le modifiche proposte con i valori esistenti e mantenga il testo supportato. Al termine, la stessa registrazione può proporre rilievi TC, altri risultati diagnostici e dettagli di dimissione. Verifichi le evidenze e selezioni le sezioni da applicare."
         }
       }
     },
@@ -193,7 +195,7 @@
       "sections": {
         "first": {
           "title": "Scegliere un documento",
-          "text": "Apra «Verifica ed esportazione». «Cartella clinica» contiene il PDF completo della cartella. «Referto per il proprietario», se attivato, contiene il PDF da consegnare. «Nota di cartella» fornisce la versione testuale per la documentazione clinica."
+          "text": "Apra Revisione ed esportazione per la visita selezionata. Per una procedura odontoiatrica, scelga Cartella clinica per il PDF, Relazione per il proprietario se disponibile o Nota clinica per il testo. Per una consultazione, apra Nota clinica per scaricare o copiare la nota della visita."
         },
         "second": {
           "title": "Personalizzare il PDF clinico",
@@ -409,11 +411,11 @@
       "sections": {
         "first": {
           "title": "Selezioni un modello",
-          "text": "Apra la visita del paziente e selezioni Visita. Sotto Modello della nota, scelga uno dei modelli visibili. Controlli il modello evidenziato e l’ordine delle sezioni. Quando cambia modello, l’ordine dei campi cambia e il testo già inserito viene conservato."
+          "text": "Dal paziente scelga Nuova visita. Se è disponibile Consultazione, selezioni quel tipo e scelga Inizia la visita. In Modello della nota scelga un modello visibile. Verifichi la selezione evidenziata e l’ordine delle sezioni. Il testo inserito viene conservato anche cambiando modello."
         },
         "second": {
           "title": "Compilare o dettare la visita",
-          "text": "Registri il motivo della visita, l’anamnesi, la valutazione e il piano. Se la dettatura è disponibile, confronti ogni sezione proposta con la relativa fonte prima di applicarla. Per rivedere una trascrizione, apra Trascrizioni salvate e selezioni la data della registrazione. Usi Apri l’esame dentale per passare all’esame dentale nella stessa visita."
+          "text": "Registri il motivo della visita, l’anamnesi, la valutazione e il piano. Se la dettatura è disponibile, confronti le sezioni proposte con le relative evidenze prima di applicarle. Per rivedere una trascrizione, apra Trascrizioni salvate e selezioni la data. Inserisca parametri vitali, esame e risultati diagnostici nei rispettivi campi, se documentati. Lasci vuoti i campi per i quali non ha rilievi da registrare. Sotto i campi della nota, apra Immagini e scelga Aggiungi immagini. Selezioni, trascini o incolli i file. Attenda che appaiano le miniature e ne apra una per verificarla. Le immagini restano allegate alla visita e non compaiono nel PDF autonomo della nota. Usi Farmaci in uso per le assunzioni riferite, Farmaci somministrati durante la visita per le dosi effettivamente date e Modifiche della terapia e prescrizioni per il piano. Durante la dettatura indichi la categoria e controlli gli estratti citati prima di applicarli. In Farmaci in uso, apra Elenco precedente dei farmaci per consultare l’ultima visita precedente e le modifiche registrate. Verifichi ciò che è ancora in uso, poi scelga Copi in Farmaci in uso se il campo è vuoto. Con Cerchi un farmaco può inserire il nome e aprire la ricerca in DailyMed. Scelga Cerchi le schede prodotto, quindi selezioni il prodotto veterinario esatto. Apra la scheda completa in DailyMed per verificare il dosaggio, le istruzioni e le avvertenze."
         },
         "third": {
           "title": "Rivedere la nota",
@@ -431,7 +433,7 @@
         },
         "second": {
           "title": "Ordinare e visualizzare le sezioni",
-          "text": "Compili Nome del modello. Usi le frecce accanto alle sezioni per cambiarne l’ordine. Selezioni Anteprima di esempio per controllare il nuovo ordine con una visita fittizia. Selezioni nuovamente lo stesso pulsante per tornare alla modifica."
+          "text": "Compili Nome del modello. Usi le frecce accanto alle sezioni per cambiarne l’ordine. Selezioni Anteprima di esempio per controllare il nuovo ordine con una visita fittizia. Selezioni nuovamente lo stesso pulsante per tornare alla modifica. Ogni modello include Immagini sotto la nota. Le immagini appartengono alla visita e restano disponibili quando cambia modello."
         },
         "third": {
           "title": "Salvare o archiviare",
@@ -441,7 +443,7 @@
     },
     "consultation-transfer": {
       "title": "Rivedere e trasferire una nota di visita",
-      "intro": "Verifichi la cartella clinica prima di copiarla o inviarla.",
+      "intro": "Controlli la cartella clinica prima di scaricarla, copiarla o inviarla.",
       "sections": {
         "first": {
           "title": "Aprire la nota clinica",
@@ -452,8 +454,8 @@
           "text": "Se un avviso segnala che la cartella è cambiata dopo la modifica della nota, confronti la nota con la visita attuale. Conservi le formulazioni manuali che Le servono prima di selezionare Rigenera dalla cartella. Questa azione sostituisce la nota modificata con i contenuti attuali della cartella."
         },
         "third": {
-          "title": "Copiare o inviare",
-          "text": "Selezioni Copia e incolli la nota nella cartella del paziente interessato, oppure usi il trasferimento integrato, se disponibile. Verifichi il paziente e la visita di destinazione e controlli il testo incollato o trasferito."
+          "title": "Scaricare, copiare o inviare",
+          "text": "Scelga Scarica PDF per salvare un PDF autonomo della consultazione con le modifiche apportate in Nota clinica. Usi Copia per incollare la nota nella cartella prevista o usi il trasferimento integrato se disponibile. Verifichi paziente, data e contenuto a destinazione."
         }
       }
     }

@@ -17,6 +17,8 @@ import { usePimsExtension } from '../hooks/usePimsExtension';
 import { toast } from './ui/dialogs';
 import type { ChartSnapshot as PreviewSnapshot } from './PdfPreviewModal';
 import { SendToEzyvetDialog } from './SendToEzyvetDialog';
+import { ConsultationNotePdfButton } from './ConsultationNotePdfButton';
+import { visitTypeOf } from '../utils/visitTypes';
 
 
 /** Send to ezyVet (Chrome extension). Omitted = no button. */
@@ -57,6 +59,7 @@ export const RecordNotePanel: React.FC<RecordNotePanelProps> = ({
 }) => {
   const { t, i18n } = useTranslation(['media', 'help']);
   const lng = i18n.language as AppLanguage;
+  const consultation = visitTypeOf(snapshot.patientInfo.visitType) === 'consultation';
 
   const note = React.useMemo(() => buildRecordNote(snapshot, recordNoteT(lng)), [snapshot, lng]);
   const basis = React.useMemo(() => recordNoteBasis(snapshot), [snapshot]);
@@ -103,9 +106,16 @@ export const RecordNotePanel: React.FC<RecordNotePanelProps> = ({
             {t('recordNote.rebuild')}
           </button>
         )}
-        <button type="button" className="pdf-preview-download" onClick={copy}>
-          {t('recordNote.copy')}
-        </button>
+        {consultation ? (
+          <div className="record-note__actions">
+            <ConsultationNotePdfButton text={text} language={stored?.lng ?? lng} />
+            <button type="button" className="pdf-preview-secondary" onClick={copy}>
+              {t('recordNote.copy')}
+            </button>
+          </div>
+        ) : (
+          <button type="button" className="pdf-preview-download" onClick={copy}>{t('recordNote.copy')}</button>
+        )}
         {canSend && pims && (
           <button type="button" className="pdf-preview-secondary" onClick={() => setSendOpen(true)}>
             {t('dialog.open', { ns: 'pims' })}

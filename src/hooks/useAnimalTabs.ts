@@ -1,3 +1,4 @@
+import { visitTypeOf } from '../utils/visitTypes';
 import { useEffect, useRef, useState } from 'react';
 import type { ChartSnapshot, Species } from '../types';
 import type { UseChartStateReturn } from './useChartState';
@@ -261,8 +262,8 @@ export function useAnimalTabs(chart: UseChartStateReturn, cloud: UseCloudSyncRet
   };
   const activeKey = tabOf(chart).key;
   const draftVisits = Array.from(drafts.values()).filter(draft => tabOf({ cloudChartId: draft.id, patientInfo: draft.snapshot.patientInfo, species: draft.snapshot.species } as UseChartStateReturn).key === activeKey)
-    .map(draft => ({ id: draft.id, date: draft.snapshot.patientInfo.date }));
-  if (!draftVisits.some(visit => visit.id === chart.cloudChartId)) draftVisits.push({ id: chart.cloudChartId, date: chart.patientInfo.date });
+    .map(draft => ({ id: draft.id, date: draft.snapshot.patientInfo.date, visitType: visitTypeOf(draft.snapshot.patientInfo.visitType) }));
+  if (!draftVisits.some(visit => visit.id === chart.cloudChartId)) draftVisits.push({ id: chart.cloudChartId, date: chart.patientInfo.date, visitType: visitTypeOf(chart.patientInfo.visitType) });
   const signOut = async () => {
     if (Array.from(drafts.values()).some(draft => draft.id !== latest.current.chart.cloudChartId && draft.dirty)) {
       const t = i18n.getFixedT(null, 'app');

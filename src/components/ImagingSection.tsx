@@ -43,6 +43,8 @@ interface ImagingSectionProps {
   onReportContentChange?: () => void;
   /** The chart's species: which teeth an image can be pinned to. */
   species?: Species;
+  /** Compact uploader embedded in the consultation note. */
+  compact?: boolean;
 }
 
 type QueueItem = { key: string; name: string; status: 'waiting' | 'uploading' | 'failed'; error?: string };
@@ -79,8 +81,9 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
   onImageInPdfChange,
   readOnly = false,
   species = 'canine',
+  compact = false,
 }) => {
-  const { t } = useTranslation('media');
+  const { t } = useTranslation(['media', 'settings']);
   const store = useAttachments(chartId, practiceId, maxImages, dicomEnabled);
   const touchDevice = useMediaQuery('(any-pointer: coarse)') || (typeof navigator !== 'undefined' && navigator.maxTouchPoints > 0);
   const [capturing, setCapturing] = React.useState(false);
@@ -248,8 +251,8 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
   };
 
   return (
-    <div ref={rootRef} className={dragging ? 'patient-form imaging imaging--dragging' : 'patient-form imaging'} {...dropProps}>
-      <SectionHeader title={t('imaging.title')} onCustomize={onCustomize} customizeTitle={t('imaging.customizeTitle')} />
+    <div ref={rootRef} className={`imaging${compact ? ' imaging--compact' : ' patient-form'}${dragging ? ' imaging--dragging' : ''}`} {...dropProps}>
+      <SectionHeader title={compact ? t('settings:chart.pdf.images') : t('imaging.title')} onCustomize={onCustomize} customizeTitle={t('imaging.customizeTitle')} />
 
       {onIncludeInPdfChange && (store.maxImages > 0 || store.items.length > 0) && (
         <label
@@ -284,7 +287,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
         </p>
       )}
 
-      {store.maxImages > 0 && !readOnly && (
+      {canUpload && (
         <div className={`imaging-upload${dragging ? ' imaging-upload--dragging' : ''}${atLimit ? ' imaging-upload--full' : ''}`} aria-busy={busy || capturing}>
           <button
             type="button"
@@ -295,23 +298,23 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
             aria-label={t('imaging.upload.title')}
             aria-describedby={uploadHelpId}
           >
-            <span className="imaging-upload__plus" aria-hidden="true">
+            {!compact && <span className="imaging-upload__plus" aria-hidden="true">
               <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.7"><path d="M12 5v14M5 12h14" /></svg>
-            </span>
+            </span>}
             <span className="imaging-upload__title">{busy ? t('imaging.uploading') : dragging ? t('imaging.dropHint') : t('imaging.upload.title')}</span>
             <span className="imaging-upload__hint" id={uploadHelpId}>{atLimit ? limitMessage : isNativeApp() || touchDevice ? t('imaging.upload.touchHint') : t('imaging.upload.dropHint')}</span>
           </button>
-          <div className="imaging-upload__actions">
-            <button type="button" className="diagram-view__action" disabled={busy || capturing || atLimit || !store.loaded} onClick={() => fileRef.current?.click()}>
+          {(!compact || isNativeApp() || touchDevice) && <div className="imaging-upload__actions">
+            {!compact && <button type="button" className="diagram-view__action" disabled={busy || capturing || atLimit || !store.loaded} onClick={() => fileRef.current?.click()}>
               {isNativeApp() || touchDevice ? t('imaging.upload.library') : t('imaging.upload.files')}
-            </button>
+            </button>}
             {(isNativeApp() || touchDevice) && (
               <button type="button" className="diagram-view__action" onClick={onTakePhoto} disabled={busy || capturing || atLimit || !store.loaded} title={atLimit ? limitMessage : undefined}>
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M4 6h4l2-3h4l2 3h4v15H4Z" /><circle cx="12" cy="13" r="4" /></svg>
                 {t('imaging.takePhoto', { ns: 'chart' })}
               </button>
             )}
-          </div>
+          </div>}
           <p className="imaging-upload__formats">
             {store.dicomEnabled ? t('imaging.formatsDicom') : isNativeApp() ? t('imaging.formatsApp', { ns: 'chart' }) : t('imaging.formatsPlain')}
           </p>

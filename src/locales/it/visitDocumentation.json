@@ -1,7 +1,28 @@
 {
   "consultation": {
+    "medications": {
+      "lookup": "Cerchi un farmaco",
+      "drugName": "Nome del farmaco",
+      "search": "Cerchi le schede prodotto",
+      "useSelection": "Usi il nome selezionato",
+      "labelScope": "Schede statunitensi dei farmaci veterinari da DailyMed. Verifichi il prodotto e il dosaggio nella scheda completa.",
+      "searching": "Ricerca in DailyMed…",
+      "searchError": "Impossibile eseguire la ricerca. Riprovi o apra la ricerca in DailyMed.",
+      "noProducts": "Nessuna scheda veterinaria statunitense trovata per questo nome.",
+      "results": "Prodotti veterinari",
+      "externalSearch": "Apra la ricerca in DailyMed",
+      "fullLabel": "Apra la scheda completa in DailyMed",
+      "loadingLabel": "Caricamento della scheda…",
+      "labelError": "Impossibile caricare qui la scheda. Selezioni il prodotto per riprovare o apra la scheda completa.",
+      "strengths": "Dosaggi indicati",
+      "complexSection": "Legga questa sezione in DailyMed per vedere la presentazione e il contesto completi.",
+      "noSections": "Apra la scheda completa per consultare le istruzioni del prodotto.",
+      "previous": "Elenco precedente dei farmaci · {{date}}",
+      "verify": "Prima di copiare, verifichi l’elenco e le modifiche registrate con le informazioni di oggi.",
+      "copy": "Copi in Farmaci in uso"
+    },
     "title": "Visita",
-    "purpose": "Registri il motivo della visita, l’anamnesi, la valutazione e il piano insieme all’esame e alla cartella condivisi.",
+    "purpose": "Registri il motivo della visita, l’anamnesi, la valutazione e il piano.",
     "review": "Verifichi la cartella clinica",
     "guide": "Guida alla visita",
     "openExam": "Apri l’esame dentale",
@@ -36,6 +57,9 @@
         "recheck-v1": "Controllo"
       },
       "samples": {
+        "consultationCurrentMedications": "Il proprietario ha riferito un farmaco in uso.",
+        "consultationAdministeredMedications": "Durante la visita è stato somministrato un farmaco.",
+        "consultationMedicationPlan": "Una modifica è stata discussa in attesa dei risultati.",
         "complaint": "Controllo per fastidio durante i pasti.",
         "consultationHistory": "Il proprietario riferisce che l’animale mangia meglio.",
         "consultationAssessment": "Il veterinario rivaluterà il caso dopo aver esaminato i rilievi registrati.",
@@ -55,6 +79,18 @@
   "treatmentRecap": "Referto del trattamento",
   "noTreatment": "Nessun referto del trattamento registrato.",
   "fields": {
+    "consultationCurrentMedications": {
+      "label": "Farmaci in uso",
+      "helper": "Elenchi i farmaci già assunti. Indichi chi li ha riferiti ed eventuali incertezze."
+    },
+    "consultationAdministeredMedications": {
+      "label": "Farmaci somministrati durante la visita",
+      "helper": "Registri i farmaci effettivamente somministrati con dose, via e orario, se noti."
+    },
+    "consultationMedicationPlan": {
+      "label": "Modifiche della terapia e prescrizioni",
+      "helper": "Registri le prescrizioni e le decisioni di iniziare, proseguire, sospendere, interrompere o modificare la terapia. Mantenga condizionali i piani provvisori."
+    },
     "complaint": {
       "label": "Motivo della visita",
       "helper": "Condiviso con i dati del paziente per questa visita."

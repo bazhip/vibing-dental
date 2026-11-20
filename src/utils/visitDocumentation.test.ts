@@ -6,7 +6,7 @@ describe('visit source templates', () => {
     expect(VISIT_DOCUMENT_TEMPLATES.consultation.id).toBe('consultation-v1');
     expect(VISIT_DOCUMENT_TEMPLATES.discharge.id).toBe('discharge-v1');
     expect(VISIT_DOCUMENT_TEMPLATES.consultation.fields.map(f => f.id)).toEqual(['complaint', 'consultationHistory', 'consultationAssessment', 'consultationPlan']);
-    expect(VISIT_DOCUMENT_FIELDS).toHaveLength(9);
+    expect(VISIT_DOCUMENT_FIELDS).toHaveLength(12);
     expect(VISIT_DOCUMENT_TEMPLATES['gp-exam']).toMatchObject({ id: 'gp-exam-v1' });
     expect(VISIT_DOCUMENT_TEMPLATES['gp-exam'].fields.map(f => f.id)).toEqual(['gpVitals', 'gpPhysicalExam', 'gpDiagnostics']);
   });

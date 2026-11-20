@@ -9,7 +9,7 @@ import { Sheet } from '../ios/Sheet';
 import { confirmDialog, friendlyError } from './ui/dialogs';
 import {
   CONSULTATION_STARTERS, CONSULTATION_TEMPLATE_LIMIT, CONSULTATION_TEMPLATE_NAME_LIMIT,
-  DENTAL_CONSULTATION, isConsultationStarter, parseConsultationLibrary,
+  DENTAL_CONSULTATION, consultationDocumentFields, isConsultationStarter, parseConsultationLibrary,
   type ConsultationField, type ConsultationLayout, type ConsultationLibrary, type PracticeConsultationTemplate,
 } from '../utils/consultationTemplates';
 
@@ -23,7 +23,7 @@ interface Props {
 }
 
 export function ConsultationTemplatesDialog({ initial, status, canEdit, onSave, onReload, onClose }: Props) {
-  const { t, i18n } = useTranslation(['visitDocumentation', 'common', 'reportui']);
+  const { t, i18n } = useTranslation(['visitDocumentation', 'common', 'reportui', 'settings']);
   const id = useId();
   const native = isNativeApp();
   const focus = useModalFocus(!native);
@@ -65,8 +65,7 @@ export function ConsultationTemplatesDialog({ initial, status, canEdit, onSave, 
     const index = fields.indexOf(field);
     const destination = index + delta;
     if (destination < 0 || destination >= fields.length) return;
-    fields.splice(index, 1);
-    fields.splice(destination, 0, field);
+    [fields[index], fields[destination]] = [fields[destination], fields[index]];
     update({ ...custom, fields });
   };
   const toggleArchive = () => {
@@ -158,21 +157,23 @@ export function ConsultationTemplatesDialog({ initial, status, canEdit, onSave, 
           </div>
           {preview && <p className="consultation-library__sample">{t('consultation.templates.sampleNotice')}</p>}
           <ol className="consultation-library__sections">
-            {selected.fields.map((field, index) => {
+            {consultationDocumentFields(selected.fields).map(field => {
+              const index = selected.fields.findIndex(item => item === field);
               const label = t(`fields.${field}.label`);
               return <li key={field}>
                 <div>
                   <span>{label}</span>
                   {preview && <p>{t(`consultation.templates.samples.${field}`)}</p>}
                 </div>
-                {editSelected && <div className="consultation-library__move">
+                {editSelected && index !== -1 && <div className="consultation-library__move">
                   <button type="button" className="ui-btn ui-btn--secondary" disabled={index === 0}
-                    aria-label={t('consultation.templates.moveUp', { field: label })} onClick={() => move(field, -1)}><span aria-hidden="true">↑</span></button>
+                    aria-label={t('consultation.templates.moveUp', { field: label })} onClick={() => move(selected.fields[index], -1)}><span aria-hidden="true">↑</span></button>
                   <button type="button" className="ui-btn ui-btn--secondary" disabled={index === selected.fields.length - 1}
-                    aria-label={t('consultation.templates.moveDown', { field: label })} onClick={() => move(field, 1)}><span aria-hidden="true">↓</span></button>
+                    aria-label={t('consultation.templates.moveDown', { field: label })} onClick={() => move(selected.fields[index], 1)}><span aria-hidden="true">↓</span></button>
                 </div>}
               </li>;
             })}
+            <li>{t('settings:chart.pdf.images')}</li>
           </ol>
         </section>
       </div>

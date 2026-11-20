@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { AnimalTab } from '../hooks/useAnimalTabs';
 import './AnimalTabs.css';
 import { formatDate } from '../i18n/format';
+import { visitTypeOf, type VisitType } from '../utils/visitTypes';
 
 const COMPACT_DATE_STYLE = 'short';
 
@@ -14,15 +15,19 @@ interface Props {
   editing?: boolean;
   saveStatus?: 'saving' | 'saved' | 'notSaved';
   saveStatusTitle?: string;
-  visits?: { id: string; date: string }[];
+  activeVisitType?: VisitType;
+  visits?: { id: string; date: string; visitType?: VisitType }[];
   onVisit?: (id: string) => void;
   onSelect: (id: string) => void;
   onClose: (id: string) => void;
   onAdd: () => void;
 }
 
-export function AnimalTabs({ tabs, activeId, busy, onSelect, onClose, onAdd, showEmpty = true, editing = false, saveStatus, saveStatusTitle, visits = [], onVisit }: Props) {
+export function AnimalTabs({ tabs, activeId, busy, onSelect, onClose, onAdd, showEmpty = true, editing = false, saveStatus, saveStatusTitle, activeVisitType, visits = [], onVisit }: Props) {
   const { t } = useTranslation('app');
+  const visitLabel = (date: string, type?: VisitType) => [
+    date ? formatDate(date) : t('topbar.undatedVisit'), t(`visitTypes.${visitTypeOf(type)}`),
+  ].join(' · ');
   const strip = useRef<HTMLDivElement>(null);
   const add = useRef<HTMLButtonElement>(null);
   const [overflow, setOverflow] = useState({ before: false, after: false });
@@ -111,29 +116,32 @@ export function AnimalTabs({ tabs, activeId, busy, onSelect, onClose, onAdd, sho
           const pid = tab.patientNumber;
           const date = tab.date ? formatDate(tab.date) : t('topbar.undatedVisit');
           const compactDate = tab.date ? formatDate(tab.date, COMPACT_DATE_STYLE) : date;
+          const type = tab.id === activeId ? activeVisitType ?? visits.find(visit => visit.id === activeId)?.visitType : undefined;
+          const typeLabel = type ? t(`visitTypes.${type}`) : '';
           return <div className={`animal-tabs__item${tab.id === activeId ? ` animal-tabs__item--active${editing ? ' animal-tabs__item--editing' : ''}` : ''}`} key={tab.id}>
             <button type="button" className="animal-tabs__select" role="tab" id={`animal-tab-${tab.id}`}
               aria-controls="animal-chart-panel" aria-selected={tab.id === activeId}
               tabIndex={tab.id === activeId || !tabs.some(item => item.id === activeId) && index === 0 ? 0 : -1}
-              disabled={busy} title={t('animalTabs.summary', { name, details: [pid, date].filter(Boolean).join(' · ') })}
+              disabled={busy} title={t('animalTabs.summary', { name, details: [pid, date, typeLabel].filter(Boolean).join(' · ') })}
               onClick={() => { restoreFocus.current = true; onSelect(tab.id); requestAnimationFrame(() => revealRef.current()); }} onKeyDown={event => move(event, index)}>
               <span className="animal-tabs__heading"><strong>{name}</strong>{tab.id === activeId && <span className="animal-tabs__indicators">
                 {editing && <span className="animal-tabs__editing" title={t('topbar.editingTitle')}>{t('topbar.editingShort')}</span>}
                 {saveStatus && <span className={`animal-tabs__save animal-tabs__save--${saveStatus}`} role="status" title={saveStatusTitle}>{t(`status.${saveStatus}`)}</span>}
               </span>}</span>
-              <span className="animal-tabs__details">
+              <span className={`animal-tabs__details${typeLabel ? ' animal-tabs__details--typed' : ''}`}>
                 {pid && <span className="animal-tabs__number">{pid}</span>}
                 <span>
                   <span className="animal-tabs__date">{date}</span>
                   <span className="animal-tabs__date-compact">{compactDate}</span>
                 </span>
+                {typeLabel && <span className="animal-tabs__type">{typeLabel}</span>}
               </span>
             </button>
             {tab.id === activeId && visits.length > 1 && onVisit && <span className="animal-tabs__visit">
               <select className="select--bare" value={activeId} onChange={event => onVisit(event.target.value)} disabled={busy}
                 aria-label={t('topbar.visitSwitchLabel', { n: visits.length })}>
-                {!visits.some(visit => visit.id === activeId) && <option value={activeId}>{date}</option>}
-                {visits.map(visit => <option key={visit.id} value={visit.id}>{visit.date ? formatDate(visit.date) : t('topbar.undatedVisit')}</option>)}
+                {!visits.some(visit => visit.id === activeId) && <option value={activeId}>{visitLabel(tab.date, type)}</option>}
+                {visits.map(visit => <option key={visit.id} value={visit.id}>{visitLabel(visit.date, visit.visitType)}</option>)}
               </select>
               <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.5" /></svg>
             </span>}

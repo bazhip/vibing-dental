@@ -47,7 +47,7 @@ export function featureForRequest(mode: unknown, kind: string): AiFeature {
 /** Request kinds retained by the shared authenticated usage log. */
 export const AI_REQUEST_KINDS = [
   'live', 'review', 'owner_report', 'warmup', 'radiology_report', 'ct_report',
-  'refine_text', 'gp-visit', 'gp-exam', 'consultation', 'discharge',
+  'refine_text', 'gp-visit', 'gp-exam', 'consultation', 'discharge', 'dental-visit',
 ] as const;
 export type AiRequestKind = typeof AI_REQUEST_KINDS[number];
 

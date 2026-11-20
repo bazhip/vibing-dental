@@ -217,7 +217,7 @@
 .chart-library__row:has(.chart-library__visit-main):is(:hover, :focus-within) { background: color-mix(in srgb, var(--text) 5%, var(--surface)); }
 .chart-library__row .chart-library__group-main:hover,
 .chart-library__row .chart-library__visit-main:hover { background: transparent; }
-.chart-library__open-patient { border: 0; padding: 0; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; max-width: 100%; }
+.chart-library__open-patient { border: 0; padding: 0; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
 .chart-library__open-patient:hover { text-decoration: underline; text-underline-offset: 3px; }
 .chart-library__group-main .chart-library__cell--recall:not(.chart-library__cell--empty) { display: flex; align-items: center; gap: 4px; overflow: visible; white-space: normal; }
 .chart-library__recall-date { min-width: 0; }

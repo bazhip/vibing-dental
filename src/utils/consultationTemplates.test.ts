@@ -20,6 +20,12 @@ describe('consultation layouts', () => {
     expect(consultationLayoutFor(patientInfo, library)).toEqual(custom);
   });
 
+  it('keeps the earlier order pinned on a saved starter layout', () => {
+    expect(normalizeConsultationLayout({ id: 'dental-v1', fields: CONSULTATION_FIELDS })).toEqual({
+      id: 'dental-v1', fields: CONSULTATION_FIELDS,
+    });
+  });
+
   it('ignores imported layouts that would drop clinical sections and refuses corrupted library revisions', () => {
     const malformed = { ...custom, fields: CONSULTATION_FIELDS.map(() => 'complaint') };
     expect(normalizeConsultationLayout(malformed)).toBeUndefined();

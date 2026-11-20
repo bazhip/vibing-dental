@@ -135,6 +135,23 @@ describe('ChartLibrary (website)', () => {
     expect(within(visits[1] as HTMLElement).getByRole('button', { name: 'Delete the 2026-10-01 visit for Max' })).toBeInTheDocument();
   });
 
+  it('distinguishes a consultation from a legacy dental procedure on the same date', async () => {
+    const { onOpen, onOpenHistory } = setup(async () => ({
+      rows: [meta({ id: 'dental' }), meta({ id: 'consultation', visit_type: 'consultation' })],
+      hasMore: false,
+    }));
+    fireEvent.click(await screen.findByTitle('2 visits — expand'));
+    expect(screen.getByRole('button', { name: /Nov 12, 2026 · Dental procedure/ })).toBeInTheDocument();
+    const consultation = screen.getByRole('button', { name: /Nov 12, 2026 · Consultation/ });
+    await act(async () => { fireEvent.click(consultation); });
+    expect(onOpen).toHaveBeenCalledWith('consultation');
+    const visit = within(consultation.closest('[role="row"]') as HTMLElement);
+    fireEvent.click(visit.getByRole('button', { name: 'Version history' }));
+    expect(onOpenHistory).toHaveBeenCalledWith('consultation', 'Bella · Nov 12, 2026 · Consultation');
+    await act(async () => { fireEvent.click(visit.getByRole('button', { name: /Delete/ })); });
+    expect(confirm.fn).toHaveBeenCalledWith(expect.objectContaining({ title: 'Delete Bella (Nov 12, 2026 · Consultation)?' }));
+  });
+
   it('search, species, doctor, Due and sort go to the server query', async () => {
     const { listCharts } = setup();
     await screen.findByText('Max');

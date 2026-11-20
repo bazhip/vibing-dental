@@ -1,7 +1,28 @@
 {
   "consultation": {
+    "medications": {
+      "lookup": "查找药物",
+      "drugName": "药品名称",
+      "search": "搜索药品标签",
+      "useSelection": "使用选中的名称",
+      "labelScope": "DailyMed 提供的美国兽药标签。请在完整标签中核对产品和规格。",
+      "searching": "正在搜索 DailyMed…",
+      "searchError": "无法搜索 DailyMed。请重试，或在 DailyMed 上打开搜索。",
+      "noProducts": "未找到该名称对应的美国兽药标签。",
+      "results": "兽药产品",
+      "externalSearch": "在 DailyMed 中打开搜索",
+      "fullLabel": "在 DailyMed 中打开完整标签",
+      "loadingLabel": "正在加载产品标签…",
+      "labelError": "无法在此加载标签。请选择产品重试，或打开完整标签。",
+      "strengths": "标签所列规格",
+      "complexSection": "请在 DailyMed 中阅读本节，查看完整排版和上下文。",
+      "noSections": "请打开完整标签查看产品说明。",
+      "previous": "先前用药清单 · {{date}}",
+      "verify": "复制前，请根据今天的信息核对清单和已记录的用药变更。",
+      "copy": "复制到当前用药"
+    },
     "title": "诊疗",
-    "purpose": "在共享的检查记录和患者病历中，记录本次就诊原因、病史、评估和计划。",
+    "purpose": "记录本次就诊原因、病史、评估和计划。",
     "review": "审核临床病历",
     "guide": "就诊记录指南",
     "openExam": "打开牙科检查",
@@ -36,6 +57,9 @@
         "recheck-v1": "复查"
       },
       "samples": {
+        "consultationCurrentMedications": "主人报告目前正在使用一种药物。",
+        "consultationAdministeredMedications": "就诊期间已给予一种药物。",
+        "consultationMedicationPlan": "已讨论在结果出来后考虑调整药物。",
         "complaint": "因进食不适前来复查。",
         "consultationHistory": "宠物主人表示进食情况有所改善。",
         "consultationAssessment": "兽医将在查看已记录的检查结果后重新评估。",
@@ -55,6 +79,18 @@
   "treatmentRecap": "治疗报告",
   "noTreatment": "尚未记录治疗报告。",
   "fields": {
+    "consultationCurrentMedications": {
+      "label": "当前用药",
+      "helper": "记录已经在使用的药物，并注明信息来源和不确定之处。"
+    },
+    "consultationAdministeredMedications": {
+      "label": "本次就诊给药",
+      "helper": "记录本次实际给药。已知时请注明剂量、给药途径和时间。"
+    },
+    "consultationMedicationPlan": {
+      "label": "用药调整与处方",
+      "helper": "记录处方和开始、继续、暂停、停用或调整药物的决定。保留暂定计划的条件。"
+    },
     "complaint": {
       "label": "就诊原因",
       "helper": "与本次就诊的患者详细信息一同共享。"

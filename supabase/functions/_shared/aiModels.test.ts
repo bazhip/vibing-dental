@@ -28,6 +28,12 @@ describe('AI model per feature', () => {
     expect(featureForRequest(undefined, '')).toBe('live');
   });
 
+  it('keeps dental supplemental requests in authenticated review usage', () => {
+    expect(AI_REQUEST_KINDS).toContain('dental-visit');
+    expect(featureForRequest('review', 'dental-visit')).toBe('review');
+    expect(usesReviewSettings('review', 'dental-visit')).toBe(true);
+  });
+
   it('keeps the server allow-list and the admin panel in sync', () => {
     expect([...ALLOWED_AI_MODELS].sort()).toEqual(AI_MODEL_CHOICES.map((c) => c.id).sort());
     expect([...AI_FEATURES].sort()).toEqual(AI_FEATURE_INFO.map((f) => f.id).sort());

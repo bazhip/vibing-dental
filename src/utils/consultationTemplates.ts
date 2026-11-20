@@ -6,6 +6,22 @@ export const CONSULTATION_FIELDS = [
 ] as const;
 export type ConsultationField = typeof CONSULTATION_FIELDS[number];
 
+const MEDICATION_SECTION: Partial<Record<ConsultationField,
+  'consultationCurrentMedications' | 'consultationAdministeredMedications' | 'consultationMedicationPlan'>> = {
+  consultationHistory: 'consultationCurrentMedications',
+  gpDiagnostics: 'consultationAdministeredMedications',
+  consultationPlan: 'consultationMedicationPlan',
+};
+export const CONSULTATION_MEDICATION_FIELDS = Object.values(MEDICATION_SECTION);
+
+/** Medication fields stay beside their parent sections in saved layouts. */
+export function consultationDocumentFields(fields: readonly ConsultationField[]) {
+  return fields.flatMap(field => {
+    const medications = MEDICATION_SECTION[field];
+    return medications ? [field, medications] : [field];
+  });
+}
+
 export interface ConsultationLayout {
   id: string;
   name?: string;
@@ -24,7 +40,10 @@ export interface ConsultationLibrary {
 
 export const CONSULTATION_TEMPLATE_LIMIT = 24;
 export const CONSULTATION_TEMPLATE_NAME_LIMIT = 100;
-export const DENTAL_CONSULTATION: ConsultationLayout = { id: 'dental-v1', fields: CONSULTATION_FIELDS };
+export const DENTAL_CONSULTATION: ConsultationLayout = {
+  id: 'dental-v1',
+  fields: ['complaint', 'consultationHistory', 'gpPhysicalExam', 'gpVitals', 'gpDiagnostics', 'consultationAssessment', 'consultationPlan'],
+};
 export const CONSULTATION_STARTERS = {
   'dental-v1': DENTAL_CONSULTATION,
   'soap-v1': {
@@ -33,7 +52,7 @@ export const CONSULTATION_STARTERS = {
   },
   'recheck-v1': {
     id: 'recheck-v1',
-    fields: ['consultationHistory', 'complaint', 'consultationAssessment', 'gpVitals', 'gpPhysicalExam', 'gpDiagnostics', 'consultationPlan'],
+    fields: ['consultationHistory', 'complaint', 'gpVitals', 'gpPhysicalExam', 'gpDiagnostics', 'consultationAssessment', 'consultationPlan'],
   },
 } as const satisfies Record<string, ConsultationLayout>;
 
@@ -44,13 +63,15 @@ export const EMPTY_CONSULTATION_LIBRARY: ConsultationLibrary = { defaultId: DENT
 
 export function normalizeConsultationLayout(value: unknown): ConsultationLayout | undefined {
   if (!value || typeof value !== 'object' || !('id' in value) || typeof value.id !== 'string') return;
-  if (isConsultationStarter(value.id)) return CONSULTATION_STARTERS[value.id];
+  const fields = 'fields' in value ? value.fields : undefined;
+  const complete = Array.isArray(fields) && fields.length === CONSULTATION_FIELDS.length
+    && CONSULTATION_FIELDS.every(field => fields.includes(field));
+  if (isConsultationStarter(value.id)) {
+    return complete ? { id: value.id, fields: [...fields] as ConsultationField[] } : CONSULTATION_STARTERS[value.id];
+  }
   if (!/^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/u.test(value.id)) return;
   if (!('name' in value) || typeof value.name !== 'string' || [...value.name].length > CONSULTATION_TEMPLATE_NAME_LIMIT || !value.name.trim()) return;
-  if (!('fields' in value)) return;
-  const fields = value.fields;
-  if (!Array.isArray(fields) || fields.length !== CONSULTATION_FIELDS.length
-    || !CONSULTATION_FIELDS.every(field => fields.includes(field))) return;
+  if (!complete) return;
   return { id: value.id, name: value.name.trim(), fields: [...fields] as ConsultationField[] };
 }
 

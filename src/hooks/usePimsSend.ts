@@ -93,7 +93,7 @@ export function usePimsSend({
   transport, note, stored, chartSnapshotPicture, hasChartPicture, chartId, patientName, patientNumber, sentAt, onSent, open = true,
   patientMatcher = patientsMatch, savedImage = null,
 }: UsePimsSendOptions) {
-  const { t, i18n } = useTranslation(['pims', 'media', 'app', 'forms', 'common']);
+  const { t, i18n } = useTranslation(['pims', 'media', 'app', 'forms', 'common', 'visitDocumentation']);
   const mounted = React.useRef(true);
   const authVersion = React.useRef(0);
   const live = React.useRef({ chartId, savedImage, open, patientName, patientNumber });

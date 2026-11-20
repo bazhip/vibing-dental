@@ -10,6 +10,7 @@ const mocks = vi.hoisted(() => ({
   load: vi.fn(),
   consultationEnabled: false,
   independentPanel: vi.fn(),
+  offscreen: vi.fn(),
   confirm: vi.fn(async (_o: unknown) => true),
   transport: { ping: vi.fn(), inspect: vi.fn(), send: vi.fn(), diagnose: vi.fn(), appointments: vi.fn(), startChart: vi.fn(), takePendingPatient: vi.fn(), noteAutofill: vi.fn(), physicalExam: vi.fn() },
   supabase: null as unknown,
@@ -18,7 +19,10 @@ const mocks = vi.hoisted(() => ({
 vi.mock('../../utils/chartQueries', () => ({ loadChartSnapshot: mocks.load }));
 vi.mock('./internalTransport', () => ({ internalTransport: mocks.transport }));
 vi.mock('./OffscreenChartPicture', () => ({
-  useOffscreenChartPicture: () => ({ element: null, render: async () => null, hasDiagrams: false }),
+  useOffscreenChartPicture: (snapshot: unknown) => {
+    mocks.offscreen(snapshot);
+    return { element: null, render: async () => null, hasDiagrams: false };
+  },
 }));
 vi.mock('../../hooks/usePimsFieldMap', () => ({
   usePimsFieldMap: () => ({ map: effectiveMap(null), save: async () => {}, reset: async () => {} }),
@@ -90,11 +94,13 @@ const info = (patientName: string | null, patientNumber: string | null = null): 
 
 type OpenOpts = {
   stored?: boolean; fresh?: boolean; ezyvet?: string | null; ezyvetNumber?: string | null; chartName?: string; ownerName?: string; sentAt?: string | null;
+  visitType?: 'dental' | 'consultation';
 } & Partial<React.ComponentProps<typeof ChartSend>>;
 
-function open({ stored, fresh, ezyvet, ezyvetNumber = null, chartName, ownerName, sentAt, ...props }: OpenOpts = {}) {
+function open({ stored, fresh, ezyvet, ezyvetNumber = null, chartName, ownerName, sentAt, visitType, ...props }: OpenOpts = {}) {
   const opts = { stored, ezyvet, chartName, sentAt };
   const snapshot = normalizeSnapshot(rawData(chartName ?? 'Bella') as never);
+  if (visitType) snapshot.patientInfo.visitType = visitType;
   if (ownerName !== undefined) snapshot.patientInfo.ownerName = ownerName;
   if (opts.stored) {
     snapshot.recordNote = { text: 'My edited note', source: 'edited', lng: 'en', basedOn: fresh ? recordNoteBasis(snapshot) : 'x' };
@@ -190,7 +196,13 @@ describe('ChartSend', () => {
     expect((note as HTMLTextAreaElement).value).toContain('Bella');
   });
 
-  it('uses the saved consultation layout for the record note, copy, mapped paste, and grouped transfer', async () => {
+  it('names the generated consultation heading in the field mappings', async () => {
+    open({ visitType: 'consultation' });
+    expect(await screen.findByRole('combobox', { name: 'Consultation' })).toBeInTheDocument();
+    expect(screen.queryByRole('combobox', { name: 'Dental procedure' })).not.toBeInTheDocument();
+  });
+
+  it('uses the legacy consultation layout for the record note, copy, mapped paste, and grouped transfer', async () => {
     const { loadChartSnapshot } = await vi.importActual<typeof import('../../utils/chartQueries')>('../../utils/chartQueries');
     const patient = rawData('Bella');
     const readChart = vi.fn(async () => ({ data: {
@@ -266,14 +278,15 @@ describe('ChartSend', () => {
     const createTab = vi.fn(async () => undefined);
     vi.stubGlobal('chrome', { tabs: { create: createTab } });
     try {
-      open({ sendFlag: 'off' });
+      open({ sendFlag: 'off', visitType: 'consultation' });
       fireEvent.click(await screen.findByRole('button', { name: 'Open consultation' }));
       expect(createTab).toHaveBeenCalledWith({ url: `${WEB_APP_ORIGIN}/#/chart/${chart.id}/consultation` });
       expect(mocks.transport.inspect).not.toHaveBeenCalled();
 
       const changed = rawData('Bella');
-      changed.patientInfo.treatmentReport = 'Updated in the web visit.';
-      mocks.load.mockResolvedValueOnce({ snapshot: normalizeSnapshot(changed as never), pimsSentAt: null });
+      const updated = normalizeSnapshot(changed as never);
+      Object.assign(updated.patientInfo, { visitType: 'consultation', consultationPlan: 'Updated in the web visit.' });
+      mocks.load.mockResolvedValueOnce({ snapshot: updated, pimsSentAt: null });
       fireEvent.click(screen.getByText('Record note', { selector: 'summary' }));
       const reload = screen.getByRole('button', { name: 'Reload saved note' });
       reload.focus();
@@ -287,11 +300,30 @@ describe('ChartSend', () => {
     }
   });
 
-  it('keeps consultation actions hidden when the practice has not enabled Consultation', async () => {
+  it('keeps the dental note reload available without opening a consultation from a legacy dental visit', async () => {
+    mocks.consultationEnabled = true;
     open({ sendFlag: 'off' });
     await screen.findByLabelText('Record note');
     expect(screen.queryByRole('button', { name: 'Open consultation' })).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: 'Reload saved note', hidden: true })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByText('Record note', { selector: 'summary' }));
+    expect(screen.getByRole('button', { name: 'Reload saved note' })).toBeInTheDocument();
+  });
+
+  it('keeps a saved consultation available for note transfer without dental-only tools', async () => {
+    mocks.supabase = { auth: { onAuthStateChange: (callback: (event: string, session: unknown) => void) => {
+      callback('INITIAL_SESSION', { user: { id: 'user' } });
+      return { data: { subscription: { unsubscribe: vi.fn() } } };
+    } } };
+    open({ visitType: 'consultation', stored: true, fresh: true });
+    const note = await screen.findByLabelText<HTMLTextAreaElement>('Record note');
+    expect(note.value).toBe('My edited note');
+    expect(screen.getByRole('button', { name: 'Open consultation' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Copy all' })).toBeInTheDocument();
+    expect(await screen.findByRole('button', { name: 'Fill an open PIMS note' })).toBeInTheDocument();
+    expect(mocks.offscreen).toHaveBeenLastCalledWith(null);
+    expect(mocks.independentPanel).not.toHaveBeenCalled();
+    await send();
+    expect(mocks.transport.send.mock.calls[0][0].items).toEqual([expect.objectContaining({ text: 'My edited note' })]);
   });
 
   it('blocks note transfer during a failed reload without disabling unrelated review panels', async () => {
@@ -308,7 +340,7 @@ describe('ChartSend', () => {
     fireEvent.click(reload);
     expect(send).toBeDisabled();
     expect(screen.getByRole('button', { name: 'Copy all' })).toBeDisabled();
-    const otherControl = screen.getByRole('button', { name: 'Open consultation' });
+    const otherControl = screen.getByRole('button', { name: /Back to charts/ });
     otherControl.focus();
     await act(async () => fail(new Error('Failed to fetch')));
     expect(screen.getByRole('alert')).toBeInTheDocument();
@@ -522,7 +554,7 @@ it.each(['filled', 'unknown'])('handles a %s note autofill outcome and keeps nav
       ? { state: 'fields', ...destination, fields: ['Notes'] } : request.operation === 'prepare'
         ? { state: 'prepared', ...destination, field: 'Notes', ticket: 'ticket', existing_characters: 0, expires_at: new Date(Date.now() + 60_000).toISOString() }
         : new Promise(resolve => { finish = resolve; }));
-  const onBusyChange = vi.fn(), onSent = vi.fn(); open({ onBusyChange, onSent });
+  const onBusyChange = vi.fn(), onSent = vi.fn(); open({ onBusyChange, onSent, visitType: 'consultation' });
   mocks.transport.inspect.mockResolvedValue({ tab: { id: 7, title: 'Open encounter' }, candidates: 1, fields: [], status: { state: 'notConsult', provider: 'pulse', patientName: null, patientNumber: null, consult: null } });
   fireEvent.click(await screen.findByRole('button', { name: 'Fill an open PIMS note' }));
   await screen.findByRole('option', { name: /Open encounter/ });
@@ -543,8 +575,9 @@ it.each(['filled', 'unknown'])('handles a %s note autofill outcome and keeps nav
     const warning = 'The outcome is unknown. Check PIMS before preparing another attempt.';
     await screen.findByText(warning);
     const changed = rawData('Bella');
-    changed.patientInfo.treatmentReport = 'Web edits after an uncertain transfer.';
-    mocks.load.mockResolvedValueOnce({ snapshot: normalizeSnapshot(changed as never), pimsSentAt: null });
+    const updated = normalizeSnapshot(changed as never);
+    Object.assign(updated.patientInfo, { visitType: 'consultation', consultationPlan: 'Web edits after an uncertain transfer.' });
+    mocks.load.mockResolvedValueOnce({ snapshot: updated, pimsSentAt: null });
     fireEvent.click(screen.getByRole('button', { name: 'Reload saved note' }));
     await waitFor(() => expect(screen.getByLabelText<HTMLTextAreaElement>('Record note').value).toContain('Web edits'));
     expect(screen.getByText(warning)).toBeInTheDocument();
