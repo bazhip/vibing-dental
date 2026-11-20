@@ -24,6 +24,10 @@
     "practice": "Rendelő és támogatás"
   },
   "images": {
+    "consultationBuilder": "Konzultációs sablonszerkesztő egyválaszos mezővel és két lehetőséggel.",
+    "attachmentNames": "Röntgenfelvételek előnézete az alsó szélen megjelenő eredeti fájlnevekkel.",
+    "imagingTemplates": "A Képalkotás szakasz külön mezőkkel a röntgenlelet és a CT-lelet szerkesztéséhez.",
+    "dischargeTemplates": "A hazabocsátási sablon szerkesztője egy fiktív viziten, megnyitott „Szakasz hozzáadása” választóval.",
     "consultationMedicationHistory": "Jelenlegi gyógyszerek az alkalmazásban megjelenő állatgyógyászati tájékoztatóval és a teljes forrás hivatkozásával.",
     "consultationMedicationReview": "A konzultációs diktálás áttekintése külön gyógyszerjavaslatokkal és az átirat megfelelő részleteivel.",
     "charting": "Minta fogászati lap számozott fogakkal és a leletek táblázatával.",
@@ -34,6 +38,7 @@
     "start": "Minta páciensnézet a vizit fülével, a szakaszok menüjével és a páciens adataival.",
     "patients": "Korábbi fogászati beavatkozások és konzultációk a beteg közös előzményeiben, egy kiválasztott vizittel.",
     "exam": "A szájüregi vizsgálat táblázata Normális és Rendellenes választással, valamint megjegyzéssel.",
+    "examCustomize": "A vizsgálat testreszabási ablaka az alapértelmezett mezőkkel és az elrendezés szerkesztésére szolgáló vezérlőkkel.",
     "viewer": "Képnézegető ablak- és szintbeállításokkal, illetve letöltéssel egy szintetikus DICOM-fájlon.",
     "treatment": "Kezelési jelentés a mentett sablonokkal és alattuk a szerkeszthető jelentéssel.",
     "preferences": "Kórlapbeállítások az elrendezéssel, az automatikus mentéssel és a tasakmélység rögzítésével.",
@@ -41,7 +46,7 @@
     "by-number": "A Foganként nézet számozott diagramján a 108-as Triadan-számú fog van kijelölve, mellette az adott foghoz tartozó leletek láthatók.",
     "imagingSettings": "A Képalkotás és PDF beállításai a lelet nyelvével és a PDF-be kerülő elemek alapbeállításaival.",
     "consultationReview": "A konzultáció Képek szakasza a Képek hozzáadása vezérlővel és egy példaminiatűrrel.",
-    "consultationTemplatePreview": "A sablonszerkesztő egy fiktív konzultáció szakaszának megnyitott beállításaival.",
+    "consultationTemplatePreview": "A konzultációs sablon szerkesztője egy fiktív viziten, megnyitott „Szakasz hozzáadása” választóval.",
     "consultationRecordNote": "Konzultációs jegyzet a PDF letöltése és a Másolás gombbal.",
     "dentalConsultation": "Az Éber szájüregi vizsgálat mező egy fiktív fogászati konzultációban.",
     "dictationCheck": "A diktálási panel rövid szünetet tart a fogászati lap ellenőrzése előtt. A „Folytatás” ugyanazt a diktálást folytatja."
@@ -71,7 +76,7 @@
       "sections": {
         "first": {
           "title": "Páciens keresése",
-          "text": "A plusz gombbal nyissa meg a betegválasztót. Azonos nevek esetén ellenőrizze a beteg azonosítóját. Folytasson egy meglévő vizitet, vagy válassza az Új vizit lehetőséget, és a kezdés előtt ellenőrizze a típust."
+          "text": "A plusz gombbal nyissa meg a betegválasztót. Azonos nevek esetén ellenőrizze a beteg azonosítóját. Folytasson egy meglévő vizitet, vagy válassza az Új vizit lehetőséget, és a kezdés előtt ellenőrizze a típust.\n\nA páciensek vagy a kontrollvizsgálatok listája felett használja a keresőt és a szűrőket. Ha nincs találat, válassza a „Szűrők törlése” lehetőséget a találatok alatt. A kontrollvizsgálatoknál továbbra is csak az esedékes vizitek láthatók. Ha nem töltődik be a lista, válassza az „Újrapróbálkozás” lehetőséget."
         },
         "second": {
           "title": "Váltás a vizitek és a pácienslapok között",
@@ -93,7 +98,7 @@
         },
         "second": {
           "title": "Leletek dokumentálása a Diagnózis szakaszban",
-          "text": "Válassza ki az érintett fogat, és jelölje a kezelés előtti elváltozásokat vagy a már hiányzó fogakat. Szükség szerint adjon meg fogászati kódokat és rövid megjegyzéseket. A kódjegyzékben ellenőrizheti a kiválasztott kódot. Az eszköztár feliratai az ikonok alatt találhatók. A „Megjegyzés” eszközzel egy foghoz társíthat megjegyzést, a „Szabad megjegyzés” eszközzel pedig bárhol elhelyezheti az ábrán. Ha kevés a hely, a Szabad megjegyzés felirata Szabad alakra rövidül."
+          "text": "Válassza ki az érintett fogat, és jelölje a kezelés előtti elváltozásokat vagy a már hiányzó fogakat. Szükség szerint adjon meg fogászati kódokat és rövid megjegyzéseket. A kódjegyzékben ellenőrizheti a kiválasztott kódot. Az eszköztár feliratai az ikonok alatt találhatók. A „Megjegyzés” eszközzel egy foghoz társíthat megjegyzést, a „Szabad megjegyzés” eszközzel pedig bárhol elhelyezheti az ábrán. Ha kevés a hely, a Szabad megjegyzés felirata Szabad alakra rövidül.\n\nA „Megjegyzés” eszköz kiválasztásakor a „Megjegyzés betűmérete” beállításai láthatók maradnak. A vizit véglegesítése után a „Diagnózis” és a „Beavatkozás” diagramján a szerkesztőeszközök inaktívak. A nagyítás és a fogszámok megjelenítése továbbra is állítható."
         },
         "third": {
           "title": "Az elvégzett munka dokumentálása a Beavatkozás szakaszban",
@@ -107,11 +112,11 @@
       "sections": {
         "first": {
           "title": "A vizsgálat dokumentálása",
-          "text": "Nyissa meg a „Vizsgálat” szakaszt. Rögzítse az ellenőrzött területek állapotát és a megjegyzéseket. A nem vizsgált területeket hagyja üresen. A vizsgálati területeket a „Testreszabás” alatt kezelheti."
+          "text": "Nyissa meg a „Vizsgálat” szakaszt, majd válassza az „Ép” vagy a „Kóros” lehetőséget minden értékelt területnél. A részleteket a „Megjegyzés” mezőben rögzítse. A nem értékelt területeket hagyja üresen. A képalkotáson kívüli eredményeket és a függőben lévő vizsgálatokat a leletek alatti „Diagnosztika” mezőben rögzítse.\n\nA „Vizsgálat” fejlécében válassza a „Testreszabás” lehetőséget a „Vizsgálat testreszabása” ablak megnyitásához. Az alapértelmezett elrendezés hat szájüregi vizsgálati területet és a „Diagnosztika” mezőt tartalmazza. A(z) „Mező neve” módosításához válasszon ki egy mezőt. A(z) „Mező hozzáadása” gombbal vegyen fel „Vizsgálati terület” típusú, állapotválasztót és megjegyzést tartalmazó mezőt, vagy „Szövegmező” típusú mezőt szabad szöveges feljegyzésekhez. A mezőt a fogantyújánál fogva húzhatja, vagy a fogantyúra lépve a nyílbillentyűkkel mozgathatja.\n\nA mező melletti eltávolítógombbal veheti ki a mezőt az elrendezésből. A(z) „Visszavonás” visszaállítja a mezőt. A beépített mezőket a „Mező hozzáadása” gombbal is visszaállíthatja. A rögzített leletek az eltávolítás után is láthatók. Válassza a „Mentés” lehetőséget, majd ellenőrizze a mezőneveket és a sorrendet a „Vizsgálat” szakaszban.\n\nA praxis tulajdonosai menthetik a közös elrendezést. A praxis többi tagja megtekintheti az elrendezést. Ha közös praxison kívül dolgozik, az elrendezés a fogászati lap személyes beállításaiba kerül."
         },
         "second": {
           "title": "Érzéstelenítő szerek és idegblokádok rögzítése",
-          "text": "Nyissa meg az „Érzéstelenítés” szakaszt, adja meg az alkalmazott szereket, majd rögzítse az elvégzett idegblokádok helyét és térfogatát. Lezárás előtt ellenőrizze az oldalt és a mértékegységeket az eredeti adatok alapján. Ha külön adott be másik érzéstelenítőt, válassza a „Második idegblokád-sorozat hozzáadása” lehetőséget. A második sorozatban rögzítse a nevét, koncentrációját és az egyes helyeken beadott térfogatot."
+          "text": "Nyissa meg az „Érzéstelenítés” szakaszt, adja meg az alkalmazott szereket, majd rögzítse az elvégzett idegblokádok helyét és térfogatát. Lezárás előtt ellenőrizze az oldalt és a mértékegységeket az eredeti adatok alapján. Ha külön adott be másik érzéstelenítőt, válassza a „Második idegblokád-sorozat hozzáadása” lehetőséget. A második sorozatban rögzítse a nevét, koncentrációját és az egyes helyeken beadott térfogatot.\n\nAz „Érzéstelenítés” fejlécében válassza a „Testreszabás” lehetőséget. A „Megjelenő idegblokádok” csoportban jelölje be a megjelenítendő beépített idegblokádokat. A „További idegblokádok” csoportban a „Idegblokád hozzáadása” gombbal adhat hozzá névvel ellátott blokkot jobb és bal oldali térfogatmezőkkel. A „Egyéni érzéstelenítési mezők” csoportban a „Mező hozzáadása” gombbal például az endotracheális tubushoz adhat megjegyzésmezőt. A saját elemeket a nevükre kattintva nevezheti át vagy távolíthatja el. Zárja be a beállításokat, és ellenőrizze a mezőket az „Érzéstelenítés” szakaszban.\n\nUgyanitt állíthatja be a „Előnyben részesített helyi érzéstelenítőszer” és szükség esetén a „Kiegészítő gyógyszer” értékét. Ha a vizithez még nem rögzített érzéstelenítőt, az „Érzéstelenítés” szakaszban megjelenik egy gyorsgomb. Használata előtt ellenőrizze a gyógyszerneveket és a koncentrációkat. A gyorsgomb rögzíti a beállított gyógyszereket a vizithez."
         },
         "third": {
           "title": "A rögzített leletek ellenőrzése",
@@ -125,7 +130,7 @@
       "sections": {
         "first": {
           "title": "Képek hozzáadása és az előzmények megtekintése",
-          "text": "A weben a „Képek hozzáadása” lehetőséggel tallózhat, behúzhat vagy beilleszthet fájlokat. A támogatott DICOM-fájlok eredetije letölthető marad. A „Képelőzmények” alatt nyissa ki a sort, vagy nyissa meg a korábbi vizitet a képek megtekintéséhez."
+          "text": "A weben a „Képek hozzáadása” lehetőséggel tallózhat, behúzhat vagy beilleszthet fájlokat. A támogatott DICOM-fájlok eredetije letölthető marad. A „Képelőzmények” alatt nyissa ki a sort, vagy nyissa meg a korábbi vizitet a képek megtekintéséhez. A fénykép vagy röntgenfelvétel alján látható az eredeti fájlnév, ha a feltöltéskor el lett mentve. A teljes névhez nyissa meg a képet."
         },
         "second": {
           "title": "A leletbe kerülő képek kiválasztása",
@@ -133,7 +138,7 @@
         },
         "third": {
           "title": "Képalkotó leletek írása",
-          "text": "A képalkotó leleteket a Röntgenlelet vagy a CT-lelet mezőben rögzítse. A többi eredmény és a függő vizsgálatok a Diagnosztika mezőbe kerülnek. Mindezt ugyanabban a fogászati felvételben diktálhatja. Mondja ki a képalkotás módját, és alkalmazás előtt ellenőrizze a javasolt mezőket."
+          "text": "A képalkotó leleteket a „Röntgenlelet” vagy a „CT-lelet” mezőben rögzítse. A többi eredményhez és a függőben lévő vizsgálatokhoz nyissa meg a „Vizsgálat” szakaszt, és használja a „Diagnosztika” mezőt. Mindezt ugyanabban a fogászati felvételben diktálhatja. Mondja ki a képalkotás módját, és alkalmazás előtt ellenőrizze a javasolt mezőket.\n\nA „Képalkotás” fejlécében válassza a „Testreszabás” lehetőséget a „Képalkotás testreszabása” ablak megnyitásához. A praxis tulajdonosai módosíthatják a leletek közös elrendezését. Nyissa le a „Röntgenlelet” vagy a „CT-lelet” mezőt a címke és a „Kezdőszöveg” szerkesztéséhez. Például a technika, a lelet és a vélemény számára adhat meg címsorokat.\n\nMentse a praxis elrendezését, majd nyissa meg a „Képalkotás” szakaszt egy új fogászati viziten a címkék és a kezdőszöveg ellenőrzéséhez. A leletben szerkesztett kezdőszöveg az adott vizithez kerül. A korábban rögzített leletek szövege megmarad.\n\nA leletek nyelvének vagy a PDF alapértelmezett tartalmának módosításához válassza a „Képalkotás és PDF beállításai” lehetőséget a testreszabási ablakban. Közös praxison kívül a „Testreszabás” közvetlenül ezeket a beállításokat nyitja meg."
         }
       }
     },
@@ -169,7 +174,7 @@
         },
         "third": {
           "title": "Újrafelhasználható sablon létrehozása",
-          "text": "Válassza az „Új sablon” lehetőséget, adjon a sablonnak könnyen felismerhető nevet, majd írja be az újrafelhasználható szöveget. A sablonszerkesztőben írjon be egy { karaktert a használható helyőrzők megtekintéséhez. A páciens nevéhez használjon olyan mezőt, mint a {pet}. A mentett sablon kiválasztásakor a ToothOps beilleszti a kórlapon szereplő értékeket, és bekéri a hiányzó adatokat."
+          "text": "Válassza az „Új sablon” lehetőséget, adjon a sablonnak könnyen felismerhető nevet, majd írja be az újrafelhasználható szöveget. A sablonszerkesztőben írjon be egy { karaktert a használható helyőrzők megtekintéséhez. A páciens nevéhez használjon olyan mezőt, mint a {pet}. A mentett sablon kiválasztásakor a ToothOps beilleszti a kórlapon rögzített adatokat. A ki nem töltött kódok a leletben szerkeszthetők.\n\nSablon szerkesztéséhez válassza a mentett sablonok melletti „Sablonok kezelése” lehetőséget. A törléshez jelölje ki a sablont, nyissa meg a „További lehetőségek” menüt, majd válassza a „Törlés” lehetőséget."
         }
       }
     },
@@ -179,15 +184,15 @@
       "sections": {
         "first": {
           "title": "Hazabocsátási utasítások rögzítése",
-          "text": "A hazabocsátásnál soronként egy gyógyszert tüntessen fel az adaggal, a beadás módjával és a kezelés időtartamával. Adja meg az otthoni teendőket és a következő lépéseket. Megosztás előtt ellenőrizze az adatokat."
+          "text": "Az új viziteknél a Felépülés fogászati kezelés után sablon van kijelölve, hacsak a rendelő más alapértelmezést nem választott. A „Hazabocsátás” lapon válasszon a „Jegyzetsablon” alatt felsorolt lehetőségek közül. Sablonváltáskor a már beírt szöveg megmarad. Sablonváltás után az aktuális mezők alatt nyissa le a „Más sablonok mezői” részt. Itt megtalálja az aktív sablonban nem szereplő mezőkbe korábban beírt szöveget.\n\nA hazabocsátásnál soronként egy gyógyszert tüntessen fel az adaggal, a beadás módjával és a kezelés időtartamával. Adja meg az otthoni teendőket és a következő lépéseket. Megosztás előtt ellenőrizze az adatokat.\n\nA sablonok mellett nyissa meg a „Sablonok kezelése” lehetőséget. A rendelő tulajdonosa minden sablont szerkeszthet, beleértve a fogászati felépülési és az általános hazabocsátási sablont. Az „Új sablon” gombbal kezdhet a szokásos szakaszokkal, majd nevet adhat a sablonnak. A „További lehetőségek” alatt másolhat egy sablont, beállíthatja alapértelmezettnek vagy törölheti a rendelő listájáról. Tartson meg legalább egy aktív sablont. A mentett vizitek megőrzik a beosztásukat és a szövegüket.\n\nA sorrend módosításához húzza a sablont a neve melletti fogantyúnál fogva. A fogantyút billentyűzettel is kijelölheti, majd használja a fel vagy le nyílbillentyűt. A sorrend alkalmazásához válassza a „Mentés” lehetőséget.\n\nNyissa meg a „Szakasz hozzáadása” lehetőséget, és a „Szakaszok keresése” mezőben keressen rá egy beépített mezőre vagy a „Rendelői mezők” között található, újra felhasználható mezőre. Ha nincs megfelelő mező, válassza a „Mező létrehozása” lehetőséget, és adja meg a nevét. Másik sablonban az ottani választó „Rendelői mezők” listájából adhatja hozzá ugyanazt a mezőt.\n\nNyissa le a szakaszt és válasszon mezőtípust. A hosszú és rövid szöveg szerkeszthető, az egy válaszhoz választógombok, a több válaszhoz jelölőnégyzetek jelennek meg. Mentés előtt nevezze el a lehetőségeket. A rendelői mezők kezelésénél törölheti a mezőt a választóból. A már használatban lévő mező a sablonokban megmarad.\n\nA sorrend módosításához húzza a mezőt a fogantyújánál fogva a kívánt helyre. Az X gombbal eltávolíthatja a mezőt az aktuális sablonból, a „Visszavonás” gombbal pedig visszateheti. A beállítások megnyitásához válassza ki a mező nevét. Egyéni mező megosztásához kapcsolja be a „Megjelenítés a gazdinak szóló leletben” beállítást az adott sablonban. Ha másik sablonban is használja ezt a mezőt, ott is külön állítsa be a megosztást.\n\nA „Minta előnézete” fiktív tartalommal mutatja a szakaszokat. Válassza a „Mentés” gombot, válassza ki a vizithez tartozó sablont, majd ellenőrizze a klinikai jegyzetet az „Áttekintés és exportálás” ablak „Kórlapi feljegyzés” lapján.\n\nA vizit galériájához válassza a „Képek” lehetőséget a szakasz hozzáadásakor. A sorra kattintva szerkesztheti a címkét és az útmutatást. Húzza a fogantyúnál, vagy használja a nyílbillentyűket. A sor eltávolítása elrejti a galériát a sablonban, és megőrzi a vizit mellékleteit."
         },
         "second": {
           "title": "A gazdinak szóló lelet piszkozatának elkészítése",
-          "text": "A „Gazdinak szóló lelet” alatt válassza ki a leletsablont. Az „Írás MI-vel” a vizit alapján elkészíti a bevezető összefoglaló és az otthoni ápolási tanácsok piszkozatát. Ellenőrizze, hogy a fő megállapítások érthetők-e, és szükség szerint szerkessze a szöveget. Módosítás után a „Létrehozott szöveg visszaállítása” lehetőséggel térhet vissza a mentett piszkozathoz."
+          "text": "A „Gazdinak szóló lelet” szakasz „Leletsablon” részén válasszon egy névvel jelölt sablont ehhez a vizithez, vagy hagyja meg a „Rendelő alapértelmezése” lehetőséget a rendelő aktuális alapértelmezett sablonjának használatához. A kiválasztott sablont pipa jelöli. Hosszabb listánál használja a „Leletsablon” menüt. A rendelő tulajdonosa a „Sablonok kezelése” lehetőséggel szerkesztheti a közös szöveget és elrendezést, az „Új sablon” lehetőséggel pedig újat adhat hozzá. A szerkesztőben válasszon sablont, a „Sablonműveletek” alatt állítsa be alapértelmezettként, majd mentse a sablonokat. Az „Írás MI-vel” a vizit alapján elkészíti a bevezető összefoglaló és az otthoni ápolási tanácsok piszkozatát. Ellenőrizze, hogy a fő megállapítások érthetők-e, és szükség szerint szerkessze a szöveget. Módosítás után a „Létrehozott szöveg visszaállítása” lehetőséggel térhet vissza a mentett piszkozathoz.\n\nA gazdinak szóló lelet szakaszait a fogantyúval húzhatja, vagy fókuszálás után a nyílbillentyűkkel mozgathatja."
         },
         "third": {
           "title": "Előnézet és megosztás",
-          "text": "A gazdinak szóló PDF megnyitásához válassza a „Testreszabás” melletti „Előnézet” lehetőséget. A mellékelni kívánt képeket a „Képalkotás” szakaszban jelölje ki. A címzett és a dokumentum ellenőrzése után az „Áttekintés és exportálás” alatt letöltheti a leletet, vagy ha a funkció elérhető, e-mailben elküldheti. A gazdinak szóló lelet fülén az előnézet fölötti sávból testreszabhatja és letöltheti a PDF-et, illetve ha elérhető, e-mailben is elküldheti."
+          "text": "A PDF megnyitásához válassza az „Előnézet” lehetőséget a gazdinak szóló lelet fejlécében, és ellenőrizze a szöveget és az elrendezést. A mellékelni kívánt képeket a „Képalkotás” szakaszban jelölje ki. A címzett és a dokumentum ellenőrzése után az „Áttekintés és exportálás” alatt letöltheti a leletet, vagy ha a funkció elérhető, e-mailben elküldheti. A gazdinak szóló lelet fülén az előnézet fölötti sávból testreszabhatja és letöltheti a PDF-et, illetve ha elérhető, e-mailben is elküldheti."
         }
       }
     },
@@ -237,7 +242,7 @@
         },
         "second": {
           "title": "Közös rendelőbeállítások kezelése",
-          "text": "A rendelő tulajdonosai kezelhetik a rendelő arculatát, a csapattagok hozzáférését és a gazdinak szóló leletek közös sablonjait. A rendelő ügyfelekhez beállított nyelve határozza meg a gazdinak szóló alapértelmezett szövegeket, köztük a lelet megfogalmazását."
+          "text": "A rendelő tulajdonosai kezelhetik a rendelő arculatát, a csapattagok hozzáférését és a gazdinak szóló leletek közös sablonjait. A rendelő ügyfelekhez beállított nyelve határozza meg a gazdinak szóló alapértelmezett szövegeket, köztük a lelet megfogalmazását.\n\nA weben a rendelő nevét a rendelő beállításainak „Általános” lapján módosíthatja. A módosítás alkalmazásához válassza a névmező alatti „Mentés” lehetőséget, a jelenlegi név visszaállításához pedig a „Mégse” lehetőséget."
         },
         "third": {
           "title": "Az elérhető funkciók ellenőrzése",
@@ -287,7 +292,7 @@
       "sections": {
         "first": {
           "title": "A képnézegető megnyitása",
-          "text": "Válasszon ki egy képet a „Képalkotás” szakaszban vagy egy korábbi viziten. A képnézegető vezérlőivel nagyíthatja, a nézethez igazíthatja vagy elmozdíthatja a képet. Szükség esetén vesse össze a részleteket az eredeti felvétellel."
+          "text": "Válasszon ki egy képet a „Képalkotás” szakaszban vagy egy korábbi viziten. A képnézegető vezérlőivel nagyíthatja, a nézethez igazíthatja vagy elmozdíthatja a képet. Szükség esetén vesse össze a részleteket az eredeti felvétellel. A teljes fájlnév a képnézegető alján látható, ha elérhető."
         },
         "second": {
           "title": "A megjelenítés beállítása",
@@ -323,15 +328,15 @@
       "sections": {
         "first": {
           "title": "A feladathoz tartozó beállítások megkeresése",
-          "text": "Nyissa meg a „Páciens”, „Vizsgálat”, „Érzéstelenítés”, „Fogászati lap kitöltése”, „Diagnózis”, „Beavatkozás” vagy „Képalkotás” szakaszt, és a fejlécben válassza a „Testreszabás” lehetőséget. A „Fogászati lap beállításai” a megfelelő kategóriánál nyílik meg. A bal oldali kategórialistából a párbeszédpanel bezárása nélkül válthat másik területre. A személyes beállítások automatikusan a fiókjába kerülnek, ha elérhető a fiókszinkronizálás, egyébként az aktuális böngésző tárolja őket.\n\nA „Kezelési leírás” szakasz „Testreszabás” gombja a kezelési sablonokat nyitja meg. A „Gazdinak szóló lelet” szakaszban az „Előnézet” melletti „Testreszabás” gomb a gazdinak szóló leletek sablonjait nyitja meg. Ezekben a szerkesztőkben kezelheti a rendelőben újra felhasználható szöveget és elrendezést. Módosítás előtt ellenőrizze, melyik sablon van kijelölve."
+          "text": "Nyissa meg a „Páciens”, „Érzéstelenítés”, „Fogászati lap kitöltése”, „Diagnózis”, vagy „Beavatkozás” szakaszt, és a fejlécben válassza a „Testreszabás” lehetőséget. A „Fogászati lap beállításai” a megfelelő kategóriánál nyílik meg. A bal oldali kategórialistából a párbeszédpanel bezárása nélkül válthat másik területre. A személyes beállítások automatikusan a fiókjába kerülnek, ha elérhető a fiókszinkronizálás, egyébként az aktuális böngésző tárolja őket.\n\nA(z) „Vizsgálat” vagy a „Képalkotás” fejlécében válassza a „Testreszabás” lehetőséget az adott szakasz szerkesztőjének megnyitásához. Itt kezelheti a praxis közös elrendezését. A(z) „Képalkotás” szerkesztőjében a „Képalkotás és PDF beállításai” is megnyitható.\n\nA „Kezelési leírás” szakaszban a mentett sablonok melletti „Sablonok kezelése” nyitja meg a kezelési sablonokat. A „Gazdinak szóló lelet” szakaszban a sablonválasztás melletti „Sablonok kezelése” nyitja meg a gazdinak szóló leletek sablonjait. Ezekben a szerkesztőkben kezelheti a rendelőben újra felhasználható szöveget és elrendezést. Módosítás előtt ellenőrizze, melyik sablon van kijelölve."
         },
         "second": {
           "title": "A fogászati lap beállítási kategóriáinak áttekintése",
-          "text": "A „Fogászati lap beállításai” oldalsávban a lehetőségek a vizit érintett részéhez vannak csoportosítva. A „Fogászati lap kitöltése” kategóriában például beállíthatja a „Táblázat” vagy a „Foganként” nézetet, a tasakmélység rögzítésének módját, a megjelenő méréseket és a pontszám beírása utáni lépést. A diagnosztikai és beavatkozási gyorsgombokat külön állítsa be, mert eltérő diagramokon jelennek meg.\n\nA mezők láthatóságának és a diagram megjelenítésének beállítása segít a kitöltésre összpontosítani. Exportálás előtt nézze át a páciens dokumentációjában rögzített leleteket."
+          "text": "A „Fogászati lap beállításai” oldalsávban a lehetőségek a vizit érintett részéhez vannak csoportosítva. A „Fogászati lap kitöltése” kategóriában például beállíthatja a „Táblázat” vagy a „Foganként” nézetet, a tasakmélység rögzítésének módját, a megjelenő méréseket és a pontszám beírása utáni lépést. A diagnosztikai és beavatkozási gyorsgombokat külön állítsa be, mert eltérő diagramokon jelennek meg.\n\nA „Páciens” mezőinek kiválasztásához nyissa meg a „Testreszabás” lehetőséget. A „Gazdi adatai” és a „Vizit részletei” csoportban jelölje be a megjelenítendő mezőket. Például a „Vizit részletei” csoportban kapcsolhatja be a kontrollvizit dátumát. Zárja be a fogászati lap beállításait, és ellenőrizze a mezőket a „Páciens” szakaszban.\n\nA mezők láthatóságának és a diagram megjelenítésének beállítása segít a kitöltésre összpontosítani. Exportálás előtt nézze át a páciens dokumentációjában rögzített leleteket."
         },
         "third": {
           "title": "Képalkotási alapbeállítások és export testreszabása",
-          "text": "Nyissa meg a „Képalkotás” szakaszt, válassza a „Testreszabás”, majd a „Képalkotás és PDF” lehetőséget a képalkotó lelet nyelvének és a PDF tartalmi alapbeállításainak megadásához. Beillesztheti a képeket, a röntgen- és CT-leleteket, valamint a használt kódokat felsoroló szakaszt. Ha kikapcsolja a diagramleleteket, a kitöltési táblázat kötelező, így a rögzített mérési adatok láthatók maradnak a klinikai dokumentumban.\n\nEgy adott exporthoz nyissa meg az „Áttekintés és exportálás” felületet, válassza a „Klinikai fogászati lap” lapfület, majd a „Testreszabás” lehetőséget. Állítsa be a klinikai PDF színét és a szükséges szakaszokat, majd ellenőrizze az előnézetet. A gazdinak szóló dokumentumhoz használja a hozzá tartozó leletsablont, a képeket pedig egyenként válassza ki a „Képalkotás” szakaszban. A klinikai PDF színének módosítása nem változtatja meg a gazdinak szóló lelet sablonját."
+          "text": "A(z) „Képalkotás” fejlécében válassza a „Testreszabás”, majd a „Képalkotás és PDF beállításai” lehetőséget a leletek nyelvének és a PDF alapértelmezett tartalmának megadásához. Beillesztheti a képeket, a röntgen- és CT-leleteket, valamint a használt kódokat felsoroló szakaszt. Ha kikapcsolja a diagramleleteket, a kitöltési táblázat kötelező, így a rögzített mérési adatok láthatók maradnak a klinikai dokumentumban.\n\nEgy adott exporthoz nyissa meg az „Áttekintés és exportálás” felületet, válassza a „Klinikai fogászati lap” lapfület, majd a „Testreszabás” lehetőséget. Állítsa be a klinikai PDF színét és a szükséges szakaszokat, majd ellenőrizze az előnézetet. A gazdinak szóló dokumentumhoz használja a hozzá tartozó leletsablont, a képeket pedig egyenként válassza ki a „Képalkotás” szakaszban. A klinikai PDF színének módosítása nem változtatja meg a gazdinak szóló lelet sablonját."
         }
       }
     },
@@ -431,15 +436,15 @@
       "sections": {
         "first": {
           "title": "Kezdés meglévő sablonnal",
-          "text": "A(z) Konzultáció részből nyissa meg a(z) Sablonok kezelése ablakot. A praxis tulajdonosai kiválaszthatnak egy kiinduló vagy egy meglévő sablont, majd a(z) Másolat készítése gombbal szerkeszthető másolatot készíthetnek.\n\nA További lehetőségek menüben válassza a Létrehozás példajegyzetből lehetőséget, és illesszen be anonimizált példát. Használjon Markdown-címsorokat vagy kettősponttal záródó címkéket. Válassza a Sablon létrehozása lehetőséget, majd ellenőrizze az átvett címsorokat. A jegyzet szövege nem kerül át."
+          "text": "A konzultációnál nyissa meg a „Sablonok kezelése” lehetőséget. A rendelőtulajdonos bármelyik sablont szerkesztheti, így a fogászati, az általános SOAP és a kontrollsablont is. Válassza az „Új sablon” lehetőséget fogászati kiinduláshoz, vagy a „További lehetőségek” menüben a másolást.\n\nA További lehetőségek menüben válassza a Létrehozás példajegyzetből lehetőséget, és illesszen be anonimizált példát. Használjon Markdown-címsorokat vagy kettősponttal záródó címkéket. Válassza a Sablon létrehozása lehetőséget, majd ellenőrizze az átvett címsorokat. A jegyzet szövege nem kerül át."
         },
         "second": {
           "title": "Szakaszok rendezése és előnézete",
-          "text": "A Szakasz hozzáadása lehetőséggel szabványos vagy egyéni szakaszt adhat hozzá. A szakasz nevére kattintva módosíthatja a feliratot, az útmutatót, a mintát, a javasolt szöveget és a formátumot, alszakasszá teheti vagy eltávolíthatja. A Diktálás beállításaiban adja meg a fogalmazási útmutatót és a részletességet. Ellenőrizze az előnézetet. Javasolt szöveget csak az adott látogatásra alkalmazható esetben használjon.\n\nTöltse ki a(z) Sablon neve mezőt. A szakaszok melletti nyilakkal módosítsa a sorrendet. Válassza a(z) Minta előnézete gombot az új sorrend ellenőrzéséhez egy fiktív viziten. A szerkesztéshez válassza ismét ugyanezt a gombot. Minden sablonban megtalálható a Képek szakasz a jegyzet alatt. A képek a vizithez tartoznak, és sablonváltáskor megmaradnak."
+          "text": "Nyissa meg a „Szakasz hozzáadása” lehetőséget, és a „Szakaszok keresése” mezőben keressen rá egy beépített mezőre vagy a „Rendelői mezők” között található, újra felhasználható mezőre. Ha nincs megfelelő mező, válassza a „Mező létrehozása” lehetőséget, és adja meg a nevét. Másik sablonban az ottani választó „Rendelői mezők” listájából adhatja hozzá ugyanazt a mezőt.\n\nNyissa le a szakaszt és válasszon mezőtípust. A hosszú és rövid szöveg szerkeszthető, az egy válaszhoz választógombok, a több válaszhoz jelölőnégyzetek jelennek meg. Mentés előtt nevezze el a lehetőségeket. A rendelői mezők kezelésénél törölheti a mezőt a választóból. A már használatban lévő mező a sablonokban megmarad.\n\nA mező nevére kattintva módosíthatja a szakasz feliratát, útmutatóját, példaszövegét, javasolt szövegét, formátumát vagy alszakaszbeállítását. Az írási útmutatót és a részletességet a „Diktálás beállításai” alatt adhatja meg. A javasolt szöveget csak akkor használja, ha ellenőrizte, hogy illik az adott vizithez. A sorrend módosításához húzza a mezőt a fogantyújánál fogva a kívánt helyre. Az X gombbal eltávolíthatja a mezőt az aktuális sablonból, a „Visszavonás” gombbal pedig visszateheti.\n\nAdja meg a sablon nevét. A „Minta előnézete” lehetőséggel fiktív viziten ellenőrizheti a mezők sorrendjét. A szerkesztés folytatásához válassza ismét ugyanezt a gombot.\n\nSablonváltás után az aktuális mezők alatt nyissa le a „Más sablonok mezői” részt. Itt megtalálja az aktív sablonban nem szereplő mezőkbe korábban beírt szöveget.\n\nA vizit galériájához válassza a „Képek” lehetőséget a szakasz hozzáadásakor. A sorra kattintva szerkesztheti a címkét és az útmutatást. Húzza a fogantyúnál, vagy használja a nyílbillentyűket. A sor eltávolítása elrejti a galériát a sablonban, és megőrzi a vizit mellékleteit."
         },
         "third": {
-          "title": "Mentés vagy archiválás",
-          "text": "Nyissa meg a(z) További lehetőségek menüt, és válassza a(z) Beállítás a praxis alapértelmezéseként lehetőséget, hogy az új konzultációk ezzel a sablonnal induljanak. A saját sablon elrejtéséhez válassza a(z) Sablon archiválása lehetőséget. Visszaállításhoz kapcsolja be a(z) Archivált sablonok megjelenítése beállítást, válassza ki a sablont, majd válassza a(z) Sablon visszaállítása lehetőséget. A változtatások alkalmazásához válassza a(z) Mentés gombot. A mentett vizitek megőrzik a kiválasztott elrendezést.\n\nA További lehetőségek menüben mozgassa előrébb vagy hátrébb a sablont, ha módosítani szeretné a választási sorrendet az új konzultációknál."
+          "title": "Sablonok mentése, rendezése vagy törlése",
+          "text": "Húzza a sablont a fogantyúnál, vagy fókuszáljon a fogantyúra és használja a nyílbillentyűket. A „További lehetőségek” menüben állíthat be alapértelmezést az új vizitekhez vagy törölhet sablont. Tartson meg legalább egyet. Válassza a mentést. A mentett vizitek megőrzik az elrendezést."
         }
       }
     },

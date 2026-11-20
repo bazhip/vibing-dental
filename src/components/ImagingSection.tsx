@@ -45,6 +45,8 @@ interface ImagingSectionProps {
   species?: Species;
   /** Compact uploader embedded in the consultation note. */
   compact?: boolean;
+  sectionLabel?: string;
+  sectionGuidance?: string;
 }
 
 type QueueItem = { key: string; name: string; status: 'waiting' | 'uploading' | 'failed'; error?: string };
@@ -82,6 +84,8 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
   readOnly = false,
   species = 'canine',
   compact = false,
+  sectionLabel,
+  sectionGuidance,
 }) => {
   const { t } = useTranslation(['media', 'settings']);
   const store = useAttachments(chartId, practiceId, maxImages, dicomEnabled);
@@ -252,7 +256,8 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
 
   return (
     <div ref={rootRef} className={`imaging${compact ? ' imaging--compact' : ' patient-form'}${dragging ? ' imaging--dragging' : ''}`} {...dropProps}>
-      <SectionHeader title={compact ? t('settings:chart.pdf.images') : t('imaging.title')} onCustomize={onCustomize} customizeTitle={t('imaging.customizeTitle')} />
+      <SectionHeader title={sectionLabel || (compact ? t('settings:chart.pdf.images') : t('imaging.title'))}
+        onCustomize={onCustomize} customizeTitle={t('imaging.customizeTitle')}>{sectionGuidance}</SectionHeader>
 
       {onIncludeInPdfChange && (store.maxImages > 0 || store.items.length > 0) && (
         <label
@@ -381,6 +386,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                 ) : (
                   <span className="imaging__thumb imaging__thumb--missing">{t('imaging.missing')}</span>
                 )}
+                {a.fileName && <bdi className="imaging__thumb-filename" title={a.fileName}>{a.fileName}</bdi>}
               </a>
               <div className="imaging__meta">
                 <div className="imaging__card-header">

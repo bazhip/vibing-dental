@@ -299,6 +299,22 @@ describe('Practice settings workspace', () => {
     expect(await leaving!).toBe(true);
   });
 
+  it('keeps a pending name edit and its save controls in General', async () => {
+    const onClose = vi.fn();
+    render(<PracticeSettingsModal open sectionNavigation onClose={onClose}
+      profile={{ ...profile, update: vi.fn().mockRejectedValue(new Error('Fixture unavailable')) }} />);
+    fireEvent.change(screen.getByLabelText('Practice name'), { target: { value: 'Pending name' } });
+    await userEvent.click(screen.getByRole('button', { name: 'Team' }));
+    expect(screen.queryByRole('button', { name: 'Save' })).toBeNull();
+    await userEvent.click(screen.getByRole('button', { name: 'General' }));
+    expect(screen.getByLabelText('Practice name')).toHaveValue('Pending name');
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+    expect(await screen.findByRole('alert')).toBeVisible();
+    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+    expect(screen.getByLabelText('Practice name')).toHaveValue(profile.practiceName);
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
   it('keeps the settings workspace open after saving the practice name', async () => {
     const onClose = vi.fn();
     render(<PracticeSettingsModal open presentation="page" onClose={onClose} profile={profile} />);

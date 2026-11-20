@@ -256,3 +256,11 @@
   .patients-workspace .chart-library__act, .patients-workspace .chart-library__actions-menu summary, .chart-library__due-toggle { min-height: 44px; }
   .patients-workspace .chart-library__group-main .chart-library__cell--recall:not(.chart-library__cell--empty) { flex-basis: 100%; }
 }
+
+.chart-library__load-feedback {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+}
+.chart-library__empty--filtered .chart-library__filter { margin-block-start: 8px; }

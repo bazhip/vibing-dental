@@ -70,7 +70,39 @@
         "gpDiagnostics": "可查看以往的影像资料。"
       },
       "builder": {
+        "inputTypes": {
+          "paragraph": "长文本",
+          "shortText": "短文本",
+          "radio": "单选",
+          "multiselect": "多选"
+        },
+        "choiceOptions": "选项",
+        "choiceOption": "选项 {{n}}",
+        "removeChoice": "移除选项 {{n}}",
+        "choiceHelp": "为每个选项输入一个唯一的名称。",
+        "deletePracticeFieldMessage": "此字段将从诊所字段选择器中移除。现有模板和就诊仍会保留此字段。",
+        "recordedText": "已记录文本",
+        "clearSelection": "清除选择",
+        "choiceLegacyHelp": "清除已记录文本后即可选择选项。",
+        "addChoice": "添加选项",
         "addSection": "添加分节",
+        "searchSections": "搜索分节",
+        "practiceFields": "诊所字段",
+        "builtInFields": "内置字段",
+        "createField": "创建字段",
+        "manageFields": "管理诊所字段",
+        "noFields": "没有匹配的分节",
+        "alreadyAdded": "已添加",
+        "dragField": "调整 {{field}} 的顺序",
+        "removeNamed": "移除 {{field}}",
+        "fieldRemoved": "已移除 {{field}}",
+        "undoRemove": "撤销",
+        "archiveField": "归档字段",
+        "restoreField": "恢复字段",
+        "fieldsFromOtherTemplates": "其他模板中的字段",
+        "sectionMoved": "已将 {{field}} 移到第 {{position}} 位",
+        "fieldName": "字段名称",
+        "noPracticeFields": "尚无诊所字段",
         "chooseSection": "选择分节",
         "customSection": "自定义分节",
         "sectionLabel": "分节名称",
@@ -125,10 +157,55 @@
       }
     }
   },
+  "imaging": {
+    "templates": {
+      "title": "影像报告模板",
+      "starter": "标准报告",
+      "intro": "为放射报告和 CT 报告创建提纲。",
+      "label": "报告模板",
+      "insert": "插入提纲",
+      "inserted": "已插入报告提纲。",
+      "tooLong": "插入提纲会超出报告长度限制。",
+      "settings": "影像与 PDF 设置",
+      "help": "影像模板的使用方法"
+    },
+    "sections": {
+      "technique": "技术",
+      "findings": "所见",
+      "impression": "印象"
+    },
+    "layout": {
+      "title": "自定义影像",
+      "intro": "设置新就诊的影像报告标签和起始文本。",
+      "help": "如何自定义影像",
+      "starterText": "起始文本"
+    }
+  },
   "discharge": {
     "title": "出院",
     "purpose": "记录本次就诊时讨论的用药、护理指导和随访安排。",
-    "review": "审核宠物主人报告"
+    "review": "审核宠物主人报告",
+    "templates": {
+      "title": "出院模板",
+      "starter": "标准出院模板",
+      "help": "出院模板的使用方法",
+      "ownerReport": "纳入宠物主人报告",
+      "intro": "选择各分节在出院记录中的显示方式。",
+      "samples": {
+        "dischargeMedications": "已与宠主核对用药说明。",
+        "dischargeInstructions": "按沟通内容提供软质食物。",
+        "dischargeFollowUp": "已讨论复查安排。"
+      },
+      "recovery": "牙科术后恢复",
+      "activity": {
+        "label": "活动",
+        "helper": "记录讨论过的活动限制。",
+        "sample": "已讨论活动限制。"
+      },
+      "deleteMessage": "保存后，该模板将从诊所列表中移除。已保存的就诊仍保留原模板和文字。",
+      "dragTemplate": "调整模板 {{template}} 的顺序",
+      "templateMoved": "模板 {{template}} 现位于第 {{position}} 位"
+    }
   },
   "sourceNotice": "记录的措辞将保留原样。分享前，请检查面向客户的语言。",
   "treatmentRecap": "治疗报告",

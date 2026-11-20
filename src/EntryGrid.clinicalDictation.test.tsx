@@ -131,6 +131,9 @@ it('persists diagnostics, CT and discharge in the same dental visit, with transc
   expect(persisted().ctReportLanguage).toBe('en');
   expect(storedSources()).toEqual([provenance]);
   navigateSection('imaging');
+  await waitFor(() => expect(document.querySelector('.sidebar-layout__main')).toHaveAttribute('data-active-section', 'imaging'));
+  expect(screen.queryByRole('textbox', { name: 'Diagnostics' })).toBeNull();
+  navigateSection('exam');
   expect(await screen.findByRole('textbox', { name: 'Diagnostics' })).toHaveValue(changes.gpDiagnostics);
 });
 
@@ -156,6 +159,8 @@ it('rejects duplicate or overflowing sources before touching any supplemental fi
 });
 
 it('opens clinical history from a finalized patient visit', async () => {
+  // Exercise the finalized-record entry point separately from the PDF bundle's cold import.
+  await import('./components/PatientRecordHistory');
   localStorage.setItem('vibing-dental.chart.finalizedAt.v1', JSON.stringify('2026-11-18T12:00:00Z'));
   cloud.listPatientVisits.mockResolvedValue([{ id: 'prior', patient_number: '7', patient_name: 'Milo', chart_date: '2025-11-10', updated_at: '2025-11-10T00:00:00Z' }]);
   mount();
@@ -340,9 +345,53 @@ it('applies reviewed awake oral findings and keeps them when the clinician switc
   })));
   expect(persisted()[field]).toBe(text);
   fireEvent.click(screen.getByRole('button', { name: 'General SOAP' }));
+  fireEvent.click(screen.getByText('Fields from other templates'));
   expect(screen.getByRole('textbox', { name: 'Awake oral examination' })).toHaveValue(text);
   expect(() => act(() => live('consultation').onApply({ [field]: 'Stale change' }, source({
     kind: 'consultation', transcript: 'Stale change', fields: [field],
   })))).toThrow(LocalizedError);
   expect(persisted()[field]).toBe(text);
+});
+
+it('shows and applies custom Discharge fields with the Consult flag off', async () => {
+  state.consultationEnabled = false;
+  const id = '11111111-1111-4111-8111-111111111111';
+  const field = 'dischargeCustom_activity';
+  const text = 'Restrict activity as discussed.';
+  localStorage.setItem('vibing-dental.chart.patientInfo.v1', JSON.stringify({
+    ...persisted(), dischargeLayout: { id, name: 'Recovery', fields: [], sections: [{ id: field, label: 'Activity' }] },
+  }));
+  mount();
+  navigateSection('discharge');
+  expect(await screen.findByRole('button', { name: 'Manage templates' })).toBeVisible();
+  expect(screen.getByRole('textbox', { name: 'Activity' })).toHaveValue('');
+  act(() => state.voice?.onDictationComplete?.('en', text));
+  expect(live().snapshot.version).toBe(5);
+  act(() => live().onApply({ [field]: text }, source({ transcript: text, fields: [field] })));
+  expect(screen.getByRole('textbox', { name: 'Activity' })).toHaveValue(text);
+  fireEvent.click(screen.getByRole('button', { name: 'Standard discharge' }));
+  const retained = screen.getByText('Fields from other templates').closest('details');
+  expect(retained).not.toHaveAttribute('open');
+  fireEvent.click(screen.getByText('Fields from other templates'));
+  expect(screen.getByRole('textbox', { name: 'Activity' })).toHaveValue(text);
+});
+
+it('opens the Imaging layout from Customize and keeps Imaging and PDF preferences accessible', async () => {
+  mount();
+  navigateSection('imaging');
+  fireEvent.click(await screen.findByRole('button', { name: 'Customize' }));
+  expect(screen.queryByRole('button', { name: 'Insert outline' })).toBeNull();
+  const templates = await screen.findByRole('dialog', { name: 'Customize Imaging' });
+  expect(within(templates).getByText('Radiographic report')).toBeVisible();
+  expect(within(templates).getByText('CT report')).toBeVisible();
+  fireEvent.click(within(templates).getByRole('button', { name: 'Imaging and PDF settings' }));
+  expect(await screen.findByRole('dialog', { name: 'Chart settings' })).toBeVisible();
+});
+
+it('opens the Exam layout editor from the chart', async () => {
+  mount();
+  navigateSection('exam');
+  expect(await screen.findByRole('textbox', { name: 'Diagnostics' })).toBeVisible();
+  fireEvent.click(screen.getByRole('button', { name: 'Customize' }));
+  expect(await screen.findByRole('dialog', { name: 'Customize Exam' })).toBeVisible();
 });

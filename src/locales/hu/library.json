@@ -11,6 +11,7 @@
     "aria": "Fogászati lapok keresése"
   },
   "filters": {
+    "clear": "Szűrők törlése",
     "speciesAria": "Szűrés állatfaj szerint",
     "allSpecies": "Minden állatfaj",
     "doctorAria": "Szűrés orvos szerint",
@@ -117,10 +118,8 @@
   },
   "templates": {
     "chartCodes": "Betegkartonkódok",
-    "chartCodeHelp": "A javaslatokhoz írjon be egy { jelet, vagy válasszon egy kódot alább. A kódok a betegkarton adatait használják, és a hiányzó értékekre rákérdeznek. A kapcsos zárójelben lévő más nevek egyéni mezőket hoznak létre.",
-    "fieldExamples": "Kitölthető mezők például: {Fogszámok}, {A beavatkozás részletei} és {Kontroll dátuma}.",
+    "chartCodeHelp": "A javaslatok megjelenítéséhez írja be a { karaktert, vagy válasszon az alábbi kódok közül. A kódok a kórlapon rögzített adatokat illesztik be. A ki nem töltött kódok a leletben szerkeszthetők.",
     "fieldsInTemplate": "A sablon mezői",
-    "fieldHelp": "Kitölthető mezőhöz írjon rövid utasítást kapcsos zárójelbe, például {Adja meg a fogszámokat}. A sablon használatakor meg kell adnia az értéket.",
     "aria": "Leletsablonok",
     "title": "Leletsablonok",
     "saved": "Mentett sablonok",

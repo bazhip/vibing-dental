@@ -186,7 +186,7 @@
     "patient": {
       "title": "Strona pacjenta",
       "hideRecheck": "Ukryj pole Termin kontroli",
-      "visibilityNote": "Wybierz pola wyświetlane w pustych wizytach. Pola zawierające dane pozostają widoczne."
+      "visibilityNote": "Wybierz pola do wyświetlenia. Wypełnione pola danych opiekuna i technika pozostają widoczne."
     },
     "pdf": {
       "title": "PDF",
@@ -250,8 +250,8 @@
         "procedure": "Zabieg"
       },
       "descriptions": {
-        "patient": "Wybierz, czy na stronie Pacjent ma być widoczny termin kontroli.",
-        "exam": "Wybierz dodatkowe obszary uwzględniane podczas badania jamy ustnej.",
+        "patient": "Wybierz, które pola danych opiekuna i wizyty są widoczne w pustych wizytach.",
+        "exam": "Wybierz i uporządkuj pola badania jamy ustnej.",
         "anesthesia": "Ustaw blokady nerwowe, własne pola i zwykle stosowane leki.",
         "charting": "Ustaw układ karty, pomiary i sposób wprowadzania danych.",
         "diagnosis": "Wybierz wyniki wyświetlane na schemacie rozpoznania i ustaw skróty kodów.",

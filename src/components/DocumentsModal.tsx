@@ -22,6 +22,8 @@ interface DocumentsModalProps {
   ownerPreviewOnly?: boolean;
   /** Clinical chart snapshot (with the live diagram SVGs). */
   chartSnapshot: PreviewSnapshot | null;
+  chartBranding?: PreviewSnapshot['branding'];
+  brandingReady?: boolean;
   chartLifecycle?: PdfExportLifecycle;
   chartOptions?: ChartPdfOptions;
   /** Owner report: off for practices without the feature. */
@@ -73,7 +75,7 @@ const TAB_WHO: Record<DocumentTab, 'documents.chartWho' | 'documents.ownerWho' |
  * just the clinical chart.
  */
 export const DocumentsModal: React.FC<DocumentsModalProps> = ({
-  open, onClose, initialTab, ownerPreviewOnly, chartSnapshot, chartLifecycle, chartOptions, ownerReport, recordNote,
+  open, onClose, initialTab, ownerPreviewOnly, chartSnapshot, chartBranding, brandingReady, chartLifecycle, chartOptions, ownerReport, recordNote,
 }) => {
   const { t } = useTranslation('media');
   const readSaved = (): DocumentTab => {
@@ -120,7 +122,7 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
 
   if (ownerPreviewOnly && ownerReport) {
     if (!open) return null;
-    const preview = <OwnerReportModal {...ownerReport} open viewOnly bare={native} onClose={onClose}
+    const preview = <OwnerReportModal {...ownerReport} open viewOnly bare={native} onClose={onClose} brandingReady={brandingReady}
       diagramSvg={chartSnapshot?.postSvg} species={chartSnapshot?.species} />;
     return native ? (
       <Sheet open={open} onClose={onClose} title={t('documents.ownerTab')} className="ios-sheet--page documents-sheet">
@@ -167,7 +169,7 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
         aria-labelledby="documents-tab-chart"
         hidden={active !== 'chart'}
       >
-        {chartVisited && <PdfPreviewModal open={open} bare onClose={onClose} snapshot={chartSnapshot} lifecycle={chartLifecycle} options={chartOptions} controlsHost={chartControlsHost} />}
+        {chartVisited && <PdfPreviewModal open={open} bare onClose={onClose} snapshot={chartSnapshot} branding={chartBranding} brandingReady={brandingReady} lifecycle={chartLifecycle} options={chartOptions} controlsHost={chartControlsHost} />}
       </div>}
       {ownerReport && (
         <div
@@ -185,6 +187,7 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
               onClose={onClose}
               snapshot={ownerReport.snapshot}
               branding={ownerReport.branding}
+              brandingReady={brandingReady}
               imageRoles={ownerReport.imageRoles}
               chartId={ownerReport.chartId}
               practiceId={ownerReport.practiceId}

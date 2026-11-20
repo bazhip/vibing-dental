@@ -8,6 +8,7 @@ import { isNativeApp } from '../native/platform';
 import { Sheet } from '../ios/Sheet';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { ReportTemplate, UseReportTemplatesReturn } from '../hooks/useReportTemplates';
+import './VisitDocumentationSection.css';
 
 interface ReportTemplatesModalProps {
   open: boolean;
@@ -26,7 +27,7 @@ interface ReportTemplatesModalProps {
  * Editor for the practice's saved report templates: pick one from the
  * list (or start a new one), edit its name and text, save or delete.
  * Reuses the AI-settings modal chrome; in the iOS app it is an iOS sheet
- * (Close / Save in its bar, Delete at the end of the form).
+ * (Close / Save in its bar).
  */
 export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
   open,
@@ -39,7 +40,7 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
   initialTemplateId = null,
   onLeaveGuardChange,
 }) => {
-  const { t } = useTranslation('library');
+  const { t } = useTranslation(['library', 'visitDocumentation']);
   const refinement = React.useContext(RefineTextContext);
   const refineEnabled = aiEnabled ?? refinement.enabled;
   const asSheet = isNativeApp();
@@ -270,6 +271,16 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
             onChange={(e) => setName(e.target.value)}
           />
         </label>
+        {selectedId && <div className="consultation-library__tools consultation-library__tools--discharge">
+          <details key={selectedId}>
+            <summary>{t('visitDocumentation:consultation.templates.options')}</summary>
+            <div className="consultation-library__menu consultation-library__menu--discharge">
+              <button type="button" className="consultation-library__delete" onClick={handleDelete} disabled={busy}>
+                {t('actions.delete', { ns: 'common' })}
+              </button>
+            </div>
+          </details>
+        </div>}
         <label htmlFor={`${instructionsId}-editor`} className="patient-form__label" style={{ marginTop: '0.75rem' }}>
           {t('templates.bodyLabel')}
         </label>
@@ -338,8 +349,6 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
           ))}
         </ul>}
         <div id={instructionsId} className="treatment-templates__field-help">
-          <p className="patient-form__hint">{t('templates.fieldHelp')}</p>
-          <p className="patient-form__hint">{t('templates.fieldExamples')}</p>
           <div>
             <strong className="patient-form__hint">{t('templates.chartCodes')}</strong>
             <p className="patient-form__hint">{t('templates.chartCodeHelp')}</p>
@@ -384,18 +393,6 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
       >
         <div className="ios-settings-page">
           {templatesBody}
-          {selectedId && (
-            <div className="ios-settings-page__actions">
-              <button
-                type="button"
-                className="diagram-view__action diagram-view__action--danger"
-                onClick={handleDelete}
-                disabled={busy}
-              >
-                {t('actions.delete', { ns: 'common' })}
-              </button>
-            </div>
-          )}
         </div>
       </Sheet>
     );
@@ -414,16 +411,6 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
           {templatesBody}
         </div>
         <footer className="ai-settings-footer">
-          {selectedId && (
-            <button
-              type="button"
-              className="diagram-view__action diagram-view__action--danger"
-              onClick={handleDelete}
-              disabled={busy}
-            >
-              {t('actions.delete', { ns: 'common' })}
-            </button>
-          )}
           <button type="button" className="diagram-view__action" onClick={() => void requestClose()} disabled={busy}>
             {t('actions.close', { ns: 'common' })}
           </button>

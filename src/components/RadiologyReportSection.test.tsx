@@ -288,3 +288,26 @@ it('uses the report Refine control for empty X-ray and CT editors and labels CT 
   expect(ct.getByRole('button', { name: 'Refine' })).toBeDisabled();
   expect(ct.getByRole('button', { name: 'Dictate CT report' }).querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
 });
+
+it.each(['radiology', 'ct'] as const)('displays %s starter text without saving it and preserves recorded reports', kind => {
+  const onChange = vi.fn();
+  const key = kind === 'ct' ? 'ctReport' : 'radiologyReport';
+  const label = 'Clinical report';
+  const starterText = 'Findings:\n';
+  const input = snapshot();
+  const empty = { ...input, patientInfo: { ...input.patientInfo, radiographicFindings: '', [key]: '' } };
+  const props = { chartEditor: true, aiEnabled: true, reportKind: kind, reportLabel: label, starterText, onChange };
+  const { rerender } = render(<RadiologyReportSection {...props} snapshot={empty} />);
+  expect(screen.getByRole('textbox', { name: label })).toHaveValue(starterText);
+  expect(onChange).not.toHaveBeenCalled();
+  expect(screen.queryByRole('button', { name: 'Insert outline' })).toBeNull();
+  expect(screen.getByRole('button', { name: 'Refine' })).toBeDisabled();
+
+  fireEvent.change(screen.getByRole('textbox', { name: label }), { target: { value: starterText + 'Recorded finding.' } });
+  expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ [key]: starterText + 'Recorded finding.' }));
+
+  rerender(<RadiologyReportSection {...props} snapshot={{ ...empty,
+    patientInfo: { ...empty.patientInfo, [key]: 'Previously recorded.' },
+  }} />);
+  expect(screen.getByRole('textbox', { name: label })).toHaveValue('Previously recorded.');
+});

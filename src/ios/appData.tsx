@@ -88,6 +88,7 @@ export interface AppSettings {
     account?(): void;
     practice?(): void;
     chartSettings(section?: SettingsSection): void;
+    customizeExam?(): void;
     reminders?(): void;
     walkthrough(): void;
     whatsNew(): void;

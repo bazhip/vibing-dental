@@ -145,7 +145,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
   viewState,
 }) => {
   const asPage = presentation === 'page';
-  const { t } = useTranslation(['library', 'app']);
+  const { t } = useTranslation(['library', 'app', 'patients']);
   const lng = i18n.language;
   const typeLabel = (visit: CloudChartMeta) => t(`app:visitTypes.${visitTypeOf(visit.visit_type)}`);
   const visitLabel = (visit: CloudChartMeta) => `${visit.chart_date ? formatChartDate(visit.chart_date) : t('visit.undated')} · ${typeLabel(visit)}`;
@@ -156,7 +156,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
     doctorFilter, setDoctorFilter,
     dueOnly, setDueOnly,
     sortKey, sortDir, setSort,
-    groups, hasMore, loadingMore, loadMore,
+    groups, hasMore, loadingMore, loadMore, refresh, filtered, clearFilters,
     dueCount,
     error: libraryError, setError: setLibraryError,
     busyId, setBusyId,
@@ -292,7 +292,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
               aria-label={t('search.aria')}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              autoFocus
+              autoFocus={!asPage}
             />
             <select
               className="chart-library__filter-select"
@@ -335,31 +335,36 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                 ))}
               </select>
             )}
-            <button
+            {!rechecksOnly && <button
               type="button"
               className="chart-library__filter chart-library__filter--primary"
               onClick={onNewPatient}
               title={t('newPatientTitle')}
             >
               {t('newPatient')}
-            </button>
+            </button>}
 
           </div>
 
-          {error && <div className="login-error" role="alert">{error}</div>}
+          {error && <div className="login-error chart-library__load-feedback">
+            <span role="alert">{error}</span>
+            {libraryError?.kind === 'load' && <button type="button" className="chart-library__filter" onClick={() => void refresh()}>
+              {t('patients:retry')}
+            </button>}
+          </div>}
 
-          {groups === null && !error && <div className="chart-library__empty">{t('loading')}</div>}
+          {groups === null && !error && <div className="chart-library__empty" role="status">{t('loading')}</div>}
 
-          {/* Only a truly empty library hides the table. A filter (search,
-              Due, doctor, species) that matches nothing keeps the header
-              row visible so its controls stay reachable. */}
-          {groups !== null && groups.length === 0 && !query && !dueOnly && !doctorFilter && !speciesFilter && (
-            <div className="chart-library__empty">
-              {t('empty')}
+          {groups?.length === 0 && !filtered && (
+            <div className="chart-library__empty" role="status">
+              {rechecksOnly ? <>
+                <strong>{t('patients:rechecks.empty')}</strong>
+                <div>{t('patients:rechecks.emptyHint')}</div>
+              </> : t('empty')}
             </div>
           )}
 
-          {groups !== null && (groups.length > 0 || query || dueOnly || doctorFilter || speciesFilter) && (
+          {groups !== null && (groups.length > 0 || filtered) && (
             <div className="chart-library__table" role="table" aria-label={t('table.aria')}>
               {/* Header uses the exact same row/row-main structure as the
                   data rows so the six columns line up pixel-for-pixel. */}
@@ -379,12 +384,9 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
               </div>
               <div className="chart-library__scroll">
                 {groups.length === 0 && (
-                  <div className="chart-library__empty">
-                    {query
-                      ? t('noMatch.search')
-                      : dueOnly
-                      ? t('noMatch.due')
-                      : t('noMatch.filters')}
+                  <div className="chart-library__empty chart-library__empty--filtered">
+                    <div role="status">{query ? t('noMatch.search') : doctorFilter || speciesFilter ? t('noMatch.filters') : t('noMatch.due')}</div>
+                    <button type="button" className="chart-library__filter" onClick={clearFilters}>{t('filters.clear')}</button>
                   </div>
                 )}
                 {groups.map((g) => {
@@ -552,7 +554,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
             </div>
           )}
         </div>
-        <footer className="chart-library-modal__footer">
+        {!rechecksOnly && <footer className="chart-library-modal__footer">
             <button
               type="button"
               className="chart-library__filter"
@@ -577,7 +579,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                 }
               }}
             />
-        </footer>
+        </footer>}
       </div>
     </div>
   );

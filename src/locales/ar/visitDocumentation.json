@@ -70,7 +70,39 @@
         "gpDiagnostics": "الصور السابقة متاحة للمراجعة."
       },
       "builder": {
+        "inputTypes": {
+          "paragraph": "نص طويل",
+          "shortText": "نص قصير",
+          "radio": "اختيار واحد",
+          "multiselect": "اختيارات متعددة"
+        },
+        "choiceOptions": "الخيارات",
+        "choiceOption": "الخيار {{n}}",
+        "removeChoice": "إزالة الخيار {{n}}",
+        "choiceHelp": "أدخل اسمًا فريدًا لكل خيار.",
+        "deletePracticeFieldMessage": "سيُزال هذا الحقل من منتقي حقول العيادة. تحتفظ القوالب والزيارات الحالية بالحقل.",
+        "recordedText": "النص المسجل",
+        "clearSelection": "مسح الاختيار",
+        "choiceLegacyHelp": "امسح النص المسجل لاختيار أحد الخيارات.",
+        "addChoice": "إضافة خيار",
         "addSection": "إضافة قسم",
+        "searchSections": "البحث في الأقسام",
+        "practiceFields": "حقول العيادة",
+        "builtInFields": "الحقول المدمجة",
+        "createField": "إنشاء حقل",
+        "manageFields": "إدارة حقول العيادة",
+        "noFields": "لا توجد أقسام مطابقة",
+        "alreadyAdded": "تمت الإضافة بالفعل",
+        "dragField": "إعادة ترتيب {{field}}",
+        "removeNamed": "إزالة {{field}}",
+        "fieldRemoved": "تمت إزالة {{field}}",
+        "undoRemove": "تراجع",
+        "archiveField": "أرشفة الحقل",
+        "restoreField": "استعادة الحقل",
+        "fieldsFromOtherTemplates": "حقول من قوالب أخرى",
+        "sectionMoved": "تم نقل {{field}} إلى الموضع {{position}}",
+        "fieldName": "اسم الحقل",
+        "noPracticeFields": "لا توجد حقول للعيادة بعد",
         "chooseSection": "اختيار قسم",
         "customSection": "قسم مخصص",
         "sectionLabel": "تسمية القسم",
@@ -125,10 +157,55 @@
       }
     }
   },
+  "imaging": {
+    "templates": {
+      "title": "قوالب تقارير التصوير",
+      "starter": "تقرير قياسي",
+      "intro": "أنشئ هياكل لتقارير الأشعة والتصوير المقطعي.",
+      "label": "قالب التقرير",
+      "insert": "إدراج الهيكل",
+      "inserted": "تم إدراج هيكل التقرير.",
+      "tooLong": "قد يؤدي إدراج الهيكل إلى تجاوز الحد الأقصى لطول التقرير.",
+      "settings": "إعدادات التصوير وملفات PDF",
+      "help": "كيفية استخدام قوالب التصوير"
+    },
+    "sections": {
+      "technique": "التقنية",
+      "findings": "النتائج",
+      "impression": "الانطباع"
+    },
+    "layout": {
+      "title": "تخصيص التصوير",
+      "intro": "اضبط تسميات التقارير ونص البداية للزيارات الجديدة.",
+      "help": "كيفية تخصيص التصوير",
+      "starterText": "نص البداية"
+    }
+  },
   "discharge": {
     "title": "الخروج",
     "purpose": "سجّلوا الأدوية وتعليمات الرعاية والمتابعة التي نوقشت لهذه الزيارة.",
-    "review": "مراجعة تقرير العميل"
+    "review": "مراجعة تقرير العميل",
+    "templates": {
+      "title": "قوالب الخروج",
+      "starter": "قالب الخروج القياسي",
+      "help": "كيفية استخدام قوالب الخروج",
+      "ownerReport": "التضمين في تقرير المالك",
+      "intro": "اختر كيفية ظهور الأقسام في ملاحظات الخروج.",
+      "samples": {
+        "dischargeMedications": "تمت مراجعة تعليمات الأدوية مع المالك.",
+        "dischargeInstructions": "قدّم طعامًا طريًا وفق ما تمت مناقشته.",
+        "dischargeFollowUp": "تمت مناقشة موعد المتابعة."
+      },
+      "recovery": "التعافي بعد علاج الأسنان",
+      "activity": {
+        "label": "النشاط",
+        "helper": "دوّن قيود النشاط التي نوقشت.",
+        "sample": "تمت مناقشة قيود النشاط."
+      },
+      "deleteMessage": "عند الحفظ سيُزال القالب من قائمة العيادة. تحتفظ الزيارات المحفوظة بقالبها ونصها.",
+      "dragTemplate": "إعادة ترتيب القالب {{template}}",
+      "templateMoved": "القالب {{template}} الآن في الموضع {{position}}"
+    }
   },
   "sourceNotice": "تبقى الصياغة المسجّلة كما أُدخلت. راجعوا لغة العميل قبل المشاركة.",
   "treatmentRecap": "تقرير العلاج",

@@ -1,5 +1,5 @@
 import type { PatientInfo } from '../types';
-import { CONSULTATION_MEDICATION_FIELDS, isCustomConsultationField, normalizeConsultationLayout, normalizeConsultationSections, type ConsultationSection } from './consultationTemplates';
+import { CONSULTATION_MEDICATION_FIELDS, isCustomNoteField, normalizeConsultationLayout, normalizeConsultationSections, type ConsultationSection } from './consultationTemplates';
 
 export const VISIT_DOCUMENT_MAX_LENGTH = 20000;
 export const VISIT_DOCUMENT_FIELDS = [
@@ -27,28 +27,32 @@ export function normalizeVisitDocumentation<T extends Partial<PatientInfo>>(info
     const value: unknown = result[key];
     if (value !== undefined && (typeof value !== 'string' || value.length > VISIT_DOCUMENT_MAX_LENGTH)) delete result[key];
   }
-  const layout = normalizeConsultationLayout(result.consultationLayout);
-  if (layout) result.consultationLayout = layout;
-  else delete result.consultationLayout;
-  if (Array.isArray(result.consultationRetainedSections)) {
+  for (const kind of ['consultation', 'discharge'] as const) {
+    const layoutKey = `${kind}Layout` as const;
+    const retainedKey = `${kind}RetainedSections` as const;
+    const layout = normalizeConsultationLayout(result[layoutKey], kind);
+    if (layout) result[layoutKey] = layout;
+    else delete result[layoutKey];
+    const raw = result[retainedKey];
     const retained = new Map<string, ConsultationSection>();
-    for (const candidate of result.consultationRetainedSections) {
-      const section = normalizeConsultationSections([candidate])?.[0];
-      if (section && !retained.has(section.id)) retained.set(section.id, section);
+    if (Array.isArray(raw)) {
+      for (const candidate of raw) {
+        const section = normalizeConsultationSections([candidate], kind)?.[0];
+        if (section && !retained.has(section.id)) retained.set(section.id, section);
+      }
     }
-    if (retained.size) result.consultationRetainedSections = [...retained.values()];
-    else delete result.consultationRetainedSections;
-  } else delete result.consultationRetainedSections;
-  for (const key of Object.keys(result)) {
-    if (!key.startsWith('consultationCustom_')) continue;
-    const value = result[key as `consultationCustom_${string}`];
-    if (!isCustomConsultationField(key) || typeof value !== 'string' || value.length > VISIT_DOCUMENT_MAX_LENGTH) {
-      delete result[key as `consultationCustom_${string}`];
+    if (retained.size) result[retainedKey] = [...retained.values()];
+    else delete result[retainedKey];
+  }
+  for (const key of Object.keys(result) as Array<keyof PatientInfo>) {
+    const value = result[key];
+    if (key.startsWith('consultationCustom_') || key.startsWith('dischargeCustom_')) {
+      if (!isCustomNoteField(key) || typeof value !== 'string' || value.length > VISIT_DOCUMENT_MAX_LENGTH) delete result[key];
     }
   }
   return result;
 }
 export function hasVisitDocumentation(info: Partial<PatientInfo>): boolean {
   return VISIT_DOCUMENT_FIELDS.some(key => typeof info[key] === 'string' && !!info[key]?.trim())
-    || Object.keys(info).some(key => isCustomConsultationField(key) && !!info[key]?.trim());
+    || Object.keys(info).some(key => isCustomNoteField(key) && !!info[key]?.trim());
 }

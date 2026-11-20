@@ -70,7 +70,39 @@
         "gpDiagnostics": "Frühere Aufnahmen stehen zur Prüfung bereit."
       },
       "builder": {
+        "inputTypes": {
+          "paragraph": "Langtext",
+          "shortText": "Kurztext",
+          "radio": "Einfachauswahl",
+          "multiselect": "Mehrfachauswahl"
+        },
+        "choiceOptions": "Optionen",
+        "choiceOption": "Option {{n}}",
+        "removeChoice": "Option {{n}} entfernen",
+        "choiceHelp": "Geben Sie jeder Option einen eindeutigen Namen.",
+        "deletePracticeFieldMessage": "Dieses Feld wird aus der Praxisauswahl entfernt. Bestehende Vorlagen und Termine behalten das Feld.",
+        "recordedText": "Erfasster Text",
+        "clearSelection": "Auswahl aufheben",
+        "choiceLegacyHelp": "Löschen Sie den erfassten Text, um eine Option auszuwählen.",
+        "addChoice": "Option hinzufügen",
         "addSection": "Abschnitt hinzufügen",
+        "searchSections": "Abschnitte suchen",
+        "practiceFields": "Praxisfelder",
+        "builtInFields": "Integrierte Felder",
+        "createField": "Feld erstellen",
+        "manageFields": "Praxisfelder verwalten",
+        "noFields": "Keine passenden Abschnitte",
+        "alreadyAdded": "Bereits hinzugefügt",
+        "dragField": "{{field}} verschieben",
+        "removeNamed": "{{field}} entfernen",
+        "fieldRemoved": "{{field}} entfernt",
+        "undoRemove": "Rückgängig",
+        "archiveField": "Feld archivieren",
+        "restoreField": "Feld wiederherstellen",
+        "fieldsFromOtherTemplates": "Felder aus anderen Vorlagen",
+        "sectionMoved": "{{field}} an Position {{position}} verschoben",
+        "fieldName": "Name des Feldes",
+        "noPracticeFields": "Noch keine Praxisfelder",
         "chooseSection": "Abschnitt auswählen",
         "customSection": "Eigener Abschnitt",
         "sectionLabel": "Abschnittsbezeichnung",
@@ -125,10 +157,55 @@
       }
     }
   },
+  "imaging": {
+    "templates": {
+      "title": "Vorlagen für Bildgebungsberichte",
+      "starter": "Standardbericht",
+      "intro": "Erstellen Sie Gliederungen für Röntgen- und CT-Berichte.",
+      "label": "Berichtsvorlage",
+      "insert": "Gliederung einfügen",
+      "inserted": "Berichtsgliederung eingefügt.",
+      "tooLong": "Die Gliederung würde die maximale Berichtslänge überschreiten.",
+      "settings": "Bildgebungs- und PDF-Einstellungen",
+      "help": "So funktionieren Bildgebungsvorlagen"
+    },
+    "sections": {
+      "technique": "Technik",
+      "findings": "Befunde",
+      "impression": "Beurteilung"
+    },
+    "layout": {
+      "title": "Bildgebung anpassen",
+      "intro": "Legen Sie die Beschriftungen und den Starttext der Befunde für neue Besuche fest.",
+      "help": "Bildgebung anpassen",
+      "starterText": "Starttext"
+    }
+  },
   "discharge": {
     "title": "Entlassung",
     "purpose": "Dokumentieren Sie die für diesen Besuch besprochenen Medikamente, Pflegehinweise und Nachsorge.",
-    "review": "Bericht für Tierhalter prüfen"
+    "review": "Bericht für Tierhalter prüfen",
+    "templates": {
+      "title": "Entlassungsvorlagen",
+      "starter": "Standardentlassung",
+      "help": "So funktionieren Entlassungsvorlagen",
+      "ownerReport": "In den Besitzerbericht aufnehmen",
+      "intro": "Legen Sie fest, wie die Abschnitte in Entlassungsnotizen angezeigt werden.",
+      "samples": {
+        "dischargeMedications": "Die Hinweise zur Medikamentengabe wurden mit dem Besitzer besprochen.",
+        "dischargeInstructions": "Bieten Sie wie besprochen weiches Futter an.",
+        "dischargeFollowUp": "Ein Kontrolltermin wurde besprochen."
+      },
+      "recovery": "Erholung nach Zahnbehandlung",
+      "activity": {
+        "label": "Aktivität",
+        "helper": "Halten Sie die besprochenen Aktivitätseinschränkungen fest.",
+        "sample": "Aktivitätseinschränkungen wurden besprochen."
+      },
+      "deleteMessage": "Beim Speichern wird die Vorlage aus der Praxisliste entfernt. Gespeicherte Besuche behalten ihre Vorlage und ihren Text.",
+      "dragTemplate": "Vorlage {{template}} verschieben",
+      "templateMoved": "Die Vorlage {{template}} steht jetzt an Position {{position}}"
+    }
   },
   "sourceNotice": "Die eingegebene Formulierung bleibt erhalten. Prüfen Sie vor dem Teilen die Sprache des Tierhalters.",
   "treatmentRecap": "Behandlungsbericht",

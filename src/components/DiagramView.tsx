@@ -134,11 +134,9 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
   // a momentary "let me get closer" gesture, and every chart should open
   // at fit-to-width.
   const [zoom, setZoom] = React.useState(1);
-  // Settings rows for the active tool; each can be folded away.
+  // Drawing settings can collapse independently of the tool.
   const [drawOpen, setDrawOpen] = React.useState(true);
   const drawId = React.useId();
-  const [textOpen, setTextOpen] = React.useState(true);
-  const textId = React.useId();
   const ZOOM_MIN = 0.5;
   const ZOOM_MAX = 3;
   const zoomBy = (factor: number) =>
@@ -219,6 +217,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               type="button"
               className={`diagram-view__tool ${tool === 'draw' ? 'diagram-view__tool--active' : ''}`}
               onClick={() => setTool('draw')}
+              disabled={readOnly}
               aria-pressed={tool === 'draw'}
               title={t('diagramView.draw')}
             >
@@ -229,6 +228,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               type="button"
               className={`diagram-view__tool ${tool === 'mark' ? 'diagram-view__tool--active' : ''}`}
               onClick={() => setTool('mark')}
+              disabled={readOnly}
               aria-pressed={tool === 'mark'}
               title={
                 markMode === 'missing-only'
@@ -248,27 +248,27 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               type="button"
               className={`diagram-view__tool ${tool === 'comment' ? 'diagram-view__tool--active' : ''}`}
               onClick={() => setTool('comment')}
+              disabled={readOnly}
               aria-pressed={tool === 'comment'}
               title={t('diagramView.comment')}
             >
               <Icon name={COMMENT_ICON} size={18} />
               <span className="diagram-view__tool-label">{t('diagramView.comment')}</span>
             </button>
-            {!readOnly && (
-              <button
-                type="button"
-                className="diagram-view__tool diagram-view__free-comment"
-                onClick={addFreeComment}
-                title={freeCommentLabel}
-                aria-label={freeCommentLabel}
-              >
-                <Icon name={FREE_COMMENT_ICON} size={18} />
-                <span className="diagram-view__tool-label diagram-view__free-comment-label" aria-hidden="true">
-                  <span ref={fullFreeCommentRef} style={{ visibility: useShortFreeComment ? 'hidden' : undefined }}>{freeCommentLabel}</span>
-                  {useShortFreeComment && <span className="diagram-view__free-comment-short">{t('diagramView.freeShort')}</span>}
-                </span>
-              </button>
-            )}
+            <button
+              type="button"
+              className="diagram-view__tool diagram-view__free-comment"
+              onClick={addFreeComment}
+              disabled={readOnly}
+              title={freeCommentLabel}
+              aria-label={freeCommentLabel}
+            >
+              <Icon name={FREE_COMMENT_ICON} size={18} />
+              <span className="diagram-view__tool-label diagram-view__free-comment-label" aria-hidden="true">
+                <span ref={fullFreeCommentRef} style={{ visibility: useShortFreeComment ? 'hidden' : undefined }}>{freeCommentLabel}</span>
+                {useShortFreeComment && <span className="diagram-view__free-comment-short">{t('diagramView.freeShort')}</span>}
+              </span>
+            </button>
           </div>
 
           <div
@@ -280,7 +280,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               type="button"
               className="diagram-view__action"
               onClick={history.undo}
-              disabled={!history.canUndo}
+              disabled={readOnly || !history.canUndo}
               aria-label={t('diagramView.undo')}
               title={t('diagramView.undoTitle', { shortcut: IS_MAC ? '⌘Z' : 'Ctrl+Z' })}
             >
@@ -291,7 +291,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               type="button"
               className="diagram-view__action"
               onClick={history.redo}
-              disabled={!history.canRedo}
+              disabled={readOnly || !history.canRedo}
               aria-label={t('diagramView.redo')}
               title={t('diagramView.redoTitle', { shortcut: IS_MAC ? '⌘⇧Z' : 'Ctrl+Y' })}
             >
@@ -412,23 +412,15 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
           )}
           {(readOnly || tool === 'comment' || tool === 'stamp') && (
             <div
-              className={`diagram-view__panel diagram-view__text-panel${textOpen ? '' : ' diagram-view__panel--collapsed'}`}
+              className="diagram-view__panel diagram-view__text-panel"
               role="group"
               aria-label={t('diagramView.textSize.group')}
             >
-              <button
-                type="button"
-                className="diagram-view__panel-toggle"
-                onClick={() => setTextOpen((o) => !o)}
-                aria-expanded={textOpen}
-                aria-controls={textId}
-              >
-                <span className="diagram-view__textsize-label" aria-hidden="true">{t('diagramView.textSize.glyph')}</span>
+              <span className="diagram-view__panel-label" aria-hidden="true">
+                <span className="diagram-view__textsize-label">{t('diagramView.textSize.glyph')}</span>
                 {t('diagramView.textSize.group')}
-                <Icon name={CHEVRON_DOWN_ICON} size={14} />
-              </button>
-              {textOpen && (
-              <div id={textId} className="diagram-view__panel-controls diagram-view__textsize">
+              </span>
+              <div className="diagram-view__panel-controls diagram-view__textsize">
               {TEXT_SIZES.map((s) => (
                 <button
                   type="button"
@@ -443,7 +435,6 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
                 </button>
               ))}
               </div>
-              )}
             </div>
           )}
         </div>

@@ -70,6 +70,21 @@
         "gpDiagnostics": "Można sprawdzić wcześniejsze badania obrazowe."
       },
       "builder": {
+        "inputTypes": {
+          "paragraph": "Długi tekst",
+          "shortText": "Krótki tekst",
+          "radio": "Wybór pojedynczy",
+          "multiselect": "Wybór wielokrotny"
+        },
+        "choiceOptions": "Opcje",
+        "choiceOption": "Opcja {{n}}",
+        "removeChoice": "Usuń opcję {{n}}",
+        "choiceHelp": "Proszę wpisać unikatową nazwę każdej opcji.",
+        "deletePracticeFieldMessage": "Pole zniknie z listy pól placówki. Istniejące szablony i wizyty zachowają to pole.",
+        "recordedText": "Zapisany tekst",
+        "clearSelection": "Wyczyść wybór",
+        "choiceLegacyHelp": "Aby wybrać opcję, proszę usunąć zapisany tekst.",
+        "addChoice": "Dodaj opcję",
         "addSection": "Dodaj sekcję",
         "chooseSection": "Wybierz sekcję",
         "customSection": "Własna sekcja",
@@ -94,7 +109,24 @@
         "importHelp": "Wklej zanonimizowany przykład z nagłówkami Markdown lub etykietami zakończonymi dwukropkiem. Sprawdź nagłówki przed zapisaniem szablonu.",
         "createTemplate": "Utwórz szablon",
         "subsection": "Użyj jako podsekcji",
-        "libraryTooLarge": "Biblioteka szablonów jest za duża. Skróć przykłady, sugerowane treści lub instrukcje dotyczące zapisu."
+        "libraryTooLarge": "Biblioteka szablonów jest za duża. Skróć przykłady, sugerowane treści lub instrukcje dotyczące zapisu.",
+        "searchSections": "Szukaj sekcji",
+        "practiceFields": "Pola placówki",
+        "builtInFields": "Pola wbudowane",
+        "createField": "Utwórz pole",
+        "manageFields": "Zarządzaj polami placówki",
+        "noFields": "Brak pasujących sekcji",
+        "alreadyAdded": "Już dodano",
+        "dragField": "Zmień kolejność pola „{{field}}”",
+        "removeNamed": "Usuń „{{field}}”",
+        "fieldRemoved": "Usunięto pole „{{field}}”",
+        "undoRemove": "Cofnij",
+        "archiveField": "Archiwizuj pole",
+        "restoreField": "Przywróć pole",
+        "fieldsFromOtherTemplates": "Pola z innych szablonów",
+        "sectionMoved": "Pole „{{field}}” przeniesiono na pozycję {{position}}",
+        "fieldName": "Nazwa pola",
+        "noPracticeFields": "Brak pól placówki"
       }
     },
     "dental": {
@@ -128,7 +160,28 @@
   "discharge": {
     "title": "Wypis",
     "purpose": "Zapisz leki, zalecenia dotyczące opieki i dalsze postępowanie omówione podczas wizyty.",
-    "review": "Sprawdź raport dla opiekuna"
+    "review": "Sprawdź raport dla opiekuna",
+    "templates": {
+      "title": "Szablony wypisu",
+      "starter": "Standardowy wypis",
+      "help": "Jak działają szablony wypisu",
+      "ownerReport": "Uwzględnij w raporcie dla opiekuna",
+      "intro": "Ustal, jak mają wyglądać sekcje notatki wypisowej.",
+      "samples": {
+        "dischargeMedications": "Z opiekunem omówiono zalecenia dotyczące leków.",
+        "dischargeInstructions": "Podawać miękką karmę zgodnie z ustaleniami.",
+        "dischargeFollowUp": "Omówiono wizytę kontrolną."
+      },
+      "recovery": "Rekonwalescencja po zabiegu stomatologicznym",
+      "activity": {
+        "label": "Aktywność",
+        "helper": "Proszę zapisać omówione ograniczenia aktywności.",
+        "sample": "Omówiono ograniczenia aktywności."
+      },
+      "deleteMessage": "Po zapisaniu szablon zniknie z listy placówki. Zapisane wizyty zachowają swój szablon i treść.",
+      "dragTemplate": "Zmień kolejność szablonu „{{template}}”",
+      "templateMoved": "Szablon „{{template}}” jest teraz na pozycji {{position}}"
+    }
   },
   "sourceNotice": "Zapisana treść pozostaje w oryginalnym brzmieniu. Przed udostępnieniem sprawdź język komunikacji z opiekunem.",
   "treatmentRecap": "Raport z leczenia",
@@ -191,5 +244,29 @@
     "title": "Badanie ogólne",
     "purpose": "Zapisz parametry życiowe, wyniki badania fizykalnego i ustalenia diagnostyczne z tej wizyty.",
     "review": "Sprawdź dokumentację kliniczną"
+  },
+  "imaging": {
+    "templates": {
+      "title": "Szablony raportów obrazowania",
+      "starter": "Raport standardowy",
+      "intro": "Twórz konspekty raportów RTG i TK.",
+      "label": "Szablon raportu",
+      "insert": "Wstaw konspekt",
+      "inserted": "Wstawiono konspekt raportu.",
+      "tooLong": "Wstawienie konspektu przekroczyłoby limit długości raportu.",
+      "settings": "Ustawienia obrazowania i PDF",
+      "help": "Jak działają szablony obrazowania"
+    },
+    "sections": {
+      "technique": "Technika badania",
+      "findings": "Wyniki badania",
+      "impression": "Wnioski"
+    },
+    "layout": {
+      "title": "Dostosuj obrazowanie",
+      "intro": "Ustaw etykiety i tekst początkowy raportów dla nowych wizyt.",
+      "help": "Jak dostosować obrazowanie",
+      "starterText": "Tekst początkowy"
+    }
   }
 }

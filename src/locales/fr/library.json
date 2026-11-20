@@ -11,6 +11,7 @@
     "aria": "Rechercher dans les dossiers"
   },
   "filters": {
+    "clear": "Effacer les filtres",
     "speciesAria": "Filtrer par espèce",
     "allSpecies": "Toutes les espèces",
     "doctorAria": "Filtrer par vétérinaire",
@@ -119,10 +120,8 @@
   },
   "templates": {
     "chartCodes": "Codes du dossier",
-    "chartCodeHelp": "Saisissez { pour afficher les suggestions ou sélectionnez un code ci-dessous. Les codes utilisent les valeurs du dossier et vous invitent à compléter les valeurs manquantes. Les autres noms entre accolades créent des champs personnalisés.",
-    "fieldExamples": "Exemples de champs à remplir : {Numéros de dents}, {Détails de l’intervention} et {Date du suivi}.",
+    "chartCodeHelp": "Saisissez { pour afficher les suggestions ou choisissez un code ci-dessous. Les codes insèrent les valeurs du dossier. Les codes non renseignés restent modifiables dans le compte rendu.",
     "fieldsInTemplate": "Champs de ce modèle",
-    "fieldHelp": "Placez une courte consigne entre accolades pour créer un champ à renseigner, par exemple {Saisissez les numéros des dents}. La valeur vous sera demandée à l’utilisation du modèle.",
     "aria": "Modèles de compte rendu",
     "title": "Modèles de compte rendu",
     "saved": "Modèles enregistrés",

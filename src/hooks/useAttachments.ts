@@ -26,6 +26,8 @@ export interface Attachment {
   chartId: string;
   path: string;
   caption: string;
+  /** Original upload name, when recorded. */
+  fileName?: string | null;
   kind: AttachmentKind;
   toothTriadan: number | null;
   createdAt: string;
@@ -262,6 +264,7 @@ interface AttachmentRow {
   tooth_triadan: number | null;
   created_at: string;
   original_path?: string | null;
+  file_name?: string | null;
 }
 
 /** Sign a batch of storage paths for display (or download). */
@@ -310,7 +313,8 @@ export async function listAttachmentsForCharts(chartIds: string[]): Promise<Atta
     const part = ids.slice(i, i + CHART_CHUNK);
     // original_path ships via migration; a database without it degrades to
     // "no DICOM originals" rather than losing every image.
-    let { data, error } = await query(`${base}, original_path`, part);
+    let { data, error } = await query(`${base}, original_path, file_name`, part);
+    if (error) ({ data, error } = await query(`${base}, original_path`, part));
     if (error) ({ data, error } = await query(base, part));
     if (error) return null;
     rows.push(...((data ?? []) as unknown as AttachmentRow[]));
@@ -329,6 +333,7 @@ export async function listAttachmentsForCharts(chartIds: string[]): Promise<Atta
     chartId: r.chart_id,
     path: r.path,
     caption: r.caption ?? '',
+    fileName: r.file_name ?? null,
     kind: (r.kind as AttachmentKind) ?? 'photo',
     toothTriadan: r.tooth_triadan ?? null,
     createdAt: r.created_at,
@@ -439,7 +444,7 @@ export function useAttachments(
         () => client.from('charts').select('practice_id').eq('id', chartId).maybeSingle(),
         practiceIdRef.current
       );
-      const { error: rowErr } = await supabase.from('attachments').insert({
+      const attachment = {
         id,
         chart_id: chartId,
         path,
@@ -448,7 +453,12 @@ export function useAttachments(
         caption: caption.trim(),
         practice_id: practiceForImage,
         ...(originalPath ? { original_path: originalPath } : {}),
-      });
+      };
+      let { error: rowErr } = await client.from('attachments').insert({ ...attachment, file_name: file.name || null });
+      // Uploads still work while a database is waiting for the filename migration.
+      if (rowErr && (rowErr.code === 'PGRST204' || rowErr.code === '42703') && rowErr.message.includes('file_name')) {
+        ({ error: rowErr } = await client.from('attachments').insert(attachment));
+      }
       if (rowErr) throw new Error(rowErr.message);
       await load();
       } finally { finishUpload(); }

@@ -1,7 +1,7 @@
 import type { ClinicalDictationField, ClinicalDictationKind, ClinicalDictationSource } from '../types';
 import i18n from '../i18n';
 import { isAppLanguage } from '../i18n/config';
-import { CONSULTATION_MEDICATION_FIELDS, CONSULTATION_SECTION_LIMIT, isCustomConsultationField } from './consultationTemplates';
+import { CONSULTATION_MEDICATION_FIELDS, CONSULTATION_SECTION_LIMIT, isCustomConsultationField, isCustomDischargeField } from './consultationTemplates';
 import { LocalizedError } from './apiErrors';
 
 export const CLINICAL_DICTATION_MAX_SOURCES = 20;
@@ -17,14 +17,15 @@ export const DENTAL_SUPPLEMENT_FIELDS: readonly ClinicalDictationField[] = Objec
 export function isClinicalDictationSource(value: unknown): value is ClinicalDictationSource {
   if (!value || typeof value !== 'object') return false;
   const s = value as ClinicalDictationSource;
+  const isDischarge = s.kind === 'dental-visit' || s.kind === 'discharge';
   const fields = s.kind === 'dental-visit' ? DENTAL_SUPPLEMENT_FIELDS
     : s.kind === 'consultation' ? [...FIELDS, ...CONSULTATION_MEDICATION_FIELDS] : FIELDS;
   return typeof s.id === 'string' && !!s.id.trim() && s.id.length <= 200
     && KINDS.includes(s.kind) && isAppLanguage(s.language)
     && typeof s.transcript === 'string' && !!s.transcript.trim() && s.transcript.length <= CLINICAL_DICTATION_MAX_TRANSCRIPT
     && typeof s.recordedAt === 'string' && s.recordedAt.length <= 100 && Number.isFinite(Date.parse(s.recordedAt))
-    && Array.isArray(s.fields) && s.fields.length <= (s.kind === 'consultation' ? CONSULTATION_SECTION_LIMIT : fields.length)
-    && s.fields.every(f => typeof f === 'string' && (fields.includes(f) || (s.kind === 'consultation' && isCustomConsultationField(f)))) && new Set(s.fields).size === s.fields.length;
+    && Array.isArray(s.fields) && s.fields.length <= (s.kind === 'consultation' ? CONSULTATION_SECTION_LIMIT : isDischarge ? CONSULTATION_SECTION_LIMIT + 2 : fields.length)
+    && s.fields.every(f => typeof f === 'string' && (fields.includes(f) || (s.kind === 'consultation' && isCustomConsultationField(f)) || (isDischarge && isCustomDischargeField(f)))) && new Set(s.fields).size === s.fields.length;
 }
 
 /** Reject entire invalid entries without changing any retained clinical wording. */

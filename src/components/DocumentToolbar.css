@@ -44,14 +44,6 @@
 .document-toolbar__options input[type="checkbox"] { flex: none; accent-color: var(--primary); }
 .document-toolbar__notices:empty { display: none; }
 .document-toolbar__notices { padding: 0 16px 8px; }
-.document-toolbar__options .document-toolbar__template-picker {
-  width: auto;
-  min-width: 0;
-  max-width: min(100%, 20rem);
-  min-height: 40px;
-  text-overflow: ellipsis;
-}
-.document-toolbar__template-name { color: var(--text); font-size: .875rem; overflow-wrap: anywhere; }
 .document-toolbar__note { font-size: .82rem; color: var(--text-muted); margin: 0; }
 .document-toolbar__note--warning { color: var(--ios-warning-label, var(--warning)); }
 .pdf-style-inline { display: flex; gap: 8px; align-items: center; }
@@ -72,6 +64,6 @@
   }
   .documents-modal__controls .document-toolbar__row > .ui-btn { flex-shrink: 0; max-width: 45%; }
   .document-toolbar__group { flex: 1 1 100%; }
-  .document-toolbar__options :is(select, label, .document-toolbar__template-picker) { min-height: 44px; }
+  .document-toolbar__options :is(select, label) { min-height: 44px; }
   .pdf-style-inline input[type="color"] { width: 44px; height: 44px; }
 }

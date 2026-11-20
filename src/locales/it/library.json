@@ -11,6 +11,7 @@
     "aria": "Cerca nelle cartelle"
   },
   "filters": {
+    "clear": "Cancella filtri",
     "speciesAria": "Filtra per specie",
     "allSpecies": "Tutte le specie",
     "doctorAria": "Filtra per veterinario",
@@ -119,10 +120,8 @@
   },
   "templates": {
     "chartCodes": "Codici della cartella",
-    "chartCodeHelp": "Digiti { per visualizzare i suggerimenti o selezioni un codice qui sotto. I codici utilizzano i dati della cartella e Le chiedono di inserire quelli mancanti. Gli altri nomi tra parentesi graffe creano richieste personalizzate.",
-    "fieldExamples": "Esempi di campi da compilare: {Numeri dei denti}, {Dettagli della procedura} e {Data del controllo}.",
+    "chartCodeHelp": "Digiti { per vedere i suggerimenti oppure scelga un codice qui sotto. I codici inseriscono i valori registrati nella cartella. Può modificare i codici rimasti nel referto.",
     "fieldsInTemplate": "Campi di questo modello",
-    "fieldHelp": "Inserisca una breve istruzione tra parentesi graffe per creare un campo da compilare, ad esempio {Inserisca i numeri dei denti}. Il valore verrà chiesto quando userà il modello.",
     "aria": "Modelli di referto",
     "title": "Modelli di referto",
     "saved": "Modelli salvati",

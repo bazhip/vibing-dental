@@ -168,7 +168,8 @@
   "dischargeSource": {
     "dischargeMedications": "Hazabocsátáskor rendelt gyógyszerek",
     "dischargeInstructions": "Hazabocsátási utasítások",
-    "dischargeFollowUp": "Hazabocsátás utáni utánkövetés"
+    "dischargeFollowUp": "Hazabocsátás utáni utánkövetés",
+    "activity": "Tevékenység"
   },
   "homecareTipsRabbit": {
     "hay": "Biztosítson korlátlan mennyiségű fűszénát a fogak természetes kopásának elősegítésére, és a kezelés után kövesse az állatorvosi csapat etetési útmutatását.",

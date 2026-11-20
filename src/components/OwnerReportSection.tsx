@@ -1,5 +1,6 @@
 import { SectionHeader } from './SectionHeader';
 import { RefineTextAction } from './RefineTextAction';
+import { OwnerReportTemplateChoices } from './OwnerReportTemplateChoices';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { confirmDialog, friendlyDetail, toast } from './ui/dialogs';
@@ -19,8 +20,6 @@ import {
 } from '../utils/ownerReport';
 import { MAX_TEMPLATES, type OwnerReportContext } from '../utils/ownerReportConfig';
 
-const NEW_OWNER_TEMPLATE = '__new_owner_template__';
-
 type GeneratedField = 'extractionsText' | 'findingsText' | 'examNotesText';
 
 interface OwnerReportSectionProps {
@@ -39,7 +38,7 @@ interface OwnerReportSectionProps {
   readOnly?: boolean;
   /** Enable drafting and refinement. */
   aiEnabled?: boolean;
-  /** Open the report templates editor ("Customize"). */
+  /** Open the report templates editor. */
   onCustomize?: () => void;
   onNewTemplate?: () => void;
 }
@@ -81,10 +80,7 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
   const values = placeholderValuesFor(snapshot, context, template);
   const introDefault = model.generatedOpening ?? templateIntro(snapshot, template, values);
   const homecareDefault = overrides.generatedHomecare ?? templateHomecareTips(template, values, snapshot.species).join('\n');
-  const templates = context?.config?.templates ?? [];
-  const practiceTemplate = templates.find(tpl => tpl.id === context?.config?.defaultTemplateId) ?? templates[0] ?? template;
-  const canCreateTemplate = !!onNewTemplate && templates.length < MAX_TEMPLATES;
-  const chosenKnown = !!overrides.templateId && templates.some((tpl) => tpl.id === overrides.templateId);
+  const canCreateTemplate = onNewTemplate && !readOnly && (context?.config?.templates.length ?? 0) < MAX_TEMPLATES;
 
   // '' is a deliberate customization ("print nothing here"), so edited
   // state is tracked by presence, not truthiness.
@@ -284,47 +280,32 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
 
   return (
     <section className="patient-form owner-report-editor" ref={editorRef} tabIndex={-1} aria-label={t('section.title')}>
-      <SectionHeader title={t('section.title')} onCustomize={onCustomize} customizeTitle={t('section.customizeTitle')}
+      <SectionHeader title={t('section.title')}
         titleAction={
           <button type="button" className="diagram-view__action" aria-haspopup="dialog" aria-label={t('section.previewButton')} onClick={onPreview}>
             {t('templates.previewShort')}
           </button>
         } />
 
-      <fieldset className="sidebar-layout__fieldset" disabled={readOnly}>
-        <div className="owner-report__template-bar">
-          <label className="patient-form__label owner-report__template-picker">
-            {t('section.templateLabel')}
-            <select
-              className="patient-form__input"
-              value={templates.length > 1 && chosenKnown ? overrides.templateId : ''}
-              disabled={templates.length <= 1 && !canCreateTemplate}
-              onChange={(event) => {
-                const value = event.target.value;
-                if (value === NEW_OWNER_TEMPLATE) onNewTemplate?.();
-                else onOverrideChange('templateId', value || null);
-              }}
-            >
-              <option value="">{t('section.practiceDefault', { name: practiceTemplate.name || t('templates.untitled') })}</option>
-              {templates.length > 1 && templates.map((tpl) => (
-                <option key={tpl.id} value={tpl.id}>
-                  {tpl.language !== 'en'
-                    ? t('section.templateOption', { name: tpl.name, language: t(`languages.${tpl.language}`) })
-                    : tpl.name}
-                </option>
-              ))}
-              {canCreateTemplate && <option value={NEW_OWNER_TEMPLATE}>{t('templates.newName')}</option>}
-            </select>
-          </label>
-          {aiEnabled && !readOnly && (
-            <button type="button" className="diagram-view__action owner-report__draft"
-              title={t('section.writeTitle')} aria-label={t(drafting ? 'section.writing' : 'section.writeWithAi')} disabled={drafting} onClick={() => void writeWithAi()}>
-              <span aria-hidden="true">✨</span>
-              <span role="status">{t(drafting ? 'section.writing' : 'section.writeWithAi')}</span>
-            </button>
-          )}
-        </div>
+      <div className="owner-report__template-bar">
+        <OwnerReportTemplateChoices config={context?.config} templateId={overrides.templateId} followPracticeDefault
+          onSelect={readOnly ? undefined : id => onOverrideChange('templateId', id)}
+          actions={<>
+            {onCustomize && <button type="button" className="diagram-view__action" onClick={onCustomize} title={t('section.customizeTitle')}>
+              {t('consultation.templates.manage', { ns: 'visitDocumentation' })}
+            </button>}
+            {canCreateTemplate && <button type="button" className="diagram-view__action" onClick={onNewTemplate}>{t('templates.newName')}</button>}
+          </>} />
+        {aiEnabled && !readOnly && (
+          <button type="button" className="diagram-view__action owner-report__draft"
+            title={t('section.writeTitle')} aria-label={t(drafting ? 'section.writing' : 'section.writeWithAi')} disabled={drafting} onClick={() => void writeWithAi()}>
+            <span aria-hidden="true">✨</span>
+            <span role="status">{t(drafting ? 'section.writing' : 'section.writeWithAi')}</span>
+          </button>
+        )}
+      </div>
 
+      <fieldset className="sidebar-layout__fieldset" disabled={readOnly}>
         <p className="patient-form__hint">{t('section.intro')}</p>
 
       {summaryBlock}

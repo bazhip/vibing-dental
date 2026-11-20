@@ -247,3 +247,14 @@ it('exports all 28 rabbit teeth and reopens the complete chart without changing 
   expect(parsed.toothData).toEqual(teeth);
   expect(parsed.preDiagram?.marks).toEqual({ 102: 'missing' });
 });
+
+it('prints custom Exam text as a labelled continuation and keeps its chart value', async () => {
+  const textField = { id: 'exam-text-airway', label: 'Airway risk', status: '' as const, comment: 'Observe breathing before discharge.\nCall if effort increases.' };
+  const { bytes, allTexts } = await capture({ ...patient, customExam: [textField] });
+  const runs = allTexts.map(run => run.text);
+  expect(runs.filter(text => text === textField.label)).toHaveLength(1);
+  expect(runs).toContain('Observe breathing before discharge.');
+  expect(runs).toContain('Call if effort increases.');
+  const parsed = await parseDentalChartPDF({ arrayBuffer: async () => bytes.slice().buffer } as File);
+  expect(parsed.patientInfo.customExam).toContainEqual(textField);
+});

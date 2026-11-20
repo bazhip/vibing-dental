@@ -70,7 +70,39 @@
         "gpDiagnostics": "Hay imágenes anteriores disponibles para revisar."
       },
       "builder": {
+        "inputTypes": {
+          "paragraph": "Texto largo",
+          "shortText": "Texto corto",
+          "radio": "Selección única",
+          "multiselect": "Selección múltiple"
+        },
+        "choiceOptions": "Opciones",
+        "choiceOption": "Opción {{n}}",
+        "removeChoice": "Quitar opción {{n}}",
+        "choiceHelp": "Escriba un nombre único para cada opción.",
+        "deletePracticeFieldMessage": "Este campo se quitará del selector de campos de la clínica. Las plantillas y visitas existentes conservan el campo.",
+        "recordedText": "Texto registrado",
+        "clearSelection": "Borrar selección",
+        "choiceLegacyHelp": "Borre el texto registrado para elegir una opción.",
+        "addChoice": "Añadir opción",
         "addSection": "Añadir sección",
+        "searchSections": "Buscar secciones",
+        "practiceFields": "Campos de la clínica",
+        "builtInFields": "Campos integrados",
+        "createField": "Crear un campo",
+        "manageFields": "Gestionar campos de la clínica",
+        "noFields": "No hay secciones coincidentes",
+        "alreadyAdded": "Ya añadido",
+        "dragField": "Reordenar {{field}}",
+        "removeNamed": "Quitar {{field}}",
+        "fieldRemoved": "Se quitó {{field}}",
+        "undoRemove": "Deshacer",
+        "archiveField": "Archivar campo",
+        "restoreField": "Restaurar campo",
+        "fieldsFromOtherTemplates": "Campos de otras plantillas",
+        "sectionMoved": "Se movió {{field}} a la posición {{position}}",
+        "fieldName": "Nombre del campo",
+        "noPracticeFields": "Aún no hay campos de la clínica",
         "chooseSection": "Elegir una sección",
         "customSection": "Sección personalizada",
         "sectionLabel": "Etiqueta de la sección",
@@ -125,10 +157,55 @@
       }
     }
   },
+  "imaging": {
+    "templates": {
+      "title": "Plantillas de informes de diagnóstico por imagen",
+      "starter": "Informe estándar",
+      "intro": "Cree esquemas para los informes radiográficos y de TC.",
+      "label": "Plantilla del informe",
+      "insert": "Insertar esquema",
+      "inserted": "Se insertó el esquema del informe.",
+      "tooLong": "El esquema haría que se superara la longitud máxima del informe.",
+      "settings": "Ajustes de diagnóstico por imagen y PDF",
+      "help": "Cómo funcionan las plantillas de diagnóstico por imagen"
+    },
+    "sections": {
+      "technique": "Técnica",
+      "findings": "Hallazgos",
+      "impression": "Conclusión"
+    },
+    "layout": {
+      "title": "Personalizar diagnóstico por imagen",
+      "intro": "Defina las etiquetas y el texto inicial de los informes para las nuevas visitas.",
+      "help": "Cómo personalizar el diagnóstico por imagen",
+      "starterText": "Texto inicial"
+    }
+  },
   "discharge": {
     "title": "Alta",
     "purpose": "Registre los medicamentos, las instrucciones de cuidado y el seguimiento comentados para esta visita.",
-    "review": "Revisar el informe para el cliente"
+    "review": "Revisar el informe para el cliente",
+    "templates": {
+      "title": "Plantillas de alta",
+      "starter": "Alta estándar",
+      "help": "Cómo funcionan las plantillas de alta",
+      "ownerReport": "Incluir en el informe para el propietario",
+      "intro": "Elija cómo se muestran las secciones en las notas de alta.",
+      "samples": {
+        "dischargeMedications": "Se revisaron las instrucciones de medicación con el propietario.",
+        "dischargeInstructions": "Ofrézcale comida blanda según lo acordado.",
+        "dischargeFollowUp": "Se habló de una cita de seguimiento."
+      },
+      "recovery": "Recuperación dental",
+      "activity": {
+        "label": "Actividad",
+        "helper": "Anote las restricciones de actividad que se hayan comentado.",
+        "sample": "Se comentaron las restricciones de actividad."
+      },
+      "deleteMessage": "Al guardar, se retirará la plantilla de la lista de la clínica. Las visitas guardadas conservan su plantilla y su texto.",
+      "dragTemplate": "Reordenar la plantilla {{template}}",
+      "templateMoved": "La plantilla {{template}} está ahora en la posición {{position}}"
+    }
   },
   "sourceNotice": "El texto registrado se conserva tal como se ha introducido. Revise el idioma del cliente antes de compartirlo.",
   "treatmentRecap": "Informe del tratamiento",

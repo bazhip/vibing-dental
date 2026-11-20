@@ -25,7 +25,9 @@ vi.mock('./PdfPagesPreview', () => ({
 import { OwnerReportModal } from './OwnerReportModal';
 import { OwnerReportSection } from './OwnerReportSection';
 import { OwnerReportCustomize } from './OwnerReportCustomize';
+import { OwnerReportTemplateChoices } from './OwnerReportTemplateChoices';
 import { OwnerReportTemplatesModal } from './OwnerReportTemplatesModal';
+import { ReorderHandle } from './ui/ReorderHandle';
 import { defaultConfig, defaultTemplate, defaultSectionTitle, BUILT_IN_SECTION_IDS, type OwnerReportConfig } from '../utils/ownerReportConfig';
 import { appReportLocale, reportStrings, type ReportLocale } from '../utils/ownerReportI18n';
 import { buildOwnerReportModel, ownerReportChartWording } from '../utils/ownerReport';
@@ -72,6 +74,26 @@ const twoTemplates = (): OwnerReportConfig => ({
   ],
 });
 
+it('localizes the compact owner template picker for large lists', () => {
+  const onSelect = vi.fn();
+  const config = twoTemplates();
+  config.templates.push(...['First follow-up', 'Second follow-up', 'Third follow-up'].map((name, index) => ({ ...defaultTemplate(), id: `extra-${index}`, name })));
+  const { container } = render(<OwnerReportTemplateChoices config={config} followPracticeDefault onSelect={onSelect} />);
+  const picker = screen.getByRole('combobox', { name: '⟦Report template⟧' });
+  expect(picker).toHaveValue('');
+  fireEvent.change(picker, { target: { value: 'extra-2' } });
+  expect(onSelect).toHaveBeenCalledExactlyOnceWith('extra-2');
+  expect(findUntranslated(container, config.templates.map(template => template.name))).toEqual([]);
+});
+
+it('gives the reorder handle a localized accessible name', () => {
+  const label = i18n.t('consultation.templates.builder.dragField', { ns: 'visitDocumentation', field: 'Section' });
+  const { container } = render(<ReorderHandle index={0} label={label}
+    reorder={{ target: undefined, start: vi.fn(), track: vi.fn(), finish: vi.fn(), moveByKey: vi.fn(), dropAt: vi.fn() }} />);
+  expect(screen.getByRole('button', { name: '⟦Reorder Section⟧' })).toHaveAttribute('aria-keyshortcuts', 'ArrowUp ArrowDown');
+  expect(findUntranslated(container)).toEqual([]);
+});
+
 describe('OwnerReportTemplatesModal', () => {
   const props = { open: true, onClose: noop, onSave: vi.fn(async () => {}), canEdit: true, roleKnown: true, branding };
   const allow = [
@@ -99,7 +121,7 @@ describe('OwnerReportTemplatesModal', () => {
 
     custom.defaultTemplateId = 'b';
     rerender(<OwnerReportTemplatesModal {...props} config={custom} />);
-    fireEvent.change(screen.getByRole('combobox', { name: '⟦Report template⟧' }), { target: { value: 'b' } });
+    fireEvent.click(screen.getByRole('button', { name: /Cat dentals/ }));
     expect(findUntranslated(container, [...allow, 'Brush daily'])).toEqual([]);
 
     rerender(<OwnerReportTemplatesModal {...props} config={custom} canEdit={false} />);
@@ -240,6 +262,19 @@ describe('OwnerReportModal', () => {
     open: true, onClose: noop, snapshot, branding, chartId: 'c1', practiceId: 'p1', cloudActive: true, onEditWording: noop,
   };
 
+  it('keeps the owner preview loading until practice branding is ready', async () => {
+    const pendingBranding = { brandingReady: false };
+    const { rerender } = render(<OwnerReportModal {...baseProps} {...pendingBranding} imageRoles={{}} />);
+    await waitFor(() => expect(screen.getByText('⟦Generating the owner report…⟧')).toBeVisible());
+    expect(screen.queryByTitle('⟦Owner report preview⟧')).not.toBeInTheDocument();
+    expect(pdf.build).not.toHaveBeenCalled();
+
+    const readyBranding = { brandingReady: true, branding: { ...branding, logoUrl: 'https://example.test/logo' } };
+    rerender(<OwnerReportModal {...baseProps} {...readyBranding} imageRoles={{}} />);
+    expect(await screen.findByTitle('⟦Owner report preview⟧')).toBeInTheDocument();
+    expect(pdf.build).toHaveBeenCalledExactlyOnceWith(expect.anything(), readyBranding.branding, [], undefined);
+  });
+
   it('ready, with one tagged photo and with three', async () => {
     attachmentsState.items = [photo('a1')];
     const { container, rerender } = render(<OwnerReportModal {...baseProps} imageRoles={{ a1: 'before' }} />);
@@ -275,12 +310,13 @@ describe('OwnerReportModal', () => {
 
     const multiple = twoTemplates();
     rerender(<OwnerReportModal {...baseProps} imageRoles={{}} bare config={multiple} onTemplateChange={onTemplateChange} />);
-    const picker = screen.getByRole('combobox', { name: '⟦Report template⟧' });
-    fireEvent.change(picker, { target: { value: 'b' } });
+    const choices = within(screen.getByRole('group', { name: '⟦Report template⟧' }));
+    fireEvent.click(choices.getByRole('button', { name: /Cat dentals/, pressed: false }));
     expect(onTemplateChange).toHaveBeenCalledWith('b');
     rerender(<OwnerReportModal {...baseProps} snapshot={{ ...snapshot, ownerReport: { ...snapshot.ownerReport, templateId: 'b' } }} imageRoles={{}} bare config={multiple} onTemplateChange={onTemplateChange} />);
-    expect(picker).toHaveValue('b');
-    fireEvent.change(picker, { target: { value: '' } });
+    fireEvent.click(choices.getByRole('button', { name: /Cat dentals/, pressed: true }));
+    expect(onTemplateChange).toHaveBeenCalledTimes(1);
+    fireEvent.click(choices.getByRole('button', { name: '⟦Practice default (Standard)⟧', pressed: false }));
     expect(onTemplateChange).toHaveBeenLastCalledWith(null);
   });
 

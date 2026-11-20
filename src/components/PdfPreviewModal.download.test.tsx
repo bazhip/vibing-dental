@@ -37,9 +37,30 @@ const snapshot = {
 beforeEach(() => {
   saveChartPdf.mockClear();
   savePdf.mockClear();
+  vi.mocked(buildDentalChartPDFBytes).mockClear();
   vi.mocked(createPdfDownloadLink).mockReset().mockResolvedValue('https://example.test/download');
   URL.createObjectURL = vi.fn(() => 'blob:pdf') as unknown as typeof URL.createObjectURL;
   URL.revokeObjectURL = vi.fn();
+});
+
+test('the clinical preview waits for practice branding and builds once when it arrives', async () => {
+  env.native = false;
+  listAttachments.mockClear().mockResolvedValueOnce([]);
+  const withImages = { ...snapshot, imagesChartId: 'branding-chart' };
+  const pendingBranding = { brandingReady: false };
+  const { rerender } = render(<PdfPreviewModal open onClose={() => {}} snapshot={withImages} {...pendingBranding} />);
+  await act(async () => {});
+  expect(screen.queryByTitle('Clinical chart preview')).toBeNull();
+  expect(screen.getByText('Generating preview…')).toBeVisible();
+  expect(screen.getByRole('button', { name: 'Download PDF' })).toBeDisabled();
+  expect(buildDentalChartPDFBytes).not.toHaveBeenCalled();
+
+  const readyBranding = { brandingReady: true, branding: { practiceName: 'ToothOpsHQ', logoUrl: 'https://example.test/logo' } };
+  rerender(<PdfPreviewModal open onClose={() => {}} snapshot={withImages} {...readyBranding} />);
+  await waitFor(() => expect(screen.getByRole('button', { name: 'Download PDF' })).toBeEnabled());
+  expect(buildDentalChartPDFBytes).toHaveBeenCalledTimes(1);
+  expect(vi.mocked(buildDentalChartPDFBytes).mock.lastCall?.[7]).toEqual(readyBranding.branding);
+  expect(listAttachments).toHaveBeenCalledTimes(1);
 });
 
 async function clickDownload(name = 'Download PDF') {

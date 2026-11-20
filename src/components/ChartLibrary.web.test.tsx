@@ -68,6 +68,42 @@ const lastQuery = (fn: ReturnType<typeof vi.fn>) =>
   (fn.mock.calls.map((c) => c[0] as ChartListQuery).filter((q) => q && !(q.dueOnly && q.limit === 500 && !q.sortKey)).at(-1));
 
 describe('ChartLibrary (website)', () => {
+  it('retries a failed list load in place', async () => {
+    let failed = false;
+    setup(async (query) => {
+      if (query?.limit !== 500 && !failed) {
+        failed = true;
+        throw new Error('Fixture offline');
+      }
+      return { rows: ROWS, hasMore: false };
+    });
+    expect(await screen.findByRole('alert')).toHaveTextContent(/Couldn’t load/);
+    fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
+    expect(await screen.findByText('Bella')).toBeVisible();
+    expect(screen.queryByRole('alert')).toBeNull();
+  });
+
+  it('clears search and filters while retaining the Rechecks scope', async () => {
+    const { listCharts } = setup(async query => ({
+      rows: query?.search || query?.species ? [] : [ROWS[0]], hasMore: false,
+    }), true);
+    await screen.findByText('Bella');
+    fireEvent.change(screen.getByRole('combobox', { name: 'Filter by species' }), { target: { value: 'feline' } });
+    fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'missing' } });
+    fireEvent.click(await screen.findByRole('button', { name: 'Clear filters' }));
+    expect(await screen.findByText('Bella')).toBeVisible();
+    expect(screen.getByRole('searchbox')).toHaveValue('');
+    expect(lastQuery(listCharts)).toMatchObject({ dueOnly: true, species: undefined, search: undefined });
+  });
+
+  it('gives an empty Rechecks queue a dedicated message', async () => {
+    setup(async () => ({ rows: [], hasMore: false }), true);
+    expect(await screen.findByText('No rechecks due')).toBeVisible();
+    expect(screen.queryByRole('table')).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Clear filters' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'New patient' })).toBeNull();
+  });
+
   it('restores Patients filters independently of the Rechecks workspace', async () => {
     const patientsState = { current: undefined as ChartLibraryViewState | undefined };
     const rechecksState = { current: undefined as ChartLibraryViewState | undefined };

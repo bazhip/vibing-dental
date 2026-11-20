@@ -186,7 +186,7 @@
     "patient": {
       "title": "Páciensoldal",
       "hideRecheck": "Kontroll esedékessége mező elrejtése",
-      "visibilityNote": "Válassza ki az üres viziteken megjelenő mezőket. A rögzített adatokat tartalmazó mezők láthatók maradnak."
+      "visibilityNote": "Válassza ki a megjelenítendő mezőket. A már kitöltött gazdi- és asszisztensmezők láthatók maradnak."
     },
     "pdf": {
       "title": "PDF",
@@ -250,8 +250,8 @@
         "procedure": "Beavatkozás"
       },
       "descriptions": {
-        "patient": "Válassza ki, megjelenjen-e a kontrollvizsgálat dátuma a Páciens oldalon.",
-        "exam": "Válassza ki a szájüregi vizsgálat során rögzítendő további területeket.",
+        "patient": "Válassza ki, mely gazdi- és vizitmezők jelenjenek meg az üres viziteken.",
+        "exam": "Válassza ki és rendezze el a szájüregi vizsgálat mezőit.",
         "anesthesia": "Állítsa be az idegblokádokat, egyéni mezőket és szokásos gyógyszereit.",
         "charting": "Állítsa be a fogászati lap elrendezését, méréseit és adatbeviteli működését.",
         "diagnosis": "Válassza ki a diagnosztikai diagramon megjelenő leleteket és a gyorskódokat.",

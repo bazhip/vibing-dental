@@ -3,7 +3,7 @@ import { PDFDocument, PDFPage, StandardFonts } from 'pdf-lib';
 import { buildDentalChartPDFBytes, type DiagramExport, type PdfLayoutOptions } from '../pdfGenerator';
 import { EMPTY_NERVE_BLOCKS, normalizeNerveBlocks, type PatientInfo, type ToothData, type Species, type Logo } from '../../types';
 import { parseDentalChartPDF, type DiagramState } from './parser';
-import { pdfSafe, fitGridRowLabel } from './sections';
+import { drawLogoAndHeader, pdfSafe, fitGridRowLabel } from './sections';
 import { TOOTH_DATA_ROWS, TOOTH_GRID_LAYOUTS } from '../../constants/chartLayout';
 import { columnLabel } from '../../constants/columnDefinitions';
 import { loadLanguage } from '../../i18n';
@@ -30,6 +30,20 @@ const diagram = (state: Partial<DiagramState> = {}): DiagramExport => ({
 });
 
 const r2 = (n: number) => Math.round(n * 100) / 100;
+
+it('omits a template logo for an authenticated document with no available branding', async () => {
+  const doc = await PDFDocument.create();
+  const page = doc.addPage();
+  const regular = await doc.embedFont(StandardFonts.Helvetica);
+  const bold = await doc.embedFont(StandardFonts.HelveticaBold);
+  const fetchLogo = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(PNG));
+  try {
+    await drawLogoAndHeader(doc, page, 'socal', 'canine', '', '', regular, bold, '', '', 'en', false);
+    expect(fetchLogo).not.toHaveBeenCalled();
+  } finally {
+    fetchLogo.mockRestore();
+  }
+});
 
 type Run = { t: string; x: number; y: number; s: number };
 

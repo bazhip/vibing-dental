@@ -1,3 +1,4 @@
+import { dischargeOwnerReportFields } from './consultationTemplates';
 import type { Attachment } from '../hooks/useAttachments';
 import { ChartSnapshot, DentalField, EXAM_ITEMS, type ImageRole } from '../types';
 import { parseRootPockets, deepestPocket } from './pocket';
@@ -225,9 +226,10 @@ export function ownerReportIsReviewed(snapshot: ChartSnapshot, options: BuildOwn
 /** Client-language labels; the clinician's wording remains verbatim. */
 function recordedDischargeNotes(info: ChartSnapshot['patientInfo'], locale: ReportLocale): string {
   const t = i18n.getFixedT(locale, 'report');
-  return (['dischargeMedications', 'dischargeInstructions', 'dischargeFollowUp'] as const).map(key =>
-    info[key]?.trim() ? `${t(`dischargeSource.${key}`)}:\n${info[key]}` : ''
-  ).filter(Boolean).join('\n\n');
+  const standard = (['dischargeMedications', 'dischargeInstructions', 'dischargeFollowUp'] as const).map(key =>
+    info[key]?.trim() ? `${t(`dischargeSource.${key}`)}:\n${info[key]}` : '');
+  const custom = dischargeOwnerReportFields(info, t('dischargeSource.activity')).map(field => `${field.label}:\n${field.value}`);
+  return [...standard, ...custom].filter(Boolean).join('\n\n');
 }
 
 export function buildOwnerReportModel(

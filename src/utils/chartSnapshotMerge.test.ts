@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { ChartSnapshot } from '../types';
+import { changeConsultationLayout, dischargeVisitSections, STANDARD_DISCHARGE } from './consultationTemplates';
 import { mergeChartSnapshots } from './chartSnapshotMerge';
 
 const base = {
@@ -32,4 +33,16 @@ describe('chart merge', () => {
     phone.finalizedAt = '2026-11-19T12:00:00Z';
     expect(mergeChartSnapshots(base, laptop, phone)).toBeNull();
   });
+});
+
+it('retains a Discharge field edited on another device during a template switch', () => {
+  const section = { id: 'dischargeCustom_activity', label: 'Activity' } as const;
+  const layout = { id: 'custom-recovery', fields: [], sections: [section] };
+  const original = { ...base, patientInfo: { ...base.patientInfo, dischargeLayout: layout } };
+  const change = changeConsultationLayout(original.patientInfo, layout, STANDARD_DISCHARGE, 'discharge');
+  const laptop = { ...original, patientInfo: { ...original.patientInfo, ...change } };
+  const phone = { ...original, patientInfo: { ...original.patientInfo, [section.id]: 'Lead walks only.' } };
+  const merged = mergeChartSnapshots(original, laptop, phone);
+  expect(merged?.patientInfo[section.id]).toBe('Lead walks only.');
+  expect(dischargeVisitSections(merged!.patientInfo)).toContainEqual(section);
 });

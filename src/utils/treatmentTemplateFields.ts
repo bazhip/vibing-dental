@@ -1,19 +1,23 @@
 import { fillPlaceholders, PLACEHOLDERS, type PlaceholderKey, type PlaceholderValues } from './ownerReportConfig';
 
-// Single braces name fill-in fields. Doubled braces remain literal text.
+// Double braces and unsupported tokens are kept as written.
 const templateField = /\{\{[^{}\r\n]*\}\}|\{([^{}\r\n]+)\}/gu;
 
 export function treatmentTemplateFields(body: string): string[] {
-  return Array.from(new Set(Array.from(body.matchAll(templateField), match => match[1]?.trim() ?? '').filter(Boolean)));
+  const fields = new Set<string>();
+  for (const [, token] of body.matchAll(templateField)) {
+    const field = token?.trim();
+    if (field && PLACEHOLDERS.includes(field.toLowerCase() as PlaceholderKey)) fields.add(field);
+  }
+  return [...fields];
 }
 
-export function fillTreatmentTemplate(body: string, values: ReadonlyMap<string, string>): string {
-  return body.replace(templateField, (match, field?: string) => values.get(field?.trim() ?? '') ?? match);
-}
-
-export function treatmentChartFieldValue(field: string, values: PlaceholderValues = {}): string {
-  const key = field.toLowerCase() as PlaceholderKey;
-  return PLACEHOLDERS.includes(key) ? fillPlaceholders(`{${field}}`, values).trim() : '';
+export function fillTreatmentTemplate(body: string, values: PlaceholderValues = {}): string {
+  return body.replace(templateField, (match, field?: string) => {
+    const name = field?.trim();
+    if (!name || !PLACEHOLDERS.includes(name.toLowerCase() as PlaceholderKey)) return match;
+    return fillPlaceholders(`{${name}}`, values).trim() || match;
+  });
 }
 
 export function treatmentCodeSuggestions(body: string, caret: number | null) {

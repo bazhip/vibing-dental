@@ -2,6 +2,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ALL_CODES, codeDefinition } from '../constants/dentalCodes';
 import { MAX_QUICK_CODES, MAX_QUICK_CODE_LENGTH, canonicalQuickCode } from '../utils/quickCodes';
+import { useReorderList } from '../hooks/useReorderList';
+import { ReorderHandle } from './ui/ReorderHandle';
 
 /**
  * Chart settings → Quick codes: the codes offered as one-tap buttons in
@@ -16,16 +18,17 @@ export const QuickCodesEditor: React.FC<{
   description?: string;
   placeholder?: string;
 }> = ({ codes, onChange, title, description, placeholder }) => {
-  const { t } = useTranslation('settings');
+  const { t } = useTranslation(['settings', 'visitDocumentation']);
   const [draft, setDraft] = React.useState('');
   const listId = React.useId();
   const codeToAdd = canonicalQuickCode(draft);
   const duplicate = codes.includes(codeToAdd);
-  const move = (index: number, offset: number) => {
+  const reorder = useReorderList('.quick-codes-editor__list', 'data-quick-code-row', codes.length, (from, to) => {
     const next = [...codes];
-    [next[index], next[index + offset]] = [next[index + offset], next[index]];
+    const [code] = next.splice(from, 1);
+    next.splice(to, 0, code);
     onChange(next);
-  };
+  });
 
   const add = () => {
     const code = canonicalQuickCode(draft);
@@ -39,16 +42,14 @@ export const QuickCodesEditor: React.FC<{
       <legend>{title ?? t('chart.quickCodes.title')}</legend>
       <p className="chart-settings__note">{description ?? t('chart.quickCodes.note')}</p>
       <p className="chart-settings__note">{t('chart.list.count', { used: codes.length, max: MAX_QUICK_CODES })}</p>
-      {codes.map((code, index) => {
+      <div className="quick-codes-editor__list">{codes.map((code, index) => {
         const definition = codeDefinition(code);
         return (
-          <div key={code} className="quick-codes-editor__row">
+          <div key={code} className="quick-codes-editor__row" data-quick-code-row={index} data-reorder-drop={reorder.dropAt(index)}>
+            <ReorderHandle index={index} reorder={reorder} disabled={codes.length < 2}
+              label={t('visitDocumentation:consultation.templates.builder.dragField', { field: code })} />
             <span className="quick-codes-editor__code">{code}</span>
             <span className="quick-codes-editor__def">{definition !== code ? definition : ''}</span>
-            <div className="customization-order">
-              <button type="button" className="diagram-view__action" disabled={index === 0} aria-label={t('chart.list.moveUp', { name: code })} onClick={() => move(index, -1)}>↑</button>
-              <button type="button" className="diagram-view__action" disabled={index === codes.length - 1} aria-label={t('chart.list.moveDown', { name: code })} onClick={() => move(index, 1)}>↓</button>
-            </div>
             <button
               type="button"
               className="diagram-view__action custom-def__remove"
@@ -59,7 +60,7 @@ export const QuickCodesEditor: React.FC<{
             </button>
           </div>
         );
-      })}
+      })}</div>
       {codes.length < MAX_QUICK_CODES && (
         <div className="quick-codes-editor__add">
           <input

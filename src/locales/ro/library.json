@@ -11,6 +11,7 @@
     "aria": "Căutați fișe"
   },
   "filters": {
+    "clear": "Ștergeți filtrele",
     "speciesAria": "Filtrați după specie",
     "allSpecies": "Toate speciile",
     "doctorAria": "Filtrați după medic",
@@ -117,10 +118,8 @@
   },
   "templates": {
     "chartCodes": "Coduri din fișă",
-    "chartCodeHelp": "Tastați { pentru a vedea sugestii sau selectați un cod de mai jos. Codurile folosesc valorile din fișă și vă cer să completați valorile lipsă. Alte nume între acolade creează câmpuri personalizate.",
-    "fieldExamples": "Exemple de câmpuri de completat: {Numerele dinților}, {Detaliile procedurii} și {Data controlului}.",
+    "chartCodeHelp": "Tastați { pentru a vedea sugestii sau alegeți un cod de mai jos. Codurile inserează valorile înregistrate în fișă. Puteți edita în raport codurile rămase necompletate.",
     "fieldsInTemplate": "Câmpurile acestui șablon",
-    "fieldHelp": "Puneți o instrucțiune scurtă între acolade pentru a crea un câmp de completat, de exemplu {Introduceți numerele dinților}. Valoarea va fi solicitată când folosiți șablonul.",
     "aria": "Șabloane de raport",
     "title": "Șabloane de raport",
     "saved": "Șabloane salvate",

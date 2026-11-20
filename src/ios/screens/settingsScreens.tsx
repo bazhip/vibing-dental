@@ -13,6 +13,7 @@ import { WhatsNewModal } from '../../components/WhatsNewModal';
 import { FeedbackModal } from '../../components/FeedbackModal';
 import { AdminPanel } from '../../components/AdminPanel';
 import { useTeam } from '../../hooks/useTeam';
+import { usePracticeLanguage } from '../../hooks/usePracticeLanguage';
 import '../settings.css';
 
 /**
@@ -47,6 +48,7 @@ export function OwnerReportTemplatesScreen() {
   const { profile } = useAppSettings();
   const { pop } = useStack();
   const team = useTeam(true);
+  const clientLang = usePracticeLanguage(team.practice?.id ?? null);
   const branding = React.useMemo(
     () => ({ practiceName: profile.practiceName, doctorName: profile.doctorName, logoUrl: profile.logoUrl }),
     [profile.practiceName, profile.doctorName, profile.logoUrl],
@@ -58,10 +60,11 @@ export function OwnerReportTemplatesScreen() {
       onClose={pop}
       config={profile.ownerReportConfig}
       onSave={profile.saveOwnerReportConfig}
-      canEdit={team.loaded && team.role === 'owner'}
-      roleKnown={team.loaded}
+      canEdit={team.loaded && clientLang.loaded && team.role === 'owner'}
+      roleKnown={team.loaded && clientLang.loaded}
       loadFailed={profile.ownerReportConfigLoadFailed}
       branding={branding}
+      clientLanguage={clientLang.language}
       presentation={SCREEN}
     />
   );
@@ -69,7 +72,7 @@ export function OwnerReportTemplatesScreen() {
 
 export function ChartSettingsScreen() {
   const s = useAppSettings();
-  return <ChartSettingsList prefs={s.prefs} followsAccount={s.prefsFollowAccount} onChange={s.setPref} only={null} />;
+  return <ChartSettingsList prefs={s.prefs} followsAccount={s.prefsFollowAccount} onChange={s.setPref} only={null} onCustomizeExam={s.open.customizeExam} />;
 }
 
 export function RemindersSettingsScreen() {

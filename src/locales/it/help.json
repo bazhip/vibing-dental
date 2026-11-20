@@ -24,6 +24,10 @@
     "practice": "Studio e assistenza"
   },
   "images": {
+    "consultationBuilder": "Editor dei modelli di consulto con un campo a scelta singola e due opzioni.",
+    "attachmentNames": "Miniature di radiografie con i nomi originali dei file lungo il bordo inferiore.",
+    "imagingTemplates": "La sezione Diagnostica per immagini con campi separati per il referto radiografico e il referto TC.",
+    "dischargeTemplates": "L’editor dei modelli di dimissione con il selettore «Aggiungi sezione» aperto in una visita fittizia.",
     "consultationMedicationHistory": "Farmaci in uso con una scheda veterinaria nell’app e un collegamento alla fonte completa.",
     "consultationMedicationReview": "Revisione della dettatura della visita con proposte separate per i farmaci e i relativi estratti.",
     "charting": "Esempio di odontogramma con denti numerati e griglia dei reperti.",
@@ -34,6 +38,7 @@
     "start": "Area di lavoro di esempio con la linguetta della visita, la navigazione e le informazioni del paziente.",
     "patients": "Procedure odontoiatriche e consultazioni precedenti nello stesso storico, con una visita selezionata.",
     "exam": "Griglia dell’esame orale con le opzioni Normale e Anomalo e un commento.",
+    "examCustomize": "La finestra di personalizzazione dell’esame con i campi predefiniti e i comandi per modificare la disposizione.",
     "viewer": "Visualizzatore con i comandi di finestra, livello e download per un DICOM sintetico.",
     "treatment": "Referto del trattamento con i modelli salvati e il testo modificabile sottostante.",
     "preferences": "Impostazioni della cartella con disposizione, salvataggio automatico e registrazione della profondità delle tasche.",
@@ -41,7 +46,7 @@
     "by-number": "Vista Per dente con il 108 Triadan selezionato sul diagramma numerato e i relativi reperti aperti.",
     "imagingSettings": "Impostazioni di diagnostica per immagini e PDF con la lingua dei referti e le opzioni di inclusione predefinite nel PDF.",
     "consultationReview": "La sezione Immagini di una visita, con il comando Aggiungi immagini e una miniatura di esempio.",
-    "consultationTemplatePreview": "L’editor del modello con le impostazioni di una sezione di un consulto fittizio.",
+    "consultationTemplatePreview": "L’editor dei modelli di consulto con il selettore «Aggiungi sezione» aperto in una visita fittizia.",
     "consultationRecordNote": "Nota della consultazione con i comandi Scarica PDF e Copia.",
     "dentalConsultation": "Il campo Esame orale a paziente sveglio in un consulto odontoiatrico fittizio.",
     "dictationCheck": "Il pannello di dettatura si ferma brevemente prima di verificare la cartella. Con «Riprendi» può proseguire la stessa dettatura."
@@ -71,7 +76,7 @@
       "sections": {
         "first": {
           "title": "Trovare un paziente",
-          "text": "Apra il selettore dei pazienti con il pulsante più. In caso di omonimia, controlli il numero del paziente. Riprenda una visita esistente oppure scelga Nuova visita e verifichi il tipo prima di iniziare."
+          "text": "Apra il selettore dei pazienti con il pulsante più. In caso di omonimia, controlli il numero del paziente. Riprenda una visita esistente oppure scelga Nuova visita e verifichi il tipo prima di iniziare.\n\nIn «Pazienti» o «Ricontrolli», usi la ricerca e i filtri sopra l’elenco. Se non trova corrispondenze, scelga «Cancella filtri» sotto i risultati. Nei ricontrolli continuano a comparire solo le visite in scadenza. Se l’elenco non si carica, scelga «Riprova»."
         },
         "second": {
           "title": "Passare da una visita o da un paziente all’altro",
@@ -93,7 +98,7 @@
         },
         "second": {
           "title": "Documentare i reperti in Diagnosi",
-          "text": "Selezioni il dente e indichi i reperti rilevati prima del trattamento o i denti già mancanti. Aggiunga codici dentali e brevi note quando serve. Consulti il repertorio dei codici per verificarne uno. Le etichette della barra degli strumenti sono sotto le icone. Usi «Commento» per associare una nota a un dente oppure «Commento libero» per inserirla in un punto qualsiasi del diagramma. Quando lo spazio è limitato, Commento libero appare come Libero."
+          "text": "Selezioni il dente e indichi i reperti rilevati prima del trattamento o i denti già mancanti. Aggiunga codici dentali e brevi note quando serve. Consulti il repertorio dei codici per verificarne uno. Le etichette della barra degli strumenti sono sotto le icone. Usi «Commento» per associare una nota a un dente oppure «Commento libero» per inserirla in un punto qualsiasi del diagramma. Quando lo spazio è limitato, Commento libero appare come Libero.\n\nQuando seleziona «Commento», le opzioni di «Dimensione del testo dei commenti» restano visibili. Dopo la finalizzazione, gli strumenti di modifica dei diagrammi in «Diagnosi» e «Procedura» sono disattivati. Può ancora ingrandire il diagramma e mostrare o nascondere i numeri dei denti."
         },
         "third": {
           "title": "Documentare le prestazioni in Procedura",
@@ -107,11 +112,11 @@
       "sections": {
         "first": {
           "title": "Documentare l’esame",
-          "text": "Apra «Esame» e registri lo stato e le osservazioni per le aree valutate. Lasci vuote le aree che non ha valutato. Usi «Personalizza» per gestire le aree d’esame."
+          "text": "Apra «Esame» e selezioni «Normale» o «Anormale» per ogni area valutata. Aggiunga i dettagli in «Commento». Lasci vuote le aree non valutate. Usi «Diagnostica», sotto i rilievi dell’esame, per registrare gli esiti non di imaging e gli esami in attesa.\n\nScelga «Personalizza» nell’intestazione di «Esame» per aprire «Personalizza l’esame». La struttura predefinita include sei aree dell’esame del cavo orale e il campo «Diagnostica». Selezioni un campo per modificare il «Nome del campo». Usi «Aggiungi campo» per aggiungere un campo di tipo «Area dell’esame», con opzioni per lo stato e un commento, oppure «Campo di testo» per le note libere. Trascini un campo per la maniglia oppure porti il focus sulla maniglia e usi i tasti freccia.\n\nUsi il pulsante di rimozione accanto al campo per toglierlo dalla disposizione. Scelga «Annulla» per ripristinarlo oppure usi «Aggiungi campo» per ripristinare un campo integrato. I rilievi già registrati restano visibili dopo la rimozione. Scelga «Salva», poi verifichi i nomi e l’ordine dei campi in «Esame».\n\nI titolari della struttura possono salvare la disposizione condivisa. Gli altri membri della struttura possono visualizzarla. Se lavora al di fuori di una struttura condivisa, la disposizione viene salvata nelle Sue impostazioni personali dell’odontogramma."
         },
         "second": {
           "title": "Registrare anestetici e blocchi nervosi",
-          "text": "Apra «Anestesia», inserisca i farmaci anestetici e registri il sito e il volume dei blocchi eseguiti. Prima di finalizzare, confronti i lati e le unità di misura con la documentazione di origine. Se ha somministrato separatamente un altro anestetico, selezioni «Aggiungi una seconda serie di blocchi nervosi». Indichi nome, concentrazione e volumi per sede nella seconda serie."
+          "text": "Apra «Anestesia», inserisca i farmaci anestetici e registri il sito e il volume dei blocchi eseguiti. Prima di finalizzare, confronti i lati e le unità di misura con la documentazione di origine. Se ha somministrato separatamente un altro anestetico, selezioni «Aggiungi una seconda serie di blocchi nervosi». Indichi nome, concentrazione e volumi per sede nella seconda serie.\n\nNell’intestazione di «Anestesia», scelga «Personalizza». In «Blocchi nervosi mostrati», selezioni i blocchi predefiniti da mostrare. In «Blocchi nervosi aggiuntivi», scelga «Aggiungi blocco nervoso» per aggiungere un blocco con nome e campi per il volume a destra e a sinistra. In «Campi di anestesia personalizzati», scelga «Aggiungi campo» per aggiungere, per esempio, un campo di note sul tubo endotracheale. Selezioni un elemento personalizzato per rinominarlo o rimuoverlo. Chiuda le impostazioni e verifichi i campi in «Anestesia».\n\nNelle stesse impostazioni, configuri «Anestetico locale preferito» ed eventualmente «Farmaco aggiuntivo». Se per la visita non è ancora stato registrato un anestetico, «Anestesia» propone un comando rapido. Verifichi i nomi e le concentrazioni prima di usarlo. Il comando registra i farmaci configurati per la visita."
         },
         "third": {
           "title": "Controllare i rilievi registrati",
@@ -125,7 +130,7 @@
       "sections": {
         "first": {
           "title": "Aggiungere immagini e consultare lo storico",
-          "text": "Sul web, apra «Aggiungere immagini» per selezionare, trascinare o incollare i file. Se il formato DICOM è supportato, può scaricare il file originale conservato. In «Cronologia delle immagini», espanda la riga o apra una visita precedente per consultarne le immagini."
+          "text": "Sul web, apra «Aggiungere immagini» per selezionare, trascinare o incollare i file. Se il formato DICOM è supportato, può scaricare il file originale conservato. In «Cronologia delle immagini», espanda la riga o apra una visita precedente per consultarne le immagini. Il nome originale del file appare in basso nella foto o nella radiografia se è stato salvato durante il caricamento. Apra l’immagine per leggere il nome completo."
         },
         "second": {
           "title": "Scegliere quali immagini includere nei referti",
@@ -133,7 +138,7 @@
         },
         "third": {
           "title": "Redigere i referti di diagnostica per immagini",
-          "text": "Inserisca i rilievi in Referto radiografico o Referto TC. Usi Diagnostica per altri risultati ed esami in attesa. Può dettare tutto nella stessa registrazione odontoiatrica. Indichi la modalità di imaging e verifichi le destinazioni proposte prima di applicarle."
+          "text": "Inserisca i rilievi in «Referto radiografico» o «Referto TC». Per gli altri esiti e gli esami in attesa, apra «Esame» e usi «Diagnostica». Può dettare tutto nella stessa registrazione odontoiatrica. Indichi la modalità di imaging e verifichi i campi proposti prima di applicare le modifiche.\n\nNell’intestazione di «Diagnostica per immagini», scelga «Personalizza» per aprire «Personalizza diagnostica per immagini». I titolari della struttura possono modificare la disposizione condivisa dei referti. Espanda «Referto radiografico» o «Referto TC» per modificare l’etichetta e il campo «Testo iniziale». Ad esempio, può aggiungere intestazioni per tecnica, rilievi e conclusioni.\n\nSalvi la disposizione della struttura, poi apra «Diagnostica per immagini» in una nuova visita odontoiatrica per verificare le etichette e il testo iniziale. Quando modifica il testo iniziale nel referto, il testo viene registrato per quella visita. I referti già compilati conservano il loro testo.\n\nPer modificare la lingua dei referti o il contenuto predefinito del PDF, scelga «Impostazioni di diagnostica per immagini e PDF» nella finestra di personalizzazione. Al di fuori di una struttura condivisa, «Personalizza» apre direttamente queste impostazioni."
         }
       }
     },
@@ -169,7 +174,7 @@
         },
         "third": {
           "title": "Creare un modello riutilizzabile",
-          "text": "Scelga «Nuovo modello», gli assegni un nome riconoscibile e scriva il testo da riutilizzare. Digiti «{» nell’editor del modello per vedere i codici di sostituzione supportati. Usi un campo come {pet} per il nome del paziente. Quando seleziona il modello salvato, ToothOps inserisce i valori già presenti nella cartella e Le chiede quelli mancanti."
+          "text": "Scelga «Nuovo modello», gli assegni un nome riconoscibile e scriva il testo da riutilizzare. Digiti «{» nell’editor del modello per vedere i codici di sostituzione supportati. Usi un campo come {pet} per il nome del paziente. Quando seleziona il modello salvato, ToothOps inserisce i valori registrati nella cartella. Può modificare i codici rimasti nel referto.\n\nScelga «Gestisci i modelli» accanto ai modelli salvati per modificare un modello. Per rimuoverlo, lo selezioni, apra «Altre opzioni» e scelga «Elimina»."
         }
       }
     },
@@ -179,15 +184,15 @@
       "sections": {
         "first": {
           "title": "Registrare le istruzioni di dimissione",
-          "text": "In Dimissione, indichi un farmaco per riga, con dose, modalità e durata della somministrazione. Aggiunga le istruzioni per le cure a casa e il follow-up. Verifichi i dettagli prima della condivisione."
+          "text": "Recupero dopo le cure dentali è selezionato per le nuove visite, a meno che la Sua clinica abbia scelto un altro modello predefinito. In «Dimissione», scelga una delle opzioni sotto «Modello della nota». Il testo già inserito viene conservato quando cambia modello. Dopo aver cambiato modello, espanda «Campi di altri modelli» sotto i campi correnti per trovare il testo già inserito nei campi assenti dal modello attivo.\n\nIn Dimissione, indichi un farmaco per riga, con dose, modalità e durata della somministrazione. Aggiunga le istruzioni per le cure a casa e il follow-up. Verifichi i dettagli prima della condivisione.\n\nApra «Gestisci i modelli» accanto alle opzioni. I titolari della clinica possono modificare tutti i modelli, compresi Recupero dopo le cure dentali e Dimissione standard. Scelga «Nuovo modello» per iniziare con le sezioni standard e assegni un nome al modello. In «Altre opzioni», scelga «Duplica» per copiarlo o «Imposta come predefinito della struttura» per preselezionarlo nelle nuove visite. Scelga «Elimina modello» per rimuoverlo dall’elenco della clinica. Mantenga almeno un modello attivo. Le visite salvate conservano la struttura e il testo.\n\nPer riordinare i modelli, trascini un modello dalla maniglia accanto al nome. Può anche portare il focus sulla maniglia e premere la freccia su o giù. Scelga «Salva» per applicare l’ordine.\n\nApra «Aggiungi sezione» e usi «Cerca sezioni» per trovare un campo integrato o un campo riutilizzabile in «Campi della clinica». Se manca il campo necessario, scelga «Crea un campo» e ne inserisca il nome. Per riutilizzarlo, lo selezioni in «Campi della clinica» nel selettore di un altro modello.\n\nEspanda una sezione e scelga «Tipo di campo». Usi testo lungo o breve, scelta singola per i pulsanti di opzione o scelta multipla per le caselle di controllo. Aggiunga e nomini le opzioni prima di salvare. In «Gestisci i campi dello studio», scelga «Elimina» per rimuovere un campo dal selettore. I modelli che lo usano già lo conservano.\n\nTrascini un campo usando la maniglia per cambiarne la posizione. Usi la X per rimuovere il campo dal modello corrente o scelga «Annulla» per rimetterlo nella posizione precedente. Selezioni il nome del campo per aprirne le impostazioni. Per condividere un campo personalizzato, attivi «Includi nel referto per il proprietario» in quel modello. Se riutilizza il campo in un altro modello, imposti anche lì l’opzione di condivisione.\n\nUsi «Anteprima di esempio» per vedere le sezioni con contenuti fittizi. Scelga «Salva», selezioni il modello per la visita e verifichi la nota clinica in «Verifica ed esportazione» → «Nota di cartella».\n\nPer inserire la galleria della visita, scelga «Immagini» in «Aggiungi sezione». Selezioni la riga per impostare l’etichetta e le istruzioni. La trascini dalla maniglia o usi le frecce. Rimuovere la riga nasconde la galleria nel modello e conserva gli allegati della visita."
         },
         "second": {
           "title": "Preparare il referto per il proprietario",
-          "text": "In «Referto per il proprietario», scelga il modello del referto. Usi «Scrivi con l’IA» per preparare una bozza del riepilogo iniziale e dei consigli di cura a casa a partire dalla visita. Verifichi che i reperti principali siano spiegati chiaramente e modifichi il testo. Dopo le modifiche può tornare alla bozza salvata con «Ripristina testo generato»."
+          "text": "In «Referto per il proprietario», scelga un modello per nome sotto «Modello di referto» per usarlo in questa visita, oppure mantenga «Predefinito dello studio» per seguire il modello predefinito corrente. Un segno di spunta indica la scelta attiva. Se l’elenco è più lungo, usi il menu «Modello di referto». I titolari dello studio possono scegliere «Gestisci i modelli» per modificare testi e impaginazione condivisi, oppure «Nuovo modello» per aggiungerne uno. Nell’editor, scelga il modello, usi «Azioni del modello» per impostarlo come predefinito e selezioni «Salva modelli». Usi «Scrivi con l’IA» per preparare una bozza del riepilogo iniziale e dei consigli di cura a casa a partire dalla visita. Verifichi che i reperti principali siano spiegati chiaramente e modifichi il testo. Dopo le modifiche può tornare alla bozza salvata con «Ripristina testo generato».\n\nPer riordinare le sezioni del referto per il proprietario, trascini la maniglia o vi porti il focus e usi le frecce."
         },
         "third": {
           "title": "Visualizzare l’anteprima e condividere",
-          "text": "Scelga «Anteprima» accanto a «Personalizza» per aprire il PDF per il proprietario. Se desidera includere immagini, le selezioni in «Diagnostica per immagini». In «Verifica ed esportazione», controlli il destinatario e il documento prima di scaricarlo o, dove disponibile, inviarlo per e-mail. Nella scheda del referto per il proprietario, i pulsanti per personalizzare, scaricare il PDF e, se disponibile, inviarlo per e-mail si trovano nella barra sopra l’anteprima."
+          "text": "Scelga «Anteprima» nell’intestazione del referto per il proprietario per aprire il PDF e verificare testo e impaginazione. Se desidera includere immagini, le selezioni in «Diagnostica per immagini». In «Verifica ed esportazione», controlli il destinatario e il documento prima di scaricarlo o, dove disponibile, inviarlo per e-mail. Nella scheda del referto per il proprietario, i pulsanti per personalizzare, scaricare il PDF e, se disponibile, inviarlo per e-mail si trovano nella barra sopra l’anteprima."
         }
       }
     },
@@ -237,7 +242,7 @@
         },
         "second": {
           "title": "Gestire le impostazioni condivise dello studio",
-          "text": "I titolari dello studio possono gestire l’identità visiva, gli accessi del team e i modelli condivisi dei referti per il proprietario. La lingua per i clienti impostata dallo studio si applica ai contenuti predefiniti rivolti al proprietario, compresi i testi dei referti."
+          "text": "I titolari dello studio possono gestire l’identità visiva, gli accessi del team e i modelli condivisi dei referti per il proprietario. La lingua per i clienti impostata dallo studio si applica ai contenuti predefiniti rivolti al proprietario, compresi i testi dei referti.\n\nSul web, modifichi il nome dello studio in «Impostazioni dello studio» → «Generali». Scelga «Salva» sotto il campo per applicare la modifica o «Annulla» per ripristinare il nome attuale."
         },
         "third": {
           "title": "Verificare le funzionalità disponibili",
@@ -287,7 +292,7 @@
       "sections": {
         "first": {
           "title": "Aprire il visualizzatore",
-          "text": "Selezioni un’immagine in «Diagnostica per immagini» o in una visita precedente. Usi i comandi del visualizzatore per ingrandire l’immagine, adattarla alla finestra o spostare l’inquadratura. Se necessario, confronti i dettagli con l’acquisizione originale."
+          "text": "Selezioni un’immagine in «Diagnostica per immagini» o in una visita precedente. Usi i comandi del visualizzatore per ingrandire l’immagine, adattarla alla finestra o spostare l’inquadratura. Se necessario, confronti i dettagli con l’acquisizione originale. Il nome completo del file appare in basso nel visualizzatore, quando disponibile."
         },
         "second": {
           "title": "Regolare la visualizzazione",
@@ -323,15 +328,15 @@
       "sections": {
         "first": {
           "title": "Trovare le impostazioni adatte alla Sua attività",
-          "text": "Apra «Paziente», «Esame», «Anestesia», «Odontogramma», «Diagnosi», «Procedura» o «Diagnostica per immagini» e scelga «Personalizza» nell’intestazione della sezione. «Impostazioni dell’odontogramma» si apre nella categoria corrispondente. Nell’elenco delle categorie a sinistra può scegliere un’altra area senza chiudere la finestra. Se la sincronizzazione dell’account è disponibile, le preferenze personali della cartella vengono salvate automaticamente nel Suo account. Altrimenti vengono salvate nel browser in uso.\n\nIl pulsante «Personalizza» in «Referto del trattamento» apre i modelli di referto del trattamento. Il pulsante «Personalizza» accanto ad «Anteprima» in «Referto per il proprietario» apre i modelli di referto per il proprietario. Questi strumenti gestiscono i testi riutilizzabili e l’impaginazione per il Suo studio. Controlli il modello selezionato prima di modificarlo."
+          "text": "Apra «Paziente», «Anestesia», «Odontogramma», «Diagnosi», o «Procedura» e scelga «Personalizza» nell’intestazione della sezione. «Impostazioni dell’odontogramma» si apre nella categoria corrispondente. Nell’elenco delle categorie a sinistra può scegliere un’altra area senza chiudere la finestra. Se la sincronizzazione dell’account è disponibile, le preferenze personali della cartella vengono salvate automaticamente nel Suo account. Altrimenti vengono salvate nel browser in uso.\n\nIn «Esame» o «Diagnostica per immagini», scelga «Personalizza» nell’intestazione per aprire l’editor della relativa sezione. Da qui può gestire la disposizione condivisa della struttura. L’editor di «Diagnostica per immagini» consente anche di aprire «Impostazioni di diagnostica per immagini e PDF».\n\nIn «Referto del trattamento», «Gestisci i modelli» accanto ai modelli salvati apre i modelli di referto del trattamento. In «Referto per il proprietario», «Gestisci i modelli» accanto alla scelta del modello apre i modelli di referto per il proprietario. Questi strumenti gestiscono i testi riutilizzabili e l’impaginazione per il Suo studio. Controlli il modello selezionato prima di modificarlo."
         },
         "second": {
           "title": "Conoscere le categorie delle impostazioni della cartella",
-          "text": "La barra laterale di «Impostazioni dell’odontogramma» raggruppa le opzioni per la parte della visita a cui si applicano. In «Odontogramma», ad esempio, può scegliere «Griglia» o «Per dente», come registrare la profondità delle tasche, quali misurazioni mostrare e cosa succede dopo l’inserimento di un punteggio. Configuri separatamente i codici rapidi di «Diagnosi» e «Procedura», perché si applicano a diagrammi diversi.\n\nPuò scegliere quali campi e quali elementi dei diagrammi mostrare per concentrarsi sulle informazioni necessarie durante la compilazione. Prima di esportare, controlli i reperti registrati nella cartella del paziente."
+          "text": "La barra laterale di «Impostazioni dell’odontogramma» raggruppa le opzioni per la parte della visita a cui si applicano. In «Odontogramma», ad esempio, può scegliere «Griglia» o «Per dente», come registrare la profondità delle tasche, quali misurazioni mostrare e cosa succede dopo l’inserimento di un punteggio. Configuri separatamente i codici rapidi di «Diagnosi» e «Procedura», perché si applicano a diagrammi diversi.\n\nPer scegliere i campi di «Paziente», apra «Personalizza». In «Dati del proprietario» e «Dettagli della visita», selezioni i campi da mostrare. Ad esempio, usi «Dettagli della visita» per mostrare la data del controllo. Chiuda le impostazioni dell’odontogramma e verifichi i campi in «Paziente».\n\nPuò scegliere quali campi e quali elementi dei diagrammi mostrare per concentrarsi sulle informazioni necessarie durante la compilazione. Prima di esportare, controlli i reperti registrati nella cartella del paziente."
         },
         "third": {
           "title": "Impostare le opzioni per le immagini e personalizzare le esportazioni",
-          "text": "Apra «Diagnostica per immagini», scelga «Personalizza» e selezioni «Diagnostica per immagini e PDF» per impostare la lingua dei referti e le opzioni di inclusione predefinite. Può includere immagini, referti radiografici e TC e la sezione dei codici utilizzati. Quando i reperti sul diagramma sono disattivati, la griglia delle misure è obbligatoria per mantenere visibili le misurazioni registrate nel documento clinico.\n\nPer personalizzare un’esportazione specifica, apra «Verifica ed esportazione», selezioni «Cartella clinica» e apra «Personalizza». Scelga il colore del PDF clinico e le sezioni da includere, poi controlli l’anteprima. Per il documento da consegnare al proprietario, usi il modello in «Referto per il proprietario» e scelga le singole immagini da includere in «Diagnostica per immagini». La modifica del colore del PDF clinico non cambia il modello di referto per il proprietario."
+          "text": "Nell’intestazione di «Diagnostica per immagini», scelga «Personalizza», poi selezioni «Impostazioni di diagnostica per immagini e PDF» per impostare la lingua dei referti e il contenuto predefinito del PDF. Può includere immagini, referti radiografici e TC e la sezione dei codici utilizzati. Quando i reperti sul diagramma sono disattivati, la griglia delle misure è obbligatoria per mantenere visibili le misurazioni registrate nel documento clinico.\n\nPer personalizzare un’esportazione specifica, apra «Verifica ed esportazione», selezioni «Cartella clinica» e apra «Personalizza». Scelga il colore del PDF clinico e le sezioni da includere, poi controlli l’anteprima. Per il documento da consegnare al proprietario, usi il modello in «Referto per il proprietario» e scelga le singole immagini da includere in «Diagnostica per immagini». La modifica del colore del PDF clinico non cambia il modello di referto per il proprietario."
         }
       }
     },
@@ -431,15 +436,15 @@
       "sections": {
         "first": {
           "title": "Partire da un modello esistente",
-          "text": "Apra Gestisci i modelli da Visita. I titolari della struttura possono scegliere un modello iniziale o esistente e selezionare Duplica per creare una copia modificabile.\n\nIn Altre opzioni scelga Crea da una nota di esempio e incolli un esempio anonimizzato. Usi titoli Markdown o etichette seguite da due punti. Scelga Crea modello e controlli i titoli importati. Il corpo della nota non viene copiato."
+          "text": "Apra «Gestisci i modelli» in «Consulto». I titolari dello studio possono modificare qualsiasi modello, inclusi consulto odontoiatrico, SOAP generale e ricontrollo. Scelga «Nuovo modello» per partire dal modello odontoiatrico oppure «Altre opzioni» → «Duplica» per copiare la selezione.\n\nIn Altre opzioni scelga Crea da una nota di esempio e incolli un esempio anonimizzato. Usi titoli Markdown o etichette seguite da due punti. Scelga Crea modello e controlli i titoli importati. Il corpo della nota non viene copiato."
         },
         "second": {
           "title": "Ordinare e visualizzare le sezioni",
-          "text": "Scelga Aggiungi sezione per inserire un campo standard o personalizzato. Selezioni il nome della sezione per cambiare etichetta, indicazioni, esempio, testo suggerito e formato, renderla una sottosezione o rimuoverla. In Impostazioni della dettatura indichi le istruzioni e il livello di dettaglio. Verifichi il risultato nell’anteprima. Usi il testo suggerito solo se si applica alla visita.\n\nCompili Nome del modello. Usi le frecce accanto alle sezioni per cambiarne l’ordine. Selezioni Anteprima di esempio per controllare il nuovo ordine con una visita fittizia. Selezioni nuovamente lo stesso pulsante per tornare alla modifica. Ogni modello include Immagini sotto la nota. Le immagini appartengono alla visita e restano disponibili quando cambia modello."
+          "text": "Apra «Aggiungi sezione» e usi «Cerca sezioni» per trovare un campo integrato o un campo riutilizzabile in «Campi della clinica». Se manca il campo necessario, scelga «Crea un campo» e ne inserisca il nome. Per riutilizzarlo, lo selezioni in «Campi della clinica» nel selettore di un altro modello.\n\nEspanda una sezione e scelga «Tipo di campo». Usi testo lungo o breve, scelta singola per i pulsanti di opzione o scelta multipla per le caselle di controllo. Aggiunga e nomini le opzioni prima di salvare. In «Gestisci i campi dello studio», scelga «Elimina» per rimuovere un campo dal selettore. I modelli che lo usano già lo conservano.\n\nSelezioni il nome del campo per modificare l’etichetta della sezione, le indicazioni, l’esempio di formulazione, il testo suggerito, il formato o l’impostazione per le sottosezioni. Apra «Impostazioni della dettatura» per definire le istruzioni di scrittura e il livello di dettaglio. Usi il testo suggerito solo dopo aver verificato che si applichi alla visita. Trascini un campo usando la maniglia per cambiarne la posizione. Usi la X per rimuovere il campo dal modello corrente o scelga «Annulla» per rimetterlo nella posizione precedente.\n\nInserisca il nome del modello. Apra «Anteprima di esempio» per verificare l’ordine dei campi con una visita fittizia, poi selezioni nuovamente lo stesso pulsante per tornare alla modifica.\n\nDopo aver cambiato modello, espanda «Campi di altri modelli» sotto i campi correnti per trovare il testo già inserito nei campi assenti dal modello attivo.\n\nPer inserire la galleria della visita, scelga «Immagini» in «Aggiungi sezione». Selezioni la riga per impostare l’etichetta e le istruzioni. La trascini dalla maniglia o usi le frecce. Rimuovere la riga nasconde la galleria nel modello e conserva gli allegati della visita."
         },
         "third": {
-          "title": "Salvare o archiviare",
-          "text": "Apra Altre opzioni e scelga Imposta come predefinito della struttura per preselezionare questo modello per le nuove visite. Per nascondere un modello personalizzato dalle opzioni della visita, scelga Archivia il modello. Per recuperarlo, attivi Mostra i modelli archiviati, selezioni il modello e scelga Ripristina il modello. Selezioni Salva per applicare le modifiche. Le visite salvate conservano la disposizione scelta.\n\nIn Altre opzioni sposti il modello in alto o in basso per cambiare l’ordine delle scelte nei nuovi consulti."
+          "title": "Salvare, riordinare o eliminare i modelli",
+          "text": "Trascini un modello dalla maniglia oppure la selezioni con il focus e usi le frecce su e giù. In «Altre opzioni», imposti il modello predefinito per le nuove visite o scelga «Elimina modello». Mantenga almeno un modello. Scelga «Salva». Le visite salvate mantengono il proprio modello."
         }
       }
     },

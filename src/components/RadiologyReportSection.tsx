@@ -21,6 +21,8 @@ interface Props {
   chartEditor?: boolean;
   preferredLanguage?: AppLanguage | null;
   onCustomizeLanguage?: () => void;
+  reportLabel?: string;
+  starterText?: string;
   reportKind?: 'radiology' | 'ct';
   chartId?: string | null;
   chartSession?: number;
@@ -38,7 +40,7 @@ type Guard = { epoch: number; source: string; report: string; reviewed: string; 
 const reportFields = ['radiologyReport', 'radiologyReportLanguage', 'radiologyReportBasis', 'radiologyReviewedBasis', 'radiologyReportGeneratedAt'] as const;
 const escapeHtml = (value: string) => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-export function RadiologyReportSection({ snapshot: originalSnapshot, chartEditor = false, preferredLanguage, onCustomizeLanguage, reportKind = 'radiology', chartId = null, chartSession = 0, readOnly = false, aiEnabled = false, showAiNotice = true, onDictationApply, dictationDisabled, dictationOpenRequest, onDictationOpenChange, refineRequest, onChange: onPatientChange }: Props): React.ReactElement {
+export function RadiologyReportSection({ snapshot: originalSnapshot, chartEditor = false, preferredLanguage, onCustomizeLanguage, reportLabel, starterText, reportKind = 'radiology', chartId = null, chartSession = 0, readOnly = false, aiEnabled = false, showAiNotice = true, onDictationApply, dictationDisabled, dictationOpenRequest, onDictationOpenChange, refineRequest, onChange: onPatientChange }: Props): React.ReactElement {
   const { t, i18n } = useTranslation('app');
   const snapshot = reportKind === 'ct' ? ctReportSnapshot(originalSnapshot) : originalSnapshot;
   const onChange = (changes: Partial<PatientInfo>) => onPatientChange(reportKind === 'ct' ? ctReportChanges(changes) : changes);
@@ -157,7 +159,7 @@ export function RadiologyReportSection({ snapshot: originalSnapshot, chartEditor
     }
   };
   const chartReport = reportKind === 'ct' ? 'ct' : 'radiographic';
-  const title = chartEditor ? t(`${chartReport}.title`) : t(reportKey('title'));
+  const title = chartEditor ? reportLabel || t(`${chartReport}.title`) : t(reportKey('title'));
   const help = chartEditor ? t(`${chartReport}.hint`) : t(reportKey('editorHelp'));
   const placeholder = chartEditor ? t(`${chartReport}.placeholder`) : t(reportKey('editorPlaceholder'));
   return <section className="radiology-report patient-form" aria-labelledby={`${fieldId}-title`} aria-busy={busy}>
@@ -181,8 +183,8 @@ export function RadiologyReportSection({ snapshot: originalSnapshot, chartEditor
     <div className="radiology-report__body">
       <div className="radiographic-findings radiology-report__field refine-field">
         {chartEditor ? <CodeField multiline className="patient-form__textarea radiographic-findings__text radiology-report__editor"
-          aria-label={title} aria-describedby={`${fieldId}-help`} placeholder={placeholder}
-          value={draft} readOnly={readOnly} onChange={text => {
+          aria-label={title} aria-describedby={`${fieldId}-help`} placeholder={placeholder} maxLength={60000}
+          value={draft || (!readOnly ? starterText ?? '' : '')} readOnly={readOnly} onChange={text => {
             if (readOnly) return;
             invalidate();
             onChange({ radiologyReport: text, radiologyReviewedBasis: '' });

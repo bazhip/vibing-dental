@@ -11,6 +11,7 @@
     "aria": "Szukaj kart"
   },
   "filters": {
+    "clear": "Wyczyść filtry",
     "speciesAria": "Filtruj według gatunku",
     "allSpecies": "Wszystkie gatunki",
     "doctorAria": "Filtruj według lekarza",
@@ -121,10 +122,8 @@
   },
   "templates": {
     "chartCodes": "Kody karty",
-    "chartCodeHelp": "Wpisz {, aby zobaczyć podpowiedzi, lub wybierz kod poniżej. Kody wstawiają wartości zapisane w karcie i proszą o uzupełnienie brakujących danych. Inne nazwy w nawiasach klamrowych stają się polami do samodzielnego uzupełnienia.",
-    "fieldExamples": "Przykładowe pola do uzupełnienia: {Numery zębów}, {Szczegóły zabiegu} i {Termin kontroli}.",
+    "chartCodeHelp": "Proszę wpisać {, aby zobaczyć podpowiedzi, lub wybrać kod poniżej. Kody wstawiają dane zapisane w karcie. Niewypełnione kody można edytować w raporcie.",
     "fieldsInTemplate": "Pola w tym szablonie",
-    "fieldHelp": "Aby utworzyć pole do uzupełnienia, wpisz krótką instrukcję w nawiasach klamrowych, np. {Wprowadź numery zębów}. Przy użyciu szablonu aplikacja poprosi o podanie wartości.",
     "aria": "Szablony raportów",
     "title": "Szablony raportów",
     "saved": "Zapisane szablony",

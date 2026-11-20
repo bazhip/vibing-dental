@@ -372,6 +372,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({ items, index, onIndexC
               <span className="image-viewer__missing">{t('viewer.missing')}</span>
             )}
           </div>
+          {item.fileName && <bdi className="imaging__thumb-filename image-viewer__filename" title={item.fileName}>{item.fileName}</bdi>}
           {items.length > 1 && (
             <button
               type="button"

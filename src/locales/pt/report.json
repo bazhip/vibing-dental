@@ -168,7 +168,8 @@
   "dischargeSource": {
     "dischargeMedications": "Medicamentos na alta",
     "dischargeInstructions": "Instruções na alta",
-    "dischargeFollowUp": "Seguimento após a alta"
+    "dischargeFollowUp": "Seguimento após a alta",
+    "activity": "Atividade"
   },
   "homecareTipsRabbit": {
     "hay": "Ofereça feno de gramíneas à vontade para favorecer o desgaste normal dos dentes e siga as instruções de alimentação da sua equipa veterinária após o tratamento.",

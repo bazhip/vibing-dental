@@ -70,7 +70,39 @@
         "gpDiagnostics": "Imaginile anterioare sunt disponibile pentru verificare."
       },
       "builder": {
+        "inputTypes": {
+          "paragraph": "Text lung",
+          "shortText": "Text scurt",
+          "radio": "Alegere unică",
+          "multiselect": "Alegere multiplă"
+        },
+        "choiceOptions": "Opțiuni",
+        "choiceOption": "Opțiunea {{n}}",
+        "removeChoice": "Eliminați opțiunea {{n}}",
+        "choiceHelp": "Introduceți un nume unic pentru fiecare opțiune.",
+        "deletePracticeFieldMessage": "Acest câmp va fi eliminat din selectorul cabinetului. Șabloanele și vizitele existente păstrează câmpul.",
+        "recordedText": "Text înregistrat",
+        "clearSelection": "Goliți selecția",
+        "choiceLegacyHelp": "Ștergeți textul înregistrat pentru a alege o opțiune.",
+        "addChoice": "Adăugați o opțiune",
         "addSection": "Adăugați o secțiune",
+        "searchSections": "Căutați secțiuni",
+        "practiceFields": "Câmpurile cabinetului",
+        "builtInFields": "Câmpuri predefinite",
+        "createField": "Creați un câmp",
+        "manageFields": "Gestionați câmpurile cabinetului",
+        "noFields": "Nicio secțiune corespunzătoare",
+        "alreadyAdded": "Deja adăugat",
+        "dragField": "Reordonați {{field}}",
+        "removeNamed": "Eliminați {{field}}",
+        "fieldRemoved": "Câmpul {{field}} a fost eliminat",
+        "undoRemove": "Anulați",
+        "archiveField": "Arhivați câmpul",
+        "restoreField": "Restaurați câmpul",
+        "fieldsFromOtherTemplates": "Câmpuri din alte șabloane",
+        "sectionMoved": "Câmpul {{field}} a fost mutat pe poziția {{position}}",
+        "fieldName": "Numele câmpului",
+        "noPracticeFields": "Cabinetul nu are încă niciun câmp",
         "chooseSection": "Alegeți o secțiune",
         "customSection": "Secțiune personalizată",
         "sectionLabel": "Eticheta secțiunii",
@@ -125,10 +157,55 @@
       }
     }
   },
+  "imaging": {
+    "templates": {
+      "title": "Șabloane pentru rapoarte imagistice",
+      "starter": "Raport standard",
+      "intro": "Creați structuri pentru rapoartele radiografice și CT.",
+      "label": "Șablonul raportului",
+      "insert": "Inserați structura",
+      "inserted": "Structura raportului a fost inserată.",
+      "tooLong": "Structura ar depăși limita de lungime a raportului.",
+      "settings": "Setări pentru imagistică și PDF",
+      "help": "Cum funcționează șabloanele de imagistică"
+    },
+    "sections": {
+      "technique": "Tehnică",
+      "findings": "Constatări",
+      "impression": "Concluzii"
+    },
+    "layout": {
+      "title": "Personalizați imagistica",
+      "intro": "Stabiliți etichetele și textul inițial al rapoartelor pentru vizitele noi.",
+      "help": "Cum să personalizați imagistica",
+      "starterText": "Text inițial"
+    }
+  },
   "discharge": {
     "title": "Externare",
     "purpose": "Înregistrați medicamentele, instrucțiunile de îngrijire și monitorizarea discutate pentru această vizită.",
-    "review": "Verificați raportul pentru proprietar"
+    "review": "Verificați raportul pentru proprietar",
+    "templates": {
+      "title": "Șabloane de externare",
+      "starter": "Externare standard",
+      "help": "Cum funcționează șabloanele de externare",
+      "ownerReport": "Includeți în raportul pentru proprietar",
+      "intro": "Alegeți cum apar secțiunile în notele de externare.",
+      "samples": {
+        "dischargeMedications": "Instrucțiunile de administrare a medicamentelor au fost revizuite împreună cu proprietarul.",
+        "dischargeInstructions": "Oferiți hrană moale, conform celor discutate.",
+        "dischargeFollowUp": "S-a discutat despre o vizită de control."
+      },
+      "recovery": "Recuperare după tratamentul dentar",
+      "activity": {
+        "label": "Activitate",
+        "helper": "Notați restricțiile de activitate discutate.",
+        "sample": "Restricțiile de activitate au fost discutate."
+      },
+      "deleteMessage": "La salvare, șablonul va fi eliminat din lista cabinetului. Vizitele salvate își păstrează șablonul și textul.",
+      "dragTemplate": "Reordonați șablonul {{template}}",
+      "templateMoved": "Șablonul {{template}} se află acum pe poziția {{position}}"
+    }
   },
   "sourceNotice": "Formularea înregistrată rămâne așa cum a fost introdusă. Verificați limba clientului înainte de partajare.",
   "treatmentRecap": "Raport de tratament",

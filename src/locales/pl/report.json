@@ -168,7 +168,8 @@
   "dischargeSource": {
     "dischargeMedications": "Leki do podania w domu",
     "dischargeInstructions": "Zalecenia po wypisie",
-    "dischargeFollowUp": "Dalsze postępowanie po wypisie"
+    "dischargeFollowUp": "Dalsze postępowanie po wypisie",
+    "activity": "Aktywność"
   },
   "homecareTipsRabbit": {
     "hay": "Prosimy zapewnić stały dostęp do siana z traw, aby zęby ścierały się prawidłowo, i przestrzegać zaleceń żywieniowych zespołu weterynaryjnego po zabiegu.",

@@ -264,7 +264,11 @@ describe('DiagramView toolbar', () => {
   });
   it('never exposes drawing mutations in a locked chart, but keeps the view controls', () => {
     renderIt(true);
-    expect(screen.queryByRole('button', { name: 'Free comment' })).toBeNull();
+    expect(within(screen.getByRole('group', { name: 'Diagram tool' })).getAllByRole('button')).toHaveLength(4);
+    for (const button of within(screen.getByRole('group', { name: 'Diagram tool' })).getAllByRole('button')) expect(button).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Free comment' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Undo' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Redo' })).toBeDisabled();
     expect(screen.queryByRole('button', { name: 'Clear strokes' })).toBeNull();
     expect(screen.queryByRole('group', { name: 'Draw settings' })).toBeNull();
     expect(screen.getByRole('button', { name: 'Zoom in' })).toBeInTheDocument();
@@ -286,16 +290,14 @@ describe('DiagramView toolbar', () => {
     expect(screen.getByRole('button', { name: 'Zoom in' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Zoom out' })).toBeInTheDocument();
   });
-  it('shows comment text size while commenting, and it folds away', () => {
+  it('keeps all four comment text sizes visible while commenting', () => {
     renderIt();
     expect(screen.queryByRole('group', { name: 'Comment text size' })).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Comment' }));
     const panel = screen.getByRole('group', { name: 'Comment text size' });
-    const toggle = within(panel).getByRole('button', { name: 'Comment text size' });
+    expect(within(panel).getAllByRole('button')).toHaveLength(4);
     expect(within(panel).getAllByRole('button', { pressed: true })).toHaveLength(1);
-    fireEvent.click(toggle);
-    expect(toggle).toHaveAttribute('aria-expanded', 'false');
-    expect(within(panel).queryAllByRole('button', { pressed: true })).toHaveLength(0);
+    expect(within(panel).queryByRole('button', { name: 'Comment text size' })).toBeNull();
   });
   it('website: Undo / Redo use the same SVG icons', () => {
     renderIt();

@@ -36,12 +36,9 @@ describe('OwnerReportTemplatesModal', () => {
     };
     renderModal({ config });
 
-    const list = screen.getByRole('combobox', { name: 'Report template' });
-    expect(list).toHaveTextContent('Standard');
-    expect(list).toHaveTextContent('Español');
-    // The default badge lands on template b, and the non-English one
-    // shows its language.
-    expect(screen.getByRole('option', { name: 'Español · ES · Default', selected: true })).toBeInTheDocument();
+    const list = within(screen.getByRole('group', { name: 'Report template' }));
+    expect(list.getByRole('button', { name: 'Standard', pressed: false })).toBeInTheDocument();
+    expect(list.getByRole('button', { name: /Español.*Spanish.*Default/, pressed: true })).toBeInTheDocument();
   });
 
   it('owners can disable a section and save', async () => {
@@ -64,18 +61,29 @@ describe('OwnerReportTemplatesModal', () => {
     expect(onClose).toHaveBeenCalled();
   });
 
+  it('saves the new owner report section order after a keyboard reorder', async () => {
+    const onSave = vi.fn().mockResolvedValue(undefined);
+    renderModal({ onSave });
+    fireEvent.click(screen.getByRole('button', { name: 'Report content' }));
+    fireEvent.keyDown(screen.getByRole('button', { name: 'Reorder Teeth removed' }), { key: 'ArrowDown' });
+    fireEvent.click(screen.getByRole('button', { name: 'Save templates' }));
+    await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
+    const saved = onSave.mock.calls[0][0] as OwnerReportConfig;
+    expect(saved.templates[0].sections[1].id).toBe('extractions');
+  });
+
   it('disables template mutations while saving', async () => {
     let finish!: () => void;
     const onSave = vi.fn(() => new Promise<void>((resolve) => { finish = resolve; }));
     const user = userEvent.setup();
     const config = { defaultTemplateId: 'a', templates: [{ ...defaultTemplate(), id: 'a', name: 'First' }, { ...defaultTemplate(), id: 'b', name: 'Second' }] };
     renderModal({ config, onSave });
-    await user.selectOptions(screen.getByRole('combobox', { name: 'Report template' }), 'b');
+    await user.click(screen.getByRole('button', { name: 'Second' }));
     await user.type(screen.getByLabelText('Template name'), '!');
     await user.click(screen.getByRole('button', { name: 'Save templates' }));
     expect(screen.getByRole('button', { name: 'New template' })).toBeDisabled();
     expect(screen.getByRole('button', { name: 'Template actions' })).toBeDisabled();
-    expect(screen.getByRole('combobox', { name: 'Report template' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Second!', pressed: true })).toBeDisabled();
     await act(async () => finish());
   });
 
@@ -225,6 +233,16 @@ describe('OwnerReportTemplatesModal', () => {
     expect(intro).toHaveValue('{owner}{pet}');
   });
 
+  it('shows supported personalization fields detected in the current draft', async () => {
+    const config = defaultConfig();
+    config.templates[0].footer = '{Practice} · {unknown}';
+    renderModal({ config });
+    await userEvent.click(screen.getByRole('button', { name: 'Report content' }));
+    fireEvent.change(screen.getByLabelText('Opening summary template'), { target: { value: 'Hello {Pet} and {owner}.' } });
+    const fields = screen.getByRole('list', { name: 'Fields in this template' });
+    expect(within(fields).getAllByRole('listitem').map(item => item.textContent)).toEqual(['{Pet}', '{owner}', '{Practice}']);
+  });
+
   it('when the saved templates failed to load, it says so and keeps Save off — even after an edit', async () => {
     renderModal({ loadFailed: true });
     expect(screen.getByRole('alert')).toHaveTextContent(/didn’t load/);
@@ -274,16 +292,20 @@ describe('web template editor categories', () => {
     expect(onSave.mock.calls[0][0].templates[0]).toMatchObject({ introTemplate: 'A careful summary.', closingNote: 'Contact the practice.' });
   });
 
-  it('supports the compact category and template pickers without losing edits', async () => {
+  it('supports the compact category picker and direct template choices without losing edits', async () => {
     const user = userEvent.setup();
     const config = defaultConfig();
     config.templates.push({ ...defaultTemplate(), id: 'second', name: 'Second template' });
     renderModal({ config });
     await user.selectOptions(screen.getByRole('combobox', { name: 'Template settings' }), 'closing');
     await user.type(screen.getByLabelText('Closing note'), 'First template note');
-    await user.selectOptions(screen.getByLabelText('Report template'), 'second');
+    const templates = within(screen.getByRole('group', { name: 'Report template' }));
+    const first = templates.getByRole('button', { name: /Standard/, pressed: true });
+    await user.click(first);
+    expect(screen.getByLabelText('Closing note')).toHaveValue('First template note');
+    await user.click(templates.getByRole('button', { name: 'Second template', pressed: false }));
     expect(screen.getByLabelText('Closing note')).toHaveValue('');
-    await user.selectOptions(screen.getByLabelText('Report template'), config.defaultTemplateId);
+    await user.click(first);
     expect(screen.getByLabelText('Closing note')).toHaveValue('First template note');
   });
 
@@ -313,6 +335,14 @@ it('template management disclosure exposes its state without changing the draft'
   expect(toggle).toHaveAttribute('aria-expanded', 'false');
   expect(toggle).toHaveFocus();
   expect(screen.getByRole('dialog')).toBeInTheDocument();
+});
+
+it('keeps secondary template actions in a disclosure in the native editor', async () => {
+  renderModal({ presentation: 'screen' });
+  expect(screen.queryByRole('button', { name: 'Delete' })).toBeNull();
+  await userEvent.click(screen.getByRole('button', { name: 'Template actions' }));
+  expect(screen.getByRole('button', { name: 'Duplicate' })).toBeEnabled();
+  expect(screen.getByRole('button', { name: 'Delete' })).toBeDisabled();
 });
 
 it('opens a new template draft in the practice client language', () => {

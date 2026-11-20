@@ -70,7 +70,39 @@
         "gpDiagnostics": "A korábbi felvételek áttekinthetők."
       },
       "builder": {
+        "inputTypes": {
+          "paragraph": "Hosszú szöveg",
+          "shortText": "Rövid szöveg",
+          "radio": "Egy válasz",
+          "multiselect": "Több válasz"
+        },
+        "choiceOptions": "Lehetőségek",
+        "choiceOption": "{{n}}. lehetőség",
+        "removeChoice": "{{n}}. lehetőség eltávolítása",
+        "choiceHelp": "Adjon meg minden lehetőséghez egyedi nevet.",
+        "deletePracticeFieldMessage": "A mező eltűnik a rendelő mezőválasztójából. A meglévő sablonokban és viziteken megmarad.",
+        "recordedText": "Rögzített szöveg",
+        "clearSelection": "Kijelölés törlése",
+        "choiceLegacyHelp": "A választáshoz törölje a rögzített szöveget.",
+        "addChoice": "Lehetőség hozzáadása",
         "addSection": "Szakasz hozzáadása",
+        "searchSections": "Szakaszok keresése",
+        "practiceFields": "Rendelői mezők",
+        "builtInFields": "Beépített mezők",
+        "createField": "Mező létrehozása",
+        "manageFields": "Rendelői mezők kezelése",
+        "noFields": "Nincs megfelelő szakasz",
+        "alreadyAdded": "Már hozzáadva",
+        "dragField": "A következő mező áthelyezése: {{field}}",
+        "removeNamed": "A következő mező eltávolítása: {{field}}",
+        "fieldRemoved": "Mező eltávolítva: {{field}}",
+        "undoRemove": "Visszavonás",
+        "archiveField": "Mező archiválása",
+        "restoreField": "Mező visszaállítása",
+        "fieldsFromOtherTemplates": "Más sablonok mezői",
+        "sectionMoved": "A(z) {{field}} mező a(z) {{position}}. helyre került",
+        "fieldName": "Mező neve",
+        "noPracticeFields": "Még nincsenek rendelői mezők",
         "chooseSection": "Szakasz kiválasztása",
         "customSection": "Egyéni szakasz",
         "sectionLabel": "Szakasz felirata",
@@ -125,10 +157,55 @@
       }
     }
   },
+  "imaging": {
+    "templates": {
+      "title": "Képalkotólelet-sablonok",
+      "starter": "Általános lelet",
+      "intro": "Készítsen vázlatokat a röntgen- és CT-leletekhez.",
+      "label": "Leletsablon",
+      "insert": "Vázlat beszúrása",
+      "inserted": "Leletvázlat beszúrva.",
+      "tooLong": "A vázlattal a lelet túllépné a megengedett hosszúságot.",
+      "settings": "Képalkotás és PDF beállításai",
+      "help": "A képalkotólelet-sablonok használata"
+    },
+    "sections": {
+      "technique": "Technika",
+      "findings": "Leletek",
+      "impression": "Összegzés"
+    },
+    "layout": {
+      "title": "Képalkotás testreszabása",
+      "intro": "Adja meg az új vizitek leleteinek címkéit és kezdőszövegét.",
+      "help": "A képalkotás testreszabása",
+      "starterText": "Kezdőszöveg"
+    }
+  },
   "discharge": {
     "title": "Hazabocsátás",
     "purpose": "Rögzítse a vizit során megbeszélt gyógyszereket, ápolási utasításokat és utánkövetést.",
-    "review": "Gazdinak szóló jelentés áttekintése"
+    "review": "Gazdinak szóló jelentés áttekintése",
+    "templates": {
+      "title": "Hazabocsátási sablonok",
+      "starter": "Általános hazabocsátás",
+      "help": "A hazabocsátási sablonok használata",
+      "ownerReport": "Megjelenítés a gazdinak szóló leletben",
+      "intro": "Válassza ki, hogyan jelenjenek meg a szakaszok a hazabocsátási jegyzetben.",
+      "samples": {
+        "dischargeMedications": "A gyógyszerek beadására vonatkozó utasításokat átbeszéltük a gazdival.",
+        "dischargeInstructions": "A megbeszéltek szerint adjon puha eledelt.",
+        "dischargeFollowUp": "A kontrollvizitről egyeztettünk."
+      },
+      "recovery": "Felépülés fogászati kezelés után",
+      "activity": {
+        "label": "Tevékenység",
+        "helper": "Jegyezze fel a megbeszélt mozgáskorlátozásokat.",
+        "sample": "A mozgáskorlátozásokat megbeszélték."
+      },
+      "deleteMessage": "Mentéskor a sablon eltűnik a rendelő listájából. A mentett vizitek megőrzik sablonjukat és szövegüket.",
+      "dragTemplate": "A(z) {{template}} sablon áthelyezése",
+      "templateMoved": "A(z) {{template}} sablon most a(z) {{position}}. helyen van"
+    }
   },
   "sourceNotice": "A rögzített megfogalmazás a beírt formában marad. Megosztás előtt ellenőrizze az ügyfél nyelvét.",
   "treatmentRecap": "Kezelési jelentés",

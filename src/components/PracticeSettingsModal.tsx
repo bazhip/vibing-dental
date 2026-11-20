@@ -311,10 +311,10 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
       setNameDraft(practiceName.trim());
       toast(t('practice.nameSaved'), { kind: 'success' });
       // The screen stays (it holds the team, logo, …); the dialog closes.
-      if (!asScreen && !asPage) onClose();
+      if (!asScreen && !sectioned) onClose();
     } catch (e) {
       setNameError(friendlyError(e, t('practice.nameSaveFailed')));
-      if (asPage) setSection('general');
+      if (sectioned) setSection('general');
     } finally {
       setNameBusy(false);
     }
@@ -535,6 +535,15 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
           </p>
         )}
         {nameError && <div className="login-error settings-msg" role="alert">{nameError}</div>}
+        {sectioned && nameDirty && <div className="practice-logo-actions">
+          <button type="button" className="diagram-view__action" disabled={nameBusy}
+            onClick={() => { setNameDraft(null); setNameError(''); }}>
+            {t('actions.cancel', { ns: 'common' })}
+          </button>
+          <button type="submit" className="entry-grid__button entry-grid__button--topbar" disabled={nameBusy}>
+            {nameBusy ? t('saving') : t('actions.save', { ns: 'common' })}
+          </button>
+        </div>}
       </form>
 
       {/* ---- Logo --------------------------------------------------- */}
@@ -994,8 +1003,6 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
         <div className="practice-workspace__content">
           <h2>{t(`workspace.${section}`)}</h2>
           {practiceBody}
-
-          {footer}
         </div>
       </div>
     </main>
@@ -1016,7 +1023,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
           {sectionNavigation && settingsNavigation}
           {sectionNavigation ? <div className="practice-workspace__content"><h3>{t(`workspace.${section}`)}</h3>{practiceBody}</div> : practiceBody}
         </div>
-        {footer}
+        {!sectioned && footer}
       </div>
     </div>
   );

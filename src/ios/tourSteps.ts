@@ -43,7 +43,7 @@ export function buildAppSteps(t: TFunction<'settings'>, aiEnabled?: boolean, own
     step('customize', { section: 'charting', target: '[data-app-tab="chart"] .ios-navbar__trailing', placement: 'bottom' }),
     step('diagrams', { section: 'diagnosis', target: '.tooth-diagram-wrapper', placement: 'bottom' }),
     step('images', { section: 'imaging', target: '.radiographic-findings', placement: 'bottom' }),
-    step('treatment', { section: 'treatment', target: '.surgery-report__header', placement: 'bottom' }),
+    step('treatment', { section: 'treatment', target: '[data-tour="treatment"] > .section-header', placement: 'bottom' }),
     ...(ownerReportEnabled ? [step('ownerReport', { section: 'owner-report', target: '.owner-report__block', placement: 'top' })] : []),
     step('patients', { target: tab('patients'), placement: 'top' }),
     ...(aiEnabled ? [step('dictate', { target: '.voice-input', placement: 'top' })] : []),

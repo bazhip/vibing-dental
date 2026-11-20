@@ -2,7 +2,7 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const backend = vi.hoisted(() => ({
-  insert: vi.fn(async (_row: unknown) => ({ error: null })),
+  insert: vi.fn(async (_row: unknown): Promise<{ error: { code: string; message: string } | null }> => ({ error: null })),
   upload: vi.fn(async () => ({ error: null })),
   update: vi.fn((_patch: unknown) => ({ eq: vi.fn(async () => ({ error: null })) })),
 }));
@@ -48,9 +48,19 @@ describe('attachment upload classification', () => {
     const file = new File([new Uint8Array(4)], name, { type });
     await act(async () => { await result.current.upload(file, 'photo', 'Caption'); });
     expect(backend.insert).toHaveBeenCalledWith(expect.objectContaining({
-      chart_id: 'c1', kind: expectedKind, caption: 'Caption', practice_id: 'p1',
+      chart_id: 'c1', kind: expectedKind, caption: 'Caption', practice_id: 'p1', file_name: name,
     }));
     if (expectedKind === 'xray') expect(backend.insert.mock.calls[0][0]).toHaveProperty('original_path');
+  });
+
+  it('can still upload before the filename column is deployed', async () => {
+    backend.insert.mockResolvedValueOnce({ error: { code: 'PGRST204', message: 'Missing file_name column' } });
+    const { result } = renderHook(() => useAttachments('c1', 'p1', 10, true));
+    await waitFor(() => expect(result.current.loaded).toBe(true));
+    await act(async () => result.current.upload(new File(['image'], 'photo.jpg', { type: 'image/jpeg' }), 'photo', ''));
+    expect(backend.insert).toHaveBeenCalledTimes(2);
+    expect(backend.insert.mock.calls[1][0]).not.toHaveProperty('file_name');
+    expect(backend.upload).toHaveBeenCalledTimes(1);
   });
 
   it('recognizes an extensionless sensor export from its DICOM signature', async () => {

@@ -16,10 +16,10 @@ import { DialogHost } from './ui/dialogs';
 beforeEach(() => { vi.clearAllMocks(); store.enabled = true; store.templates = [{ id: 't1', name: 'Cleaning', body: 'Scaled and polished.' }]; });
 
 describe('treatment report customization', () => {
-  it('opens template management from the Customize header action', async () => {
+  it('opens template management beside the template choices', async () => {
     render(<SurgeryReportForm value="" onChange={vi.fn()} />);
-    const customize = screen.getByRole('button', { name: 'Customize' });
-    expect(customize.closest('.patient-form__header')).not.toBeNull();
+    const customize = screen.getByRole('button', { name: 'Manage templates' });
+    expect(within(customize.closest('.visit-documentation__toolbar')!).getByRole('button', { name: 'Cleaning' })).toBeVisible();
     expect(customize).toHaveAttribute('title', 'Manage treatment report templates');
     expect(screen.queryByRole('button', { name: 'Edit templates' })).toBeNull();
     await userEvent.click(customize);
@@ -36,14 +36,14 @@ describe('treatment report customization', () => {
     fireEvent.change(report, { target: { value: 'Attempted edit' } });
     fireEvent.click(screen.getByRole('button', { name: 'Cleaning' }));
     expect(onChange).not.toHaveBeenCalled();
-    await userEvent.click(screen.getByRole('button', { name: 'Customize' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Manage templates' }));
     expect(screen.getByRole('dialog', { name: 'Report templates' })).toBeInTheDocument();
     expect(store.create).not.toHaveBeenCalled();
   });
 
   it('hides template controls when cloud access is disabled', () => {
     render(<SurgeryReportForm value="" onChange={vi.fn()} cloudActive={false} />);
-    expect(screen.queryByRole('button', { name: 'Customize' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Manage templates' })).toBeNull();
     expect(screen.queryByRole('combobox')).toBeNull();
   });
 
@@ -56,42 +56,39 @@ describe('treatment report customization', () => {
     await userEvent.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: 'Use template' }));
     expect(onChange).toHaveBeenCalledWith('Scaled and polished.');
   });
-  it('does not reinsert the selected template even when its wording was edited', () => {
+  it.each(['Updated wording', ''])('does not reinsert the selected template after its wording changes to %j', (value) => {
     const onApplyTemplate = vi.fn();
-    render(<SurgeryReportForm value="Updated wording" templateId="t1" onApplyTemplate={onApplyTemplate} onChange={vi.fn()} />);
+    render(<SurgeryReportForm value={value} templateId="t1" onApplyTemplate={onApplyTemplate} onChange={vi.fn()} />);
     const active = screen.getByRole('button', { name: 'Cleaning', pressed: true });
     fireEvent.click(active);
     expect(onApplyTemplate).not.toHaveBeenCalled();
   });
 });
 
-it('creates a new template from a blank report and saves its prompts as written', async () => {
-  const body = 'Teeth extracted: {Enter tooth numbers}.';
+it('creates a new template from a blank report and saves its wording as written', async () => {
+  const body = 'Patient: {pet}. Teeth extracted: {Tooth numbers}.';
   store.create.mockResolvedValueOnce({ id: 'new', name: 'Extraction', body });
   render(<SurgeryReportForm value="" onChange={vi.fn()} />);
   fireEvent.click(screen.getByRole('button', { name: 'New template' }));
   const editor = screen.getByRole('dialog', { name: 'New template' });
-  expect(within(editor).getByRole('textbox', { name: 'Report text' })).toHaveAccessibleDescription(/braces/);
+  expect(within(editor).getByRole('textbox', { name: 'Report text' })).toHaveAccessibleDescription(/Codes fill in recorded chart values/);
   fireEvent.change(within(editor).getByRole('textbox', { name: 'Template name' }), { target: { value: 'Extraction' } });
   fireEvent.change(within(editor).getByRole('textbox', { name: 'Report text' }), { target: { value: body } });
   expect(within(editor).getByText('Fields in this template')).toBeVisible();
-  expect(within(editor).getByText('{Enter tooth numbers}')).toBeVisible();
+  expect(within(editor).getByText('{pet}', { selector: 'li > code' })).toBeVisible();
   fireEvent.click(within(editor).getByRole('button', { name: 'Save template' }));
   await waitFor(() => expect(editor).not.toBeInTheDocument());
   expect(store.create).toHaveBeenCalledWith('Extraction', body);
 });
 
-it('asks for each named field once before applying the completed template', async () => {
-  store.templates = [{ id: 't1', name: 'Extraction', body: 'Teeth: {Enter tooth numbers}. Site: {Enter tooth numbers}. {{Code}}' }];
+it('applies the template directly when chart values are missing or tokens are unknown', async () => {
+  store.templates = [{ id: 't1', name: 'Extraction', body: '{pet} · {doctor} · Teeth: {Tooth numbers} · {{pet}}' }];
   const onChange = vi.fn();
-  render(<><SurgeryReportForm value="Existing notes" onChange={onChange} /><DialogHost /></>);
-  fireEvent.click(screen.getByRole('button', { name: 'Extraction' }));
-  fireEvent.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: 'Use template' }));
-  const field = await screen.findByRole('textbox', { name: 'Enter tooth numbers' });
-  expect(onChange).not.toHaveBeenCalled();
-  fireEvent.change(field, { target: { value: '108' } });
-  fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
-  await waitFor(() => expect(onChange).toHaveBeenCalledWith('Teeth: 108. Site: 108. {{Code}}'));
+  render(<><SurgeryReportForm value="" chartFields={{ doctor: 'Dr Rivera' }} onChange={onChange} /><DialogHost /></>);
+  await userEvent.click(screen.getByRole('button', { name: 'Extraction' }));
+  expect(onChange).toHaveBeenCalledWith('{pet} · Dr Rivera · Teeth: {Tooth numbers} · {{pet}}');
+  expect(screen.queryByRole('alertdialog')).toBeNull();
+  expect(screen.queryByRole('dialog')).toBeNull();
 });
 
 it('lists all chart codes and offers keyboard and mouse insertion after a brace', async () => {

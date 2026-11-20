@@ -20,12 +20,12 @@ export interface CustomExamAreaDef {
  *  settings must stay under the database's 8 KB cap for preferences. */
 export const MAX_CUSTOM_EXAM_AREAS = 8;
 export const MAX_EXAM_LABEL = 60;
-const MAX_EXAM_COMMENT = 500;
+export const MAX_EXAM_COMMENT = 500;
 
 /** Suggestions add distinct soft-tissue areas beyond the built-in exam. Labels are captured in the person's language. */
 export const EXAM_PRESET_KEYS = ['gingiva', 'salivary', 'floor'] as const;
 
-const str = (v: unknown, max: number) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
+const str = (v: unknown, max: number) => (typeof v === 'string' ? [...v.trim()].slice(0, max).join('') : '');
 const obj = (v: unknown): Record<string, unknown> | null =>
   v && typeof v === 'object' && !Array.isArray(v) ? (v as Record<string, unknown>) : null;
 const status = (v: unknown): ExamFinding => (v === 'normal' || v === 'abnormal' ? v : '');

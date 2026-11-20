@@ -1,6 +1,6 @@
 import { ctRecordedText } from '../utils/ctReportState';
 import { radiologyRecordedText } from '../utils/radiologyReportState';
-import { CONSULTATION_SNAPSHOT_VERSION } from '../utils/consultationTemplates';
+import { CONSULTATION_SNAPSHOT_VERSION, DISCHARGE_SNAPSHOT_VERSION } from '../utils/consultationTemplates';
 import { hasVisitDocumentation } from '../utils/visitDocumentation';
 import { visitTypeOf } from '../utils/visitTypes';
 import React from 'react';
@@ -964,8 +964,10 @@ export function useCloudSync(
     if (!supabase) return false;
     // Unsaved edits here would be replaced — ask, as opening a chart does.
     if (!(await confirmDiscardIfDirty('restore'))) return false;
-    const restored = snapshot.patientInfo.visitType === 'consultation'
-      ? { ...snapshot, version: Math.max(snapshot.version ?? 1, CONSULTATION_SNAPSHOT_VERSION) } : snapshot;
+    const currentHasDischargeLayout = lastSavedRef.current.chartId === id && lastSavedRef.current.snapshot?.patientInfo.dischargeLayout;
+    const minimumVersion = snapshot.patientInfo.dischargeLayout || currentHasDischargeLayout
+      ? DISCHARGE_SNAPSHOT_VERSION : snapshot.patientInfo.visitType === 'consultation' ? CONSULTATION_SNAPSHOT_VERSION : 1;
+    const restored = minimumVersion > (snapshot.version ?? 1) ? { ...snapshot, version: minimumVersion } : snapshot;
     await upsertChart(JSON.stringify(restored), id, { restore: true });
     const { data, error } = await supabase.from('charts').select('id, data, updated_at').eq('id', id).single();
     if (error) throw new Error(error.message);

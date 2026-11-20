@@ -138,19 +138,17 @@ html:not(.native-ios) .entry-grid-container .entry-grid-form .dental-grid .rdg-h
   letter-spacing: 0;
 }
 
-html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__header, .dental-grid__section-header, .surgery-report__actions, .owner-report__actions) .diagram-view__action {
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__header, .dental-grid__section-header) .diagram-view__action {
   min-height: var(--clinical-action-height);
   font-size: var(--clinical-label-size);
 }
 
 /* Report and imaging tools remain part of the record, with clear editable areas. */
 .owner-report__template-bar { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 8px 12px; }
-.owner-report__template-picker { flex: 1 1 12rem; max-width: 20rem; min-width: 0; margin: 0; }
-.owner-report__template-picker select { width: 100%; text-overflow: ellipsis; }
 .owner-report__draft { display: inline-flex; align-items: center; gap: .4rem; min-height: 40px; }
 .owner-report__draft:disabled { cursor: progress; }
 @media (max-width: 600px) {
-  .owner-report__template-picker select, .owner-report__draft { min-height: 44px; }
+  .owner-report__draft { min-height: 44px; }
 }
 html:not(.native-ios) .entry-grid-container .entry-grid-form .owner-report__block {
   margin-bottom: 24px;
@@ -181,8 +179,8 @@ html:not(.native-ios) .entry-grid-container .entry-grid-form .imaging__uploader 
     gap: 18px;
     margin-bottom: 20px;
   }
-  /* Touch targets for actions only: never expand tooth marks or chart cells. */
-  html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.species-tab, .diagram-view__action, .diagram-view__tool, .anesthesia-drug__add, .anesthesia-drug__remove, .imaging__queue-dismiss, .exam-table__radio-hit) {
+  /* Keep touch targets outside the chart large enough without expanding chart cells. */
+  html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.species-tab, .diagram-view__action, .diagram-view__tool, .anesthesia-drug__add, .anesthesia-drug__remove, .imaging__queue-dismiss, .exam-table__radio-hit, .visit-documentation__short-text) {
     min-height: 44px;
     min-width: 44px;
   }
@@ -257,15 +255,6 @@ html:not(.native-ios) .entry-grid-form .section-header__actions .entry-grid__but
 html:not(.native-ios) .entry-grid-container .entry-grid-form .patient-form { padding: 0; border-radius: 0; }
 
 html:not(.native-ios) .sidebar-layout__main[data-active-section="treatment"] { min-height: 0; }
-
-/* Exam areas use the same inline add flow as anesthesia entries. */
-.exam-add-area { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
-.exam-add-area .exam-add-area__input { flex: 1 1 200px; min-width: 0; max-width: 420px; }
-.exam-add-area :is(button, input) { min-height: 40px; }
-.exam-add-area__message { flex-basis: 100%; }
-@media (max-width: 600px) {
-  .exam-add-area :is(button, input) { min-height: 44px; }
-}
 
 .patient-form__history { min-height: var(--clinical-action-height, 40px); }
 @media (max-width: 600px) {

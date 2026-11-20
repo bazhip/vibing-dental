@@ -186,7 +186,7 @@
     "patient": {
       "title": "Página Paciente",
       "hideRecheck": "Ocultar el campo Próxima revisión",
-      "visibilityNote": "Elija los campos que se muestran en las visitas vacías. Los campos con información registrada permanecen visibles."
+      "visibilityNote": "Elija qué campos mostrar. Los campos del propietario y del auxiliar veterinario con información registrada permanecen visibles."
     },
     "pdf": {
       "title": "PDF",
@@ -250,8 +250,8 @@
         "procedure": "Procedimiento"
       },
       "descriptions": {
-        "patient": "Elija si se muestra la fecha de revisión en la página Paciente.",
-        "exam": "Elija las áreas adicionales que registra durante la exploración oral.",
+        "patient": "Elija qué campos del propietario y de la visita se muestran en las visitas en blanco.",
+        "exam": "Elija y ordene los campos de la exploración oral.",
         "anesthesia": "Configure los bloqueos nerviosos, los campos personalizados y sus medicamentos habituales.",
         "charting": "Defina la disposición, las mediciones y el comportamiento de introducción de datos.",
         "diagnosis": "Elija los hallazgos del diagrama diagnóstico y sus códigos rápidos.",

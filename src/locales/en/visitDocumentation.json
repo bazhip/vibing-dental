@@ -70,7 +70,39 @@
         "gpDiagnostics": "Previous imaging is available for review."
       },
       "builder": {
+        "inputTypes": {
+          "paragraph": "Long text",
+          "shortText": "Short text",
+          "radio": "Single choice",
+          "multiselect": "Multiple choice"
+        },
+        "choiceOptions": "Options",
+        "choiceOption": "Option {{n}}",
+        "removeChoice": "Remove option {{n}}",
+        "choiceHelp": "Enter a unique name for each option.",
+        "deletePracticeFieldMessage": "This field will be removed from the practice field picker. Existing templates and visits keep the field.",
+        "recordedText": "Recorded text",
+        "clearSelection": "Clear selection",
+        "choiceLegacyHelp": "Clear the recorded text to choose an option.",
+        "addChoice": "Add option",
         "addSection": "Add section",
+        "searchSections": "Search sections",
+        "practiceFields": "Practice fields",
+        "builtInFields": "Built-in fields",
+        "createField": "Create a field",
+        "manageFields": "Manage practice fields",
+        "noFields": "No matching sections",
+        "alreadyAdded": "Already added",
+        "dragField": "Reorder {{field}}",
+        "removeNamed": "Remove {{field}}",
+        "fieldRemoved": "{{field}} removed",
+        "undoRemove": "Undo",
+        "archiveField": "Archive field",
+        "restoreField": "Restore field",
+        "fieldsFromOtherTemplates": "Fields from other templates",
+        "sectionMoved": "{{field}} moved to position {{position}}",
+        "fieldName": "Field name",
+        "noPracticeFields": "No practice fields yet",
         "chooseSection": "Choose a section",
         "customSection": "Custom section",
         "sectionLabel": "Section label",
@@ -125,10 +157,55 @@
       }
     }
   },
+  "imaging": {
+    "templates": {
+      "title": "Imaging report templates",
+      "starter": "Standard report",
+      "intro": "Create outlines for radiographic and CT reports.",
+      "label": "Report template",
+      "insert": "Insert outline",
+      "inserted": "Report outline inserted.",
+      "tooLong": "The outline would exceed the report length limit.",
+      "settings": "Imaging and PDF settings",
+      "help": "How imaging templates work"
+    },
+    "sections": {
+      "technique": "Technique",
+      "findings": "Findings",
+      "impression": "Impression"
+    },
+    "layout": {
+      "title": "Customize Imaging",
+      "intro": "Set report labels and starter text for new visits.",
+      "help": "How to customize Imaging",
+      "starterText": "Starter text"
+    }
+  },
   "discharge": {
     "title": "Discharge",
     "purpose": "Record the medications, care instructions, and follow-up discussed for this visit.",
-    "review": "Review client report"
+    "review": "Review client report",
+    "templates": {
+      "title": "Discharge templates",
+      "starter": "Standard discharge",
+      "help": "How discharge templates work",
+      "ownerReport": "Include in owner report",
+      "intro": "Choose how sections appear in discharge notes.",
+      "samples": {
+        "dischargeMedications": "Medication instructions reviewed with the owner.",
+        "dischargeInstructions": "Offer soft food as discussed.",
+        "dischargeFollowUp": "Follow-up appointment discussed."
+      },
+      "recovery": "Dental recovery",
+      "activity": {
+        "label": "Activity",
+        "helper": "Record any activity restrictions discussed.",
+        "sample": "Activity restrictions were discussed."
+      },
+      "deleteMessage": "The template will be removed from the practice list when you save. Saved visits keep their template and wording.",
+      "dragTemplate": "Reorder template {{template}}",
+      "templateMoved": "{{template}} is now number {{position}}"
+    }
   },
   "sourceNotice": "Recorded wording stays as entered. Review the client language before sharing.",
   "treatmentRecap": "Treatment report",

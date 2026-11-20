@@ -11,6 +11,7 @@
     "aria": "Akten durchsuchen"
   },
   "filters": {
+    "clear": "Filter zurücksetzen",
     "speciesAria": "Nach Tierart filtern",
     "allSpecies": "Alle Tierarten",
     "doctorAria": "Nach Tierarzt filtern",
@@ -117,10 +118,8 @@
   },
   "templates": {
     "chartCodes": "Aktencodes",
-    "chartCodeHelp": "Geben Sie { ein, um Vorschläge anzuzeigen, oder wählen Sie unten einen Code. Codes übernehmen die Werte aus der Akte und fragen fehlende Angaben ab. Andere Namen in geschweiften Klammern erstellen eigene Eingabefelder.",
-    "fieldExamples": "Beispiele für ausfüllbare Felder sind {Zahnnummern}, {Behandlungsdetails} und {Kontrolltermin}.",
+    "chartCodeHelp": "Geben Sie { ein, um Vorschläge zu sehen, oder wählen Sie unten einen Code. Die Codes übernehmen Werte aus der Patientenakte. Nicht ausgefüllte Codes können Sie im Bericht bearbeiten.",
     "fieldsInTemplate": "Felder in dieser Vorlage",
-    "fieldHelp": "Setzen Sie eine kurze Anweisung in geschweifte Klammern, um ein Eingabefeld zu erstellen, etwa {Zahnnummern eingeben}. Der Wert wird beim Verwenden der Vorlage abgefragt.",
     "aria": "Berichtsvorlagen",
     "title": "Berichtsvorlagen",
     "saved": "Gespeicherte Vorlagen",

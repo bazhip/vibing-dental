@@ -103,16 +103,6 @@ describe('PatientForm', () => {
 });
 
 describe('ExamForm', () => {
-  it('translates the inline add editor and duplicate feedback', () => {
-    const { container } = render(<ExamForm exam={EMPTY_EXAM_FINDINGS} onStatusChange={() => {}} onCommentChange={() => {}}
-      onAddArea={() => {}} />);
-    fireEvent.click(screen.getByRole('button', { name: /⟦Add area⟧/ }));
-    expect(findUntranslated(container, ALLOW)).toEqual([]);
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: '⟦Tongue⟧' } });
-    expect(screen.getByRole('alert')).toHaveTextContent('⟦This area is already in your exam.⟧');
-    expect(findUntranslated(container, ALLOW)).toEqual([]);
-  });
-
   const noop = () => {};
   it('unanswered, partly answered with an abnormal comment, fully answered', () => {
     const exam: ExamFindings = {
@@ -193,9 +183,10 @@ describe('AnesthesiaForm', () => {
 describe('AnesthesiaCustomEditor', () => {
   it('empty and with a block and a field of each type', () => {
     const noop = () => {};
-    const { container, rerender } = render(<AnesthesiaCustomEditor blocks={[]} fields={[]} onBlocksChange={noop} onFieldsChange={noop} />);
-    expect(findUntranslated(container, ALLOW)).toEqual([]);
-    rerender(
+    const empty = render(<AnesthesiaCustomEditor blocks={[]} fields={[]} onBlocksChange={noop} onFieldsChange={noop} />);
+    expect(findUntranslated(empty.container, ALLOW)).toEqual([]);
+    empty.unmount();
+    const { container } = render(
       <AnesthesiaCustomEditor
         blocks={[{ id: 'b1', label: 'Major palatine' }]}
         fields={[
@@ -206,6 +197,10 @@ describe('AnesthesiaCustomEditor', () => {
         onFieldsChange={noop}
       />,
     );
+    fireEvent.click(screen.getByRole('button', { name: 'Major palatine' }));
+    fireEvent.click(screen.getByRole('button', { name: 'ET tube' }));
+    expect(findUntranslated(container, ALLOW)).toEqual([]);
+    fireEvent.click(screen.getByRole('button', { name: 'ASA status' }));
     expect(findUntranslated(container, ALLOW)).toEqual([]);
   });
 });

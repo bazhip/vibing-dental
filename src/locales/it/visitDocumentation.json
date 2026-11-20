@@ -70,7 +70,39 @@
         "gpDiagnostics": "Le immagini precedenti sono disponibili per la revisione."
       },
       "builder": {
+        "inputTypes": {
+          "paragraph": "Testo lungo",
+          "shortText": "Testo breve",
+          "radio": "Scelta singola",
+          "multiselect": "Scelta multipla"
+        },
+        "choiceOptions": "Opzioni",
+        "choiceOption": "Opzione {{n}}",
+        "removeChoice": "Rimuovi opzione {{n}}",
+        "choiceHelp": "Inserisca un nome univoco per ogni opzione.",
+        "deletePracticeFieldMessage": "Questo campo verrà rimosso dal selettore dei campi dello studio. I modelli e le visite esistenti conservano il campo.",
+        "recordedText": "Testo registrato",
+        "clearSelection": "Deseleziona",
+        "choiceLegacyHelp": "Cancelli il testo registrato per scegliere un’opzione.",
+        "addChoice": "Aggiungi opzione",
         "addSection": "Aggiungi sezione",
+        "searchSections": "Cerca sezioni",
+        "practiceFields": "Campi della clinica",
+        "builtInFields": "Campi integrati",
+        "createField": "Crea un campo",
+        "manageFields": "Gestisci i campi della clinica",
+        "noFields": "Nessuna sezione corrispondente",
+        "alreadyAdded": "Già aggiunto",
+        "dragField": "Riordina {{field}}",
+        "removeNamed": "Rimuovi {{field}}",
+        "fieldRemoved": "Campo {{field}} rimosso",
+        "undoRemove": "Annulla",
+        "archiveField": "Archivia campo",
+        "restoreField": "Ripristina campo",
+        "fieldsFromOtherTemplates": "Campi di altri modelli",
+        "sectionMoved": "Campo {{field}} spostato in posizione {{position}}",
+        "fieldName": "Nome del campo",
+        "noPracticeFields": "Nessun campo della clinica",
         "chooseSection": "Scelga una sezione",
         "customSection": "Sezione personalizzata",
         "sectionLabel": "Etichetta della sezione",
@@ -125,10 +157,55 @@
       }
     }
   },
+  "imaging": {
+    "templates": {
+      "title": "Modelli di referti di diagnostica per immagini",
+      "starter": "Referto standard",
+      "intro": "Crei strutture per i referti radiografici e TC.",
+      "label": "Modello di referto",
+      "insert": "Inserisci struttura",
+      "inserted": "Struttura del referto inserita.",
+      "tooLong": "La struttura farebbe superare la lunghezza massima del referto.",
+      "settings": "Impostazioni di diagnostica per immagini e PDF",
+      "help": "Come funzionano i modelli di diagnostica per immagini"
+    },
+    "sections": {
+      "technique": "Tecnica",
+      "findings": "Reperti",
+      "impression": "Conclusioni"
+    },
+    "layout": {
+      "title": "Personalizza diagnostica per immagini",
+      "intro": "Imposti le etichette e il testo iniziale dei referti per le nuove visite.",
+      "help": "Come personalizzare la diagnostica per immagini",
+      "starterText": "Testo iniziale"
+    }
+  },
   "discharge": {
     "title": "Dimissione",
     "purpose": "Registri i farmaci, le istruzioni di cura e il controllo successivo discussi per questa visita.",
-    "review": "Verifichi il resoconto per il cliente"
+    "review": "Verifichi il resoconto per il cliente",
+    "templates": {
+      "title": "Modelli di dimissione",
+      "starter": "Dimissione standard",
+      "help": "Come funzionano i modelli di dimissione",
+      "ownerReport": "Includi nel referto per il proprietario",
+      "intro": "Scelga come visualizzare le sezioni nelle note di dimissione.",
+      "samples": {
+        "dischargeMedications": "Le istruzioni per la somministrazione dei farmaci sono state riesaminate con il proprietario.",
+        "dischargeInstructions": "Offra cibo morbido come concordato.",
+        "dischargeFollowUp": "È stato discusso un appuntamento di controllo."
+      },
+      "recovery": "Recupero dopo le cure dentali",
+      "activity": {
+        "label": "Attività",
+        "helper": "Annoti le eventuali limitazioni dell’attività concordate.",
+        "sample": "Sono state discusse le limitazioni dell’attività."
+      },
+      "deleteMessage": "Al salvataggio il modello verrà rimosso dall’elenco della clinica. Le visite salvate conservano il modello e il testo.",
+      "dragTemplate": "Riordina il modello {{template}}",
+      "templateMoved": "Il modello {{template}} è ora in posizione {{position}}"
+    }
   },
   "sourceNotice": "Il testo registrato rimane come inserito. Verifichi la lingua del cliente prima della condivisione.",
   "treatmentRecap": "Referto del trattamento",

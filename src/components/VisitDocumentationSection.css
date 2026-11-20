@@ -6,6 +6,7 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px;
 }
+.visit-documentation__images { grid-column: 1 / -1; min-inline-size: 0; }
 .visit-documentation__field {
   min-width: 0;
 }
@@ -16,6 +17,37 @@
   min-height: 88px;
   resize: vertical;
 }
+.visit-documentation__short-text {
+  width: 100%;
+  box-sizing: border-box;
+}
+.visit-documentation__option-group {
+  display: grid;
+  gap: 4px;
+  border: 0;
+  padding: 0;
+  margin: 0 0 6px;
+  min-inline-size: 0;
+}
+.visit-documentation__option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 4px 8px;
+  box-sizing: border-box;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow-wrap: anywhere;
+}
+.visit-documentation__option input {
+  accent-color: var(--primary);
+  flex: none;
+}
+.visit-documentation__option:focus-within {
+  border-color: var(--primary);
+}
+.visit-documentation__recorded-text { margin-block-start: 8px; }
 .visit-documentation__helper {
   color: var(--text-muted);
   font-size: 0.8125rem;
@@ -47,6 +79,8 @@
   .visit-documentation .visit-documentation__review {
     min-height: 44px;
   }
+  .visit-documentation__short-text,
+  .visit-documentation__option { min-height: 44px; }
 }
 
 .visit-documentation__review { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
@@ -135,6 +169,30 @@
   color: var(--text);
   margin-block-start: 0;
 }
+.consultation-library__preview-choices {
+  list-style: none;
+  padding-inline-start: 0;
+}
+.consultation-library__preview-choices label { display: flex; align-items: center; gap: 6px; }
+.consultation-library__input-options {
+  display: grid;
+  gap: 8px;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 8px 12px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.consultation-library__input-options legend { font-size: 0.875rem; font-weight: 600; }
+.consultation-library__input-options > button { justify-self: start; }
+.consultation-library__field-option {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+}
+/* Keep shared confirmation dialogs above the template editor. */
+.ui-dialog-overlay.consultation-library-overlay { z-index: 1150; }
 .ui-dialog.consultation-library {
   --ui-dialog-max-width: 52rem;
   max-height: calc(100dvh - 2rem);
@@ -170,7 +228,7 @@
 .consultation-library__list { padding: 12px; background: var(--surface-alt); border-radius: 10px; }
 .consultation-library__list ul,
 .consultation-library__sections { padding: 0; margin: 0; list-style: none; }
-.consultation-library__list li button {
+.consultation-library__template-choice {
   display: grid;
   justify-items: start;
   align-content: center;
@@ -188,10 +246,31 @@
   font-size: 0.875rem;
   cursor: pointer;
 }
-.consultation-library__list li button:is([aria-current], :hover) { background: var(--action-tint); color: var(--primary); }
+.consultation-library__template-choice:is([aria-current], :hover) { background: var(--action-tint); color: var(--primary); }
+.consultation-library__template-list > [data-template-row] {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  border-radius: 6px;
+}
+.consultation-library__template-choice { min-inline-size: 0; }
+.consultation-library__template-list > [data-drop-target]::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  block-size: 2px;
+  border-radius: 2px;
+  background: var(--primary);
+  pointer-events: none;
+}
+.consultation-library__template-list > [data-drop-target="before"]::after { inset-block-start: 0; }
+.consultation-library__template-list > [data-drop-target="after"]::after { inset-block-end: 0; }
 .consultation-library__list--scroll { max-block-size: 18rem; overflow-y: auto; }
+.consultation-library__new { inline-size: 100%; margin-block-start: 8px; }
+.consultation-library__new span { margin-inline-end: 4px; }
 .consultation-library__archived { display: flex; align-items: center; gap: 8px; min-height: 44px; font-size: 0.875rem; }
 .consultation-library__editor { padding: 12px 16px; min-width: 0; }
+.consultation-library__editor > .ui-dialog__label { gap: 6px; }
 .consultation-library__heading,
 .consultation-library__tools,
 .consultation-library__menu { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
@@ -199,6 +278,47 @@
 .consultation-library__tools { margin-block: 10px; }
 .consultation-library__tools summary { font-size: 0.875rem; }
 .consultation-library__menu { margin-block-end: 8px; }
+.consultation-library__tools--discharge summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-block-size: 40px;
+  padding-inline: 8px;
+  border-radius: 6px;
+}
+.consultation-library__tools--discharge summary::before { content: '▸'; }
+.consultation-library__tools--discharge details[open] summary::before { content: '▾'; }
+.consultation-library__tools--discharge details[open] { flex-basis: 100%; }
+.consultation-library__menu--discharge {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: 2px 8px;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-alt);
+}
+.consultation-library__menu--discharge button {
+  min-block-size: 44px;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  box-shadow: none;
+  color: var(--primary);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-align: start;
+  cursor: pointer;
+}
+.consultation-library__menu--discharge button:not(:disabled):hover,
+.consultation-library__tools--discharge summary:hover { background: var(--action-tint); }
+.consultation-library__menu--discharge button:disabled { opacity: 0.55; cursor: default; }
+.consultation-library__menu--discharge .consultation-library__delete {
+  grid-column: 1 / -1;
+  color: var(--ios-danger, #b91c1c);
+}
 .consultation-library__sections > li {
   display: grid;
   align-content: center;
@@ -220,7 +340,51 @@
   justify-content: space-between;
   gap: 8px;
 }
-.consultation-library__section-row > div:first-child { min-width: 0; overflow-wrap: anywhere; }
+.consultation-library__row-label { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.consultation-library__row-action {
+  flex: none;
+  min-inline-size: 40px;
+  min-block-size: 40px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--primary);
+  font: inherit;
+  cursor: pointer;
+}
+.consultation-library__row-action:not(:disabled):is(:hover, :focus-visible) { background: var(--action-tint); }
+.consultation-library__row-action:disabled { opacity: 0.45; cursor: default; }
+.consultation-library__drag { touch-action: none; cursor: grab; }
+.consultation-library__drag:active { cursor: grabbing; }
+.consultation-library__remove { font-size: 1.25rem; }
+.consultation-library__sections > li[data-drop-target="before"] { box-shadow: inset 0 2px var(--primary); }
+.consultation-library__sections > li[data-drop-target="after"] { box-shadow: inset 0 -2px var(--primary); }
+.consultation-library__picker {
+  margin-block-start: 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-alt);
+}
+.consultation-library__picker h4 { margin-block: 8px 4px; font-size: 0.875rem; }
+.consultation-library__picker .ui-dialog__input { width: 100%; min-height: 44px; }
+.consultation-library__field-list { list-style: none; margin: 0; padding: 0; max-block-size: 10rem; overflow: auto; }
+.consultation-library__field-list li,
+.consultation-library__undo { display: flex; align-items: center; gap: 8px; overflow-wrap: anywhere; }
+.consultation-library__field-list li > button:first-child {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+  text-align: start;
+  overflow-wrap: anywhere;
+}
+.consultation-library__field-list small { flex: none; }
+.dental-exam__diagnostics { margin-block-start: 16px; }
+.consultation-library__field-list li > span { flex: 1; min-width: 0; }
+.visit-documentation__retained { margin-block-start: 16px; }
 .consultation-library__section-name {
   display: block;
   min-height: 40px;
@@ -262,23 +426,27 @@
 .consultation-library__editor > .ui-btn:last-child { margin-block-start: 8px; }
 .consultation-library__sections p,
 .consultation-library__sample { color: var(--text-muted); margin-block: 4px; font-size: 0.875rem; }
-.consultation-library__move { display: flex; gap: 4px; }
-.consultation-library__move .ui-btn { inline-size: 40px; padding: 0; }
 .consultation-library__footer { flex-wrap: wrap; }
 .consultation-library .ui-btn { max-width: 100%; overflow-wrap: anywhere; }
 .consultation-library .ui-btn:disabled { opacity: 0.55; cursor: default; }
+@media (max-width: 360px) {
+  .visit-documentation__tools { column-gap: 6px; }
+  .visit-documentation__tools .diagram-view__action { padding-inline: 8px; }
+}
 @media (max-width: 640px) {
   .visit-documentation__toolbar { padding: 10px 12px; }
   .visit-documentation__guide,
   .visit-documentation__choices .diagram-view__action,
-  .consultation-library__list li button,
+  .visit-documentation__tools .diagram-view__action,
+  .consultation-library__template-choice,
   .consultation-library .ui-btn,
   .consultation-library__section-name,
   .consultation-library__settings summary,
   .consultation-library__settings .ui-dialog__input { min-height: 44px; }
-  .consultation-library__move .ui-btn { inline-size: 44px; }
+  .consultation-library__row-action { min-inline-size: 44px; min-block-size: 44px; }
   .consultation-library__layout { grid-template-columns: minmax(0, 1fr); }
   .consultation-library__list ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; }
+  .consultation-library__list ul[data-template-sortable] { grid-template-columns: minmax(0, 1fr); }
   .consultation-library__list--scroll { max-block-size: 12rem; }
   .consultation-library__editor { padding-inline: 12px; }
   .visit-documentation__transcripts summary,
@@ -358,3 +526,28 @@
 .drug-reference__label details p {
   white-space: pre-wrap;
 }
+
+.consultation-library__imaging-fields > .consultation-library__settings summary { min-block-size: 44px; }
+.consultation-library__imaging-fields .ui-dialog__label { gap: 6px; }
+
+.ui-dialog.exam-layout { --ui-dialog-max-width: 42rem; }
+.exam-layout__body .consultation-library__intro { margin-block-end: 8px; }
+.exam-layout__row-label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: 12px;
+  min-width: 0;
+}
+.exam-layout__field-kind { color: var(--text-muted); font-size: 0.8rem; }
+.exam-layout__choices {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+.exam-layout__defaults { margin-block: 12px 4px; font-size: 0.875rem; }
+.exam-layout__add { margin-block-start: 8px; }
+.dental-exam__diagnostics + .exam-table,
+.dental-exam__diagnostics + .ios-form__section { margin-block-start: 16px; }

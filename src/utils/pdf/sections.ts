@@ -1,3 +1,4 @@
+import { consultationSectionKey, dischargeVisitSections, noteSectionLines } from '../consultationTemplates';
 import { loadPracticeLogoBytes } from '../practiceLogoCache';
 import { VISIT_DOCUMENT_TEMPLATES } from '../visitDocumentation';
 import type { ClinicalContinuation } from './continuation';
@@ -7,6 +8,7 @@ import { PDFDocument, PDFFont, PDFForm, PDFImage, PDFPage } from 'pdf-lib';
 import { parseRootPockets } from '../pocket';
 import { filledBlocks, fieldLines } from '../customAnesthesia';
 import { answeredCustomExam } from '../customExam';
+import { isCustomExamText } from '../examLayout';
 import type { CustomAnesthesia } from '../../types';
 import { DentalCode, findCodesInText, codeDefinition, codesFor } from '../../constants/dentalCodes';
 import i18n from '../../i18n';
@@ -239,7 +241,8 @@ export async function drawLogoAndHeader(
   /** Practice name — drawn as a text wordmark when there's no uploaded
    *  logo, so a signed-in practice never prints another clinic's mark. */
   practiceName?: string,
-  lng = 'en'
+  lng = 'en',
+  useTemplateLogo = true
 ): Promise<number> {
   const t = pdfT(lng);
   const { width: pageWidth, height: pageHeight } = page.getSize();
@@ -263,9 +266,8 @@ export async function drawLogoAndHeader(
 
   // Logos keep their own colors — the active style only drives the
   // surrounding chrome (titles, table headers, comment cards), not the
-  // mark itself. A signed-in practice's uploaded logo takes precedence
-  // over the template asset; failures fall through to the template, then
-  // to a text wordmark.
+  // mark itself. Use the practice's wordmark if its upload is unavailable.
+  // A built-in logo is only available when the caller allows it.
   // Fallback placement assumes a ~2:1 logo so the doctor name / underline
   // below still land sensibly if the asset can't be loaded.
   let logoBottomPt = logoTopPt - logoWidth * 0.5;
@@ -292,17 +294,13 @@ export async function drawLogoAndHeader(
         // fall through to the wordmark / template asset
       }
     }
-    if (!logoBytes && practiceName?.trim()) {
-      // Signed-in practice without an uploaded logo: their name, never
-      // another clinic's mark.
-      drawWordmark(practiceName.trim());
-    } else {
-      if (!logoBytes) {
-        const res = await fetch(logoUrl);
-        // eslint-disable-next-line no-restricted-syntax -- dev-only: PDF build callers show a generic translated build error
-        if (!res.ok) throw new Error(`logo fetch failed: ${res.status}`);
-        logoBytes = await res.arrayBuffer();
-      }
+    if (!logoBytes && !practiceName?.trim() && useTemplateLogo) {
+      const res = await fetch(logoUrl);
+      // eslint-disable-next-line no-restricted-syntax -- dev-only: PDF build callers show a generic translated build error
+      if (!res.ok) throw new Error(`logo fetch failed: ${res.status}`);
+      logoBytes = await res.arrayBuffer();
+    }
+    if (logoBytes) {
       const png = await pdfDoc.embedPng(new Uint8Array(logoBytes));
       // Fit inside a bounded box: width-capped AND height-capped, aspect
       // preserved. Without the height cap a square or tall uploaded logo
@@ -316,15 +314,16 @@ export async function drawLogoAndHeader(
         x: logoLeftPt, y: logoBottomPt,
         width: logoW, height: logoH,
       });
+    } else if (practiceName?.trim()) {
+      drawWordmark(practiceName.trim());
     }
   } catch (err) {
     // A missing/unreachable logo must not sink the entire chart export.
     // Drop in a text wordmark and carry on.
     // eslint-disable-next-line no-console
-    console.warn('[pdf] logo unavailable, using text fallback', err);
-    drawWordmark(
-      practiceName?.trim() || (logo === 'vca' ? 'VCA' : 'SoCal Veterinary Dentistry')
-    );
+    console.warn('[pdf] logo unavailable', err);
+    const fallback = practiceName?.trim() || (useTemplateLogo ? (logo === 'vca' ? 'VCA' : 'SoCal Veterinary Dentistry') : '');
+    if (fallback) drawWordmark(fallback);
   }
 
   // Doctor name + (optional) "Tech: …" sub-line + colored underline.
@@ -679,7 +678,7 @@ export function drawCustomExamCard(
   lng = 'en',
   measure?: SectionMeasure
 ): number | null {
-  const answered = answeredCustomExam(custom);
+  const answered = answeredCustomExam(custom).filter(({ id }) => !isCustomExamText(id));
   if (answered.length === 0) return null;
   const t = pdfT(lng);
   const geo = compactExamGeometry(xIn, widthIn);
@@ -1639,7 +1638,14 @@ export function visitDocumentationContinuations(patient: PatientInfo, lng: strin
   if (kind === 'gp-exam' && !patient.gpVitals?.trim() && !patient.gpPhysicalExam?.trim() && patient.gpDiagnostics?.trim()) {
     return [{ title: t('fields.gpDiagnostics.label'), paragraphs: [patient.gpDiagnostics] }];
   }
-  const paragraphs = VISIT_DOCUMENT_TEMPLATES[kind].fields.flatMap(field => {
+  const paragraphs = kind === 'discharge' ? dischargeVisitSections(patient).flatMap(section => {
+    const key = consultationSectionKey(section);
+    const label = section.label ?? (key ? t(`${key}.label`) : '');
+    const value = patient[section.id];
+    if (!value?.trim()) return [];
+    const text = section.format === 'bullets' ? noteSectionLines(value, section).join('\n') : value;
+    return [`${label}\n${text}`];
+  }) : VISIT_DOCUMENT_TEMPLATES[kind].fields.flatMap(field => {
     const value = patient[field.id];
     return value?.trim() ? [`${t(field.labelKey)}\n${value}`] : [];
   });

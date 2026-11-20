@@ -27,12 +27,13 @@ interface Props {
   listVisits?: () => Promise<HistoryVisit[]>;
   fetchVisit: (id: string) => Promise<ChartSnapshot>;
   branding: PdfSnapshot['branding'];
+  brandingReady?: boolean;
   onClose: () => void;
 }
 
 const modes = ['pdf', 'note'] as const;
 
-export function PatientRecordHistory({ current, currentId, listVisits, fetchVisit, branding, onClose }: Props) {
+export function PatientRecordHistory({ current, currentId, listVisits, fetchVisit, branding, brandingReady, onClose }: Props) {
   const { t, i18n } = useTranslation(['media', 'common', 'library', 'pdfui', 'app']);
   const native = isNativeApp();
   const focusRef = useModalFocus<HTMLDivElement>(!native);
@@ -129,7 +130,7 @@ export function PatientRecordHistory({ current, currentId, listVisits, fetchVisi
         {selected && mode === 'pdf' && (
           isConsultation
             ? <ConsultationNotePdfButton text={selectedNote} language={selected.recordNote?.lng ?? i18n.language} className="pdf-preview-download" />
-            : <VisitPdf key={selectedId} snapshot={selected} chartId={selectedId || currentId} branding={branding} onClose={onClose} />
+            : <VisitPdf key={selectedId} snapshot={selected} chartId={selectedId || currentId} branding={branding} brandingReady={brandingReady} onClose={onClose} />
         )}
       </div>
     </div>
@@ -150,10 +151,11 @@ export function PatientRecordHistory({ current, currentId, listVisits, fetchVisi
   );
 }
 
-function VisitPdf({ snapshot, chartId, branding, onClose }: {
+function VisitPdf({ snapshot, chartId, branding, brandingReady, onClose }: {
   snapshot: ChartSnapshot;
   chartId: string | null;
   branding: PdfSnapshot['branding'];
+  brandingReady?: boolean;
   onClose: () => void;
 }) {
   const { element, hasDiagrams, getDiagrams } = useOffscreenChartPicture(snapshot);
@@ -170,11 +172,10 @@ function VisitPdf({ snapshot, chartId, branding, onClose }: {
       postState: { marks: snapshot.postMarks, comments: snapshot.postComments, strokes: snapshot.postStrokes },
       imagesChartId: chartId ?? undefined,
       pdfExcludedImages: snapshot.pdfExcludedImages,
-      branding,
     };
-  }, [snapshot, chartId, branding, getDiagrams, hasDiagrams]);
+  }, [snapshot, chartId, getDiagrams, hasDiagrams]);
   return <>
     {element}
-    {pdf && <PdfPreviewModal open bare viewOnly snapshot={pdf} onClose={onClose} />}
+    {pdf && <PdfPreviewModal open bare viewOnly snapshot={pdf} branding={branding} brandingReady={brandingReady} onClose={onClose} />}
   </>;
 }

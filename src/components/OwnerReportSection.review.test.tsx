@@ -3,6 +3,7 @@ import { vi } from 'vitest';
 import { OwnerReportSection } from './OwnerReportSection';
 import { buildOwnerReportModel } from '../utils/ownerReport';
 import { sampleOwnerReportSnapshot } from '../utils/ownerReportSample';
+import { defaultConfig, defaultTemplate } from '../utils/ownerReportConfig';
 
 it.each([false, true])('allows preview without review for readOnly=%s', (readOnly) => {
   const snapshot = { ...sampleOwnerReportSnapshot(), ownerReport: {} };
@@ -58,17 +59,33 @@ it('keeps Refine disabled on the template wording until the wording changes', ()
   expect(within(block).getByText('Refine').closest('summary')).toBeInTheDocument();
 });
 
-it('makes the practice template visible and places Preview before Customize', () => {
+it('shows the practice template and places management beside the template choices', () => {
   const preview = vi.fn();
+  const manage = vi.fn();
   render(<OwnerReportSection snapshot={sampleOwnerReportSnapshot()} overrides={{}} onOverrideChange={vi.fn()}
-    onPreview={preview} onCustomize={vi.fn()} />);
-  const button = screen.getByRole('button', { name: 'Preview owner report' });
-  const customize = screen.getByRole('button', { name: 'Customize' });
-  expect(button.parentElement).toBe(customize.parentElement);
-  expect(button.compareDocumentPosition(customize) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-  expect(screen.getByRole('combobox', { name: 'Report template' })).toHaveDisplayValue('Practice default (Standard)');
-  fireEvent.click(button);
+    onPreview={preview} onCustomize={manage} />);
+  const choices = within(screen.getByRole('group', { name: 'Report template' }));
+  expect(choices.getByText('Practice default (Standard)')).toBeVisible();
+  fireEvent.click(choices.getByRole('button', { name: 'Manage templates' }));
+  expect(manage).toHaveBeenCalledOnce();
+  fireEvent.click(screen.getByRole('button', { name: 'Preview owner report' }));
   expect(preview).toHaveBeenCalledOnce();
+});
+
+it('keeps report edits when the active template is selected again', () => {
+  const config = defaultConfig();
+  config.templates.push({ ...defaultTemplate(), id: 'second', name: 'Follow-up' });
+  const onOverrideChange = vi.fn();
+  const overrides = { templateId: 'second', intro: 'Saved report wording.' };
+  const snapshot = { ...sampleOwnerReportSnapshot(), ownerReport: overrides };
+  render(<OwnerReportSection snapshot={snapshot} overrides={overrides} onOverrideChange={onOverrideChange}
+    onPreview={vi.fn()} context={{ config }} />);
+  const active = screen.getByRole('button', { name: 'Follow-up', pressed: true });
+  fireEvent.click(active);
+  expect(onOverrideChange).not.toHaveBeenCalled();
+  expect(screen.getByRole('textbox', { name: 'Opening summary' })).toHaveValue(overrides.intro);
+  fireEvent.click(screen.getByRole('button', { name: 'Practice default (Standard)', pressed: false }));
+  expect(onOverrideChange).toHaveBeenCalledWith('templateId', null);
 });
 
 it('protects generated wording from refinement and restores it after a manual edit', () => {
@@ -109,11 +126,9 @@ it('offers New template even when there is only one saved template', () => {
   const onOverrideChange = vi.fn();
   render(<OwnerReportSection snapshot={sampleOwnerReportSnapshot()} overrides={{}} onOverrideChange={onOverrideChange}
     onPreview={vi.fn()} onNewTemplate={onNewTemplate} />);
-  const picker = screen.getByRole('combobox', { name: 'Report template' });
-  expect(picker).toBeEnabled();
-  const option = within(picker).getByRole('option', { name: 'New template' });
-  fireEvent.change(picker, { target: { value: (option as HTMLOptionElement).value } });
+  const choices = within(screen.getByRole('group', { name: 'Report template' }));
+  fireEvent.click(choices.getByRole('button', { name: 'New template' }));
   expect(onNewTemplate).toHaveBeenCalledOnce();
   expect(onOverrideChange).not.toHaveBeenCalled();
-  expect(picker).toHaveDisplayValue('Practice default (Standard)');
+  expect(choices.getByText('Practice default (Standard)')).toBeVisible();
 });

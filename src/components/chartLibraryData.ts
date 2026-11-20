@@ -186,7 +186,7 @@ export function useChartLibraryList({
   const [busyId, setBusyId] = React.useState<string | null>(null);
   const [sortKey, setSortKey] = React.useState<SortKey>(viewState?.current?.sortKey ?? (lockedDueOnly ? 'recall' : 'updated'));
   const [sortDir, setSortDir] = React.useState<SortDir>(viewState?.current?.sortDir ?? (lockedDueOnly ? 'asc' : 'desc'));
-  const [dueFilter, setDueOnly] = React.useState(viewState?.current?.dueOnly ?? false);
+  const [dueFilter, setDueOnly] = React.useState(!lockedDueOnly && (viewState?.current?.dueOnly ?? false));
   const dueOnly = lockedDueOnly || dueFilter;
   const [dueCount, setDueCount] = React.useState(0);
   // Visit-level filters. Doctor filters by each chart's author — the
@@ -350,7 +350,14 @@ export function useChartLibraryList({
     }
   };
 
-  const filtered = !!(query || dueOnly || doctorFilter || speciesFilter);
+  const filtered = !!(query || dueFilter || doctorFilter || speciesFilter);
+  const clearFilters = () => {
+    setQuery('');
+    setDebouncedQuery('');
+    setSpeciesFilter('');
+    setDoctorFilter('');
+    setDueOnly(false);
+  };
 
   return {
     query, setQuery,
@@ -364,6 +371,6 @@ export function useChartLibraryList({
     busyId, setBusyId,
     deleteVisit, clearRecheck,
     /** Search or any filter is on. */
-    filtered,
+    filtered, clearFilters,
   };
 }
