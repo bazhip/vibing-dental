@@ -41,8 +41,9 @@
     "by-number": "The By tooth chart with Triadan 108 selected on the numbered diagram and its findings open.",
     "imagingSettings": "Imaging and PDF settings showing the report language and default PDF inclusion choices.",
     "consultationReview": "The Images section in a consultation, with the Add images control and a sample thumbnail.",
-    "consultationTemplatePreview": "Template library with a fictional consultation preview showing the sections in the selected order.",
+    "consultationTemplatePreview": "The template editor with section settings expanded for a fictional consultation.",
     "consultationRecordNote": "A consultation’s record note with the Download PDF and Copy controls.",
+    "dentalConsultation": "The Awake oral examination field in a fictional dental consultation.",
     "dictationCheck": "The dictation panel pauses briefly before it checks the chart. Resume keeps the same dictation open."
   },
   "articles": {
@@ -416,7 +417,7 @@
         },
         "second": {
           "title": "Enter or dictate the visit",
-          "text": "Record the reason for the visit, history, assessment and plan. If dictation is available, compare the proposed sections with their evidence before applying them. To revisit a transcript, open Saved transcripts and select the recording date. Record vital signs, examination and diagnostics under their own fields when those findings were documented. Leave fields blank when you have no findings to enter. Below Plan and the other note fields, open Images and choose Add images. Select files, or drop or paste them into the visit. Wait for thumbnails to appear and open one to check it. Images stay attached to this visit and do not appear in the standalone note PDF. Use Current medications for reported use, Medications given during this visit for doses actually given, and Medication changes and prescriptions for the plan. During dictation, say which category each medication belongs to and review the quoted evidence before applying. In Current medications, open Previous medication list to see the most recent earlier consultation and any recorded changes. Check what is still current, then choose Copy to current medications if the field is empty. Use Look up a drug to enter a drug name and open the DailyMed label search. Select Search labels, then choose the exact veterinary product. Use Open full label on DailyMed to verify the strength, directions and warnings."
+          "text": "Use Dental consultation for a pre-procedure visit. In Awake oral examination, record visible findings and what you could not assess. Record relevant risks in Pre-anesthetic considerations. Use Client discussion and decisions to document options, estimates, consent status, and care that is deferred or still pending. Record home dental care and the agreed follow-up in their own sections. If a template provides Suggested text, review it and choose Use suggested text only when it applies to this visit.\n\nRecord the reason for the visit, history, assessment and plan. If dictation is available, compare the proposed sections with their evidence before applying them. To revisit a transcript, open Saved transcripts and select the recording date. Record vital signs, examination and diagnostics under their own fields when those findings were documented. Leave fields blank when you have no findings to enter. Below Plan and the other note fields, open Images and choose Add images. Select files, or drop or paste them into the visit. Wait for thumbnails to appear and open one to check it. Images stay attached to this visit and do not appear in the standalone note PDF. Use Current medications for reported use, Medications given during this visit for doses actually given, and Medication changes and prescriptions for the plan. During dictation, say which category each medication belongs to and review the quoted evidence before applying. In Current medications, open Previous medication list to see the most recent earlier consultation and any recorded changes. Check what is still current, then choose Copy to current medications if the field is empty. Use Look up a drug to enter a drug name and open the DailyMed label search. Select Search labels, then choose the exact veterinary product. Use Open full label on DailyMed to verify the strength, directions and warnings."
         },
         "third": {
           "title": "Review the note",
@@ -430,15 +431,15 @@
       "sections": {
         "first": {
           "title": "Start from an existing template",
-          "text": "Open Manage templates from Consultation. Practice owners can choose a starter or an existing template and select Duplicate to make an editable copy."
+          "text": "Open Manage templates from Consultation. Practice owners can choose a starter or an existing template and select Duplicate to make an editable copy.\n\nIn More options, choose Create from a sample note to paste a de-identified example. Use Markdown headings or labels followed by a colon. Select Create template, then review the imported headings. The note body stays out of the template."
         },
         "second": {
           "title": "Arrange and preview sections",
-          "text": "Enter a Template name. Use the up and down arrows beside each section to change its order. Select Sample preview to check the new order with fictional visit details. Select it again to return to editing. Every template includes Images below the note. Images belong to the visit and are kept when you switch templates."
+          "text": "Use Add section to choose a standard field or a custom section. Select a section name to change its label, guidance, example wording, suggested text, and output format, mark it as a subsection, or remove it. Use Dictation settings to add writing instructions and select the level of detail. Check the result with Sample preview. Use suggested text only after confirming it applies to the current visit.\n\nEnter a Template name. Use the up and down arrows beside each section to change its order. Select Sample preview to check the new order with fictional visit details. Select it again to return to editing. Every template includes Images below the note. Images belong to the visit and are kept when you switch templates."
         },
         "third": {
           "title": "Save or archive",
-          "text": "Open More options and choose Set as practice default to preselect this template for new consultations. To hide a custom template from the visit choices, choose Archive template. To bring it back, turn on Show archived templates, select the template and choose Restore template. Select Save to apply your changes. Saved visits keep their selected layout."
+          "text": "Open More options and choose Set as practice default to preselect this template for new consultations. To hide a custom template from the visit choices, choose Archive template. To bring it back, turn on Show archived templates, select the template and choose Restore template. Select Save to apply your changes. Saved visits keep their selected layout.\n\nUse Move template earlier or Move template later in More options to change the order of choices shown on new consultations."
         }
       }
     },

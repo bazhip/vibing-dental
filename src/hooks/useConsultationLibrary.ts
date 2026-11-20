@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import i18n from '../i18n';
 import { LocalizedError } from '../utils/apiErrors';
 import { supabase } from '../utils/supabaseClient';
-import { EMPTY_CONSULTATION_LIBRARY, parseConsultationLibrary, type ConsultationLibrary } from '../utils/consultationTemplates';
+import { CONSULTATION_LIBRARY_VERSION, EMPTY_CONSULTATION_LIBRARY, parseConsultationLibrary, type ConsultationLibrary } from '../utils/consultationTemplates';
 
 type LibraryState =
   | { practiceId: string; loadKey: number; status: 'ready'; config: ConsultationLibrary; revision: string | null }
@@ -41,7 +41,7 @@ export function useConsultationLibrary(practiceId: string) {
   }, []);
 
   const save = async (draft: ConsultationLibrary) => {
-    const config = parseConsultationLibrary(draft);
+    const config = parseConsultationLibrary({ ...draft, version: CONSULTATION_LIBRARY_VERSION });
     const conflict = () => new LocalizedError(i18n.t('visitDocumentation:consultation.templates.conflict'));
     if (!supabase || !practiceId || scope.current !== practiceId || current?.status !== 'ready' || current.loadKey !== reloadKey || !config) throw conflict();
     const revision = crypto.randomUUID();

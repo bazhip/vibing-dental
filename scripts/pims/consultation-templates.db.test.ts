@@ -69,6 +69,7 @@ describe.skipIf(!container)('practice consultation template libraries', () => {
     if (exists !== 't') sql(`create database ${database};`, 'postgres');
     sql(readFileSync('scripts/pims/bootstrap.sql', 'utf8'));
     sql(readFileSync('supabase/migrations/20261215_consultation_templates.sql', 'utf8'));
+    sql(readFileSync('supabase/migrations/20261216_custom_consultation_sections.sql', 'utf8'));
   }, 20_000);
 
   beforeEach(() => {
@@ -89,6 +90,37 @@ describe.skipIf(!container)('practice consultation template libraries', () => {
     expect(() => asUser(outsider, insert(config))).toThrow(/row-level security/);
     expect(() => asUser(member, insert(config, otherPractice))).toThrow(/row-level security/);
     expect(() => sql(`set role anon; select config from ${table}`)).toThrow(/permission denied/);
+  });
+
+  it('accepts ordered custom sections and rejects unsupported or duplicate fields', () => {
+    const section = { id: 'consultationCustom_oral', label: 'Oral findings', format: 'bullets', level: 2 };
+    const layout = { ...template, sections: [section], detail: 'concise', instructions: 'Use short sentences.' };
+    const next = { defaultId: 'dental-v2', templates: [layout], order: [templateId, 'dental-v2'] };
+    expect(asUser(owner, insert(next))).toBe(firstRevision);
+    const valid = (value: unknown) => asUser(owner, `select consultation_private.valid_template_library('${JSON.stringify(value)}'::jsonb)`);
+    for (const sections of [[{ id: 'patientName' }], [section, section], [{ ...section, label: '' }], [{ ...section, level: 3 }]]) {
+      expect(valid({ ...next, templates: [{ ...layout, sections }] })).toBe('f');
+    }
+    expect(valid({ ...next, order: [templateId, templateId] })).toBe('f');
+  });
+
+  it('rejects old template writers even when they hold the latest revision', () => {
+    const put = (value: unknown) => `update ${table} set config = '${JSON.stringify(value)}'::jsonb where practice_id = '${practice}' and revision = '${firstRevision}' returning revision`;
+    const modern = { ...config, version: 2 };
+    expect(asUser(owner, insert(modern))).toBe(firstRevision);
+    expect(() => asUser(owner, put({ ...config, defaultId: 'soap-v1' })))
+      .toThrow(/Update ToothOps to save consultation templates/);
+    expect(asUser(owner, put({ ...modern, defaultId: 'dental-v2' }))).toBe(firstRevision);
+  });
+
+  it('prevents version-one clients from overwriting version-two consultation snapshots', () => {
+    const id = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
+    const original = { version: 2, patientInfo: { visitType: 'consultation', consultationCustom_oral: 'Finding' } };
+    sql(`insert into public.charts (id, created_by, data) values ('${id}', '${owner}', '${JSON.stringify(original)}')`);
+    expect(() => sql(`update public.charts set data = jsonb_set(data, '{version}', '1') where id = '${id}'`))
+      .toThrow(/Update ToothOps to save this consultation/);
+    expect(sql(`update public.charts set patient_name = 'Sample', data = data where id = '${id}' returning data->>'version'`)).toBe('2');
+    expect(sql(`update public.charts set data = jsonb_set(data, '{patientInfo,consultationCustom_oral}', '"Revised"') where id = '${id}' returning data#>>'{patientInfo,consultationCustom_oral}'`)).toBe('Revised');
   });
 
   it('revokes library access when a co-owner leaves the practice', () => {

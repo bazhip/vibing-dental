@@ -8,10 +8,16 @@ import { isNativeApp } from '../native/platform';
 import { Sheet } from '../ios/Sheet';
 import { confirmDialog, friendlyError } from './ui/dialogs';
 import {
-  CONSULTATION_STARTERS, CONSULTATION_TEMPLATE_LIMIT, CONSULTATION_TEMPLATE_NAME_LIMIT,
-  DENTAL_CONSULTATION, consultationDocumentFields, isConsultationStarter, parseConsultationLibrary,
-  type ConsultationField, type ConsultationLayout, type ConsultationLibrary, type PracticeConsultationTemplate,
+  CONSULTATION_LIBRARY_VERSION, CONSULTATION_STARTERS, CONSULTATION_TEMPLATE_LIMIT, CONSULTATION_TEMPLATE_NAME_LIMIT,
+  CONSULTATION_SECTION_LIMIT, CONSULTATION_STANDARD_FIELDS, consultationHeadings, consultationChoices, consultationLibraryFits, consultationSectionKey, consultationSections, dentalSectionKey, isCustomConsultationField,
+  DENTAL_CONSULTATION, isConsultationStarter, parseConsultationLibrary,
+  type ConsultationSection, type ConsultationLayout, type ConsultationLibrary, type PracticeConsultationTemplate,
 } from '../utils/consultationTemplates';
+
+const SECTION_TEXT_SETTINGS = ['guidance', 'example', 'suggestedText'] as const;
+const FORMATS = ['paragraph', 'bullets'] as const;
+const DETAIL_LEVELS = ['concise', 'detailed'] as const;
+const CUSTOM_SECTION = 'custom';
 
 interface Props {
   initial: ConsultationLibrary;
@@ -33,16 +39,25 @@ export function ConsultationTemplatesDialog({ initial, status, canEdit, onSave, 
   const selectedId = choice ?? draft.defaultId;
   const [showArchived, setShowArchived] = useState(false);
   const [preview, setPreview] = useState(false);
+  const [expanded, setExpanded] = useState<ConsultationSection['id']>();
+  const [adding, setAdding] = useState(false);
+  const [sample, setSample] = useState('');
+  const [importing, setImporting] = useState(false);
   const [saving, setSaving] = useState(false);
   const savingRef = useRef(false);
   const [error, setError] = useState('');
   const changed = draft !== initial && JSON.stringify(draft) !== JSON.stringify(initial);
-  const templates = [...Object.values(CONSULTATION_STARTERS), ...draft.templates.filter(template => showArchived || !template.archived)];
+  const activeTemplates = consultationChoices(draft);
+  const templates = [...activeTemplates, ...draft.templates.filter(template => showArchived && template.archived)];
   const custom = draft.templates.find(template => template.id === selectedId);
-  const selected = custom ?? (isConsultationStarter(selectedId) ? CONSULTATION_STARTERS[selectedId] : DENTAL_CONSULTATION);
+  const selected: ConsultationLayout = custom ?? (isConsultationStarter(selectedId) ? CONSULTATION_STARTERS[selectedId] : DENTAL_CONSULTATION);
   const editable = status === 'ready' && canEdit && !saving;
+  const canAddTemplate = editable && draft.templates.length < CONSULTATION_TEMPLATE_LIMIT;
   const editSelected = editable && !!custom && !custom.archived && !preview;
-  const valid = !!parseConsultationLibrary(draft);
+  const sections = consultationSections(selected);
+  const selectedTemplateIndex = activeTemplates.findIndex(template => template.id === selected.id);
+  const versionedDraft: ConsultationLibrary = { ...draft, version: CONSULTATION_LIBRARY_VERSION };
+  const valid = !!parseConsultationLibrary(versionedDraft);
   const language = i18n.resolvedLanguage ?? i18n.language;
   const nameOf = (template: ConsultationLayout) => isConsultationStarter(template.id)
     ? t(`consultation.templates.starters.${template.id}`)
@@ -53,25 +68,66 @@ export function ConsultationTemplatesDialog({ initial, status, canEdit, onSave, 
   const choose = (templateId: string) => {
     setSelectedId(templateId);
     setPreview(false);
+    setExpanded(undefined);
+    setAdding(false);
   };
-  const duplicate = () => {
-    const template = { id: crypto.randomUUID(), name: nameOf(selected), fields: [...selected.fields] };
-    setDraft({ ...draft, templates: [...draft.templates, template] });
-    choose(template.id);
+  const sectionName = (section: ConsultationSection) => {
+    const key = consultationSectionKey(section);
+    return section.label?.trim() || (key ? t(`${key}.label`) : t('consultation.templates.builder.customSection'));
   };
-  const move = (field: ConsultationField, delta: number) => {
-    if (!custom) return;
-    const fields = [...custom.fields];
-    const index = fields.indexOf(field);
-    const destination = index + delta;
-    if (destination < 0 || destination >= fields.length) return;
-    [fields[index], fields[destination]] = [fields[destination], fields[index]];
-    update({ ...custom, fields });
+  const addTemplate = (template: Omit<PracticeConsultationTemplate, 'id'>) => {
+    if (!canAddTemplate) return;
+    const id = crypto.randomUUID();
+    setDraft({ ...draft, templates: [...draft.templates, { ...template, id }] });
+    choose(id);
+    setImporting(false);
+  };
+  const duplicate = () => addTemplate({
+    name: nameOf(selected), fields: selected.fields, sections,
+    ...(selected.instructions ? { instructions: selected.instructions } : {}),
+    ...(selected.detail ? { detail: selected.detail } : {}),
+  });
+  const importSample = () => {
+    const headings = consultationHeadings(sample);
+    if (!headings.length) return;
+    addTemplate({
+      name: t('consultation.templates.untitled'),
+      fields: DENTAL_CONSULTATION.fields,
+      sections: headings.map(label => ({ id: `consultationCustom_${crypto.randomUUID()}`, label })),
+    });
+    setSample('');
+  };
+  const updateSections = (items: readonly ConsultationSection[]) => {
+    if (custom) update({ ...custom, sections: items });
+  };
+  const updateSection = (section: ConsultationSection) => {
+    updateSections(sections.map(item => item.id === section.id ? section : item));
+  };
+  const addSection = (field: ConsultationSection['id'] | 'custom') => {
+    const section: ConsultationSection = field === 'custom'
+      ? { id: `consultationCustom_${crypto.randomUUID()}`, label: t('consultation.templates.builder.customSection') }
+      : { id: field };
+    updateSections([...sections, section]);
+    setExpanded(section.id);
+    setAdding(false);
+  };
+  const move = (index: number, delta: number) => {
+    const items = [...sections], destination = index + delta;
+    if (destination < 0 || destination >= items.length) return;
+    [items[index], items[destination]] = [items[destination], items[index]];
+    updateSections(items);
+  };
+  const moveTemplate = (delta: number) => {
+    const order = activeTemplates.map(template => template.id), destination = selectedTemplateIndex + delta;
+    if (selectedTemplateIndex < 0 || destination < 0 || destination >= order.length) return;
+    [order[selectedTemplateIndex], order[destination]] = [order[destination], order[selectedTemplateIndex]];
+    setDraft({ ...draft, order });
   };
   const toggleArchive = () => {
     if (!custom) return;
     const archiving = !custom.archived;
     setDraft({
+      ...draft,
       defaultId: archiving && draft.defaultId === custom.id ? DENTAL_CONSULTATION.id : draft.defaultId,
       templates: draft.templates.map(item => item.id === custom.id ? { ...item, archived: archiving } : item),
     });
@@ -144,41 +200,127 @@ export function ConsultationTemplatesDialog({ initial, status, canEdit, onSave, 
             <button type="button" className="ui-btn ui-btn--secondary" aria-pressed={preview}
               onClick={() => setPreview(!preview)}>{t('consultation.templates.preview')}</button>
             {editable && <button type="button" className="ui-btn ui-btn--secondary"
-              disabled={draft.templates.length >= CONSULTATION_TEMPLATE_LIMIT} onClick={duplicate}>{t('common:actions.duplicate')}</button>}
+              disabled={!canAddTemplate} onClick={duplicate}>{t('common:actions.duplicate')}</button>}
             {editable && <details>
               <summary>{t('consultation.templates.options')}</summary>
               <div className="consultation-library__menu">
                 <button type="button" className="ui-btn ui-btn--secondary" disabled={selected.id === draft.defaultId || custom?.archived}
                   onClick={() => setDraft({ ...draft, defaultId: selected.id })}>{t('consultation.templates.setDefault')}</button>
+                {selectedTemplateIndex >= 0 && <>
+                  <button type="button" className="ui-btn ui-btn--secondary" disabled={selectedTemplateIndex === 0}
+                    onClick={() => moveTemplate(-1)}>{t('consultation.templates.builder.earlier')}</button>
+                  <button type="button" className="ui-btn ui-btn--secondary" disabled={selectedTemplateIndex === activeTemplates.length - 1}
+                    onClick={() => moveTemplate(1)}>{t('consultation.templates.builder.later')}</button>
+                </>}
+                <button type="button" className="ui-btn ui-btn--secondary" disabled={!canAddTemplate}
+                  onClick={() => setImporting(!importing)}>{t('consultation.templates.builder.importTitle')}</button>
                 {custom && <button type="button" className="ui-btn ui-btn--secondary"
                   onClick={toggleArchive}>{t(custom.archived ? 'consultation.templates.restore' : 'consultation.templates.archive')}</button>}
               </div>
             </details>}
           </div>
+          {importing && <div className="consultation-library__settings">
+            <label className="ui-dialog__label">{t('consultation.templates.builder.importTitle')}
+              <textarea className="ui-dialog__input" rows={4} value={sample} maxLength={12000}
+                aria-describedby={`${id}-sample-help`} onChange={event => setSample(event.target.value)} />
+            </label>
+            <p id={`${id}-sample-help`}>{t('consultation.templates.builder.importHelp')}</p>
+            <button type="button" className="ui-btn ui-btn--secondary" disabled={!canAddTemplate || !consultationHeadings(sample).length}
+              onClick={importSample}>{t('consultation.templates.builder.createTemplate')}</button>
+          </div>}
+          {editSelected && <details className="consultation-library__settings">
+            <summary>{t('consultation.templates.builder.dictation')}</summary>
+            <label className="ui-dialog__label">{t('consultation.templates.builder.instructions')}
+              <textarea className="ui-dialog__input" rows={2} dir="auto" maxLength={2000} value={custom.instructions ?? ''}
+                onChange={event => update({ ...custom, instructions: event.target.value })} />
+            </label>
+            <label className="ui-dialog__label">{t('consultation.templates.builder.detail')}
+              <select className="ui-dialog__input" value={custom.detail ?? ''}
+                onChange={event => update({ ...custom, detail: event.target.value as PracticeConsultationTemplate['detail'] || undefined })}>
+                <option value="">{t('consultation.templates.builder.standard')}</option>
+                {DETAIL_LEVELS.map(level => <option key={level} value={level}>{t(`consultation.templates.builder.${level}`)}</option>)}
+              </select>
+            </label>
+          </details>}
           {preview && <p className="consultation-library__sample">{t('consultation.templates.sampleNotice')}</p>}
           <ol className="consultation-library__sections">
-            {consultationDocumentFields(selected.fields).map(field => {
-              const index = selected.fields.findIndex(item => item === field);
-              const label = t(`fields.${field}.label`);
-              return <li key={field}>
-                <div>
-                  <span>{label}</span>
-                  {preview && <p>{t(`consultation.templates.samples.${field}`)}</p>}
+            {sections.map((section, index) => {
+              const label = sectionName(section);
+              const key = consultationSectionKey(section);
+              const dentalKey = dentalSectionKey(section.id);
+              const example = section.example ?? (dentalKey ? t(`consultation.dental.${dentalKey}.sample`)
+                : isCustomConsultationField(section.id) ? '' : t(`consultation.templates.samples.${section.id}`));
+              return <li key={section.id} className={section.level === 2 ? 'consultation-library__subsection' : undefined}>
+                <div className="consultation-library__section-row">
+                  <div>
+                    {editSelected ? <button type="button" className="consultation-library__section-name"
+                      aria-expanded={expanded === section.id} aria-controls={`${id}-${section.id}`}
+                      onClick={() => setExpanded(expanded === section.id ? undefined : section.id)}>{label}</button> : <span dir="auto">{label}</span>}
+                    {preview && example && (section.format === 'bullets'
+                      ? <ul>{example.split(/\r?\n/u).filter(Boolean).map((line, n) => <li key={n}>{line}</li>)}</ul>
+                      : <p>{example}</p>)}
+                  </div>
+                  {editSelected && <div className="consultation-library__move">
+                    <button type="button" className="ui-btn ui-btn--secondary" disabled={index === 0}
+                      aria-label={t('consultation.templates.moveUp', { field: label })} onClick={() => move(index, -1)}><span aria-hidden="true">↑</span></button>
+                    <button type="button" className="ui-btn ui-btn--secondary" disabled={index === sections.length - 1}
+                      aria-label={t('consultation.templates.moveDown', { field: label })} onClick={() => move(index, 1)}><span aria-hidden="true">↓</span></button>
+                  </div>}
                 </div>
-                {editSelected && index !== -1 && <div className="consultation-library__move">
-                  <button type="button" className="ui-btn ui-btn--secondary" disabled={index === 0}
-                    aria-label={t('consultation.templates.moveUp', { field: label })} onClick={() => move(selected.fields[index], -1)}><span aria-hidden="true">↑</span></button>
-                  <button type="button" className="ui-btn ui-btn--secondary" disabled={index === selected.fields.length - 1}
-                    aria-label={t('consultation.templates.moveDown', { field: label })} onClick={() => move(selected.fields[index], 1)}><span aria-hidden="true">↓</span></button>
+                {editSelected && expanded === section.id && <div className="consultation-library__settings" id={`${id}-${section.id}`}>
+                  <label className="ui-dialog__label">{t('consultation.templates.builder.sectionLabel')}
+                    <input className="ui-dialog__input" dir="auto" maxLength={100} value={section.label ?? ''}
+                      placeholder={key ? t(`${key}.label`) : undefined}
+                      onChange={event => updateSection({ ...section, label: event.target.value || undefined })} />
+                  </label>
+                  {SECTION_TEXT_SETTINGS.map(property => <label key={property} className="ui-dialog__label">
+                    {t(`consultation.templates.builder.${property}`)}
+                    <textarea className="ui-dialog__input" dir="auto" rows={2} maxLength={1000} value={section[property] ?? ''}
+                      placeholder={property === 'guidance' && key ? t(`${key}.helper`) : property === 'example' ? example : undefined}
+                      onChange={event => updateSection({ ...section, [property]: event.target.value || undefined })} />
+                  </label>)}
+                  <label className="ui-dialog__label">{t('consultation.templates.builder.format')}
+                    <select className="ui-dialog__input" value={section.format ?? FORMATS[0]}
+                      onChange={event => updateSection({ ...section, format: event.target.value as ConsultationSection['format'] })}>
+                      {FORMATS.map(format => <option key={format} value={format}>{t(`consultation.templates.builder.${format}`)}</option>)}
+                    </select>
+                  </label>
+                  <label className="consultation-library__archived">
+                    <input type="checkbox" checked={section.level === 2}
+                      onChange={event => updateSection({ ...section, level: event.target.checked ? 2 : undefined })} />
+                    {t('consultation.templates.builder.subsection')}
+                  </label>
+                  <button type="button" className="ui-btn ui-btn--secondary" disabled={sections.length === 1}
+                    onClick={() => { updateSections(sections.filter(item => item.id !== section.id)); setExpanded(undefined); }}>
+                    {t('consultation.templates.builder.removeSection')}
+                  </button>
                 </div>}
               </li>;
             })}
             <li>{t('settings:chart.pdf.images')}</li>
           </ol>
+          {editSelected && sections.length < CONSULTATION_SECTION_LIMIT && (adding
+            ? <label className="ui-dialog__label">{t('consultation.templates.builder.addSection')}
+              <select className="ui-dialog__input" value="" onChange={event => {
+                if (event.target.value) addSection(event.target.value as ConsultationSection['id'] | 'custom');
+              }}>
+                <option value="">{t('consultation.templates.builder.chooseSection')}</option>
+                <option value={CUSTOM_SECTION}>{t('consultation.templates.builder.customSection')}</option>
+                {[...CONSULTATION_STANDARD_FIELDS.map(id => ({ id })), ...consultationSections(DENTAL_CONSULTATION)]
+                  .filter((item, index, list) => !sections.some(section => section.id === item.id) && list.findIndex(other => other.id === item.id) === index)
+                  .map(section => <option key={section.id} value={section.id}>{sectionName(section)}</option>)}
+              </select>
+            </label>
+            : <button type="button" className="ui-btn ui-btn--secondary" onClick={() => setAdding(true)}>
+              {t('consultation.templates.builder.addSection')}
+            </button>)}
         </section>
       </div>
     </div>
     {error && <p role="alert" className="ui-dialog__error">{error}</p>}
+    {!valid && !consultationLibraryFits(versionedDraft) && <p role="alert" className="ui-dialog__error">
+      {t('consultation.templates.builder.libraryTooLarge')}
+    </p>}
     <footer className="ui-dialog__actions consultation-library__footer">
       <button type="button" className="ui-btn ui-btn--secondary" disabled={saving} onClick={() => void close()}>{t('common:actions.close')}</button>
       {canEdit && <button type="button" className="ui-btn ui-btn--primary" disabled={!editable || !changed || !valid}

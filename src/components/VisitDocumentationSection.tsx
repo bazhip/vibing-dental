@@ -1,10 +1,10 @@
 import { useId, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ClinicalDictationSource, PatientInfo } from '../types';
-import { consultationChoices, consultationDocumentFields, consultationLayoutFor, EMPTY_CONSULTATION_LIBRARY, isConsultationStarter, type ConsultationLibrary } from '../utils/consultationTemplates';
+import { changeConsultationLayout, consultationChoices, consultationSectionKey, consultationVisitSections, consultationLayoutFor, EMPTY_CONSULTATION_LIBRARY, isConsultationStarter, type ConsultationLibrary, type ConsultationSection } from '../utils/consultationTemplates';
 import { documentationUrl } from '../help/openDocumentation';
 import { formatDate, formatDateTime } from '../i18n/format';
-import { VISIT_DOCUMENT_MAX_LENGTH, VISIT_DOCUMENT_TEMPLATES, visitDocumentField, type VisitDocumentKind } from '../utils/visitDocumentation';
+import { VISIT_DOCUMENT_MAX_LENGTH, VISIT_DOCUMENT_TEMPLATES, type VisitDocumentKind } from '../utils/visitDocumentation';
 import { SectionHeader } from './SectionHeader';
 import { DrugReferenceLookup } from './DrugReferenceLookup';
 import type { PreviousMedicationList } from '../utils/consultationMedicationHistory';
@@ -43,7 +43,9 @@ export function VisitDocumentationSection({ kind, patientInfo, onChange, readOnl
   const layout = consultationLayoutFor(patientInfo, library, readOnly || consultation?.historical);
   const choices = consultationChoices(library);
   const savedVersion = !choices.some(choice => choice.id === layout.id && choice.name === layout.name
-    && choice.fields.every((field, index) => layout.fields[index] === field));
+    && JSON.stringify(choice.fields) === JSON.stringify(layout.fields)
+    && JSON.stringify(choice.sections) === JSON.stringify(layout.sections)
+    && choice.instructions === layout.instructions && choice.detail === layout.detail);
   const layoutName = (option: typeof layout) =>
     isConsultationStarter(option.id) ? t(`consultation.templates.starters.${option.id}`) : option.name;
   const update = (patch: Partial<PatientInfo>) => {
@@ -68,29 +70,40 @@ export function VisitDocumentationSection({ kind, patientInfo, onChange, readOnl
       )}
     </details>}
   </div>;
-  const renderField = (field: ReturnType<typeof visitDocumentField>) => {
+  const renderField = (field: ConsultationSection | typeof VISIT_DOCUMENT_TEMPLATES.discharge.fields[number] | typeof VISIT_DOCUMENT_TEMPLATES['gp-exam']['fields'][number]) => {
+    const section: ConsultationSection | undefined = 'labelKey' in field ? undefined : field;
+    const key = section && consultationSectionKey(section);
+    const label = section?.label || ('labelKey' in field ? t(field.labelKey) : key ? t(`${key}.label`) : t('consultation.templates.builder.customSection'));
+    const helper = section?.guidance || ('helperKey' in field ? t(field.helperKey) : key ? t(`${key}.helper`) : '');
+    const value = patientInfo[field.id] ?? '';
     const locked = readOnly;
     return (
-      <div className="visit-documentation__field" key={field.id}>
+      <div className={section?.level === 2 ? 'visit-documentation__field visit-documentation__field--subsection' : 'visit-documentation__field'} key={field.id}>
         <div className="visit-documentation__field-head">
-          <label className="patient-form__label" htmlFor={`${id}-${field.id}`}>{t(field.labelKey)}</label>
+          <label className="patient-form__label" htmlFor={`${id}-${field.id}`}>{label}</label>
         </div>
-        <p className="visit-documentation__helper" id={`${id}-${field.id}-help`}>{t(field.helperKey)}</p>
+        {helper && <p className="visit-documentation__helper" id={`${id}-${field.id}-help`}>{helper}</p>}
         {field.id === 'consultationCurrentMedications' && medicationTools}
         <div className="refine-field">
           <textarea id={`${id}-${field.id}`} ref={field.id === 'consultationCurrentMedications' ? currentMedicationsInput : undefined} className="patient-form__textarea" rows={field.id === 'gpPhysicalExam' && !isConsultation ? 6 : 3}
-            aria-describedby={`${id}-${field.id}-help`} maxLength={VISIT_DOCUMENT_MAX_LENGTH}
-            value={patientInfo[field.id] ?? ''} readOnly={locked}
+            aria-describedby={helper ? `${id}-${field.id}-help` : undefined} maxLength={VISIT_DOCUMENT_MAX_LENGTH}
+            value={value} readOnly={locked}
             onSelect={field.id === 'consultationCurrentMedications' ? event => {
               const input = event.currentTarget;
               const selection = input.value.slice(input.selectionStart, input.selectionEnd).trim();
               setSelectedDrug(selection.length <= 100 && !selection.includes('\n') ? selection : '');
             } : undefined}
             onChange={event => { if (!locked) update({ [field.id]: event.target.value }); }} />
-          <RefineTextAction value={patientInfo[field.id] ?? ''} readOnly={locked}
+          <RefineTextAction value={value} readOnly={locked}
             maxLength={VISIT_DOCUMENT_MAX_LENGTH}
             onApply={text => { if (!locked) update({ [field.id]: text }); }} />
         </div>
+        {!locked && section?.suggestedText && !value.trim() && <details className="visit-documentation__transcripts">
+          <summary>{t('consultation.templates.builder.suggestedText')}</summary>
+          <p dir="auto">{section.suggestedText}</p>
+          <button className="diagram-view__action" type="button"
+            onClick={() => update({ [field.id]: section.suggestedText })}>{t('consultation.templates.builder.useSuggested')}</button>
+        </details>}
       </div>
     );
   };
@@ -121,7 +134,7 @@ export function VisitDocumentationSection({ kind, patientInfo, onChange, readOnl
                   const selected = !savedVersion && choice.id === layout.id;
                   return <button key={choice.id} type="button" className="diagram-view__action" aria-pressed={selected} dir="auto"
                     onClick={() => {
-                      if (!selected) update({ consultationLayout: { id: choice.id, name: choice.name, fields: [...choice.fields] } });
+                      if (!selected) update(changeConsultationLayout(patientInfo, layout, choice));
                     }}>{layoutName(choice)}</button>;
                 })}
               </div>}
@@ -155,7 +168,7 @@ export function VisitDocumentationSection({ kind, patientInfo, onChange, readOnl
         </ul>
       </details>}
       <div className="visit-documentation__fields">
-        {(isConsultation ? consultationDocumentFields(layout.fields).map(visitDocumentField) : VISIT_DOCUMENT_TEMPLATES[kind].fields).map(renderField)}
+        {(isConsultation ? consultationVisitSections(patientInfo, layout) : VISIT_DOCUMENT_TEMPLATES[kind].fields).map(renderField)}
       </div>
       {kind === 'discharge' && <p className="visit-documentation__helper visit-documentation__notice">{t('sourceNotice')}</p>}
       {children}

@@ -24,11 +24,12 @@ export const HELP_SCREENSHOTS: Partial<Record<HelpTopic, readonly HelpScreenshot
   patients: [{ caption: 'patients', src: '/help/screenshots/patient-history.jpg', width: 1132, height: 772, section: 'third' }],
   exam: [{ caption: 'exam', src: '/help/screenshots/exam.jpg', width: 976, height: 508, section: 'first' }],
   consultation: [
+    { caption: 'dentalConsultation', src: '/help/screenshots/dental-consultation.jpg', width: 1240, height: 1100, section: 'second' },
     { caption: 'consultationMedicationHistory', src: '/help/screenshots/consultation-medication-history.jpg', width: 1100, height: 780, section: 'second' },
     { caption: 'consultationMedicationReview', src: '/help/screenshots/consultation-medication-review.jpg', width: 1000, height: 1000, section: 'second' },
     { caption: 'consultationReview', src: '/help/screenshots/consultation-review.jpg', width: 1200, height: 780, section: 'second' },
   ],
-  'consultation-templates': [{ caption: 'consultationTemplatePreview', src: '/help/screenshots/consultation-template-preview.jpg', width: 1000, height: 780, section: 'second' }],
+  'consultation-templates': [{ caption: 'consultationTemplatePreview', src: '/help/screenshots/consultation-template-preview.jpg', width: 1240, height: 1100, section: 'second' }],
   'consultation-transfer': [{ caption: 'consultationRecordNote', src: '/help/screenshots/consultation-record-note.jpg', width: 1100, height: 780, section: 'first' }],
   viewer: [{ caption: 'viewer', src: '/help/screenshots/viewer.jpg', width: 1200, height: 772, section: 'second' }],
   treatment: [{ caption: 'treatment', src: '/help/screenshots/treatment.jpg', width: 976, height: 418, section: 'second' }],

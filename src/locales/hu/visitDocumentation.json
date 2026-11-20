@@ -52,9 +52,10 @@
       "moveUp": "{{field}} feljebb helyezése",
       "moveDown": "{{field}} lejjebb helyezése",
       "starters": {
-        "dental-v1": "Fogászati konzultáció",
+        "dental-v1": "Fogászati konzultáció (korábbi verzió)",
         "soap-v1": "Általános SOAP",
-        "recheck-v1": "Kontrollvizsgálat"
+        "recheck-v1": "Kontrollvizsgálat",
+        "dental-v2": "Fogászati konzultáció"
       },
       "samples": {
         "consultationCurrentMedications": "A gazda egy jelenleg szedett gyógyszerről számolt be.",
@@ -67,6 +68,60 @@
         "gpVitals": "Az alkalommal rögzített testtömeg.",
         "gpPhysicalExam": "A vizsgálati leleteket rögzítették.",
         "gpDiagnostics": "A korábbi felvételek áttekinthetők."
+      },
+      "builder": {
+        "addSection": "Szakasz hozzáadása",
+        "chooseSection": "Szakasz kiválasztása",
+        "customSection": "Egyéni szakasz",
+        "sectionLabel": "Szakasz felirata",
+        "removeSection": "Szakasz eltávolítása",
+        "guidance": "Útmutató a mezőhöz",
+        "example": "Példaszöveg",
+        "suggestedText": "Javasolt szöveg",
+        "useSuggested": "Javasolt szöveg használata",
+        "format": "Kimeneti formátum",
+        "paragraph": "Bekezdés",
+        "bullets": "Felsorolás",
+        "dictation": "Diktálás beállításai",
+        "instructions": "Fogalmazási útmutató",
+        "detail": "Részletesség",
+        "standard": "Szokásos",
+        "concise": "Tömör",
+        "detailed": "Részletes",
+        "earlier": "Sablon előrébb helyezése",
+        "later": "Sablon hátrébb helyezése",
+        "importTitle": "Létrehozás példajegyzetből",
+        "importHelp": "Illesszen be egy anonimizált példát Markdown-címsorokkal vagy kettősponttal záruló címkékkel. Mentés előtt ellenőrizze a címsorokat.",
+        "createTemplate": "Sablon létrehozása",
+        "subsection": "Használat alszakaszként",
+        "libraryTooLarge": "A sablontár túl nagy. Rövidítse a példákat, a javasolt szövegeket vagy a fogalmazási útmutatót."
+      }
+    },
+    "dental": {
+      "awakeOralExam": {
+        "label": "Éber szájüregi vizsgálat",
+        "helper": "Rögzítse a látható eltéréseket és az éber állapotban nem vizsgálható területeket.",
+        "sample": "Enyhe ínyvörösség látható. A szájüreg hátsó része nem volt vizsgálható."
+      },
+      "preanesthetic": {
+        "label": "Altatás előtti szempontok",
+        "helper": "Rögzítse a kockázatokat, a korábbi altatási problémákat és a megbeszélt vizsgálatokat vagy konzultációkat.",
+        "sample": "A korábbi altatásokat áttekintették. Az altatás előtti vizsgálatokról egyeztettek."
+      },
+      "clientDiscussion": {
+        "label": "Gazdával egyeztetett lehetőségek és döntések",
+        "helper": "Rögzítse a lehetőségeket, a költségbecslést, a beleegyezés állapotát és az elhalasztott vagy elutasított ellátást. Jelölje a függő döntéseket.",
+        "sample": "Az előzetes költségbecslést megbeszélték. A gazda az áttekintése után dönt."
+      },
+      "homeCare": {
+        "label": "Otthoni fogápolás",
+        "helper": "Rögzítse az otthoni ápolási tanácsokat és a gyakorlati korlátokat.",
+        "sample": "A gazda az otthoni fogápolásról érdeklődött."
+      },
+      "followUp": {
+        "label": "Utánkövetés és időpont",
+        "helper": "Rögzítse a következő egyeztetett lépést, az időzítést és a korábbi kapcsolatfelvétel okait.",
+        "sample": "A gazda időpontért felkeresi a rendelőt."
       }
     }
   },

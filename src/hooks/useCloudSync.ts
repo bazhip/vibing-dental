@@ -1,5 +1,6 @@
 import { ctRecordedText } from '../utils/ctReportState';
 import { radiologyRecordedText } from '../utils/radiologyReportState';
+import { CONSULTATION_SNAPSHOT_VERSION } from '../utils/consultationTemplates';
 import { hasVisitDocumentation } from '../utils/visitDocumentation';
 import { visitTypeOf } from '../utils/visitTypes';
 import React from 'react';
@@ -963,7 +964,9 @@ export function useCloudSync(
     if (!supabase) return false;
     // Unsaved edits here would be replaced — ask, as opening a chart does.
     if (!(await confirmDiscardIfDirty('restore'))) return false;
-    await upsertChart(JSON.stringify(snapshot), id, { restore: true });
+    const restored = snapshot.patientInfo.visitType === 'consultation'
+      ? { ...snapshot, version: Math.max(snapshot.version ?? 1, CONSULTATION_SNAPSHOT_VERSION) } : snapshot;
+    await upsertChart(JSON.stringify(restored), id, { restore: true });
     const { data, error } = await supabase.from('charts').select('id, data, updated_at').eq('id', id).single();
     if (error) throw new Error(error.message);
     armBaseline();

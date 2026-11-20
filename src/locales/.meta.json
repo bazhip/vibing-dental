@@ -7285,7 +7285,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.text": {
-      "hash": "864b5a82c53b",
+      "hash": "23ffa89cf3b4",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.title": {
@@ -7293,7 +7293,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.text": {
-      "hash": "18c7d1775ea8",
+      "hash": "a0e2c434d724",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.title": {
@@ -7301,7 +7301,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.text": {
-      "hash": "5138335fee80",
+      "hash": "419abeaee7e8",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.title": {
@@ -7357,7 +7357,7 @@
       "status": "machine"
     },
     "help:articles.consultation.sections.second.text": {
-      "hash": "247b346361ce",
+      "hash": "2b4a479cb41a",
       "status": "machine"
     },
     "help:articles.consultation.sections.second.title": {
@@ -7929,7 +7929,11 @@
       "status": "machine"
     },
     "help:images.consultationTemplatePreview": {
-      "hash": "3262593f547f",
+      "hash": "6d9eaf73640a",
+      "status": "machine"
+    },
+    "help:images.dentalConsultation": {
+      "hash": "290b49746aac",
       "status": "machine"
     },
     "help:images.dictation": {
@@ -15096,6 +15100,66 @@
       "hash": "56b564b75c7f",
       "status": "machine"
     },
+    "visitDocumentation:consultation.dental.awakeOralExam.helper": {
+      "hash": "6eac43941398",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.awakeOralExam.label": {
+      "hash": "d6a539205987",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.awakeOralExam.sample": {
+      "hash": "c467b39c3c63",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.clientDiscussion.helper": {
+      "hash": "91bb23ad661f",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.clientDiscussion.label": {
+      "hash": "eda7c0596e61",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.clientDiscussion.sample": {
+      "hash": "9d60fa83a169",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.followUp.helper": {
+      "hash": "a5cf279c23c7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.followUp.label": {
+      "hash": "0fa2a0234a35",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.followUp.sample": {
+      "hash": "9a06d19ced68",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.homeCare.helper": {
+      "hash": "a8d5ac28f7fc",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.homeCare.label": {
+      "hash": "c5346312dbb9",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.homeCare.sample": {
+      "hash": "02bce229759a",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.preanesthetic.helper": {
+      "hash": "d038ed1d8124",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.preanesthetic.label": {
+      "hash": "a2d612910650",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.preanesthetic.sample": {
+      "hash": "cbd0ef42262b",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.guide": {
       "hash": "776ee8ac3073",
       "status": "machine"
@@ -15194,6 +15258,106 @@
     },
     "visitDocumentation:consultation.templates.archived": {
       "hash": "bdb86505f806",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.addSection": {
+      "hash": "7c3690997f72",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.bullets": {
+      "hash": "20c579c3da98",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.chooseSection": {
+      "hash": "551647764038",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.concise": {
+      "hash": "8340d833ab72",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.createTemplate": {
+      "hash": "7dc9c0adaca0",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.customSection": {
+      "hash": "ca803a429ff0",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.detail": {
+      "hash": "8d5f9236afca",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.detailed": {
+      "hash": "6d46fcd50a63",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.dictation": {
+      "hash": "ff716fc4735e",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.earlier": {
+      "hash": "4c3c9bb78b12",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.example": {
+      "hash": "9c0fa1e53744",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.format": {
+      "hash": "93c53d374513",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.guidance": {
+      "hash": "d6911a5ee1e4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.importHelp": {
+      "hash": "26805b2b13a1",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.importTitle": {
+      "hash": "3081f3042451",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.instructions": {
+      "hash": "eb96796aa9b8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.later": {
+      "hash": "1e1d556ccfb5",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.libraryTooLarge": {
+      "hash": "de04720d6bf6",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.paragraph": {
+      "hash": "c3b03dd28595",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.removeSection": {
+      "hash": "a873a013563e",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.sectionLabel": {
+      "hash": "ceb036e1f5bd",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.standard": {
+      "hash": "ef6691545d2c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.subsection": {
+      "hash": "f50ec6f19b00",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.suggestedText": {
+      "hash": "53016cac2fce",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.useSuggested": {
+      "hash": "4c08630d20e6",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.conflict": {
@@ -15313,6 +15477,10 @@
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.starters.dental-v1": {
+      "hash": "1acf510f5ca7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.dental-v2": {
       "hash": "f3d2f78dfaf7",
       "status": "machine"
     },
@@ -23499,7 +23667,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.text": {
-      "hash": "864b5a82c53b",
+      "hash": "23ffa89cf3b4",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.title": {
@@ -23507,7 +23675,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.text": {
-      "hash": "18c7d1775ea8",
+      "hash": "a0e2c434d724",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.title": {
@@ -23515,7 +23683,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.text": {
-      "hash": "5138335fee80",
+      "hash": "419abeaee7e8",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.title": {
@@ -23571,7 +23739,7 @@
       "status": "machine"
     },
     "help:articles.consultation.sections.second.text": {
-      "hash": "247b346361ce",
+      "hash": "2b4a479cb41a",
       "status": "machine"
     },
     "help:articles.consultation.sections.second.title": {
@@ -24143,7 +24311,11 @@
       "status": "machine"
     },
     "help:images.consultationTemplatePreview": {
-      "hash": "3262593f547f",
+      "hash": "6d9eaf73640a",
+      "status": "machine"
+    },
+    "help:images.dentalConsultation": {
+      "hash": "290b49746aac",
       "status": "machine"
     },
     "help:images.dictation": {
@@ -31246,6 +31418,66 @@
       "hash": "56b564b75c7f",
       "status": "machine"
     },
+    "visitDocumentation:consultation.dental.awakeOralExam.helper": {
+      "hash": "6eac43941398",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.awakeOralExam.label": {
+      "hash": "d6a539205987",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.awakeOralExam.sample": {
+      "hash": "c467b39c3c63",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.clientDiscussion.helper": {
+      "hash": "91bb23ad661f",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.clientDiscussion.label": {
+      "hash": "eda7c0596e61",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.clientDiscussion.sample": {
+      "hash": "9d60fa83a169",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.followUp.helper": {
+      "hash": "a5cf279c23c7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.followUp.label": {
+      "hash": "0fa2a0234a35",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.followUp.sample": {
+      "hash": "9a06d19ced68",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.homeCare.helper": {
+      "hash": "a8d5ac28f7fc",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.homeCare.label": {
+      "hash": "c5346312dbb9",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.homeCare.sample": {
+      "hash": "02bce229759a",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.preanesthetic.helper": {
+      "hash": "d038ed1d8124",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.preanesthetic.label": {
+      "hash": "a2d612910650",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.preanesthetic.sample": {
+      "hash": "cbd0ef42262b",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.guide": {
       "hash": "776ee8ac3073",
       "status": "machine"
@@ -31344,6 +31576,106 @@
     },
     "visitDocumentation:consultation.templates.archived": {
       "hash": "bdb86505f806",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.addSection": {
+      "hash": "7c3690997f72",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.bullets": {
+      "hash": "20c579c3da98",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.chooseSection": {
+      "hash": "551647764038",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.concise": {
+      "hash": "8340d833ab72",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.createTemplate": {
+      "hash": "7dc9c0adaca0",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.customSection": {
+      "hash": "ca803a429ff0",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.detail": {
+      "hash": "8d5f9236afca",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.detailed": {
+      "hash": "6d46fcd50a63",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.dictation": {
+      "hash": "ff716fc4735e",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.earlier": {
+      "hash": "4c3c9bb78b12",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.example": {
+      "hash": "9c0fa1e53744",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.format": {
+      "hash": "93c53d374513",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.guidance": {
+      "hash": "d6911a5ee1e4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.importHelp": {
+      "hash": "26805b2b13a1",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.importTitle": {
+      "hash": "3081f3042451",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.instructions": {
+      "hash": "eb96796aa9b8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.later": {
+      "hash": "1e1d556ccfb5",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.libraryTooLarge": {
+      "hash": "de04720d6bf6",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.paragraph": {
+      "hash": "c3b03dd28595",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.removeSection": {
+      "hash": "a873a013563e",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.sectionLabel": {
+      "hash": "ceb036e1f5bd",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.standard": {
+      "hash": "ef6691545d2c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.subsection": {
+      "hash": "f50ec6f19b00",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.suggestedText": {
+      "hash": "53016cac2fce",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.useSuggested": {
+      "hash": "4c08630d20e6",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.conflict": {
@@ -31463,6 +31795,10 @@
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.starters.dental-v1": {
+      "hash": "1acf510f5ca7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.dental-v2": {
       "hash": "f3d2f78dfaf7",
       "status": "machine"
     },
@@ -39613,7 +39949,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.text": {
-      "hash": "864b5a82c53b",
+      "hash": "23ffa89cf3b4",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.title": {
@@ -39621,7 +39957,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.text": {
-      "hash": "18c7d1775ea8",
+      "hash": "a0e2c434d724",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.title": {
@@ -39629,7 +39965,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.text": {
-      "hash": "5138335fee80",
+      "hash": "419abeaee7e8",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.title": {
@@ -39685,7 +40021,7 @@
       "status": "machine"
     },
     "help:articles.consultation.sections.second.text": {
-      "hash": "247b346361ce",
+      "hash": "2b4a479cb41a",
       "status": "machine"
     },
     "help:articles.consultation.sections.second.title": {
@@ -40257,7 +40593,11 @@
       "status": "machine"
     },
     "help:images.consultationTemplatePreview": {
-      "hash": "3262593f547f",
+      "hash": "6d9eaf73640a",
+      "status": "machine"
+    },
+    "help:images.dentalConsultation": {
+      "hash": "290b49746aac",
       "status": "machine"
     },
     "help:images.dictation": {
@@ -47392,6 +47732,66 @@
       "hash": "56b564b75c7f",
       "status": "machine"
     },
+    "visitDocumentation:consultation.dental.awakeOralExam.helper": {
+      "hash": "6eac43941398",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.awakeOralExam.label": {
+      "hash": "d6a539205987",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.awakeOralExam.sample": {
+      "hash": "c467b39c3c63",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.clientDiscussion.helper": {
+      "hash": "91bb23ad661f",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.clientDiscussion.label": {
+      "hash": "eda7c0596e61",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.clientDiscussion.sample": {
+      "hash": "9d60fa83a169",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.followUp.helper": {
+      "hash": "a5cf279c23c7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.followUp.label": {
+      "hash": "0fa2a0234a35",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.followUp.sample": {
+      "hash": "9a06d19ced68",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.homeCare.helper": {
+      "hash": "a8d5ac28f7fc",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.homeCare.label": {
+      "hash": "c5346312dbb9",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.homeCare.sample": {
+      "hash": "02bce229759a",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.preanesthetic.helper": {
+      "hash": "d038ed1d8124",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.preanesthetic.label": {
+      "hash": "a2d612910650",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.preanesthetic.sample": {
+      "hash": "cbd0ef42262b",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.guide": {
       "hash": "776ee8ac3073",
       "status": "machine"
@@ -47490,6 +47890,106 @@
     },
     "visitDocumentation:consultation.templates.archived": {
       "hash": "bdb86505f806",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.addSection": {
+      "hash": "7c3690997f72",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.bullets": {
+      "hash": "20c579c3da98",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.chooseSection": {
+      "hash": "551647764038",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.concise": {
+      "hash": "8340d833ab72",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.createTemplate": {
+      "hash": "7dc9c0adaca0",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.customSection": {
+      "hash": "ca803a429ff0",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.detail": {
+      "hash": "8d5f9236afca",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.detailed": {
+      "hash": "6d46fcd50a63",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.dictation": {
+      "hash": "ff716fc4735e",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.earlier": {
+      "hash": "4c3c9bb78b12",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.example": {
+      "hash": "9c0fa1e53744",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.format": {
+      "hash": "93c53d374513",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.guidance": {
+      "hash": "d6911a5ee1e4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.importHelp": {
+      "hash": "26805b2b13a1",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.importTitle": {
+      "hash": "3081f3042451",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.instructions": {
+      "hash": "eb96796aa9b8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.later": {
+      "hash": "1e1d556ccfb5",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.libraryTooLarge": {
+      "hash": "de04720d6bf6",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.paragraph": {
+      "hash": "c3b03dd28595",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.removeSection": {
+      "hash": "a873a013563e",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.sectionLabel": {
+      "hash": "ceb036e1f5bd",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.standard": {
+      "hash": "ef6691545d2c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.subsection": {
+      "hash": "f50ec6f19b00",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.suggestedText": {
+      "hash": "53016cac2fce",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.useSuggested": {
+      "hash": "4c08630d20e6",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.conflict": {
@@ -47609,6 +48109,10 @@
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.starters.dental-v1": {
+      "hash": "1acf510f5ca7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.dental-v2": {
       "hash": "f3d2f78dfaf7",
       "status": "machine"
     },
@@ -55783,7 +56287,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.text": {
-      "hash": "864b5a82c53b",
+      "hash": "23ffa89cf3b4",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.title": {
@@ -55791,7 +56295,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.text": {
-      "hash": "18c7d1775ea8",
+      "hash": "a0e2c434d724",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.title": {
@@ -55799,7 +56303,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.text": {
-      "hash": "5138335fee80",
+      "hash": "419abeaee7e8",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.title": {
@@ -55855,7 +56359,7 @@
       "status": "machine"
     },
     "help:articles.consultation.sections.second.text": {
-      "hash": "247b346361ce",
+      "hash": "2b4a479cb41a",
       "status": "machine"
     },
     "help:articles.consultation.sections.second.title": {
@@ -56427,7 +56931,11 @@
       "status": "machine"
     },
     "help:images.consultationTemplatePreview": {
-      "hash": "3262593f547f",
+      "hash": "6d9eaf73640a",
+      "status": "machine"
+    },
+    "help:images.dentalConsultation": {
+      "hash": "290b49746aac",
       "status": "machine"
     },
     "help:images.dictation": {
@@ -63562,6 +64070,66 @@
       "hash": "56b564b75c7f",
       "status": "machine"
     },
+    "visitDocumentation:consultation.dental.awakeOralExam.helper": {
+      "hash": "6eac43941398",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.awakeOralExam.label": {
+      "hash": "d6a539205987",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.awakeOralExam.sample": {
+      "hash": "c467b39c3c63",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.clientDiscussion.helper": {
+      "hash": "91bb23ad661f",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.clientDiscussion.label": {
+      "hash": "eda7c0596e61",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.clientDiscussion.sample": {
+      "hash": "9d60fa83a169",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.followUp.helper": {
+      "hash": "a5cf279c23c7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.followUp.label": {
+      "hash": "0fa2a0234a35",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.followUp.sample": {
+      "hash": "9a06d19ced68",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.homeCare.helper": {
+      "hash": "a8d5ac28f7fc",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.homeCare.label": {
+      "hash": "c5346312dbb9",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.homeCare.sample": {
+      "hash": "02bce229759a",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.preanesthetic.helper": {
+      "hash": "d038ed1d8124",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.preanesthetic.label": {
+      "hash": "a2d612910650",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.preanesthetic.sample": {
+      "hash": "cbd0ef42262b",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.guide": {
       "hash": "776ee8ac3073",
       "status": "machine"
@@ -63660,6 +64228,106 @@
     },
     "visitDocumentation:consultation.templates.archived": {
       "hash": "bdb86505f806",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.addSection": {
+      "hash": "7c3690997f72",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.bullets": {
+      "hash": "20c579c3da98",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.chooseSection": {
+      "hash": "551647764038",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.concise": {
+      "hash": "8340d833ab72",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.createTemplate": {
+      "hash": "7dc9c0adaca0",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.customSection": {
+      "hash": "ca803a429ff0",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.detail": {
+      "hash": "8d5f9236afca",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.detailed": {
+      "hash": "6d46fcd50a63",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.dictation": {
+      "hash": "ff716fc4735e",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.earlier": {
+      "hash": "4c3c9bb78b12",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.example": {
+      "hash": "9c0fa1e53744",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.format": {
+      "hash": "93c53d374513",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.guidance": {
+      "hash": "d6911a5ee1e4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.importHelp": {
+      "hash": "26805b2b13a1",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.importTitle": {
+      "hash": "3081f3042451",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.instructions": {
+      "hash": "eb96796aa9b8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.later": {
+      "hash": "1e1d556ccfb5",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.libraryTooLarge": {
+      "hash": "de04720d6bf6",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.paragraph": {
+      "hash": "c3b03dd28595",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.removeSection": {
+      "hash": "a873a013563e",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.sectionLabel": {
+      "hash": "ceb036e1f5bd",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.standard": {
+      "hash": "ef6691545d2c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.subsection": {
+      "hash": "f50ec6f19b00",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.suggestedText": {
+      "hash": "53016cac2fce",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.useSuggested": {
+      "hash": "4c08630d20e6",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.conflict": {
@@ -63779,6 +64447,10 @@
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.starters.dental-v1": {
+      "hash": "1acf510f5ca7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.dental-v2": {
       "hash": "f3d2f78dfaf7",
       "status": "machine"
     },
@@ -71885,7 +72557,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.text": {
-      "hash": "864b5a82c53b",
+      "hash": "23ffa89cf3b4",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.title": {
@@ -71893,7 +72565,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.text": {
-      "hash": "18c7d1775ea8",
+      "hash": "a0e2c434d724",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.title": {
@@ -71901,7 +72573,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.text": {
-      "hash": "5138335fee80",
+      "hash": "419abeaee7e8",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.title": {
@@ -71957,7 +72629,7 @@
       "status": "machine"
     },
     "help:articles.consultation.sections.second.text": {
-      "hash": "247b346361ce",
+      "hash": "2b4a479cb41a",
       "status": "machine"
     },
     "help:articles.consultation.sections.second.title": {
@@ -72529,7 +73201,11 @@
       "status": "machine"
     },
     "help:images.consultationTemplatePreview": {
-      "hash": "3262593f547f",
+      "hash": "6d9eaf73640a",
+      "status": "machine"
+    },
+    "help:images.dentalConsultation": {
+      "hash": "290b49746aac",
       "status": "machine"
     },
     "help:images.dictation": {
@@ -79568,6 +80244,66 @@
       "hash": "56b564b75c7f",
       "status": "machine"
     },
+    "visitDocumentation:consultation.dental.awakeOralExam.helper": {
+      "hash": "6eac43941398",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.awakeOralExam.label": {
+      "hash": "d6a539205987",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.awakeOralExam.sample": {
+      "hash": "c467b39c3c63",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.clientDiscussion.helper": {
+      "hash": "91bb23ad661f",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.clientDiscussion.label": {
+      "hash": "eda7c0596e61",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.clientDiscussion.sample": {
+      "hash": "9d60fa83a169",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.followUp.helper": {
+      "hash": "a5cf279c23c7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.followUp.label": {
+      "hash": "0fa2a0234a35",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.followUp.sample": {
+      "hash": "9a06d19ced68",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.homeCare.helper": {
+      "hash": "a8d5ac28f7fc",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.homeCare.label": {
+      "hash": "c5346312dbb9",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.homeCare.sample": {
+      "hash": "02bce229759a",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.preanesthetic.helper": {
+      "hash": "d038ed1d8124",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.preanesthetic.label": {
+      "hash": "a2d612910650",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.preanesthetic.sample": {
+      "hash": "cbd0ef42262b",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.guide": {
       "hash": "776ee8ac3073",
       "status": "machine"
@@ -79666,6 +80402,106 @@
     },
     "visitDocumentation:consultation.templates.archived": {
       "hash": "bdb86505f806",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.addSection": {
+      "hash": "7c3690997f72",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.bullets": {
+      "hash": "20c579c3da98",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.chooseSection": {
+      "hash": "551647764038",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.concise": {
+      "hash": "8340d833ab72",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.createTemplate": {
+      "hash": "7dc9c0adaca0",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.customSection": {
+      "hash": "ca803a429ff0",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.detail": {
+      "hash": "8d5f9236afca",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.detailed": {
+      "hash": "6d46fcd50a63",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.dictation": {
+      "hash": "ff716fc4735e",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.earlier": {
+      "hash": "4c3c9bb78b12",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.example": {
+      "hash": "9c0fa1e53744",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.format": {
+      "hash": "93c53d374513",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.guidance": {
+      "hash": "d6911a5ee1e4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.importHelp": {
+      "hash": "26805b2b13a1",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.importTitle": {
+      "hash": "3081f3042451",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.instructions": {
+      "hash": "eb96796aa9b8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.later": {
+      "hash": "1e1d556ccfb5",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.libraryTooLarge": {
+      "hash": "de04720d6bf6",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.paragraph": {
+      "hash": "c3b03dd28595",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.removeSection": {
+      "hash": "a873a013563e",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.sectionLabel": {
+      "hash": "ceb036e1f5bd",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.standard": {
+      "hash": "ef6691545d2c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.subsection": {
+      "hash": "f50ec6f19b00",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.suggestedText": {
+      "hash": "53016cac2fce",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.useSuggested": {
+      "hash": "4c08630d20e6",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.conflict": {
@@ -79785,6 +80621,10 @@
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.starters.dental-v1": {
+      "hash": "1acf510f5ca7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.dental-v2": {
       "hash": "f3d2f78dfaf7",
       "status": "machine"
     },
@@ -87935,7 +88775,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.text": {
-      "hash": "864b5a82c53b",
+      "hash": "23ffa89cf3b4",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.title": {
@@ -87943,7 +88783,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.text": {
-      "hash": "18c7d1775ea8",
+      "hash": "a0e2c434d724",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.title": {
@@ -87951,7 +88791,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.text": {
-      "hash": "5138335fee80",
+      "hash": "419abeaee7e8",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.title": {
@@ -88007,7 +88847,7 @@
       "status": "machine"
     },
     "help:articles.consultation.sections.second.text": {
-      "hash": "247b346361ce",
+      "hash": "2b4a479cb41a",
       "status": "machine"
     },
     "help:articles.consultation.sections.second.title": {
@@ -88579,7 +89419,11 @@
       "status": "machine"
     },
     "help:images.consultationTemplatePreview": {
-      "hash": "3262593f547f",
+      "hash": "6d9eaf73640a",
+      "status": "machine"
+    },
+    "help:images.dentalConsultation": {
+      "hash": "290b49746aac",
       "status": "machine"
     },
     "help:images.dictation": {
@@ -95714,6 +96558,66 @@
       "hash": "56b564b75c7f",
       "status": "machine"
     },
+    "visitDocumentation:consultation.dental.awakeOralExam.helper": {
+      "hash": "6eac43941398",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.awakeOralExam.label": {
+      "hash": "d6a539205987",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.awakeOralExam.sample": {
+      "hash": "c467b39c3c63",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.clientDiscussion.helper": {
+      "hash": "91bb23ad661f",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.clientDiscussion.label": {
+      "hash": "eda7c0596e61",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.clientDiscussion.sample": {
+      "hash": "9d60fa83a169",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.followUp.helper": {
+      "hash": "a5cf279c23c7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.followUp.label": {
+      "hash": "0fa2a0234a35",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.followUp.sample": {
+      "hash": "9a06d19ced68",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.homeCare.helper": {
+      "hash": "a8d5ac28f7fc",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.homeCare.label": {
+      "hash": "c5346312dbb9",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.homeCare.sample": {
+      "hash": "02bce229759a",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.preanesthetic.helper": {
+      "hash": "d038ed1d8124",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.preanesthetic.label": {
+      "hash": "a2d612910650",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.preanesthetic.sample": {
+      "hash": "cbd0ef42262b",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.guide": {
       "hash": "776ee8ac3073",
       "status": "machine"
@@ -95812,6 +96716,106 @@
     },
     "visitDocumentation:consultation.templates.archived": {
       "hash": "bdb86505f806",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.addSection": {
+      "hash": "7c3690997f72",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.bullets": {
+      "hash": "20c579c3da98",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.chooseSection": {
+      "hash": "551647764038",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.concise": {
+      "hash": "8340d833ab72",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.createTemplate": {
+      "hash": "7dc9c0adaca0",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.customSection": {
+      "hash": "ca803a429ff0",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.detail": {
+      "hash": "8d5f9236afca",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.detailed": {
+      "hash": "6d46fcd50a63",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.dictation": {
+      "hash": "ff716fc4735e",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.earlier": {
+      "hash": "4c3c9bb78b12",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.example": {
+      "hash": "9c0fa1e53744",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.format": {
+      "hash": "93c53d374513",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.guidance": {
+      "hash": "d6911a5ee1e4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.importHelp": {
+      "hash": "26805b2b13a1",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.importTitle": {
+      "hash": "3081f3042451",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.instructions": {
+      "hash": "eb96796aa9b8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.later": {
+      "hash": "1e1d556ccfb5",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.libraryTooLarge": {
+      "hash": "de04720d6bf6",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.paragraph": {
+      "hash": "c3b03dd28595",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.removeSection": {
+      "hash": "a873a013563e",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.sectionLabel": {
+      "hash": "ceb036e1f5bd",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.standard": {
+      "hash": "ef6691545d2c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.subsection": {
+      "hash": "f50ec6f19b00",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.suggestedText": {
+      "hash": "53016cac2fce",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.useSuggested": {
+      "hash": "4c08630d20e6",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.conflict": {
@@ -95931,6 +96935,10 @@
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.starters.dental-v1": {
+      "hash": "1acf510f5ca7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.dental-v2": {
       "hash": "f3d2f78dfaf7",
       "status": "machine"
     },
@@ -104691,7 +105699,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.text": {
-      "hash": "864b5a82c53b",
+      "hash": "23ffa89cf3b4",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.title": {
@@ -104699,7 +105707,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.text": {
-      "hash": "18c7d1775ea8",
+      "hash": "a0e2c434d724",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.title": {
@@ -104707,7 +105715,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.text": {
-      "hash": "5138335fee80",
+      "hash": "419abeaee7e8",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.title": {
@@ -104763,7 +105771,7 @@
       "status": "machine"
     },
     "help:articles.consultation.sections.second.text": {
-      "hash": "247b346361ce",
+      "hash": "2b4a479cb41a",
       "status": "machine"
     },
     "help:articles.consultation.sections.second.title": {
@@ -105335,7 +106343,11 @@
       "status": "machine"
     },
     "help:images.consultationTemplatePreview": {
-      "hash": "3262593f547f",
+      "hash": "6d9eaf73640a",
+      "status": "machine"
+    },
+    "help:images.dentalConsultation": {
+      "hash": "290b49746aac",
       "status": "machine"
     },
     "help:images.dictation": {
@@ -112406,6 +113418,66 @@
       "hash": "56b564b75c7f",
       "status": "machine"
     },
+    "visitDocumentation:consultation.dental.awakeOralExam.helper": {
+      "hash": "6eac43941398",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.awakeOralExam.label": {
+      "hash": "d6a539205987",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.awakeOralExam.sample": {
+      "hash": "c467b39c3c63",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.clientDiscussion.helper": {
+      "hash": "91bb23ad661f",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.clientDiscussion.label": {
+      "hash": "eda7c0596e61",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.clientDiscussion.sample": {
+      "hash": "9d60fa83a169",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.followUp.helper": {
+      "hash": "a5cf279c23c7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.followUp.label": {
+      "hash": "0fa2a0234a35",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.followUp.sample": {
+      "hash": "9a06d19ced68",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.homeCare.helper": {
+      "hash": "a8d5ac28f7fc",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.homeCare.label": {
+      "hash": "c5346312dbb9",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.homeCare.sample": {
+      "hash": "02bce229759a",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.preanesthetic.helper": {
+      "hash": "d038ed1d8124",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.preanesthetic.label": {
+      "hash": "a2d612910650",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.preanesthetic.sample": {
+      "hash": "cbd0ef42262b",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.guide": {
       "hash": "776ee8ac3073",
       "status": "machine"
@@ -112504,6 +113576,106 @@
     },
     "visitDocumentation:consultation.templates.archived": {
       "hash": "bdb86505f806",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.addSection": {
+      "hash": "7c3690997f72",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.bullets": {
+      "hash": "20c579c3da98",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.chooseSection": {
+      "hash": "551647764038",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.concise": {
+      "hash": "8340d833ab72",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.createTemplate": {
+      "hash": "7dc9c0adaca0",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.customSection": {
+      "hash": "ca803a429ff0",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.detail": {
+      "hash": "8d5f9236afca",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.detailed": {
+      "hash": "6d46fcd50a63",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.dictation": {
+      "hash": "ff716fc4735e",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.earlier": {
+      "hash": "4c3c9bb78b12",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.example": {
+      "hash": "9c0fa1e53744",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.format": {
+      "hash": "93c53d374513",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.guidance": {
+      "hash": "d6911a5ee1e4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.importHelp": {
+      "hash": "26805b2b13a1",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.importTitle": {
+      "hash": "3081f3042451",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.instructions": {
+      "hash": "eb96796aa9b8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.later": {
+      "hash": "1e1d556ccfb5",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.libraryTooLarge": {
+      "hash": "de04720d6bf6",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.paragraph": {
+      "hash": "c3b03dd28595",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.removeSection": {
+      "hash": "a873a013563e",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.sectionLabel": {
+      "hash": "ceb036e1f5bd",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.standard": {
+      "hash": "ef6691545d2c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.subsection": {
+      "hash": "f50ec6f19b00",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.suggestedText": {
+      "hash": "53016cac2fce",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.useSuggested": {
+      "hash": "4c08630d20e6",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.conflict": {
@@ -112623,6 +113795,10 @@
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.starters.dental-v1": {
+      "hash": "1acf510f5ca7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.dental-v2": {
       "hash": "f3d2f78dfaf7",
       "status": "machine"
     },
@@ -120729,7 +121905,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.text": {
-      "hash": "864b5a82c53b",
+      "hash": "23ffa89cf3b4",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.first.title": {
@@ -120737,7 +121913,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.text": {
-      "hash": "18c7d1775ea8",
+      "hash": "a0e2c434d724",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.second.title": {
@@ -120745,7 +121921,7 @@
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.text": {
-      "hash": "5138335fee80",
+      "hash": "419abeaee7e8",
       "status": "machine"
     },
     "help:articles.consultation-templates.sections.third.title": {
@@ -120801,7 +121977,7 @@
       "status": "machine"
     },
     "help:articles.consultation.sections.second.text": {
-      "hash": "247b346361ce",
+      "hash": "2b4a479cb41a",
       "status": "machine"
     },
     "help:articles.consultation.sections.second.title": {
@@ -121373,7 +122549,11 @@
       "status": "machine"
     },
     "help:images.consultationTemplatePreview": {
-      "hash": "3262593f547f",
+      "hash": "6d9eaf73640a",
+      "status": "machine"
+    },
+    "help:images.dentalConsultation": {
+      "hash": "290b49746aac",
       "status": "machine"
     },
     "help:images.dictation": {
@@ -128412,6 +129592,66 @@
       "hash": "56b564b75c7f",
       "status": "machine"
     },
+    "visitDocumentation:consultation.dental.awakeOralExam.helper": {
+      "hash": "6eac43941398",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.awakeOralExam.label": {
+      "hash": "d6a539205987",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.awakeOralExam.sample": {
+      "hash": "c467b39c3c63",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.clientDiscussion.helper": {
+      "hash": "91bb23ad661f",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.clientDiscussion.label": {
+      "hash": "eda7c0596e61",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.clientDiscussion.sample": {
+      "hash": "9d60fa83a169",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.followUp.helper": {
+      "hash": "a5cf279c23c7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.followUp.label": {
+      "hash": "0fa2a0234a35",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.followUp.sample": {
+      "hash": "9a06d19ced68",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.homeCare.helper": {
+      "hash": "a8d5ac28f7fc",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.homeCare.label": {
+      "hash": "c5346312dbb9",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.homeCare.sample": {
+      "hash": "02bce229759a",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.preanesthetic.helper": {
+      "hash": "d038ed1d8124",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.preanesthetic.label": {
+      "hash": "a2d612910650",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.dental.preanesthetic.sample": {
+      "hash": "cbd0ef42262b",
+      "status": "machine"
+    },
     "visitDocumentation:consultation.guide": {
       "hash": "776ee8ac3073",
       "status": "machine"
@@ -128510,6 +129750,106 @@
     },
     "visitDocumentation:consultation.templates.archived": {
       "hash": "bdb86505f806",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.addSection": {
+      "hash": "7c3690997f72",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.bullets": {
+      "hash": "20c579c3da98",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.chooseSection": {
+      "hash": "551647764038",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.concise": {
+      "hash": "8340d833ab72",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.createTemplate": {
+      "hash": "7dc9c0adaca0",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.customSection": {
+      "hash": "ca803a429ff0",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.detail": {
+      "hash": "8d5f9236afca",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.detailed": {
+      "hash": "6d46fcd50a63",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.dictation": {
+      "hash": "ff716fc4735e",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.earlier": {
+      "hash": "4c3c9bb78b12",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.example": {
+      "hash": "9c0fa1e53744",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.format": {
+      "hash": "93c53d374513",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.guidance": {
+      "hash": "d6911a5ee1e4",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.importHelp": {
+      "hash": "26805b2b13a1",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.importTitle": {
+      "hash": "3081f3042451",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.instructions": {
+      "hash": "eb96796aa9b8",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.later": {
+      "hash": "1e1d556ccfb5",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.libraryTooLarge": {
+      "hash": "de04720d6bf6",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.paragraph": {
+      "hash": "c3b03dd28595",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.removeSection": {
+      "hash": "a873a013563e",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.sectionLabel": {
+      "hash": "ceb036e1f5bd",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.standard": {
+      "hash": "ef6691545d2c",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.subsection": {
+      "hash": "f50ec6f19b00",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.suggestedText": {
+      "hash": "53016cac2fce",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.builder.useSuggested": {
+      "hash": "4c08630d20e6",
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.conflict": {
@@ -128629,6 +129969,10 @@
       "status": "machine"
     },
     "visitDocumentation:consultation.templates.starters.dental-v1": {
+      "hash": "1acf510f5ca7",
+      "status": "machine"
+    },
+    "visitDocumentation:consultation.templates.starters.dental-v2": {
       "hash": "f3d2f78dfaf7",
       "status": "machine"
     },

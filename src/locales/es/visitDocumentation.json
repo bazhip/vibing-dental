@@ -52,9 +52,10 @@
       "moveUp": "Subir {{field}}",
       "moveDown": "Bajar {{field}}",
       "starters": {
-        "dental-v1": "Consulta dental",
+        "dental-v1": "Consulta dental (versión anterior)",
         "soap-v1": "SOAP general",
-        "recheck-v1": "Revisión"
+        "recheck-v1": "Revisión",
+        "dental-v2": "Consulta dental"
       },
       "samples": {
         "consultationCurrentMedications": "El propietario refirió un medicamento en uso.",
@@ -67,6 +68,60 @@
         "gpVitals": "Peso registrado en esta visita.",
         "gpPhysicalExam": "Se registraron los hallazgos de la exploración.",
         "gpDiagnostics": "Hay imágenes anteriores disponibles para revisar."
+      },
+      "builder": {
+        "addSection": "Añadir sección",
+        "chooseSection": "Elegir una sección",
+        "customSection": "Sección personalizada",
+        "sectionLabel": "Etiqueta de la sección",
+        "removeSection": "Quitar sección",
+        "guidance": "Indicaciones del campo",
+        "example": "Ejemplo de redacción",
+        "suggestedText": "Texto sugerido",
+        "useSuggested": "Usar texto sugerido",
+        "format": "Formato de salida",
+        "paragraph": "Párrafo",
+        "bullets": "Lista con viñetas",
+        "dictation": "Configuración del dictado",
+        "instructions": "Instrucciones de redacción",
+        "detail": "Nivel de detalle",
+        "standard": "Estándar",
+        "concise": "Conciso",
+        "detailed": "Detallado",
+        "earlier": "Subir plantilla",
+        "later": "Bajar plantilla",
+        "importTitle": "Crear a partir de una nota de ejemplo",
+        "importHelp": "Pegue un ejemplo anonimizado con encabezados Markdown o etiquetas seguidas de dos puntos. Revise los encabezados antes de guardar la plantilla.",
+        "createTemplate": "Crear plantilla",
+        "subsection": "Usar como subsección",
+        "libraryTooLarge": "La biblioteca de plantillas es demasiado grande. Acorte los ejemplos, el texto sugerido o las instrucciones de redacción."
+      }
+    },
+    "dental": {
+      "awakeOralExam": {
+        "label": "Exploración oral con el paciente despierto",
+        "helper": "Anote los hallazgos visibles y las zonas que no pudo valorar con el paciente despierto.",
+        "sample": "Leve enrojecimiento gingival visible. No se pudo valorar la parte caudal de la boca."
+      },
+      "preanesthetic": {
+        "label": "Consideraciones preanestésicas",
+        "helper": "Anote los riesgos pertinentes, los antecedentes anestésicos y las pruebas o consultas comentadas.",
+        "sample": "Se revisaron los antecedentes anestésicos y se comentaron las pruebas preanestésicas."
+      },
+      "clientDiscussion": {
+        "label": "Conversación y decisiones del cliente",
+        "helper": "Anote las opciones, el presupuesto, el estado del consentimiento y la atención aplazada o rechazada. Indique las decisiones pendientes.",
+        "sample": "Se comentó un presupuesto preliminar. El cliente decidirá tras revisarlo."
+      },
+      "homeCare": {
+        "label": "Cuidados dentales en casa",
+        "helper": "Anote la orientación sobre cuidados en casa y las limitaciones prácticas comentadas.",
+        "sample": "El cliente preguntó por las opciones de cuidado dental en casa."
+      },
+      "followUp": {
+        "label": "Seguimiento y citas",
+        "helper": "Anote el próximo paso acordado, los plazos y cuándo contactar antes con la clínica.",
+        "sample": "El cliente contactará con la clínica para programar la cita."
       }
     }
   },

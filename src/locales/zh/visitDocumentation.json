@@ -52,9 +52,10 @@
       "moveUp": "上移{{field}}",
       "moveDown": "下移{{field}}",
       "starters": {
-        "dental-v1": "牙科就诊",
+        "dental-v1": "牙科咨询（原版）",
         "soap-v1": "通用 SOAP",
-        "recheck-v1": "复查"
+        "recheck-v1": "复查",
+        "dental-v2": "牙科就诊"
       },
       "samples": {
         "consultationCurrentMedications": "主人报告目前正在使用一种药物。",
@@ -67,6 +68,60 @@
         "gpVitals": "已记录本次就诊的体重。",
         "gpPhysicalExam": "已记录检查所见。",
         "gpDiagnostics": "可查看以往的影像资料。"
+      },
+      "builder": {
+        "addSection": "添加分节",
+        "chooseSection": "选择分节",
+        "customSection": "自定义分节",
+        "sectionLabel": "分节名称",
+        "removeSection": "移除分节",
+        "guidance": "字段填写指导",
+        "example": "措辞示例",
+        "suggestedText": "建议文本",
+        "useSuggested": "使用建议文本",
+        "format": "输出格式",
+        "paragraph": "段落",
+        "bullets": "项目符号列表",
+        "dictation": "口述设置",
+        "instructions": "撰写说明",
+        "detail": "详细程度",
+        "standard": "标准",
+        "concise": "简洁",
+        "detailed": "详细",
+        "earlier": "上移模板",
+        "later": "下移模板",
+        "importTitle": "从示例病历创建",
+        "importHelp": "请粘贴去标识化的示例，标题使用 Markdown 或在标签后加英文冒号。保存模板前请核对标题。",
+        "createTemplate": "创建模板",
+        "subsection": "用作子节",
+        "libraryTooLarge": "模板库过大。请缩短示例、建议文本或撰写说明。"
+      }
+    },
+    "dental": {
+      "awakeOralExam": {
+        "label": "清醒状态下的口腔检查",
+        "helper": "请记录可见的口腔发现和清醒状态下无法评估的部位。",
+        "sample": "可见轻度牙龈发红，口腔后部无法评估。"
+      },
+      "preanesthetic": {
+        "label": "麻醉前注意事项",
+        "helper": "请记录有关风险、既往麻醉问题以及讨论过的检查或会诊。",
+        "sample": "已回顾麻醉史，并讨论麻醉前检查。"
+      },
+      "clientDiscussion": {
+        "label": "与宠物主人的沟通和决定",
+        "helper": "请记录方案、费用预估、知情同意状态及推迟或拒绝的护理。注明仍待评估的决定。",
+        "sample": "已讨论初步费用预估。主人将在审阅后决定。"
+      },
+      "homeCare": {
+        "label": "居家牙科护理",
+        "helper": "请记录讨论过的居家护理建议及实际限制。",
+        "sample": "主人询问了居家牙科护理方案。"
+      },
+      "followUp": {
+        "label": "复诊和预约",
+        "helper": "请记录商定的下一步、时间和需提前联系诊所的情形。",
+        "sample": "主人将联系诊所预约。"
       }
     }
   },

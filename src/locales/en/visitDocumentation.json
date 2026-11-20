@@ -52,9 +52,10 @@
       "moveUp": "Move {{field}} up",
       "moveDown": "Move {{field}} down",
       "starters": {
-        "dental-v1": "Dental consultation",
+        "dental-v1": "Dental consultation (original)",
         "soap-v1": "General SOAP",
-        "recheck-v1": "Recheck"
+        "recheck-v1": "Recheck",
+        "dental-v2": "Dental consultation"
       },
       "samples": {
         "consultationCurrentMedications": "The owner reported one ongoing medication.",
@@ -67,6 +68,60 @@
         "gpVitals": "Weight recorded at this visit.",
         "gpPhysicalExam": "Examination findings were recorded.",
         "gpDiagnostics": "Previous imaging is available for review."
+      },
+      "builder": {
+        "addSection": "Add section",
+        "chooseSection": "Choose a section",
+        "customSection": "Custom section",
+        "sectionLabel": "Section label",
+        "removeSection": "Remove section",
+        "guidance": "Field guidance",
+        "example": "Example wording",
+        "suggestedText": "Suggested text",
+        "useSuggested": "Use suggested text",
+        "format": "Output format",
+        "paragraph": "Paragraph",
+        "bullets": "Bullets",
+        "dictation": "Dictation settings",
+        "instructions": "Writing instructions",
+        "detail": "Level of detail",
+        "standard": "Standard",
+        "concise": "Concise",
+        "detailed": "Detailed",
+        "earlier": "Move template earlier",
+        "later": "Move template later",
+        "importTitle": "Create from a sample note",
+        "importHelp": "Paste a de-identified sample with Markdown headings or labels followed by a colon. Review the headings before saving the template.",
+        "createTemplate": "Create template",
+        "subsection": "Use as a subsection",
+        "libraryTooLarge": "The template library is too large. Shorten examples, suggested text, or writing instructions."
+      }
+    },
+    "dental": {
+      "awakeOralExam": {
+        "label": "Awake oral examination",
+        "helper": "Record visible oral findings and areas that could not be assessed while awake.",
+        "sample": "Mild visible gingival redness. The caudal mouth could not be assessed."
+      },
+      "preanesthetic": {
+        "label": "Pre-anesthetic considerations",
+        "helper": "Record relevant risks, previous anesthesia concerns and the testing or consultation discussed.",
+        "sample": "Prior anesthetic history reviewed. Pre-anesthetic testing discussed."
+      },
+      "clientDiscussion": {
+        "label": "Client discussion and decisions",
+        "helper": "Record options, estimate, consent status and any deferred or declined care. Keep decisions pending further assessment clear.",
+        "sample": "A preliminary estimate was discussed. The client will decide after reviewing it."
+      },
+      "homeCare": {
+        "label": "Home dental care",
+        "helper": "Record the home care guidance discussed and any practical limitations.",
+        "sample": "The client asked about options for home dental care."
+      },
+      "followUp": {
+        "label": "Follow-up and scheduling",
+        "helper": "Record the agreed next step, timing and any reason to contact the practice sooner.",
+        "sample": "The client will contact the practice to schedule."
       }
     }
   },

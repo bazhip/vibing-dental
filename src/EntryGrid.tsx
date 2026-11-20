@@ -1,7 +1,7 @@
 import { VisitTypeChooser } from './components/VisitTypeChooser';
 import { visitTypeOf, type VisitType } from './utils/visitTypes';
 import { useConsultationLibrary } from './hooks/useConsultationLibrary';
-import { consultationDocumentFields, consultationLayoutFor, CONSULTATION_FIELDS } from './utils/consultationTemplates';
+import { CONSULTATION_FIELDS, consultationLayoutFor, isCustomConsultationField } from './utils/consultationTemplates';
 import { ConsultationTemplatesDialog } from './components/ConsultationTemplatesDialog';
 import { Icon } from './ios/icons';
 import { useTeam } from './hooks/useTeam';
@@ -348,19 +348,10 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // Inline reason a save was blocked (e.g. missing patient name).
   const [saveHint, setSaveHint] = React.useState('');
   const readOnly = cloud.enabled && !editable;
-  const consultationVisitScope = JSON.stringify([profile.practiceId, chart.chartSession]);
-  const pendingConsultationLayout = React.useRef<string | null>(null);
-  const waitForConsultationDefault = () => {
-    if (!consultationLibrary.resolved && !chart.openedExisting && !chart.patientInfo.consultationLayout) {
-      pendingConsultationLayout.current = consultationVisitScope;
-    }
-  };
   const pinInitialConsultationLayout = consultationOn && consultationLibrary.resolved && !readOnly
-    && !chart.openedExisting && !chart.patientInfo.consultationLayout
-    && pendingConsultationLayout.current === consultationVisitScope;
+    && !chart.openedExisting && !chart.patientInfo.consultationLayout;
   React.useEffect(() => {
     if (!pinInitialConsultationLayout) return;
-    pendingConsultationLayout.current = null;
     chart.setPatientInfo(previous => previous.consultationLayout ? previous : {
       ...previous,
       consultationLayout: consultationLayoutFor(previous, consultationLibrary.config),
@@ -496,16 +487,16 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     if (source.kind === 'consultation' && (!live.consultationOn || !live.canCreateConsultation)) throw new LocalizedError(i18n.t('voice:clinical.stale'));
     const allowed: readonly string[] = source.kind === 'ct'
       ? ['ctReport', 'ctReportLanguage', 'ctReviewedBasis']
-      : allowedClinicalFields(source.kind, live.consultationOn, routed ? false : undefined, source.kind === 'consultation' && live.consultationOn);
+      : allowedClinicalFields(source.kind, live.consultationOn, routed ? false : undefined, source.kind === 'consultation' && live.consultationOn,
+        source.kind === 'consultation' ? consultationLayoutFor(live.chart.patientInfo, consultationLibrary.config, live.chart.openedExisting) : undefined);
     if (!Object.keys(changes).length || [...Object.keys(changes), ...source.fields].some(field => !allowed.includes(field))) throw new LocalizedError(i18n.t('voice:clinical.invalidSource'));
     appendClinicalDictationSource(live.chart.clinicalDictations, source);
     // The source append validates synchronously before any clinical fields change.
     live.chart.appendClinicalDictation(source);
-    const touchesConsultation = live.consultationOn && consultationDocumentFields(CONSULTATION_FIELDS).some(field => changes[field] !== undefined);
-    if (touchesConsultation) waitForConsultationDefault();
+    const touchesConsultation = source.kind === 'consultation' && live.consultationOn;
     live.chart.setPatientInfo(previous => ({
       ...previous, ...changes,
-      ...(touchesConsultation && consultationLibrary.resolved && !previous.consultationLayout
+      ...(touchesConsultation && !previous.consultationLayout
         ? { consultationLayout: consultationLayoutFor(previous, consultationLibrary.config, live.chart.openedExisting) } : {}),
       ...(source.kind === 'imaging' && changes.radiographicFindings !== undefined
         ? { radiologyReport: changes.radiographicFindings, radiologyReportLanguage: source.language, radiologyReviewedBasis: '' } : {}),
@@ -535,7 +526,10 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   };
   const clinicalDictationControl = (kind: ClinicalDictationKind) => profile.aiEnabled && !trial && cloud.enabled
     ? <ClinicalDictationButton key={`${kind}:${chart.chartSession}`} strictTarget consultationEnabled={consultationOn} kind={kind}
-        snapshot={chart.getSnapshot()} chartId={chart.cloudChartId} chartSession={chart.chartSession} transcriptUserId={transcriptUserId} readOnly={readOnly} aiEnabled
+        snapshot={kind === 'consultation' ? {
+          ...chart.getSnapshot(),
+          patientInfo: { ...chart.patientInfo, consultationLayout: consultationLayoutFor(chart.patientInfo, consultationLibrary.config, chart.openedExisting) },
+        } : chart.getSnapshot()} chartId={chart.cloudChartId} chartSession={chart.chartSession} transcriptUserId={transcriptUserId} readOnly={readOnly} aiEnabled
         disabled={dentalDictationBusy} openRequest={requestFor(kind)}
         seededTranscript={dictationRequest?.kind === kind && dictationRequest.session === chart.chartSession ? dictationRequest.transcript : undefined}
         onApply={applyClinicalDictation} onOpenChange={setClinicalDictationActive} /> : undefined;
@@ -1300,10 +1294,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         }}
         onChange={changes => {
           if (readOnly) return;
-          if (!changes.consultationLayout) waitForConsultationDefault();
           chart.setPatientInfo(previous => ({
             ...previous,
-            ...(consultationLibrary.resolved
+            ...((consultationLibrary.resolved || Object.keys(changes).some(isCustomConsultationField))
               ? { consultationLayout: consultationLayoutFor(previous, consultationLibrary.config, chart.openedExisting) } : {}),
             ...changes,
           }));

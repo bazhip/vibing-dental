@@ -182,3 +182,20 @@ it('separates reported, administered and planned medication details in consultat
   expect(() => parseClinicalDictationProposal([tool(sections)], { ...consultation, kind: 'dental-visit' })).toThrow(LocalizedError);
   expect(() => parseClinicalDictationProposal([tool([{ ...sections[0], evidence: 'A dose not stated.' }])], consultation)).toThrow(LocalizedError);
 });
+
+it('routes configured consultation sections, preserving evidence rules and keeping suggested text out of the request', () => {
+  const field = 'consultationCustom_oral';
+  const data = input({ kind: 'consultation', structuredConsultation: true, patientInfo: {
+    ...input().patientInfo,
+    consultationLayout: { id: 'practice-layout', fields: [], detail: 'concise', instructions: 'Use clinical phrasing.',
+      sections: [{ id: field, label: 'Oral findings', example: 'Illustrative', suggestedText: 'Only insert manually', format: 'bullets' }] },
+  } });
+  const request = buildClinicalDictationRequest(data);
+  const payload = JSON.parse(request.messages[0].content[0].text);
+  expect(payload.allowed_fields).toEqual([field]);
+  expect(payload.template).toMatchObject({ detail: 'concise', sections: [{ id: field, label: 'Oral findings', format: 'bullets' }] });
+  expect(JSON.stringify(request)).not.toContain('Only insert manually');
+  expect(parseClinicalDictationProposal([tool([{ ...proposal, field }])], data)).toEqual([{ ...proposal, field }]);
+  expect(() => parseClinicalDictationProposal([tool()], data)).toThrow(LocalizedError);
+  expect(() => parseClinicalDictationProposal([tool([{ ...proposal, field, evidence: 'Illustrative' }])], data)).toThrow(LocalizedError);
+});

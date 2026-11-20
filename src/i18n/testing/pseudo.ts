@@ -8,10 +8,10 @@ const CLOSE = '⟧';
 
 // <Trans> markup (<1>…</1>, <strong>…</strong>, <br/>) stays outside the brackets and each
 // text run is wrapped on its own: "Click <1>here</1>" becomes "⟦Click ⟧<1>⟦here⟧</1>".
-const TAG = /(<\/?[A-Za-z0-9]+\s*\/?>)/;
+const TAG_OR_PARAGRAPH = /(<\/?[A-Za-z0-9]+\s*\/?>|\n\n)/;
 function wrapText(text: string): string {
   return text
-    .split(TAG)
+    .split(TAG_OR_PARAGRAPH)
     .map((part, i) => (i % 2 === 1 || !part ? part : `${OPEN}${part}${CLOSE}`))
     .join('');
 }
