@@ -52,9 +52,10 @@
       "moveUp": "Mutați {{field}} mai sus",
       "moveDown": "Mutați {{field}} mai jos",
       "starters": {
-        "dental-v1": "Consultație dentară",
+        "dental-v1": "Consultație dentară (versiunea anterioară)",
         "soap-v1": "SOAP general",
-        "recheck-v1": "Control"
+        "recheck-v1": "Control",
+        "dental-v2": "Consultație dentară"
       },
       "samples": {
         "consultationCurrentMedications": "Proprietarul a menționat un medicament utilizat în prezent.",
@@ -67,6 +68,60 @@
         "gpVitals": "Greutatea a fost consemnată la această vizită.",
         "gpPhysicalExam": "Constatările examinării au fost consemnate.",
         "gpDiagnostics": "Imaginile anterioare sunt disponibile pentru verificare."
+      },
+      "builder": {
+        "addSection": "Adăugați o secțiune",
+        "chooseSection": "Alegeți o secțiune",
+        "customSection": "Secțiune personalizată",
+        "sectionLabel": "Eticheta secțiunii",
+        "removeSection": "Eliminați secțiunea",
+        "guidance": "Îndrumări pentru câmp",
+        "example": "Exemplu de formulare",
+        "suggestedText": "Text sugerat",
+        "useSuggested": "Folosiți textul sugerat",
+        "format": "Format de ieșire",
+        "paragraph": "Paragraf",
+        "bullets": "Listă cu marcatori",
+        "dictation": "Setări de dictare",
+        "instructions": "Instrucțiuni de redactare",
+        "detail": "Nivel de detaliu",
+        "standard": "Standard",
+        "concise": "Concis",
+        "detailed": "Detaliat",
+        "earlier": "Mutați șablonul mai sus",
+        "later": "Mutați șablonul mai jos",
+        "importTitle": "Creați dintr-o notă exemplu",
+        "importHelp": "Lipiți un exemplu anonimizat cu titluri Markdown sau etichete urmate de două puncte. Verificați titlurile înainte de salvare.",
+        "createTemplate": "Creați șablonul",
+        "subsection": "Folosiți ca subsecțiune",
+        "libraryTooLarge": "Biblioteca de șabloane este prea mare. Scurtați exemplele, textul sugerat sau instrucțiunile de redactare."
+      }
+    },
+    "dental": {
+      "awakeOralExam": {
+        "label": "Examen oral la pacientul treaz",
+        "helper": "Notați constatările vizibile și zonele care nu au putut fi evaluate la pacientul treaz.",
+        "sample": "Ușoară roșeață gingivală vizibilă. Zona caudală a gurii nu a putut fi evaluată."
+      },
+      "preanesthetic": {
+        "label": "Considerații preanestezice",
+        "helper": "Notați riscurile, problemele anestezice anterioare și testele sau consultațiile discutate.",
+        "sample": "Au fost revizuite antecedentele anestezice și discutate testele preanestezice."
+      },
+      "clientDiscussion": {
+        "label": "Discuția și deciziile clientului",
+        "helper": "Notați opțiunile, estimarea costurilor, stadiul consimțământului și îngrijirile amânate sau refuzate. Indicați deciziile în așteptare.",
+        "sample": "S-a discutat o estimare preliminară. Clientul va decide după ce o va analiza."
+      },
+      "homeCare": {
+        "label": "Îngrijire dentară la domiciliu",
+        "helper": "Notați recomandările de îngrijire la domiciliu și limitele practice discutate.",
+        "sample": "Clientul a întrebat despre îngrijirea dentară la domiciliu."
+      },
+      "followUp": {
+        "label": "Monitorizare și programare",
+        "helper": "Notați pasul următor convenit, termenul și motivele pentru a contacta clinica mai devreme.",
+        "sample": "Clientul va contacta clinica pentru programare."
       }
     }
   },

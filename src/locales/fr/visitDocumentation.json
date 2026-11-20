@@ -52,9 +52,10 @@
       "moveUp": "Monter {{field}}",
       "moveDown": "Descendre {{field}}",
       "starters": {
-        "dental-v1": "Consultation dentaire",
+        "dental-v1": "Consultation dentaire (ancienne version)",
         "soap-v1": "SOAP général",
-        "recheck-v1": "Contrôle"
+        "recheck-v1": "Contrôle",
+        "dental-v2": "Consultation dentaire"
       },
       "samples": {
         "consultationCurrentMedications": "Le propriétaire a signalé un traitement en cours.",
@@ -67,6 +68,60 @@
         "gpVitals": "Poids relevé lors de la visite.",
         "gpPhysicalExam": "Les constatations de l’examen ont été consignées.",
         "gpDiagnostics": "Des images antérieures sont disponibles pour examen."
+      },
+      "builder": {
+        "addSection": "Ajouter une section",
+        "chooseSection": "Choisir une section",
+        "customSection": "Section personnalisée",
+        "sectionLabel": "Libellé de la section",
+        "removeSection": "Retirer la section",
+        "guidance": "Consignes du champ",
+        "example": "Exemple de formulation",
+        "suggestedText": "Texte proposé",
+        "useSuggested": "Utiliser le texte proposé",
+        "format": "Format de sortie",
+        "paragraph": "Paragraphe",
+        "bullets": "Liste à puces",
+        "dictation": "Réglages de la dictée",
+        "instructions": "Consignes de rédaction",
+        "detail": "Niveau de détail",
+        "standard": "Standard",
+        "concise": "Concis",
+        "detailed": "Détaillé",
+        "earlier": "Avancer le modèle",
+        "later": "Reculer le modèle",
+        "importTitle": "Créer à partir d’une note exemple",
+        "importHelp": "Collez un exemple anonymisé avec des titres Markdown ou des libellés suivis de deux-points. Vérifiez les titres avant d’enregistrer le modèle.",
+        "createTemplate": "Créer le modèle",
+        "subsection": "Utiliser comme sous-section",
+        "libraryTooLarge": "La bibliothèque est trop volumineuse. Raccourcissez les exemples, les textes proposés ou les consignes de rédaction."
+      }
+    },
+    "dental": {
+      "awakeOralExam": {
+        "label": "Examen buccal à l’état vigile",
+        "helper": "Notez les signes visibles et les zones qui n’ont pas pu être évaluées à l’état vigile.",
+        "sample": "Légère rougeur gingivale visible. Le fond de la bouche n’a pas pu être examiné."
+      },
+      "preanesthetic": {
+        "label": "Points à considérer avant l’anesthésie",
+        "helper": "Notez les risques pertinents, les antécédents anesthésiques et les examens ou consultations évoqués.",
+        "sample": "Les antécédents anesthésiques ont été vérifiés. Le bilan préanesthésique a été évoqué."
+      },
+      "clientDiscussion": {
+        "label": "Discussion et décisions du client",
+        "helper": "Notez les options, le devis, le statut du consentement et les soins reportés ou refusés. Précisez les décisions en attente d’évaluation.",
+        "sample": "Un devis préliminaire a été discuté. Le client décidera après l’avoir examiné."
+      },
+      "homeCare": {
+        "label": "Soins dentaires à domicile",
+        "helper": "Notez les conseils de soins à domicile et les difficultés pratiques évoquées.",
+        "sample": "Le client a posé des questions sur les soins à domicile."
+      },
+      "followUp": {
+        "label": "Suivi et prise de rendez-vous",
+        "helper": "Notez la prochaine étape convenue, le délai et les motifs de contacter le cabinet plus tôt.",
+        "sample": "Le client contactera le cabinet pour prendre rendez-vous."
       }
     }
   },

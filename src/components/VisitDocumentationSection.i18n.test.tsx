@@ -4,7 +4,7 @@ import { installPseudoLocale, restoreLocale, findUntranslated } from '../i18n/te
 import { EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS, type PatientInfo } from '../types';
 import { VisitDocumentationSection } from './VisitDocumentationSection';
 import { ConsultationTemplatesDialog } from './ConsultationTemplatesDialog';
-import { EMPTY_CONSULTATION_LIBRARY } from '../utils/consultationTemplates';
+import { CONSULTATION_FIELDS, EMPTY_CONSULTATION_LIBRARY } from '../utils/consultationTemplates';
 const patient: PatientInfo = { patientName: '', patientNumber: '', ownerName: '', ownerPhone: '', ownerEmail: '', doctor: '', tech: '', date: '', complaint: '', treatmentReport: '', recallDate: '', nerveBlocks: { ...EMPTY_NERVE_BLOCKS }, exam: { ...EMPTY_EXAM_FINDINGS } };
 beforeAll(() => installPseudoLocale());
 afterAll(() => restoreLocale());
@@ -31,11 +31,13 @@ it('reorders the clinical fields and lists the shared Images section', () => {
   const fields = screen.getAllByRole('list')[1];
   expect(fields.querySelectorAll('li')).toHaveLength(11);
   expect(fields.lastElementChild).toHaveTextContent(/Images/);
-  fireEvent.click(fields.querySelectorAll('li')[0].querySelectorAll('button')[1]);
+  fireEvent.click(fields.querySelectorAll('li')[0].querySelectorAll('button')[2]);
   fireEvent.click(screen.getByRole('button', { name: /Save/ }));
   expect(onSave).toHaveBeenCalledWith({ defaultId: id, templates: [{
-    id, name: 'Custom consultation', fields: ['gpVitals', 'complaint', 'consultationHistory', 'gpPhysicalExam',
-      'consultationAssessment', 'gpDiagnostics', 'consultationPlan'],
+    id, name: 'Custom consultation',
+    fields: ['complaint', 'gpVitals', 'consultationHistory', 'gpPhysicalExam', 'consultationAssessment', 'gpDiagnostics', 'consultationPlan'],
+    sections: ['gpVitals', 'complaint', 'consultationHistory', 'consultationCurrentMedications', 'gpPhysicalExam',
+      'consultationAssessment', 'gpDiagnostics', 'consultationAdministeredMedications', 'consultationPlan', 'consultationMedicationPlan'].map(id => ({ id })),
   }] });
 });
 
@@ -50,4 +52,23 @@ it('translates a previous medication list and the external drug lookup', () => {
   fireEvent.change(input, { target: { value: 'Medication A' } });
   expect(screen.getByRole('button', { name: /Search labels/ })).toBeEnabled();
   expect(findUntranslated(container, ['Medication A', 'Recheck before change'])).toEqual([]);
+});
+
+it('closes sample import when a duplicate fills the final template slot', () => {
+  const templates = Array.from({ length: 23 }, (_, index) => ({
+    id: `00000000-0000-4000-8000-${String(index).padStart(12, '0')}`,
+    name: `Practice template ${index + 1}`,
+    fields: CONSULTATION_FIELDS,
+  }));
+  const onSave = vi.fn();
+  render(<ConsultationTemplatesDialog initial={{ ...EMPTY_CONSULTATION_LIBRARY, templates }} status="ready" canEdit
+    onSave={onSave} onReload={vi.fn()} onClose={vi.fn()} />);
+  fireEvent.click(screen.getByText(/More options/));
+  fireEvent.click(screen.getByRole('button', { name: /Create from a sample note/ }));
+  fireEvent.change(screen.getByRole('textbox', { name: /Create from a sample note/ }), { target: { value: '# Summary' } });
+  fireEvent.click(screen.getByRole('button', { name: /Duplicate/ }));
+  expect(screen.queryByRole('textbox', { name: /Create from a sample note/ })).toBeNull();
+  expect(screen.getByRole('button', { name: /Duplicate/ })).toBeDisabled();
+  fireEvent.click(screen.getByRole('button', { name: /Save/ }));
+  expect(onSave.mock.lastCall?.[0].templates).toHaveLength(24);
 });

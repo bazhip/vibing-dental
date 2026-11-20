@@ -199,17 +199,67 @@
 .consultation-library__tools { margin-block: 10px; }
 .consultation-library__tools summary { font-size: 0.875rem; }
 .consultation-library__menu { margin-block-end: 8px; }
-.consultation-library__sections li {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+.consultation-library__sections > li {
+  display: grid;
+  align-content: center;
+  gap: 4px;
   min-height: 42px;
   border-top: 1px solid var(--border);
   padding-block: 4px;
   font-size: 0.875rem;
 }
-.consultation-library__sections li > div:first-child { min-width: 0; overflow-wrap: anywhere; }
+.consultation-library__subsection,
+.visit-documentation__field--subsection {
+  margin-inline-start: 12px;
+  padding-inline-start: 8px;
+  border-inline-start: 2px solid var(--border);
+}
+.consultation-library__section-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.consultation-library__section-row > div:first-child { min-width: 0; overflow-wrap: anywhere; }
+.consultation-library__section-name {
+  display: block;
+  min-height: 40px;
+  max-width: 100%;
+  border: 0;
+  padding: 4px 0;
+  background: transparent;
+  color: var(--primary);
+  font: inherit;
+  font-weight: 600;
+  text-align: start;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.consultation-library__section-name::before { content: '▸'; margin-inline-end: 6px; }
+.consultation-library__section-name[aria-expanded="true"]::before { content: '▾'; }
+.consultation-library__settings {
+  min-width: 0;
+  padding: 8px 12px;
+  margin-block: 0 8px;
+  background: var(--action-tint);
+  border-radius: 6px;
+}
+.consultation-library__settings .ui-dialog__input {
+  box-sizing: border-box;
+  max-width: 100%;
+  min-height: 40px;
+  resize: vertical;
+}
+.consultation-library__settings summary {
+  box-sizing: border-box;
+  display: list-item;
+  align-content: center;
+  min-height: 32px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.consultation-library__editor > .ui-btn:last-child { margin-block-start: 8px; }
 .consultation-library__sections p,
 .consultation-library__sample { color: var(--text-muted); margin-block: 4px; font-size: 0.875rem; }
 .consultation-library__move { display: flex; gap: 4px; }
@@ -222,7 +272,10 @@
   .visit-documentation__guide,
   .visit-documentation__choices .diagram-view__action,
   .consultation-library__list li button,
-  .consultation-library .ui-btn { min-height: 44px; }
+  .consultation-library .ui-btn,
+  .consultation-library__section-name,
+  .consultation-library__settings summary,
+  .consultation-library__settings .ui-dialog__input { min-height: 44px; }
   .consultation-library__move .ui-btn { inline-size: 44px; }
   .consultation-library__layout { grid-template-columns: minmax(0, 1fr); }
   .consultation-library__list ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; }

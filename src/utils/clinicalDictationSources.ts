@@ -1,7 +1,7 @@
 import type { ClinicalDictationField, ClinicalDictationKind, ClinicalDictationSource } from '../types';
 import i18n from '../i18n';
 import { isAppLanguage } from '../i18n/config';
-import { CONSULTATION_MEDICATION_FIELDS } from './consultationTemplates';
+import { CONSULTATION_MEDICATION_FIELDS, CONSULTATION_SECTION_LIMIT, isCustomConsultationField } from './consultationTemplates';
 import { LocalizedError } from './apiErrors';
 
 export const CLINICAL_DICTATION_MAX_SOURCES = 20;
@@ -23,7 +23,8 @@ export function isClinicalDictationSource(value: unknown): value is ClinicalDict
     && KINDS.includes(s.kind) && isAppLanguage(s.language)
     && typeof s.transcript === 'string' && !!s.transcript.trim() && s.transcript.length <= CLINICAL_DICTATION_MAX_TRANSCRIPT
     && typeof s.recordedAt === 'string' && s.recordedAt.length <= 100 && Number.isFinite(Date.parse(s.recordedAt))
-    && Array.isArray(s.fields) && s.fields.length <= fields.length && s.fields.every(f => fields.includes(f)) && new Set(s.fields).size === s.fields.length;
+    && Array.isArray(s.fields) && s.fields.length <= (s.kind === 'consultation' ? CONSULTATION_SECTION_LIMIT : fields.length)
+    && s.fields.every(f => typeof f === 'string' && (fields.includes(f) || (s.kind === 'consultation' && isCustomConsultationField(f)))) && new Set(s.fields).size === s.fields.length;
 }
 
 /** Reject entire invalid entries without changing any retained clinical wording. */

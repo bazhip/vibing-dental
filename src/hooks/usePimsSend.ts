@@ -2,7 +2,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import type { StoredRecordNote } from '../types';
 import type { InspectResult, ItemResult, SendResult } from '../extension/protocol';
-import { HEADING_KEYS, type RecordNote, type RecordNoteKey } from '../utils/recordNote';
+import { isCustomConsultationField } from '../utils/consultationTemplates';
+import { HEADING_KEYS, type RecordNote } from '../utils/recordNote';
 import {
   buildSendItems,
   splitStoredNote,
@@ -220,7 +221,13 @@ export function usePimsSend({
     }
   };
 
-  const wantedFor = (key: SourceKey): string | null => (key in edits ? edits[key]! : map[key]) ?? null;
+  const wantedFor = (key: SourceKey): string | null => {
+    if (Object.hasOwn(edits, key)) return edits[key] ?? null;
+    if (Object.hasOwn(map, key)) return map[key];
+    if (!isCustomConsultationField(key)) return null;
+    const destination = key === 'consultationCustom_awake-oral-exam' ? 'gpPhysicalExam' : 'consultationPlan';
+    return map[destination] ?? null;
+  };
   const editedWanted =
     editedField !== undefined ? editedField : map.editedNote !== undefined ? map.editedNote : !split && note.sections.some(section => section.key === 'complaint') ? null : map.treatment;
 
@@ -232,7 +239,7 @@ export function usePimsSend({
 
   const rows: MappingRow[] = writable
     ? split
-      ? sections.map((s) => ({ key: s.key, label: t(HEADING_KEYS[s.key as RecordNoteKey]), options: targets, wanted: wantedFor(s.key) }))
+      ? sections.map((s) => ({ key: s.key, label: s.headingOverride || isCustomConsultationField(s.key) ? s.heading : t(HEADING_KEYS[s.key]), options: targets, wanted: wantedFor(s.key) }))
       : [{ key: 'edited', label: t('pims:rows.edited'), options: targets, wanted: editedWanted }]
     : [];
   if (writable && hasChartPicture) rows.push({ key: 'chart', label: t('pims:rows.chart'), options: imageTargets, wanted: wantedFor('chart') });
@@ -319,6 +326,7 @@ export function usePimsSend({
       }
 
       const effective = { ...map, ...edits } as Record<SourceKey, string | null>;
+      for (const section of sections) effective[section.key] = wantedFor(section.key);
       let pngDataUrl: string | null = null;
       let pictureFailed = false;
       // A chart target not on this page is reported, not rendered.

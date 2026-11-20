@@ -2,6 +2,7 @@ import { clinicalMappingDefaults, compatibleClinicalMapping, EZYVET_CLINICAL_DEF
 import { matchField } from '../../extension/ezyvet/matchField';
 import type { PimsId } from '../../extension/pims/types';
 import {
+  recordNoteSectionHeading,
   recordNoteSectionHtml,
   recordNoteSectionText,
   plainTextToHtml,
@@ -62,7 +63,7 @@ export function splitStoredNote(text: string, generated: RecordNote): RecordNote
   const complaint = generated.sections.find(section => section.key === 'complaint');
   // Older notes kept complaint as the final header item. Split the stored wording,
   // including clinician edits/removals, rather than restoring the current chart value.
-  if (complaint && !lines.includes(complaint.heading.toLocaleUpperCase())) {
+  if (complaint && !lines.includes(recordNoteSectionHeading(complaint))) {
     const legacy = splitStoredNote(text, { sections: generated.sections.filter(section => section.key !== 'complaint') });
     if (!legacy) return null;
     const headerIndex = legacy.sections.findIndex(section => section.key === 'header');
@@ -83,7 +84,7 @@ export function splitStoredNote(text: string, generated: RecordNote): RecordNote
   let from = 0;
   const starts: number[] = [];
   for (const s of generated.sections) {
-    const heading = s.heading.toLocaleUpperCase();
+    const heading = recordNoteSectionHeading(s);
     const at = lines.findIndex((l, i) => i >= from && l === heading);
     if (at < 0) return null;
     starts.push(at);
@@ -96,7 +97,7 @@ export function splitStoredNote(text: string, generated: RecordNote): RecordNote
     let body = lines.slice(starts[i] + 1, end);
     // sections are separated by one blank line
     if (i + 1 < starts.length && body[body.length - 1] === '') body = body.slice(0, -1);
-    sections.push({ key: s.key, heading: s.heading, lines: body });
+    sections.push({ ...s, lines: s.level === 2 ? body.map(line => line.replace(/^ {2}/u, '')) : body });
   });
   return { sections };
 }

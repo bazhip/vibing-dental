@@ -41,8 +41,9 @@
     "by-number": "Vista Per dente con il 108 Triadan selezionato sul diagramma numerato e i relativi reperti aperti.",
     "imagingSettings": "Impostazioni di diagnostica per immagini e PDF con la lingua dei referti e le opzioni di inclusione predefinite nel PDF.",
     "consultationReview": "La sezione Immagini di una visita, con il comando Aggiungi immagini e una miniatura di esempio.",
-    "consultationTemplatePreview": "Raccolta dei modelli con l’anteprima di una visita fittizia e le sezioni nell’ordine scelto.",
-    "consultationRecordNote": "Nota della consultazione con i comandi Scarica PDF e Copia."
+    "consultationTemplatePreview": "L’editor del modello con le impostazioni di una sezione di un consulto fittizio.",
+    "consultationRecordNote": "Nota della consultazione con i comandi Scarica PDF e Copia.",
+    "dentalConsultation": "Il campo Esame orale a paziente sveglio in un consulto odontoiatrico fittizio."
   },
   "articles": {
     "start": {
@@ -415,7 +416,7 @@
         },
         "second": {
           "title": "Compilare o dettare la visita",
-          "text": "Registri il motivo della visita, l’anamnesi, la valutazione e il piano. Se la dettatura è disponibile, confronti le sezioni proposte con le relative evidenze prima di applicarle. Per rivedere una trascrizione, apra Trascrizioni salvate e selezioni la data. Inserisca parametri vitali, esame e risultati diagnostici nei rispettivi campi, se documentati. Lasci vuoti i campi per i quali non ha rilievi da registrare. Sotto i campi della nota, apra Immagini e scelga Aggiungi immagini. Selezioni, trascini o incolli i file. Attenda che appaiano le miniature e ne apra una per verificarla. Le immagini restano allegate alla visita e non compaiono nel PDF autonomo della nota. Usi Farmaci in uso per le assunzioni riferite, Farmaci somministrati durante la visita per le dosi effettivamente date e Modifiche della terapia e prescrizioni per il piano. Durante la dettatura indichi la categoria e controlli gli estratti citati prima di applicarli. In Farmaci in uso, apra Elenco precedente dei farmaci per consultare l’ultima visita precedente e le modifiche registrate. Verifichi ciò che è ancora in uso, poi scelga Copi in Farmaci in uso se il campo è vuoto. Con Cerchi un farmaco può inserire il nome e aprire la ricerca in DailyMed. Scelga Cerchi le schede prodotto, quindi selezioni il prodotto veterinario esatto. Apra la scheda completa in DailyMed per verificare il dosaggio, le istruzioni e le avvertenze."
+          "text": "Usi Consulto odontoiatrico per una visita prima della procedura. In Esame orale a paziente sveglio registri reperti visibili e aree non valutabili. Registri i rischi in Considerazioni preanestetiche. In Colloquio e decisioni del cliente annoti opzioni, preventivo, consenso e cure rinviate o in sospeso. Registri cure a domicilio e controlli concordati nelle relative sezioni. Riveda l’eventuale Testo suggerito e lo usi solo se si applica alla visita.\n\nRegistri il motivo della visita, l’anamnesi, la valutazione e il piano. Se la dettatura è disponibile, confronti le sezioni proposte con le relative evidenze prima di applicarle. Per rivedere una trascrizione, apra Trascrizioni salvate e selezioni la data. Inserisca parametri vitali, esame e risultati diagnostici nei rispettivi campi, se documentati. Lasci vuoti i campi per i quali non ha rilievi da registrare. Sotto i campi della nota, apra Immagini e scelga Aggiungi immagini. Selezioni, trascini o incolli i file. Attenda che appaiano le miniature e ne apra una per verificarla. Le immagini restano allegate alla visita e non compaiono nel PDF autonomo della nota. Usi Farmaci in uso per le assunzioni riferite, Farmaci somministrati durante la visita per le dosi effettivamente date e Modifiche della terapia e prescrizioni per il piano. Durante la dettatura indichi la categoria e controlli gli estratti citati prima di applicarli. In Farmaci in uso, apra Elenco precedente dei farmaci per consultare l’ultima visita precedente e le modifiche registrate. Verifichi ciò che è ancora in uso, poi scelga Copi in Farmaci in uso se il campo è vuoto. Con Cerchi un farmaco può inserire il nome e aprire la ricerca in DailyMed. Scelga Cerchi le schede prodotto, quindi selezioni il prodotto veterinario esatto. Apra la scheda completa in DailyMed per verificare il dosaggio, le istruzioni e le avvertenze."
         },
         "third": {
           "title": "Rivedere la nota",
@@ -429,15 +430,15 @@
       "sections": {
         "first": {
           "title": "Partire da un modello esistente",
-          "text": "Apra Gestisci i modelli da Visita. I titolari della struttura possono scegliere un modello iniziale o esistente e selezionare Duplica per creare una copia modificabile."
+          "text": "Apra Gestisci i modelli da Visita. I titolari della struttura possono scegliere un modello iniziale o esistente e selezionare Duplica per creare una copia modificabile.\n\nIn Altre opzioni scelga Crea da una nota di esempio e incolli un esempio anonimizzato. Usi titoli Markdown o etichette seguite da due punti. Scelga Crea modello e controlli i titoli importati. Il corpo della nota non viene copiato."
         },
         "second": {
           "title": "Ordinare e visualizzare le sezioni",
-          "text": "Compili Nome del modello. Usi le frecce accanto alle sezioni per cambiarne l’ordine. Selezioni Anteprima di esempio per controllare il nuovo ordine con una visita fittizia. Selezioni nuovamente lo stesso pulsante per tornare alla modifica. Ogni modello include Immagini sotto la nota. Le immagini appartengono alla visita e restano disponibili quando cambia modello."
+          "text": "Scelga Aggiungi sezione per inserire un campo standard o personalizzato. Selezioni il nome della sezione per cambiare etichetta, indicazioni, esempio, testo suggerito e formato, renderla una sottosezione o rimuoverla. In Impostazioni della dettatura indichi le istruzioni e il livello di dettaglio. Verifichi il risultato nell’anteprima. Usi il testo suggerito solo se si applica alla visita.\n\nCompili Nome del modello. Usi le frecce accanto alle sezioni per cambiarne l’ordine. Selezioni Anteprima di esempio per controllare il nuovo ordine con una visita fittizia. Selezioni nuovamente lo stesso pulsante per tornare alla modifica. Ogni modello include Immagini sotto la nota. Le immagini appartengono alla visita e restano disponibili quando cambia modello."
         },
         "third": {
           "title": "Salvare o archiviare",
-          "text": "Apra Altre opzioni e scelga Imposta come predefinito della struttura per preselezionare questo modello per le nuove visite. Per nascondere un modello personalizzato dalle opzioni della visita, scelga Archivia il modello. Per recuperarlo, attivi Mostra i modelli archiviati, selezioni il modello e scelga Ripristina il modello. Selezioni Salva per applicare le modifiche. Le visite salvate conservano la disposizione scelta."
+          "text": "Apra Altre opzioni e scelga Imposta come predefinito della struttura per preselezionare questo modello per le nuove visite. Per nascondere un modello personalizzato dalle opzioni della visita, scelga Archivia il modello. Per recuperarlo, attivi Mostra i modelli archiviati, selezioni il modello e scelga Ripristina il modello. Selezioni Salva per applicare le modifiche. Le visite salvate conservano la disposizione scelta.\n\nIn Altre opzioni sposti il modello in alto o in basso per cambiare l’ordine delle scelte nei nuovi consulti."
         }
       }
     },

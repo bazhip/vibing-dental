@@ -1,4 +1,4 @@
-import { CONSULTATION_FIELDS, DENTAL_CONSULTATION, consultationDocumentFields } from './consultationTemplates';
+import { CONSULTATION_FIELDS, LEGACY_DENTAL_CONSULTATION, consultationSectionKey, consultationVisitSections, isCustomConsultationField, type CustomConsultationField, type ConsultationSection } from './consultationTemplates';
 import { ctRecordedText } from './ctReportState';
 import { radiologyRecordedText } from './radiologyReportState';
 import { visitTypeOf } from './visitTypes';
@@ -34,6 +34,8 @@ export interface RecordNoteSection {
   key: RecordNoteKey;
   heading: string;
   lines: string[];
+  level?: 2;
+  headingOverride?: true;
 }
 
 export interface RecordNote {
@@ -78,7 +80,7 @@ export const HEADING_KEYS = {
   recheck: 'media:recordNote.h.recheck',
 } as const;
 
-export type RecordNoteKey = keyof typeof HEADING_KEYS;
+export type RecordNoteKey = keyof typeof HEADING_KEYS | CustomConsultationField;
 /** Section keys in note order. */
 export const RECORD_NOTE_KEYS = Object.keys(HEADING_KEYS) as RecordNoteKey[];
 
@@ -86,7 +88,17 @@ const clean = (s: string | undefined | null) => (s ?? '').trim();
 const textLines = (s: string | undefined) => clean(s).split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
 const isGridMirror = (c: DiagramComment) => c.id.startsWith('grid-');
 const consultationFields = (info: ChartSnapshot['patientInfo']) => info.consultationLayout?.fields ?? CONSULTATION_FIELDS;
-const consultationNoteFields = (info: ChartSnapshot['patientInfo']) => consultationDocumentFields(info.consultationLayout?.fields ?? DENTAL_CONSULTATION.fields);
+const consultationNoteSections = (info: ChartSnapshot['patientInfo']) => consultationVisitSections(info, info.consultationLayout ?? LEGACY_DENTAL_CONSULTATION);
+const sectionHeading = (section: ConsultationSection, t: RecordNoteT) => {
+  if (section.label) return section.label;
+  if (!isCustomConsultationField(section.id)) return t(HEADING_KEYS[section.id]);
+  const key = consultationSectionKey(section);
+  return key ? t(`visitDocumentation:${key}.label`) : '';
+};
+const consultationLines = (value: string | undefined, section: ConsultationSection) => {
+  const lines = textLines(value);
+  return section.format === 'bullets' ? lines.map(line => `• ${line.replace(/^(?:[-*•] |\d+[.)] )/u, '')}`) : lines;
+};
 
 function commentsByTooth(comments: DiagramComment[]) {
   const pinned = new Map<number, string[]>();
@@ -117,9 +129,9 @@ export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): Record
   const info = snapshot.patientInfo;
   const consultation = visitTypeOf(info.visitType) === 'consultation';
   const sections: RecordNoteSection[] = [];
-  const add = (key: RecordNoteKey, lines: (string | null | false | undefined)[], heading = t(HEADING_KEYS[key])) => {
+  const add = (key: RecordNoteKey, lines: (string | null | false | undefined)[], heading = isCustomConsultationField(key) ? '' : t(HEADING_KEYS[key]), level?: 2, headingOverride?: true) => {
     const kept = lines.filter((l): l is string => !!l);
-    if (kept.length) sections.push({ key, heading, lines: kept });
+    if (kept.length) sections.push({ key, heading, lines: kept, ...(level ? { level } : {}), ...(headingOverride ? { headingOverride } : {}) });
   };
 
   // 1. Header
@@ -131,15 +143,16 @@ export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): Record
     clean(info.tech) && `${t('forms:patient.tech')}: ${clean(info.tech)}`,
   ], consultation ? t('visitDocumentation:consultation.title') : undefined);
 
-  for (const field of consultation ? consultationNoteFields(info) : consultationFields(info)) {
-    add(field, textLines(info[field]));
-  }
-
   if (consultation) {
+    for (const section of consultationNoteSections(info)) {
+      add(section.id, consultationLines(info[section.id], section), sectionHeading(section, t), section.level, section.label && !isCustomConsultationField(section.id) ? true : undefined);
+    }
     add('dischargeFollowUp', textLines(info.dischargeFollowUp));
     add('recheck', [clean(info.recallDate)]);
     return { sections };
   }
+
+  for (const field of consultationFields(info)) add(field, textLines(info[field]));
 
   // 2. Anesthesia
   const nb = info.nerveBlocks;
@@ -226,8 +239,11 @@ export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): Record
   return { sections };
 }
 
+export const recordNoteSectionHeading = (section: RecordNoteSection) =>
+  section.level === 2 ? `  ${section.heading.toLocaleUpperCase()}` : section.heading.toLocaleUpperCase();
+
 export function recordNoteSectionText(s: RecordNoteSection): string {
-  return [s.heading.toLocaleUpperCase(), ...s.lines].join('\n');
+  return [recordNoteSectionHeading(s), ...s.lines.map(line => s.level === 2 ? `  ${line}` : line)].join('\n');
 }
 
 export function recordNoteText(note: RecordNote): string {
@@ -238,7 +254,7 @@ const esc = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 export function recordNoteSectionHtml(s: RecordNoteSection): string {
-  return `<p><strong>${esc(s.heading)}</strong>${s.lines.map((l) => `<br>${esc(l)}`).join('')}</p>`;
+  return `<p${s.level === 2 ? ' style="margin-inline-start: 1em"' : ''}><strong>${esc(s.heading)}</strong>${s.lines.map((l) => `<br>${esc(l)}`).join('')}</p>`;
 }
 
 export function recordNoteHtml(note: RecordNote): string {
@@ -266,9 +282,9 @@ export function recordNoteBasis(snapshot: ChartSnapshot): string {
   if (visitTypeOf(i.visitType) === 'consultation') {
     return hashStr(JSON.stringify([
       'consultation', snapshot.species, i.patientName, i.patientNumber, i.date, i.doctor, i.tech,
-      consultationNoteFields(i).flatMap(field => {
-        const lines = textLines(i[field]);
-        return lines.length ? [[field, lines]] : [];
+      consultationNoteSections(i).flatMap(section => {
+        const lines = consultationLines(i[section.id], section);
+        return lines.length ? [[section.id, lines, ...(section.label ? [section.label] : []), ...(section.level ? [section.level] : [])]] : [];
       }),
       textLines(i.dischargeFollowUp), clean(i.recallDate),
     ]));

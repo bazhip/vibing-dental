@@ -41,8 +41,9 @@
     "by-number": "Vizualizarea Pe dinte, cu dintele 108 în sistemul Triadan selectat în diagrama numerotată și constatările sale deschise.",
     "imagingSettings": "Setările Imagini și PDF, cu limba raportului și opțiunile implicite de includere în PDF.",
     "consultationReview": "Secțiunea Imagini a unei consultații, cu opțiunea Adăugați imagini și o miniatură de exemplu.",
-    "consultationTemplatePreview": "Biblioteca de șabloane cu previzualizarea unei consultații fictive și secțiunile în ordinea aleasă.",
-    "consultationRecordNote": "Nota consultației cu comenzile Descărcați PDF și Copiați."
+    "consultationTemplatePreview": "Editorul de șabloane cu setările unei secțiuni deschise pentru o consultație fictivă.",
+    "consultationRecordNote": "Nota consultației cu comenzile Descărcați PDF și Copiați.",
+    "dentalConsultation": "Câmpul Examen oral la pacientul treaz într-o consultație dentară fictivă."
   },
   "articles": {
     "start": {
@@ -415,7 +416,7 @@
         },
         "second": {
           "title": "Completați sau dictați vizita",
-          "text": "Consemnați motivul vizitei, antecedentele, evaluarea și planul. Dacă dictarea este disponibilă, comparați propunerile cu dovezile înainte de aplicare. Pentru a reciti o transcriere, deschideți Transcrieri salvate și selectați data înregistrării. Introduceți semnele vitale, rezultatele examinării și investigațiilor în câmpurile lor când sunt documentate. Lăsați necompletate câmpurile pentru care nu aveți date. Sub câmpurile notei, deschideți Imagini și alegeți Adăugați imagini. Selectați, trageți sau lipiți fișierele. Așteptați apariția miniaturilor și deschideți una pentru verificare. Imaginile rămân atașate vizitei și nu apar în PDF-ul separat al notei. Folosiți Medicație curentă pentru tratamentele raportate, Medicamente administrate în timpul vizitei pentru dozele administrate efectiv și Modificări ale medicației și prescripții pentru plan. La dictare, precizați categoria și verificați fragmentele citate înainte de aplicare. În Medicație curentă, deschideți Lista anterioară de medicamente pentru a vedea consultația precedentă cea mai recentă și modificările documentate. Verificați ce mai este actual, apoi selectați Copiați în Medicație curentă dacă este gol câmpul. Folosiți Căutați un medicament pentru a introduce numele și a deschide căutarea DailyMed. Alegeți Căutați prospecte, apoi produsul veterinar exact. Deschideți prospectul complet în DailyMed pentru verificarea concentrației, instrucțiunilor și avertismentelor."
+          "text": "Folosiți Consultație dentară pentru o vizită înaintea procedurii. În Examen oral la pacientul treaz, consemnați constatările vizibile și zonele neevaluate. În Considerații preanestezice, consemnați riscurile. În Discuția și deciziile clientului, notați opțiunile, costurile estimate, consimțământul și îngrijirile amânate sau în așteptare. Notați îngrijirea la domiciliu și monitorizarea convenită în secțiunile dedicate. Verificați textul sugerat și folosiți-l doar dacă se aplică vizitei.\n\nConsemnați motivul vizitei, antecedentele, evaluarea și planul. Dacă dictarea este disponibilă, comparați propunerile cu dovezile înainte de aplicare. Pentru a reciti o transcriere, deschideți Transcrieri salvate și selectați data înregistrării. Introduceți semnele vitale, rezultatele examinării și investigațiilor în câmpurile lor când sunt documentate. Lăsați necompletate câmpurile pentru care nu aveți date. Sub câmpurile notei, deschideți Imagini și alegeți Adăugați imagini. Selectați, trageți sau lipiți fișierele. Așteptați apariția miniaturilor și deschideți una pentru verificare. Imaginile rămân atașate vizitei și nu apar în PDF-ul separat al notei. Folosiți Medicație curentă pentru tratamentele raportate, Medicamente administrate în timpul vizitei pentru dozele administrate efectiv și Modificări ale medicației și prescripții pentru plan. La dictare, precizați categoria și verificați fragmentele citate înainte de aplicare. În Medicație curentă, deschideți Lista anterioară de medicamente pentru a vedea consultația precedentă cea mai recentă și modificările documentate. Verificați ce mai este actual, apoi selectați Copiați în Medicație curentă dacă este gol câmpul. Folosiți Căutați un medicament pentru a introduce numele și a deschide căutarea DailyMed. Alegeți Căutați prospecte, apoi produsul veterinar exact. Deschideți prospectul complet în DailyMed pentru verificarea concentrației, instrucțiunilor și avertismentelor."
         },
         "third": {
           "title": "Verificați nota",
@@ -429,15 +430,15 @@
       "sections": {
         "first": {
           "title": "Porniți de la un șablon existent",
-          "text": "Deschideți Gestionați șabloanele din Consultație. Proprietarii cabinetului pot alege un șablon de bază sau existent, apoi selecta Duplicați pentru a crea o copie editabilă."
+          "text": "Deschideți Gestionați șabloanele din Consultație. Proprietarii cabinetului pot alege un șablon de bază sau existent, apoi selecta Duplicați pentru a crea o copie editabilă.\n\nDin Mai multe opțiuni, alegeți Creați dintr-o notă exemplu și lipiți un exemplu anonimizat. Folosiți titluri Markdown sau etichete urmate de două puncte. Alegeți Creați șablonul și verificați titlurile importate. Corpul notei nu se copiază."
         },
         "second": {
           "title": "Ordonați și previzualizați secțiunile",
-          "text": "Completați Numele șablonului. Folosiți săgețile de lângă secțiuni pentru a le schimba ordinea. Selectați Previzualizați exemplul pentru a verifica noua ordine pe baza unei vizite fictive. Selectați din nou același buton pentru a reveni la editare. Fiecare șablon include secțiunea Imagini sub notă. Imaginile aparțin vizitei și se păstrează când schimbați șablonul."
+          "text": "Alegeți Adăugați o secțiune pentru un câmp standard sau personalizat. Selectați numele secțiunii pentru a schimba eticheta, indicațiile, exemplul, textul sugerat și formatul, a o marca drept subsecțiune sau a o elimina. În Setări de dictare, stabiliți instrucțiunile și nivelul de detaliu. Verificați rezultatul în previzualizare. Folosiți textul sugerat doar când se aplică vizitei.\n\nCompletați Numele șablonului. Folosiți săgețile de lângă secțiuni pentru a le schimba ordinea. Selectați Previzualizați exemplul pentru a verifica noua ordine pe baza unei vizite fictive. Selectați din nou același buton pentru a reveni la editare. Fiecare șablon include secțiunea Imagini sub notă. Imaginile aparțin vizitei și se păstrează când schimbați șablonul."
         },
         "third": {
           "title": "Salvați sau arhivați",
-          "text": "Deschideți Mai multe opțiuni și alegeți Setați ca implicit pentru cabinet pentru a preselecta șablonul în consultațiile noi. Pentru a ascunde un șablon personalizat din opțiunile vizitei, alegeți Arhivați șablonul. Pentru a-l recupera, activați Afișați șabloanele arhivate, selectați șablonul și alegeți Restaurați șablonul. Selectați Salvați pentru a aplica modificările. Vizitele salvate păstrează structura aleasă."
+          "text": "Deschideți Mai multe opțiuni și alegeți Setați ca implicit pentru cabinet pentru a preselecta șablonul în consultațiile noi. Pentru a ascunde un șablon personalizat din opțiunile vizitei, alegeți Arhivați șablonul. Pentru a-l recupera, activați Afișați șabloanele arhivate, selectați șablonul și alegeți Restaurați șablonul. Selectați Salvați pentru a aplica modificările. Vizitele salvate păstrează structura aleasă.\n\nDin Mai multe opțiuni, mutați șablonul mai sus sau mai jos pentru a schimba ordinea opțiunilor la consultațiile noi."
         }
       }
     },

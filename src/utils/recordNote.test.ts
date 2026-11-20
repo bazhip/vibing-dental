@@ -210,3 +210,17 @@ it('exports current, administered and planned medications as separate consultati
     ...consultation, patientInfo: { ...consultation.patientInfo, consultationMedicationPlan: 'Decision pending.' },
   }));
 });
+
+it('uses custom headings and formatting while keeping recorded text from other consult templates', () => {
+  const field = 'consultationCustom_oral';
+  const note = buildRecordNote(snap({}, {
+    visitType: 'consultation',
+    [field]: 'Finding one\n- Finding two',
+    consultationHistory: 'Earlier history',
+    consultationLayout: { ...DENTAL_CONSULTATION, sections: [{ id: field, label: 'Oral findings', format: 'bullets' }] },
+  }), recordNoteT('en'));
+  expect(note.sections).toEqual(expect.arrayContaining([
+    { key: field, heading: 'Oral findings', lines: ['• Finding one', '• Finding two'] },
+    expect.objectContaining({ key: 'consultationHistory', lines: ['Earlier history'] }),
+  ]));
+});

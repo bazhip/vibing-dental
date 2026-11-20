@@ -328,3 +328,21 @@ it('starts a separate consultation for a new patient from the Patients dialog', 
   expect(persisted().visitType).toBe('consultation');
   expect(window.location.hash).toMatch(/^#\/chart\/[^/]+\/consultation$/);
 });
+
+it('applies reviewed awake oral findings and keeps them when the clinician switches templates', async () => {
+  openConsultation();
+  mount();
+  const field = 'consultationCustom_awake-oral-exam';
+  const text = 'Visible gingival redness on the awake exam.';
+  expect(await screen.findByRole('textbox', { name: 'Awake oral examination' })).toHaveValue('');
+  act(() => live('consultation').onApply({ [field]: text }, source({
+    kind: 'consultation', transcript: text, fields: [field],
+  })));
+  expect(persisted()[field]).toBe(text);
+  fireEvent.click(screen.getByRole('button', { name: 'General SOAP' }));
+  expect(screen.getByRole('textbox', { name: 'Awake oral examination' })).toHaveValue(text);
+  expect(() => act(() => live('consultation').onApply({ [field]: 'Stale change' }, source({
+    kind: 'consultation', transcript: 'Stale change', fields: [field],
+  })))).toThrow(LocalizedError);
+  expect(persisted()[field]).toBe(text);
+});
