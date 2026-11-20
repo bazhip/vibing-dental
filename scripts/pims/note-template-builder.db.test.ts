@@ -53,10 +53,23 @@ describe.skipIf(!container)('note template builder', () => {
     asOwner(insert(consultTable, { defaultId: 'dental-v1', templates: [] }));
     asOwner(insert(dischargeTable, { version: 2, defaultId: 'discharge-v1', templates: [] }));
     sql(readFileSync('supabase/migrations/20261227_note_template_builder.sql', 'utf8'));
+    sql(readFileSync('supabase/migrations/20261228_note_template_images.sql', 'utf8'));
   }, 40_000);
 
   beforeEach(() => {
     sql(`truncate ${consultTable}, ${dischargeTable}, public.charts;`);
+  });
+
+  it('upgrades existing layouts and validates image placement', () => {
+    const legacy = { version: 2, defaultId: 'dental-v2', templates: [] };
+    asOwner(insert(consultTable, legacy));
+    const gallery = { ...template('dental-v2', false, [{ id: 'complaint' }]), imagePlacement: { index: 0, label: 'Radiographs' } };
+    const updated = { ...legacy, version: 4, templates: [gallery] };
+    const update = (config: unknown) => asOwner(`update ${consultTable} set config = ${json(config)} returning config->>'version'`);
+    expect(update(updated)).toBe('4');
+    expect(() => update({ ...updated, version: 3 })).toThrow();
+    expect(() => update({ ...updated, templates: [{ ...gallery, imagePlacement: { index: 2 } }] })).toThrow();
+    expect(update({ ...updated, templates: [{ ...gallery, imagePlacement: false }] })).toBe('4');
   });
 
   it('continues to accept legacy Consult and Discharge libraries', () => {

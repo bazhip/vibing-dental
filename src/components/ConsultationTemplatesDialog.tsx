@@ -10,13 +10,14 @@ import { isNativeApp } from '../native/platform';
 import { Sheet } from '../ios/Sheet';
 import { confirmDialog, friendlyError } from './ui/dialogs';
 import {
-  noteLibraryVersion, CONSULTATION_TEMPLATE_LIMIT, CONSULTATION_TEMPLATE_NAME_LIMIT,
+  noteLibraryVersion, noteTemplateSections, splitNoteTemplateSections, NOTE_IMAGES_ID, CONSULTATION_TEMPLATE_LIMIT, CONSULTATION_TEMPLATE_NAME_LIMIT,
   CONSULTATION_SECTION_LIMIT, PRACTICE_NOTE_FIELD_LIMIT, practiceNoteFields, updatePracticeNoteField, consultationHeadings, consultationChoices, consultationLibraryFits, consultationSectionKey, consultationSections, dentalSectionKey, isCustomNoteField, isCustomDischargeField, standardNoteFields, defaultNoteLayout, dischargeStarterNameKey, DISCHARGE_RECOVERY_ACTIVITY, DENTAL_RECOVERY, STANDARD_DISCHARGE,
   consultationStarterNameKey, isNoteStarter, noteStarterName, canConfigureNoteInput, NOTE_INPUT_TYPES, NOTE_OPTION_LIMIT, NOTE_OPTION_LENGTH, parseConsultationLibrary, IMAGING_REPORT_KINDS, IMAGING_STARTER_TEXT_LIMIT,
-  type PracticeNoteField, type NoteTemplateKind, type ConsultationSection, type ConsultationLayout, type ConsultationLibrary, type PracticeConsultationTemplate,
+  type PracticeNoteField, type NoteTemplateKind, type NoteTemplateSection, type ConsultationSection, type ConsultationLayout, type ConsultationLibrary, type PracticeConsultationTemplate,
 } from '../utils/consultationTemplates';
 
 const SECTION_TEXT_SETTINGS = ['guidance', 'example', 'suggestedText'] as const;
+const IMAGE_TEXT_SETTINGS = ['guidance'] as const;
 const FORMATS = ['paragraph', 'bullets'] as const;
 const DETAIL_LEVELS = ['concise', 'detailed'] as const;
 
@@ -53,13 +54,13 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
     templateNameInput.current?.select();
   }, [newTemplateId]);
   const [preview, setPreview] = useState(false);
-  const [expanded, setExpanded] = useState<ConsultationSection['id']>();
+  const [expanded, setExpanded] = useState<NoteTemplateSection['id']>();
   const [adding, setAdding] = useState(false);
   const [search, setSearch] = useState('');
   const [fieldName, setFieldName] = useState('');
   const [creating, setCreating] = useState(false);
   const [managing, setManaging] = useState(false);
-  const [removed, setRemoved] = useState<{ id: string; section: ConsultationSection; index: number }>();
+  const [removed, setRemoved] = useState<{ id: string; section: NoteTemplateSection; index: number }>();
   const [announcement, setAnnouncement] = useState('');
   const [sample, setSample] = useState('');
   const [importing, setImporting] = useState(false);
@@ -81,7 +82,8 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
   const editable = status === 'ready' && canEdit && !saving;
   const canAddTemplate = editable && draft.templates.filter(template => !isNoteStarter(template.id, kind)).length < CONSULTATION_TEMPLATE_LIMIT;
   const editSelected = editable && !!custom && !custom.archived && !preview;
-  const sections = consultationSections(selected);
+  const sections = noteTemplateSections(selected, kind);
+  const textSectionCount = consultationSections(selected).length;
   const practiceFields = practiceNoteFields(draft, kind);
   const canCreateField = (draft.practiceFields?.length ?? 0) < PRACTICE_NOTE_FIELD_LIMIT;
   const canReorderTemplates = editable && activeTemplates.length > 1;
@@ -110,8 +112,9 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
     setRemoved(undefined);
     setAnnouncement('');
   };
-  const sectionName = (section: ConsultationSection) => {
-    const key = consultationSectionKey(section);
+  const sectionName = (section: NoteTemplateSection) => {
+    if (section.id === NOTE_IMAGES_ID) return section.label?.trim() || t('settings:chart.pdf.images');
+    const key = consultationSectionKey({ ...section, id: section.id });
     return section.label?.trim() || (key ? t(`${key}.label`) : t('consultation.templates.builder.customSection'));
   };
   const newFieldId = (): PracticeNoteField['id'] => isDischarge ? `dischargeCustom_${crypto.randomUUID()}` as const : `consultationCustom_${crypto.randomUUID()}` as const;
@@ -128,7 +131,7 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
   };
   const duplicate = () => addTemplate({
     name: [...t('reportui:templates.copyName', { name: nameOf(selected) })].slice(0, CONSULTATION_TEMPLATE_NAME_LIMIT).join(''),
-    fields: selected.fields, sections,
+    fields: selected.fields, sections: consultationSections(selected), imagePlacement: selected.imagePlacement,
     ...(selected.instructions ? { instructions: selected.instructions } : {}),
     ...(selected.detail ? { detail: selected.detail } : {}),
   });
@@ -142,14 +145,14 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
     });
     setSample('');
   };
-  const updateSections = (items: readonly ConsultationSection[]) => {
-    if (custom) update({ ...custom, sections: items });
+  const updateSections = (items: readonly NoteTemplateSection[]) => {
+    if (custom) update({ ...custom, ...splitNoteTemplateSections(items, kind) });
   };
-  const updateSection = (section: ConsultationSection) => {
+  const updateSection = (section: NoteTemplateSection) => {
     if (!custom) return;
-    const next = { ...draft, templates: replaceTemplate({ ...custom,
-      sections: sections.map(item => item.id === section.id ? section : item),
-    }) };
+    const updated = sections.map(item => item.id === section.id ? section : item);
+    if (section.id === NOTE_IMAGES_ID) { updateSections(updated); return; }
+    const next = { ...draft, templates: replaceTemplate({ ...custom, ...splitNoteTemplateSections(updated, kind) }) };
     const shared = practiceFields.find(field => field.id === section.id);
     const old = sections.find(item => item.id === section.id);
     if (shared && old && (old.label !== section.label || SECTION_TEXT_SETTINGS.some(key => old[key] !== section[key]) || old.inputType !== section.inputType || old.options !== section.options)
@@ -164,19 +167,19 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
     setCreating(false);
     setManaging(false);
   };
-  const addSection = (section: ConsultationSection) => {
-    if (!custom || sections.length >= CONSULTATION_SECTION_LIMIT || sections.some(item => item.id === section.id)) return;
+  const addSection = (section: NoteTemplateSection) => {
+    if (!custom || (section.id !== NOTE_IMAGES_ID && textSectionCount >= CONSULTATION_SECTION_LIMIT) || sections.some(item => item.id === section.id)) return;
     updateSections([...sections, section]);
     setExpanded(section.id);
     closePicker();
   };
   const createField = () => {
     const label = fieldName.trim();
-    if (!custom || !canCreateField || !label || sections.length >= CONSULTATION_SECTION_LIMIT) return;
+    if (!custom || !canCreateField || !label || textSectionCount >= CONSULTATION_SECTION_LIMIT) return;
     const field = { id: newFieldId(), label };
     setDraft({
       ...draft, practiceFields: [...(draft.practiceFields ?? []), field],
-      templates: replaceTemplate({ ...custom, sections: [...sections, field] }),
+      templates: replaceTemplate({ ...custom, ...splitNoteTemplateSections([...sections, field], kind) }),
     });
     setFieldName('');
     setExpanded(field.id);
@@ -203,14 +206,15 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
     return practiceFields.find(field => field.id === id);
   };
   const remove = (index: number) => {
-    if (!custom || sections.length <= 1) return;
+    if (!custom) return;
     const section = sections[index];
-    const field = fieldToKeep(section.id);
+    if (section.id !== NOTE_IMAGES_ID && textSectionCount <= 1) return;
+    const field = section.id === NOTE_IMAGES_ID ? undefined : fieldToKeep(section.id);
     if (field && !canCreateField) return;
     setDraft({
       ...draft,
       ...(field ? { practiceFields: [...(draft.practiceFields ?? []), field] } : {}),
-      templates: replaceTemplate({ ...custom, sections: sections.filter(item => item.id !== section.id) }),
+      templates: replaceTemplate({ ...custom, ...splitNoteTemplateSections(sections.filter(item => item.id !== section.id), kind) }),
     });
     if (expanded === section.id) setExpanded(undefined);
     setRemoved({ id: custom.id, section, index });
@@ -218,7 +222,7 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
   };
   const undoRemove = () => {
     if (!removed || removed.id !== custom?.id || sections.some(section => section.id === removed.section.id)
-      || sections.length >= CONSULTATION_SECTION_LIMIT) return;
+      || (removed.section.id !== NOTE_IMAGES_ID && textSectionCount >= CONSULTATION_SECTION_LIMIT)) return;
     const items = [...sections];
     items.splice(removed.index, 0, removed.section);
     updateSections(items);
@@ -409,12 +413,15 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
           <ol className="consultation-library__sections">
             {sections.map((section, index) => {
               const label = sectionName(section);
-              const key = consultationSectionKey(section);
-              const dentalKey = dentalSectionKey(section.id);
-              const example = section.example ?? (section.id === DISCHARGE_RECOVERY_ACTIVITY ? t('discharge.templates.activity.sample') : dentalKey ? t(`consultation.dental.${dentalKey}.sample`)
-                : isCustomNoteField(section.id) ? ''
-                  : section.id === 'dischargeMedications' || section.id === 'dischargeInstructions' || section.id === 'dischargeFollowUp'
-                    ? t(`discharge.templates.samples.${section.id}`) : t(`consultation.templates.samples.${section.id}`));
+              const sectionId = section.id;
+              const imageSection = sectionId === NOTE_IMAGES_ID;
+              const key = imageSection ? undefined : consultationSectionKey({ ...section, id: sectionId });
+              const dentalKey = imageSection ? undefined : dentalSectionKey(sectionId);
+              const textSettings: readonly (typeof SECTION_TEXT_SETTINGS)[number][] = imageSection ? IMAGE_TEXT_SETTINGS : SECTION_TEXT_SETTINGS;
+              const example = imageSection ? undefined : section.example ?? (sectionId === DISCHARGE_RECOVERY_ACTIVITY ? t('discharge.templates.activity.sample') : dentalKey ? t(`consultation.dental.${dentalKey}.sample`)
+                : isCustomNoteField(sectionId) ? ''
+                  : sectionId === 'dischargeMedications' || sectionId === 'dischargeInstructions' || sectionId === 'dischargeFollowUp'
+                    ? t(`discharge.templates.samples.${sectionId}`) : t(`consultation.templates.samples.${sectionId}`));
               return <li key={section.id} data-section-row={index} data-drop-target={sectionReorder.dropAt(index)}
                 className={section.level === 2 ? 'consultation-library__subsection' : undefined}>
                 <div className="consultation-library__section-row">
@@ -434,16 +441,16 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
                       : <p>{example}</p>)}
                   </div>
                   {editSelected && <button type="button" className="consultation-library__row-action consultation-library__remove"
-                    disabled={sections.length === 1 || (!canCreateField && !!fieldToKeep(section.id))} aria-label={t('consultation.templates.builder.removeNamed', { field: label })}
+                    disabled={!imageSection && (textSectionCount === 1 || (!canCreateField && !!fieldToKeep(sectionId)))} aria-label={t('consultation.templates.builder.removeNamed', { field: label })}
                     onClick={() => remove(index)}><span aria-hidden="true">×</span></button>}
                 </div>
                 {editSelected && expanded === section.id && <div className="consultation-library__settings" id={`${id}-${section.id}`}>
                   <label className="ui-dialog__label">{t('consultation.templates.builder.sectionLabel')}
                     <input className="ui-dialog__input" dir="auto" maxLength={100} value={section.label ?? ''}
-                      placeholder={key ? t(`${key}.label`) : undefined}
+                      placeholder={imageSection ? t('settings:chart.pdf.images') : key ? t(`${key}.label`) : undefined}
                       onChange={event => updateSection({ ...section, label: event.target.value || undefined })} />
                   </label>
-                  {canConfigureNoteInput(section.id, kind) && <>
+                  {!imageSection && canConfigureNoteInput(sectionId, kind) && <>
                     <label className="ui-dialog__label">{t('forms:customEditor.fieldType')}
                       <select className="ui-dialog__input" value={section.inputType ?? ''}
                         onChange={event => {
@@ -482,13 +489,13 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
                       <p className="visit-documentation__helper">{t('consultation.templates.builder.choiceHelp')}</p>
                     </fieldset>}
                   </>}
-                  {SECTION_TEXT_SETTINGS.map(property => <label key={property} className="ui-dialog__label">
+                  {textSettings.map(property => <label key={property} className="ui-dialog__label">
                     {t(`consultation.templates.builder.${property}`)}
                     <textarea className="ui-dialog__input" dir="auto" rows={2} maxLength={1000} value={section[property] ?? ''}
                       placeholder={property === 'guidance' && key ? t(`${key}.helper`) : property === 'example' ? example : undefined}
                       onChange={event => updateSection({ ...section, [property]: event.target.value || undefined })} />
                   </label>)}
-                  <label className="ui-dialog__label">{t('consultation.templates.builder.format')}
+                  {!imageSection && <><label className="ui-dialog__label">{t('consultation.templates.builder.format')}
                     <select className="ui-dialog__input" value={section.format ?? FORMATS[0]}
                       onChange={event => updateSection({ ...section, format: event.target.value as ConsultationSection['format'] })}>
                       {FORMATS.map(format => <option key={format} value={format}>{t(`consultation.templates.builder.${format}`)}</option>)}
@@ -498,7 +505,7 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
                     <input type="checkbox" checked={section.level === 2}
                       onChange={event => updateSection({ ...section, level: event.target.checked ? 2 : undefined })} />
                     {t('consultation.templates.builder.subsection')}
-                  </label>
+                  </label></>}
                   {isDischarge && isCustomDischargeField(section.id) && <label className="consultation-library__archived">
                     <input type="checkbox" checked={section.ownerReport === true}
                       onChange={event => updateSection({ ...section, ownerReport: event.target.checked ? true : undefined })} />
@@ -507,16 +514,15 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
                 </div>}
               </li>;
             })}
-            {kind === 'consultation' && <li>{t('settings:chart.pdf.images')}</li>}
           </ol>
           <div role="status" className="visually-hidden">{announcement}</div>
           <div role="status" className="consultation-library__undo">
             {removed && removed.id === custom?.id && <span>{t('consultation.templates.builder.fieldRemoved', { field: sectionName(removed.section) })}</span>}
             {editSelected && removed && removed.id === custom?.id && !sections.some(section => section.id === removed.section.id)
-              && sections.length < CONSULTATION_SECTION_LIMIT && <button type="button" className="consultation-library__row-action"
+              && (removed.section.id === NOTE_IMAGES_ID || textSectionCount < CONSULTATION_SECTION_LIMIT) && <button type="button" className="consultation-library__row-action"
                 onClick={undoRemove}>{t('consultation.templates.builder.undoRemove')}</button>}
           </div>
-          {editSelected && sections.length < CONSULTATION_SECTION_LIMIT && <>
+          {editSelected && (textSectionCount < CONSULTATION_SECTION_LIMIT || !sections.some(item => item.id === NOTE_IMAGES_ID)) && <>
             <button type="button" className="ui-btn ui-btn--secondary" aria-expanded={adding}
               onClick={() => adding ? closePicker() : setAdding(true)}>{t('consultation.templates.builder.addSection')}</button>
             {adding && <div className="consultation-library__picker">
@@ -549,16 +555,17 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
                   <input className="ui-dialog__input" type="search" autoFocus value={search} onChange={event => setSearch(event.target.value)} />
                 </label>
                 {(() => {
-                  const matching = (section: ConsultationSection) => sectionName(section).toLocaleLowerCase().includes(search.trim().toLocaleLowerCase());
-                  const builtIn = [...new Map([...standardNoteFields(kind).map(id => ({ id })), ...(isDischarge ? consultationSections(DENTAL_RECOVERY) : consultationSections(starter))]
+                  const matching = (section: NoteTemplateSection) => sectionName(section).toLocaleLowerCase().includes(search.trim().toLocaleLowerCase());
+                  const gallery = { id: NOTE_IMAGES_ID } as const;
+                  const builtIn = [...new Map([gallery, ...standardNoteFields(kind).map(id => ({ id })), ...(isDischarge ? consultationSections(DENTAL_RECOVERY) : consultationSections(starter))]
                     .map(section => [section.id, section])).values()].filter(matching);
                   const shared = practiceFields.filter(field => !field.archived && matching(field));
-                  const group = (heading: string, entries: readonly ConsultationSection[]) => entries.length > 0 && <div>
+                  const group = (heading: string, entries: readonly NoteTemplateSection[]) => entries.length > 0 && <div>
                     <h4>{heading}</h4>
                     <ul className="consultation-library__field-list">{entries.map(section => {
                       const added = sections.some(item => item.id === section.id);
                       return <li key={section.id}>
-                        <button type="button" className="consultation-library__row-action" dir="auto" disabled={added}
+                        <button type="button" className="consultation-library__row-action" dir="auto" disabled={added || (section.id !== NOTE_IMAGES_ID && textSectionCount >= CONSULTATION_SECTION_LIMIT)}
                           onClick={() => {
                             const { id, label, guidance, example, suggestedText, inputType, options } = section;
                             addSection({ id, label, guidance, example, suggestedText, inputType, options });
@@ -576,7 +583,7 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
                   </>;
                 })()}
                 <div className="consultation-library__tools">
-                  <button type="button" className="ui-btn ui-btn--secondary" disabled={!canCreateField}
+                  <button type="button" className="ui-btn ui-btn--secondary" disabled={!canCreateField || textSectionCount >= CONSULTATION_SECTION_LIMIT}
                     onClick={() => { setFieldName(search); setCreating(true); }}>{t('consultation.templates.builder.createField')}</button>
                   <button type="button" className="ui-btn ui-btn--secondary"
                     onClick={() => setManaging(true)}>{t('consultation.templates.builder.manageFields')}</button>

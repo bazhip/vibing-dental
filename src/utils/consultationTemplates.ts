@@ -74,11 +74,16 @@ export function consultationDocumentFields(fields: readonly ConsultationField[])
   });
 }
 
+export const NOTE_IMAGES_ID = 'noteImages';
+export type NoteTemplateSection = Omit<ConsultationSection, 'id'> & { id: ConsultationSectionId | typeof NOTE_IMAGES_ID };
+export type NoteImagePlacement = false | { index: number; label?: string; guidance?: string };
+
 export interface ConsultationLayout {
   id: string;
   name?: string;
   fields: readonly ConsultationField[];
   sections?: readonly ConsultationSection[];
+  imagePlacement?: NoteImagePlacement;
   instructions?: string;
   detail?: 'concise' | 'detailed';
 }
@@ -109,7 +114,7 @@ export type ImagingReportFields = Partial<Record<ImagingReportKind, ImagingRepor
 export const IMAGING_STARTER_TEXT_LIMIT = 4000;
 
 export interface ConsultationLibrary {
-  version?: 2 | 3;
+  version?: 2 | 3 | 4;
   defaultId: string;
   templates: PracticeConsultationTemplate[];
   order?: string[];
@@ -118,9 +123,9 @@ export interface ConsultationLibrary {
 }
 
 // Older clients cannot preserve custom sections and their dictation sources.
-export const CONSULTATION_SNAPSHOT_VERSION = 3;
-export const DISCHARGE_SNAPSHOT_VERSION = 4;
-export const noteLibraryVersion = (kind: NoteTemplateKind) => kind === 'imaging' ? 2 : 3;
+export const CONSULTATION_SNAPSHOT_VERSION = 4;
+export const DISCHARGE_SNAPSHOT_VERSION = 5;
+export const noteLibraryVersion = (kind: NoteTemplateKind) => kind === 'imaging' ? 2 : 4;
 export const CONSULTATION_TEMPLATE_LIMIT = 24;
 export const PRACTICE_NOTE_FIELD_LIMIT = 128;
 const CONSULTATION_LIBRARY_BYTES = 196608;
@@ -264,6 +269,25 @@ export function consultationSections(layout: ConsultationLayout): readonly Consu
   return layout.sections ?? consultationDocumentFields(layout.fields).map(id => ({ id }));
 }
 
+/** Legacy Consults always displayed the gallery after the text fields. */
+export function noteTemplateSections(layout: ConsultationLayout, kind: NoteTemplateKind): NoteTemplateSection[] {
+  const sections: NoteTemplateSection[] = [...consultationSections(layout)];
+  const placement = layout.imagePlacement ?? (kind === 'consultation' ? { index: sections.length } : false);
+  if (kind !== 'imaging' && placement) {
+    sections.splice(placement.index, 0, { id: NOTE_IMAGES_ID, ...(placement.label ? { label: placement.label } : {}),
+      ...(placement.guidance ? { guidance: placement.guidance } : {}) });
+  }
+  return sections;
+}
+export function splitNoteTemplateSections(items: readonly NoteTemplateSection[], kind: NoteTemplateKind): Pick<ConsultationLayout, 'sections' | 'imagePlacement'> {
+  const sections = items.filter((item): item is ConsultationSection => item.id !== NOTE_IMAGES_ID);
+  const index = items.findIndex(item => item.id === NOTE_IMAGES_ID);
+  if (index === -1) return { sections, imagePlacement: kind === 'consultation' ? false : undefined };
+  const { label, guidance } = items[index];
+  if (kind === 'consultation' && index === sections.length && !label && !guidance) return { sections, imagePlacement: undefined };
+  return { sections, imagePlacement: { index, ...(label ? { label } : {}), ...(guidance ? { guidance } : {}) } };
+}
+
 /** Keep populated sections visible when a clinician switches templates. */
 export function consultationVisitSections(info: Partial<PatientInfo>, layout: ConsultationLayout, kind: NoteTemplateKind = 'consultation'): readonly ConsultationSection[] {
   const active = consultationSections(layout);
@@ -281,9 +305,9 @@ export function consultationVisitSections(info: Partial<PatientInfo>, layout: Co
 
 export function changeConsultationLayout(info: Partial<PatientInfo>, previous: ConsultationLayout, next: ConsultationLayout, kind: NoteTemplateKind = 'consultation'): Partial<PatientInfo> {
   const nextSections = new Set(consultationSections(next).map(section => section.id));
-  const { id, name, fields, sections, instructions, detail } = next;
+  const { id, name, fields, sections, instructions, detail, imagePlacement } = next;
   const layout = { id, fields, ...(name ? { name } : {}), ...(sections ? { sections } : {}),
-    ...(instructions ? { instructions } : {}), ...(detail ? { detail } : {}) };
+    ...(instructions ? { instructions } : {}), ...(detail ? { detail } : {}), ...(imagePlacement === undefined ? {} : { imagePlacement }) };
   if (kind === 'discharge') {
     // Another device can fill a blank field while this device changes its layout.
     const previousSections = new Map([...info.dischargeRetainedSections ?? [], ...consultationSections(previous)]
@@ -313,7 +337,26 @@ export function normalizeConsultationLayout(value: unknown, kind: NoteTemplateKi
   if (instructions !== undefined && (typeof instructions !== 'string' || [...instructions].length > 2000)) return undefined;
   const detail = 'detail' in value ? value.detail : undefined;
   if (detail !== undefined && detail !== 'concise' && detail !== 'detailed') return undefined;
-  const options: Pick<ConsultationLayout, 'sections' | 'instructions' | 'detail'> = { ...(sections ? { sections } : {}), ...(instructions ? { instructions } : {}), ...(detail ? { detail } : {}) };
+  const rawPlacement = 'imagePlacement' in value ? value.imagePlacement : undefined;
+  let imagePlacement: NoteImagePlacement | undefined;
+  if (rawPlacement !== undefined) {
+    if (kind === 'imaging' || !sections) return undefined;
+    if (rawPlacement === false) imagePlacement = false;
+    else {
+      if (!rawPlacement || typeof rawPlacement !== 'object' || Array.isArray(rawPlacement)
+        || Object.keys(rawPlacement).some(key => !['index', 'label', 'guidance'].includes(key))) return undefined;
+      const { index, label, guidance } = rawPlacement as Partial<Record<'index' | 'label' | 'guidance', unknown>>;
+      if (typeof index !== 'number' || !Number.isInteger(index) || index < 0 || index > sections.length
+        || (label !== undefined && (typeof label !== 'string' || !label.trim() || [...label].length > 100))
+        || (guidance !== undefined && (typeof guidance !== 'string' || [...guidance].length > 1000))) return undefined;
+      imagePlacement = { index, ...(typeof label === 'string' ? { label: label.trim() } : {}),
+        ...(typeof guidance === 'string' && guidance ? { guidance } : {}) };
+    }
+  }
+  const options: Pick<ConsultationLayout, 'sections' | 'instructions' | 'detail' | 'imagePlacement'> = {
+    ...(sections ? { sections } : {}), ...(instructions ? { instructions } : {}), ...(detail ? { detail } : {}),
+    ...(imagePlacement === undefined ? {} : { imagePlacement }),
+  };
   if (kind === 'imaging' && value.id === STANDARD_IMAGING.id) return STANDARD_IMAGING;
   const dischargeStarter = kind === 'discharge' && DISCHARGE_STARTERS.find(template => template.id === value.id);
   if (dischargeStarter && !('name' in value)) return dischargeStarter;
@@ -402,12 +445,13 @@ export function parseConsultationLibrary(value: unknown, kind: NoteTemplateKind 
   if (!value || typeof value !== 'object' || !('templates' in value) || !Array.isArray(value.templates)
     || value.templates.length > CONSULTATION_TEMPLATE_LIMIT + (kind === 'discharge' ? DISCHARGE_STARTERS.length : kind === 'consultation' ? Object.keys(CONSULTATION_STARTERS).length : 0) || !('defaultId' in value) || typeof value.defaultId !== 'string') return;
   const version = 'version' in value ? value.version : undefined;
-  if ((kind !== 'consultation' || version !== undefined) && version !== 2 && version !== noteLibraryVersion(kind)) return undefined;
+  if ((kind !== 'consultation' || version !== undefined) && version !== 2 && (kind === 'imaging' || (version !== 3 && version !== 4))) return undefined;
   const templates: PracticeConsultationTemplate[] = [];
   const ids = new Set<string>();
   for (const raw of value.templates) {
     const layout = normalizeConsultationLayout(raw, kind);
-    if (version !== 3 && ((kind === 'consultation' && layout && isConsultationStarter(layout.id)) || layout?.sections?.some(section => section.inputType))) return undefined;
+    if (version !== 4 && layout?.imagePlacement !== undefined) return undefined;
+    if (version !== 3 && version !== 4 && ((kind === 'consultation' && layout && isConsultationStarter(layout.id)) || layout?.sections?.some(section => section.inputType))) return undefined;
     if (!layout?.name || ids.has(layout.id) || (raw.archived !== undefined && typeof raw.archived !== 'boolean')) return;
     ids.add(layout.id);
     templates.push({ ...layout, name: layout.name, ...(raw.archived ? { archived: true } : {}) });
@@ -421,13 +465,13 @@ export function parseConsultationLibrary(value: unknown, kind: NoteTemplateKind 
     || order.some(id => typeof id !== 'string' || (!isNoteStarter(id, kind) && !ids.has(id))))) return undefined;
   const rawFields = 'practiceFields' in value ? value.practiceFields : undefined;
   const practiceFields = rawFields === undefined ? undefined : normalizePracticeNoteFields(rawFields, kind);
-  if (rawFields !== undefined && (!practiceFields || version === undefined || (version !== 3 && practiceFields.some(field => field.inputType)))) return undefined;
+  if (rawFields !== undefined && (!practiceFields || version === undefined || (version !== 3 && version !== 4 && practiceFields.some(field => field.inputType)))) return undefined;
   const rawImagingFields = 'imagingReportFields' in value ? value.imagingReportFields : undefined;
   const imagingReportFields = rawImagingFields === undefined ? undefined : normalizeImagingReportFields(rawImagingFields);
   if (rawImagingFields !== undefined && (kind !== 'imaging' || !imagingReportFields)) return undefined;
   const config: ConsultationLibrary = { defaultId, templates, ...(order ? { order } : {}),
     ...(imagingReportFields ? { imagingReportFields } : {}),
-    ...(version === 2 || version === 3 ? { version } : {}), ...(practiceFields ? { practiceFields } : {}) };
+    ...(version === 2 || version === 3 || version === 4 ? { version } : {}), ...(practiceFields ? { practiceFields } : {}) };
   return consultationLibraryFits(config) ? config : undefined;
 }
 

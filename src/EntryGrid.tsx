@@ -1301,6 +1301,11 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   }, [medicationScope, fetchPastMedicationVisit]);
   const medicationList = priorMedicationList?.scope === medicationScope ? priorMedicationList.list : undefined;
 
+  const renderNoteImages = ({ label, guidance }: { label?: string; guidance?: string }) =>
+    <ImagingSection key={chart.cloudChartId} compact readOnly={readOnly} chartId={chart.cloudChartId}
+      cloudActive={cloud.enabled} practiceId={profile.practiceId} maxImages={profile.maxImages}
+      dicomEnabled={profile.dicomEnabled} species={chart.species} sectionLabel={label} sectionGuidance={guidance} />;
+
   const sections: ChartSection[] = [
     {
       id: 'patient',
@@ -1323,7 +1328,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       id: 'consultation',
       label: i18n.t('visitDocumentation:consultation.title'),
       content: <VisitDocumentationSection key={chart.chartSession} dictation={canCreateConsultation ? clinicalDictationControl(CLINICAL_WORKFLOWS.consultation) : undefined}
-        kind="consultation" patientInfo={chart.patientInfo} readOnly={readOnly} onReview={() => openDocuments('note')}
+        kind="consultation" patientInfo={chart.patientInfo} readOnly={readOnly} renderImages={renderNoteImages} onReview={() => openDocuments('note')}
         consultation={{
           library: consultationLibrary.config, historical: chart.openedExisting,
           onTemplates: openConsultationTemplates,
@@ -1343,11 +1348,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               ? { consultationLayout: consultationLayoutFor(previous, consultationLibrary.config, chart.openedExisting) } : {}),
             ...changes,
           }));
-        }}>
-        <ImagingSection key={chart.cloudChartId} compact readOnly={readOnly} chartId={chart.cloudChartId}
-          cloudActive={cloud.enabled} practiceId={profile.practiceId} maxImages={profile.maxImages}
-          dicomEnabled={profile.dicomEnabled} species={chart.species} />
-      </VisitDocumentationSection>,
+        }} />,
     }] : []),
     {
       id: 'exam',
@@ -1598,7 +1599,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     {
       id: OWNER_REPORT_SECTION,
       label: i18n.t('visitDocumentation:discharge.title'),
-      content: <VisitDocumentationSection kind="discharge" patientInfo={chart.patientInfo} readOnly={readOnly}
+      content: <VisitDocumentationSection kind="discharge" patientInfo={chart.patientInfo} readOnly={readOnly} renderImages={renderNoteImages}
         discharge={dischargeTemplatesAvailable ? { library: dischargeLibrary.config, historical: chart.openedExisting, onTemplates: openDischargeTemplates } : undefined}
         onChange={changes => {
           if (readOnly) return;

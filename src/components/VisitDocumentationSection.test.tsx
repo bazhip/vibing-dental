@@ -197,3 +197,21 @@ it('saves multiple discharge options on separate lines and preserves recorded te
   fireEvent.change(screen.getByRole('textbox', { name: 'Instructions Recorded text' }), { target: { value: 'Updated custom advice' } });
   expect(onChange).toHaveBeenLastCalledWith({ dischargeInstructions: 'Updated custom advice' });
 });
+
+it('places the existing visit gallery where configured and hides it only in the note when removed', () => {
+  const renderImages = vi.fn(({ label, guidance }) => <section aria-label={label}>{guidance}</section>);
+  const layout = {
+    id: 'soap-v1', fields: CONSULTATION_FIELDS, sections: [{ id: 'complaint' as const }],
+    imagePlacement: { index: 0, label: 'Radiographs and photos', guidance: 'Add relevant views' },
+  };
+  const { rerender } = render(<VisitDocumentationSection kind="consultation" patientInfo={{ ...patient, consultationLayout: layout }}
+    onChange={vi.fn()} renderImages={renderImages} />);
+  const gallery = screen.getByRole('region', { name: 'Radiographs and photos' });
+  const reason = screen.getByRole('textbox', { name: 'Reason for visit' });
+  expect(gallery.compareDocumentPosition(reason) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  expect(gallery).toHaveTextContent('Add relevant views');
+  rerender(<VisitDocumentationSection kind="consultation" patientInfo={{ ...patient, consultationLayout: { ...layout, imagePlacement: false } }}
+    onChange={vi.fn()} renderImages={renderImages} />);
+  expect(screen.queryByRole('region', { name: 'Radiographs and photos' })).toBeNull();
+  expect(screen.getByRole('textbox', { name: 'Reason for visit' })).toHaveValue('Reason');
+});

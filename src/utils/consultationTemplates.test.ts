@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { DENTAL_CONSULTATION, CONSULTATION_FIELDS, STANDARD_DISCHARGE, dischargeLayoutFor, changeConsultationLayout, insertImagingOutline, updatePracticeNoteField, consultationVisitSections, consultationChoices, consultationHeadings, consultationLayoutFor, normalizeConsultationLayout, parseConsultationLibrary } from './consultationTemplates';
+import { NOTE_IMAGES_ID, noteTemplateSections, DENTAL_CONSULTATION, CONSULTATION_FIELDS, STANDARD_DISCHARGE, dischargeLayoutFor, changeConsultationLayout, insertImagingOutline, updatePracticeNoteField, consultationVisitSections, consultationChoices, consultationHeadings, consultationLayoutFor, normalizeConsultationLayout, parseConsultationLibrary } from './consultationTemplates';
 import { normalizeVisitDocumentation } from './visitDocumentation';
 
 const custom = { id: '11111111-1111-4111-8111-111111111111', name: 'Practice consult', fields: [...CONSULTATION_FIELDS].reverse() };
@@ -155,4 +155,15 @@ it('preserves named, typed Consult defaults in both the library and a saved visi
   ]) {
     expect(parseConsultationLibrary({ ...config, templates: [{ ...dental, sections: [section] }] })).toBeUndefined();
   }
+});
+
+it('keeps the implicit Consult gallery and preserves explicit placement or removal on template selection', () => {
+  const gallery = { ...DENTAL_CONSULTATION, name: 'Dental intake', imagePlacement: { index: 0, label: 'Photos' } };
+  const hidden = { ...gallery, imagePlacement: false as const };
+  expect(noteTemplateSections(DENTAL_CONSULTATION, 'consultation').at(-1)?.id).toBe(NOTE_IMAGES_ID);
+  expect(noteTemplateSections(gallery, 'consultation')[0]).toEqual({ id: NOTE_IMAGES_ID, label: 'Photos' });
+  expect(noteTemplateSections(hidden, 'consultation').some(section => section.id === NOTE_IMAGES_ID)).toBe(false);
+  expect(changeConsultationLayout({}, DENTAL_CONSULTATION, hidden).consultationLayout?.imagePlacement).toBe(false);
+  expect(parseConsultationLibrary({ version: 4, defaultId: gallery.id, templates: [gallery] })?.templates[0]).toEqual(gallery);
+  expect(parseConsultationLibrary({ version: 3, defaultId: gallery.id, templates: [gallery] })).toBeUndefined();
 });

@@ -226,3 +226,18 @@ it('deletes a Consult starter and selects another default without an archive con
     defaultId: 'soap-v1', templates: [expect.objectContaining({ id: 'dental-v2', archived: true })],
   });
 });
+
+it('adds Images to a Discharge template and lets the owner configure and reorder it', () => {
+  const onSave = vi.fn();
+  render(<ConsultationTemplatesDialog kind="discharge" initial={EMPTY_DISCHARGE_LIBRARY} status="ready" canEdit
+    onSave={onSave} onReload={vi.fn()} onClose={vi.fn()} />);
+  fireEvent.click(screen.getByRole('button', { name: /Add section/ }));
+  fireEvent.click(screen.getByRole('button', { name: /^⟦Images⟧$/ }));
+  fireEvent.change(screen.getByRole('textbox', { name: /Section label/ }), { target: { value: 'Radiographs and photos' } });
+  fireEvent.change(screen.getByRole('textbox', { name: /Field guidance/ }), { target: { value: 'Add views from this visit' } });
+  fireEvent.keyDown(screen.getByRole('button', { name: /Reorder Radiographs and photos/ }), { key: 'ArrowUp' });
+  fireEvent.click(screen.getByRole('button', { name: /Save/ }));
+  expect(onSave.mock.lastCall?.[0].templates[0].imagePlacement).toEqual({
+    index: 3, label: 'Radiographs and photos', guidance: 'Add views from this visit',
+  });
+});

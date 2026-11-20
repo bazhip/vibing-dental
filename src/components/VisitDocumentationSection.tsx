@@ -1,7 +1,7 @@
 import { useId, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ClinicalDictationSource, PatientInfo } from '../types';
-import { canConfigureNoteInput, changeConsultationLayout, consultationChoices, consultationSectionKey, consultationSections, consultationStarterNameKey, consultationVisitSections, consultationLayoutFor, dischargeLayoutFor, dischargeStarterNameKey, EMPTY_CONSULTATION_LIBRARY, EMPTY_DISCHARGE_LIBRARY, type ConsultationLibrary, type ConsultationSection } from '../utils/consultationTemplates';
+import { NOTE_IMAGES_ID, noteTemplateSections, canConfigureNoteInput, changeConsultationLayout, consultationChoices, consultationSectionKey, consultationSections, consultationStarterNameKey, consultationVisitSections, consultationLayoutFor, dischargeLayoutFor, dischargeStarterNameKey, EMPTY_CONSULTATION_LIBRARY, EMPTY_DISCHARGE_LIBRARY, type ConsultationLibrary, type ConsultationSection } from '../utils/consultationTemplates';
 import { documentationUrl } from '../help/openDocumentation';
 import { formatDate, formatDateTime } from '../i18n/format';
 import { VISIT_DOCUMENT_MAX_LENGTH, VISIT_DOCUMENT_TEMPLATES, type VisitDocumentKind } from '../utils/visitDocumentation';
@@ -16,6 +16,7 @@ export interface VisitDocumentationSectionProps {
   patientInfo: PatientInfo;
   onChange: (patch: Partial<PatientInfo>) => void;
   readOnly?: boolean;
+  renderImages?: (field: { label?: string; guidance?: string }) => React.ReactNode;
   onReview?: () => void;
   reviewLabel?: string;
   children?: ReactNode;
@@ -84,7 +85,7 @@ function VisitChoiceField({ id, describedBy, options, type, value, readOnly, onC
 }
 
 /** Source-only forms: generated clinical/client reports keep their existing owners. */
-export function VisitDocumentationSection({ kind, patientInfo, onChange, readOnly, onReview, reviewLabel, children, dictation, consultation, discharge }: VisitDocumentationSectionProps) {
+export function VisitDocumentationSection({ kind, patientInfo, onChange, readOnly, renderImages, onReview, reviewLabel, children, dictation, consultation, discharge }: VisitDocumentationSectionProps) {
   const { t, i18n } = useTranslation('visitDocumentation');
   const id = useId();
   const [selectedDrug, setSelectedDrug] = useState('');
@@ -98,11 +99,12 @@ export function VisitDocumentationSection({ kind, patientInfo, onChange, readOnl
     : consultationLayoutFor(patientInfo, library, readOnly || consultation?.historical);
   const choices = consultationChoices(library, templateKind);
   const hasLayout = isConsultation || (isDischarge && (discharge || patientInfo.dischargeLayout));
-  const activeFields = hasLayout ? consultationSections(layout) : VISIT_DOCUMENT_TEMPLATES[kind].fields;
-  const retainedFields = hasLayout ? consultationVisitSections(patientInfo, layout, templateKind).slice(activeFields.length) : [];
+  const activeFields = hasLayout ? noteTemplateSections(layout, templateKind) : VISIT_DOCUMENT_TEMPLATES[kind].fields;
+  const retainedFields = hasLayout ? consultationVisitSections(patientInfo, layout, templateKind).slice(consultationSections(layout).length) : [];
   const savedVersion = !choices.some(choice => choice.id === layout.id && choice.name === layout.name
     && JSON.stringify(choice.fields) === JSON.stringify(layout.fields)
     && JSON.stringify(choice.sections) === JSON.stringify(layout.sections)
+    && JSON.stringify(choice.imagePlacement) === JSON.stringify(layout.imagePlacement)
     && choice.instructions === layout.instructions && choice.detail === layout.detail);
   const layoutName = (option: typeof layout) => {
     const starterKey = isDischarge ? dischargeStarterNameKey(option) : consultationStarterNameKey(option);
@@ -242,7 +244,9 @@ export function VisitDocumentationSection({ kind, patientInfo, onChange, readOnl
         </ul>
       </details>}
       <div className="visit-documentation__fields">
-        {activeFields.map(renderField)}
+        {activeFields.map(field => field.id === NOTE_IMAGES_ID
+          ? renderImages && <div className="visit-documentation__images" key={field.id}>{renderImages(field)}</div>
+          : renderField({ ...field, id: field.id }))}
       </div>
       {retainedFields.length > 0 && <details key={layout.id} className="visit-documentation__transcripts visit-documentation__retained">
         <summary>{t('consultation.templates.builder.fieldsFromOtherTemplates')}</summary>
