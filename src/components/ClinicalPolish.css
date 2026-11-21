@@ -210,8 +210,36 @@ html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__
   grid-column: 2; grid-row: 1; justify-self: end;
 }
 html:not(.native-ios) .entry-grid-container .entry-grid-form .charting-header-actions { display: contents; }
-html:not(.native-ios) .entry-grid-container .entry-grid-form .charting-header-actions > .diagram-view__action { grid-column: 2; grid-row: 1; justify-self: end; }
-html:not(.native-ios) .entry-grid-container .entry-grid-form .charting-view-switch { grid-column: 1 / -1; grid-row: 2; justify-self: start; }
+html:not(.native-ios) .entry-grid-container .entry-grid-form .charting-header-actions > .section-header__customize { grid-column: 2; grid-row: 1; justify-self: end; }
+html:not(.native-ios) .entry-grid-container .entry-grid-form .dental-grid-section:has(> .dental-grid__section-header > .charting-header-actions) {
+  container: charting-header / inline-size;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .charting-view-switch {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  justify-self: start;
+  max-inline-size: 100%;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .tooth-chart .charting-view-switch {
+  grid-column: 1;
+}
+@container charting-header (min-width: 320px) {
+  html:not(.native-ios) .entry-grid-container .entry-grid-form .dental-grid__section-header:has(> .charting-header-actions) {
+    grid-template-columns: minmax(0, max-content) minmax(0, 1fr) auto;
+  }
+  html:not(.native-ios) .entry-grid-container .entry-grid-form .charting-header-actions > .section-header__customize {
+    grid-column: 3;
+  }
+  html:not(.native-ios) .entry-grid-container .entry-grid-form .charting-header-actions > .charting-view-switch {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .dental-grid__section-header:has(> .charting-header-actions) .dental-grid__title,
+html:not(.native-ios) .entry-grid-container .entry-grid-form .charting-view-switch__btn {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
 
 .section-header__actions, .section-header__description, .section-header__title-action { grid-column: 1 / -1; min-width: 0; }
 .section-header__title-action { margin-inline-start: auto; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }

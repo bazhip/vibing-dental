@@ -191,3 +191,30 @@ html:not(.native-ios)[dir='rtl'] select:not([multiple], [size], .select--bare) {
 @media (max-width: 640px), (pointer: coarse) {
   .template-help, .template-create:is(.ui-btn, .diagram-view__action) { min-inline-size: 44px; min-block-size: 44px; }
 }
+
+.customize-button {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  padding: 5px 8px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm, 6px);
+  background: transparent;
+  color: var(--primary);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.customize-button > .ios-icon { flex: none; }
+.customize-button:is(:hover, [aria-expanded='true']) { background: var(--primary-tint); }
+.customize-button:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }

@@ -23,7 +23,7 @@ export const HELP_SCREENSHOTS: Partial<Record<HelpTopic, readonly HelpScreenshot
   start: [{ caption: 'start', src: '/help/screenshots/chart-overview.jpg', width: 1280, height: 605, section: 'first' }],
   patients: [{ caption: 'patients', src: '/help/screenshots/patient-history.jpg', width: 1132, height: 772, section: 'third' }],
   exam: [
-    { caption: 'exam', src: '/help/screenshots/exam.jpg', width: 976, height: 508, section: 'first' },
+    { caption: 'exam', src: '/help/screenshots/exam.jpg', width: 976, height: 530, section: 'first' },
     { caption: 'examCustomize', src: '/help/screenshots/exam-customize.jpg', width: 964, height: 784, section: 'first' },
   ],
   consultation: [
@@ -44,7 +44,7 @@ export const HELP_SCREENSHOTS: Partial<Record<HelpTopic, readonly HelpScreenshot
   charting: [{ caption: 'charting', src: '/screenshots/feat-grid.jpg', width: 1400, height: 515, section: 'first' }],
   imaging: [
     { caption: 'attachmentNames', src: '/help/screenshots/attachment-names.jpg', width: 968, height: 233, section: 'first' },
-    { caption: 'imagingTemplates', src: '/help/screenshots/imaging.jpg', width: 1240, height: 850, section: 'third' },
+    { caption: 'imagingTemplates', src: '/help/screenshots/imaging.jpg', width: 1240, height: 686, section: 'third' },
   ],
   dictation: [
     { caption: 'dictation', src: '/help/screenshots/dictation.jpg', width: 1440, height: 705, section: 'third' },
@@ -54,8 +54,8 @@ export const HELP_SCREENSHOTS: Partial<Record<HelpTopic, readonly HelpScreenshot
     { caption: 'dischargeTemplates', src: '/help/screenshots/discharge-templates.jpg', width: 836, height: 922, section: 'first' },
     { caption: 'owner', src: '/help/screenshots/owner-report.jpg', width: 976, height: 438, section: 'second' },
   ],
-  export: [{ caption: 'export', src: '/help/screenshots/review-export.jpg', width: 1232, height: 772, section: 'second' }],
-  'by-number': [{ caption: 'by-number', src: '/help/screenshots/by-tooth.jpg', width: 942, height: 927, section: 'first' }],
+  export: [{ caption: 'export', src: '/help/screenshots/review-export.jpg', width: 1280, height: 772, section: 'second' }],
+  'by-number': [{ caption: 'by-number', src: '/help/screenshots/by-tooth.jpg', width: 984, height: 916, section: 'first' }],
 };
 
 export const CHART_CUSTOMIZATION_CATEGORIES = ['patient', 'exam', 'anesthesia', 'charting', 'diagnosis', 'procedure', 'images'] as const;

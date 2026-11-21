@@ -2,6 +2,7 @@ import { useId, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { useCompactPdfLayout } from './PdfStylePicker';
+import { CustomizeButton } from './CustomizeButton';
 import './DocumentToolbar.css';
 
 interface Props {
@@ -21,10 +22,8 @@ export function DocumentToolbar({ actions, children, notice, controlsHost }: Pro
 
   const controls = (
     <div className="document-toolbar__row">
-      <button type="button" className="ui-btn ui-btn--secondary" aria-expanded={expanded} aria-controls={id}
-        onClick={() => setChoice(!expanded)}>
-        {t('documents.customize')} <span aria-hidden="true">{expanded ? '▴' : '▾'}</span>
-      </button>
+      <CustomizeButton label={t('documents.customize')} aria-expanded={expanded} aria-controls={id}
+        onClick={() => setChoice(!expanded)} />
       <div className="document-toolbar__actions">{actions}</div>
     </div>
   );

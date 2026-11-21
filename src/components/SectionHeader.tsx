@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { CustomizeButton } from './CustomizeButton';
 
 /** Customization belongs to the section; clinical actions have their own row. */
 export function SectionHeader({ title, onCustomize, customizeTitle, titleAction, actions, children }: {
@@ -12,9 +13,8 @@ export function SectionHeader({ title, onCustomize, customizeTitle, titleAction,
 }) {
   const { t } = useTranslation('forms');
   const customize = onCustomize && (
-    <button type="button" className="diagram-view__action section-header__customize" onClick={onCustomize} title={customizeTitle}>
-      {t('patient.customize')}
-    </button>
+    <CustomizeButton className="section-header__customize" label={t('patient.customize')}
+      onClick={onCustomize} title={customizeTitle} opensDialog />
   );
   return (
     <div className="patient-form__header section-header">

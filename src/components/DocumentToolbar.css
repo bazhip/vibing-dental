@@ -61,7 +61,7 @@
     white-space: normal;
     overflow-wrap: anywhere;
   }
-  .documents-modal__controls .document-toolbar__row > .ui-btn { flex-shrink: 0; max-width: 45%; }
+  .documents-modal__controls .document-toolbar__row > .customize-button { flex-shrink: 0; max-width: 45%; }
   .document-toolbar__group { flex: 1 1 100%; }
   .document-toolbar__options {
     display: grid;
