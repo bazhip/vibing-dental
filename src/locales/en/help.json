@@ -188,7 +188,7 @@
         },
         "second": {
           "title": "Draft the owner report",
-          "text": "In Owner report, choose a named template under Report template to use it for this visit, or keep Practice default to follow the practice’s current default. The check mark identifies the active choice. For a longer list, use the Report template menu. Practice owners can select Manage templates to edit shared wording and layout, or New template to add one. In the editor, choose the template, use Template actions to set a default, and select Save templates. Use Write with AI to draft the opening summary and home care advice from the visit. Check that key findings are explained clearly, edit the wording, and use Restore generated to return to the saved draft after edits.\n\nTo reorder sections in the owner report editor, drag a section by its handle or focus the handle and use the arrow keys."
+          "text": "In Owner report, choose a named template under Report template to use it for this visit, or choose Practice default to follow the practice’s current default. The highlighted choice is active. Scroll inside the list when there are more templates. To edit shared wording or layout, choose Manage templates. Practice owners can choose Create template in the editor, or use Template actions to set a default. Select Save templates when finished. Use Write with AI beside the wording to draft the opening summary and home care advice. Check and edit the draft before sharing. Restore generated returns a section to its saved draft.\n\nTo reorder sections in the owner report editor, drag a section by its handle or focus the handle and use the arrow keys."
         },
         "third": {
           "title": "Preview and share",

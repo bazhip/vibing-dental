@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 import { EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS, type PatientInfo } from '../types';
 import { CONSULTATION_FIELDS, DISCHARGE_RECOVERY_ACTIVITY, EMPTY_DISCHARGE_LIBRARY, type ConsultationSection } from '../utils/consultationTemplates';
@@ -66,7 +66,7 @@ it('shows the saved name of an edited starter in the consult template selector',
 it('keeps a saved consult template visible and protects its sources when locked', () => {
   render(<VisitDocumentationSection kind="consultation" patientInfo={patient} onChange={vi.fn()} readOnly />);
   expect(screen.getByText('Dental consultation (original)')).toBeVisible();
-  expect(screen.queryByRole('group', { name: 'Note template' })).not.toBeInTheDocument();
+  expect(within(screen.getByRole('group', { name: 'Note template' })).queryByRole('button')).toBeNull();
   expect(screen.getByRole('textbox', { name: 'Reason for visit' })).toHaveAttribute('readonly');
 });
 

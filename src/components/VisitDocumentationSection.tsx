@@ -1,3 +1,4 @@
+import { TemplatePicker } from './TemplatePicker';
 import { useId, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ClinicalDictationSource, PatientInfo } from '../types';
@@ -94,6 +95,7 @@ export function VisitDocumentationSection({ kind, patientInfo, onChange, readOnl
   const language = i18n.resolvedLanguage ?? i18n.language;
   const isDischarge = kind === 'discharge';
   const templateKind = isDischarge ? 'discharge' : 'consultation';
+  const templatesGuide = documentationUrl(language, templateKind);
   const library = isDischarge ? discharge?.library ?? EMPTY_DISCHARGE_LIBRARY : consultation?.library ?? EMPTY_CONSULTATION_LIBRARY;
   const layout = isDischarge ? dischargeLayoutFor(patientInfo, library, readOnly || discharge?.historical)
     : consultationLayoutFor(patientInfo, library, readOnly || consultation?.historical);
@@ -108,7 +110,7 @@ export function VisitDocumentationSection({ kind, patientInfo, onChange, readOnl
     && choice.instructions === layout.instructions && choice.detail === layout.detail);
   const layoutName = (option: typeof layout) => {
     const starterKey = isDischarge ? dischargeStarterNameKey(option) : consultationStarterNameKey(option);
-    return starterKey ? t(starterKey) : option.name;
+    return starterKey ? t(starterKey) : option.name || t('consultation.templates.untitled');
   };
   const update = (patch: Partial<PatientInfo>) => {
     if (!readOnly) onChange(patch);
@@ -196,32 +198,24 @@ export function VisitDocumentationSection({ kind, patientInfo, onChange, readOnl
         </SectionHeader>
       </div>
       {(isConsultation || discharge) && <>
-        <div className="visit-documentation__toolbar">
-          <div className="visit-documentation__template">
-            <span id={`${id}-template`} className="patient-form__label">{t('consultation.templates.label')}</span>
-            {readOnly
-              ? <span className="visit-documentation__selected">{layoutName(layout)}</span>
-              : <div className={`visit-documentation__choices${choices.length > 6 ? ' visit-documentation__choices--scroll' : ''}`}
-                  role="group" aria-labelledby={`${id}-template`}>
-                {savedVersion && <button type="button" className="diagram-view__action" aria-pressed="true">
-                  {t('consultation.templates.saved', { name: layoutName(layout) })}
-                </button>}
-                {choices.map(choice => {
-                  const selected = !savedVersion && choice.id === layout.id;
-                  return <button key={choice.id} type="button" className="diagram-view__action" aria-pressed={selected} dir="auto"
-                    onClick={() => {
-                      if (!selected) update(changeConsultationLayout(patientInfo, layout, choice, templateKind));
-                    }}>{layoutName(choice)}</button>;
-                })}
-              </div>}
-          </div>
-          <div className="visit-documentation__tools">
-            {(consultation?.onTemplates || discharge?.onTemplates) && <button type="button" className="diagram-view__action"
-              onClick={consultation?.onTemplates ?? discharge?.onTemplates} aria-haspopup="dialog">{t('consultation.templates.manage')}</button>}
-            <a className="visit-documentation__guide" href={documentationUrl(language, isDischarge ? 'discharge' : 'consultation')}
-              target="_blank" rel="noopener noreferrer">{t(isDischarge ? 'discharge.templates.help' : 'consultation.guide')}</a>
-          </div>
-        </div>
+        <TemplatePicker label={t('consultation.templates.label')}
+          choices={[
+            ...(savedVersion ? [{ id: '', label: t('consultation.templates.saved', { name: layoutName(layout) }) }] : []),
+            ...choices.map(choice => ({ id: choice.id, label: layoutName(choice) })),
+          ]}
+          activeId={savedVersion ? '' : layout.id}
+          status={readOnly ? <span className="template-picker__current">{layoutName(layout)}</span> : undefined}
+          onSelect={id => {
+            const choice = choices.find(entry => entry.id === id);
+            if (choice) update(changeConsultationLayout(patientInfo, layout, choice, templateKind));
+          }}
+          actions={(consultation?.onTemplates || discharge?.onTemplates) && <button type="button" className="diagram-view__action"
+            onClick={consultation?.onTemplates ?? discharge?.onTemplates} aria-haspopup="dialog">{t('consultation.templates.manage')}</button>}
+          help={{
+            label: t(isDischarge ? 'discharge.templates.help' : 'consultation.guide'),
+            href: templatesGuide,
+          }}
+        />
         {isConsultation && (dictation || consultation?.onExam) && <div className="visit-documentation__sources">
           {dictation}
           {consultation?.onExam && <button className="diagram-view__action" type="button"

@@ -144,7 +144,8 @@ html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__
 }
 
 /* Report and imaging tools remain part of the record, with clear editable areas. */
-.owner-report__template-bar { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 8px 12px; }
+.owner-report__wording-tools { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 16px; margin-block-end: 12px; }
+.owner-report__wording-tools .patient-form__hint { flex: 1 1 22rem; margin: 0; }
 .owner-report__draft { display: inline-flex; align-items: center; gap: .4rem; min-height: 40px; }
 .owner-report__draft:disabled { cursor: progress; }
 @media (max-width: 600px) {
@@ -217,6 +218,13 @@ html:not(.native-ios) .entry-grid-container .entry-grid-form .charting-view-swit
 .section-header__title-action > button { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
 @media (min-width: 641px) {
   .section-header__title-action { grid-column: 2; grid-row: 1; }
+}
+@media (max-width: 640px) {
+  .section-header__title-action:has(> button:only-child) {
+    grid-column: 2;
+    grid-row: 1;
+    max-inline-size: 44vw;
+  }
 }
 .section-header__actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .section-header__description { color: var(--text-muted); font-size: 0.875rem; }

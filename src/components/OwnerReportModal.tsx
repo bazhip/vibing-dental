@@ -311,12 +311,12 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
         <div className={viewOnly ? 'pdf-preview-body pdf-preview-body--view-only' : bare ? 'pdf-preview-body pdf-preview-body--toolbar' : 'pdf-preview-body'}>
           {!viewOnly && (bare ? <DocumentToolbar actions={actions} notice={notices} controlsHost={controlsHost}>
             <section className="document-toolbar__group">
-              <OwnerReportTemplateChoices config={config} templateId={snapshot.ownerReport?.templateId} followPracticeDefault onSelect={onTemplateChange}
+              <OwnerReportTemplateChoices config={config} templateId={snapshot.ownerReport?.templateId} followPracticeDefault onSelect={onTemplateChange} embedded
                 actions={<>
-                  {onCustomizeTemplate && <button type="button" className="ui-btn ui-btn--secondary" onClick={onCustomizeTemplate}>
+                  {onCustomizeTemplate && <button type="button" className="diagram-view__action" aria-haspopup="dialog" onClick={onCustomizeTemplate}>
                     {t('consultation.templates.manage', { ns: 'visitDocumentation' })}
                   </button>}
-                  {onEditWording && <button type="button" className="ui-btn ui-btn--secondary" onClick={onEditWording}>{t('modal.editWording')}</button>}
+                  {onEditWording && <button type="button" className="diagram-view__action" onClick={onEditWording}>{t('modal.editWording')}</button>}
                 </>} />
               {photoNote && <p className={photoWarning ? 'document-toolbar__note document-toolbar__note--warning' : 'document-toolbar__note'} role="status">{photoNote}</p>}
             </section>

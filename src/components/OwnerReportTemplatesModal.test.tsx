@@ -81,7 +81,7 @@ describe('OwnerReportTemplatesModal', () => {
     await user.click(screen.getByRole('button', { name: 'Second' }));
     await user.type(screen.getByLabelText('Template name'), '!');
     await user.click(screen.getByRole('button', { name: 'Save templates' }));
-    expect(screen.getByRole('button', { name: 'New template' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Create template' })).toBeDisabled();
     expect(screen.getByRole('button', { name: 'Template actions' })).toBeDisabled();
     expect(screen.getByRole('button', { name: 'Second!', pressed: true })).toBeDisabled();
     await act(async () => finish());
@@ -346,7 +346,8 @@ it('keeps secondary template actions in a disclosure in the native editor', asyn
 });
 
 it('opens a new template draft in the practice client language', () => {
-  renderModal({ startNew: true, clientLanguage: 'fr' });
+  renderModal({ clientLanguage: 'fr' });
+  fireEvent.click(screen.getByRole('button', { name: 'Create template' }));
   expect(screen.getByRole('textbox', { name: 'Template name' })).toHaveValue('New template');
   expect(screen.getByRole('combobox', { name: 'Report language' })).toHaveValue('fr');
   expect(screen.getByRole('button', { name: 'Save templates' })).toBeEnabled();

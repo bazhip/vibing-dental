@@ -92,7 +92,7 @@ export const RecordNotePanel: React.FC<RecordNotePanelProps> = ({
       <aside className="pdf-preview-styles">
         <ul className="pdf-preview-notes">
           <li>{t('recordNote.hint')}</li>
-          {showConsultationGuide && <li><a className="visit-documentation__guide"
+          {showConsultationGuide && <li><a className="context-help-link"
             href={documentationUrl(lng, 'consultation-transfer')} target="_blank" rel="noopener noreferrer">
             {t('help:articles.consultation-transfer.title')}
           </a></li>}
