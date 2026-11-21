@@ -1,0 +1,125 @@
+.dental-exam {
+  container: dental-exam / inline-size;
+}
+
+.exam-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.exam-table tr {
+  border-block-end: 1px solid var(--border);
+}
+
+.exam-table :is(th, td) {
+  padding: 0;
+  vertical-align: middle;
+}
+
+.exam-table thead tr {
+  background: var(--surface-alt);
+  color: var(--text-muted);
+  border-color: var(--border-strong);
+}
+
+.exam-table thead th {
+  padding-block: 10px;
+  font-weight: 600;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.exam-table__area {
+  width: 28%;
+  text-align: start;
+}
+
+.exam-table .exam-table__area,
+.exam-table .exam-table__comment-col {
+  padding-inline: 10px;
+  overflow-wrap: anywhere;
+}
+
+.exam-table tbody .exam-table__area {
+  padding-block: 8px;
+  font-weight: 500;
+}
+
+.exam-table__status {
+  width: 6rem;
+  text-align: center;
+}
+
+.exam-table thead .exam-table__comment-col {
+  text-align: start;
+}
+
+.exam-table tbody .exam-table__comment-col {
+  padding-block: 5px;
+}
+
+/* The label offers a full-width target for gloved and touch input. */
+.exam-table__radio-hit {
+  display: grid;
+  place-items: center;
+  min-block-size: 44px;
+  cursor: pointer;
+}
+
+.exam-table__radio-hit:has(input:disabled) {
+  cursor: default;
+}
+
+.exam-table__row--abnormal {
+  background: var(--danger-tint);
+  --selection-accent: var(--danger);
+}
+
+.exam-table tbody .exam-table__row--abnormal .exam-table__area {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.exam-table__comment {
+  display: block;
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-block-size: 2.4em;
+  padding: 0.4rem 0.6rem;
+  resize: none;
+  overflow: hidden;
+  font-family: inherit;
+  line-height: 1.35;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+@container dental-exam (max-width: 34rem) {
+  .exam-table,
+  .exam-table thead,
+  .exam-table tbody {
+    display: block;
+  }
+
+  .exam-table tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) repeat(2, minmax(4rem, 25%));
+    align-items: center;
+  }
+
+  .exam-table :is(.exam-table__area, .exam-table__status) {
+    width: auto;
+  }
+
+  .exam-table thead .exam-table__comment-col,
+  .exam-table tbody .exam-table__comment-col:empty {
+    display: none;
+  }
+
+  .exam-table tbody .exam-table__comment-col {
+    grid-column: 1 / -1;
+    padding-block: 0 8px;
+  }
+}

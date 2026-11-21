@@ -7,6 +7,7 @@ import { FormGroup } from '../ios/Form';
 import { MAX_EXAM_COMMENT } from '../utils/customExam';
 import { EXAM_DIAGNOSTICS_ID, isBuiltInExamArea, isCustomExamText, type ExamLayoutField } from '../utils/examLayout';
 import { RefineTextAction } from './RefineTextAction';
+import './ExamForm.css';
 
 const NORMAL = 'normal' as const;
 const ABNORMAL = 'abnormal' as const;
@@ -239,28 +240,29 @@ export const ExamForm: React.FC<ExamFormProps> = ({
   );
 
   const webAreaGroup = (group: Row[]) => (
-    <table className="exam-table" key={group[0].id}>
-      <thead>
-        <tr>
-          <th></th>
-          <th>{t('exam.normal')}</th>
-          <th>{t('exam.abnormal')}</th>
-          <th className="exam-table__comment-col">{t('exam.comment')}</th>
+    <table className="exam-table" key={group[0].id} role="table">
+      <thead role="rowgroup">
+        <tr role="row">
+          <th className="exam-table__area" scope="col" role="columnheader">{t('exam.layout.area')}</th>
+          <th className="exam-table__status" scope="col" role="columnheader">{t('exam.normal')}</th>
+          <th className="exam-table__status" scope="col" role="columnheader">{t('exam.abnormal')}</th>
+          <th className="exam-table__comment-col" scope="col" role="columnheader">{t('exam.comment')}</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody role="rowgroup">
         {group.map((item) => {
           const { label } = item;
           const groupName = `exam-${item.id}`;
           return (
             <tr
               key={item.id}
+              role="row"
               className={item.status === 'abnormal' ? 'exam-table__row--abnormal' : undefined}
             >
-              <td className="anesthesia-table__label">{label}</td>
+              <th className="exam-table__area" scope="row" role="rowheader" dir="auto">{label}</th>
               {/* The whole cell is the hit area — this gets used with
                   gloves on; a bare 13px radio is not a target. */}
-              <td className="exam-table__radio">
+              <td className="exam-table__radio" role="cell">
                 <label className="exam-table__radio-hit">
                   <input
                     type="radio"
@@ -274,7 +276,7 @@ export const ExamForm: React.FC<ExamFormProps> = ({
                   />
                 </label>
               </td>
-              <td className="exam-table__radio">
+              <td className="exam-table__radio" role="cell">
                 <label className="exam-table__radio-hit">
                   <input
                     type="radio"
@@ -287,7 +289,7 @@ export const ExamForm: React.FC<ExamFormProps> = ({
                   />
                 </label>
               </td>
-              <td className="exam-table__comment-col">
+              <td className="exam-table__comment-col" role="cell">
                 {showComment(item) && (
                   <CommentBox
                     label={label}
@@ -308,7 +310,7 @@ export const ExamForm: React.FC<ExamFormProps> = ({
   const native = isNativeApp();
   const areaGroup = native ? nativeAreaGroup : webAreaGroup;
   return (
-    <div className={native ? 'dental-grid-section exam-ios' : 'dental-grid-section'}>
+    <div className={native ? 'dental-grid-section exam-ios' : 'dental-grid-section dental-exam'}>
       {header}
       {layout && rows.length === 0 && <p className="chart-settings__note" role="status">{t('exam.layout.empty')}</p>}
       {groups.map(group => Array.isArray(group) ? areaGroup(group) : textField(group))}

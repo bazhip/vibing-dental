@@ -96,8 +96,8 @@ html:not(.native-ios) .entry-grid-container .entry-grid-form .species-tab:focus-
   outline-offset: 2px;
 }
 
-/* Clinical tables use plain readable labels; abnormal row signals remain intact. */
-html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.exam-table, .anesthesia-table) thead th {
+/* Anesthesia table labels match the rest of the chart. */
+html:not(.native-ios) .entry-grid-container .entry-grid-form .anesthesia-table thead th {
   padding-block: 12px;
   font-size: var(--clinical-label-size);
   text-transform: none;
@@ -105,10 +105,10 @@ html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.exam-table, .a
   background: var(--surface-alt);
   border-bottom: 1px solid var(--border-strong);
 }
-html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.exam-table, .anesthesia-table) tbody td {
+html:not(.native-ios) .entry-grid-container .entry-grid-form .anesthesia-table tbody td {
   border-bottom: 1px solid var(--border);
 }
-html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.exam-table, .anesthesia-table) tbody tr:last-child td {
+html:not(.native-ios) .entry-grid-container .entry-grid-form .anesthesia-table tbody tr:last-child td {
   border-bottom: 0;
 }
 html:not(.native-ios) .entry-grid-container .entry-grid-form .anesthesia-drug {
@@ -181,7 +181,7 @@ html:not(.native-ios) .entry-grid-container .entry-grid-form .imaging__uploader 
     margin-bottom: 20px;
   }
   /* Keep touch targets outside the chart large enough without expanding chart cells. */
-  html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.species-tab, .diagram-view__action, .diagram-view__tool, .anesthesia-drug__add, .anesthesia-drug__remove, .imaging__queue-dismiss, .exam-table__radio-hit, .visit-documentation__short-text) {
+  html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.species-tab, .diagram-view__action, .diagram-view__tool, .anesthesia-drug__add, .anesthesia-drug__remove, .imaging__queue-dismiss, .visit-documentation__short-text) {
     min-height: 44px;
     min-width: 44px;
   }
