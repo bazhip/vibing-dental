@@ -110,9 +110,11 @@ export function ExamLayoutDialog({ fields, status, mode, canEdit, onSave, onRelo
   const content = <>
     <div className="consultation-library__body exam-layout__body">
       <div className="consultation-library__intro">
-        <p>{t(mode === 'practice' ? 'exam.layout.practiceIntro' : 'exam.layout.personalIntro')}</p>
-        <a className="visit-documentation__guide" href={documentationUrl(i18n.resolvedLanguage ?? i18n.language, 'exam') + '/first'}
-          target="_blank" rel="noopener noreferrer">{t('exam.layout.help')}</a>
+        <div className="consultation-library__intro-copy">
+          <p>{t(mode === 'practice' ? 'exam.layout.practiceIntro' : 'exam.layout.personalIntro')}</p>
+          <a className="context-help-link" href={documentationUrl(i18n.resolvedLanguage ?? i18n.language, 'exam') + '/first'}
+            target="_blank" rel="noopener noreferrer">{t('exam.layout.help')}</a>
+        </div>
       </div>
       {status === 'loading' && <p role="status">{t('exam.layout.loading')}</p>}
       {status === 'error' && <div className="consultation-library__notice">

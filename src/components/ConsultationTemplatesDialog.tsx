@@ -304,9 +304,11 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
   const body = <>
     <div className="consultation-library__body">
       <div className="consultation-library__intro">
-        <p>{t(isImaging ? 'imaging.layout.intro' : isDischarge ? 'discharge.templates.intro' : 'consultation.templates.intro')}</p>
-        <a className="visit-documentation__guide" href={documentationUrl(language, isImaging ? 'imaging' : isDischarge ? 'discharge' : 'consultation-templates')}
-          target="_blank" rel="noopener noreferrer">{t(isImaging ? 'imaging.layout.help' : isDischarge ? 'discharge.templates.help' : 'consultation.templates.help')}</a>
+        <div className="consultation-library__intro-copy">
+          <p>{t(isImaging ? 'imaging.layout.intro' : isDischarge ? 'discharge.templates.intro' : 'consultation.templates.intro')}</p>
+          <a className="context-help-link" href={documentationUrl(language, isImaging ? 'imaging' : isDischarge ? 'discharge' : 'consultation-templates')}
+            target="_blank" rel="noopener noreferrer">{t(isImaging ? 'imaging.layout.help' : isDischarge ? 'discharge.templates.help' : 'consultation.templates.help')}</a>
+        </div>
         {onOpenSettings && <button type="button" className="ui-btn ui-btn--secondary" onClick={async () => {
           if (!(await canClose())) return;
           onClose();

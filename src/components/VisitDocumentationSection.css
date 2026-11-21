@@ -97,41 +97,11 @@
   field-sizing: content;
   max-block-size: 25rem;
 }
-.visit-documentation__toolbar,
-.visit-documentation__sources,
-.visit-documentation__tools {
+.visit-documentation__sources {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 8px 12px;
-}
-.visit-documentation__toolbar {
-  justify-content: space-between;
-  align-items: end;
-  padding: 12px 16px;
-  background: var(--surface-alt);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  margin-block-end: 12px;
-}
-.visit-documentation__template { flex: 1 1 24rem; min-width: 0; }
-.visit-documentation__choices { display: flex; flex-wrap: wrap; gap: 6px; }
-.visit-documentation__choices--scroll { max-height: 9rem; overflow-y: auto; padding: 2px; }
-.visit-documentation__choices .diagram-view__action { max-width: 100%; overflow-wrap: anywhere; white-space: normal; }
-.visit-documentation__choices [aria-pressed="true"] {
-  background: var(--action-tint);
-  border-color: var(--primary);
-  color: var(--primary);
-}
-.visit-documentation__selected { display: block; color: var(--text); overflow-wrap: anywhere; }
-.visit-documentation__guide {
-  display: inline-flex;
-  align-items: center;
-  min-height: 40px;
-  color: var(--primary);
-  text-underline-offset: 3px;
-  font-size: 0.875rem;
-  font-weight: 600;
 }
 .visit-documentation__sources { margin-block-end: 16px; }
 .visit-documentation__status {
@@ -210,6 +180,7 @@
   color: var(--text-muted);
   font-size: 0.875rem;
 }
+.consultation-library__intro-copy { min-inline-size: 0; flex: 1 1 20rem; }
 .consultation-library__intro p,
 .consultation-library__notice p { margin-block: 4px; }
 .consultation-library__layout {
@@ -423,15 +394,7 @@
 .consultation-library__footer { flex-wrap: wrap; }
 .consultation-library .ui-btn { max-width: 100%; overflow-wrap: anywhere; }
 .consultation-library .ui-btn:disabled { opacity: 0.55; cursor: default; }
-@media (max-width: 360px) {
-  .visit-documentation__tools { column-gap: 6px; }
-  .visit-documentation__tools .diagram-view__action { padding-inline: 8px; }
-}
 @media (max-width: 640px) {
-  .visit-documentation__toolbar { padding: 10px 12px; }
-  .visit-documentation__guide,
-  .visit-documentation__choices .diagram-view__action,
-  .visit-documentation__tools .diagram-view__action,
   .consultation-library__template-choice,
   .consultation-library .ui-btn,
   .consultation-library__section-name,

@@ -1,3 +1,4 @@
+import { TemplatePicker } from './TemplatePicker';
 import { PLACEHOLDERS, placeholderTitle, type PlaceholderKey } from '../utils/ownerReportConfig';
 import { treatmentCodeSuggestions, treatmentTemplateFields } from '../utils/treatmentTemplateFields';
 import { RefineTextAction, RefineTextContext } from './RefineTextAction';
@@ -225,39 +226,18 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
   const fields = treatmentTemplateFields(body);
   const templatesBody = (
     <>
-      {!createOnly && <section className="ai-settings-section">
-        <div className="treatment-templates__list-head">
-          <span className="patient-form__label">{t('templates.saved')}</span>
-          <button type="button" className="diagram-view__action" onClick={() => void startNew()} disabled={busy}>
-            {t('templates.new')}
-          </button>
-        </div>
-        {store.templates.length === 0 ? (
-          <p className="practice-logo-empty">
-            {t('templates.empty')}
-          </p>
-        ) : (
-          <ul className="treatment-templates__list">
-            {store.templates.map((tpl) => (
-              <li key={tpl.id}>
-                <button
-                  type="button"
-                  className={
-                    tpl.id === selectedId
-                      ? 'treatment-templates__item treatment-templates__item--active'
-                      : 'treatment-templates__item'
-                  }
-                  aria-pressed={tpl.id === selectedId}
-                  onClick={() => void pick(tpl)}
-                  disabled={busy}
-                >
-                  {tpl.name.trim() || t('templates.untitled')}
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>}
+      {!createOnly && <TemplatePicker label={t('templates.saved')}
+        choices={store.templates.map(template => ({ id: template.id, label: template.name.trim() || t('templates.untitled') }))}
+        activeId={selectedId ?? undefined} disabled={busy}
+        onSelect={id => {
+          const template = store.templates.find(entry => entry.id === id);
+          if (template) void pick(template);
+        }}
+        status={!store.templates.length ? <p className="practice-logo-empty">{t('templates.empty')}</p> : undefined}
+        actions={<button type="button" className="diagram-view__action" onClick={() => void startNew()} disabled={busy}>
+          <span aria-hidden="true">+</span>{' '}{t('visitDocumentation:consultation.templates.builder.createTemplate')}
+        </button>}
+      />}
 
       <section className="ai-settings-section">
         <label className="patient-form__label">

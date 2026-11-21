@@ -18,7 +18,8 @@ import {
   templateHomecareTips,
   templateIntro,
 } from '../utils/ownerReport';
-import { MAX_TEMPLATES, type OwnerReportContext } from '../utils/ownerReportConfig';
+import type { OwnerReportContext } from '../utils/ownerReportConfig';
+import { documentationUrl } from '../help/openDocumentation';
 
 type GeneratedField = 'extractionsText' | 'findingsText' | 'examNotesText';
 
@@ -40,7 +41,6 @@ interface OwnerReportSectionProps {
   aiEnabled?: boolean;
   /** Open the report templates editor. */
   onCustomize?: () => void;
-  onNewTemplate?: () => void;
 }
 
 /**
@@ -61,9 +61,9 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
   context,
   aiEnabled = false,
   onCustomize,
-  onNewTemplate,
 }) => {
-  const { t } = useTranslation('reportui');
+  const { t, i18n } = useTranslation('reportui');
+  const templatesGuide = documentationUrl(i18n.resolvedLanguage ?? i18n.language, 'discharge') + '/second';
   const fieldPrefix = React.useId();
   const [expandedFields, setExpandedFields] = React.useState<Partial<Record<GeneratedField, boolean>>>({});
   const model = React.useMemo(() => buildOwnerReportModel(snapshot, context), [snapshot, context]);
@@ -80,7 +80,6 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
   const values = placeholderValuesFor(snapshot, context, template);
   const introDefault = model.generatedOpening ?? templateIntro(snapshot, template, values);
   const homecareDefault = overrides.generatedHomecare ?? templateHomecareTips(template, values, snapshot.species).join('\n');
-  const canCreateTemplate = onNewTemplate && !readOnly && (context?.config?.templates.length ?? 0) < MAX_TEMPLATES;
 
   // '' is a deliberate customization ("print nothing here"), so edited
   // state is tracked by presence, not truthiness.
@@ -287,26 +286,29 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
           </button>
         } />
 
-      <div className="owner-report__template-bar">
-        <OwnerReportTemplateChoices config={context?.config} templateId={overrides.templateId} followPracticeDefault
-          onSelect={readOnly ? undefined : id => onOverrideChange('templateId', id)}
-          actions={<>
-            {onCustomize && <button type="button" className="diagram-view__action" onClick={onCustomize} title={t('section.customizeTitle')}>
-              {t('consultation.templates.manage', { ns: 'visitDocumentation' })}
-            </button>}
-            {canCreateTemplate && <button type="button" className="diagram-view__action" onClick={onNewTemplate}>{t('templates.newName')}</button>}
-          </>} />
-        {aiEnabled && !readOnly && (
-          <button type="button" className="diagram-view__action owner-report__draft"
-            title={t('section.writeTitle')} aria-label={t(drafting ? 'section.writing' : 'section.writeWithAi')} disabled={drafting} onClick={() => void writeWithAi()}>
-            <span aria-hidden="true">✨</span>
-            <span role="status">{t(drafting ? 'section.writing' : 'section.writeWithAi')}</span>
-          </button>
-        )}
-      </div>
+      <OwnerReportTemplateChoices config={context?.config} templateId={overrides.templateId} followPracticeDefault
+        onSelect={readOnly ? undefined : id => onOverrideChange('templateId', id)}
+        actions={onCustomize && <button type="button" className="diagram-view__action" onClick={onCustomize}
+          aria-haspopup="dialog" title={t('section.customizeTitle')}>
+          {t('consultation.templates.manage', { ns: 'visitDocumentation' })}
+        </button>}
+        help={{
+          label: t('consultation.templates.help', { ns: 'visitDocumentation' }),
+          href: templatesGuide,
+        }}
+      />
 
       <fieldset className="sidebar-layout__fieldset" disabled={readOnly}>
-        <p className="patient-form__hint">{t('section.intro')}</p>
+        <div className="owner-report__wording-tools">
+          <p className="patient-form__hint">{t('section.intro')}</p>
+          {aiEnabled && !readOnly && (
+            <button type="button" className="diagram-view__action owner-report__draft"
+              title={t('section.writeTitle')} aria-label={t(drafting ? 'section.writing' : 'section.writeWithAi')} disabled={drafting} onClick={() => void writeWithAi()}>
+              <span aria-hidden="true">✨</span>
+              <span role="status">{t(drafting ? 'section.writing' : 'section.writeWithAi')}</span>
+            </button>
+          )}
+        </div>
 
       {summaryBlock}
 

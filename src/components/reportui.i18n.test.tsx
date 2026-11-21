@@ -1,3 +1,4 @@
+import { TemplatePicker } from './TemplatePicker';
 import React from 'react';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { vi } from 'vitest';
@@ -74,14 +75,15 @@ const twoTemplates = (): OwnerReportConfig => ({
   ],
 });
 
-it('localizes the compact owner template picker for large lists', () => {
+it('keeps long template lists accessible with the common picker', () => {
   const onSelect = vi.fn();
   const config = twoTemplates();
-  config.templates.push(...['First follow-up', 'Second follow-up', 'Third follow-up'].map((name, index) => ({ ...defaultTemplate(), id: `extra-${index}`, name })));
+  config.templates.push(...['First follow-up', 'Second follow-up', 'Third follow-up', 'Fourth follow-up'].map((name, index) => ({ ...defaultTemplate(), id: `extra-${index}`, name })));
   const { container } = render(<OwnerReportTemplateChoices config={config} followPracticeDefault onSelect={onSelect} />);
-  const picker = screen.getByRole('combobox', { name: '⟦Report template⟧' });
-  expect(picker).toHaveValue('');
-  fireEvent.change(picker, { target: { value: 'extra-2' } });
+  const picker = screen.getByRole('group', { name: '⟦Report template⟧' });
+  expect(picker.querySelector('.template-picker__choices--scroll')).toBeInTheDocument();
+  expect(within(picker).getByRole('button', { name: /Practice default/, pressed: true })).toBeInTheDocument();
+  fireEvent.click(within(picker).getByRole('button', { name: 'Third follow-up', pressed: false }));
   expect(onSelect).toHaveBeenCalledExactlyOnceWith('extra-2');
   expect(findUntranslated(container, config.templates.map(template => template.name))).toEqual([]);
 });
@@ -141,7 +143,7 @@ describe('OwnerReportTemplatesModal', () => {
     await i18n.changeLanguage('de');
     const onSave = vi.fn(async () => {});
     render(<OwnerReportTemplatesModal {...props} onSave={onSave} config={defaultConfig()} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Neue Vorlage' }));
+    fireEvent.click(screen.getByRole('button', { name: i18n.t('visitDocumentation:consultation.templates.builder.createTemplate') }));
     fireEvent.click(screen.getByRole('button', { name: 'Vorlagen speichern' }));
     await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
     const saved = (onSave.mock.calls[0] as unknown as [OwnerReportConfig])[0];
@@ -159,7 +161,7 @@ describe('OwnerReportTemplatesModal', () => {
     await i18n.changeLanguage('fr');
     const onSave = vi.fn(async () => {});
     render(<OwnerReportTemplatesModal {...props} onSave={onSave} config={defaultConfig()} clientLanguage="de" />);
-    fireEvent.click(screen.getByRole('button', { name: 'Nouveau modèle' }));
+    fireEvent.click(screen.getByRole('button', { name: i18n.t('visitDocumentation:consultation.templates.builder.createTemplate') }));
     fireEvent.click(screen.getByRole('button', { name: /^Enregistrer/ }));
     await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
     const saved = (onSave.mock.calls[0] as unknown as [OwnerReportConfig])[0];
@@ -169,7 +171,7 @@ describe('OwnerReportTemplatesModal', () => {
   it('a template created in an app language reports do not cover (pseudo-locale) is saved as English', async () => {
     const onSave = vi.fn(async () => {});
     render(<OwnerReportTemplatesModal {...props} onSave={onSave} config={defaultConfig()} />);
-    fireEvent.click(screen.getByRole('button', { name: '⟦New template⟧' }));
+    fireEvent.click(screen.getByRole('button', { name: '⟦Create template⟧' }));
     fireEvent.click(screen.getByRole('button', { name: '⟦Save templates⟧' }));
     await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
     const saved = (onSave.mock.calls[0] as unknown as [OwnerReportConfig])[0];
@@ -371,4 +373,15 @@ describe('sampleOwnerReportSnapshot', () => {
     expect(s.postComments[0].text).toMatch(/lasca/);
     expect(s.ownerReport?.extraNotes).toMatch(/Comida macia/);
   });
+});
+
+it('renders shared template picker labels and guidance in the current language', () => {
+  const label = i18n.t('section.templateLabel', { ns: 'reportui' });
+  const guide = i18n.t('consultation.templates.help', { ns: 'visitDocumentation' });
+  const { container } = render(<TemplatePicker label={label} activeId="a" onSelect={vi.fn()}
+    choices={[{id: 'a', label: i18n.t('templates.badgeDefault', { ns: 'reportui' })}]}
+    help={{ label: guide, href: '/help/#discharge' }} />);
+  expect(screen.getByRole('group', { name: label })).toBeVisible();
+  expect(screen.getByRole('link', { name: guide })).toBeVisible();
+  expect(findUntranslated(container, [])).toEqual([]);
 });

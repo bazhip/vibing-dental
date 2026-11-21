@@ -19,7 +19,7 @@ describe('treatment report customization', () => {
   it('opens template management beside the template choices', async () => {
     render(<SurgeryReportForm value="" onChange={vi.fn()} />);
     const customize = screen.getByRole('button', { name: 'Manage templates' });
-    expect(within(customize.closest('.visit-documentation__toolbar')!).getByRole('button', { name: 'Cleaning' })).toBeVisible();
+    expect(within(customize.closest('.template-picker')!).getByRole('button', { name: 'Cleaning' })).toBeVisible();
     expect(customize).toHaveAttribute('title', 'Manage treatment report templates');
     expect(screen.queryByRole('button', { name: 'Edit templates' })).toBeNull();
     await userEvent.click(customize);

@@ -41,7 +41,6 @@ interface OwnerReportTemplatesModalProps {
   onSave: (config: OwnerReportConfig) => Promise<void>;
   /** Practice owners edit; everyone else gets a read-only view. */
   canEdit: boolean;
-  startNew?: boolean;
   aiEnabled?: boolean;
   /** Role still loading — suppress the read-only note until known. */
   roleKnown: boolean;
@@ -82,7 +81,6 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
   config,
   onSave,
   canEdit,
-  startNew = false,
   aiEnabled,
   roleKnown,
   loadFailed = false,
@@ -100,7 +98,6 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
   const asScreen = presentation === 'screen';
   const asSheet = presentation === 'sheet';
   const categorized = !asScreen && !asSheet;
-  const startedNew = React.useRef(false);
   const [actionsOpen, setActionsOpen] = React.useState(false);
   const actionsTrigger = React.useRef<HTMLButtonElement>(null);
   const [category, setCategory] = React.useState<EditorCategory>('basics');
@@ -117,7 +114,6 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
   const activeField = React.useRef<{ el: TextField; set: (value: string) => void } | null>(null);
 
   React.useEffect(() => {
-    startedNew.current = false;
     if (!open) return;
     setDraft(clone(config));
     setSelectedId(config.defaultTemplateId);
@@ -131,15 +127,6 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
     () => ({ ...defaultTemplate(clientLanguage ?? appReportLocale()), id: newId('tpl-'), name: t('templates.newName') }),
     [clientLanguage, t],
   );
-  React.useEffect(() => {
-    if (!open || !startNew || !canEdit || loadFailed || startedNew.current || config.templates.length >= MAX_TEMPLATES) return;
-    startedNew.current = true;
-    const fresh = makeNewTemplate();
-    setDraft(previous => ({ ...previous, templates: [...previous.templates, fresh] }));
-    setSelectedId(fresh.id);
-    nameRef.current?.focus({ preventScroll: true });
-  }, [open, startNew, canEdit, loadFailed, config.templates.length, makeNewTemplate]);
-
   const baseline = React.useMemo(() => JSON.stringify(config), [config]);
   const dirty = open && JSON.stringify(draft) !== baseline;
 
@@ -439,11 +426,11 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
   const templatesEditor = (
     <>
       <div className="report-templates__toolbar">
-        <OwnerReportTemplateChoices config={draft} templateId={selected.id} onSelect={selectTemplate} disabled={busy}
+        <OwnerReportTemplateChoices config={draft} templateId={selected.id} onSelect={selectTemplate} disabled={busy} embedded
           actions={canEdit && (
             <div className="report-templates__toolbar-actions">
               <button type="button" className="diagram-view__action" onClick={() => addTemplate()} disabled={!canAddTemplate}>
-                <span aria-hidden="true">+</span>{' '}{t('templates.newName')}
+                <span aria-hidden="true">+</span>{' '}{t('visitDocumentation:consultation.templates.builder.createTemplate')}
               </button>
               <div
                 className="report-templates__overflow"

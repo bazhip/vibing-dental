@@ -1,3 +1,5 @@
+import { documentationUrl } from '../help/openDocumentation';
+import { TemplatePicker } from './TemplatePicker';
 import { SectionHeader } from './SectionHeader';
 import { RefineTextAction } from './RefineTextAction';
 import React from 'react';
@@ -35,8 +37,9 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
   practiceId = '',
   readOnly = false,
 }) => {
-  const { t } = useTranslation(['forms', 'library', 'visitDocumentation']);
+  const { t, i18n } = useTranslation(['forms', 'library', 'visitDocumentation']);
   const store = useReportTemplates(practiceId);
+  const templatesGuide = documentationUrl(i18n.resolvedLanguage ?? i18n.language, 'treatment');
   const templatesOn = store.enabled && cloudActive;
   const [templateEditor, setTemplateEditor] = React.useState<'manage' | 'new' | null>(null);
   const selectedId = store.templates.find(template => template.id === templateId)?.id
@@ -75,29 +78,24 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
   return (
     <div className="patient-form" data-tour="treatment">
       <SectionHeader title={t('report.title')} />
-      {templatesOn && <div className="visit-documentation__toolbar">
-        <div className="visit-documentation__template">
-          <span className="patient-form__label">{t('library:templates.saved')}</span>
-          {!store.loaded || !store.templates.length
-            ? <p className="visit-documentation__helper">{t(store.loaded ? 'report.none' : 'report.loading')}</p>
-            : <div role="group" aria-label={t('library:templates.saved')}
-                className={store.templates.length > 6 ? 'visit-documentation__choices visit-documentation__choices--scroll' : 'visit-documentation__choices'}>
-                {store.templates.map(template => (
-                  <button key={template.id} type="button" className="diagram-view__action" disabled={readOnly}
-                    aria-pressed={selectedId === template.id} onClick={() => void applyTemplate(template.id)}>
-                    {template.name.trim() || t('report.untitled')}
-                  </button>
-                ))}
-              </div>}
-        </div>
-        <div className="visit-documentation__tools">
-          <button type="button" className="diagram-view__action" onClick={() => setTemplateEditor('new')} disabled={readOnly || !store.loaded}>
+      {templatesOn && <TemplatePicker label={t('library:templates.saved')}
+        choices={store.templates.map(template => ({ id: template.id, label: template.name.trim() || t('report.untitled') }))}
+        activeId={selectedId} disabled={readOnly} onSelect={id => void applyTemplate(id)}
+        status={!store.loaded || !store.templates.length
+          ? <p className="visit-documentation__helper">{t(store.loaded ? 'report.none' : 'report.loading')}</p> : undefined}
+        help={{
+          label: t('visitDocumentation:consultation.templates.help'),
+          href: templatesGuide,
+        }}
+        actions={<>
+          <button type="button" className="diagram-view__action" onClick={() => setTemplateEditor('new')}
+            aria-haspopup="dialog" disabled={readOnly || !store.loaded}>
             <span aria-hidden="true">+</span>{' '}{t('report.newTemplate')}
           </button>
           <button type="button" className="diagram-view__action" onClick={() => setTemplateEditor('manage')}
             aria-haspopup="dialog" title={t('report.customizeTitle')}>{t('visitDocumentation:consultation.templates.manage')}</button>
-        </div>
-      </div>}
+        </>}
+      />}
       <div className="refine-field">
         <textarea
           className="patient-form__textarea surgery-report__textarea"

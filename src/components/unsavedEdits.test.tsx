@@ -45,7 +45,7 @@ describe('Report templates editor', () => {
 
     const closeX = () => document.querySelector<HTMLButtonElement>('.pdf-preview-close')!;
     const footerClose = () => screen.getAllByRole('button', { name: 'Close' }).find((b) => b !== closeX())!;
-    for (const button of [closeX, footerClose, () => screen.getByRole('button', { name: 'Extraction' }), () => screen.getByRole('button', { name: 'New template' })]) {
+    for (const button of [closeX, footerClose, () => screen.getByRole('button', { name: 'Extraction' }), () => screen.getByRole('button', { name: 'Create template' })]) {
       fireEvent.click(button());
       await waitFor(() => expect(confirm).toHaveBeenCalled());
       confirm.mockClear();

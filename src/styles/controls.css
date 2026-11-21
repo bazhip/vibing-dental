@@ -140,3 +140,19 @@ html:not(.native-ios)[dir='rtl'] select:not([multiple], [size], .select--bare) {
   }
   :where(input[type='checkbox']:not(.dental-grid__missing-check), input[type='radio'])::before, .ios-switch::before { display: none; }
 }
+
+.context-help-link {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  min-block-size: 24px;
+  max-inline-size: 100%;
+  color: var(--primary);
+  font-size: .8125rem;
+  font-weight: 500;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 640px), (pointer: coarse) {
+  .context-help-link { min-block-size: 44px; align-items: flex-start; padding-block: 4px; }
+}

@@ -166,7 +166,6 @@ const CHARTING_COMPANIONS: Record<string, string> = { charting: 'diagnosis' };
 // What toLocaleString() prints by default: the saved-at tooltip's old format.
 const FULL_DATE_TIME: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
 const OWNER_REPORT_SECTION = 'discharge';
-const MANAGE_OWNER_REPORT_TEMPLATES = 'manage';
 const CT_REPORT_KIND = 'ct';
 function mostRecentVisitFirst(a: CloudChartMeta, b: CloudChartMeta): number {
   return (b.chart_date || '').localeCompare(a.chart_date || '') || b.updated_at.localeCompare(a.updated_at);
@@ -237,7 +236,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   }, [chartSettings.update]); // eslint-disable-line react-hooks/exhaustive-deps
   // Chart settings dialog: closed, everything, or one section only.
   const [chartSettingsOpen, setChartSettingsOpen] = React.useState<false | 'all' | SettingsSection>(false);
-  const [reportCustomizeOpen, setReportCustomizeOpen] = React.useState<false | 'manage' | 'new'>(false);
+  const [reportCustomizeOpen, setReportCustomizeOpen] = React.useState(false);
   const returnToOwnerPreview = React.useRef(false);
   // Chart history: which chart (the open one, or a visit picked in My charts).
   const [historyFor, setHistoryFor] = React.useState<{ id: string; label?: string; fromLibrary?: boolean } | null>(null);
@@ -1631,9 +1630,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           onPreview={() => openDocuments('owner', true)}
           context={{ config: profile.ownerReportConfig, practiceName: profile.practiceName, doctorName: profile.doctorName }}
           aiEnabled={profile.aiEnabled && !trial && cloud.enabled}
-          onCustomize={cloud.enabled && !trial && !native ? () => setReportCustomizeOpen(MANAGE_OWNER_REPORT_TEMPLATES) : undefined}
-          onNewTemplate={!trial && practiceTeam.loaded && practiceTeam.role === 'owner' && !profile.ownerReportConfigLoadFailed
-            ? () => setReportCustomizeOpen('new') : undefined}
+          onCustomize={cloud.enabled && !trial ? () => setReportCustomizeOpen(true) : undefined}
         />}
       </VisitDocumentationSection>,
     },
@@ -1955,7 +1952,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     <>
       {reportCustomizeOpen && (
         <OwnerReportCustomize
-          startNew={reportCustomizeOpen === 'new'}
           aiEnabled={profile.aiEnabled}
           onClose={() => {
             setReportCustomizeOpen(false);
@@ -2197,7 +2193,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               onCustomizeTemplate: cloud.enabled && !trial ? () => {
                 returnToOwnerPreview.current = true;
                 setPreviewOpen(false);
-                setReportCustomizeOpen(MANAGE_OWNER_REPORT_TEMPLATES);
+                setReportCustomizeOpen(true);
               } : undefined,
               ownerEmail: chart.patientInfo.ownerEmail,
               ensureSaved: ensureSavedForEmail,
@@ -2474,7 +2470,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       charting: () => setChartSettingsOpen('charting'),
       diagnosis: () => setChartSettingsOpen('diagnosis'),
       imaging: openImagingTemplates,
-      discharge: ownerReportOn && !trial ? () => setReportCustomizeOpen(MANAGE_OWNER_REPORT_TEMPLATES) : undefined,
     };
     const hasSavedPatient = cloud.enabled && chart.openedExisting && !!chart.cloudChartId;
     const customize = customizeFor[activeSection];
@@ -2496,7 +2491,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         : []),
       ...(status.canSaveNow && !saveDraft ? [{ label: t('ios.menu.saveNow', { ns: 'chart' }), icon: 'checkmark-circle' as const, onSelect: attemptSave }] : []),
       ...(status.retry ? [{ label: t('ios.menu.retrySave', { ns: 'chart' }), icon: 'arrow-uturn-forward' as const, onSelect: attemptSave }] : []),
-      ...(customize ? [{ label: activeSection === 'discharge' ? t('practice.ownerReport.title', { ns: 'settings' }) : t('ios.menu.customize', { ns: 'chart', section: sectionLabel }), icon: 'gear' as const, onSelect: customize }] : []),
+      ...(customize ? [{ label: t('ios.menu.customize', { ns: 'chart', section: sectionLabel }), icon: 'gear' as const, onSelect: customize }] : []),
       // Always there, so the bar's trailing capsule keeps its shape.
       { label: t('chart.title', { ns: 'settings' }), icon: 'line-3-horizontal-decrease' as const, onSelect: () => setChartSettingsOpen('all') },
     ];
