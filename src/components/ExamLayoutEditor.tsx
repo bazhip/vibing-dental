@@ -1,12 +1,8 @@
-import { useId, useRef, useState } from 'react';
+import { useId, useLayoutEffect, useRef, useState, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { documentationUrl } from '../help/openDocumentation';
-import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
 import { useReorderList } from '../hooks/useReorderList';
-import { useModalFocus } from '../hooks/useModalFocus';
-import { Sheet } from '../ios/Sheet';
-import { isNativeApp } from '../native/platform';
 import { MAX_EXAM_LABEL } from '../utils/customExam';
 import {
   DEFAULT_EXAM_LAYOUT, EXAM_DIAGNOSTICS_ID, EXAM_LAYOUT_LIMIT, isBuiltInExamArea,
@@ -17,21 +13,24 @@ import './VisitDocumentationSection.css';
 
 const FIELD_KINDS = ['area', 'text'] as const;
 
-interface Props {
+export interface ExamLayoutSettings {
+  scope?: string;
   fields: ExamLayoutField[];
   status: 'loading' | 'ready' | 'error';
   mode: 'personal' | 'practice';
   canEdit: boolean;
   onSave: (fields: ExamLayoutField[]) => Promise<void>;
   onReload: () => void;
-  onClose: () => void;
 }
 
-export function ExamLayoutDialog({ fields, status, mode, canEdit, onSave, onReload, onClose }: Props) {
+export type ExamLayoutDismiss = () => boolean | Promise<boolean>;
+
+export function ExamLayoutEditor({ fields, status, mode, canEdit, onSave, onReload, dismissGuard, saveTarget }: ExamLayoutSettings & {
+  dismissGuard?: RefObject<ExamLayoutDismiss | null>;
+  saveTarget?: HTMLElement | null;
+}) {
   const { t, i18n } = useTranslation(['forms', 'visitDocumentation', 'common', 'settings']);
   const id = useId();
-  const native = isNativeApp();
-  const focus = useModalFocus(!native);
   const [edits, setEdits] = useState<ExamLayoutField[]>();
   const [expanded, setExpanded] = useState<string>();
   const [adding, setAdding] = useState(false);
@@ -39,6 +38,7 @@ export function ExamLayoutDialog({ fields, status, mode, canEdit, onSave, onRelo
   const [announcement, setAnnouncement] = useState('');
   const [saving, setSaving] = useState(false);
   const savingRef = useRef(false);
+  const closingRef = useRef(false);
   const [error, setError] = useState('');
   const draft = edits ?? fields;
   const parsed = parseExamLayout(draft);
@@ -90,7 +90,8 @@ export function ExamLayoutDialog({ fields, status, mode, canEdit, onSave, onRelo
     setError('');
     try {
       await onSave(parsed);
-      onClose();
+      setEdits(undefined);
+      setRemoved(undefined);
     } catch (cause) {
       setError(friendlyError(cause, t('exam.layout.saveFailed')));
     } finally {
@@ -98,16 +99,28 @@ export function ExamLayoutDialog({ fields, status, mode, canEdit, onSave, onRelo
       setSaving(false);
     }
   };
-  const canClose = () => !savingRef.current && (!changed || confirmDialog({
-    title: t('exam.layout.discard'),
-    confirmLabel: t('common:actions.dismiss'),
-  }));
-  const close = async () => { if (await canClose()) onClose(); };
-  const backdrop = useBackdropDismiss(() => void close());
-  const title = t('exam.layout.title');
+  useLayoutEffect(() => {
+    if (!dismissGuard) return;
+    dismissGuard.current = async () => {
+      if (savingRef.current || closingRef.current) return false;
+      if (!changed) return true;
+      closingRef.current = true;
+      try {
+        return await confirmDialog({ title: t('exam.layout.discard'), confirmLabel: t('common:actions.dismiss') });
+      } finally {
+        closingRef.current = false;
+      }
+    };
+    return () => { dismissGuard.current = null; };
+  }, [changed, dismissGuard, t]);
+
   const missingDefaults = DEFAULT_EXAM_LAYOUT.filter(field => !draft.some(item => item.id === field.id));
 
-  const content = <>
+  const saveButton = canEdit && (
+    <button type="button" className="ui-btn ui-btn--primary" disabled={!editable || !changed || !parsed || hasDuplicate}
+      onClick={() => void save()}>{t('common:actions.save')}</button>
+  );
+  return <section className="exam-layout__editor" aria-label={t('exam.layout.title')}>
     <div className="consultation-library__body exam-layout__body">
       <div className="consultation-library__intro">
         <div className="consultation-library__intro-copy">
@@ -194,25 +207,8 @@ export function ExamLayoutDialog({ fields, status, mode, canEdit, onSave, onRelo
       </>}
     </div>
     {(error || hasDuplicate) && <p role="alert" className="ui-dialog__error">{error || t('exam.layout.duplicate')}</p>}
-    {!native && <footer className="ui-dialog__actions consultation-library__footer">
-      <button type="button" className="ui-btn ui-btn--secondary" disabled={saving} onClick={() => void close()}>{t('common:actions.close')}</button>
-      {canEdit && <button type="button" className="ui-btn ui-btn--primary" disabled={!editable || !changed || !parsed || hasDuplicate}
-        onClick={() => void save()}>{t('common:actions.save')}</button>}
-    </footer>}
-  </>;
-
-  if (native) return <Sheet open title={title} confirmDismiss={canClose} onClose={onClose}
-    cancelLabel={t('common:actions.close')}
-    onDone={canEdit ? () => void save() : undefined} doneLabel={canEdit ? t('common:actions.save') : undefined}
-    doneDisabled={!editable || !changed || !parsed || hasDuplicate}>
-    <div className="consultation-library">{content}</div>
-  </Sheet>;
-  return createPortal(<div className="ui-dialog-overlay consultation-library-overlay" {...backdrop}>
-    <div className="ui-dialog consultation-library exam-layout" role="dialog" aria-modal="true" aria-labelledby={`${id}-title`}
-      ref={focus} tabIndex={-1}
-      onKeyDown={event => { if (event.key === 'Escape') { event.stopPropagation(); void close(); } }}>
-      <h2 className="ui-dialog__title" id={`${id}-title`}>{title}</h2>
-      {content}
-    </div>
-  </div>, document.body);
+    {saveButton && (saveTarget
+      ? createPortal(saveButton, saveTarget)
+      : <div className="exam-layout__actions">{saveButton}</div>)}
+  </section>;
 }

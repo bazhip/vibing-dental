@@ -17,7 +17,6 @@ interface ReportTemplatesModalProps {
   store: UseReportTemplatesReturn;
   /** Prefill for a new template (the current report text, if any). */
   draftBody?: string;
-  createOnly?: boolean;
   aiEnabled?: boolean;
   onCreated?: (template: ReportTemplate) => void;
   initialTemplateId?: string | null;
@@ -35,7 +34,6 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
   onClose,
   store,
   draftBody = '',
-  createOnly = false,
   aiEnabled,
   onCreated,
   initialTemplateId = null,
@@ -124,7 +122,7 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
   // current report so "save what I just wrote" is one click away).
   React.useEffect(() => {
     if (open) {
-      const initial = createOnly ? undefined : store.templates.find((tpl) => tpl.id === initialTemplateId);
+      const initial = store.templates.find((tpl) => tpl.id === initialTemplateId);
       setSelectedId(initial?.id ?? null);
       setName(initial?.name ?? '');
       setBody(initial?.body ?? draftBody);
@@ -157,16 +155,16 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
     setError('');
   };
 
-  const clearToNew = () => {
+  const clearToNew = (initialBody = '') => {
     setSelectedId(null);
     setName('');
-    setBody('');
-    setBaseline({ name: '', body: '' });
+    setBody(initialBody);
+    setBaseline({ name: '', body: initialBody });
     setError('');
     nameRef.current?.focus();
   };
   const startNew = async () => {
-    if (await confirmDiscard()) clearToNew();
+    if (await confirmDiscard()) clearToNew(draftBody);
   };
 
   const handleSave = async () => {
@@ -183,11 +181,7 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
         await store.update(selectedId, name.trim(), body);
       } else {
         const created = await store.create(name.trim(), body);
-        if (createOnly) {
-          onCreated?.(created);
-          onClose();
-          return;
-        }
+        onCreated?.(created);
         setSelectedId(created.id);
       }
       // What was saved; anything typed during the save stays (and is unsaved).
@@ -226,7 +220,7 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
   const fields = treatmentTemplateFields(body);
   const templatesBody = (
     <>
-      {!createOnly && <TemplatePicker label={t('templates.saved')}
+      <TemplatePicker label={t('templates.saved')}
         choices={store.templates.map(template => ({ id: template.id, label: template.name.trim() || t('templates.untitled') }))}
         activeId={selectedId ?? undefined} disabled={busy}
         onSelect={id => {
@@ -234,10 +228,12 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
           if (template) void pick(template);
         }}
         status={!store.templates.length ? <p className="practice-logo-empty">{t('templates.empty')}</p> : undefined}
-        actions={<button type="button" className="diagram-view__action" onClick={() => void startNew()} disabled={busy}>
-          <span aria-hidden="true">+</span>{' '}{t('visitDocumentation:consultation.templates.builder.createTemplate')}
+        actions={<button type="button" className="diagram-view__action template-create" onClick={() => void startNew()} disabled={busy || !store.loaded}
+          aria-label={t('visitDocumentation:consultation.templates.builder.createTemplate')}
+          title={t('visitDocumentation:consultation.templates.builder.createTemplate')}>
+          <span aria-hidden="true">+</span>
         </button>}
-      />}
+      />
 
       <section className="ai-settings-section">
         <label className="patient-form__label">
@@ -364,7 +360,7 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
       <Sheet
         open
         onClose={onClose}
-        title={t(createOnly ? 'templates.new' : 'templates.title')}
+        title={t('templates.title')}
         cancelLabel={t('actions.close', { ns: 'common' })}
         doneLabel={busy ? t('templates.saving') : selectedId ? t('templates.saveChanges') : t('templates.saveTemplate')}
         onDone={() => void handleSave()}
@@ -379,10 +375,10 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
   }
 
   return (
-    <div className="ai-settings-overlay" onClick={() => void requestClose()} role="dialog" aria-modal="true" aria-label={t(createOnly ? 'templates.new' : 'templates.aria')}>
+    <div className="ai-settings-overlay" onClick={() => void requestClose()} role="dialog" aria-modal="true" aria-label={t('templates.aria')}>
       <div className="ai-settings-modal" ref={modalRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
         <header className="ai-settings-header">
-          <h2>{t(createOnly ? 'templates.new' : 'templates.title')}</h2>
+          <h2>{t('templates.title')}</h2>
           <button type="button" className="pdf-preview-close" onClick={() => void requestClose()} aria-label={t('actions.close', { ns: 'common' })}>
             ×
           </button>

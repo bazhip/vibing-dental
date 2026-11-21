@@ -1,3 +1,4 @@
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { cleanup, fireEvent, render, renderHook, screen, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
@@ -225,7 +226,8 @@ describe('SurgeryReportForm', () => {
     const { toast } = await import('./ui/dialogs');
     templateStore.create.mockResolvedValueOnce({ id: 'new', name: 'Routine cleaning', body: 'Scaled' });
     render(<SurgeryReportForm value="Scaled" onChange={() => {}} />);
-    fireEvent.click(screen.getByRole('button', { name: '⟦New template⟧' }));
+    fireEvent.click(screen.getByRole('button', { name: '⟦Manage templates⟧' }));
+    await userEvent.click(screen.getByRole('button', { name: '⟦Create template⟧' }));
     fireEvent.change(screen.getByRole('textbox', { name: '⟦Template name⟧' }), { target: { value: 'Routine cleaning' } });
     fireEvent.change(screen.getByRole('textbox', { name: '⟦Report text⟧' }), { target: { value: 'Scaled' } });
     fireEvent.click(screen.getByRole('button', { name: '⟦Save template⟧' }));

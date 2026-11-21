@@ -24,7 +24,7 @@ export const HELP_SCREENSHOTS: Partial<Record<HelpTopic, readonly HelpScreenshot
   patients: [{ caption: 'patients', src: '/help/screenshots/patient-history.jpg', width: 1132, height: 772, section: 'third' }],
   exam: [
     { caption: 'exam', src: '/help/screenshots/exam.jpg', width: 976, height: 508, section: 'first' },
-    { caption: 'examCustomize', src: '/help/screenshots/exam-customize.jpg', width: 1240, height: 900, section: 'first' },
+    { caption: 'examCustomize', src: '/help/screenshots/exam-customize.jpg', width: 964, height: 784, section: 'first' },
   ],
   consultation: [
     { caption: 'dentalConsultation', src: '/help/screenshots/dental-consultation.jpg', width: 1240, height: 1100, section: 'second' },
@@ -35,7 +35,7 @@ export const HELP_SCREENSHOTS: Partial<Record<HelpTopic, readonly HelpScreenshot
   'consultation-templates': [{ caption: 'consultationBuilder', src: '/help/screenshots/consultation-builder.jpg', width: 832, height: 928, section: 'second' }],
   'consultation-transfer': [{ caption: 'consultationRecordNote', src: '/help/screenshots/consultation-record-note.jpg', width: 1100, height: 780, section: 'first' }],
   viewer: [{ caption: 'viewer', src: '/help/screenshots/viewer.jpg', width: 1200, height: 772, section: 'second' }],
-  treatment: [{ caption: 'treatment', src: '/help/screenshots/treatment.jpg', width: 976, height: 418, section: 'second' }],
+  treatment: [{ caption: 'treatment', src: '/help/screenshots/treatment.jpg', width: 976, height: 367, section: 'second' }],
   preferences: [
     { caption: 'preferences', src: '/help/screenshots/preferences.jpg', width: 960, height: 772, section: 'first' },
     { caption: 'imagingSettings', src: '/help/screenshots/imaging-settings.jpg', width: 960, height: 780, section: 'third' },
@@ -51,8 +51,8 @@ export const HELP_SCREENSHOTS: Partial<Record<HelpTopic, readonly HelpScreenshot
     { caption: 'dictationCheck', src: '/help/screenshots/dictation-check.jpg', width: 352, height: 290, section: 'third' },
   ],
   discharge: [
-    { caption: 'dischargeTemplates', src: '/help/screenshots/discharge-templates.jpg', width: 1240, height: 1100, section: 'first' },
-    { caption: 'owner', src: '/help/screenshots/owner-report.jpg', width: 1000, height: 458, section: 'second' },
+    { caption: 'dischargeTemplates', src: '/help/screenshots/discharge-templates.jpg', width: 836, height: 922, section: 'first' },
+    { caption: 'owner', src: '/help/screenshots/owner-report.jpg', width: 976, height: 438, section: 'second' },
   ],
   export: [{ caption: 'export', src: '/help/screenshots/review-export.jpg', width: 1232, height: 772, section: 'second' }],
   'by-number': [{ caption: 'by-number', src: '/help/screenshots/by-tooth.jpg', width: 942, height: 927, section: 'first' }],

@@ -8,6 +8,7 @@ import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
 import { AnesthesiaCustomEditor } from './AnesthesiaCustomEditor';
 import { QuickCodesEditor } from './QuickCodesEditor';
 import { ExamAreasEditor } from './ExamAreasEditor';
+import { ExamLayoutEditor, type ExamLayoutDismiss, type ExamLayoutSettings } from './ExamLayoutEditor';
 import { SCORE_PICKER_OPTIONS, BLOCK_ROW_OPTIONS, ChartPrefs, PERIO_FIELDS } from '../utils/chartSettings';
 import { isNativeApp } from '../native/platform';
 import { Sheet } from '../ios/Sheet';
@@ -31,7 +32,7 @@ export interface ChartSettingsModalProps {
   /** Saved to the account (vs. only this browser, without one). */
   followsAccount: boolean;
   onChange: (patch: Partial<ChartPrefs>) => void;
-  onCustomizeExam?: () => void;
+  examLayout?: ExamLayoutSettings;
   /** Open the matching category from a page's Customize button. Native
    *  retains its scoped list and All chart settings action. */
   section?: SettingsSection;
@@ -44,30 +45,33 @@ export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = (props) =>
   isNativeApp() ? <ChartSettingsSheet {...props} /> : <ChartSettingsDialog {...props} />;
 
 /** The app: an iOS sheet holding the settings list. */
-function ChartSettingsSheet({ onClose, prefs, followsAccount, onChange, onCustomizeExam, section }: ChartSettingsModalProps) {
+function ChartSettingsSheet({ onClose, prefs, followsAccount, onChange, examLayout, section }: ChartSettingsModalProps) {
   const { t } = useTranslation(['settings', 'app']);
-  const settingsId = React.useId();
+  const examDismiss = React.useRef<ExamLayoutDismiss | null>(null);
   const [only, setOnly] = React.useState<SettingsSection | null>(section ?? null);
   return (
     <Sheet
       open
       onClose={onClose}
+      confirmDismiss={() => examDismiss.current?.() ?? true}
       title={only ? t(`chart.sections.${only}`) : t('chart.title')}
       doneLabel={t('actions.done', { ns: 'common' })}
-      onDone={onClose}
+      onDone={async () => { if (await (examDismiss.current?.() ?? true)) onClose(); }}
       className="ios-chart-settings-sheet"
     >
       <ChartSettingsList prefs={prefs} followsAccount={followsAccount} onChange={onChange} only={only} onShowAll={() => setOnly(null)}
-        onCustomizeExam={onCustomizeExam && (() => { onClose(); onCustomizeExam(); })} />
+        examEditor={examLayout && <ExamLayoutEditor key={examLayout.scope} {...examLayout} dismissGuard={examDismiss} />} />
     </Sheet>
   );
 }
 
 /** The website's dialog. */
-const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs, followsAccount, onChange, onCustomizeExam, section }) => {
+const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs, followsAccount, onChange, examLayout, section }) => {
   const { t } = useTranslation(['settings', 'app']);
   const settingsId = React.useId();
   const [only, setOnly] = React.useState<SettingsSection>(section ?? 'charting');
+  const examDismiss = React.useRef<ExamLayoutDismiss | null>(null);
+  const [examSaveTarget, setExamSaveTarget] = React.useState<HTMLDivElement | null>(null);
   const contentRef = React.useRef<HTMLDivElement>(null);
   const categories: SettingsSection[] = ['patient', 'exam', 'anesthesia', 'charting', 'diagnosis', 'procedure', 'images'];
   const categoryLabel = (category: SettingsSection) => category === 'charting' || category === 'anesthesia'
@@ -83,7 +87,8 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
     exam: only === 'exam', anesthesia: only === 'anesthesia', patient: only === 'patient',
     pdfGrid: only === 'images', pdfImages: only === 'images',
   };
-  const close = React.useCallback(() => {
+  const close = React.useCallback(async () => {
+    if (examDismiss.current && !(await examDismiss.current())) return;
     const active = document.activeElement;
     if (active instanceof HTMLElement && active.closest('.chart-settings__group')) active.blur();
     flushPendingDrafts();
@@ -137,12 +142,10 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
           <div className="ai-settings-body chart-settings__body chart-customization__content" ref={contentRef}>
             <div className="chart-customization__intro">
               <h3>{t(`chart.sections.${only}`)}</h3>
-              {(!show.exam || onCustomizeExam) && (
-                <p className="chart-settings__note">{show.patient ? t('chart.patient.visibilityNote') : t(`chart.customization.descriptions.${only}`)}</p>
-              )}
-              {!(show.exam && onCustomizeExam) && (
+              {!(show.exam && examLayout) && <>
+                {!show.exam && <p className="chart-settings__note">{show.patient ? t('chart.patient.visibilityNote') : t(`chart.customization.descriptions.${only}`)}</p>}
                 <p className="chart-customization__scope">{followsAccount ? t('chart.noteAccount') : t('chart.noteBrowser')}</p>
-              )}
+              </>}
             </div>
 
           <section className="chart-settings__group" hidden={!show.charting}>
@@ -278,11 +281,7 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
           </section>
 
           <section className="chart-settings__group" hidden={!show.exam}>
-            {onCustomizeExam ? (
-              <button type="button" className="ui-btn ui-btn--secondary chart-customization__launch" onClick={() => { close(); onCustomizeExam(); }}>
-                {t('exam.layout.title', { ns: 'forms' })}
-              </button>
-            ) : (
+            {examLayout ? <ExamLayoutEditor key={examLayout.scope} {...examLayout} dismissGuard={examDismiss} saveTarget={show.exam ? examSaveTarget : null} /> : (
               <>
                 <h3 className="ai-settings-subhead">{t('chart.exam.title')}</h3>
                 <ExamAreasEditor hiddenAreas={prefs.hiddenExamAreas} onHiddenChange={(hiddenExamAreas) => onChange({ hiddenExamAreas })} areas={prefs.customExamAreas} onChange={(customExamAreas) => onChange({ customExamAreas })} />
@@ -471,7 +470,8 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
           </div>
         </div>
         <footer className="ai-settings-footer chart-customization__footer">
-          <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={close}>{t('done')}</button>
+          <button type="button" className={show.exam && examLayout ? "ui-btn ui-btn--secondary" : "entry-grid__button entry-grid__button--topbar"} onClick={close}>{t('done')}</button>
+          {show.exam && examLayout?.canEdit && <div ref={setExamSaveTarget} />}
         </footer>
       </div>
     </div>,

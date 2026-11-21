@@ -49,20 +49,6 @@
 .visit-documentation__notice {
   margin-top: 16px;
 }
-.visit-documentation__recap {
-  margin-bottom: 20px;
-}
-.visit-documentation__recap h3 {
-  color: var(--text);
-  font-size: 0.875rem;
-  margin: 0 0 4px;
-}
-.visit-documentation__recap p {
-  color: var(--text-muted);
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-  margin: 0;
-}
 @media (max-width: 640px) {
   .visit-documentation__fields {
     grid-template-columns: minmax(0, 1fr);
@@ -231,8 +217,7 @@
 .consultation-library__template-list > [data-drop-target="before"]::after { inset-block-start: 0; }
 .consultation-library__template-list > [data-drop-target="after"]::after { inset-block-end: 0; }
 .consultation-library__list--scroll { max-block-size: 18rem; overflow-y: auto; }
-.consultation-library__new { inline-size: 100%; margin-block-start: 8px; }
-.consultation-library__new span { margin-inline-end: 4px; }
+.consultation-library__new { margin-block-start: 8px; }
 .consultation-library__checkbox { font-size: 0.875rem; }
 .consultation-library__editor { padding: 12px 16px; min-width: 0; }
 .consultation-library__editor > .ui-dialog__label { gap: 6px; }
@@ -508,3 +493,11 @@
 .exam-layout__add { margin-block-start: 8px; }
 .dental-exam__diagnostics + .exam-table,
 .dental-exam__diagnostics + .ios-form__section { margin-block-start: 16px; }
+
+.exam-layout__editor { min-inline-size: 0; }
+.exam-layout__actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-block-start: 16px;
+}
+.exam-layout__actions .ui-btn { min-block-size: 44px; }

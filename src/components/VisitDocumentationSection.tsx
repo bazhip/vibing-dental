@@ -222,10 +222,6 @@ export function VisitDocumentationSection({ kind, patientInfo, onChange, readOnl
             onClick={consultation.onExam}>{t('consultation.openExam')}</button>}
         </div>}
       </>}
-      {kind === 'discharge' && <div className="visit-documentation__recap">
-        <h3>{t('treatmentRecap')}</h3>
-        <p>{patientInfo.treatmentReport?.trim() ? patientInfo.treatmentReport : t('noTreatment')}</p>
-      </div>}
       {isConsultation && !!consultation?.sources?.length && <details className="visit-documentation__transcripts">
         <summary>{t('consultation.transcripts')}</summary>
         <ul>

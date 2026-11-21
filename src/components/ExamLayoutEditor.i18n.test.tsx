@@ -1,16 +1,15 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { findUntranslated, installPseudoLocale, restoreLocale } from '../i18n/testing/pseudo';
 import { DEFAULT_EXAM_LAYOUT, type ExamLayoutField } from '../utils/examLayout';
-import { ExamLayoutDialog } from './ExamLayoutDialog';
+import { ExamLayoutEditor } from './ExamLayoutEditor';
 
 test('edits, reorders and restores the fields in a single translated Exam editor', async () => {
   await installPseudoLocale();
   const onSave = vi.fn<(fields: ExamLayoutField[]) => Promise<void>>().mockResolvedValue(undefined);
-  const onClose = vi.fn();
   try {
-    render(<ExamLayoutDialog fields={DEFAULT_EXAM_LAYOUT} status="ready" mode="practice" canEdit
-      onSave={onSave} onReload={vi.fn()} onClose={onClose} />);
-    const dialog = screen.getByRole('dialog', { name: '⟦Customize Exam⟧' });
+    render(<ExamLayoutEditor fields={DEFAULT_EXAM_LAYOUT} status="ready" mode="practice" canEdit
+      onSave={onSave} onReload={vi.fn()} />);
+    const dialog = screen.getByRole('region', { name: '⟦Customize Exam⟧' });
 
     const diagnostics = within(dialog).getByRole('button', { name: '⟦Diagnostics⟧' });
     const reorder = within(dialog).getByRole('button', { name: /Reorder .*Diagnostics/ });
@@ -42,9 +41,9 @@ test('edits, reorders and restores the fields in a single translated Exam editor
 test('non-owners can review the practice layout without editing it', async () => {
   await installPseudoLocale();
   try {
-    render(<ExamLayoutDialog fields={DEFAULT_EXAM_LAYOUT} status="ready" mode="practice" canEdit={false}
-      onSave={vi.fn()} onReload={vi.fn()} onClose={vi.fn()} />);
-    const dialog = screen.getByRole('dialog');
+    render(<ExamLayoutEditor fields={DEFAULT_EXAM_LAYOUT} status="ready" mode="practice" canEdit={false}
+      onSave={vi.fn()} onReload={vi.fn()} />);
+    const dialog = screen.getByRole('region', { name: '⟦Customize Exam⟧' });
     expect(within(dialog).getByText('⟦Only practice owners can edit this layout.⟧')).toBeInTheDocument();
     expect(within(dialog).queryByRole('button', { name: /Add field|Save|Reorder/ })).toBeNull();
     expect(findUntranslated(dialog)).toEqual([]);

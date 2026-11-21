@@ -41,6 +41,7 @@ import type { ChartSnapshot } from './components/PdfPreviewModal';
 import { VoiceInputButton, actionFocus, voiceReviewSection } from './components/VoiceInputButton';
 import { App as CapacitorApp } from '@capacitor/app';
 import { FeedbackModal } from './components/FeedbackModal';
+import type { ExamLayoutSettings } from './components/ExamLayoutEditor';
 import { ChartSettingsModal, type SettingsSection } from './components/ChartSettingsModal';
 import { WhatsNewModal } from './components/WhatsNewModal';
 import { ChartHistoryModal } from './components/ChartHistoryModal';
@@ -84,7 +85,6 @@ import { DiagramComment, PatientInfo, NerveBlockSite, usualConcentration, withDr
 import { setCustomExamValue } from './utils/customExam';
 import { legacyExamLayout } from './utils/examLayout';
 import { useExamLayout } from './hooks/useExamLayout';
-import { ExamLayoutDialog } from './components/ExamLayoutDialog';
 import { localDateISO } from './utils/localDate';
 import { visitsForPatient } from './utils/currentVisit';
 import { shouldOpenLibraryOnArrival } from './utils/arrival';
@@ -326,7 +326,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const imagingTemplatesOpen = imagingTemplatesAvailable && imagingTemplatesPractice === profile.practiceId && activeSection === 'imaging';
   const openImagingTemplates = () => {
     if (!imagingTemplatesAvailable) {
-      setChartSettingsOpen('images');
+      openChartSettings('images');
       return;
     }
     imagingLibrary.reload();
@@ -341,15 +341,24 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const [consultationTemplatesPractice, setConsultationTemplatesPractice] = React.useState<string | null>(null);
   const consultationTemplatesOpen = consultationOn && consultationTemplatesPractice === profile.practiceId;
   const examPractice = !trial && cloud.enabled ? profile.practiceId : '';
-  const [examLayoutScope, setExamLayoutScope] = React.useState<string | null>(null);
-  const examLayoutOpen = examLayoutScope === examPractice;
-  const examLibrary = useExamLayout(activeSection === 'exam' || examLayoutOpen ? examPractice : '');
+  const examSettingsOpen = Boolean(chartSettingsOpen) && !consultationOn;
+  const examLibrary = useExamLayout(activeSection === 'exam' || examSettingsOpen ? examPractice : '');
   const examFields = examLibrary.fields ?? prefs.examLayout ?? legacyExamLayout(prefs.customExamAreas, prefs.hiddenExamAreas);
-  const openExamLayout = () => {
-    if (examPractice) examLibrary.reload();
-    setExamLayoutScope(examPractice);
+  const openChartSettings = (section: SettingsSection | 'all' = 'all') => {
+    if (examPractice && !consultationOn && !chartSettingsOpen) examLibrary.reload();
+    setChartSettingsOpen(section);
   };
-  const practiceTeam = useTeam(!trial && ((ownerReportOn && activeSection === OWNER_REPORT_SECTION) || consultationTemplatesOpen || dischargeTemplatesOpen || imagingTemplatesOpen || (examLayoutOpen && !!examPractice)));
+  const openExamLayout = () => openChartSettings('exam');
+  const practiceTeam = useTeam(!trial && ((ownerReportOn && activeSection === OWNER_REPORT_SECTION) || consultationTemplatesOpen || dischargeTemplatesOpen || imagingTemplatesOpen || (examSettingsOpen && !!examPractice)));
+  const examLayoutSettings: ExamLayoutSettings | undefined = consultationOn ? undefined : {
+    scope: examPractice,
+    fields: examFields,
+    mode: examPractice ? 'practice' : 'personal',
+    status: examPractice && !practiceTeam.loaded && examLibrary.status === 'ready' ? 'loading' : examLibrary.status,
+    canEdit: !examPractice || (practiceTeam.practice?.id === examPractice && practiceTeam.role === 'owner'),
+    onSave: examPractice ? examLibrary.save : fields => chartSettings.update({ examLayout: fields }),
+    onReload: examLibrary.reload,
+  };
   const openConsultationTemplates = () => {
     consultationLibrary.reload();
     setConsultationTemplatesPractice(profile.practiceId);
@@ -470,7 +479,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         <button
           type="button"
           className="diagram-view__action section-header__customize"
-          onClick={() => setChartSettingsOpen('charting')}
+          onClick={() => openChartSettings('charting')}
           title={t('customize.hint')}
         >
           {t('customize.label')}
@@ -1326,7 +1335,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           onReviewHistory={hasPriorVisits ? openRecordHistory : undefined}
           hideRecheck={prefs.hideRecheck}
           hiddenFields={prefs.hiddenPatientFields}
-          onCustomize={native ? undefined : () => setChartSettingsOpen('patient')}
+          onCustomize={native ? undefined : () => openChartSettings('patient')}
         />
       ),
     },
@@ -1392,7 +1401,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           hiddenBlocks={prefs.hiddenBlocks}
           usualDrug={prefs.usualDrug}
           usualAdjunct={prefs.usualAdjunct}
-          onCustomize={native ? undefined : () => setChartSettingsOpen('anesthesia')}
+          onCustomize={native ? undefined : () => openChartSettings('anesthesia')}
           customBlockDefs={prefs.customBlocks}
           customFieldDefs={prefs.customFields}
           customValues={chart.patientInfo.customAnesthesia}
@@ -1476,7 +1485,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               ref={preDiagramRef}
               readOnly={readOnly}
               title={t('sections.diagnosis')}
-              onCustomize={native ? undefined : () => setChartSettingsOpen('diagnosis')}
+              onCustomize={native ? undefined : () => openChartSettings('diagnosis')}
               species={chart.species}
               toothMarks={chart.preToothMarks}
               onToothMarksChange={chart.setPreToothMarks}
@@ -1517,7 +1526,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               onStrokesChange={chart.setPostDiagramStrokes}
               lockedTriadans={chart.lockedPostTriadans}
               quickCodes={prefs.procedureQuickCodes}
-              onCustomize={native ? undefined : () => setChartSettingsOpen('procedure')}
+              onCustomize={native ? undefined : () => openChartSettings('procedure')}
               markMode="extracted-only"
               highlightTriadan={aiHighlightTriadan}
             />
@@ -1999,7 +2008,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           prefs={prefs}
           followsAccount={chartSettings.followsAccount}
           onChange={setPref}
-          onCustomizeExam={consultationOn ? undefined : openExamLayout}
+          examLayout={examLayoutSettings}
         />
       )}
 
@@ -2137,18 +2146,12 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           onSave={dischargeLibrary.save} onReload={dischargeLibrary.reload}
           onClose={() => setDischargeTemplatesPractice(null)} />
       )}
-      {examLayoutOpen && (
-        <ExamLayoutDialog fields={examFields} mode={examPractice ? 'practice' : 'personal'}
-          status={examLibrary.status} canEdit={!examPractice || (practiceTeam.practice?.id === examPractice && practiceTeam.role === 'owner')}
-          onSave={examPractice ? examLibrary.save : fields => chartSettings.update({ examLayout: fields })}
-          onReload={examLibrary.reload} onClose={() => setExamLayoutScope(null)} />
-      )}
       {imagingTemplatesOpen && (
         <ConsultationTemplatesDialog kind="imaging"
           initial={imagingLibrary.config} status={imagingLibrary.status}
           canEdit={practiceTeam.practice?.id === profile.practiceId && practiceTeam.role === 'owner'}
           onSave={imagingLibrary.save} onReload={imagingLibrary.reload}
-          onClose={() => setImagingTemplatesPractice(null)} onOpenSettings={() => setChartSettingsOpen('images')} />
+          onClose={() => setImagingTemplatesPractice(null)} onOpenSettings={() => openChartSettings('images')} />
       )}
       {(previewSnapshot || consultationOn) && previewVisitSession === chart.chartSession && (
         <React.Suspense fallback={null}>
@@ -2235,7 +2238,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         presentation={MODAL_PRESENTATION}
         onLeaveGuardChange={registerPracticeGuard}
         onOpenReminders={() => setRemindersOpen(true)}
-        onOpenChartSettings={() => setChartSettingsOpen('all')}
+        onOpenChartSettings={() => openChartSettings('all')}
         profile={profile}
       />
 
@@ -2336,7 +2339,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     goToSection: showChartSection,
     account: () => setAccountOpen(true),
     practice: openPracticeSettings,
-    chartSettings: (section?: SettingsSection) => setChartSettingsOpen(section ?? 'all'),
+    chartSettings: openChartSettings,
     customizeExam: openExamLayout,
     reminders: () => setRemindersOpen(true),
     walkthrough: () => { setWalkthroughFirstRun(false); setWalkthroughOpen(true); },
@@ -2463,12 +2466,12 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       }
     );
     const customizeFor: Record<string, (() => void) | undefined> = {
-      patient: () => setChartSettingsOpen('patient'),
+      patient: () => openChartSettings('patient'),
       exam: openExamLayout,
-      procedure: () => setChartSettingsOpen('procedure'),
-      anesthesia: () => setChartSettingsOpen('anesthesia'),
-      charting: () => setChartSettingsOpen('charting'),
-      diagnosis: () => setChartSettingsOpen('diagnosis'),
+      procedure: () => openChartSettings('procedure'),
+      anesthesia: () => openChartSettings('anesthesia'),
+      charting: () => openChartSettings('charting'),
+      diagnosis: () => openChartSettings('diagnosis'),
       imaging: openImagingTemplates,
     };
     const hasSavedPatient = cloud.enabled && chart.openedExisting && !!chart.cloudChartId;
@@ -2493,7 +2496,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       ...(status.retry ? [{ label: t('ios.menu.retrySave', { ns: 'chart' }), icon: 'arrow-uturn-forward' as const, onSelect: attemptSave }] : []),
       ...(customize ? [{ label: t('ios.menu.customize', { ns: 'chart', section: sectionLabel }), icon: 'gear' as const, onSelect: customize }] : []),
       // Always there, so the bar's trailing capsule keeps its shape.
-      { label: t('chart.title', { ns: 'settings' }), icon: 'line-3-horizontal-decrease' as const, onSelect: () => setChartSettingsOpen('all') },
+      { label: t('chart.title', { ns: 'settings' }), icon: 'line-3-horizontal-decrease' as const, onSelect: () => openChartSettings('all') },
     ];
     const chartTab = (
       <div className="ios-chart-screen">
@@ -2614,7 +2617,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               onGoHome={onGoHome}
               onOpenAdmin={isAdmin && !trial ? () => setAdminOpen(true) : undefined}
               onOpenFeedback={canFeedback ? () => setFeedback({}) : undefined}
-              onOpenChartSettings={() => setChartSettingsOpen('all')}
+              onOpenChartSettings={() => openChartSettings('all')}
               onOpenWhatsNew={() => setWhatsNewOpen(true)}
               onRevert={editingSavedVisit && !workspacePage && unlockSnapshotChanged ? revertUnlockedChanges : undefined}
               cloud={cloud.enabled ? {
@@ -2685,7 +2688,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             onGoHome={onGoHome}
             onOpenAdmin={isAdmin && !trial ? () => setAdminOpen(true) : undefined}
             onOpenFeedback={canFeedback ? () => setFeedback({}) : undefined}
-            onOpenChartSettings={() => setChartSettingsOpen('all')}
+            onOpenChartSettings={() => openChartSettings('all')}
             onOpenWhatsNew={() => setWhatsNewOpen(true)}
             cloud={
               cloud.enabled
@@ -2746,7 +2749,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       <div className={`workspace-layout${!workspacePage && animalTabs.empty ? ' workspace-layout--empty' : ''}`}>
       <aside className="workspace-sidebar">
       {!cloud.enabled && <nav className="workspace-nav" aria-label={t('workspace.navigation')}>
-        <button type="button" onClick={() => setChartSettingsOpen('all')}>{t('menu.chartSettings.label')}</button>
+        <button type="button" onClick={() => openChartSettings('all')}>{t('menu.chartSettings.label')}</button>
       </nav>}
       <div className="workspace-sidebar__sections" hidden={workspacePage || animalTabs.empty} ref={setNavigationHost} />
       <div className="workspace-sidebar__account">
