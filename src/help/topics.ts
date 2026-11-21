@@ -23,7 +23,7 @@ export const HELP_SCREENSHOTS: Partial<Record<HelpTopic, readonly HelpScreenshot
   start: [{ caption: 'start', src: '/help/screenshots/chart-overview.jpg', width: 1280, height: 605, section: 'first' }],
   patients: [{ caption: 'patients', src: '/help/screenshots/patient-history.jpg', width: 1132, height: 772, section: 'third' }],
   exam: [
-    { caption: 'exam', src: '/help/screenshots/exam.jpg', width: 976, height: 530, section: 'first' },
+    { caption: 'exam', src: '/help/screenshots/exam.jpg', width: 984, height: 660, section: 'first' },
     { caption: 'examCustomize', src: '/help/screenshots/exam-customize.jpg', width: 964, height: 784, section: 'first' },
   ],
   consultation: [
