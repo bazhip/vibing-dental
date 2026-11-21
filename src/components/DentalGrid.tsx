@@ -33,6 +33,8 @@ interface DentalGridProps {
   onToggleMissing: (triadan: number) => void;
   /** Tooth row to flash (AI autofill just edited it). */
   highlightTriadan?: number | null;
+  reviewFields?: ReadonlySet<string>;
+  reviewFocus?: { triadan: number; field?: string };
   /** The patient's previous visit, keyed by triadan — rendered as muted
    *  hints in empty cells and "Last visit" tooltips on filled ones.
    *  Reference only; hinted cells stay empty until typed into. */
@@ -472,6 +474,8 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   toothMarks,
   onToggleMissing,
   highlightTriadan,
+  reviewFields,
+  reviewFocus,
   priorToothData,
   priorGoneTeeth,
   mirrorToDiagnosis,
@@ -842,6 +846,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       key,
       name,
       width,
+      cellClass: (row: ToothData) => reviewFields?.has(`${row.triadan}:${key}`) ? 'dental-grid__cell--review' : undefined,
       renderEditCell: readOnly ? undefined : key === 'pocket' && pocketMode !== 'tooth' ? PocketCellEditor : CodeCellEditor,
       // Teeth marked missing have nothing to measure.
       editable: (row: ToothData) => !readOnly && toothMarks[row.triadan] !== 'missing',
@@ -918,7 +923,16 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       };
     }),
     ];
-  }, [toothMarks, onToggleMissing, setAllForColumn, priorToothData, priorGoneTeeth, layoutWidth, readOnly, visibleColumns, pocketMode, species, narrow, coarse, toothPickTitle, t, triadanLabel, toothLabel]);
+  }, [toothMarks, onToggleMissing, setAllForColumn, priorToothData, priorGoneTeeth, layoutWidth, readOnly, visibleColumns, pocketMode, species, narrow, coarse, toothPickTitle, t, triadanLabel, toothLabel, reviewFields]);
+
+  React.useEffect(() => {
+    if (!reviewFocus) return;
+    const rowIdx = toothData.findIndex(row => row.triadan === reviewFocus.triadan);
+    const idx = Math.max(1, columns.findIndex(column => column.key === reviewFocus.field));
+    if (rowIdx >= 0) gridRef.current?.setActivePosition({ rowIdx, idx }, { enableEditor: false, shouldFocus: true });
+    // The grid changes with every keystroke. Only an explicit review jump should move focus.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reviewFocus]);
 
   return (
     <div className="dental-grid-section">

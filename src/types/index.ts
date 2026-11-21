@@ -473,6 +473,7 @@ export interface ClinicalDictationSource {
 }
 
 export interface ChartSnapshot {
+  voiceReviews?: import('../utils/voiceReview').VoiceReviewItem[];
   clinicalDictations?: ClinicalDictationSource[];
   /** Explicitly closed for editing; absent on unfinalized records. */
   finalizedAt?: string;

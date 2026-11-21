@@ -23,7 +23,7 @@ const NOTICE_ICON: IconName = 'exclamationmark-circle';
 export interface ChartNavBarProps {
   title: string;
   subtitle: string;
-  sections: { id: string; label: string }[];
+  sections: { id: string; label: string; needsReview?: boolean }[];
   activeSection: string;
   onSection(id: string): void;
   /** Accessible name of Share (what it previews and downloads). */
@@ -62,7 +62,7 @@ export function ChartNavBar({ title, subtitle, sections, activeSection, onSectio
   }, []);
 
   const titleMenu = sections.map((s) => ({
-    label: s.label,
+    label: s.needsReview ? `! ${s.label}` : s.label,
     checked: s.id === activeSection,
     onSelect: () => {
       onSection(s.id);

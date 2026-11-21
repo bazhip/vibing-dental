@@ -38,7 +38,7 @@ import { DiagramViewHandle } from './components/DiagramView';
 import { SidebarLayout, ChartSection } from './components/Layouts';
 import { ChartMenu } from './components/ChartMenu';
 import type { ChartSnapshot } from './components/PdfPreviewModal';
-import { VoiceInputButton, actionFocus } from './components/VoiceInputButton';
+import { VoiceInputButton, actionFocus, voiceReviewSection } from './components/VoiceInputButton';
 import { App as CapacitorApp } from '@capacitor/app';
 import { FeedbackModal } from './components/FeedbackModal';
 import { ChartSettingsModal, type SettingsSection } from './components/ChartSettingsModal';
@@ -208,6 +208,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // The app's chart status messages (src/ios/chart/chartStatus.ts).
   const { t: tChart } = useTranslation('chart');
   const chart = useChartState();
+  const [reviewFocus, setReviewFocus] = React.useState<{ triadan: number; field?: string; session: number }>();
+  const [voiceReviewHost, setVoiceReviewHost] = React.useState<HTMLDivElement | null>(null);
   const profile = useProfile();
   const logoInputRef = React.useRef<HTMLInputElement>(null);
   const [logoUploading, setLogoUploading] = React.useState(false);
@@ -1306,6 +1308,11 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       cloudActive={cloud.enabled} practiceId={profile.practiceId} maxImages={profile.maxImages}
       dicomEnabled={profile.dicomEnabled} species={chart.species} sectionLabel={label} sectionGuidance={guidance} />;
 
+  const reviewFields = React.useMemo(() => new Set((chart.voiceReviews ?? []).flatMap(item => {
+    const action = item.proposal?.action ?? item.flag.applied;
+    return action?.name === 'set_tooth_field' ? [`${action.input.triadan}:${action.input.field}`] : [];
+  })), [chart.voiceReviews]);
+  const chartReviewFocus = reviewFocus?.session === chart.chartSession ? reviewFocus : undefined;
   const sections: ChartSection[] = [
     {
       id: 'patient',
@@ -1422,6 +1429,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               plannedExtractions={chart.plannedExtractions}
               setPlannedExtraction={chart.setPlannedExtraction}
               highlightTriadan={aiHighlightTriadan}
+              reviewFields={reviewFields}
+              reviewFocus={chartReviewFocus}
               headerAccessory={chartingHeaderAccessory}
               hiddenColumns={prefs.hiddenColumns}
               pocketMode={prefs.pocketMode}
@@ -1434,6 +1443,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             toothData={chart.toothData}
             onToothDataChange={chart.setToothDataDirectly}
             highlightTriadan={aiHighlightTriadan}
+            reviewFields={reviewFields}
+            reviewFocus={chartReviewFocus}
             // The grid's "Missing" toggle writes the same pre-surgery marks
             // the Diagnosis diagram edits, so marking a tooth missing in
             // either place crosses out the grid row AND fills the tooth on
@@ -2029,6 +2040,19 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       })()}
     </>
   );
+  const reviewSections = sections.map(section => section.id);
+  for (const item of chart.voiceReviews ?? []) {
+    const section = sections.find(section => section.id === voiceReviewSection(item, reviewSections));
+    if (section) section.needsReview = true;
+  }
+
+  for (const section of sections) {
+    section.content = <>
+      <div ref={section.id === activeSection ? setVoiceReviewHost : undefined} hidden={!section.needsReview} />
+      {section.content}
+    </>;
+  }
+
   const chartForm = (
     <form
       id="chart-form"
@@ -2366,10 +2390,10 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     rechecks: <RechecksScreen />,
     settings: <SettingsScreen />,
   }), []);
-  const sectionLinksKey = sections.map((x) => `${x.id}\u0000${x.label}`).join('\u0001');
+  const sectionLinksKey = sections.map((x) => `${x.id}\u0000${x.label}\u0000${!!x.needsReview}`).join('\u0001');
   const chartSectionLinks = React.useMemo(
-    () => sections.map(({ id, label }) => ({ id, label })),
-    // Only ids/labels matter here; `sections` itself is rebuilt every render.
+    () => sections.map(({ id, label, needsReview }) => ({ id, label, needsReview })),
+    // Only ids, labels, and review indicators matter here; `sections` itself is rebuilt every render.
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [sectionLinksKey]
   );
@@ -2380,12 +2404,23 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       kind: CLINICAL_WORKFLOWS.consultation, id: ++requestSerial.current, session: chart.chartSession,
     }),
   } : { label: t('visitTypes.dictateDental') };
-  const dictate = (triggerHidden: boolean) => profile.aiEnabled && !trial && (!consultationOn || canCreateConsultation) && (
+  const canDictate = profile.aiEnabled && !trial && (!consultationOn || canCreateConsultation);
+  const dictate = (triggerHidden: boolean) => (canDictate || !!chart.voiceReviews?.length) && (
     <VoiceInputButton
       context={aiContext}
+      savedReviews={chart.voiceReviews}
+      onReviewsChange={chart.setVoiceReviews}
+      reviewHost={voiceReviewHost}
+      reviewSections={reviewSections}
+      reviewOnly={!canDictate}
       handlers={aiHandlers}
       onActivity={handleAiActivity}
-      onShowAction={goToSection}
+      onShowAction={native ? showChartSection : goToSection}
+      onReviewFocus={focus => {
+        if (focus.section === 'charting' && focus.triadan != null) {
+          setReviewFocus({ triadan: focus.triadan, field: focus.field, session: chart.chartSession });
+        }
+      }}
       onDictationComplete={handleDictationComplete}
       finalReviewRef={finalDictationReviewRef}
       contextualDestination={contextualDestination}

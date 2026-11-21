@@ -1,4 +1,7 @@
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import React from "react";
+import type { VoiceReviewItem } from "../utils/voiceReview";
+
+import { render, screen, fireEvent, act, within } from '@testing-library/react';
 import { vi } from 'vitest';
 
 const extract = vi.hoisted(() => vi.fn());
@@ -121,4 +124,45 @@ it('routes clear findings across sections and holds conflicting values for expli
   expect(screen.getByText('Keep current value')).toBeVisible();
   fireEvent.click(screen.getByRole('button', { name: 'Apply suggestion' }));
   expect(handlers.setToothField).toHaveBeenCalledExactlyOnceWith(108, 'mobility', '3');
+});
+
+it('charts the best guess in an empty field and resolves the saved finding from either review surface', async () => {
+  const action = { name: 'set_tooth_field', input: { triadan: 108, field: 'mobility', value: '2', uncertain: true } };
+  extract.mockResolvedValueOnce({ actions: [action], skipped: [], ran: true,
+    flags: [{ heard: '108 mobility two', reason: 'Low confidence', applied: action, options: [] }] });
+  const storage: { reviews: VoiceReviewItem[]; mobility: string } = { reviews: [], mobility: '' };
+  const host = document.createElement('div');
+  document.body.append(host);
+  function Chart() {
+    const [reviews, setReviews] = React.useState(storage.reviews);
+    const [mobility, setMobility] = React.useState(storage.mobility);
+    React.useEffect(() => { storage.reviews = reviews; storage.mobility = mobility; }, [reviews, mobility]);
+    return <VoiceInputButton context={{ ...(context as object), toothData: [{ triadan: 108, mobility }] } as never}
+      handlers={{ setToothField: (_tooth: number, _field: string, value: string) => setMobility(value) } as never}
+      activeSection="charting" sessionKey="visit" contextualDestination={{ label: 'Charting' }}
+      savedReviews={reviews} onReviewsChange={setReviews} reviewHost={host} />;
+  }
+  const first = render(<Chart />);
+  fireEvent.click(screen.getByRole('button', { name: 'Dictate' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Start dictation' }));
+  act(() => FakeRecognition.last!.say('mobility at one oh eight is probably two'));
+  await flush(4000);
+  expect(storage.mobility).toBe('2');
+  expect(storage.reviews).toHaveLength(1);
+  expect(screen.getAllByText('Needs review (1)')).toHaveLength(2);
+  first.unmount();
+
+  const reopened = render(<Chart />);
+  try {
+    expect(within(host).getByText('Needs review (1)')).toBeVisible();
+    fireEvent.click(screen.getByRole('button', { name: 'Dictate' }));
+    expect(screen.getAllByText('Needs review (1)')).toHaveLength(2);
+    fireEvent.click(within(host).getByRole('button', { name: 'Remove' }));
+    expect(storage.mobility).toBe('');
+    expect(storage.reviews).toHaveLength(0);
+    expect(screen.queryByText('Needs review (1)')).toBeNull();
+  } finally {
+    reopened.unmount();
+    host.remove();
+  }
 });

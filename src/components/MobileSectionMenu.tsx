@@ -84,7 +84,7 @@ export const MobileSectionMenu: React.FC<MobileSectionMenuProps> = ({
         aria-expanded={open}
       >
         <span className="mobile-section-menu__icon" aria-hidden="true">☰</span>
-        <span className="mobile-section-menu__label">{active?.label ?? t('sections.menuFallback')}</span>
+        <span className="mobile-section-menu__label">{active?.needsReview && <span className="chart-review-badge" role="img" aria-label={t('panel.needsReview', { ns: 'voice' })}><span aria-hidden="true">!</span></span>}{active?.label ?? t('sections.menuFallback')}</span>
         <span className="mobile-section-menu__chev" aria-hidden="true">▾</span>
       </button>
 
@@ -105,7 +105,10 @@ export const MobileSectionMenu: React.FC<MobileSectionMenuProps> = ({
                 }}
               >
                 <span className="mobile-section-menu__num">{String(i + 1).padStart(2, '0')}</span>
-                <span className="mobile-section-menu__item-label">{s.label}</span>
+                <span className="mobile-section-menu__item-label">
+                  {s.needsReview && <span className="chart-review-badge" role="img" aria-label={t('panel.needsReview', { ns: 'voice' })}><span aria-hidden="true">!</span></span>}
+                  {s.label}
+                </span>
               </button>
             </li>
           ))}
