@@ -1,4 +1,5 @@
 import React from 'react';
+import { CustomizeButton } from './CustomizeButton';
 import { Trans, useTranslation } from 'react-i18next';
 import i18n from '../i18n';
 import { formatDateTime } from '../i18n/format';
@@ -763,13 +764,8 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
               </li>
             ))}
           </ul>
-          <button
-            type="button"
-            className="diagram-view__action"
-            onClick={() => { setTreatmentTemplateId(null); setTemplatesOpen('treatment'); }}
-          >
-            {t('practice.treatmentReport.customize')}
-          </button>
+          <CustomizeButton label={t('practice.treatmentReport.customize')}
+            onClick={() => { setTreatmentTemplateId(null); setTemplatesOpen('treatment'); }} />
         </section>
       )}
 
@@ -780,13 +776,8 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
           <p className="ai-settings-blurb">
             {t('practice.ownerReport.blurb')}
           </p>
-          <button
-            type="button"
-            className="diagram-view__action"
-            onClick={() => (asScreen && onCustomizeReport ? onCustomizeReport() : setTemplatesOpen('owner'))}
-          >
-            {t('practice.ownerReport.customize')}
-          </button>
+          <CustomizeButton label={t('practice.ownerReport.customize')}
+            onClick={() => (asScreen && onCustomizeReport ? onCustomizeReport() : setTemplatesOpen('owner'))} />
         </section>
       )}
 

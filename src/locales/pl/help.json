@@ -94,7 +94,7 @@
       "sections": {
         "first": {
           "title": "Zapisywanie pomiarów zębów",
-          "text": "W sekcji „Karta zębowa” proszę wybrać widok „Tabela” lub „Według zęba”. Pomiary przyzębia wprowadza się przy odpowiednich numerach zębów. Opcja „Dostosuj” pozwala wybrać widoczne kolumny i sposób wpisywania pomiarów kieszonek.\n\nW widoku „Według zęba” wybranie numeru na diagramie otwiera pomiary i notatki danego zęba. W widoku „Tabela” można wybrać kilka zębów po numerach. Kliknięcie z klawiszem Shift zaznacza zakres. Pomiary są wspólne dla obu widoków."
+          "text": "Obok nagłówka „Karta zębowa” proszę wybrać widok „Tabela” lub „Według zęba”. Pomiary przyzębia wprowadza się przy odpowiednich numerach zębów. Opcja „Dostosuj” pozwala wybrać widoczne kolumny i sposób wpisywania pomiarów kieszonek.\n\nW widoku „Według zęba” wybranie numeru na diagramie otwiera pomiary i notatki danego zęba. W widoku „Tabela” można wybrać kilka zębów po numerach. Kliknięcie z klawiszem Shift zaznacza zakres. Pomiary są wspólne dla obu widoków."
         },
         "second": {
           "title": "Dokumentowanie zmian w sekcji „Rozpoznanie”",
@@ -328,7 +328,7 @@
       "sections": {
         "first": {
           "title": "Wyszukiwanie odpowiednich ustawień",
-          "text": "W nagłówku sekcji „Pacjent”, „Znieczulenie”, „Karta zębowa”, „Rozpoznanie”, „Zabieg” proszę wybrać „Dostosuj”. Ustawienia karty otworzą się na odpowiedniej kategorii. Na liście po lewej można wybrać inny obszar bez zamykania okna. Preferencje osobiste zapisują się automatycznie na koncie, jeśli dostępna jest synchronizacja, albo w bieżącej przeglądarce.\n\nAby zmienić układ badania, proszę wybrać „Badanie jamy ustnej” w ustawieniach karty. W nagłówku sekcji „Obrazowanie” proszę wybrać „Dostosuj”, aby zmienić wspólny układ lub otworzyć ustawienia obrazowania i PDF.\n\nW sekcji „Raport z leczenia” opcja „Zarządzaj szablonami” obok zapisanych szablonów otwiera szablony raportów z leczenia. W sekcji „Raport dla opiekuna” opcja „Zarządzaj szablonami” obok wyboru szablonu otwiera szablony raportów dla opiekuna. Te edytory służą do zarządzania powtarzalną treścią i układem raportów placówki. Przed wprowadzeniem zmian proszę sprawdzić wybrany szablon."
+          "text": "W nagłówku sekcji „Pacjent”, „Znieczulenie”, „Karta zębowa”, „Rozpoznanie”, „Zabieg” proszę wybrać ikonę koła zębatego „Dostosuj”. Ustawienia karty otworzą się na odpowiedniej kategorii. Na liście po lewej można wybrać inny obszar bez zamykania okna. Preferencje osobiste zapisują się automatycznie na koncie, jeśli dostępna jest synchronizacja, albo w bieżącej przeglądarce.\n\nAby zmienić układ badania, proszę wybrać „Badanie jamy ustnej” w ustawieniach karty. W nagłówku sekcji „Obrazowanie” proszę wybrać „Dostosuj”, aby zmienić wspólny układ lub otworzyć ustawienia obrazowania i PDF.\n\nW sekcji „Raport z leczenia” opcja „Zarządzaj szablonami” obok zapisanych szablonów otwiera szablony raportów z leczenia. W sekcji „Raport dla opiekuna” opcja „Zarządzaj szablonami” obok wyboru szablonu otwiera szablony raportów dla opiekuna. Te edytory służą do zarządzania powtarzalną treścią i układem raportów placówki. Przed wprowadzeniem zmian proszę sprawdzić wybrany szablon."
         },
         "second": {
           "title": "Kategorie w ustawieniach karty",

@@ -17,6 +17,7 @@ import { ExamAreasEditor } from './ExamAreasEditor';
 import { SurgeryReportForm } from './SurgeryReportForm';
 import { ImagingSection } from './ImagingSection';
 import { DocumentsModal } from './DocumentsModal';
+import { CustomizeButton } from './CustomizeButton';
 
 // The report-template store and the attachment hook talk to Supabase; swap in plain state.
 const templateStore = vi.hoisted(() => ({
@@ -73,6 +74,16 @@ const patient: PatientInfo = {
   doctor: '', tech: 'Dr. Sharma', date: '2026-03-05', complaint: 'Gum swelling', treatmentReport: '',
   recallDate: '2026-09-05', nerveBlocks: EMPTY_NERVE_BLOCKS, exam: EMPTY_EXAM_FINDINGS,
 };
+
+it('keeps the Customize label accessible with the gear and opens its action', () => {
+  const onClick = vi.fn();
+  const { container } = render(<CustomizeButton label={i18n.t('forms:patient.customize')} onClick={onClick} />);
+  expect(findUntranslated(container)).toEqual([]);
+  const button = screen.getByRole('button', { name: '⟦Customize⟧' });
+  expect(button.querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
+  fireEvent.click(button);
+  expect(onClick).toHaveBeenCalledOnce();
+});
 
 describe('PatientForm', () => {
   it('empty and filled, with and without the recheck field', () => {

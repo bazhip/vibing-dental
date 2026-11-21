@@ -4,6 +4,7 @@ import { useConsultationLibrary } from './hooks/useConsultationLibrary';
 import { CONSULTATION_FIELDS, isUnmodifiedStandardDischarge, consultationLayoutFor, dischargeLayoutFor, isCustomConsultationField, isCustomDischargeField } from './utils/consultationTemplates';
 import { ConsultationTemplatesDialog } from './components/ConsultationTemplatesDialog';
 import { Icon } from './ios/icons';
+import { CustomizeButton } from './components/CustomizeButton';
 import { useTeam } from './hooks/useTeam';
 import { RefineTextContext } from './components/RefineTextAction';
 import type { HistoryVisit } from './components/PatientRecordHistory';
@@ -476,14 +477,13 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       {chartingViewSwitch}
       {/* The app has Customize in the Chart bar's More menu. */}
       {!native && (
-        <button
-          type="button"
-          className="diagram-view__action section-header__customize"
+        <CustomizeButton
+          className="section-header__customize"
           onClick={() => openChartSettings('charting')}
           title={t('customize.hint')}
-        >
-          {t('customize.label')}
-        </button>
+          label={t('customize.label')}
+          opensDialog
+        />
       )}
     </div>
   );

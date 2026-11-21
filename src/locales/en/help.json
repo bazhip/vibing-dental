@@ -94,7 +94,7 @@
       "sections": {
         "first": {
           "title": "Record tooth measurements",
-          "text": "Use Charting to choose Grid or By tooth. Enter recorded periodontal measurements against the numbered teeth. Use Customize to choose which columns appear and how pocket measurements are entered.\n\nSelect a numbered tooth on the diagram in By tooth to open its measurements and notes together. In Grid, select tooth numbers to work with several teeth. Shift-click selects a range. Both views share the same measurements."
+          "text": "Choose Grid or By tooth beside the Charting heading. Enter recorded periodontal measurements against the numbered teeth. Use Customize to choose which columns appear and how pocket measurements are entered.\n\nSelect a numbered tooth on the diagram in By tooth to open its measurements and notes together. In Grid, select tooth numbers to work with several teeth. Shift-click selects a range. Both views share the same measurements."
         },
         "second": {
           "title": "Document findings on Diagnosis",
@@ -328,7 +328,7 @@
       "sections": {
         "first": {
           "title": "Find the right settings for your task",
-          "text": "Open Patient, Anesthesia, Charting, Diagnosis, Procedure and choose Customize in that section’s header. Chart settings opens at the matching category. In the left-hand category list, choose another area without leaving the dialog. Personal chart preferences save automatically to your account when account sync is available, or to the current browser otherwise.\n\nFor Exam, select Oral exam in Chart settings to edit the layout. In Imaging, choose Customize in the header to edit the shared layout or open Imaging and PDF settings.\n\nIn Treatment report, Manage templates beside the saved choices opens the treatment templates. In Owner report, Manage templates beside the report template choices opens the owner report templates. These editors manage reusable wording and layout for your practice, so review the selected template before changing it."
+          "text": "Open Patient, Anesthesia, Charting, Diagnosis, Procedure and choose the gear labeled Customize in that section’s header. Chart settings opens at the matching category. In the left-hand category list, choose another area without leaving the dialog. Personal chart preferences save automatically to your account when account sync is available, or to the current browser otherwise.\n\nFor Exam, select Oral exam in Chart settings to edit the layout. In Imaging, choose Customize in the header to edit the shared layout or open Imaging and PDF settings.\n\nIn Treatment report, Manage templates beside the saved choices opens the treatment templates. In Owner report, Manage templates beside the report template choices opens the owner report templates. These editors manage reusable wording and layout for your practice, so review the selected template before changing it."
         },
         "second": {
           "title": "Understand each Chart settings category",

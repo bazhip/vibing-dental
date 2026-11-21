@@ -97,3 +97,7 @@
   .practice-settings-modal .ai-settings-body.practice-workspace__layout { grid-template-columns: minmax(0, 1fr); }
   .practice-settings-modal .practice-logo-row { flex-wrap: wrap; }
 }
+
+.ai-settings-section > .customize-button {
+  align-self: flex-start;
+}
