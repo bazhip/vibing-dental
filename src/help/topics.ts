@@ -47,7 +47,7 @@ export const HELP_SCREENSHOTS: Partial<Record<HelpTopic, readonly HelpScreenshot
     { caption: 'imagingTemplates', src: '/help/screenshots/imaging.jpg', width: 1240, height: 850, section: 'third' },
   ],
   dictation: [
-    { caption: 'dictation', src: '/help/screenshots/dictation.jpg', width: 600, height: 370, section: 'second' },
+    { caption: 'dictation', src: '/help/screenshots/dictation.jpg', width: 1440, height: 705, section: 'third' },
     { caption: 'dictationCheck', src: '/help/screenshots/dictation-check.jpg', width: 352, height: 290, section: 'third' },
   ],
   discharge: [

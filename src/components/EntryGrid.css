@@ -4951,3 +4951,36 @@ a, button, input, select, textarea, label, summary, [role='button'] {
 
 /* Independent imaging reports share a layout with consistent section spacing. */
 .imaging-reports { display: grid; gap: 24px; min-width: 0; margin-top: 24px; }
+
+/* AI review stays visible with the chart while the recorder is closed. */
+.ai-review--chart {
+  margin-block-end: 1rem;
+  border: 1px solid var(--border);
+  border-radius: .75rem;
+}
+.ai-review--chart .ai-review__list { max-height: none; overflow: visible; }
+.ai-review--chart .ai-review__label { margin: 0; padding: .75rem; }
+.chart-review-badge {
+  display: inline-grid;
+  place-items: center;
+  min-inline-size: 1.125rem;
+  min-block-size: 1.125rem;
+  margin-inline-end: .375rem;
+  border-radius: 50%;
+  background: var(--ios-warning-fill, #fffbeb);
+  color: var(--ios-warning-label, #92400e);
+  font-size: .8rem;
+  font-weight: 700;
+  line-height: 1;
+}
+@media (max-width: 640px), (pointer: coarse) {
+  .ai-review--chart .ai-review__opt { min-block-size: 44px; }
+}
+
+.dental-grid-section .dental-grid__cell--review {
+  box-shadow: inset 3px 0 var(--ios-warning-label, #92400e);
+  background-color: var(--ios-warning-fill, #fffbeb);
+}
+[dir='rtl'] .dental-grid-section .dental-grid__cell--review {
+  box-shadow: inset -3px 0 var(--ios-warning-label, #92400e);
+}

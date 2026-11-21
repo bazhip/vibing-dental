@@ -118,3 +118,19 @@ it('preserves untyped history and rejects a malformed visit type in imported sna
   const malformed = { ...saved, patientInfo: { ...saved.patientInfo, visitType: 'phone' } };
   expect(normalizeSnapshot(malformed as never).patientInfo).not.toHaveProperty('visitType');
 });
+
+it('persists unresolved dictation findings on their visit and reloads them with the snapshot', () => {
+  const item = { id: 'guess', spoken: true, section: 'charting', previous: '',
+    flag: { heard: '108 mobility two', reason: 'Low confidence', triadan: 108, options: [],
+      applied: { name: 'set_tooth_field', input: { triadan: 108, field: 'mobility', value: '2' } } } };
+  const first = renderHook(() => useChartState());
+  act(() => first.result.current.setVoiceReviews([item]));
+  const saved = JSON.parse(JSON.stringify(first.result.current.getSnapshot()));
+  first.unmount();
+  const next = renderHook(() => useChartState());
+  expect(next.result.current.voiceReviews).toEqual([item]);
+  act(() => next.result.current.startNewVisit());
+  expect(next.result.current.getSnapshot().voiceReviews).toBeUndefined();
+  act(() => next.result.current.applySnapshot(saved, 'previous-visit'));
+  expect(next.result.current.voiceReviews).toEqual([item]);
+});

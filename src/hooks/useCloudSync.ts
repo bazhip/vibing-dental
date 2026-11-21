@@ -122,7 +122,7 @@ function hasContent(s: ChartSnapshot): boolean {
   const p = s?.patientInfo;
   if (!p || typeof p !== 'object' || !Array.isArray(s.toothData)) return false;
   if ((p.patientName ?? '').trim() || ((p.patientNumber ?? '').trim() && !isGeneratedPatientNumber(p)) || (p.ownerName ?? '').trim() || (p.ownerPhone ?? '').trim() || (p.ownerEmail ?? '').trim() || (p.complaint ?? '').trim() || (p.treatmentReport ?? '').trim()) return true;
-  if (s.clinicalDictations?.length) return true;
+  if (s.clinicalDictations?.length || s.voiceReviews?.length) return true;
   if (hasVisitDocumentation(p) || radiologyRecordedText(p).trim() || ctRecordedText(p).trim()) return true;
   if (p.secondNerveBlocks && hasNerveBlockEntries(p.secondNerveBlocks)) return true;
   if (s.plannedExtractions?.length) return true;

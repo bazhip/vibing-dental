@@ -47,6 +47,8 @@ export interface ToothChartViewProps {
   /** View-only chart: teeth can still be browsed, nothing edits. */
   readOnly?: boolean;
   highlightTriadan?: number | null;
+  reviewFields?: ReadonlySet<string>;
+  reviewFocus?: { triadan: number; field?: string };
   /** Rendered in the section header (the Grid / By tooth switch). */
   headerAccessory?: React.ReactNode;
   /** Chart settings: measurements to leave out, one pocket box per root. */
@@ -96,6 +98,8 @@ export function ToothChartView({
   setPlannedExtraction,
   readOnly = false,
   highlightTriadan,
+  reviewFields,
+  reviewFocus,
   headerAccessory,
   hiddenColumns,
   pocketMode = 'tooth',
@@ -152,6 +156,13 @@ export function ToothChartView({
   React.useEffect(() => {
     if (selected != null && !diagram.teeth.some((t) => t.triadan === selected)) setSelected(null);
   }, [diagram, selected]);
+
+  React.useEffect(() => {
+    if (!reviewFocus || !diagram.teeth.some(tooth => tooth.triadan === reviewFocus.triadan)) return;
+    setSelected(reviewFocus.triadan);
+    setMapOpen(false);
+    focusHeadingAfterSelection.current = true;
+  }, [reviewFocus, diagram]);
 
   const order = React.useMemo(() => toothWalkOrder(diagram.teeth.map((t) => t.triadan)), [diagram]);
   const planned = React.useMemo(() => new Set(plannedExtractions), [plannedExtractions]);
@@ -368,13 +379,15 @@ export function ToothChartView({
                     const value = typeof v === 'string' ? v : '';
                     const bad = outOfRange(col.key, value);
                     const id = `tooth-chart-${col.key}`;
+                    const review = reviewFields?.has(`${selected}:${col.key}`);
+                    const fieldLabel = <>{review && <span className="chart-review-badge" role="img" aria-label={t('panel.needsReview', { ns: 'voice' })}><span aria-hidden="true">!</span></span>}{col.name}</>;
                     const roots = col.key === 'pocket' && selected != null ? pocketLabels(pocketMode, species, selected) : [];
                     const boxes = roots.length ? rootBoxes(roots, value) : null;
                     if (boxes && !boxes.unplaced) {
                       // One box per root ("M4 D6") or per site ("MB2 B1 … DL2").
                       return (
                         <fieldset key={col.key} className="tooth-chart__finding tooth-chart__finding--roots">
-                          <legend>{col.name}</legend>
+                          <legend>{fieldLabel}</legend>
                           <div className={`tooth-chart__roots${pocketMode === 'site' ? ' tooth-chart__roots--sites' : ''}`}>
                             {roots.map((l) => (
                               <label key={l} className="tooth-chart__root">
@@ -398,7 +411,7 @@ export function ToothChartView({
                     const choices = scoreChoices(col.key);
                     const field = (
                       <label key={col.key} className="tooth-chart__finding" htmlFor={id}>
-                        <span>{col.name}</span>
+                        <span>{fieldLabel}</span>
                         <input
                           id={id}
                           className={`tooth-chart__finding-input${bad ? ' tooth-chart__finding-input--bad' : ''}`}

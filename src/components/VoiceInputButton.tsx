@@ -15,6 +15,7 @@ import { needsAiConsent, ensureAiConsent } from '../native/aiConsent';
 import type { AppLanguage } from '../i18n/config';
 import { endsMidFindingOther } from '../utils/voice/normalize';
 import { transcriptTurns } from '../utils/voice/transcriptTurns';
+import type { VoiceReviewItem as ReviewItem } from '../utils/voiceReview';
 import { directDentalScore } from '../utils/voice/directDentalScore';
 import {
   extractChartActions,
@@ -27,7 +28,6 @@ import {
   overwrittenChartValue,
   normalizeTranscript,
   codeOnlyComment,
-  ReviewFlag,
   describeAction,
   prewarmAutofill,
   isScopedSection,
@@ -101,8 +101,22 @@ export function actionFocus(a: AiAction, activeSection?: string, lng: AppLanguag
   }
 }
 
+function reviewDestination(action: AiAction | undefined, activeSection?: string, lng?: AppLanguage): string | undefined {
+  return action && actionFocus(action, activeSection, lng)?.section;
+}
+
+export function voiceReviewSection(item: ReviewItem, visibleSections?: string[]): string {
+  const section = item.section ?? reviewDestination(item.proposal?.action ?? item.flag.applied ?? item.flag.options[0]?.action);
+  return section && (!visibleSections || visibleSections.includes(section)) ? section : 'patient';
+}
+
 interface VoiceInputButtonProps {
   transcriptUserId?: string;
+  savedReviews?: ReviewItem[];
+  onReviewsChange?: React.Dispatch<React.SetStateAction<ReviewItem[]>>;
+  reviewHost?: HTMLElement | null;
+  reviewSections?: string[];
+  reviewOnly?: boolean;
   context: ChartContext;
   handlers: ChartHandlers;
   /** Called with each batch of applied actions so the app can focus the
@@ -116,6 +130,7 @@ interface VoiceInputButtonProps {
   triggerHidden?: boolean;
   onActivity?: (actions: AiAction[], lng: AppLanguage) => void;
   onShowAction?: (section: string) => void;
+  onReviewFocus?: (focus: AiFocus) => void;
   /** Chart section on screen, used as context for ambiguous findings. */
   activeSection?: string;
   /** Identifies the open chart. When it changes, the dictation (transcript
@@ -133,18 +148,6 @@ interface ActivityEntry {
   at: Date;
   skipped?: boolean;
   uncertain?: boolean;
-}
-
-/** A finding the vet should check — see ReviewFlag. */
-interface ReviewItem {
-  id: string;
-  flag: ReviewFlag;
-  /** Undo the applied best guess (absent for questions, or when the
-   *  change can't be cleanly undone). */
-  revert?: () => void;
-  /** Already announced in the earpiece. */
-  spoken: boolean;
-  proposal?: { action: AiAction; existing: string | undefined };
 }
 
 /** What an action writes to — two actions with the same target are the
@@ -264,7 +267,7 @@ function useStickToBottom<T extends HTMLElement>(dep: unknown) {
 }
 
 export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
-  context, handlers, onActivity, onShowAction, onDictationComplete, finalReviewRef, onBusyChange, activeSection, sessionKey, locked = false, onOpenFeedback, contextualDestination, transcriptUserId, triggerHidden = false }) => {
+  context, handlers, onActivity, onShowAction, onReviewFocus, onDictationComplete, finalReviewRef, onBusyChange, activeSection, sessionKey, locked = false, onOpenFeedback, contextualDestination, transcriptUserId, triggerHidden = false, savedReviews, onReviewsChange, reviewHost, reviewSections, reviewOnly = false }) => {
   const { t } = useTranslation(['voice', 'app']);
   const [activeChunkCount, setActiveChunkCount] = React.useState(0);
   const [activity, setActivity] = React.useState<ActivityEntry[]>([]);
@@ -309,7 +312,10 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   const reviewFocusPending = React.useRef(false);
   const [reviewCompleted, setReviewCompleted] = React.useState(false);
   const [panelOpen, setPanelOpen] = React.useState(false);
-  const [reviews, setReviews] = React.useState<ReviewItem[]>([]);
+  const [sessionReviews, setSessionReviews] = React.useState<ReviewItem[]>([]);
+  const reviews = savedReviews ?? sessionReviews;
+  const setReviews = onReviewsChange ?? setSessionReviews;
+  const persistentReviews = React.useRef(onReviewsChange != null);
   const reviewsRef = React.useRef(reviews);
   reviewsRef.current = reviews;
   React.useLayoutEffect(() => {
@@ -446,11 +452,12 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     }
 
     const gen = sessionGenRef.current;
+    const session = currentSessionRef.current;
     inFlightRef.current = true;
     setActiveChunkCount((c) => c + 1);
     try {
       const result = await extractChartActions({ delta, recentContext, context: contextRef.current, section, lng: voiceRef.current?.lng ?? 'en' });
-      if (gen === sessionGenRef.current) applyResult(result);
+      if (gen === sessionGenRef.current && session === currentSessionRef.current) applyResult(result);
     } catch (err) {
       console.error('[VoiceInputButton] chunk extraction failed', err);
       setError(errorText(err, i18n.getFixedT(null, 'voice')('errors.failed')));
@@ -474,12 +481,12 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       if (reviewBeforeReplacing.current) {
         const seen = new Set<string>();
         for (const action of all) {
-          const flag = result.flags.find(candidate => candidate.applied === action && action.input.uncertain === true);
+          const flag = result.flags.find(candidate => candidate.applied === action);
           const existing = overwrittenChartValue(action, before);
           const key = targetKey(action);
           const duplicate = seen.has(key) && !['add_comment', 'append_treatment_report', 'append_radiographic_findings'].includes(action.name);
           seen.add(key);
-          if (existing === undefined && !flag && !duplicate && !invalidReason(action)) continue;
+          if (existing === undefined && !duplicate && !invalidReason(action)) continue;
           const description = describeAction(action);
           const options = [
             ...(!invalidReason(action) ? [{ label: tNow('correction.apply'), action }] : []),
@@ -489,8 +496,9 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
             id: `rv${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
             spoken: false,
             proposal: { action, existing },
+            section: actionFocus(action, sectionRef.current, voiceRef.current?.lng)?.section,
             flag: {
-              heard: description,
+              heard: flag?.heard ?? description,
               reason: existing !== undefined
                 ? tNow('correction.conflict')
                 : invalidReason(action) ?? flag?.reason ?? tNow('correction.conflict'),
@@ -502,19 +510,22 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       }
       const fresh = all.filter(action => !held.has(action));
       // Undo info has to be captured from the chart BEFORE applying.
-      const reverts = new Map<AiAction, (() => void) | undefined>();
-      for (const f of result.flags) if (f.applied) reverts.set(f.applied, revertFor(f.applied, before));
+      const reverts = new Map<AiAction, string | null | undefined>();
+      for (const f of result.flags) if (f.applied) reverts.set(f.applied, previousValue(f.applied, before));
       const applied = applyAiActions(fresh, handlersRef.current, voiceRef.current?.lng ?? 'en');
       const appliedSet = new Set(applied);
 
       const newItems: ReviewItem[] = [...held.values()];
       for (const f of result.flags) {
-        if (f.applied && !fresh.includes(f.applied)) continue; // already on the chart
+        if (f.applied && held.has(f.applied)) continue;
         const wasApplied = !!f.applied && appliedSet.has(f.applied);
+        // Also keep a warning about a value already present, with no undo of that value.
+        const stillCharted = wasApplied || (!!f.applied && isNoopAction(f.applied, before));
         newItems.push({
           id: `rv${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
-          flag: wasApplied ? f : { ...f, applied: undefined },
-          revert: wasApplied ? reverts.get(f.applied!) : undefined,
+          flag: stillCharted ? f : { ...f, applied: undefined },
+          previous: wasApplied ? reverts.get(f.applied!) : undefined,
+          section: reviewDestination(f.applied ?? f.options[0]?.action, sectionRef.current, voiceRef.current?.lng),
           spoken: false,
         });
       }
@@ -525,15 +536,18 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       if (settled.length || newItems.length) {
         setReviews((prev) => {
           const keys = new Set(settled.map(targetKey));
-          const teeth = new Set(settled.map((a) => a.input.triadan).filter((t) => t != null));
-          const proposedKeys = new Set(newItems.flatMap(item => item.proposal ? [targetKey(item.proposal.action)] : []));
           const remaining = prev.filter((r) => {
-            if (r.proposal && proposedKeys.has(targetKey(r.proposal.action))) return false;
+            if (r.proposal && keys.has(targetKey(r.proposal.action))) return false;
             if (r.flag.applied) return !keys.has(targetKey(r.flag.applied));
             const optKeys = r.flag.options.map((o) => targetKey(o.action));
-            return !optKeys.some((k) => keys.has(k)) && !(r.flag.triadan != null && teeth.has(r.flag.triadan));
+            return !optKeys.some((k) => keys.has(k));
           });
-          return [...remaining, ...newItems];
+          return [...remaining, ...newItems.filter(item => !remaining.some(prior =>
+            prior.flag.heard === item.flag.heard && prior.flag.reason === item.flag.reason
+            && JSON.stringify(prior.proposal) === JSON.stringify(item.proposal)
+            && JSON.stringify(prior.flag.applied) === JSON.stringify(item.flag.applied)
+            && JSON.stringify(prior.flag.options) === JSON.stringify(item.flag.options)
+          ))];
         });
       }
       appendActivity(applied, result.skipped, flaggedActions, direct);
@@ -565,10 +579,11 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
    */
   const runFinalCheck = async () => {
     const startedGen = sessionGenRef.current;
+    const session = currentSessionRef.current;
     // Read the language when the check finishes (this runs from a callback created once).
     const tNow = i18n.getFixedT(null, 'voice');
     await drain();
-    if (!canEdit() || startedGen !== sessionGenRef.current) return;
+    if (!canEdit() || startedGen !== sessionGenRef.current || session !== currentSessionRef.current) return;
     const segments = voiceRef.current?.allSegments() ?? [];
     const transcript = segments.map((s) => s.annotated ?? s.text).join('\n').trim();
     if (!transcript) return;
@@ -578,7 +593,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     // Let React commit the last chunk's chart changes into contextRef.
     await new Promise((r) => setTimeout(r, 150));
     if (inFlightRef.current) await waitIdle();
-    if (!canEdit() || startedGen !== sessionGenRef.current) return;
+    if (!canEdit() || startedGen !== sessionGenRef.current || session !== currentSessionRef.current) return;
     const gen = startedGen;
     inFlightRef.current = true;
     setActiveChunkCount((c) => c + 1);
@@ -589,7 +604,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
         rejected: rejectedRef.current,
         lng: voiceRef.current?.lng ?? 'en',
       });
-      if (!result.ran || gen !== sessionGenRef.current || !canEdit()) return;
+      if (!result.ran || gen !== sessionGenRef.current || session !== currentSessionRef.current || !canEdit()) return;
       finalCheckedSegmentsRef.current = segments.length;
       setReviewStatus('checked');
       const raised = applyResult(result);
@@ -625,28 +640,53 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 
   /** How to take back `a` if the vet rejects it, from the chart as it was
    *  just before. Undefined when there's no clean undo. */
-  function revertFor(a: AiAction, before: ChartContext): (() => void) | undefined {
-    const h = () => handlersRef.current;
+  function previousValue(a: AiAction, before: ChartContext): string | null | undefined {
     const i = a.input;
     const t = Number(i.triadan);
     const post = i.diagram === 'post';
     switch (a.name) {
       case 'set_tooth_field': {
         const tooth = before.toothData.find((x) => x.triadan === t);
-        const prior = tooth ? String(tooth[i.field as keyof typeof tooth] ?? '') : '';
-        return () => h().setToothField(t, i.field as never, prior);
+        return tooth ? String(tooth[i.field as keyof typeof tooth] ?? '') : undefined;
       }
       case 'set_tooth_mark':
       case 'unset_tooth_mark': {
-        const prior = (post ? before.postMarks : before.preMarks)[t] ?? null;
-        return () => (post ? h().setPostMark : h().setPreMark)(t, prior as never);
+        return (post ? before.postMarks : before.preMarks)[t] ?? null;
       }
-      case 'add_comment': {
-        const text = codeOnlyComment(String(i.text ?? ''));
-        return () => h().removeComment(post ? 'post' : 'pre', i.triadan != null ? t : null, text);
-      }
+      case 'add_comment': return null;
+      case 'set_nerve_block': return String(before.patientInfo.nerveBlocks?.[i.site as keyof typeof before.patientInfo.nerveBlocks] ?? '');
+      case 'set_patient_field': return String(before.patientInfo[i.field as keyof typeof before.patientInfo] ?? '');
       default:
         return undefined;
+    }
+  }
+
+  function revertReview(item: ReviewItem) {
+    const action = item.flag.applied;
+    if (!action || item.previous === undefined) return;
+    // Reopening a review must never roll back a subsequent manual edit.
+    if (persistentReviews.current && !isNoopAction(action, contextRef.current)) return;
+    const h = handlersRef.current;
+    const { input } = action;
+    const tooth = Number(input.triadan);
+    const post = input.diagram === 'post';
+    switch (action.name) {
+      case 'set_tooth_field':
+        h.setToothField(tooth, input.field as never, item.previous ?? '');
+        break;
+      case 'set_tooth_mark':
+      case 'unset_tooth_mark':
+        (post ? h.setPostMark : h.setPreMark)(tooth, item.previous as never);
+        break;
+      case 'set_nerve_block':
+        h.setNerveBlock(input.site as Parameters<ChartHandlers['setNerveBlock']>[0], item.previous ?? '');
+        break;
+      case 'set_patient_field':
+        h.setPatientField(input.field as Parameters<ChartHandlers['setPatientField']>[0], item.previous ?? '');
+        break;
+      case 'add_comment':
+        h.removeComment(post ? 'post' : 'pre', input.triadan != null ? tooth : null, codeOnlyComment(String(input.text ?? '')));
+        break;
     }
   }
 
@@ -654,45 +694,54 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     if (!canEdit()) return;
     const item = reviewsRef.current.find((r) => r.id === id);
     if (!item) return;
-    if (typeof choice === 'object' && item.proposal) {
+    if (typeof choice === 'object' && (item.proposal || persistentReviews.current)) {
       const current = overwrittenChartValue(choice.action, contextRef.current);
       if (isNoopAction(choice.action, contextRef.current)) {
         setReviews(prev => prev.filter(review => review.id !== id));
         return;
       }
-      if (current !== undefined && (choice.action !== item.proposal.action || current !== item.proposal.existing)) {
+      const replacesGuess = !!item.flag.applied && targetKey(item.flag.applied) === targetKey(choice.action)
+        && item.previous !== undefined && isNoopAction(item.flag.applied, contextRef.current);
+      if (current !== undefined && !replacesGuess && (choice.action !== item.proposal?.action || current !== item.proposal?.existing)) {
         const proposal = { action: choice.action, existing: current };
         setReviews(prev => prev.map(review => review.id === id ? {
-          ...review, proposal, flag: { ...review.flag, heard: describeAction(choice.action), reason: t('correction.conflict'),
+          ...review, proposal, section: reviewDestination(choice.action, sectionRef.current, voiceRef.current?.lng), flag: { ...review.flag, heard: describeAction(choice.action), reason: t('correction.conflict'),
             options: [{ label: t('correction.apply'), action: choice.action }] },
         } : review));
         return;
       }
     }
-    if (choice === 'remove' && item.proposal) rejectedRef.current.push(item.proposal.action);
-    reviewFocusPending.current = true;
-    setReviewCompleted(true);
-    setReviews((prev) => prev.filter((r) => r.id !== id));
-    const now = new Date();
-    if (choice === 'keep') return;
-    if (item.flag.applied) rejectedRef.current.push(item.flag.applied);
-    item.revert?.();
-    if (choice === 'remove') {
+    if (typeof choice === 'object') {
+      const applied = applyAiActions([choice.action], handlersRef.current, voiceRef.current?.lng ?? 'en');
+      if (!applied.length) return;
+      const guess = item.flag.applied;
+      if (guess && (targetKey(guess) !== targetKey(choice.action) || guess.name === 'add_comment')) {
+        revertReview(item);
+      }
+      appendActivity(applied);
+    } else if (choice === 'remove') {
+      if (item.proposal) rejectedRef.current.push(item.proposal.action);
+      revertReview(item);
       if (item.flag.applied) {
+        const now = new Date();
         setActivity((prev) => [...prev, { id: `${now.getTime()}_r`, description: i18n.getFixedT(null, 'voice')('activity.removed', { what: describeAction(item.flag.applied!) }), at: now }]);
       }
-      return;
     }
-    const applied = applyAiActions([choice.action], handlersRef.current, voiceRef.current?.lng ?? 'en');
-    appendActivity(applied);
+    if (choice !== 'keep' && item.flag.applied) rejectedRef.current.push(item.flag.applied);
+    reviewFocusPending.current = true;
+    setReviewCompleted(true);
+    setReviews(prev => prev.filter(review => review.id !== id));
   };
 
   const showReview = (item: ReviewItem) => {
     const a = item.proposal?.action ?? item.flag.applied ?? item.flag.options[0]?.action;
     if (!a) return;
     const lng = voiceRef.current?.lng ?? 'en';
-    const focus = actionFocus(a, sectionRef.current, lng);
-    if (focus) onShowAction?.(focus.section);
+    const focus = actionFocus(a, item.section, lng);
+    if (focus) {
+      onShowAction?.(focus.section);
+      onReviewFocus?.(focus);
+    }
     onActivityRef.current?.([a], lng);
   };
 
@@ -908,7 +957,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     voiceRef.current?.clear();
     if (voiceRef.current?.recording) voiceRef.current.stop();
     setActivity([]);
-    setReviews([]);
+    if (!persistentReviews.current) setReviews([]);
     setReviewCompleted(false);
     setPanelOpen(false);
     setFinishing(false);
@@ -956,7 +1005,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     if (fresh) {
       resetSessionMemory();
       setActivity([]);
-      setReviews([]);
+      if (!persistentReviews.current) setReviews([]);
       setReviewCompleted(false);
       voice.start();
     } else {
@@ -1041,7 +1090,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     if (voice.recording) voice.stop();
     setFinishing(false);
     setActivity([]);
-    setReviews([]);
+    if (!persistentReviews.current) setReviews([]);
     setReviewCompleted(false);
   };
 
@@ -1097,6 +1146,51 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   // The iOS app draws its symbols as icons, not text glyphs.
   const native = isNativeApp();
   const label = voice.recording ? t('button.stop') : hasSession && !contextualDestination ? t('button.resume') : t('button.dictate');
+  const renderReview = (r: ReviewItem) => {
+    const canRemove = r.previous !== undefined && !!r.flag.applied
+      && (!persistentReviews.current || isNoopAction(r.flag.applied, context));
+    const reviewAction = r.proposal?.action ?? r.flag.applied ?? r.flag.options[0]?.action;
+    const section = r.section ?? reviewDestination(reviewAction, sectionRef.current, voiceRef.current?.lng);
+    const label = section && (section === 'imaging' ? t('app:radiographic.title') : sectionLabel(section));
+    return <li key={r.id} className="ai-review__item">
+      {label && <span className="ai-review__destination">{label}</span>}
+      <button type="button" className="ai-review__what" onClick={() => showReview(r)} title={t('panel.showInChart')}>
+        <span className="ai-review__heard">
+          {r.proposal ? describeAction(r.proposal.action) : r.flag.applied ? describeAction(r.flag.applied) : t('panel.heard', { heard: r.flag.heard })}
+        </span>
+        <span className="ai-review__reason">
+          {r.flag.applied ? t('panel.guess', { reason: r.flag.reason }) : t('panel.notCharted', { reason: r.flag.reason })}
+        </span>
+      </button>
+      {r.proposal?.existing !== undefined && <dl className="ai-review__comparison">
+        <dt>{t('clinical.current')}</dt><dd>{r.proposal.existing}</dd>
+      </dl>}
+      <div className="ai-review__actions">
+        {r.flag.options.map((o, i) => (
+          <button key={i} type="button" className="ai-review__opt" disabled={locked} onClick={() => resolveReview(r.id, o)}>
+            {o.label}
+          </button>
+        ))}
+        {r.flag.applied && (
+          <button type="button" className="ai-review__opt ai-review__opt--keep" disabled={locked} onClick={() => resolveReview(r.id, 'keep')}>
+            {t('panel.keep')}
+          </button>
+        )}
+        <button type="button" className="ai-review__opt ai-review__opt--quiet" disabled={locked} onClick={() => resolveReview(r.id, 'remove')}>
+          {r.proposal?.existing !== undefined ? t('correction.keep') : canRemove ? t('panel.remove') : t('panel.dismiss')}
+        </button>
+      </div>
+    </li>;
+  };
+  const sectionReviews = reviewHost ? reviews.filter(item => voiceReviewSection(item, reviewSections) === activeSection) : [];
+  const inlineReviews = reviewHost && sectionReviews.length > 0 && ReactDOM.createPortal(
+    <section className="ai-review ai-review--chart" aria-label={t('panel.needsReview')}>
+      <h3 className="ai-sidebar__section-label ai-review__label">{t('panel.needsReviewCount', { count: sectionReviews.length })}</h3>
+      <ul className="ai-review__list">{sectionReviews.map(renderReview)}</ul>
+    </section>,
+    reviewHost,
+  );
+
   const reviewLabel = reviews.length ? t('toReview', { count: reviews.length }) : null;
   // Recording but the mic isn't live yet: say so, so nobody talks into
   // the gap. Live but nothing heard yet: invite them to start.
@@ -1174,12 +1268,15 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       </button>
   );
 
+  if (reviewOnly) return <>{inlineReviews}</>;
+
   return (
     <div className="voice-input-wrap">
       {!triggerHidden && trigger}
       {/* How-it-works modal. Portaled to <body> so it isn't trapped by the
           topbar's backdrop-filter containing block (which would clip a
           position:fixed overlay to the short topbar). */}
+      {inlineReviews}
       {intro && ReactDOM.createPortal(
         <div className="ai-settings-overlay" onClick={() => setIntro(null)} role="dialog" aria-modal="true" aria-label={intro === 'welcome' ? t('welcome.title') : t('intro.ariaLabel')}>
           <div className="ai-settings-modal ai-intro" ref={introRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
@@ -1265,40 +1362,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
                   {reviews.length === 0 && <p>{t('panel.reviewComplete')}</p>}
                   {reviews.length > 0 && <div className="ai-sidebar__section-label ai-review__label">{t('panel.needsReviewCount', { count: reviews.length })}</div>}
                   <ul className="ai-review__list">
-                    {reviews.map((r) => {
-                      const reviewAction = r.proposal?.action ?? r.flag.applied ?? r.flag.options[0]?.action;
-                      const home = reviewAction && actionFocus(reviewAction, sectionRef.current, voiceRef.current?.lng);
-                      const label = home && (home.section === 'imaging' ? t('app:radiographic.title') : sectionLabel(home.section));
-                      return <li key={r.id} className="ai-review__item">
-                        {label && <span className="ai-review__destination">{label}</span>}
-                        <button type="button" className="ai-review__what" onClick={() => showReview(r)} title={t('panel.showInChart')}>
-                          <span className="ai-review__heard">
-                            {r.proposal ? describeAction(r.proposal.action) : r.flag.applied ? describeAction(r.flag.applied) : t('panel.heard', { heard: r.flag.heard })}
-                          </span>
-                          <span className="ai-review__reason">
-                            {r.flag.applied ? t('panel.guess', { reason: r.flag.reason }) : t('panel.notCharted', { reason: r.flag.reason })}
-                          </span>
-                        </button>
-                        {r.proposal?.existing !== undefined && <dl className="ai-review__comparison">
-                          <dt>{t('clinical.current')}</dt><dd>{r.proposal.existing}</dd>
-                        </dl>}
-                        <div className="ai-review__actions">
-                          {r.flag.options.map((o, i) => (
-                            <button key={i} type="button" className="ai-review__opt" disabled={locked} onClick={() => resolveReview(r.id, o)}>
-                              {o.label}
-                            </button>
-                          ))}
-                          {r.flag.applied && (
-                            <button type="button" className="ai-review__opt ai-review__opt--keep" disabled={locked} onClick={() => resolveReview(r.id, 'keep')}>
-                              {t('panel.keep')}
-                            </button>
-                          )}
-                          <button type="button" className="ai-review__opt ai-review__opt--quiet" disabled={locked} onClick={() => resolveReview(r.id, 'remove')}>
-                            {r.proposal?.existing !== undefined ? t('correction.keep') : r.flag.applied && r.revert ? t('panel.remove') : t('panel.dismiss')}
-                          </button>
-                        </div>
-                      </li>;
-                    })}
+                    {reviews.map(renderReview)}
                   </ul>
                 </section>
               )}

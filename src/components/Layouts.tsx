@@ -17,6 +17,7 @@ import { MobileSectionMenu } from './MobileSectionMenu';
 export interface ChartSection {
   id: string;
   label: string;
+  needsReview?: boolean;
   content: React.ReactNode;
 }
 
@@ -127,7 +128,10 @@ export const SidebarLayout: React.FC<LayoutProps> = ({
               title={companion ? s.label : undefined}
             >
               <span className="sidebar-layout__nav-num">{String(i + 1).padStart(2, '0')}</span>
-              <span className="sidebar-layout__nav-label">{s.label}</span>
+              <span className="sidebar-layout__nav-label">
+                {s.needsReview && <span className="chart-review-badge" role="img" aria-label={t('panel.needsReview', { ns: 'voice' })}><span aria-hidden="true">!</span></span>}
+                {s.label}
+              </span>
             </button>
           ))}
         </nav>

@@ -102,6 +102,7 @@ export function useAppShell(): AppShellApi {
 export interface ChartSectionLink {
   id: string;
   label: string;
+  needsReview?: boolean;
 }
 
 export interface AppShellProps {
@@ -356,6 +357,7 @@ export function AppShell({
                               aria-current={current ? 'location' : undefined}
                               onClick={() => chooseSection(s.id)}
                             >
+                              {s.needsReview && <span className="chart-review-badge" role="img" aria-label={t('panel.needsReview', { ns: 'voice' })}><span aria-hidden="true">!</span></span>}
                               {s.label}
                             </button>
                           );
