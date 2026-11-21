@@ -16,9 +16,9 @@ it('edits declarative consultation sources with linked visible help and reviews 
   fireEvent.click(screen.getByRole('button', { name: 'Review clinical record' }));
   expect(onReview).toHaveBeenCalledOnce();
 });
-it('shows the shared treatment recap, child output, and read-only source fields without a second treatment editor', () => {
+it('shows child output and read-only discharge fields without repeating the treatment report', () => {
   render(<VisitDocumentationSection kind="discharge" patientInfo={patient} onChange={vi.fn()} readOnly><p>Existing client output</p></VisitDocumentationSection>);
-  expect(screen.getByText('Existing treatment')).toBeVisible();
+  expect(screen.queryByText('Existing treatment')).toBeNull();
   expect(screen.getByText('Existing client output')).toBeVisible();
   expect(screen.getAllByRole('textbox')).toHaveLength(3);
   for (const field of screen.getAllByRole('textbox')) expect(field).toHaveAttribute('readonly');

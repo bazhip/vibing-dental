@@ -121,15 +121,15 @@ it('shows Restore generated and explains why older wording cannot be restored', 
   expect(onOverrideChange).not.toHaveBeenCalled();
 });
 
-it('keeps template creation inside management and places the guide after its button', () => {
+it('keeps template creation inside management and places the guide in the picker heading', () => {
   const onCustomize = vi.fn();
   render(<OwnerReportSection snapshot={sampleOwnerReportSnapshot()} overrides={{}} onOverrideChange={vi.fn()}
     onPreview={vi.fn()} onCustomize={onCustomize} aiEnabled />);
   const picker = within(screen.getByRole('group', { name: 'Report template' }));
   const manage = picker.getByRole('button', { name: 'Manage templates' });
   const guide = picker.getByRole('link', { name: 'How templates work' });
-  expect(manage.closest('.template-picker__tools')).toContainElement(guide);
-  expect(manage.compareDocumentPosition(guide) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  expect(guide.closest('.template-picker__heading')).toContainElement(guide);
+  expect(guide).toHaveTextContent('?');
   expect(picker.queryByRole('button', { name: 'New template' })).toBeNull();
   expect(picker.queryByRole('button', { name: 'Write with AI' })).toBeNull();
   expect(screen.getByRole('button', { name: 'Write with AI' })).toBeVisible();

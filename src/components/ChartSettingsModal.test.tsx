@@ -1,4 +1,5 @@
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { DEFAULT_EXAM_LAYOUT } from '../utils/examLayout';
+import { render, screen, fireEvent, within, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 import { ChartSettingsModal } from './ChartSettingsModal';
 import { DEFAULT_CHART_PREFS, ChartPrefs } from '../utils/chartSettings';
@@ -169,16 +170,45 @@ it('switches categories with the compact mobile selector', () => {
   expect(screen.getByRole('checkbox', { name: 'Show the Recheck due field' })).toBeChecked();
 });
 
-it('opens the Exam layout editor from the Exam category when available', () => {
+it('edits the exam layout inside Chart settings and keeps the draft across categories', async () => {
   const onClose = vi.fn();
-  const onCustomizeExam = vi.fn();
+  const onSave = vi.fn().mockResolvedValue(undefined);
   render(<ChartSettingsModal prefs={DEFAULT_CHART_PREFS} followsAccount onChange={() => {}} onClose={onClose}
-    onCustomizeExam={onCustomizeExam} section="exam" />);
-  expect(screen.queryByRole('button', { name: /Add area/ })).not.toBeInTheDocument();
-  expect(screen.queryByText(/Changes save automatically/)).not.toBeInTheDocument();
-  fireEvent.click(screen.getByRole('button', { name: 'Customize Exam' }));
-  expect(onClose).toHaveBeenCalledOnce();
-  expect(onCustomizeExam).toHaveBeenCalledOnce();
+    examLayout={{ fields: DEFAULT_EXAM_LAYOUT, mode: 'practice', status: 'ready', canEdit: true, onSave, onReload: vi.fn() }} section="exam" />);
+  expect(screen.getAllByRole('dialog')).toHaveLength(1);
+  expect(screen.queryByRole('button', { name: 'Customize Exam' })).toBeNull();
+  expect(screen.queryByText(/Changes save automatically/)).toBeNull();
+  fireEvent.click(screen.getByRole('button', { name: 'Diagnostics' }));
+  fireEvent.change(screen.getByRole('textbox', { name: 'Field name' }), { target: { value: 'Test results' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Patient details' }));
+  expect(screen.queryByRole('textbox', { name: 'Field name' })).toBeNull();
+  fireEvent.click(screen.getByRole('button', { name: 'Oral exam' }));
+  expect(screen.getByRole('textbox', { name: 'Field name' })).toHaveValue('Test results');
+  fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+  await waitFor(() => expect(onSave).toHaveBeenCalledWith(expect.arrayContaining([
+    { id: 'gpDiagnostics', kind: 'text', label: 'Test results' },
+  ])));
+  expect(onClose).not.toHaveBeenCalled();
+});
+
+it('guards closing Chart settings from another category while there are unsaved exam edits', async () => {
+  const onClose = vi.fn();
+  const confirm = vi.spyOn(window, 'confirm').mockReturnValueOnce(false).mockReturnValueOnce(true);
+  try {
+    render(<ChartSettingsModal prefs={DEFAULT_CHART_PREFS} followsAccount onChange={() => {}} onClose={onClose}
+      examLayout={{ fields: DEFAULT_EXAM_LAYOUT, mode: 'personal', status: 'ready', canEdit: true, onSave: vi.fn(), onReload: vi.fn() }} section="exam" />);
+    fireEvent.click(screen.getByRole('button', { name: 'Diagnostics' }));
+    fireEvent.change(screen.getByRole('textbox', { name: 'Field name' }), { target: { value: 'Sample edit' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Patient details' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Done' }));
+    expect(confirm).toHaveBeenCalledOnce();
+    expect(onClose).not.toHaveBeenCalled();
+    await waitFor(() => expect(screen.getByRole('dialog')).toBeInTheDocument());
+    fireEvent.keyDown(document, { key: 'Escape' });
+    await waitFor(() => expect(onClose).toHaveBeenCalledOnce());
+  } finally {
+    confirm.mockRestore();
+  }
 });
 
 it('procedure customization edits its own quick codes without changing diagnosis codes', () => {

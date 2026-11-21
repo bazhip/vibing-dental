@@ -156,3 +156,38 @@ html:not(.native-ios)[dir='rtl'] select:not([multiple], [size], .select--bare) {
 @media (max-width: 640px), (pointer: coarse) {
   .context-help-link { min-block-size: 44px; align-items: flex-start; padding-block: 4px; }
 }
+
+.template-help {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  min-inline-size: 28px;
+  min-block-size: 28px;
+  color: var(--primary);
+  border-radius: 50%;
+  text-decoration: none;
+}
+.template-help span {
+  display: grid;
+  place-items: center;
+  min-inline-size: 1.125rem;
+  min-block-size: 1.125rem;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-size: .75rem;
+  font-weight: 650;
+  line-height: 1;
+}
+.template-help:hover { background: var(--action-tint); }
+.template-create:is(.ui-btn, .diagram-view__action) {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 40px;
+  min-block-size: 40px;
+  padding: 0;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+@media (max-width: 640px), (pointer: coarse) {
+  .template-help, .template-create:is(.ui-btn, .diagram-view__action) { min-inline-size: 44px; min-block-size: 44px; }
+}

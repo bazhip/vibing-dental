@@ -29,6 +29,7 @@ export interface ChartSettingsListProps {
   /** Shown with `only`: switch to every setting. */
   onShowAll?: () => void;
   onCustomizeExam?: () => void;
+  examEditor?: React.ReactNode;
 }
 
 // Pref values (not text).
@@ -41,7 +42,7 @@ const STAY = 'stay' as const;
 const CHEVRON = 'chevron' as const;
 
 
-export function ChartSettingsList({ prefs, followsAccount, onChange, only, onShowAll, onCustomizeExam }: ChartSettingsListProps) {
+export function ChartSettingsList({ prefs, followsAccount, onChange, only, onShowAll, onCustomizeExam, examEditor }: ChartSettingsListProps) {
   const { t } = useTranslation(['settings', 'app']);
   // Same rules as the web dialog; a pending usual-anesthetic edit is also
   // saved when the screen or sheet goes away without a blur (iOS Back).
@@ -58,7 +59,7 @@ export function ChartSettingsList({ prefs, followsAccount, onChange, only, onSho
   return (
     <List className="ios-chart-settings">
       {!showAll && onShowAll && (
-        <ListSection footer={only === 'exam' && onCustomizeExam ? undefined : note}>
+        <ListSection footer={only === 'exam' && (onCustomizeExam || examEditor) ? undefined : note}>
           <ListRow title={<span className="ios-row__tint">{t('chart.all')}</span>} onClick={onShowAll} />
         </ListSection>
       )}
@@ -175,7 +176,7 @@ export function ChartSettingsList({ prefs, followsAccount, onChange, only, onSho
 
       {show.exam && (
         <ListSection header={t('chart.exam.title')}>
-          {onCustomizeExam ? (
+          {examEditor ? <div role="listitem" className="ios-list__item ios-cell-embed">{examEditor}</div> : onCustomizeExam ? (
             <ListRow title={t('exam.layout.title', { ns: 'forms' })} accessory={CHEVRON} onClick={onCustomizeExam} />
           ) : (
             <div role="listitem" className="ios-list__item ios-cell-embed">

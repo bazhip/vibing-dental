@@ -32,7 +32,7 @@ describe('treatment report customization', () => {
     const report = screen.getByRole('textbox', { name: 'Treatment report' });
     expect(report).toBeDisabled();
     expect(screen.getByRole('button', { name: 'Cleaning' })).toBeDisabled();
-    expect(screen.getByRole('button', { name: 'New template' })).toBeDisabled();
+    expect(screen.queryByRole('button', { name: 'New template' })).toBeNull();
     fireEvent.change(report, { target: { value: 'Attempted edit' } });
     fireEvent.click(screen.getByRole('button', { name: 'Cleaning' }));
     expect(onChange).not.toHaveBeenCalled();
@@ -69,15 +69,17 @@ it('creates a new template from a blank report and saves its wording as written'
   const body = 'Patient: {pet}. Teeth extracted: {Tooth numbers}.';
   store.create.mockResolvedValueOnce({ id: 'new', name: 'Extraction', body });
   render(<SurgeryReportForm value="" onChange={vi.fn()} />);
-  fireEvent.click(screen.getByRole('button', { name: 'New template' }));
-  const editor = screen.getByRole('dialog', { name: 'New template' });
+  fireEvent.click(screen.getByRole('button', { name: 'Manage templates' }));
+  const editor = screen.getByRole('dialog', { name: 'Report templates' });
+  await userEvent.click(within(editor).getByRole('button', { name: 'Create template' }));
   expect(within(editor).getByRole('textbox', { name: 'Report text' })).toHaveAccessibleDescription(/Codes fill in recorded chart values/);
   fireEvent.change(within(editor).getByRole('textbox', { name: 'Template name' }), { target: { value: 'Extraction' } });
   fireEvent.change(within(editor).getByRole('textbox', { name: 'Report text' }), { target: { value: body } });
   expect(within(editor).getByText('Fields in this template')).toBeVisible();
   expect(within(editor).getByText('{pet}', { selector: 'li > code' })).toBeVisible();
   fireEvent.click(within(editor).getByRole('button', { name: 'Save template' }));
-  await waitFor(() => expect(editor).not.toBeInTheDocument());
+  await waitFor(() => expect(store.create).toHaveBeenCalledOnce());
+  expect(editor).toBeInTheDocument();
   expect(store.create).toHaveBeenCalledWith('Extraction', body);
 });
 
@@ -93,8 +95,9 @@ it('applies the template directly when chart values are missing or tokens are un
 
 it('lists all chart codes and offers keyboard and mouse insertion after a brace', async () => {
   render(<SurgeryReportForm value="" onChange={vi.fn()} />);
-  await userEvent.click(screen.getByRole('button', { name: 'New template' }));
-  const dialog = screen.getByRole('dialog', { name: 'New template' });
+  await userEvent.click(screen.getByRole('button', { name: 'Manage templates' }));
+  const dialog = screen.getByRole('dialog', { name: 'Report templates' });
+  await userEvent.click(within(dialog).getByRole('button', { name: 'Create template' }));
   for (const code of ['pet', 'owner', 'species', 'date', 'practice', 'doctor']) {
     expect(within(dialog).getByRole('button', { name: `{${code}}` })).toBeVisible();
   }

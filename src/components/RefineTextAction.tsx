@@ -44,9 +44,9 @@ export function RefineTextAction({ value, onApply, readOnly, enabled, disabled, 
   }, []);
 
   if (!available) return null;
-  if (!canRefine) return <button type="button" className="diagram-view__action refine-text__disabled" disabled
+  if (!canRefine) return <button type="button" className="diagram-view__action refine-text__disabled" aria-label={t('refinement.action')} disabled
     title={disabled ? undefined : t(value.trim() ? 'refinement.tooLong' : 'refinement.enterText')}>
-    <span aria-hidden="true">✨</span> {t('refinement.action')}
+    <span aria-hidden="true">✨</span> <span className="refine-text__label">{t('refinement.action')}</span>
   </button>;
 
   const refine = async (mode: RefinementMode) => {
@@ -121,8 +121,8 @@ export function RefineTextAction({ value, onApply, readOnly, enabled, disabled, 
       event.currentTarget.open = false;
       event.currentTarget.querySelector('summary')?.focus();
     }}>
-    <summary className="diagram-view__action" aria-disabled={busy} onClick={event => { if (busy) event.preventDefault(); }}>
-      <span aria-hidden="true">✨</span> {t('refinement.action')}
+    <summary className="diagram-view__action" aria-label={t('refinement.action')} title={t('refinement.action')} aria-disabled={busy} onClick={event => { if (busy) event.preventDefault(); }}>
+      <span aria-hidden="true">✨</span> <span className="refine-text__label">{t('refinement.action')}</span>
     </summary>
     <div className="refine-text__options">
       {REFINEMENT_MODES.map(mode => <button type="button" key={mode} onClick={() => void refine(mode)}>

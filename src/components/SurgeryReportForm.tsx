@@ -41,7 +41,7 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
   const store = useReportTemplates(practiceId);
   const templatesGuide = documentationUrl(i18n.resolvedLanguage ?? i18n.language, 'treatment');
   const templatesOn = store.enabled && cloudActive;
-  const [templateEditor, setTemplateEditor] = React.useState<'manage' | 'new' | null>(null);
+  const [templateEditor, setTemplateEditor] = React.useState(false);
   const selectedId = store.templates.find(template => template.id === templateId)?.id
     ?? (value.trim() ? store.templates.find(template => template.body === value && !treatmentTemplateFields(template.body).length)?.id : undefined);
   const live = React.useRef({ value, readOnly, onChange, onApplyTemplate, templatesOn, chartFields });
@@ -87,14 +87,8 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
           label: t('visitDocumentation:consultation.templates.help'),
           href: templatesGuide,
         }}
-        actions={<>
-          <button type="button" className="diagram-view__action" onClick={() => setTemplateEditor('new')}
-            aria-haspopup="dialog" disabled={readOnly || !store.loaded}>
-            <span aria-hidden="true">+</span>{' '}{t('report.newTemplate')}
-          </button>
-          <button type="button" className="diagram-view__action" onClick={() => setTemplateEditor('manage')}
-            aria-haspopup="dialog" title={t('report.customizeTitle')}>{t('visitDocumentation:consultation.templates.manage')}</button>
-        </>}
+        actions={<button type="button" className="diagram-view__action" onClick={() => setTemplateEditor(true)}
+          aria-haspopup="dialog" title={t('report.customizeTitle')}>{t('visitDocumentation:consultation.templates.manage')}</button>}
       />}
       <div className="refine-field">
         <textarea
@@ -110,12 +104,11 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
 
       {templatesOn && (
         <ReportTemplatesModal
-          open={templateEditor !== null}
-          createOnly={templateEditor === 'new'}
-          onClose={() => setTemplateEditor(null)}
+          open={templateEditor}
+          onClose={() => setTemplateEditor(false)}
           onCreated={(template) => toast(t('report.saved', { name: template.name }), { kind: 'success' })}
           store={store}
-          draftBody={templateEditor === 'manage' ? value : undefined}
+          draftBody={value}
           initialTemplateId={selectedId}
         />
       )}

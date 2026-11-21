@@ -37,8 +37,12 @@ export function TemplatePicker({
   const active = choices.find(choice => choice.id === activeId);
   return (
     <div className={embedded ? 'template-picker template-picker--embedded' : 'template-picker'} role="group" aria-labelledby={labelId}>
-      <div className="template-picker__selection">
+      <div className="template-picker__heading">
         <span id={labelId} className="patient-form__label">{label}</span>
+        {help && <a className="template-help" href={help.href} target="_blank" rel="noopener noreferrer"
+          aria-label={help.label} title={help.label}><span aria-hidden="true">?</span></a>}
+      </div>
+      <div className="template-picker__selection">
         {status ?? (onSelect ? (
           <div ref={scrollable ? listRef : undefined} className={scrollable ? 'template-picker__choices template-picker__choices--scroll' : 'template-picker__choices'}>
             {choices.map(({ id, label, note }) => (
@@ -55,12 +59,7 @@ export function TemplatePicker({
           </div>
         ))}
       </div>
-      {(actions || help) && (
-        <div className="template-picker__tools">
-          {actions && <div className="template-picker__actions">{actions}</div>}
-          {help && <a className="context-help-link" href={help.href} target="_blank" rel="noopener noreferrer">{help.label}</a>}
-        </div>
-      )}
+      {actions && <div className="template-picker__actions">{actions}</div>}
     </div>
   );
 }

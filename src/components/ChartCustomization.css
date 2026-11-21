@@ -52,6 +52,12 @@
   scrollbar-gutter: stable;
 }
 .chart-customization__intro { margin-bottom: 24px; }
+.chart-customization .chart-customization__content:has(.chart-settings__group:not([hidden]) .exam-layout__editor) {
+  gap: 8px;
+}
+.chart-customization__content:has(.chart-settings__group:not([hidden]) .exam-layout__editor) > .chart-customization__intro {
+  margin-block-end: 0;
+}
 .chart-customization__intro h3 { margin: 0 0 8px; font-size: 20px; font-weight: 650; }
 .chart-customization__intro .chart-settings__note { margin: 0; line-height: 1.6; }
 .chart-customization__scope {
@@ -106,7 +112,7 @@
 }
 .chart-customization .chart-settings__drug { margin-bottom: 20px; }
 .chart-customization__footer { flex: none; border-top: 1px solid var(--border); }
-.chart-customization .chart-customization__launch { align-self: flex-start; min-height: 44px; }
+.chart-customization__footer .ui-btn { min-block-size: 44px; }
 .chart-customization .chart-customization__modules { gap: 20px; }
 .chart-customization .chart-customization__module {
   margin: 0;

@@ -10,7 +10,7 @@ import { LocalizedError } from './utils/apiErrors';
 import { DEFAULT_CHART_PREFS } from './utils/chartSettings';
 
 type Control = { kind: ClinicalDictationKind; snapshot: ChartSnapshot; chartId?: string | null; chartSession?: number; readOnly?: boolean; aiEnabled?: boolean; disabled?: boolean; openRequest?: number | null; seededTranscript?: { text: string; language: string }; onApply: (changes: Partial<PatientInfo>, source: ClinicalDictationSource) => void; onOpenChange?: (open: boolean) => void };
-const state = vi.hoisted(() => ({ controls: {} as Partial<Record<ClinicalDictationKind, Control>>, voice: null as React.ComponentProps<typeof VoiceInputButton> | null, refine: vi.fn(), aiEnabled: true, profileLoaded: true, gpExamEnabled: true, consultationEnabled: true, ownerReportEnabled: false }));
+const state = vi.hoisted(() => ({ controls: {} as Partial<Record<ClinicalDictationKind, Control>>, voice: null as React.ComponentProps<typeof VoiceInputButton> | null, refine: vi.fn(), reloadExamLayout: vi.fn(), aiEnabled: true, profileLoaded: true, gpExamEnabled: true, consultationEnabled: true, ownerReportEnabled: false }));
 vi.mock('./components/ClinicalDictationButton', () => ({ ClinicalDictationButton: (props: Control) => {
   state.controls[props.kind] = props;
   if (props.openRequest !== undefined) return null;
@@ -33,6 +33,13 @@ vi.mock('./components/DocumentsModal', () => ({
 
 vi.mock('./native/aiConsent', () => ({ ensureAiConsent: async () => true }));
 vi.mock('./utils/supabaseClient', () => ({ supabase: null, cloudEnabled: false }));
+vi.mock('./hooks/useExamLayout', async original => {
+  const actual = await original<typeof import('./hooks/useExamLayout')>();
+  return { ...actual, useExamLayout: (practiceId: string) => {
+    const layout = actual.useExamLayout(practiceId);
+    return { ...layout, reload: () => { state.reloadExamLayout(); layout.reload(); } };
+  } };
+});
 vi.mock('./hooks/useProfile', async original => {
   const actual = await original<typeof import('./hooks/useProfile')>();
   return { ...actual, useProfile: () => ({ ...actual.useProfile(), loaded: state.profileLoaded, practiceKnown: state.profileLoaded, practiceId: 'practice-1', maxImages: 10, aiEnabled: state.aiEnabled, gpExamEnabled: state.gpExamEnabled, consultationEnabled: state.consultationEnabled, ownerReportEnabled: state.ownerReportEnabled }) };
@@ -73,6 +80,7 @@ beforeEach(() => {
   cloud.dirty = false; cloud.awaitingClinical = false; cloud.status = 'saved'; cloud.saveNow.mockClear();
   cloud.fetchChart.mockReset().mockResolvedValue(sampleOwnerReportSnapshot());
   cloud.listPatientVisits.mockReset().mockResolvedValue([]);
+  state.reloadExamLayout.mockClear();
   state.refine.mockReset().mockResolvedValue('Refined CT: possible fracture at 108.');
   localStorage.setItem('vibing-dental.onboarding.seen.v1', '1');
   localStorage.setItem('vibing-dental.chart.cloudId.v1', JSON.stringify(CHART_ID));
@@ -386,6 +394,7 @@ it('opens the Imaging layout from Customize and keeps Imaging and PDF preference
   expect(within(templates).getByText('CT report')).toBeVisible();
   fireEvent.click(within(templates).getByRole('button', { name: 'Imaging and PDF settings' }));
   expect(await screen.findByRole('dialog', { name: 'Chart settings' })).toBeVisible();
+  expect(state.reloadExamLayout).toHaveBeenCalledOnce();
 });
 
 it('opens the Exam layout editor from the chart', async () => {
@@ -393,5 +402,6 @@ it('opens the Exam layout editor from the chart', async () => {
   navigateSection('exam');
   expect(await screen.findByRole('textbox', { name: 'Diagnostics' })).toBeVisible();
   fireEvent.click(screen.getByRole('button', { name: 'Customize' }));
-  expect(await screen.findByRole('dialog', { name: 'Customize Exam' })).toBeVisible();
+  const settings = await screen.findByRole('dialog', { name: 'Chart settings' });
+  expect(within(settings).getByRole('region', { name: 'Customize Exam' })).toBeVisible();
 });

@@ -306,14 +306,17 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
       <div className="consultation-library__intro">
         <div className="consultation-library__intro-copy">
           <p>{t(isImaging ? 'imaging.layout.intro' : isDischarge ? 'discharge.templates.intro' : 'consultation.templates.intro')}</p>
-          <a className="context-help-link" href={documentationUrl(language, isImaging ? 'imaging' : isDischarge ? 'discharge' : 'consultation-templates')}
-            target="_blank" rel="noopener noreferrer">{t(isImaging ? 'imaging.layout.help' : isDischarge ? 'discharge.templates.help' : 'consultation.templates.help')}</a>
+
         </div>
         {onOpenSettings && <button type="button" className="ui-btn ui-btn--secondary" onClick={async () => {
           if (!(await canClose())) return;
           onClose();
           onOpenSettings();
         }}>{t('imaging.templates.settings')}</button>}
+        <a className="template-help" href={documentationUrl(language, isImaging ? 'imaging' : isDischarge ? 'discharge' : 'consultation-templates')}
+          target="_blank" rel="noopener noreferrer"
+          aria-label={t(isImaging ? 'imaging.layout.help' : isDischarge ? 'discharge.templates.help' : 'consultation.templates.help')}
+          title={t(isImaging ? 'imaging.layout.help' : isDischarge ? 'discharge.templates.help' : 'consultation.templates.help')}><span aria-hidden="true">?</span></a>
       </div>
       {status === 'loading' && <p role="status">{t('consultation.templates.loading')}</p>}
       {status === 'error' && <div className="consultation-library__notice">
@@ -359,8 +362,9 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
               </li>;
             })}
           </ul>
-          {editable && <button type="button" className="ui-btn ui-btn--secondary consultation-library__new"
-            disabled={!canAddTemplate} onClick={createTemplate}><span aria-hidden="true">+</span> {t('library:templates.new')}</button>}
+          {editable && <button type="button" className="ui-btn ui-btn--secondary consultation-library__new template-create"
+            disabled={!canAddTemplate} onClick={createTemplate}
+            aria-label={t('library:templates.new')} title={t('library:templates.new')}><span aria-hidden="true">+</span></button>}
         </div>
         <section className="consultation-library__editor" aria-labelledby={`${id}-name`}>
           <header className={editSelected ? 'visually-hidden' : 'consultation-library__heading'}>

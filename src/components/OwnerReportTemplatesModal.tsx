@@ -429,8 +429,10 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
         <OwnerReportTemplateChoices config={draft} templateId={selected.id} onSelect={selectTemplate} disabled={busy} embedded
           actions={canEdit && (
             <div className="report-templates__toolbar-actions">
-              <button type="button" className="diagram-view__action" onClick={() => addTemplate()} disabled={!canAddTemplate}>
-                <span aria-hidden="true">+</span>{' '}{t('visitDocumentation:consultation.templates.builder.createTemplate')}
+              <button type="button" className="diagram-view__action template-create" onClick={() => addTemplate()} disabled={!canAddTemplate}
+                aria-label={t('visitDocumentation:consultation.templates.builder.createTemplate')}
+                title={t('visitDocumentation:consultation.templates.builder.createTemplate')}>
+                <span aria-hidden="true">+</span>
               </button>
               <div
                 className="report-templates__overflow"
