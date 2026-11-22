@@ -374,7 +374,7 @@ it('shows and applies custom Discharge fields with the Consult flag off', async 
   expect(await screen.findByRole('button', { name: 'Manage templates' })).toBeVisible();
   expect(screen.getByRole('textbox', { name: 'Activity' })).toHaveValue('');
   act(() => state.voice?.onDictationComplete?.('en', text));
-  expect(live().snapshot.version).toBe(5);
+  expect(live().snapshot.version).toBe(6);
   act(() => live().onApply({ [field]: text }, source({ transcript: text, fields: [field] })));
   expect(screen.getByRole('textbox', { name: 'Activity' })).toHaveValue(text);
   fireEvent.click(screen.getByRole('button', { name: 'Standard discharge' }));

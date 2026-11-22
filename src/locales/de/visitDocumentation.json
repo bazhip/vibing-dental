@@ -74,7 +74,9 @@
           "paragraph": "Langtext",
           "shortText": "Kurztext",
           "radio": "Einfachauswahl",
-          "multiselect": "Mehrfachauswahl"
+          "multiselect": "Mehrfachauswahl",
+          "dropdown": "Einzelauswahl (Dropdown)",
+          "multiselectDropdown": "Mehrfachauswahl (durchsuchbares Dropdown)"
         },
         "choiceOptions": "Optionen",
         "choiceOption": "Option {{n}}",
@@ -126,7 +128,13 @@
         "importHelp": "Fügen Sie ein anonymisiertes Beispiel mit Markdown-Überschriften oder Bezeichnungen mit abschließendem Doppelpunkt ein. Prüfen Sie die Überschriften vor dem Speichern.",
         "createTemplate": "Vorlage erstellen",
         "subsection": "Als Unterabschnitt verwenden",
-        "libraryTooLarge": "Die Vorlagenbibliothek ist zu groß. Kürzen Sie Beispiele, vorgeschlagene Texte oder Schreibanweisungen."
+        "libraryTooLarge": "Die Vorlagenbibliothek ist zu groß. Kürzen Sie Beispiele, vorgeschlagene Texte oder Schreibanweisungen.",
+        "chooseOption": "Option auswählen",
+        "chooseOptions": "Optionen auswählen",
+        "searchOptions": "Optionen suchen",
+        "noMatchingOptions": "Keine passenden Optionen",
+        "selectedOptions_one": "{{count}} ausgewählt",
+        "selectedOptions_other": "{{count}} ausgewählt"
       }
     },
     "dental": {
@@ -268,5 +276,22 @@
     "title": "Allgemeinuntersuchung",
     "purpose": "Dokumentieren Sie die Vitalparameter, die körperliche Untersuchung und die diagnostischen Befunde dieses Besuchs.",
     "review": "Klinische Dokumentation prüfen"
+  },
+  "practiceChartFields": {
+    "intro": "Fügen Sie dieser Seite wiederverwendbare Felder hinzu. Jede Seite behält ihre eigenen Feldeinstellungen.",
+    "loadFailed": "Die Praxisfelder konnten nicht geladen werden.",
+    "conflict": "Die Praxisfelder wurden an anderer Stelle geändert. Schließen und öffnen Sie die Einstellungen erneut, um die aktuellen Felder zu laden.",
+    "saveFailed": "Die Praxisfelder konnten nicht gespeichert werden. Versuchen Sie es erneut.",
+    "saved": "Praxisfelder gespeichert.",
+    "discard": "Änderungen an Praxisfeldern verwerfen?",
+    "search": "Praxisfelder suchen",
+    "save": "Felder speichern",
+    "apply": "Änderungen übernehmen",
+    "addToPage": "Zur Seite hinzufügen",
+    "page": "Zahnschemaseite",
+    "publish": "In gemeinsamer Feldbibliothek speichern",
+    "published": "Feld zur gemeinsamen Bibliothek hinzugefügt.",
+    "manage": "Gemeinsame Felder verwalten",
+    "deleteMessage": "Das Feld wird aus der gemeinsamen Bibliothek entfernt. Seiten, Vorlagen und Besuche, die es bereits verwenden, behalten ihre Kopie."
   }
 }

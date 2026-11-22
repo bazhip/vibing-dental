@@ -4238,6 +4238,7 @@ button.save-status--manual:hover {
 .dental-grid__root-label { font-size: 0.7rem; font-weight: 700; color: var(--text-muted, #64748b); }
 .dental-grid__root input { width: 100%; min-width: 0; border: 0; outline: none; font: inherit; background: transparent; color: var(--text, #0f172a); }
 .dental-grid__root input:focus { background: color-mix(in srgb, var(--primary, #0c6b63) 10%, var(--ios-cell, white)); }
+.dental-grid__root input:focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; }
 .tooth-chart__finding--roots { border: 0; margin: 0; padding: 0; }
 .tooth-chart__finding--roots legend { padding: 0; font-size: inherit; }
 .tooth-chart__roots { display: flex; gap: 0.35rem; }

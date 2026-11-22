@@ -4,6 +4,8 @@ import { effectiveNerveBlockDrugs, formatAnestheticDrug, type PatientInfo, type 
 import { fieldLines, filledBlocks } from '../customAnesthesia';
 import { answeredCustomExam } from '../customExam';
 import { isCustomExamText } from '../examLayout';
+import { readPracticeChartFieldAnswers } from '../practiceChartFieldAnswers';
+import { PRACTICE_CHART_PAGES } from '../practiceChartFields';
 import { drawSectionCard, finishSectionCard, CARD_BAND_PT } from './draw';
 import { PAGE_WIDTH_PT, PAGE_HEIGHT_PT, NERVE_BLOCK_BOX } from './layout';
 import { PALETTE } from './styles';
@@ -61,6 +63,16 @@ export function customExamTextContinuation(patient: PatientInfo, lng: string): C
     .filter(({ id, comment }) => isCustomExamText(id) && comment.trim())
     .map(({ label, comment }) => `${label}\n${comment}`);
   return paragraphs.length ? [{ title: i18n.getFixedT(lng, 'pdf')('exam.title'), paragraphs }] : [];
+}
+
+export function practiceChartFieldContinuations(patient: PatientInfo, lng: string): ClinicalContinuation[] {
+  const t = i18n.getFixedT(lng, 'app');
+  const answers = readPracticeChartFieldAnswers(patient.practiceChartFields);
+  return PRACTICE_CHART_PAGES.flatMap(page => {
+    const paragraphs = answers.filter(answer => answer.page === page)
+      .map(({ field, value }) => `${field.label}: ${value.trim()}`);
+    return paragraphs.length ? [{ title: t(`sections.${page}`), paragraphs }] : [];
+  });
 }
 
 /** Wraps even a single long token, retaining every character at a readable size. */

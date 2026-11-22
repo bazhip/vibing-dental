@@ -7,6 +7,8 @@ const DISCHARGE = [['Discharge Summary', 'Discharge notes', 'Discharge instructi
 const HISTORY = [['History'], ['Subjective > Notes'], ['Subjective']] as const;
 const PLAN = [['Plan'], ['Plan > Notes']] as const;
 const SOAP_DESTINATIONS = {
+  patient: HISTORY,
+  images: [['Imaging', 'Radiology'], ...EXAM],
   complaint: HISTORY,
   consultationHistory: HISTORY,
   consultationCurrentMedications: HISTORY,
@@ -24,6 +26,7 @@ export type ClinicalMappingKey = keyof typeof SOAP_DESTINATIONS;
 export type ClinicalMappingDefaults = Record<ClinicalMappingKey, string | null>;
 
 export const EZYVET_CLINICAL_DEFAULTS: ClinicalMappingDefaults = {
+  patient: 'History', images: 'Physical Exam',
   complaint: 'History',
   consultationHistory: 'History', consultationAssessment: 'Assessment', consultationPlan: 'Plan',
   consultationCurrentMedications: 'History', consultationAdministeredMedications: 'Plan', consultationMedicationPlan: 'Plan',

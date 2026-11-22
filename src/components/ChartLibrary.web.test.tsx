@@ -140,8 +140,9 @@ describe('ChartLibrary (website)', () => {
     expect(screen.getByRole('dialog', { name: 'Patients' })).toBeInTheDocument();
     expect(container.querySelector('.ai-settings-modal.chart-library-modal')).not.toBeNull();
     expect(screen.getAllByRole('columnheader').map((h) => h.textContent)).toEqual([
-      'Patient', 'Patient #', 'Species', 'Visits', 'Finalized', 'Updated▼', 'Recheck',
+      'Patient', 'Patient #', 'Species', 'Visits', 'Finalized', 'Updated▼', 'Recheck', '',
     ]);
+    expect(screen.getByRole('columnheader', { name: 'More actions' })).toBeInTheDocument();
     await waitFor(() => expect(screen.getByRole('button', { name: 'Rechecks due (2)' })).toHaveAttribute('aria-pressed', 'false'));
     const rows = container.querySelectorAll('.chart-library__scroll > .chart-library__row');
     expect(Array.from(rows).map((r) => r.querySelector('.chart-library__patient-main')?.firstChild?.textContent)).toEqual([
@@ -170,6 +171,9 @@ describe('ChartLibrary (website)', () => {
     fireEvent.click(await screen.findByTitle('2 visits — expand'));
     const visits = container.querySelectorAll('.chart-library__visit');
     expect(visits).toHaveLength(2);
+    const secondVisit = within(visits[1] as HTMLElement);
+    expect(secondVisit.getByRole('button', { name: /Oct 1, 2026/ }).closest('[role="cell"]')).not.toBeNull();
+    expect(secondVisit.getAllByRole('cell')).toHaveLength(4);
     expect(within(visits[0] as HTMLElement).getByText(/^Dr Ames · Updated|^b@x.test · Updated/)).toBeInTheDocument();
     expect(within(visits[1] as HTMLElement).getByRole('button', { name: 'Delete the 2026-10-01 visit for Max' })).toBeInTheDocument();
   });

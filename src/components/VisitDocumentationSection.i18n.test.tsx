@@ -241,3 +241,18 @@ it('adds Images to a Discharge template and lets the owner configure and reorder
     index: 3, label: 'Radiographs and photos', guidance: 'Add views from this visit',
   });
 });
+
+it.each(['consultation', 'discharge'] as const)('copies a shared dropdown into a %s template', async kind => {
+  const field = { id: 'a1519354-e316-4f50-a2cb-a0b7ff0a6643', label: 'Referral source', inputType: 'dropdown' as const, options: ['Owner', 'Hospital'] };
+  const initial = kind === 'discharge' ? EMPTY_DISCHARGE_LIBRARY : EMPTY_CONSULTATION_LIBRARY;
+  const save = vi.fn();
+  render(<ConsultationTemplatesDialog kind={kind} initial={initial} sharedFields={[field]}
+    status="ready" canEdit onSave={save} onReload={vi.fn()} onClose={vi.fn()} />);
+  fireEvent.click(screen.getByRole('button', { name: /Add section/ }));
+  fireEvent.click(screen.getByRole('button', { name: field.label }));
+  fireEvent.click(screen.getByRole('button', { name: '⟦Save⟧' }));
+  await waitFor(() => expect(save).toHaveBeenCalled());
+  expect(save.mock.lastCall?.[0].templates[0].sections).toEqual(expect.arrayContaining([
+    { ...field, id: `${kind}Custom_${field.id}` },
+  ]));
+});

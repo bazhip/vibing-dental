@@ -6,20 +6,33 @@ import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
 const container = process.env.PIMS_TEST_CONTAINER;
 const database = 'note_template_builder_test';
 const owner = '11111111-1111-4111-8111-111111111111';
+const member = '11111111-1111-4111-8111-111111111112';
+const otherOwner = '11111111-1111-4111-8111-111111111113';
 const practice = '22222222-2222-4222-8222-222222222222';
+const otherPractice = '22222222-2222-4222-8222-222222222223';
 const revision = '33333333-3333-4333-8333-333333333333';
+const nextRevision = '33333333-3333-4333-8333-333333333334';
 const chart = '44444444-4444-4444-8444-444444444444';
 const consultTable = 'public.consultation_template_libraries';
 const dischargeTable = 'public.discharge_template_libraries';
+const practiceFieldTable = 'public.practice_chart_field_libraries';
 const consultFields = ['complaint', 'consultationHistory', 'consultationAssessment', 'consultationPlan', 'gpVitals', 'gpPhysicalExam', 'gpDiagnostics'];
+const dietField = {
+  id: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', label: 'Diet',
+  inputType: 'dropdown', options: ['Dry', 'Wet'],
+};
 
 function sql(statement: string, db = database) {
   const args = ['exec', '-i', container!, 'psql', '-X', '-qAt', '-v', 'ON_ERROR_STOP=1', '-U', 'postgres', '-d', db];
   return execFileSync('docker', args, { input: statement, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }).trim();
 }
 
+function asUser(statement: string, user: string, role: 'authenticated' | 'anon' = 'authenticated') {
+  return sql(`begin; set local role ${role}; set local request.jwt.claim.sub='${user}'; ${statement}; commit;`);
+}
+
 function asOwner(statement: string) {
-  return sql(`begin; set local role authenticated; set local request.jwt.claim.sub='${owner}'; ${statement}; commit;`);
+  return asUser(statement, owner);
 }
 
 function json(value: unknown) {
@@ -47,17 +60,21 @@ describe.skipIf(!container)('note template builder', () => {
       'supabase/migrations/20261222_discharge_templates.sql',
       'supabase/migrations/20261223_practice_note_fields.sql',
     ]) sql(readFileSync(file, 'utf8'));
-    sql(`insert into auth.users values ('${owner}');
-      insert into public.practices (id, owner) values ('${practice}', '${owner}');
-      insert into public.practice_members (practice_id, user_id, role) values ('${practice}', '${owner}', 'owner');`);
+    sql(`insert into auth.users values ('${owner}'), ('${member}'), ('${otherOwner}');
+      insert into public.practices (id, owner) values ('${practice}', '${owner}'), ('${otherPractice}', '${otherOwner}');
+      insert into public.practice_members (practice_id, user_id, role)
+        values ('${practice}', '${owner}', 'owner'), ('${practice}', '${member}', 'member'),
+          ('${otherPractice}', '${otherOwner}', 'owner');`);
     asOwner(insert(consultTable, { defaultId: 'dental-v1', templates: [] }));
     asOwner(insert(dischargeTable, { version: 2, defaultId: 'discharge-v1', templates: [] }));
     sql(readFileSync('supabase/migrations/20261227_note_template_builder.sql', 'utf8'));
     sql(readFileSync('supabase/migrations/20261228_note_template_images.sql', 'utf8'));
+    sql(readFileSync('supabase/migrations/20261229_note_choice_dropdowns.sql', 'utf8'));
+    sql(readFileSync('supabase/migrations/20261230_practice_chart_fields.sql', 'utf8'));
   }, 40_000);
 
   beforeEach(() => {
-    sql(`truncate ${consultTable}, ${dischargeTable}, public.charts;`);
+    sql(`truncate ${consultTable}, ${dischargeTable}, ${practiceFieldTable}, public.charts;`);
   });
 
   it('upgrades existing layouts and validates image placement', () => {
@@ -115,7 +132,9 @@ describe.skipIf(!container)('note template builder', () => {
     const id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
     const field = { id: 'consultationCustom_choices', label: 'Follow-up channel' };
     const invalid = [
-      { inputType: 'dropdown', options: ['Phone'] },
+      { inputType: 'unknown', options: ['Phone'] },
+      { inputType: 'dropdown' },
+      { inputType: 'multiselectDropdown', options: ['Phone', 'Phone'] },
       { inputType: 'radio' },
       { inputType: 'radio', options: 'Phone' },
       { inputType: 'radio', options: ['Phone', 'Phone'] },
@@ -139,6 +158,87 @@ describe.skipIf(!container)('note template builder', () => {
     }
     expect(asOwner(insert(consultTable, { ...base, templates: [template(id, false, [{ ...field, inputType: 'shortText' }])] }))).toBe(revision);
   }, 20_000);
+
+  it('persists single and multiple dropdowns in layouts and reusable fields', () => {
+    const fields = [
+      { id: 'consultationCustom_method', label: 'Follow-up method', inputType: 'dropdown', options: ['Phone', 'Email'] },
+      { id: 'consultationCustom_instructions', label: 'Instructions', inputType: 'multiselectDropdown', options: ['Phone', 'Email'] },
+    ];
+    const layout = template('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', false, fields);
+    expect(asOwner(insert(consultTable, { version: 4, defaultId: layout.id, templates: [layout], practiceFields: fields }))).toBe(revision);
+    expect(asOwner(`select config#>>'{practiceFields,1,inputType}' from ${consultTable}`)).toBe('multiselectDropdown');
+  });
+
+  it('keeps practice field settings readable by members and writable by their practice owners', () => {
+    const config = { fields: [dietField], pages: {} };
+    const save = insert(practiceFieldTable, config);
+    expect(() => asUser(save, member)).toThrow(/row-level security/);
+    expect(() => asUser(save, otherOwner)).toThrow(/row-level security/);
+    expect(asOwner(save)).toBe(revision);
+
+    const read = `select revision from ${practiceFieldTable}`;
+    expect(asUser(read, member)).toBe(revision);
+    expect(asUser(read, otherOwner)).toBe('');
+    expect(() => asUser(read, otherOwner, 'anon')).toThrow(/permission denied/);
+
+    const update = `update ${practiceFieldTable} set revision = '${nextRevision}' returning revision`;
+    expect(asUser(update, member)).toBe('');
+    expect(asUser(update, otherOwner)).toBe('');
+    expect(() => asOwner(`delete from ${practiceFieldTable}`)).toThrow(/permission denied/);
+    expect(asUser(read, member)).toBe(revision);
+  }, 20_000);
+
+  it('keeps page snapshots after a library definition is removed and applies only the current revision', () => {
+    const pages = {
+      patient: [{ ...dietField, label: 'Previous diet' }],
+      exam: [{ ...dietField, label: 'Diet choices', inputType: 'multiselectDropdown' }],
+    };
+    expect(asOwner(insert(practiceFieldTable, { fields: [dietField], pages }))).toBe(revision);
+    const update = (config: unknown) => `update ${practiceFieldTable}
+      set config = ${json(config)}, revision = '${nextRevision}'
+      where practice_id = '${practice}' and revision = '${revision}' returning revision`;
+    const saved = { fields: [], pages };
+    expect(asOwner(update(saved))).toBe(nextRevision);
+    expect(asOwner(update({ fields: [dietField], pages: {} }))).toBe('');
+    expect(JSON.parse(asUser(`select config from ${practiceFieldTable}`, member))).toEqual(saved);
+  });
+
+  it('rejects malformed practice field settings and caps library, page and payload size', () => {
+    const fieldList = (count: number, guidance?: string) => Array.from({ length: count }, (_, index) => ({
+      ...dietField, id: `aaaaaaaa-aaaa-4aaa-8aaa-${String(index).padStart(12, '0')}`, guidance,
+    }));
+    for (const config of [
+      { fields: [], pages: 4 },
+      { fields: [], pages: { unknown: [dietField] } },
+      { fields: [], pages: { exam: null } },
+      { fields: [], pages: { exam: [dietField, dietField] } },
+      { fields: [dietField, dietField], pages: {} },
+      { fields: [{ ...dietField, id: 'diet' }], pages: {} },
+      { fields: [{ ...dietField, label: '\u00a0\ufeff' }], pages: {} },
+      { fields: [{ ...dietField, value: 'Wet' }], pages: {} },
+      { fields: [], pages: { patient: [{ ...dietField, options: ['Dry', 'Dry'] }] } },
+      { fields: fieldList(129), pages: {} },
+      { fields: [], pages: { anesthesia: fieldList(25) } },
+      { fields: fieldList(100, '🐾'.repeat(500)), pages: {} },
+    ]) {
+      expect(() => asOwner(insert(practiceFieldTable, config))).toThrow(/check constraint/);
+    }
+    expect(asOwner(insert(practiceFieldTable, { fields: fieldList(128), pages: { images: fieldList(24) } }))).toBe(revision);
+  }, 20_000);
+
+  it.each([
+    { visitType: 'consultation', consultationLayout: { sections: [{ id: 'complaint', inputType: 'dropdown', options: ['Pain'] }] } },
+    { dischargeLayout: { sections: [{ id: 'dischargeInstructions', inputType: 'multiselectDropdown', options: ['Soft food'] }] } },
+    { dischargeRetainedSections: [{ id: 'dischargeInstructions', inputType: 'dropdown', options: ['Soft food'] }] },
+  ])('protects saved dropdown configuration from older serializers', patientInfo => {
+    sql(`insert into public.charts (id, created_by, data) values
+      ('${chart}', '${owner}', ${json({ version: 6, patientInfo })})`);
+    const replace = (version: number) => sql(`update public.charts
+      set data = ${json({ version, patientInfo: { visitType: 'consultation' } })}
+      where id = '${chart}' returning data->>'version'`);
+    expect(() => replace(5)).toThrow(/Update ToothOps to save this note/);
+    expect(replace(6)).toBe('6');
+  });
 
   it.each([
     { kind: 'consultation', version: 3, patientInfo: { visitType: 'consultation' } },

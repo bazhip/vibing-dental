@@ -74,7 +74,9 @@
           "paragraph": "Testo lungo",
           "shortText": "Testo breve",
           "radio": "Scelta singola",
-          "multiselect": "Scelta multipla"
+          "multiselect": "Scelta multipla",
+          "dropdown": "Scelta singola (elenco a discesa)",
+          "multiselectDropdown": "Scelta multipla (elenco con ricerca)"
         },
         "choiceOptions": "Opzioni",
         "choiceOption": "Opzione {{n}}",
@@ -126,7 +128,14 @@
         "importHelp": "Incolli un esempio anonimizzato con titoli Markdown o etichette seguite da due punti. Controlli i titoli prima di salvare il modello.",
         "createTemplate": "Crea modello",
         "subsection": "Usa come sottosezione",
-        "libraryTooLarge": "La raccolta dei modelli è troppo grande. Accorci gli esempi, i testi suggeriti o le istruzioni di scrittura."
+        "libraryTooLarge": "La raccolta dei modelli è troppo grande. Accorci gli esempi, i testi suggeriti o le istruzioni di scrittura.",
+        "chooseOption": "Scelga un’opzione",
+        "chooseOptions": "Scelga le opzioni",
+        "searchOptions": "Cerchi tra le opzioni",
+        "noMatchingOptions": "Nessuna opzione corrispondente",
+        "selectedOptions_one": "Opzioni selezionate: {{count}}",
+        "selectedOptions_many": "Opzioni selezionate: {{count}}",
+        "selectedOptions_other": "Opzioni selezionate: {{count}}"
       }
     },
     "dental": {
@@ -268,5 +277,22 @@
     "title": "Visita generale",
     "purpose": "Registri i parametri vitali, l’esame obiettivo e i risultati diagnostici di questa visita.",
     "review": "Verifichi la cartella clinica"
+  },
+  "practiceChartFields": {
+    "intro": "Aggiunga campi riutilizzabili a questa pagina. Ogni pagina conserva le proprie impostazioni.",
+    "loadFailed": "Impossibile caricare i campi della clinica.",
+    "conflict": "I campi della clinica sono stati modificati altrove. Chiuda e riapra le impostazioni per caricare quelli aggiornati.",
+    "saveFailed": "Impossibile salvare i campi della clinica. Riprovi.",
+    "saved": "Campi della clinica salvati.",
+    "discard": "Scartare le modifiche ai campi della clinica?",
+    "search": "Cerchi nei campi della clinica",
+    "save": "Salva campi",
+    "apply": "Applica modifiche",
+    "addToPage": "Aggiungi alla pagina",
+    "page": "Pagina della cartella",
+    "publish": "Salva nella raccolta condivisa",
+    "published": "Campo aggiunto alla raccolta condivisa.",
+    "manage": "Gestisci campi condivisi",
+    "deleteMessage": "Il campo verrà rimosso dalla raccolta condivisa. Le pagine, i modelli e le visite che lo usano conservano la propria copia."
   }
 }

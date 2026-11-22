@@ -27,6 +27,32 @@ const en = () => recordNoteT('en');
 const section = (s: ChartSnapshot, heading: string) =>
   buildRecordNote(s, en()).sections.find((x) => x.heading === heading);
 
+it('prints recorded practice answers with their clinical page and retains their original labels', () => {
+  const value = snap({}, { practiceChartFields: [
+    { page: 'patient', field: { id: '3b71a1c4-dc76-4b3c-9edd-b441b727ef01', label: 'Arrival weight' }, value: '4.2 kg' },
+    { page: 'exam', field: { id: '3b71a1c4-dc76-4b3c-9edd-b441b727ef02', label: 'Palpation' }, value: 'Reviewed' },
+    { page: 'anesthesia', field: { id: '3b71a1c4-dc76-4b3c-9edd-b441b727ef03', label: 'Recovery plan' }, value: 'Warm blanket' },
+    { page: 'images', field: { id: '3b71a1c4-dc76-4b3c-9edd-b441b727ef04', label: 'Comparison study' }, value: 'Baseline\nFollow-up pending' },
+  ] });
+  const note = recordNoteText(buildRecordNote(value, en()));
+  expect(note).toContain('PATIENT\nArrival weight: 4.2 kg');
+  expect(note).toContain('Palpation: Reviewed');
+  expect(note).toContain('ANESTHESIA\nRecovery plan: Warm blanket');
+  expect(note).toContain('IMAGING\nComparison study: Baseline\nFollow-up pending');
+  const consultation = { ...value, patientInfo: { ...value.patientInfo, visitType: 'consultation' as const } };
+  expect(recordNoteText(buildRecordNote(consultation, en()))).toContain('PATIENT\nArrival weight: 4.2 kg');
+});
+
+it('changes the record review basis only for recorded practice answer content', () => {
+  const answer = { page: 'patient' as const, field: { id: '3b71a1c4-dc76-4b3c-9edd-b441b727ef01', label: 'Arrival weight' }, value: '4.2 kg' };
+  const noAnswer = recordNoteBasis(snap());
+  expect(recordNoteBasis(snap({}, { practiceChartFields: [{ ...answer, value: ' ' }] }))).toBe(noAnswer);
+  const recorded = recordNoteBasis(snap({}, { practiceChartFields: [answer] }));
+  expect(recorded).not.toBe(noAnswer);
+  expect(recordNoteBasis(snap({}, { practiceChartFields: [{ ...answer, field: { ...answer.field, guidance: 'Use kilograms' } }] }))).toBe(recorded);
+  expect(recordNoteBasis(snap({}, { practiceChartFields: [{ ...answer, value: '4.4 kg' }] }))).not.toBe(recorded);
+});
+
 describe('record note builder', () => {
   afterEach(() => i18n.changeLanguage('en'));
 

@@ -157,6 +157,17 @@ it('preserves named, typed Consult defaults in both the library and a saved visi
   }
 });
 
+it.each(['dropdown', 'multiselectDropdown'])('preserves %s fields and their options in libraries and visit layouts', inputType => {
+  const field = { id: 'consultationCustom_channel', label: 'Contact channel', inputType, options: ['Email', 'Phone'] };
+  const layout = { ...DENTAL_CONSULTATION, name: 'Dental intake', sections: [field] };
+  const config = { version: 4, defaultId: layout.id, templates: [layout], practiceFields: [field] };
+  expect(parseConsultationLibrary(config)).toEqual(config);
+  expect(normalizeConsultationLayout(layout)).toEqual(layout);
+  for (const options of [undefined, [], ['Phone', 'Phone'], ['After\nhours']]) {
+    expect(parseConsultationLibrary({ ...config, practiceFields: [{ ...field, options }] })).toBeUndefined();
+  }
+});
+
 it('keeps the implicit Consult gallery and preserves explicit placement or removal on template selection', () => {
   const gallery = { ...DENTAL_CONSULTATION, name: 'Dental intake', imagePlacement: { index: 0, label: 'Photos' } };
   const hidden = { ...gallery, imagePlacement: false as const };

@@ -1,6 +1,8 @@
 import { VisitTypeChooser } from './components/VisitTypeChooser';
 import { visitTypeOf, type VisitType } from './utils/visitTypes';
 import { useConsultationLibrary } from './hooks/useConsultationLibrary';
+import { usePracticeChartFields } from './hooks/usePracticeChartFields';
+import { PRACTICE_CHART_FIELD_LIMIT, type PracticeChartPage, type SharedPracticeField } from './utils/practiceChartFields';
 import { CONSULTATION_FIELDS, isUnmodifiedStandardDischarge, consultationLayoutFor, dischargeLayoutFor, isCustomConsultationField, isCustomDischargeField } from './utils/consultationTemplates';
 import { ConsultationTemplatesDialog } from './components/ConsultationTemplatesDialog';
 import { Icon } from './ios/icons';
@@ -16,6 +18,7 @@ import { LocalizedError } from './utils/apiErrors';
 import type { ClinicalDictationKind, ClinicalDictationSource } from './types';
 import { appendRadiologyDictation, radiologyRecordedText } from './utils/radiologyReportState';
 import { VisitDocumentationSection } from './components/VisitDocumentationSection';
+import { PracticeChartFields } from './components/PracticeChartFields';
 import { RadiologyReportSection } from './components/RadiologyReportSection';
 import { isGeneratedPatientNumber } from './utils/patientIds';
 import { ImageHistory } from './components/ImageHistory';
@@ -117,6 +120,8 @@ function formatSavedAt(iso: string): string {
   if (Number.isNaN(d.getTime())) return '';
   return d.toDateString() === new Date().toDateString() ? formatTime(d) : `${formatMonthDay(d)}, ${formatTime(d)}`;
 }
+
+const PRACTICE_FIELD_PAGE = { patient: 'patient', exam: 'exam', anesthesia: 'anesthesia', images: 'images' } as const;
 
 const PAGE_PRESENTATION = 'page' as const;
 const MODAL_PRESENTATION = 'modal' as const;
@@ -347,20 +352,25 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const dischargeTemplatesOpen = dischargeTemplatesAvailable && dischargeTemplatesPractice === profile.practiceId;
   const openDischargeTemplates = () => {
     dischargeLibrary.reload();
+    sharedPracticeFields.reload();
     setDischargeTemplatesPractice(profile.practiceId);
   };
   const [consultationTemplatesPractice, setConsultationTemplatesPractice] = React.useState<string | null>(null);
   const consultationTemplatesOpen = consultationOn && consultationTemplatesPractice === profile.practiceId;
   const examPractice = !trial && cloud.enabled ? profile.practiceId : '';
+  const sharedPracticeFields = usePracticeChartFields(examPractice);
   const examSettingsOpen = Boolean(chartSettingsOpen) && !consultationOn;
   const examLibrary = useExamLayout(activeSection === 'exam' || examSettingsOpen ? examPractice : '');
   const examFields = examLibrary.fields ?? prefs.examLayout ?? legacyExamLayout(prefs.customExamAreas, prefs.hiddenExamAreas);
   const openChartSettings = (section: SettingsSection | 'all' = 'all') => {
-    if (examPractice && !consultationOn && !chartSettingsOpen) examLibrary.reload();
+    if (examPractice && !chartSettingsOpen) {
+      if (!consultationOn) examLibrary.reload();
+      sharedPracticeFields.reload();
+    }
     setChartSettingsOpen(section);
   };
   const openExamLayout = () => openChartSettings('exam');
-  const practiceTeam = useTeam(!trial && ((ownerReportOn && activeSection === OWNER_REPORT_SECTION) || consultationTemplatesOpen || dischargeTemplatesOpen || imagingTemplatesOpen || (examSettingsOpen && !!examPractice)));
+  const practiceTeam = useTeam(!trial && ((ownerReportOn && activeSection === OWNER_REPORT_SECTION) || consultationTemplatesOpen || dischargeTemplatesOpen || imagingTemplatesOpen || (!!chartSettingsOpen && !!examPractice)));
   const examLayoutSettings: ExamLayoutSettings | undefined = consultationOn ? undefined : {
     scope: examPractice,
     fields: examFields,
@@ -370,8 +380,19 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     onSave: examPractice ? examLibrary.save : fields => chartSettings.update({ examLayout: fields }),
     onReload: examLibrary.reload,
   };
+  const canEditPracticeFields = practiceTeam.practice?.id === examPractice && practiceTeam.role === 'owner';
+  const practiceFieldSettings = examPractice ? {
+    scope: examPractice, config: sharedPracticeFields.config, status: sharedPracticeFields.status,
+    canEdit: canEditPracticeFields, onSave: sharedPracticeFields.save, onReload: sharedPracticeFields.reload,
+  } : undefined;
+  const publishPracticeField = canEditPracticeFields && sharedPracticeFields.status === 'ready'
+    && sharedPracticeFields.config.fields.length < PRACTICE_CHART_FIELD_LIMIT
+    ? (field: SharedPracticeField) => sharedPracticeFields.save({
+      ...sharedPracticeFields.config, fields: [...sharedPracticeFields.config.fields, field],
+    }) : undefined;
   const openConsultationTemplates = () => {
     consultationLibrary.reload();
+    sharedPracticeFields.reload();
     setConsultationTemplatesPractice(profile.practiceId);
   };
   // Follow the hash when it names a different section (Back/Forward, a
@@ -1350,11 +1371,32 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     return action?.name === 'set_tooth_field' ? [`${action.input.triadan}:${action.input.field}`] : [];
   })), [chart.voiceReviews]);
   const chartReviewFocus = reviewFocus?.session === chart.chartSession ? reviewFocus : undefined;
+  const renderPracticeFields = (page: PracticeChartPage) => (
+    <PracticeChartFields
+      fields={sharedPracticeFields.config.pages[page] ?? []}
+      answers={(chart.patientInfo.practiceChartFields ?? []).filter(answer => answer.page === page)}
+      readOnly={readOnly}
+      onChange={(field, value) => {
+        if (readOnly) return;
+        chart.setPatientInfo(previous => {
+          const answers = previous.practiceChartFields ?? [];
+          const existing = answers.findIndex(answer => answer.page === page && answer.field.id === field.id);
+          const next = [...answers];
+          if (existing >= 0) {
+            if (value) next[existing] = { page, field, value };
+            else next.splice(existing, 1);
+          } else if (value) next.push({ page, field, value });
+          return { ...previous, practiceChartFields: next.length ? next : undefined };
+        });
+      }}
+    />
+  );
   const sections: ChartSection[] = [
     {
       id: 'patient',
       label: t('sections.patient'),
       content: (
+        <>
         <PatientForm
           patientInfo={chart.patientInfo}
           species={chart.species}
@@ -1366,6 +1408,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           hiddenFields={prefs.hiddenPatientFields}
           onCustomize={native ? undefined : () => openChartSettings('patient')}
         />
+        {renderPracticeFields(PRACTICE_FIELD_PAGE.patient)}
+        </>
       ),
     },
     ...(consultationOn ? [{
@@ -1398,6 +1442,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       id: 'exam',
       label: t('sections.exam'),
       content: (
+        <>
         <ExamForm
           exam={chart.patientInfo.exam}
           layout={examFields}
@@ -1412,13 +1457,16 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           readOnly={readOnly}
           onCustomize={native ? undefined : openExamLayout}
         />
+        {renderPracticeFields(PRACTICE_FIELD_PAGE.exam)}
+        </>
       ),
     },
     {
       id: 'anesthesia',
       label: t('sections.anesthesia'),
-      content: lock(
-        <AnesthesiaForm
+      content: (
+        <>
+        {lock(<AnesthesiaForm
           nerveBlocks={chart.patientInfo.nerveBlocks}
           secondNerveBlocks={chart.patientInfo.secondNerveBlocks}
           onSecondNerveBlocksChange={update => chart.setPatientInfo(prev => ({
@@ -1435,7 +1483,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           customFieldDefs={prefs.customFields}
           customValues={chart.patientInfo.customAnesthesia}
           onCustomValuesChange={(next) => chart.setPatientInfo((prev: PatientInfo) => ({ ...prev, customAnesthesia: next }))}
-        />
+        />)}
+        {renderPracticeFields(PRACTICE_FIELD_PAGE.anesthesia)}
+        </>
       ),
     },
     {
@@ -1615,6 +1665,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             onChange={changes => chart.setPatientInfo(prev => ({ ...prev, ...changes }))} />)}
           </div>
         </div>
+        {renderPracticeFields(PRACTICE_FIELD_PAGE.images)}
         </>
       ),
     },
@@ -2038,6 +2089,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           followsAccount={chartSettings.followsAccount}
           onChange={setPref}
           examLayout={examLayoutSettings}
+          practiceFields={practiceFieldSettings}
         />
       )}
 
@@ -2166,6 +2218,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           initial={consultationLibrary.config} status={consultationLibrary.status}
           canEdit={practiceTeam.practice?.id === profile.practiceId && practiceTeam.role === 'owner'}
           onSave={consultationLibrary.save} onReload={consultationLibrary.reload}
+          sharedFields={sharedPracticeFields.config.fields} onPublishField={publishPracticeField}
           onClose={() => setConsultationTemplatesPractice(null)} />
       )}
       {dischargeTemplatesOpen && (
@@ -2173,6 +2226,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           initial={dischargeLibrary.config} status={dischargeLibrary.status}
           canEdit={practiceTeam.practice?.id === profile.practiceId && practiceTeam.role === 'owner'}
           onSave={dischargeLibrary.save} onReload={dischargeLibrary.reload}
+          sharedFields={sharedPracticeFields.config.fields} onPublishField={publishPracticeField}
           onClose={() => setDischargeTemplatesPractice(null)} />
       )}
       {imagingTemplatesOpen && (

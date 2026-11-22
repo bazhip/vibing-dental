@@ -3,6 +3,8 @@ import { isCustomExamText } from './examLayout';
 import { ctRecordedText } from './ctReportState';
 import { radiologyRecordedText } from './radiologyReportState';
 import { visitTypeOf } from './visitTypes';
+import { readPracticeChartFieldAnswers } from './practiceChartFieldAnswers';
+import type { PracticeChartPage } from './practiceChartFields';
 import type { TFunction } from 'i18next';
 import i18n from '../i18n';
 import type { AppLanguage } from '../i18n/config';
@@ -59,6 +61,7 @@ const BLOCK_SITES = [
 export const HEADING_KEYS = {
   complaint: 'forms:patient.complaint',
   header: 'media:recordNote.h.header',
+  patient: 'app:sections.patient',
   consultationHistory: 'media:recordNote.h.consultationHistory',
   consultationAssessment: 'media:recordNote.h.consultationAssessment',
   consultationPlan: 'media:recordNote.h.consultationPlan',
@@ -73,6 +76,7 @@ export const HEADING_KEYS = {
   findings: 'media:recordNote.h.findings',
   procedures: 'media:recordNote.h.procedures',
   radiographs: 'media:recordNote.h.radiographs',
+  images: 'app:sections.images',
   ct: 'media:recordNote.h.ct',
   treatment: 'forms:report.title',
   dischargeMedications: 'media:recordNote.h.dischargeMedications',
@@ -124,6 +128,12 @@ function examLine(label: string, v: ExamItemValue | undefined, t: RecordNoteT): 
 export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): RecordNote {
   const info = snapshot.patientInfo;
   const consultation = visitTypeOf(info.visitType) === 'consultation';
+  const practiceAnswers = readPracticeChartFieldAnswers(info.practiceChartFields);
+  const practiceLines = (page: PracticeChartPage) => practiceAnswers.flatMap(({ page: source, field, value }) => {
+    if (page !== source) return [];
+    const [first, ...rest] = textLines(value);
+    return [`${field.label}: ${first}`, ...rest];
+  });
   const sections: RecordNoteSection[] = [];
   const add = (key: RecordNoteKey, lines: (string | null | false | undefined)[], heading = isCustomNoteField(key) ? '' : t(HEADING_KEYS[key]), level?: 2, headingOverride?: true) => {
     const kept = lines.filter((l): l is string => !!l);
@@ -138,11 +148,15 @@ export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): Record
     clean(info.doctor) && `${t('media:recordNote.doctor')}: ${clean(info.doctor)}`,
     clean(info.tech) && `${t('forms:patient.tech')}: ${clean(info.tech)}`,
   ], consultation ? t('visitDocumentation:consultation.title') : undefined);
+  add('patient', practiceLines('patient'));
 
   if (consultation) {
     for (const section of consultationNoteSections(info)) {
       add(section.id, noteSectionLines(info[section.id], section), sectionHeading(section, t), section.level, section.label && !isCustomNoteField(section.id) ? true : undefined);
     }
+    add('exam', practiceLines('exam'));
+    add('anesthesia', practiceLines('anesthesia'));
+    add('images', practiceLines('images'));
     add('dischargeFollowUp', textLines(info.dischargeFollowUp));
     add('recheck', [clean(info.recallDate)]);
     return { sections };
@@ -186,6 +200,7 @@ export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): Record
     ...(custom?.fields ?? []).map((f) =>
       clean(f.value) ? `${clean(f.label)}: ${clean(f.value)}${f.unit ? ` ${f.unit}` : ''}` : null),
     ...(secondLines.length ? [t('forms:anesthesia.secondTitle'), ...secondLines] : []),
+    ...practiceLines('anesthesia'),
   ]);
 
   // 3. Oral exam
@@ -194,6 +209,7 @@ export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): Record
     ...(info.customExam ?? []).map((c) => isCustomExamText(c.id)
       ? clean(c.comment) && `${clean(c.label)}: ${clean(c.comment)}`
       : examLine(clean(c.label), c, t)),
+    ...practiceLines('exam'),
   ]);
 
   // 4. Findings by tooth
@@ -228,6 +244,7 @@ export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): Record
   // 6–8. Free text and recheck
   add('radiographs', textLines(radiologyRecordedText(info)));
   add('ct', textLines(info.ctReport));
+  add('images', practiceLines('images'));
   add('treatment', textLines(info.treatmentReport));
   for (const section of dischargeVisitSections(info)) {
     add(section.id, noteSectionLines(info[section.id], section), sectionHeading(section, t), section.level,
@@ -278,6 +295,9 @@ function hashStr(s: string): string {
  *  language), so a stored note can tell when the chart moved on. */
 export function recordNoteBasis(snapshot: ChartSnapshot): string {
   const i = snapshot.patientInfo;
+  const answers = readPracticeChartFieldAnswers(i.practiceChartFields)
+    .map(({ page, field, value }) => [page, field.label, textLines(value)]);
+  const practiceBasis = answers.length ? [['practiceChartFields', answers]] : [];
   if (visitTypeOf(i.visitType) === 'consultation') {
     return hashStr(JSON.stringify([
       'consultation', snapshot.species, i.patientName, i.patientNumber, i.date, i.doctor, i.tech,
@@ -286,6 +306,7 @@ export function recordNoteBasis(snapshot: ChartSnapshot): string {
         return lines.length ? [[section.id, lines, ...(section.label ? [section.label] : []), ...(section.level ? [section.level] : [])]] : [];
       }),
       textLines(i.dischargeFollowUp), clean(i.recallDate),
+      ...practiceBasis,
     ]));
   }
   const recordedFields = CONSULTATION_FIELDS.filter(field => textLines(i[field]).length);
@@ -307,5 +328,6 @@ export function recordNoteBasis(snapshot: ChartSnapshot): string {
     snapshot.preMarks, snapshot.postMarks,
     (snapshot.preComments ?? []).map((c) => [c.id, c.text, c.anchorTriadan]),
     (snapshot.postComments ?? []).map((c) => [c.id, c.text, c.anchorTriadan]),
+    ...practiceBasis,
   ]));
 }

@@ -227,11 +227,12 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
 
   const recallCell = (group: PatientGroup) => {
     const recall = group.recall;
-    if (!recall) return <span className="chart-library__cell chart-library__cell--recall chart-library__cell--empty">—</span>;
+    if (!recall) return <span role="cell" className="chart-library__cell chart-library__cell--recall chart-library__cell--empty">—</span>;
     const overdue = recall < today;
     const due = recall <= today;
     return (
       <span
+        role="cell"
         className={
           due
             ? `chart-library__cell chart-library__cell--recall chart-library__recall--${overdue ? 'overdue' : 'due'}`
@@ -371,7 +372,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                 {/* Header uses the exact same row/row-main structure as the
                     data rows so the six columns line up pixel-for-pixel. */}
                 <div className="chart-library__row chart-library__head-row" role="row">
-                  <div className="chart-library__row-main chart-library__head-main">
+                  <div className="chart-library__row-main chart-library__head-main" role="presentation">
                     {heads.patient}
                     <span role="columnheader">{t('table.number')}</span>
                     <span role="columnheader">{t('table.species')}</span>
@@ -380,9 +381,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                     {heads.updated}
                     {heads.recall}
                   </div>
-                  <span className="chart-library__row-actions">
-
-                  </span>
+                  <span className="chart-library__row-actions" role="columnheader" aria-label={t('ios.moreActions', { ns: 'common' })} />
                 </div>
                 <div className="chart-library__scroll" role="rowgroup">
                   {groups.map((g) => {
@@ -392,7 +391,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                     return (
                       <React.Fragment key={g.key}>
                         <div className="chart-library__row" role="row">
-                          <div className="chart-library__row-main chart-library__group-main" onClick={(event) => {
+                          <div className="chart-library__row-main chart-library__group-main" role="presentation" onClick={(event) => {
                             if (busyId !== null || (event.target as HTMLElement).closest('button, a, input, select, textarea, summary')) return;
                             void handleOpen(only.id);
                           }}>
@@ -430,7 +429,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                             </span>
                             {recallCell(g)}
                           </div>
-                          <span className="chart-library__row-actions">
+                          <span className="chart-library__row-actions" role="cell">
 
                             <button
                               type="button"
@@ -486,15 +485,20 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                         {multi && isOpen &&
                           g.visits.map((v) => (
                             <div className="chart-library__row chart-library__visit" role="row" key={v.id}>
-                              <button
-                                type="button"
+                              <div
+                                role="presentation"
                                 className="chart-library__row-main chart-library__visit-main"
-                                onClick={() => handleOpen(v.id)}
-                                disabled={busyId === v.id}
-                                title={v.chart_date ? t('visit.openDated', { date: v.chart_date }) : t('visit.openUndated')}
+                                onClick={(event) => {
+                                  if (busyId !== null || (event.target as Element).closest('button')) return;
+                                  void handleOpen(v.id);
+                                }}
                               >
                                 <span role="cell" className="chart-library__visit-date">
-                                  {visitLabel(v)}
+                                  <button type="button" className="chart-library__patient-main chart-library__open-patient" disabled={busyId === v.id}
+                                    onClick={() => handleOpen(v.id)}
+                                    title={v.chart_date ? t('visit.openDated', { date: v.chart_date }) : t('visit.openUndated')}>
+                                    {visitLabel(v)}
+                                  </button>
                                 </span>
                                 <span role="cell" data-label={t('table.finalized')} className="chart-library__cell chart-library__cell--finalized">
                                   {t(v.finalized_at ? 'finalized.yes' : 'finalized.no')}
@@ -505,8 +509,8 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                                   )}
                                   {t('visit.updated', { when: formatDateTime(v.updated_at, lng, { dateStyle: 'medium', timeStyle: 'short' }) })}
                                 </span>
-                              </button>
-                              <span className="chart-library__row-actions">
+                              </div>
+                              <span className="chart-library__row-actions" role="cell">
                                 <RowActions>
                                 {onOpenHistory && (
                                   <button

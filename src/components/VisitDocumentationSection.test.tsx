@@ -198,6 +198,56 @@ it('saves multiple discharge options on separate lines and preserves recorded te
   expect(onChange).toHaveBeenLastCalledWith({ dischargeInstructions: 'Updated custom advice' });
 });
 
+it('saves and clears a single dropdown selection and protects unmatched recorded text', () => {
+  const onChange = vi.fn();
+  const sections: ConsultationSection[] = [
+    { id: 'consultationCustom_method', label: 'Method', inputType: 'dropdown', options: ['Telephone', 'In person'] },
+  ];
+  const info = { ...patient, consultationLayout: { id: 'dental-v2', fields: CONSULTATION_FIELDS, sections } };
+  const { rerender } = render(<VisitDocumentationSection kind="consultation" patientInfo={info} onChange={onChange} />);
+  fireEvent.change(screen.getByRole('combobox', { name: 'Method' }), { target: { value: 'In person' } });
+  expect(onChange).toHaveBeenLastCalledWith({ consultationCustom_method: 'In person' });
+  rerender(<VisitDocumentationSection kind="consultation" patientInfo={{ ...info, consultationCustom_method: 'In person' }} onChange={onChange} />);
+  expect(screen.getByRole('combobox', { name: 'Method' })).toHaveValue('In person');
+  fireEvent.change(screen.getByRole('combobox', { name: 'Method' }), { target: { value: '' } });
+  expect(onChange).toHaveBeenLastCalledWith({ consultationCustom_method: '' });
+  rerender(<VisitDocumentationSection kind="consultation" patientInfo={{ ...info, consultationCustom_method: 'Recorded elsewhere' }} onChange={onChange} />);
+  expect(screen.getByRole('combobox', { name: 'Method' })).toBeDisabled();
+  expect(screen.getByRole('textbox', { name: 'Method Recorded text' })).toHaveValue('Recorded elsewhere');
+});
+
+it('filters a multiselect dropdown and preserves hidden selections and recorded text when toggling', () => {
+  const onChange = vi.fn();
+  const sections: ConsultationSection[] = [
+    { id: 'dischargeInstructions', inputType: 'multiselectDropdown', options: ['Brush daily', 'Soft food', 'Short walks'] },
+  ];
+  const info: PatientInfo = {
+    ...patient,
+    dischargeLayout: { id: 'example', fields: [], sections },
+    dischargeInstructions: 'Brush daily\nEarlier custom advice',
+  };
+  const { rerender } = render(<VisitDocumentationSection kind="discharge" patientInfo={info} onChange={onChange} />);
+  const toggle = screen.getByRole('button', { name: /Instructions/ });
+  expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  fireEvent.click(toggle);
+  const search = screen.getByRole('searchbox');
+  expect(search).toHaveFocus();
+  fireEvent.change(search, { target: { value: 'FOOD' } });
+  expect(screen.queryByRole('checkbox', { name: 'Brush daily' })).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole('checkbox', { name: 'Soft food' }));
+  expect(onChange).toHaveBeenLastCalledWith({ dischargeInstructions: 'Brush daily\nEarlier custom advice\nSoft food' });
+  const saved = { ...info, ...onChange.mock.lastCall![0] };
+  rerender(<VisitDocumentationSection kind="discharge" patientInfo={saved} onChange={onChange} />);
+  fireEvent.keyDown(search, { key: 'Escape' });
+  expect(toggle).toHaveFocus();
+  expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  rerender(<VisitDocumentationSection kind="discharge" patientInfo={saved} onChange={onChange} readOnly />);
+  fireEvent.click(toggle);
+  expect(screen.getByRole('checkbox', { name: 'Brush daily' })).toBeChecked();
+  expect(screen.getByRole('checkbox', { name: 'Soft food' })).toBeDisabled();
+  expect(screen.getByRole('textbox', { name: 'Instructions Recorded text' })).toHaveValue(saved.dischargeInstructions);
+});
+
 it('places the existing visit gallery where configured and hides it only in the note when removed', () => {
   const renderImages = vi.fn(({ label, guidance }) => <section aria-label={label}>{guidance}</section>);
   const layout = {

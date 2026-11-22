@@ -74,7 +74,9 @@
           "paragraph": "Text lung",
           "shortText": "Text scurt",
           "radio": "Alegere unică",
-          "multiselect": "Alegere multiplă"
+          "multiselect": "Alegere multiplă",
+          "dropdown": "Selecție unică (listă derulantă)",
+          "multiselectDropdown": "Selecție multiplă (listă cu căutare)"
         },
         "choiceOptions": "Opțiuni",
         "choiceOption": "Opțiunea {{n}}",
@@ -126,7 +128,14 @@
         "importHelp": "Lipiți un exemplu anonimizat cu titluri Markdown sau etichete urmate de două puncte. Verificați titlurile înainte de salvare.",
         "createTemplate": "Creați șablonul",
         "subsection": "Folosiți ca subsecțiune",
-        "libraryTooLarge": "Biblioteca de șabloane este prea mare. Scurtați exemplele, textul sugerat sau instrucțiunile de redactare."
+        "libraryTooLarge": "Biblioteca de șabloane este prea mare. Scurtați exemplele, textul sugerat sau instrucțiunile de redactare.",
+        "chooseOption": "Alegeți o opțiune",
+        "chooseOptions": "Alegeți opțiunile",
+        "searchOptions": "Căutați opțiuni",
+        "noMatchingOptions": "Nicio opțiune potrivită",
+        "selectedOptions_one": "Opțiuni selectate: {{count}}",
+        "selectedOptions_few": "Opțiuni selectate: {{count}}",
+        "selectedOptions_other": "Opțiuni selectate: {{count}}"
       }
     },
     "dental": {
@@ -268,5 +277,22 @@
     "title": "Examinare de medicină generală",
     "purpose": "Înregistrați semnele vitale, examenul fizic și constatările diagnostice pentru această vizită.",
     "review": "Verificați dosarul clinic"
+  },
+  "practiceChartFields": {
+    "intro": "Adăugați câmpuri reutilizabile pe această pagină. Fiecare pagină păstrează propriile setări ale câmpurilor.",
+    "loadFailed": "Câmpurile cabinetului nu au putut fi încărcate.",
+    "conflict": "Câmpurile cabinetului au fost modificate în altă parte. Închideți și redeschideți setările pentru a încărca versiunea actuală.",
+    "saveFailed": "Câmpurile cabinetului nu au putut fi salvate. Încercați din nou.",
+    "saved": "Câmpurile cabinetului au fost salvate.",
+    "discard": "Renunțați la modificările câmpurilor cabinetului?",
+    "search": "Căutați câmpuri ale cabinetului",
+    "save": "Salvați câmpurile",
+    "apply": "Aplicați modificările",
+    "addToPage": "Adăugați pe pagină",
+    "page": "Pagina fișei",
+    "publish": "Salvați în biblioteca partajată",
+    "published": "Câmpul a fost adăugat în biblioteca partajată.",
+    "manage": "Gestionați câmpurile partajate",
+    "deleteMessage": "Câmpul va fi eliminat din biblioteca partajată. Paginile, șabloanele și vizitele care îl folosesc păstrează propria copie."
   }
 }

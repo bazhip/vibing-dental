@@ -74,7 +74,9 @@
           "paragraph": "长文本",
           "shortText": "短文本",
           "radio": "单选",
-          "multiselect": "多选"
+          "multiselect": "多选",
+          "dropdown": "单选（下拉列表）",
+          "multiselectDropdown": "多选（可搜索的下拉列表）"
         },
         "choiceOptions": "选项",
         "choiceOption": "选项 {{n}}",
@@ -126,7 +128,13 @@
         "importHelp": "请粘贴去标识化的示例，标题使用 Markdown 或在标签后加英文冒号。保存模板前请核对标题。",
         "createTemplate": "创建模板",
         "subsection": "用作子节",
-        "libraryTooLarge": "模板库过大。请缩短示例、建议文本或撰写说明。"
+        "libraryTooLarge": "模板库过大。请缩短示例、建议文本或撰写说明。",
+        "chooseOption": "选择一个选项",
+        "chooseOptions": "选择选项",
+        "searchOptions": "搜索选项",
+        "noMatchingOptions": "没有匹配的选项",
+        "selectedOptions_other": "已选 {{count}} 项",
+        "selectedOptions_one": "已选 {{count}} 项"
       }
     },
     "dental": {
@@ -268,5 +276,22 @@
     "title": "全科检查",
     "purpose": "记录本次就诊的生命体征、体格检查和诊断检查结果。",
     "review": "审核临床病历"
+  },
+  "practiceChartFields": {
+    "intro": "向此页面添加可重复使用的字段。每个页面保留自己的字段设置。",
+    "loadFailed": "无法加载诊所字段。",
+    "conflict": "诊所字段已在其他位置修改。请关闭并重新打开设置以加载最新字段。",
+    "saveFailed": "无法保存诊所字段。请重试。",
+    "saved": "诊所字段已保存。",
+    "discard": "放弃对诊所字段的修改吗？",
+    "search": "搜索诊所字段",
+    "save": "保存字段",
+    "apply": "应用更改",
+    "addToPage": "添加到页面",
+    "page": "病历页面",
+    "publish": "保存到共享字段库",
+    "published": "字段已添加到共享字段库。",
+    "manage": "管理共享字段",
+    "deleteMessage": "该字段将从共享库中移除。已使用该字段的页面、模板和就诊记录会保留各自的副本。"
   }
 }

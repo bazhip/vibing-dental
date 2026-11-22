@@ -74,7 +74,9 @@
           "paragraph": "Texto largo",
           "shortText": "Texto corto",
           "radio": "Selección única",
-          "multiselect": "Selección múltiple"
+          "multiselect": "Selección múltiple",
+          "dropdown": "Selección única (lista desplegable)",
+          "multiselectDropdown": "Selección múltiple (lista con búsqueda)"
         },
         "choiceOptions": "Opciones",
         "choiceOption": "Opción {{n}}",
@@ -126,7 +128,14 @@
         "importHelp": "Pegue un ejemplo anonimizado con encabezados Markdown o etiquetas seguidas de dos puntos. Revise los encabezados antes de guardar la plantilla.",
         "createTemplate": "Crear plantilla",
         "subsection": "Usar como subsección",
-        "libraryTooLarge": "La biblioteca de plantillas es demasiado grande. Acorte los ejemplos, el texto sugerido o las instrucciones de redacción."
+        "libraryTooLarge": "La biblioteca de plantillas es demasiado grande. Acorte los ejemplos, el texto sugerido o las instrucciones de redacción.",
+        "chooseOption": "Elija una opción",
+        "chooseOptions": "Elija las opciones",
+        "searchOptions": "Buscar opciones",
+        "noMatchingOptions": "No hay opciones que coincidan",
+        "selectedOptions_one": "Opciones seleccionadas: {{count}}",
+        "selectedOptions_many": "Opciones seleccionadas: {{count}}",
+        "selectedOptions_other": "Opciones seleccionadas: {{count}}"
       }
     },
     "dental": {
@@ -268,5 +277,22 @@
     "title": "Exploración general",
     "purpose": "Registre las constantes vitales, la exploración física y los hallazgos diagnósticos de esta visita.",
     "review": "Revisar la historia clínica"
+  },
+  "practiceChartFields": {
+    "intro": "Añada campos reutilizables a esta página. Cada página conserva su propia configuración.",
+    "loadFailed": "No se pudieron cargar los campos de la clínica.",
+    "conflict": "Los campos de la clínica se han modificado en otro lugar. Cierre y vuelva a abrir los ajustes para cargar los campos actuales.",
+    "saveFailed": "No se pudieron guardar los campos de la clínica. Inténtelo de nuevo.",
+    "saved": "Campos de la clínica guardados.",
+    "discard": "¿Descartar los cambios en los campos de la clínica?",
+    "search": "Buscar campos de la clínica",
+    "save": "Guardar campos",
+    "apply": "Aplicar cambios",
+    "addToPage": "Añadir a la página",
+    "page": "Página del historial",
+    "publish": "Guardar en la biblioteca compartida",
+    "published": "Campo añadido a la biblioteca compartida.",
+    "manage": "Gestionar campos compartidos",
+    "deleteMessage": "Se eliminará el campo de la biblioteca compartida. Las páginas, plantillas y visitas que ya lo usan conservan su copia."
   }
 }

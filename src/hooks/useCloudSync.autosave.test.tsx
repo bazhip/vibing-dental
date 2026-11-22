@@ -234,6 +234,21 @@ describe('hasClinicalContent', () => {
 });
 
 describe('autosave of new charts', () => {
+  it('autosaves practice answers and treats them as clinical charting', async () => {
+    const initial = snap({});
+    const practiceChartFields = [{
+      page: 'images' as const,
+      field: { id: '3b71a1c4-dc76-4b3c-9edd-b441b727ef04', label: 'Comparison study' },
+      value: 'Baseline study',
+    }];
+    const snapshot = { ...initial, patientInfo: { ...initial.patientInfo, practiceChartFields } };
+    const { result } = renderHook(() => useCloudSync(fakeChart(snapshot)));
+    expect(result.current.preclinical).toBe(false);
+    await flush();
+    expect(db.upserts[0]?.data).toMatchObject({ patientInfo: { practiceChartFields } });
+    expect(result.current.dirty).toBe(false);
+  });
+
   it('uploads named patient and owner details before clinical charting starts', async () => {
     const { result } = renderHook(() => useCloudSync(fakeChart(snap({}))));
     expect(result.current.preclinical).toBe(true);
@@ -579,6 +594,18 @@ describe('clearing the recheck on the chart that is open', () => {
 });
 
 describe('restoring an earlier version', () => {
+  it('uses the current format even when the local baseline predates dropdowns', async () => {
+    const current = snap({});
+    const chart = fakeChart(current);
+    store.set('vibing-dental.chart.lastSaved.v1', JSON.stringify({
+      chartId: chart.cloudChartId, at: db.readAt, snapshot: current,
+    }));
+    confirm.mockResolvedValue(true);
+    const { result } = renderHook(() => useCloudSync(chart));
+    await act(async () => { await result.current.restoreRevision(chart.cloudChartId, snap({})); });
+    expect(db.upserts[0]?.data).toMatchObject({ version: 6 });
+  });
+
   it('stamps the save as a restore, so history keeps the version it replaces', async () => {
     const chart = { ...fakeChart(snap({ exam: true }), 'open-1'), openedExisting: true } as unknown as Parameters<typeof useCloudSync>[0];
     confirm.mockResolvedValue(true); // discard the unsaved edits on screen
