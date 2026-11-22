@@ -49,7 +49,8 @@
     "consultationTemplatePreview": "Editorul de șabloane de consultație cu selectorul „Adăugați o secțiune” deschis într-o vizită fictivă.",
     "consultationRecordNote": "Nota consultației cu comenzile Descărcați PDF și Copiați.",
     "dentalConsultation": "Câmpul Examen oral la pacientul treaz într-o consultație dentară fictivă.",
-    "dictationCheck": "Panoul de dictare face o scurtă pauză înainte de a verifica fișa. Cu „Reluați” continuați aceeași dictare."
+    "dictationCheck": "Panoul de dictare face o scurtă pauză înainte de a verifica fișa. Cu „Reluați” continuați aceeași dictare.",
+    "pocketSites": "Șase adâncimi ale pungilor înregistrate în vizualizarea Pe dinte."
   },
   "articles": {
     "start": {
@@ -152,7 +153,7 @@
         },
         "second": {
           "title": "Verificați transcrierea și propunerile",
-          "text": "Constatările clare pot completa filele potrivite în timp ce dictați, inclusiv Examinare, Anestezie, Fișă dentară, Diagnostic și Procedură. Fila activă oferă context formulărilor ambigue. Opriți înregistrarea la final și verificați transcrierea și fișa."
+          "text": "Constatările clare pot completa filele potrivite în timp ce dictați, inclusiv Examinare, Anestezie, Fișă dentară, Diagnostic și Procedură. Fila activă oferă context formulărilor ambigue. Opriți înregistrarea la final și verificați transcrierea și fișa.\n\nPentru a dicta adâncimile pungilor parodontale, spuneți numărul dintelui și valorile măsurate. Spuneți „308 adâncimea pungii 4” pentru o singură valoare sau „308 mezial 3, distal 5” pentru câte o valoare pe rădăcină. Pentru sondarea în șase puncte, numiți fiecare punct sau dictați toate valorile în ordinea MB, B, DB, ML, L, DL. Fișa dentară folosește aspectul corespunzător pentru această vizită. Adăugarea unei valori păstrează celelalte valori înregistrate pentru acel dinte. Verificați orice propunere de înlocuire a unei adâncimi salvate înainte de a o aplica."
         },
         "third": {
           "title": "Verificați corecțiile înainte de a le aplica",
@@ -404,7 +405,7 @@
         },
         "second": {
           "title": "Consemnați constatările, notele și starea extracției",
-          "text": "Introduceți măsurătorile în „Constatări”. Pentru adâncimea pungii parodontale, puteți consemna o singură valoare, câte o valoare pentru fiecare rădăcină sau valorile din șase situsuri. Deschideți „Personalizați” în „Fișă dentară” ca să alegeți modul de înregistrare a adâncimii pungilor și măsurătorile afișate. Bifați „Absent (înainte de această vizită)” doar dacă dintele lipsea deja.\n\nFolosiți „Notă de diagnostic” și codurile rapide configurate pentru constatările făcute, respectiv „Notă de procedură” pentru intervențiile efectuate. Folosiți „Planificați extracția” pentru intervențiile propuse. După efectuarea extracției, marcați dintele ca extras. Legenda diagramei distinge constatările consemnate, extracțiile planificate, extracțiile efectuate și dinții absenți."
+          "text": "Introduceți măsurătorile în „Constatări”. Pentru adâncimea pungii parodontale, puteți consemna o singură valoare, câte o valoare pentru fiecare rădăcină sau valorile din șase situsuri. Deschideți „Personalizați” în „Fișă dentară” ca să alegeți modul de înregistrare a adâncimii pungilor și măsurătorile afișate. Bifați „Absent (înainte de această vizită)” doar dacă dintele lipsea deja.\n\nDictarea poate schimba aspectul măsurătorilor pungilor pentru vizita deschisă. De exemplu, spuneți „308 mezial 3, distal 5” pentru a afișa câmpurile rădăcinilor. La măsurarea în șase puncte, numiți punctele sau dictați toate cele șase valori în ordinea MB, B, DB, ML, L, DL. Adăugarea unei măsurători cu un punct numit păstrează celelalte măsurători ale dintelui. Dacă dictarea propune modificarea unei măsurători înregistrate, verificați-o înainte de aplicare.\n\nFolosiți „Notă de diagnostic” și codurile rapide configurate pentru constatările făcute, respectiv „Notă de procedură” pentru intervențiile efectuate. Folosiți „Planificați extracția” pentru intervențiile propuse. După efectuarea extracției, marcați dintele ca extras. Legenda diagramei distinge constatările consemnate, extracțiile planificate, extracțiile efectuate și dinții absenți."
         },
         "third": {
           "title": "Comutați între vizualizări sau dictați o constatare cu numărul dintelui",

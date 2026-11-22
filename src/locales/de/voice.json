@@ -57,7 +57,8 @@
   "correction": {
     "conflict": "Prüfen Sie diese Änderung der Patientenakte.",
     "apply": "Vorschlag übernehmen",
-    "keep": "Aktuellen Wert beibehalten"
+    "keep": "Aktuellen Wert beibehalten",
+    "pocketReadings": "Prüfen Sie die Messstellen für „{{value}}“."
   },
   "welcome": {
     "ready": "Sobald Sie die Aufnahme starten, erscheint hier die Transkription.",
@@ -75,7 +76,10 @@
     "step1": "Sprechen Sie ganz natürlich: <em>„104 GI 2, Zahnstein 1. 105 fehlt. Zunge unauffällig.“</em>",
     "step2": "Bleiben Sie auf einer beliebigen Seite. Jeder Befund landet an der richtigen Stelle in der Akte.",
     "step3": "Tippen Sie auf <strong>Stopp</strong>, wenn Sie fertig sind. Alles Unsichere erscheint unter <strong>Zu prüfen</strong>.",
-    "title": "Diktieren Sie Ihre Akte"
+    "title": "Diktieren Sie Ihre Akte",
+    "pocketsTitle": "Taschensondierungstiefen",
+    "pocketsTip": "Sagen Sie „308 mesial 3, distal 5“. Das Zahnschema passt das Layout für diesen Besuch an. Prüfen Sie vorgeschlagene Änderungen an gespeicherten Tiefen.",
+    "pocketsGuide": "Anleitung zum Diktieren von Sondierungstiefen"
   },
   "panel": {
     "activity": "Aktivität",

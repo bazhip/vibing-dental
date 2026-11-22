@@ -5,7 +5,7 @@ import i18n from '../i18n';
 import { invokeFunction } from './edgeFunctions';
 import { ApiError, LocalizedError } from './apiErrors';
 import { DENTAL_CODES, EQUINE_CODES } from '../constants/dentalCodes';
-import { pocketDepths } from './pocket';
+import { dictatedPocketIsPresent, dictatedPocketsReplace, parseRootPockets, pocketDepths, type PocketMode } from './pocket';
 import { SCORE_TERMS, englishDigitRuns, englishScoreWords, englishUnitWords } from './voice/numbers';
 import { chunkWorthSendingOther, isPerioOnlyOther, normalizeOther } from './voice/normalize';
 import { NATIVE_FEW_SHOT, dictationLanguageBlock } from './voice/fewShot';
@@ -536,6 +536,7 @@ export function chunkWorthSending(chunk: string, lng: AppLanguage = 'en'): boole
 export interface ChartContext {
   patientInfo: PatientInfo;
   species: Species;
+  pocketMode?: PocketMode;
   logo: Logo;
   toothData: ToothData[];
   preMarks: ToothMarks;
@@ -955,6 +956,7 @@ export async function sendAutofill(requestBody: AutofillRequest): Promise<Array<
 export function parseAutofillContent(
   content: Array<{ type: string; name?: string; input?: unknown }>,
   allowed: (a: AiAction) => boolean,
+  lng: AppLanguage = 'en',
 ): Omit<ExtractResult, 'ran'> {
   const actions: AiAction[] = [];
   const skipped: AiAction[] = [];
@@ -979,7 +981,7 @@ export function parseAutofillContent(
     }
     actions.push(action);
     // Uncertain per the model, or a value our own checks reject.
-    const invalid = invalidReason(action);
+    const invalid = invalidReason(action, lng);
     if (input.uncertain === true || invalid) {
       flags.push({
         heard: describeAction(action),
@@ -1007,7 +1009,7 @@ export async function extractChartActions(
   if (!requestBody) return { actions: [], skipped: [], flags: [], ran: false };
   markDictationPromptUsed();
   const content = await sendAutofill(requestBody);
-  return { ...parseAutofillContent(content, (a) => actionAllowedAnywhere(a, input.lng ?? 'en')), ran: true };
+  return { ...parseAutofillContent(content, (a) => actionAllowedAnywhere(a, input.lng ?? 'en'), input.lng ?? 'en'), ran: true };
 }
 
 /**
@@ -1020,7 +1022,7 @@ export async function reviewFullTranscript(input: ReviewInput): Promise<ExtractR
   if (!requestBody) return { actions: [], skipped: [], flags: [], ran: false };
   markDictationPromptUsed();
   const content = await sendAutofill(requestBody);
-  const result = parseAutofillContent(content, (a) => actionAllowedAnywhere(a, input.lng ?? 'en'));
+  const result = parseAutofillContent(content, (a) => actionAllowedAnywhere(a, input.lng ?? 'en'), input.lng ?? 'en');
   return { ...result, flags: markFinalCheck(result), ran: true };
 }
 
@@ -1061,7 +1063,7 @@ const FIELD_RANGES: Partial<Record<DentalField, [number, number]>> = {
 /** Our own sanity check, independent of the model's confidence: a grid
  *  value outside its scale, or a tooth number the species chart can't
  *  have. Returns why, or null when it looks fine. */
-export function invalidReason(action: AiAction): string | null {
+export function invalidReason(action: AiAction, lng: AppLanguage = 'en'): string | null {
   const t = Number(action.input.triadan);
   if (action.input.triadan != null && !(Number.isInteger(t) && t >= 100 && t < 900 && t % 100 >= 1 && t % 100 <= 11)) {
     return `${action.input.triadan} isn't a Triadan tooth number`;
@@ -1070,9 +1072,13 @@ export function invalidReason(action: AiAction): string | null {
     const field = String(action.input.field) as DentalField;
     const range = FIELD_RANGES[field];
     if (!range) return null;
-    const normalized = normalizeFieldValue(String(action.input.value ?? ''));
+    const raw = String(action.input.value ?? '');
+    const normalized = field === 'pocket' ? normalizeDictatedPocket(raw) : normalizeFieldValue(raw);
     // Pockets may be per root ("M4 D6"): check the depths themselves.
     const nums = field === 'pocket' ? pocketDepths(normalized) : normalized.split(/\s+/).filter(Boolean).map(Number);
+    if (field === 'pocket' && (!nums.length || (parseRootPockets(normalized) && normalized.split(/\s+/).length !== nums.length))) {
+      return i18n.getFixedT(lng, 'voice')('correction.pocketReadings', { value: raw });
+    }
     if (nums.some((n) => Number.isNaN(n) || n < range[0] || n > range[1])) {
       return `${field} ${action.input.value} is outside ${range[0]}–${range[1]}`;
     }
@@ -1131,6 +1137,8 @@ export interface ChartHandlers {
   setPreMark: (triadan: number, mark: 'missing' | 'extracted' | null) => void;
   setPostMark: (triadan: number, mark: 'missing' | 'extracted' | null) => void;
   setToothField: (triadan: number, field: DentalField, value: string) => void;
+  /** Live chart handlers accumulate compatible named readings. Undo still uses the exact setter. */
+  setDictatedPocket?: (triadan: number, value: string) => void;
   addComment: (diagram: 'pre' | 'post', triadan: number | null, text: string) => void;
   /** Remove `text` from that tooth's note (deleting the note if nothing
    *  is left) — used to take back a guess the vet rejected in review. */
@@ -1226,6 +1234,26 @@ export function normalizeFieldValue(value: string): string {
   return `${label}${site[1]}`;
 }
 
+const POCKET_LABEL_WORDS: Record<string, string> = {
+  mesial: 'M', distal: 'D', buccal: 'B', lingual: 'L', palatal: 'P',
+  mesiobuccal: 'MB', mesiopalatal: 'MP', distobuccal: 'DB', mesiolingual: 'ML', distolingual: 'DL',
+};
+
+export function normalizeDictatedPocket(value: string): string {
+  const compact = value.trim().replace(/(?<=\d)\s*(?:mm|millimet(?:er|re)s?)\b\.?/gi, '').replace(
+    /\b(mesiobuccal|mesiopalatal|distobuccal|mesiolingual|distolingual|mesial|distal|buccal|lingual|palatal|MB|MP|DB|ML|DL|M|D|B|L|P)\s*[:=]?\s*(?=\d)/gi,
+    label => {
+      const name = label.replace(/[:=]/g, '').trim().toLowerCase();
+      return POCKET_LABEL_WORDS[name] ?? name.toUpperCase();
+    },
+  );
+  return parseRootPockets(compact) ? compact.split(/[\s,]+/).filter(Boolean).join(' ') : normalizeFieldValue(value);
+}
+
+export function isPocketAction(action: AiAction): boolean {
+  return action.name === 'set_tooth_field' && action.input.field === 'pocket';
+}
+
 /** A dose dictated with a decimal comma may reach a tool call as "0,3"
  *  despite the prompt; the chart stores "0.3". Any language. */
 export function decimalPoint(value: string): string {
@@ -1248,7 +1276,9 @@ export function isNoopAction(action: AiAction, c: ChartContext): boolean {
     case 'set_tooth_field': {
       const tooth = c.toothData.find((x) => x.triadan === t);
       const cur = tooth ? String(tooth[str('field') as DentalField] ?? '').trim() : '';
-      return !!tooth && cur === normalizeFieldValue(str('value'));
+      return !!tooth && (isPocketAction(action)
+        ? dictatedPocketIsPresent(cur, normalizeDictatedPocket(str('value')), c.species, t, c.pocketMode)
+        : cur === normalizeFieldValue(str('value')));
     }
     case 'set_tooth_mark':
       return (post ? c.postMarks : c.preMarks)[t] === str('mark');
@@ -1295,6 +1325,8 @@ export function overwrittenChartValue(action: AiAction, chart: ChartContext): st
   switch (action.name) {
     case 'set_tooth_field':
       existing = chart.toothData.find(row => row.triadan === tooth)?.[read('field') as DentalField];
+      if (isPocketAction(action) && existing &&
+          !dictatedPocketsReplace(existing, normalizeDictatedPocket(read('value')), chart.species, tooth, chart.pocketMode)) return;
       break;
     case 'set_tooth_mark':
     case 'unset_tooth_mark':
@@ -1386,7 +1418,12 @@ function applyOne(action: AiAction, h: ChartHandlers, lng?: AppLanguage): boolea
       const triadan = n('triadan');
       const field = s('field') as DentalField;
       if (!validTriadan(triadan) || !DENTAL_FIELD_SET.has(field)) return false;
-      h.setToothField(triadan, field, normalizeFieldValue(s('value')));
+      if (field === 'pocket') {
+        if (invalidReason(action, lng)) return false;
+        const value = normalizeDictatedPocket(s('value'));
+        if (h.setDictatedPocket) h.setDictatedPocket(triadan, value);
+        else h.setToothField(triadan, field, value);
+      } else h.setToothField(triadan, field, normalizeFieldValue(s('value')));
       return true;
     }
     case 'add_comment': {

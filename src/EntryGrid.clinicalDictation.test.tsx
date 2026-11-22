@@ -405,3 +405,37 @@ it('opens the Exam layout editor from the chart', async () => {
   const settings = await screen.findByRole('dialog', { name: 'Chart settings' });
   expect(within(settings).getByRole('region', { name: 'Customize Exam' })).toBeVisible();
 });
+
+it('updates the active visit’s pocket layout as accepted dictation adds roots and sites', async () => {
+  mount();
+  navigateSection('charting');
+  const readPocket = (tooth: number) => JSON.parse(localStorage.getItem('vibing-dental.chart.toothData.v1')!)
+    .find((row: { triadan: number }) => row.triadan === tooth)?.pocket;
+  const pocket = (triadan: number, value: string) => act(() => {
+    applyAiActions([{ name: 'set_tooth_field', input: { triadan, field: 'pocket', value } }], state.voice!.handlers, 'en');
+  });
+
+  pocket(308, 'M3');
+  pocket(308, 'D5');
+  expect(readPocket(308)).toBe('M3 D5');
+  fireEvent.click(await screen.findByRole('button', { name: 'Customize' }));
+  const settings = await screen.findByRole('dialog', { name: 'Chart settings' });
+  expect(within(settings).getByRole('radio', { name: /One per root/ })).toBeChecked();
+
+  pocket(108, '2 1 3 2 1 2');
+  expect(within(settings).getByRole('radio', { name: /Six sites per tooth/ })).toBeChecked();
+  expect(readPocket(308)).toBe('M3 D5');
+  pocket(408, 'mesial 2 distal 4');
+  expect(within(settings).getByRole('radio', { name: /One per root/ })).toBeChecked();
+  expect(readPocket(108)).toBe('2 1 3 2 1 2');
+  expect(persisted().dictatedPocketMode).toBe('root');
+
+  pocket(104, '4');
+  expect(within(settings).getByRole('radio', { name: /One per tooth/ })).toBeChecked();
+  expect(persisted().dictatedPocketMode).toBe('tooth');
+  expect(readPocket(308)).toBe('M3 D5');
+  act(() => state.voice!.handlers.setToothField(308, 'pocket', 'D5'));
+  expect(within(settings).getByRole('radio', { name: /One per tooth/ })).toBeChecked();
+  expect(persisted().dictatedPocketMode).toBe('tooth');
+  expect(readPocket(308)).toBe('D5');
+});

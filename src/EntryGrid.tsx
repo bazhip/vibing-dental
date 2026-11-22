@@ -52,6 +52,7 @@ import { useChartSettings } from './hooks/useChartSettings';
 import { useAppLanguage } from './i18n/useAppLanguage';
 import { formatDate, formatDateTime, formatMonthDay, formatTime } from './i18n/format';
 import type { ChartPrefs } from './utils/chartSettings';
+import { chartPocketMode, inferDictatedPocketMode, mergeDictatedPockets, type PocketMode } from './utils/pocket';
 import { useChartState } from './hooks/useChartState';
 import { ensureChartSaved } from './utils/ensureSaved';
 import { useCloudSync } from './hooks/useCloudSync';
@@ -228,13 +229,22 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     }
   };
   const chartSettings = useChartSettings(profile.loaded);
-  const prefs = chartSettings.prefs;
+  const accountPrefs = chartSettings.prefs;
+  const [pocketModeOverride, setPocketModeOverride] = React.useState<{ session: number; mode: PocketMode }>();
+  const recordedPocketMode = chart.patientInfo.dictatedPocketMode;
+  const supportedMode = recordedPocketMode === 'tooth' || recordedPocketMode === 'root' || recordedPocketMode === 'site'
+    ? recordedPocketMode : undefined;
+  const inferredMode = supportedMode ?? chartPocketMode(chart.toothData, chart.species, accountPrefs.pocketMode);
+  const pocketMode = pocketModeOverride?.session === chart.chartSession ? pocketModeOverride.mode : inferredMode;
+  const prefs = React.useMemo(() => pocketMode === accountPrefs.pocketMode ? accountPrefs : { ...accountPrefs, pocketMode },
+    [accountPrefs, pocketMode]);
   const language = useAppLanguage(prefs.language, chartSettings.loaded, true);
   const setPref = React.useCallback((patch: Partial<ChartPrefs>) => {
+    if (patch.pocketMode) setPocketModeOverride({ session: chart.chartSession, mode: patch.pocketMode });
     // Looked up when it fails, in the language in effect then.
     chartSettings.update(patch).catch((err) =>
       toast(i18n.getFixedT(null, 'app')('errors.setting', { error: friendlyDetail(err) }), { kind: 'error' }));
-  }, [chartSettings.update]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [chartSettings.update, chart.chartSession]); // eslint-disable-line react-hooks/exhaustive-deps
   // Chart settings dialog: closed, everything, or one section only.
   const [chartSettingsOpen, setChartSettingsOpen] = React.useState<false | 'all' | SettingsSection>(false);
   const [reportCustomizeOpen, setReportCustomizeOpen] = React.useState(false);
@@ -1057,6 +1067,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     patientInfo: typeof chart.patientInfo.radiologyReport === 'string'
       ? { ...chart.patientInfo, radiographicFindings: radiologyRecordedText(chart.patientInfo) } : chart.patientInfo,
     species:     chart.species,
+    pocketMode,
     logo:        chart.logo,
     toothData:   chart.toothData,
     preMarks:    chart.preToothMarks,
@@ -1092,9 +1103,27 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       });
     },
     setToothField: (triadan: number, field: DentalField, value: string) => {
+      if (field === 'pocket') {
+        const mode = inferDictatedPocketMode(value, chart.species, triadan);
+        chart.setPatientInfo(previous => previous.dictatedPocketTooth !== triadan || previous.dictatedPocketMode === mode ? previous : {
+          ...previous, dictatedPocketMode: mode, dictatedPocketTooth: mode ? triadan : undefined,
+        });
+      }
       chart.setToothDataDirectly((rows: ToothData[]) =>
         rows.map((t) => (t.triadan === triadan ? { ...t, [field]: value } : t))
       );
+    },
+    setDictatedPocket: (triadan, value) => {
+      if (!chart.toothData.some(row => row.triadan === triadan)) return;
+      const mode = inferDictatedPocketMode(value, chart.species, triadan);
+      if (mode) {
+        setPocketModeOverride(undefined);
+        chart.setPatientInfo(previous => previous.dictatedPocketMode === mode && previous.dictatedPocketTooth === triadan
+          ? previous : { ...previous, dictatedPocketMode: mode, dictatedPocketTooth: triadan });
+      }
+      chart.setToothDataDirectly(rows => rows.map(row => row.triadan === triadan
+        ? { ...row, pocket: mergeDictatedPockets(row.pocket ?? '', value, chart.species, triadan, pocketMode) }
+        : row));
     },
     addComment: (diagram, triadan, text) => {
       const setter = diagram === 'pre' ? chart.setPreDiagramComments : chart.setPostDiagramComments;

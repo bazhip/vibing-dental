@@ -170,15 +170,15 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
             <fieldset className="chart-settings__field">
               <legend>{t('chart.charting.pocket')}</legend>
               <label className="chart-settings__choice choice-row">
-                <input type="radio" name="pocketMode" checked={prefs.pocketMode === 'tooth'} onChange={() => onChange({ pocketMode: 'tooth' })} />
+                <input type="radio" name="pocketMode" checked={prefs.pocketMode === 'tooth'} onChange={() => onChange({ pocketMode: 'tooth' })} onClick={() => { if (prefs.pocketMode === 'tooth') onChange({ pocketMode: 'tooth' }); }} />
                 {t('chart.charting.pocketTooth')}
               </label>
               <label className="chart-settings__choice choice-row">
-                <input type="radio" name="pocketMode" checked={prefs.pocketMode === 'root'} onChange={() => onChange({ pocketMode: 'root' })} />
+                <input type="radio" name="pocketMode" checked={prefs.pocketMode === 'root'} onChange={() => onChange({ pocketMode: 'root' })} onClick={() => { if (prefs.pocketMode === 'root') onChange({ pocketMode: 'root' }); }} />
                 <span>{t('chart.charting.pocketRoot')} <span className="chart-settings__hint">{t('chart.charting.pocketRootHint')}</span></span>
               </label>
               <label className="chart-settings__choice choice-row">
-                <input type="radio" name="pocketMode" checked={prefs.pocketMode === 'site'} onChange={() => onChange({ pocketMode: 'site' })} />
+                <input type="radio" name="pocketMode" checked={prefs.pocketMode === 'site'} onChange={() => onChange({ pocketMode: 'site' })} onClick={() => { if (prefs.pocketMode === 'site') onChange({ pocketMode: 'site' }); }} />
                 <span>{t('chart.charting.pocketSite')} <span className="chart-settings__hint">{t('chart.charting.pocketSiteHint')}</span></span>
               </label>
             </fieldset>

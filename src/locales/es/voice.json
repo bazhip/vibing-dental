@@ -58,7 +58,8 @@
   "correction": {
     "conflict": "Revise este cambio en el historial.",
     "apply": "Aplicar sugerencia",
-    "keep": "Conservar el valor actual"
+    "keep": "Conservar el valor actual",
+    "pocketReadings": "Revise las etiquetas de los sitios en «{{value}}»."
   },
   "welcome": {
     "ready": "La transcripción aparecerá aquí cuando inicie la grabación.",
@@ -76,7 +77,10 @@
     "step1": "Hable como lo haría normalmente: <em>«104 GI 2, sarro 1. 105 ausente. Lengua normal.»</em>",
     "step2": "Permanezca en cualquier página. Cada hallazgo va al lugar correcto del historial.",
     "step3": "Toque <strong>Detener</strong> cuando termine. Todo aquello de lo que no estaba seguro aparece en <strong>Por revisar</strong>.",
-    "title": "Dicte su historial"
+    "title": "Dicte su historial",
+    "pocketsTitle": "Profundidades de sondaje",
+    "pocketsTip": "Diga «308 mesial 3, distal 5». El odontograma adapta el formato para esta visita. Revise los cambios sugeridos a las profundidades guardadas.",
+    "pocketsGuide": "Guía de dictado de profundidades de sondaje"
   },
   "panel": {
     "activity": "Actividad",

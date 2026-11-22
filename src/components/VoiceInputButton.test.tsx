@@ -68,6 +68,9 @@ describe('VoiceInputButton session flow', () => {
     render(<VoiceInputButton {...props} />);
 
     fireEvent.click(screen.getByRole('button', { name: /Dictate/ }));
+    expect(screen.getByText(/308 mesial 3, distal 5/)).toBeVisible();
+    expect(screen.getByRole('link', { name: 'Pocket dictation guide' }).getAttribute('href'))
+      .toContain('#by-number/second');
     fireEvent.click(screen.getByRole('button', { name: 'Start dictation' }));
     act(() => FakeRecognition.last!.say('104 GI 2'));
     expect(screen.getByText(/104 GI 2/)).toBeInTheDocument();

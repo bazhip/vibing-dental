@@ -49,7 +49,8 @@
     "consultationTemplatePreview": "The Consult template editor with the Add section picker open on a fictional visit.",
     "consultationRecordNote": "A consultation’s record note with the Download PDF and Copy controls.",
     "dentalConsultation": "The Awake oral examination field in a fictional dental consultation.",
-    "dictationCheck": "The dictation panel pauses briefly before it checks the chart. Resume keeps the same dictation open."
+    "dictationCheck": "The dictation panel pauses briefly before it checks the chart. Resume keeps the same dictation open.",
+    "pocketSites": "Six recorded pocket depths displayed in the By tooth chart."
   },
   "articles": {
     "start": {
@@ -152,7 +153,7 @@
         },
         "second": {
           "title": "Check the transcript and proposals",
-          "text": "Clear findings can fill the matching tabs while you speak, including Exam, Anesthesia, Charting, Diagnosis and Procedure. The active tab gives context to ambiguous wording. Stop when you finish and review the transcript and chart."
+          "text": "Clear findings can fill the matching tabs while you speak, including Exam, Anesthesia, Charting, Diagnosis and Procedure. The active tab gives context to ambiguous wording. Stop when you finish and review the transcript and chart.\n\nFor pocket depths, say the tooth number and the measurements. Say “308 pocket depth 4” for a single reading or “308 mesial 3, distal 5” for one reading per root. For six-site probing, name each site or say all six readings in this order: MB, B, DB, ML, L, DL. Charting switches to the matching layout for this visit. Adding a reading keeps the other recorded readings for that tooth. Review any suggested replacement of a saved depth before applying it."
         },
         "third": {
           "title": "Review corrections before applying",
@@ -404,7 +405,7 @@
         },
         "second": {
           "title": "Record findings, notes, and extraction status",
-          "text": "Enter the recorded measurements in Findings. A pocket depth can be a single reading, one reading per root, or six site-specific readings. Open Customize in Charting to choose the pocket depth mode and the measurements you want to see. Mark Missing (before this visit) only when the tooth was already missing.\n\nUse Diagnosis note and any configured quick codes for what you found, and Procedure note for what you did. Use Plan to extract for intended work. When the extraction has happened, mark it extracted. The diagram key distinguishes recorded findings, planned extraction, completed extraction, and missing teeth."
+          "text": "Enter the recorded measurements in Findings. A pocket depth can be a single reading, one reading per root, or six site-specific readings. Open Customize in Charting to choose the pocket depth mode and the measurements you want to see. Mark Missing (before this visit) only when the tooth was already missing.\n\nDictation can change the pocket layout for the open visit. For example, say “308 mesial 3, distal 5” to show the root boxes. Name the sites for six-site probing, or give all six readings in order: MB, B, DB, ML, L, DL. Adding a named reading keeps the other readings for that tooth. If dictation proposes changing a recorded reading, review it before applying the change.\n\nUse Diagnosis note and any configured quick codes for what you found, and Procedure note for what you did. Use Plan to extract for intended work. When the extraction has happened, mark it extracted. The diagram key distinguishes recorded findings, planned extraction, completed extraction, and missing teeth."
         },
         "third": {
           "title": "Switch views or dictate a numbered finding",

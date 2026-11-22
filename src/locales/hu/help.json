@@ -49,7 +49,8 @@
     "consultationTemplatePreview": "A konzultációs sablon szerkesztője egy fiktív viziten, megnyitott „Szakasz hozzáadása” választóval.",
     "consultationRecordNote": "Konzultációs jegyzet a PDF letöltése és a Másolás gombbal.",
     "dentalConsultation": "Az Éber szájüregi vizsgálat mező egy fiktív fogászati konzultációban.",
-    "dictationCheck": "A diktálási panel rövid szünetet tart a fogászati lap ellenőrzése előtt. A „Folytatás” ugyanazt a diktálást folytatja."
+    "dictationCheck": "A diktálási panel rövid szünetet tart a fogászati lap ellenőrzése előtt. A „Folytatás” ugyanazt a diktálást folytatja.",
+    "pocketSites": "Hat rögzített tasakmélység fogankénti nézetben."
   },
   "articles": {
     "start": {
@@ -152,7 +153,7 @@
         },
         "second": {
           "title": "Az átirat és a javaslatok ellenőrzése",
-          "text": "Az egyértelmű leletek diktálás közben a megfelelő lapokra kerülhetnek, például a Vizsgálat, az Anesztézia, a Fogászati karton, a Diagnózis vagy a Beavatkozás lapra. Az aktív lap segít értelmezni a kétértelmű megfogalmazást. A végén állítsa le a felvételt, és ellenőrizze a leiratot és a kartont."
+          "text": "Az egyértelmű leletek diktálás közben a megfelelő lapokra kerülhetnek, például a Vizsgálat, az Anesztézia, a Fogászati karton, a Diagnózis vagy a Beavatkozás lapra. Az aktív lap segít értelmezni a kétértelmű megfogalmazást. A végén állítsa le a felvételt, és ellenőrizze a leiratot és a kartont.\n\nA tasakmélységek diktálásakor mondja be a fog számát és a mért értékeket. Egyetlen mérésnél mondja azt, hogy „308 tasakmélység 4”, gyökerenkénti mérésnél pedig azt, hogy „308 meziális 3, disztális 5”. Hatpontos szondázásnál nevezze meg az egyes pontokat, vagy mondja be mind a hat értéket ebben a sorrendben: MB, B, DB, ML, L, DL. A fogászati karton az adott vizithez a megfelelő elrendezésre vált. Új érték hozzáadásakor a fog többi rögzített értéke megmarad. Alkalmazás előtt ellenőrizze a mentett mélység cseréjére vonatkozó javaslatokat."
         },
         "third": {
           "title": "Javítások áttekintése alkalmazás előtt",
@@ -404,7 +405,7 @@
         },
         "second": {
           "title": "Leletek, megjegyzések és a foghúzás állapotának rögzítése",
-          "text": "A „Leletek” részen adja meg a mért értékeket. A tasakmélység egyetlen érték, gyökerenként egy érték vagy hat külön mérési pont értéke lehet. A „Fogászati lap kitöltése” szakasz „Testreszabás” beállításaiban válassza ki a tasakmélység rögzítésének módját és a megjelenítendő méréseket. Csak akkor jelölje be a „Hiányzó (e vizit előtt)” lehetőséget, ha a fog már a vizit előtt hiányzott.\n\nA megállapításokat a „Diagnosztikai megjegyzés” mezőben és a beállított gyorsgombokkal, az elvégzett ellátást a „Beavatkozási megjegyzés” mezőben rögzítse. Tervezett eltávolításhoz használja a „Foghúzás tervezése” lehetőséget. Ha a foghúzás megtörtént, jelölje eltávolítottnak a fogat. A diagram jelmagyarázata megkülönbözteti a rögzített leleteket, a tervezett és az elvégzett foghúzásokat, valamint a hiányzó fogakat."
+          "text": "A „Leletek” részen adja meg a mért értékeket. A tasakmélység egyetlen érték, gyökerenként egy érték vagy hat külön mérési pont értéke lehet. A „Fogászati lap kitöltése” szakasz „Testreszabás” beállításaiban válassza ki a tasakmélység rögzítésének módját és a megjelenítendő méréseket. Csak akkor jelölje be a „Hiányzó (e vizit előtt)” lehetőséget, ha a fog már a vizit előtt hiányzott.\n\nA diktálás módosíthatja a tasakmélységek elrendezését a megnyitott viziten. Például mondja azt, hogy „308 meziális 3, disztális 5” a gyökerenkénti mezők megjelenítéséhez. Hatpontos méréskor nevezze meg a helyeket, vagy mondja be mind a hat értéket ebben a sorrendben: MB, B, DB, ML, L, DL. Ha megnevezett helyhez ad hozzá mérést, a fog többi mérése megmarad. Ellenőrizze a rögzített mérés javasolt módosítását, mielőtt alkalmazza.\n\nA megállapításokat a „Diagnosztikai megjegyzés” mezőben és a beállított gyorsgombokkal, az elvégzett ellátást a „Beavatkozási megjegyzés” mezőben rögzítse. Tervezett eltávolításhoz használja a „Foghúzás tervezése” lehetőséget. Ha a foghúzás megtörtént, jelölje eltávolítottnak a fogat. A diagram jelmagyarázata megkülönbözteti a rögzített leleteket, a tervezett és az elvégzett foghúzásokat, valamint a hiányzó fogakat."
         },
         "third": {
           "title": "Váltás a nézetek között vagy lelet diktálása a fog számával",

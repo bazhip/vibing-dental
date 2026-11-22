@@ -17,7 +17,7 @@ import {
 import 'react-data-grid/lib/styles.css';
 import { DentalField, Species, ToothData, ToothMarks } from '../types';
 import type { ScorePicker, ScoreTapMove } from '../utils/chartSettings';
-import { pocketLabels, rootBoxes, formatRootPockets, type PocketMode } from '../utils/pocket';
+import { chartPocketMode, pocketLabels, rootBoxes, formatRootPockets, type PocketMode } from '../utils/pocket';
 
 const GRID_DIRECTION = 'ltr' as const;
 
@@ -296,8 +296,8 @@ function PocketRootsEditor(props: RenderEditCellProps<ToothData>) {
   const { row, rowIdx, column, onRowChange, onClose } = props;
   const { t } = useTranslation('chart');
   const wiring = React.useContext(EditorWiringContext);
-  const labels = pocketLabels(wiring?.pocketModeRef.current ?? 'root', wiring?.speciesRef.current ?? 'canine', row.triadan);
-  const site = wiring?.pocketModeRef.current === 'site';
+  const labels = pocketLabels(wiring?.pocketModeRef.current ?? 'root', wiring?.speciesRef.current ?? 'canine', row.triadan, row.pocket);
+  const site = labels.length === 6;
   const initial = React.useMemo(() => rootBoxes(labels, row.pocket), []); // eslint-disable-line react-hooks/exhaustive-deps
   const [depths, setDepths] = React.useState<Record<string, string>>(initial.depths);
   const inputs = useRef<Array<HTMLInputElement | null>>([]);
@@ -371,7 +371,7 @@ function PocketRootsEditor(props: RenderEditCellProps<ToothData>) {
  *  the plain editor, so nothing is lost — clear it to get the boxes. */
 function PocketCellEditor(props: RenderEditCellProps<ToothData>) {
   const wiring = React.useContext(EditorWiringContext);
-  const labels = pocketLabels(wiring?.pocketModeRef.current ?? 'root', wiring?.speciesRef.current ?? 'canine', props.row.triadan);
+  const labels = pocketLabels(wiring?.pocketModeRef.current ?? 'root', wiring?.speciesRef.current ?? 'canine', props.row.triadan, props.row.pocket);
   if (labels.length === 0 || rootBoxes(labels, props.row.pocket).unplaced) return <CodeCellEditor {...props} />;
   return <PocketRootsEditor {...props} />;
 }
@@ -506,6 +506,8 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   rowCountRef.current = toothData.length;
   // Columns shown (chart settings may hide some). Leading columns:
   // Missing, Tooth, Triadan — so the editable ones start at index 3.
+  const recordedPocketMode = chartPocketMode(toothData, species, 'tooth');
+  const pocketSizeMode = POCKET_MIN[recordedPocketMode] > POCKET_MIN[pocketMode] ? recordedPocketMode : pocketMode;
   const visibleColumns = React.useMemo(() => {
     const hidden = new Set(hiddenColumns ?? []);
     const shown = CODE_COLUMNS.filter((c) => !hidden.has(c.key as DentalField));
@@ -515,10 +517,10 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       key: c.key,
       name: c.key === 'pdstate' ? t('grid.pdstateTitle') : columnLabel(c.key),
       short: t(`grid.short.${c.key}`),
-      share: c.key === 'pocket' ? POCKET_SHARE[pocketMode] : c.share,
+      share: c.key === 'pocket' ? POCKET_SHARE[pocketSizeMode] : c.share,
     }));
     // `language` re-reads the labels, which come from the active catalog.
-  }, [hiddenColumns, pocketMode, t, language]);
+  }, [hiddenColumns, pocketMode, pocketSizeMode, t, language]);
   const narrow = useMediaQuery(NARROW_QUERY);
   const coarse = useMediaQuery('(pointer: coarse)');
   const headOpts = { button: !readOnly, narrow, coarse };
@@ -526,7 +528,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   // short title (the card scrolls sideways); wider ones fill the
   // container. Per-root / per-site pockets need room for their boxes.
   const narrowWidth = (c: { key: keyof ToothData; short: string }) =>
-    Math.max(headerWidth(c.short, headOpts), c.key === 'pocket' ? POCKET_MIN[pocketMode] : 60);
+    Math.max(headerWidth(c.short, headOpts), c.key === 'pocket' ? POCKET_MIN[pocketSizeMode] : 60);
   const narrowMinWidth = NARROW_LEAD.reduce((a, b) => a + b, 0) + visibleColumns.reduce((sum, c) => sum + narrowWidth(c), 0) + 2;
   const lastEditableRef = useRef(FIRST_EDITABLE + visibleColumns.length - 1);
   lastEditableRef.current = FIRST_EDITABLE + visibleColumns.length - 1;
@@ -748,7 +750,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     // anything left over is shared out by the usual proportions. If even
     // short titles don't fit, fall back to plain proportions.
     const titleOf = (c: (typeof visibleColumns)[number]) => (c.key === 'pocket' ? pocketTitle(c.name) : c.name);
-    const minOf = (c: (typeof visibleColumns)[number]) => (c.key === 'pocket' ? POCKET_MIN[pocketMode] : 60);
+    const minOf = (c: (typeof visibleColumns)[number]) => (c.key === 'pocket' ? POCKET_MIN[pocketSizeMode] : 60);
     const desktopWidths = (() => {
       const opts = { ...headOpts, button: !readOnly };
       const short = visibleColumns.map((c) => Math.max(headerWidth(c.short, opts), minOf(c)));
@@ -847,7 +849,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       name,
       width,
       cellClass: (row: ToothData) => reviewFields?.has(`${row.triadan}:${key}`) ? 'dental-grid__cell--review' : undefined,
-      renderEditCell: readOnly ? undefined : key === 'pocket' && pocketMode !== 'tooth' ? PocketCellEditor : CodeCellEditor,
+      renderEditCell: readOnly ? undefined : key === 'pocket' ? PocketCellEditor : CodeCellEditor,
       // Teeth marked missing have nothing to measure.
       editable: (row: ToothData) => !readOnly && toothMarks[row.triadan] !== 'missing',
       renderCell: ({ row }) => {
@@ -857,9 +859,9 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
         // Per-root / per-site pockets: always show a labelled slot per box,
         // so the expected input is visible before anything is typed.
         // Clicking a slot opens the editor on that box.
-        if (key === 'pocket' && pocketMode !== 'tooth' && toothMarks[row.triadan] !== 'missing') {
-          const site = pocketMode === 'site';
-          const labels = pocketLabels(pocketMode, species, row.triadan);
+        if (key === 'pocket' && toothMarks[row.triadan] !== 'missing') {
+          const labels = pocketLabels(pocketMode, species, row.triadan, value);
+          const site = labels.length === 6;
           const boxes = labels.length ? rootBoxes(labels, value) : null;
           if (boxes && !boxes.unplaced) {
             const priorBoxes = priorValue ? rootBoxes(labels, priorValue).depths : {};
@@ -923,7 +925,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       };
     }),
     ];
-  }, [toothMarks, onToggleMissing, setAllForColumn, priorToothData, priorGoneTeeth, layoutWidth, readOnly, visibleColumns, pocketMode, species, narrow, coarse, toothPickTitle, t, triadanLabel, toothLabel, reviewFields]);
+  }, [toothMarks, onToggleMissing, setAllForColumn, priorToothData, priorGoneTeeth, layoutWidth, readOnly, visibleColumns, pocketMode, pocketSizeMode, species, narrow, coarse, toothPickTitle, t, triadanLabel, toothLabel, reviewFields]);
 
   React.useEffect(() => {
     if (!reviewFocus) return;

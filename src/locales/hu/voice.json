@@ -57,7 +57,8 @@
   "correction": {
     "conflict": "Ellenőrizze ezt a módosítást a kórlapon.",
     "apply": "Javaslat alkalmazása",
-    "keep": "Jelenlegi érték megtartása"
+    "keep": "Jelenlegi érték megtartása",
+    "pocketReadings": "Ellenőrizze a mérési helyeket itt: „{{value}}”."
   },
   "welcome": {
     "ready": "A felvétel indítása után itt jelenik meg az átirat.",
@@ -75,7 +76,10 @@
     "step1": "Beszéljen természetesen: <em>„104 GI 2, fogkő 1. 105 hiányzik. Nyelv ép.”</em>",
     "step2": "Bármely oldalon maradhat. Minden lelet a megfelelő helyre kerül a fogászati lapon.",
     "step3": "Ha végzett, koppintson a <strong>Leállítás</strong> gombra. A bizonytalan elemek az <strong>Ellenőrzést igényel</strong> részbe kerülnek.",
-    "title": "Diktálja a fogászati lapot"
+    "title": "Diktálja a fogászati lapot",
+    "pocketsTitle": "Tasakmélységek",
+    "pocketsTip": "Mondja azt, hogy „308 meziális 3, disztális 5”. A fogászati karton erre a vizitre vált elrendezést. Ellenőrizze a mentett mélységek javasolt módosításait.",
+    "pocketsGuide": "Útmutató a tasakmélységek diktálásához"
   },
   "panel": {
     "activity": "Tevékenység",

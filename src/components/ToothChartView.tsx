@@ -381,14 +381,14 @@ export function ToothChartView({
                     const id = `tooth-chart-${col.key}`;
                     const review = reviewFields?.has(`${selected}:${col.key}`);
                     const fieldLabel = <>{review && <span className="chart-review-badge" role="img" aria-label={t('panel.needsReview', { ns: 'voice' })}><span aria-hidden="true">!</span></span>}{col.name}</>;
-                    const roots = col.key === 'pocket' && selected != null ? pocketLabels(pocketMode, species, selected) : [];
+                    const roots = col.key === 'pocket' && selected != null ? pocketLabels(pocketMode, species, selected, value) : [];
                     const boxes = roots.length ? rootBoxes(roots, value) : null;
                     if (boxes && !boxes.unplaced) {
                       // One box per root ("M4 D6") or per site ("MB2 B1 … DL2").
                       return (
                         <fieldset key={col.key} className="tooth-chart__finding tooth-chart__finding--roots">
                           <legend>{fieldLabel}</legend>
-                          <div className={`tooth-chart__roots${pocketMode === 'site' ? ' tooth-chart__roots--sites' : ''}`}>
+                          <div className={`tooth-chart__roots${roots.length === 6 ? ' tooth-chart__roots--sites' : ''}`}>
                             {roots.map((l) => (
                               <label key={l} className="tooth-chart__root">
                                 <span>{l}</span>
@@ -398,7 +398,7 @@ export function ToothChartView({
                                   inputMode="decimal"
                                   autoComplete="off"
                                   disabled={isMissing}
-                                  aria-label={pocketMode === 'site' ? t('toothChart.siteAria', { site: l }) : t('toothChart.rootAria', { root: l })}
+                                  aria-label={roots.length === 6 ? t('toothChart.siteAria', { site: l }) : t('toothChart.rootAria', { root: l })}
                                   onChange={(e) => setField('pocket', formatRootPockets(roots, { ...boxes.depths, [l]: e.target.value.replace(/[^\d.]/g, '') }))}
                                   onKeyDown={blockEnter}
                                 />

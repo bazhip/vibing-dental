@@ -58,7 +58,8 @@
   "correction": {
     "conflict": "Vérifiez cette modification du dossier.",
     "apply": "Appliquer la suggestion",
-    "keep": "Conserver la valeur actuelle"
+    "keep": "Conserver la valeur actuelle",
+    "pocketReadings": "Vérifiez les libellés des sites pour « {{value}} »."
   },
   "welcome": {
     "ready": "Votre transcription s’affichera ici dès le début de l’enregistrement.",
@@ -76,7 +77,10 @@
     "step1": "Parlez comme vous le feriez normalement : <em>« 104 GI 2, tartre 1. 105 manquante. Langue normale. »</em>",
     "step2": "Restez sur la page de votre choix. Chaque observation va au bon endroit du dossier.",
     "step3": "Touchez <strong>Arrêter</strong> lorsque vous avez terminé. Tout ce dont elle n’était pas sûre est listé sous <strong>À vérifier</strong>.",
-    "title": "Dictez votre dossier"
+    "title": "Dictez votre dossier",
+    "pocketsTitle": "Profondeurs de poche",
+    "pocketsTip": "Dites « 308 mésial 3, distal 5 ». La disposition du tableau dentaire s’adapte pour cette visite. Vérifiez les modifications proposées pour les profondeurs enregistrées.",
+    "pocketsGuide": "Guide de dictée des profondeurs de poche"
   },
   "panel": {
     "activity": "Activité",

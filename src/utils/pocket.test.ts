@@ -1,4 +1,4 @@
-import { rootLabels, pocketLabels, POCKET_SITES, parseRootPockets, formatRootPockets, rootBoxes, pocketDepths, deepestPocket } from './pocket';
+import { rootLabels, pocketLabels, POCKET_SITES, parseRootPockets, formatRootPockets, rootBoxes, pocketDepths, deepestPocket, inferPocketMode, mergeDictatedPockets, dictatedPocketsReplace, revertDictatedPockets } from './pocket';
 
 describe('rootLabels', () => {
   it('canine: single-rooted front teeth, two-rooted premolars, three-rooted upper P4 and molars', () => {
@@ -103,5 +103,34 @@ describe('six-site pockets', () => {
   it('keeps another mode\'s labels visible instead of dropping them', () => {
     expect(rootBoxes(POCKET_SITES as string[], 'MB4 MP5 D6')).toEqual({ depths: {}, unplaced: 'MB4 MP5 D6' });
     expect(rootBoxes(['M', 'D'], 'MB3 B2')).toEqual({ depths: {}, unplaced: 'MB3 B2' });
+  });
+});
+
+describe('dictated pocket readings', () => {
+  it('detects named roots, six sites, and unambiguous inline site names', () => {
+    expect(inferPocketMode('M3 D5', 'canine', 308)).toBe('root');
+    expect(inferPocketMode('2 1 3 2 1 2', 'canine', 308)).toBe('site');
+    expect(inferPocketMode('MB2 ML3', 'canine', 108)).toBe('site');
+    expect(inferPocketMode('MB2', 'canine', 108)).toBeUndefined();
+    expect(inferPocketMode('2 3', 'canine', 308)).toBeUndefined();
+    expect(pocketLabels('site', 'canine', 308, 'M3 D5')).toEqual(['M', 'D']);
+    expect(pocketLabels('root', 'canine', 308, '2 1 3 2 1 2')).toEqual(POCKET_SITES);
+    expect(pocketLabels('tooth', 'canine', 308, 'M3 D5')).toEqual(['M', 'D']);
+  });
+
+  it('combines compatible named readings but identifies replacements', () => {
+    expect(mergeDictatedPockets('M3', 'D5', 'canine', 308)).toBe('M3 D5');
+    expect(dictatedPocketsReplace('M3', 'D5', 'canine', 308)).toBe(false);
+    expect(dictatedPocketsReplace('M3 D5', 'D6', 'canine', 308)).toBe(true);
+    expect(mergeDictatedPockets('M3 D5', 'D6', 'canine', 308)).toBe('M3 D6');
+    expect(dictatedPocketsReplace('M3 D5', 'ML2', 'canine', 308)).toBe(true);
+    expect(mergeDictatedPockets('M3 D5', 'ML2', 'canine', 308)).toBe('ML2');
+    expect(mergeDictatedPockets('2 1 3 2 1 2', 'B4', 'canine', 108)).toBe('MB2 B4 DB3 ML2 L1 DL2');
+    expect(mergeDictatedPockets('4 5', 'M6', 'canine', 308, 'root')).toBe('M6 D5');
+  });
+
+  it('takes back just the guessed reading and leaves newer readings alone', () => {
+    expect(revertDictatedPockets('M3 D5', '', 'M3', 'canine', 308)).toBe('D5');
+    expect(revertDictatedPockets('M4 D5', 'M3', 'M3', 'canine', 308)).toBe('M4 D5');
   });
 });

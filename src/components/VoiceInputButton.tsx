@@ -6,6 +6,7 @@ import i18n from '../i18n';
 import ReactDOM from 'react-dom';
 import { Trans, useTranslation } from 'react-i18next';
 import { formatDateTime, formatList } from '../i18n/format';
+import { documentationUrl } from '../help/openDocumentation';
 import { confirmDialog, toast } from './ui/dialogs';
 import { errorText } from '../utils/apiErrors';
 import { useVoiceCapture, FinalSegment } from '../hooks/useVoiceCapture';
@@ -16,6 +17,7 @@ import type { AppLanguage } from '../i18n/config';
 import { endsMidFindingOther } from '../utils/voice/normalize';
 import { transcriptTurns } from '../utils/voice/transcriptTurns';
 import type { VoiceReviewItem as ReviewItem } from '../utils/voiceReview';
+import { dictatedPocketsReplace, displayedPocketReadings, mergeDictatedPockets, parseRootPockets, revertDictatedPockets } from '../utils/pocket';
 import { directDentalScore } from '../utils/voice/directDentalScore';
 import {
   extractChartActions,
@@ -25,6 +27,8 @@ import {
   dedupeActions,
   invalidReason,
   isNoopAction,
+  isPocketAction,
+  normalizeDictatedPocket,
   overwrittenChartValue,
   normalizeTranscript,
   codeOnlyComment,
@@ -165,6 +169,14 @@ function targetKey(a: AiAction): string {
     case 'set_patient_field': return `patient:${i.field}`;
     default: return a.name;
   }
+}
+
+function sameReviewTarget(first: AiAction, second: AiAction): boolean {
+  if (targetKey(first) !== targetKey(second)) return false;
+  if (!isPocketAction(first) || !isPocketAction(second)) return true;
+  const left = parseRootPockets(normalizeDictatedPocket(String(first.input.value ?? '')));
+  const right = parseRootPockets(normalizeDictatedPocket(String(second.input.value ?? '')));
+  return !left || !right || Object.keys(left).some(label => Object.hasOwn(right, label));
 }
 
 /** The activity line for a change: prefixed with where it landed when
@@ -475,22 +487,38 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   function applyResult(result: ExtractResult, direct = false): number {
       if (!canEdit()) return 0;
       const before = contextRef.current;
+      const lng = voiceRef.current?.lng ?? 'en';
       const all = dedupeActions(result.actions, before);
       const tNow = i18n.getFixedT(null, 'voice');
       const held = new Map<AiAction, ReviewItem>();
+      const pocketBefore = new Map<AiAction, string>();
       if (reviewBeforeReplacing.current) {
         const seen = new Set<string>();
+        const pendingPockets = new Map<number, string>();
         for (const action of all) {
           const flag = result.flags.find(candidate => candidate.applied === action);
-          const existing = overwrittenChartValue(action, before);
+          const invalid = invalidReason(action, lng);
+          const pocket = isPocketAction(action);
+          const tooth = Number(action.input.triadan);
+          const reading = pocket ? normalizeDictatedPocket(String(action.input.value ?? '')) : '';
+          const previous = pocket ? pendingPockets.get(tooth) ?? before.toothData.find(row => row.triadan === tooth)?.pocket ?? '' : '';
+          const existing = pocket
+            ? (dictatedPocketsReplace(previous, reading, before.species, tooth, before.pocketMode) ? previous : undefined)
+            : overwrittenChartValue(action, before);
           const key = targetKey(action);
-          const duplicate = seen.has(key) && !['add_comment', 'append_treatment_report', 'append_radiographic_findings'].includes(action.name);
+          const duplicate = !pocket && seen.has(key) && !['add_comment', 'append_treatment_report', 'append_radiographic_findings'].includes(action.name);
           seen.add(key);
-          if (existing === undefined && !duplicate && !invalidReason(action)) continue;
+          if (existing === undefined && !duplicate && !invalid) {
+            if (pocket) {
+              pocketBefore.set(action, previous);
+              pendingPockets.set(tooth, mergeDictatedPockets(previous, reading, before.species, tooth, before.pocketMode));
+            }
+            continue;
+          }
           const description = describeAction(action);
           const options = [
-            ...(!invalidReason(action) ? [{ label: tNow('correction.apply'), action }] : []),
-            ...(flag?.options.filter(option => !invalidReason(option.action)) ?? []),
+            ...(!invalid ? [{ label: tNow('correction.apply'), action }] : []),
+            ...(flag?.options.filter(option => !invalidReason(option.action, lng)) ?? []),
           ];
           held.set(action, {
             id: `rv${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
@@ -501,7 +529,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
               heard: flag?.heard ?? description,
               reason: existing !== undefined
                 ? tNow('correction.conflict')
-                : invalidReason(action) ?? flag?.reason ?? tNow('correction.conflict'),
+                : invalid ?? flag?.reason ?? tNow('correction.conflict'),
               triadan: typeof action.input.triadan === 'number' ? action.input.triadan : undefined,
               options,
             },
@@ -511,7 +539,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       const fresh = all.filter(action => !held.has(action));
       // Undo info has to be captured from the chart BEFORE applying.
       const reverts = new Map<AiAction, string | null | undefined>();
-      for (const f of result.flags) if (f.applied) reverts.set(f.applied, previousValue(f.applied, before));
+      for (const f of result.flags) if (f.applied) reverts.set(f.applied, pocketBefore.get(f.applied) ?? previousValue(f.applied, before));
       const applied = applyAiActions(fresh, handlersRef.current, voiceRef.current?.lng ?? 'en');
       const appliedSet = new Set(applied);
 
@@ -532,15 +560,27 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       const flaggedActions = new Set(newItems.map((r) => r.flag.applied).filter(Boolean) as AiAction[]);
       // A clear (unflagged) statement about the same thing settles an
       // earlier flag — the vet just said the correction out loud.
-      const settled = applied.filter((a) => !flaggedActions.has(a));
+      const settled = applied.filter(action => !flaggedActions.has(action)).flatMap(action => {
+        // The model may echo the full root set. An unchanged echoed reading
+        // supplies no new evidence for an outstanding review on that site.
+        const previous = pocketBefore.get(action);
+        if (!previous) return [action];
+        const tooth = Number(action.input.triadan);
+        const old = displayedPocketReadings(previous, before.species, tooth, before.pocketMode);
+        const value = normalizeDictatedPocket(String(action.input.value ?? ''));
+        const named = displayedPocketReadings(value, before.species, tooth);
+        if (!old || !named) return [action];
+        const changed = Object.entries(named).filter(([label, depth]) => Number(old[label]) !== Number(depth))
+          .map(([label, depth]) => `${label}${depth}`).join(' ');
+        return changed ? [{ ...action, input: { ...action.input, value: changed } }] : [];
+      });
       if (settled.length || newItems.length) {
         setReviews((prev) => {
-          const keys = new Set(settled.map(targetKey));
+          const matches = (action: AiAction) => settled.some(candidate => sameReviewTarget(candidate, action));
           const remaining = prev.filter((r) => {
-            if (r.proposal && keys.has(targetKey(r.proposal.action))) return false;
-            if (r.flag.applied) return !keys.has(targetKey(r.flag.applied));
-            const optKeys = r.flag.options.map((o) => targetKey(o.action));
-            return !optKeys.some((k) => keys.has(k));
+            if (r.proposal && matches(r.proposal.action)) return false;
+            if (r.flag.applied) return !matches(r.flag.applied);
+            return !r.flag.options.some(option => matches(option.action));
           });
           return [...remaining, ...newItems.filter(item => !remaining.some(prior =>
             prior.flag.heard === item.flag.heard && prior.flag.reason === item.flag.reason
@@ -661,9 +701,27 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     }
   }
 
-  function revertReview(item: ReviewItem) {
+  function revertReview(item: ReviewItem, keep?: AiAction) {
     const action = item.flag.applied;
     if (!action || item.previous === undefined) return;
+    if (isPocketAction(action)) {
+      const tooth = Number(action.input.triadan);
+      const current = contextRef.current;
+      const saved = current.toothData.find(row => row.triadan === tooth)?.pocket ?? '';
+      let guess = normalizeDictatedPocket(String(action.input.value ?? ''));
+      if (keep && isPocketAction(keep) && targetKey(keep) === targetKey(action)) {
+        const kept = displayedPocketReadings(normalizeDictatedPocket(String(keep.input.value ?? '')), current.species, tooth);
+        const readings = displayedPocketReadings(guess, current.species, tooth);
+        if (kept && readings) {
+          guess = Object.entries(readings).filter(([label, depth]) => Number(kept[label]) !== Number(depth))
+            .map(([label, depth]) => `${label}${depth}`).join(' ');
+          if (!guess) return;
+        } else if (guess === normalizeDictatedPocket(String(keep.input.value ?? ''))) return;
+      }
+      const next = revertDictatedPockets(saved, item.previous ?? '', guess, current.species, tooth, current.pocketMode);
+      if (next !== saved) handlersRef.current.setToothField(tooth, 'pocket', next);
+      return;
+    }
     // Reopening a review must never roll back a subsequent manual edit.
     if (persistentReviews.current && !isNoopAction(action, contextRef.current)) return;
     const h = handlersRef.current;
@@ -697,10 +755,11 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     if (typeof choice === 'object' && (item.proposal || persistentReviews.current)) {
       const current = overwrittenChartValue(choice.action, contextRef.current);
       if (isNoopAction(choice.action, contextRef.current)) {
+        if (isPocketAction(choice.action) && item.flag.applied && isPocketAction(item.flag.applied)) revertReview(item, choice.action);
         setReviews(prev => prev.filter(review => review.id !== id));
         return;
       }
-      const replacesGuess = !!item.flag.applied && targetKey(item.flag.applied) === targetKey(choice.action)
+      const replacesGuess = !!item.flag.applied && sameReviewTarget(item.flag.applied, choice.action)
         && item.previous !== undefined && isNoopAction(item.flag.applied, contextRef.current);
       if (current !== undefined && !replacesGuess && (choice.action !== item.proposal?.action || current !== item.proposal?.existing)) {
         const proposal = { action: choice.action, existing: current };
@@ -712,10 +771,13 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       }
     }
     if (typeof choice === 'object') {
+      const guess = item.flag.applied;
+      const correctsPocket = !!guess && isPocketAction(guess) && isPocketAction(choice.action)
+        && targetKey(guess) === targetKey(choice.action);
+      if (correctsPocket && !invalidReason(choice.action, voiceRef.current?.lng ?? 'en')) revertReview(item);
       const applied = applyAiActions([choice.action], handlersRef.current, voiceRef.current?.lng ?? 'en');
       if (!applied.length) return;
-      const guess = item.flag.applied;
-      if (guess && (targetKey(guess) !== targetKey(choice.action) || guess.name === 'add_comment')) {
+      if (guess && !correctsPocket && (targetKey(guess) !== targetKey(choice.action) || guess.name === 'add_comment')) {
         revertReview(item);
       }
       appendActivity(applied);
@@ -1294,6 +1356,17 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
                 <li>{t('intro.step2')}</li>
                 <li><Trans t={t} i18nKey="intro.step3" components={{ strong: <strong /> }} /></li>
               </ol>}
+              {!contextualDestination?.onOpen && (
+                <div className="ai-intro__pocket-tip">
+                  <strong>{t('intro.pocketsTitle')}</strong>
+                  <p>{t('intro.pocketsTip')}</p>
+                  <a className="context-help-link"
+                    href={documentationUrl(i18n.resolvedLanguage ?? i18n.language, 'by-number') + '/second'}
+                    target="_blank" rel="noopener noreferrer">
+                    {t('intro.pocketsGuide')}
+                  </a>
+                </div>
+              )}
             </div>
             <footer className="ai-settings-footer">
               {intro === 'start' || intro === 'welcome' ? (

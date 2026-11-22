@@ -49,7 +49,8 @@
     "consultationTemplatePreview": "L’editor dei modelli di consulto con il selettore «Aggiungi sezione» aperto in una visita fittizia.",
     "consultationRecordNote": "Nota della consultazione con i comandi Scarica PDF e Copia.",
     "dentalConsultation": "Il campo Esame orale a paziente sveglio in un consulto odontoiatrico fittizio.",
-    "dictationCheck": "Il pannello di dettatura si ferma brevemente prima di verificare la cartella. Con «Riprendi» può proseguire la stessa dettatura."
+    "dictationCheck": "Il pannello di dettatura si ferma brevemente prima di verificare la cartella. Con «Riprendi» può proseguire la stessa dettatura.",
+    "pocketSites": "Sei profondità delle tasche registrate nella vista Per dente."
   },
   "articles": {
     "start": {
@@ -152,7 +153,7 @@
         },
         "second": {
           "title": "Controllare la trascrizione e le proposte",
-          "text": "I rilievi chiari possono compilare le sezioni corrispondenti durante la dettatura, tra cui Esame, Anestesia, Odontogramma, Diagnosi e Procedura. La sezione attiva aiuta a interpretare le formulazioni ambigue. Al termine interrompa la registrazione e controlli la trascrizione e la cartella."
+          "text": "I rilievi chiari possono compilare le sezioni corrispondenti durante la dettatura, tra cui Esame, Anestesia, Odontogramma, Diagnosi e Procedura. La sezione attiva aiuta a interpretare le formulazioni ambigue. Al termine interrompa la registrazione e controlli la trascrizione e la cartella.\n\nPer dettare le profondità di sondaggio, indichi il numero del dente e le misure. Dica «308 profondità di sondaggio 4» per una misura singola o «308 mesiale 3, distale 5» per una misura per radice. Per il sondaggio a sei siti, nomini ogni sito o detti tutte e sei le misure nell’ordine MB, B, DB, ML, L, DL. Lo schema dentale adotta il layout corrispondente per questa visita. Aggiungendo una misura, le altre misure già registrate per il dente vengono conservate. Verifichi ogni proposta di sostituzione di una profondità salvata prima di applicarla."
         },
         "third": {
           "title": "Verificare le correzioni prima di applicarle",
@@ -404,7 +405,7 @@
         },
         "second": {
           "title": "Registrare reperti, note e stato dell’estrazione",
-          "text": "Inserisca le misurazioni registrate in «Reperti». Per la profondità delle tasche può registrare una misura per dente, una per radice o sei misure in siti distinti. Apra «Personalizza» in «Odontogramma» per scegliere come registrare la profondità delle tasche e quali misurazioni vedere. Usi «Mancante (prima di questa visita)» solo per i denti già mancanti.\n\nUsi «Nota diagnostica» e i codici rapidi configurati per i reperti e «Nota procedurale» per le prestazioni eseguite. Usi «Pianifica estrazione» per un’estrazione prevista. Dopo averla eseguita, contrassegni il dente come estratto. La legenda distingue i reperti registrati, le estrazioni pianificate, le estrazioni eseguite e i denti mancanti."
+          "text": "Inserisca le misurazioni registrate in «Reperti». Per la profondità delle tasche può registrare una misura per dente, una per radice o sei misure in siti distinti. Apra «Personalizza» in «Odontogramma» per scegliere come registrare la profondità delle tasche e quali misurazioni vedere. Usi «Mancante (prima di questa visita)» solo per i denti già mancanti.\n\nLa dettatura può cambiare la disposizione delle misure delle tasche nella visita aperta. Per esempio, dica «308 mesiale 3, distale 5» per mostrare i campi per radice. Per il sondaggio in sei siti, indichi i siti o detti tutti e sei i valori in quest’ordine: MB, B, DB, ML, L, DL. L’aggiunta di una misura in un sito specifico conserva le altre misure del dente. Se la dettatura propone di cambiare una misura registrata, la verifichi prima di applicare la modifica.\n\nUsi «Nota diagnostica» e i codici rapidi configurati per i reperti e «Nota procedurale» per le prestazioni eseguite. Usi «Pianifica estrazione» per un’estrazione prevista. Dopo averla eseguita, contrassegni il dente come estratto. La legenda distingue i reperti registrati, le estrazioni pianificate, le estrazioni eseguite e i denti mancanti."
         },
         "third": {
           "title": "Cambiare vista o dettare un reperto indicando il numero",
