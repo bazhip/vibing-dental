@@ -310,4 +310,7 @@ it.each(['radiology', 'ct'] as const)('displays %s starter text without saving i
     patientInfo: { ...empty.patientInfo, [key]: 'Previously recorded.' },
   }} />);
   expect(screen.getByRole('textbox', { name: label })).toHaveValue('Previously recorded.');
+  expect(screen.queryByLabelText('I reviewed this report against the current chart.')).not.toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: 'Copy report' })).not.toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: 'Download PDF' })).not.toBeInTheDocument();
 });

@@ -210,6 +210,7 @@ export function RadiologyReportSection({ snapshot: originalSnapshot, chartEditor
     {!aiEnabled && showAiNotice && <p className="patient-form__hint">{t('radiologyReport.refineUnavailable')}</p>}
     {!!draft.trim() && <>
     {stale && <p role="status" className="patient-form__hint">{t('radiologyReport.stale')}</p>}
+    {!chartEditor && (
     <div className="radiology-report__review">
     <label className="choice-row radiology-report__check"><input type="checkbox" disabled={readOnly || busy || !draft.trim()} checked={reviewed} onChange={event => {
       if (readOnly || busy) return;
@@ -221,6 +222,7 @@ export function RadiologyReportSection({ snapshot: originalSnapshot, chartEditor
       <button type="button" className="diagram-view__action" disabled={!reviewed || busy} onClick={() => void transfer('pdf')}>{t('radiologyReport.pdf')}</button>
     </div>
     </div>
+    )}
     </>}
     {chartEditor && busy && !reviewed && <p role="status" className="patient-form__hint">{t('radiologyReport.refining')}</p>}
     {error && <p role="alert" className="radiology-report__error">{error}</p>}

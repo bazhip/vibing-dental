@@ -106,41 +106,47 @@
 
 /* Multiline fields keep the Refine control in the same grid cell as the editor.
    Inline space keeps the control clear of the text at every scroll position. */
-.refine-field:has(> :is(textarea, .owner-report__generated-text)):has(> :is(.refine-text__control, .refine-text__disabled)) {
+.refine-field:has(> :is(textarea, .code-field--multiline, .owner-report__generated-text)):has(> :is(.refine-text__control, .refine-text__disabled)) {
   --refine-overlay-clearance: 8.5rem;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
 }
-:is(.refine-field, html .entry-grid-container .entry-grid-form .refine-field):has(> :is(.refine-text__control, .refine-text__disabled))
-  > :is(textarea, .owner-report__generated-text) {
+.refine-field:has(> :is(.refine-text__control, .refine-text__disabled))
+  > :is(textarea, .code-field--multiline, .owner-report__generated-text) {
   grid-area: 1 / 1;
+}
+.refine-field:has(> :is(.refine-text__control, .refine-text__disabled)) > .code-field--multiline > textarea {
+  display: block;
+}
+:is(.refine-field, html .entry-grid-container .entry-grid-form .refine-field):has(> :is(.refine-text__control, .refine-text__disabled))
+  :is(textarea, .owner-report__generated-text) {
   min-block-size: 6em;
   padding-inline-end: var(--refine-overlay-clearance);
 }
-.refine-field:has(> :is(textarea, .owner-report__generated-text)) > .refine-text__control { display: contents; }
-.refine-field:has(> :is(textarea, .owner-report__generated-text)) > .refine-text__disabled,
-.refine-field:has(> :is(textarea, .owner-report__generated-text)) > .refine-text__control > .refine-text {
+.refine-field:has(> :is(textarea, .code-field--multiline, .owner-report__generated-text)) > .refine-text__control { display: contents; }
+.refine-field:has(> :is(textarea, .code-field--multiline, .owner-report__generated-text)) > .refine-text__disabled,
+.refine-field:has(> :is(textarea, .code-field--multiline, .owner-report__generated-text)) > .refine-text__control > .refine-text {
   grid-area: 1 / 1;
   align-self: end;
   justify-self: end;
-  margin-block: 0 4px;
-  margin-inline: 4px 19px;
-  max-inline-size: calc(var(--refine-overlay-clearance) - 28px);
+  margin-block: 0 16px;
+  margin-inline: 4px 12px;
+  max-inline-size: calc(var(--refine-overlay-clearance) - 20px);
   border-radius: var(--radius-sm);
   background: var(--surface);
 }
-.refine-field:has(> :is(textarea, .owner-report__generated-text)) .refine-text__feedback {
+.refine-field:has(> :is(textarea, .code-field--multiline, .owner-report__generated-text)) .refine-text__feedback {
   grid-area: 2 / 1;
   justify-self: end;
 }
 @media (max-width: 640px), (pointer: coarse) {
-  .refine-field:has(> :is(textarea, .owner-report__generated-text)):has(> :is(.refine-text__control, .refine-text__disabled)) {
+  .refine-field:has(> :is(textarea, .code-field--multiline, .owner-report__generated-text)):has(> :is(.refine-text__control, .refine-text__disabled)) {
     --refine-overlay-clearance: 4.75rem;
   }
   .refine-field :is(.refine-text > summary, .refine-text__disabled) { min-height: 44px; }
-  .refine-field:has(> :is(textarea, .owner-report__generated-text)) :is(.refine-text > summary, .refine-text__disabled) {
+  .refine-field:has(> :is(textarea, .code-field--multiline, .owner-report__generated-text)) :is(.refine-text > summary, .refine-text__disabled) {
     min-inline-size: 44px;
     justify-content: center;
   }
-  .refine-field:has(> :is(textarea, .owner-report__generated-text)) .refine-text__label { display: none; }
+  .refine-field:has(> :is(textarea, .code-field--multiline, .owner-report__generated-text)) .refine-text__label { display: none; }
 }
