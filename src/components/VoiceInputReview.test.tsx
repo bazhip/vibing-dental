@@ -11,6 +11,7 @@ vi.mock('../utils/aiAutofill', async (orig) => {
 });
 
 import { VoiceInputButton } from './VoiceInputButton';
+import { mergeDictatedPockets } from '../utils/pocket';
 
 class FakeRecognition {
   static last: FakeRecognition | null = null;
@@ -165,4 +166,47 @@ it('charts the best guess in an empty field and resolves the saved finding from 
     reopened.unmount();
     host.remove();
   }
+});
+
+it('fills separate named pockets in one reply and holds a correction to a recorded site', async () => {
+  const pocket = (value: string) => ({ name: 'set_tooth_field', input: { triadan: 108, field: 'pocket', value } });
+  extract.mockResolvedValueOnce({ actions: [pocket('MB3'), pocket('D5'), pocket('D6')], flags: [], skipped: [], ran: true });
+  const handlers = { setDictatedPocket: vi.fn() };
+  render(<VoiceInputButton context={context} handlers={handlers as never} activeSection="charting" sessionKey="pocket"
+    contextualDestination={{ label: 'Charting' }} />);
+  fireEvent.click(screen.getByRole('button', { name: 'Dictate' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Start dictation' }));
+  act(() => FakeRecognition.last!.say('108 mesiobuccal 3, distal 5, distal 6'));
+  await flush(4000);
+  expect(handlers.setDictatedPocket.mock.calls).toEqual([[108, 'MB3'], [108, 'D5']]);
+  expect(screen.getByText(/Needs review \(1\)/)).toBeInTheDocument();
+});
+
+it.each(['Remove', 'Use distal 5'])('keeps an echoed root under review and resolves it with %s', async resolution => {
+  const uncertain = { name: 'set_tooth_field', input: { triadan: 308, field: 'pocket', value: 'M3', uncertain: true } };
+  const distal = { name: 'set_tooth_field', input: { triadan: 308, field: 'pocket', value: 'M3 D5' } };
+  const alternative = { ...distal, input: { ...distal.input, value: 'D5' } };
+  extract.mockResolvedValueOnce({ actions: [uncertain], skipped: [], ran: true,
+    flags: [{ heard: '308 mesial 3', reason: 'Low confidence', applied: uncertain, options: [{ label: 'Use distal 5', action: alternative }] }] });
+  extract.mockResolvedValueOnce({ actions: [distal], flags: [], skipped: [], ran: true });
+  const saved = vi.fn();
+  function Chart() {
+    const [pocket, setPocket] = React.useState('');
+    return <VoiceInputButton context={{ ...(context as object), toothData: [{ triadan: 308, pocket }] } as never}
+      handlers={{
+        setDictatedPocket: (_tooth: number, value: string) => setPocket(previous => mergeDictatedPockets(previous, value, 'canine', 308)),
+        setToothField: (_tooth: number, _field: string, value: string) => { saved(value); setPocket(value); },
+      } as never}
+      activeSection="charting" sessionKey="pocket" contextualDestination={{ label: 'Charting' }} />;
+  }
+  render(<Chart />);
+  fireEvent.click(screen.getByRole('button', { name: 'Dictate' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Start dictation' }));
+  act(() => FakeRecognition.last!.say('308 mesial 3'));
+  await flush(4000);
+  act(() => FakeRecognition.last!.say('308 distal 5'));
+  await flush(4000);
+  expect(screen.getByText(/Needs review \(1\)/)).toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: resolution }));
+  expect(saved).toHaveBeenCalledWith('D5');
 });

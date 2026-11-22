@@ -49,7 +49,8 @@
     "dentalConsultation": "Pole „Badanie jamy ustnej bez znieczulenia” w przykładowej konsultacji stomatologicznej.",
     "dictationCheck": "Panel dyktowania zatrzymuje nagrywanie na krótko przed sprawdzeniem karty. Opcja „Wznów” pozwala kontynuować to samo dyktowanie.",
     "imagingTemplates": "Sekcja Obrazowanie z osobnymi polami edycji raportu radiograficznego i raportu TK.",
-    "dischargeTemplates": "Edytor szablonu wypisu z otwartą listą „Dodaj sekcję” na fikcyjnej wizycie."
+    "dischargeTemplates": "Edytor szablonu wypisu z otwartą listą „Dodaj sekcję” na fikcyjnej wizycie.",
+    "pocketSites": "Sześć zapisanych głębokości kieszonek w widoku Według zęba."
   },
   "articles": {
     "start": {
@@ -152,7 +153,7 @@
         },
         "second": {
           "title": "Sprawdzanie transkrypcji i sugestii",
-          "text": "Jednoznaczne wyniki mogą podczas mówienia trafiać bezpośrednio do odpowiednich kart, takich jak „Badanie”, „Znieczulenie”, „Karta zębowa”, „Rozpoznanie” i „Zabieg”. W przypadku niejednoznacznego sformułowania otwarta karta dostarcza kontekstu. Po zakończeniu proszę zatrzymać nagranie i sprawdzić transkrypcję oraz kartę pacjenta."
+          "text": "Jednoznaczne wyniki mogą podczas mówienia trafiać bezpośrednio do odpowiednich kart, takich jak „Badanie”, „Znieczulenie”, „Karta zębowa”, „Rozpoznanie” i „Zabieg”. W przypadku niejednoznacznego sformułowania otwarta karta dostarcza kontekstu. Po zakończeniu proszę zatrzymać nagranie i sprawdzić transkrypcję oraz kartę pacjenta.\n\nAby podyktować głębokości kieszonek, proszę podać numer zęba i pomiary. Dla pojedynczego pomiaru proszę powiedzieć „308 głębokość kieszonki 4”, a dla pomiarów według korzeni „308 mezjalnie 3, dystalnie 5”. Przy sondowaniu w sześciu punktach proszę nazwać każdy punkt lub podać wszystkie odczyty w kolejności MB, B, DB, ML, L, DL. Karta stomatologiczna dobierze układ dla tej wizyty. Dodanie pomiaru zachowuje pozostałe pomiary tego zęba. Przed zastosowaniem proponowanej zmiany zapisanej głębokości proszę ją sprawdzić."
         },
         "third": {
           "title": "Przegląd poprawek przed zastosowaniem",
@@ -404,7 +405,7 @@
         },
         "second": {
           "title": "Zapisywanie wyników i notatek oraz oznaczanie ekstrakcji",
-          "text": "Proszę wpisywać pomiary w sekcji „Wyniki badania”. Głębokość kieszonki można zapisać jako jeden pomiar, po jednym pomiarze dla każdego korzenia lub sześć pomiarów w określonych miejscach. Opcja „Dostosuj” na karcie stomatologicznej pozwala wybrać tryb i wyświetlane pomiary. Opcję „Brak (sprzed tej wizyty)” należy zaznaczać tylko dla zębów, których już wcześniej brakowało.\n\nRozpoznane zmiany proszę zapisać w polu „Notatka diagnostyczna”, w razie potrzeby używając skonfigurowanych szybkich kodów. Wykonane czynności proszę zapisać w polu „Notatka z zabiegu”. Dla planowanej ekstrakcji proszę użyć opcji „Zaplanuj ekstrakcję”. Po wykonaniu ekstrakcji proszę oznaczyć ząb jako usunięty. Legenda odróżnia zapisane wyniki, planowane i wykonane ekstrakcje oraz brakujące zęby."
+          "text": "Proszę wpisywać pomiary w sekcji „Wyniki badania”. Głębokość kieszonki można zapisać jako jeden pomiar, po jednym pomiarze dla każdego korzenia lub sześć pomiarów w określonych miejscach. Opcja „Dostosuj” na karcie stomatologicznej pozwala wybrać tryb i wyświetlane pomiary. Opcję „Brak (sprzed tej wizyty)” należy zaznaczać tylko dla zębów, których już wcześniej brakowało.\n\nDyktowanie może zmienić układ głębokości kieszonek w otwartej wizycie. Przykładowo proszę powiedzieć „308 mezjalnie 3, dystalnie 5”, aby pokazać pola dla korzeni. Przy pomiarze w sześciu miejscach proszę podać miejsca lub podyktować sześć wartości w kolejności: MB, B, DB, ML, L, DL. Dodanie pomiaru dla określonego miejsca zachowuje pozostałe pomiary zęba. Proszę sprawdzić proponowane zmiany zapisanych pomiarów przed ich zastosowaniem.\n\nRozpoznane zmiany proszę zapisać w polu „Notatka diagnostyczna”, w razie potrzeby używając skonfigurowanych szybkich kodów. Wykonane czynności proszę zapisać w polu „Notatka z zabiegu”. Dla planowanej ekstrakcji proszę użyć opcji „Zaplanuj ekstrakcję”. Po wykonaniu ekstrakcji proszę oznaczyć ząb jako usunięty. Legenda odróżnia zapisane wyniki, planowane i wykonane ekstrakcje oraz brakujące zęby."
         },
         "third": {
           "title": "Zmiana widoku lub dyktowanie wyniku według numeru",

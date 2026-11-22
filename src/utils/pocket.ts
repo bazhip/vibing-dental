@@ -70,9 +70,10 @@ export function rootLabels(species: Species, triadan: number): string[] {
  * The labelled boxes a tooth's pocket gets in a chart-settings mode: none
  * (one plain value) per tooth, its roots per root, the six sites per site.
  */
-export function pocketLabels(mode: PocketMode, species: Species, triadan: number): string[] {
-  if (mode === 'site') return [...POCKET_SITES];
-  if (mode === 'root') return rootLabels(species, triadan);
+export function pocketLabels(mode: PocketMode, species: Species, triadan: number, value?: string): string[] {
+  const layout = inferPocketMode(value, species, triadan) ?? mode;
+  if (layout === 'site') return [...POCKET_SITES];
+  if (layout === 'root') return rootLabels(species, triadan);
   return [];
 }
 
@@ -134,4 +135,100 @@ export function pocketDepths(value: string | undefined): number[] {
 export function deepestPocket(value: string | undefined): number | null {
   const ds = pocketDepths(value).filter((n) => Number.isFinite(n));
   return ds.length ? Math.max(...ds) : null;
+}
+
+type StructuredPocketMode = Exclude<PocketMode, 'tooth'>;
+
+function namedPocketLayout(labels: string[], species: Species, triadan: number) {
+  const roots = rootLabels(species, triadan);
+  return {
+    roots,
+    isRoot: labels.every(label => roots.includes(label)),
+    isSite: labels.every(label => POCKET_SITES.includes(label)),
+  };
+}
+
+function sixPocketReadings(value: string | undefined): Record<string, string> | null {
+  const depths = rootBoxes([...POCKET_SITES], value).depths;
+  return Object.keys(depths).length === POCKET_SITES.length ? depths : null;
+}
+
+/** Infer a layout only when the readings identify it unambiguously. */
+export function inferPocketMode(value: string | undefined, species: Species, triadan: number): StructuredPocketMode | undefined {
+  const named = parseRootPockets(value);
+  if (!named) return sixPocketReadings(value) ? 'site' : undefined;
+  const { isRoot, isSite } = namedPocketLayout(Object.keys(named), species, triadan);
+  if (isRoot !== isSite) return isRoot ? 'root' : 'site';
+}
+
+/** An explicit single reading also changes the dictation layout. */
+export function inferDictatedPocketMode(value: string, species: Species, triadan: number): PocketMode | undefined {
+  return /^\d+(?:\.\d+)?$/u.test(value.trim()) ? 'tooth' : inferPocketMode(value, species, triadan);
+}
+
+/** A visit with mixed readings shows the most detailed layout in Settings. */
+export function chartPocketMode(rows: readonly { triadan: number; pocket?: string }[], species: Species, fallback: PocketMode): PocketMode {
+  let inferred: PocketMode = fallback;
+  for (const row of rows) {
+    const mode = inferPocketMode(row.pocket, species, row.triadan);
+    if (mode === 'site') return 'site';
+    if (mode === 'root') inferred = 'root';
+  }
+  return inferred;
+}
+
+/** A positional value is assigned to roots only when the active layout already shows it that way. */
+export function displayedPocketReadings(value: string, species: Species, triadan: number, mode?: PocketMode) {
+  const known = parseRootPockets(value) ?? sixPocketReadings(value);
+  if (known || mode !== 'root') return known;
+  const labels = rootLabels(species, triadan);
+  if (labels.length === 0) return null;
+  const { depths, unplaced } = rootBoxes(labels, value);
+  return unplaced || !Object.keys(depths).length ? null : depths;
+}
+
+function comparePockets(current: string, incoming: string, species: Species, triadan: number, mode?: PocketMode) {
+  const previous = displayedPocketReadings(current, species, triadan, mode);
+  const next = parseRootPockets(incoming) ?? sixPocketReadings(incoming);
+  if (!previous || !next) return;
+  const { roots, isRoot, isSite } = namedPocketLayout([...Object.keys(previous), ...Object.keys(next)], species, triadan);
+  if (!isRoot && !isSite) return;
+  return { previous, next, labels: isRoot ? roots : [...POCKET_SITES] };
+}
+
+export function mergeDictatedPockets(current: string, incoming: string, species: Species, triadan: number, mode?: PocketMode): string {
+  const named = comparePockets(current, incoming, species, triadan, mode);
+  return named ? formatRootPockets(named.labels, { ...named.previous, ...named.next }) : incoming;
+}
+
+export function dictatedPocketIsPresent(current: string, incoming: string, species: Species, triadan: number, mode?: PocketMode): boolean {
+  if (current.trim() === incoming.trim()) return true;
+  const named = comparePockets(current, incoming, species, triadan, mode);
+  return !!named && Object.entries(named.next).every(([label, depth]) =>
+    named.previous[label] !== undefined && Number(named.previous[label]) === Number(depth));
+}
+
+/** Changing a depth or substituting an incompatible layout needs review. */
+export function dictatedPocketsReplace(current: string, incoming: string, species: Species, triadan: number, mode?: PocketMode): boolean {
+  if (!current.trim() || current.trim() === incoming.trim()) return false;
+  const named = comparePockets(current, incoming, species, triadan, mode);
+  return !named || Object.entries(named.next).some(([label, depth]) =>
+    named.previous[label] !== undefined && Number(named.previous[label]) !== Number(depth));
+}
+
+export function revertDictatedPockets(current: string, previous: string, guess: string, species: Species, triadan: number, mode?: PocketMode): string {
+  const named = comparePockets(current, guess, species, triadan);
+  if (!named) return current.trim() === guess.trim() ? previous : current;
+  const old = displayedPocketReadings(previous, species, triadan, mode);
+  if (previous.trim() && (!old || !comparePockets(previous, guess, species, triadan, mode))) {
+    return dictatedPocketIsPresent(current, guess, species, triadan) &&
+      Object.keys(named.previous).length === Object.keys(named.next).length ? previous : current;
+  }
+  const remaining = { ...named.previous };
+  for (const [label, depth] of Object.entries(named.next)) {
+    if (Number(remaining[label]) !== Number(depth)) continue;
+    if (old?.[label] !== undefined) remaining[label] = old[label];
+    else delete remaining[label];
+  }
+  return formatRootPockets(named.labels, remaining);
 }

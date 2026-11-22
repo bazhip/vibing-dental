@@ -65,6 +65,7 @@ it('shows the introduction once on this device and opens the current report with
   const dictate = () => fireEvent.click(screen.getByRole('button', { name: 'Dictate' }));
   dictate();
   expect(screen.getByRole('dialog', { name: 'Dictation' })).toBeVisible();
+  expect(screen.queryByRole('link', { name: 'Pocket dictation guide' })).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: 'Got it' }));
   expect(openImaging).toHaveBeenCalledTimes(1);
   expect(FakeRecognition.started).toBe(0);

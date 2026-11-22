@@ -58,7 +58,8 @@
   "correction": {
     "conflict": "Verifichi questa modifica alla cartella.",
     "apply": "Applica suggerimento",
-    "keep": "Mantieni il valore attuale"
+    "keep": "Mantieni il valore attuale",
+    "pocketReadings": "Verifichi le etichette dei siti per «{{value}}»."
   },
   "welcome": {
     "ready": "La trascrizione verrà visualizzata qui quando avvierà la registrazione.",
@@ -76,7 +77,10 @@
     "step1": "Parli come farebbe normalmente: <em>«104 GI 2, tartaro 1. 105 mancante. Lingua normale.»</em>",
     "step2": "Rimanga pure su qualsiasi pagina. Ogni reperto finisce al posto giusto nella cartella.",
     "step3": "Tocchi <strong>Stop</strong> quando ha finito. Tutto ciò su cui non era sicura è elencato in <strong>Da verificare</strong>.",
-    "title": "Detti la Sua cartella"
+    "title": "Detti la Sua cartella",
+    "pocketsTitle": "Profondità di sondaggio",
+    "pocketsTip": "Dica «308 mesiale 3, distale 5». Lo schema dentale adatta il layout per questa visita. Verifichi le modifiche proposte alle profondità salvate.",
+    "pocketsGuide": "Guida alla dettatura delle profondità di sondaggio"
   },
   "panel": {
     "activity": "Attività",

@@ -270,6 +270,9 @@ export interface CustomAnesthesia {
 }
 
 export interface PatientInfo {
+  /** The last pocket layout selected by dictation in this visit. */
+  dictatedPocketMode?: import('../utils/pocket').PocketMode;
+  dictatedPocketTooth?: number;
   /** Workflow for this dated visit. Absent on older dental procedure records. */
   visitType?: VisitType;
   /** Permanent identity for new patients; legacy records may not have one. */

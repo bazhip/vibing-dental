@@ -57,7 +57,8 @@
   "correction": {
     "conflict": "Review this change to the chart.",
     "apply": "Apply suggestion",
-    "keep": "Keep current value"
+    "keep": "Keep current value",
+    "pocketReadings": "Check the site labels for “{{value}}”."
   },
   "welcome": {
     "ready": "Your transcript will appear here once you start recording.",
@@ -75,7 +76,10 @@
     "step1": "Talk like you normally would: <em>“104 GI 2, calc 1. 105 missing. Tongue normal.”</em>",
     "step2": "Stay on any page. Each finding goes to the right place in the chart.",
     "step3": "Tap <strong>Stop</strong> when you’re done. Anything it wasn’t sure about is listed under <strong>Needs review</strong>.",
-    "title": "Dictate your chart"
+    "title": "Dictate your chart",
+    "pocketsTitle": "Pocket depths",
+    "pocketsTip": "Say “308 mesial 3, distal 5.” Charting switches layouts for this visit. Review suggested changes to saved depths.",
+    "pocketsGuide": "Pocket dictation guide"
   },
   "panel": {
     "activity": "Activity",

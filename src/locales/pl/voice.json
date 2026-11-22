@@ -59,7 +59,8 @@
   "correction": {
     "conflict": "Sprawdź tę zmianę w karcie.",
     "apply": "Zastosuj sugestię",
-    "keep": "Zachowaj bieżącą wartość"
+    "keep": "Zachowaj bieżącą wartość",
+    "pocketReadings": "Proszę sprawdzić oznaczenia miejsc w „{{value}}”."
   },
   "welcome": {
     "ready": "Transkrypcja pojawi się tutaj po rozpoczęciu nagrywania.",
@@ -77,7 +78,10 @@
     "step1": "Mów naturalnie, np. <em>„104 zapalenie dziąseł 2, kamień 1. Brak 105. Język w normie”.</em>",
     "step2": "Możesz pozostać na dowolnej stronie. Każdy wynik trafia do właściwego miejsca w karcie.",
     "step3": "Po zakończeniu wybierz <strong>Zatrzymaj</strong>. Niepewne wpisy znajdziesz na liście <strong>Do weryfikacji</strong>.",
-    "title": "Dyktuj treść karty"
+    "title": "Dyktuj treść karty",
+    "pocketsTitle": "Głębokości kieszonek",
+    "pocketsTip": "Proszę powiedzieć „308 mezjalnie 3, dystalnie 5”. Karta stomatologiczna dostosuje układ dla tej wizyty. Proszę sprawdzić proponowane zmiany zapisanych głębokości.",
+    "pocketsGuide": "Przewodnik po dyktowaniu głębokości kieszonek"
   },
   "panel": {
     "activity": "Aktywność",

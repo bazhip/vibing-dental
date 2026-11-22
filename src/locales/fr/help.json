@@ -49,7 +49,8 @@
     "consultationTemplatePreview": "L’éditeur de modèles de consultation avec le sélecteur « Ajouter une section » ouvert dans une visite fictive.",
     "consultationRecordNote": "Note de consultation avec les commandes Télécharger le PDF et Copier.",
     "dentalConsultation": "Le champ d’examen buccal à l’état vigile dans une consultation dentaire fictive.",
-    "dictationCheck": "Le panneau de dictée marque une courte pause avant de vérifier le dossier. « Reprendre » permet de poursuivre la même dictée."
+    "dictationCheck": "Le panneau de dictée marque une courte pause avant de vérifier le dossier. « Reprendre » permet de poursuivre la même dictée.",
+    "pocketSites": "Six profondeurs de poche enregistrées dans la vue Par dent."
   },
   "articles": {
     "start": {
@@ -152,7 +153,7 @@
         },
         "second": {
           "title": "Vérifier la transcription et les propositions",
-          "text": "Les constatations claires peuvent renseigner les onglets correspondants pendant la dictée, notamment Examen, Anesthésie, Relevé dentaire, Diagnostic et Intervention. L’onglet actif aide à interpréter les formulations ambiguës. Arrêtez l’enregistrement à la fin, puis vérifiez la transcription et le dossier."
+          "text": "Les constatations claires peuvent renseigner les onglets correspondants pendant la dictée, notamment Examen, Anesthésie, Relevé dentaire, Diagnostic et Intervention. L’onglet actif aide à interpréter les formulations ambiguës. Arrêtez l’enregistrement à la fin, puis vérifiez la transcription et le dossier.\n\nPour dicter les profondeurs de poche, indiquez le numéro de la dent et les mesures. Dites « 308 profondeur de poche 4 » pour une mesure unique ou « 308 mésial 3, distal 5 » pour une mesure par racine. Pour un sondage à six sites, nommez chaque site ou dictez les six mesures dans cet ordre : MB, B, DB, ML, L, DL. Le tableau dentaire adopte la disposition correspondante pour cette visite. L’ajout d’une mesure conserve les autres mesures enregistrées pour la dent. Vérifiez tout remplacement proposé d’une profondeur enregistrée avant de l’appliquer."
         },
         "third": {
           "title": "Vérifier les corrections avant de les appliquer",
@@ -404,7 +405,7 @@
         },
         "second": {
           "title": "Consigner les observations, les notes et le statut d’extraction",
-          "text": "Saisissez les mesures dans « Observations ». Une profondeur de poche peut être saisie sous forme de mesure unique, d’une mesure par racine ou de six mesures par site. Dans « Schéma dentaire », choisissez « Personnaliser » pour sélectionner le mode de mesure et les mesures à afficher. Cochez « Absente (avant cette visite) » uniquement si la dent était déjà absente.\n\nUtilisez « Note de diagnostic » et les codes rapides configurés pour consigner vos observations, puis « Note d’intervention » pour les actes réalisés. Sélectionnez « Extraction prévue » pour un acte planifié, puis marquez la dent comme extraite une fois l’extraction réalisée. La légende distingue les dents renseignées, les extractions prévues, les dents extraites et les dents absentes."
+          "text": "Saisissez les mesures dans « Observations ». Une profondeur de poche peut être saisie sous forme de mesure unique, d’une mesure par racine ou de six mesures par site. Dans « Schéma dentaire », choisissez « Personnaliser » pour sélectionner le mode de mesure et les mesures à afficher. Cochez « Absente (avant cette visite) » uniquement si la dent était déjà absente.\n\nLa dictée peut changer la disposition des mesures de poche pour la visite ouverte. Par exemple, dites « 308 mésial 3, distal 5 » pour afficher les cases par racine. Pour un sondage à six sites, nommez les sites ou dictez les six valeurs dans l’ordre suivant : MB, B, DB, ML, L, DL. L’ajout d’une mesure nommée conserve les autres mesures de cette dent. Si la dictée propose de modifier une mesure enregistrée, vérifiez-la avant de l’appliquer.\n\nUtilisez « Note de diagnostic » et les codes rapides configurés pour consigner vos observations, puis « Note d’intervention » pour les actes réalisés. Sélectionnez « Extraction prévue » pour un acte planifié, puis marquez la dent comme extraite une fois l’extraction réalisée. La légende distingue les dents renseignées, les extractions prévues, les dents extraites et les dents absentes."
         },
         "third": {
           "title": "Changer de vue ou dicter une observation avec le numéro",

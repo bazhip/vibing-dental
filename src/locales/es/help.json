@@ -49,7 +49,8 @@
     "consultationTemplatePreview": "El editor de plantillas de consulta con el selector «Añadir sección» abierto en una visita ficticia.",
     "consultationRecordNote": "Nota de consulta con los controles Descargar PDF y Copiar.",
     "dentalConsultation": "El campo de exploración oral con el paciente despierto en una consulta dental ficticia.",
-    "dictationCheck": "El panel de dictado hace una breve pausa antes de revisar el historial. Con «Reanudar» puede continuar el mismo dictado."
+    "dictationCheck": "El panel de dictado hace una breve pausa antes de revisar el historial. Con «Reanudar» puede continuar el mismo dictado.",
+    "pocketSites": "Seis profundidades de bolsa registradas en la vista por diente."
   },
   "articles": {
     "start": {
@@ -152,7 +153,7 @@
         },
         "second": {
           "title": "Comprobar la transcripción y las propuestas",
-          "text": "Los hallazgos claros pueden completar las pestañas correspondientes durante el dictado, como Exploración, Anestesia, Odontograma, Diagnóstico y Procedimiento. La pestaña activa da contexto al texto ambiguo. Al terminar, detenga la grabación y compruebe la transcripción y el historial."
+          "text": "Los hallazgos claros pueden completar las pestañas correspondientes durante el dictado, como Exploración, Anestesia, Odontograma, Diagnóstico y Procedimiento. La pestaña activa da contexto al texto ambiguo. Al terminar, detenga la grabación y compruebe la transcripción y el historial.\n\nPara dictar las profundidades de sondaje, indique el número del diente y las mediciones. Diga «308 profundidad de bolsa 4» para una sola medición o «308 mesial 3, distal 5» para una medición por raíz. Para el sondaje en seis sitios, nombre cada sitio o dicte las seis mediciones en este orden: MB, B, DB, ML, L, DL. El odontograma adopta el formato correspondiente para esta visita. Al añadir una medición se conservan las demás mediciones registradas para ese diente. Revise cualquier propuesta de sustituir una profundidad guardada antes de aplicarla."
         },
         "third": {
           "title": "Revisar las correcciones antes de aplicarlas",
@@ -404,7 +405,7 @@
         },
         "second": {
           "title": "Registrar hallazgos, notas y estado de extracción",
-          "text": "Introduzca las mediciones registradas en «Hallazgos». Para la profundidad de la bolsa puede registrar una medición por diente, una por raíz o seis en sitios específicos. Abra «Personalizar» en «Odontograma» para elegir el modo de registro de profundidad de bolsa y las mediciones que desea ver. Marque «Ausente (antes de esta visita)» solo cuando el diente ya faltaba.\n\nUse «Nota de diagnóstico» y los códigos rápidos configurados para anotar los hallazgos. Use «Nota de procedimiento» para documentar el trabajo realizado. Elija «Planificar extracción» para una extracción prevista. Cuando la haya realizado, marque el diente como extraído. La leyenda distingue los hallazgos registrados, las extracciones planificadas, las extracciones realizadas y los dientes ausentes."
+          "text": "Introduzca las mediciones registradas en «Hallazgos». Para la profundidad de la bolsa puede registrar una medición por diente, una por raíz o seis en sitios específicos. Abra «Personalizar» en «Odontograma» para elegir el modo de registro de profundidad de bolsa y las mediciones que desea ver. Marque «Ausente (antes de esta visita)» solo cuando el diente ya faltaba.\n\nEl dictado puede cambiar la disposición de las profundidades de bolsa en la visita abierta. Por ejemplo, diga «308 mesial 3, distal 5» para mostrar las casillas por raíz. Para el sondaje en seis sitios, nombre los sitios o dicte los seis valores en este orden: MB, B, DB, ML, L, DL. Al añadir una medición con nombre se conservan las demás del diente. Si el dictado propone cambiar una medición registrada, revísela antes de aplicar el cambio.\n\nUse «Nota de diagnóstico» y los códigos rápidos configurados para anotar los hallazgos. Use «Nota de procedimiento» para documentar el trabajo realizado. Elija «Planificar extracción» para una extracción prevista. Cuando la haya realizado, marque el diente como extraído. La leyenda distingue los hallazgos registrados, las extracciones planificadas, las extracciones realizadas y los dientes ausentes."
         },
         "third": {
           "title": "Cambiar de vista o dictar un hallazgo indicando el número",

@@ -1,3 +1,4 @@
+import { normalizeDictatedPocket } from './aiAutofill';
 import { EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS } from '../types';
 import {
   normalizeTranscript, chunkWorthSending, buildChunkRequest, buildReviewRequest, markFinalCheck, normalizeFieldValue,
@@ -502,4 +503,9 @@ it('passes the captured dictation language when appending radiology text', () =>
   const action: AiAction = { name: 'append_radiographic_findings', input: { text: '409: possible resorption' } };
   applyAiActions([action], { appendRadiographicFindings } as never, 'fr');
   expect(appendRadiographicFindings).toHaveBeenCalledExactlyOnceWith('409: possible resorption', 'fr');
+});
+
+it('keeps units on a spoken root from stripping the root label', () => {
+  expect(normalizeDictatedPocket('M3 mm')).toBe('M3');
+  expect(normalizeDictatedPocket('mesial 3 mm, distal 5 mm')).toBe('M3 D5');
 });

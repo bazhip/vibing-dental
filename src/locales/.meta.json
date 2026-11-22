@@ -7281,7 +7281,7 @@
       "status": "machine"
     },
     "help:articles.by-number.sections.second.text": {
-      "hash": "38272defecd1",
+      "hash": "2e4ccf22b19c",
       "status": "machine"
     },
     "help:articles.by-number.sections.second.title": {
@@ -7441,7 +7441,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.second.text": {
-      "hash": "50ba6962c1d3",
+      "hash": "f44d21229fa5",
       "status": "machine"
     },
     "help:articles.dictation.sections.second.title": {
@@ -8042,6 +8042,10 @@
     },
     "help:images.patients": {
       "hash": "db82ffbdefca",
+      "status": "machine"
+    },
+    "help:images.pocketSites": {
+      "hash": "cc2d97ef7186",
       "status": "machine"
     },
     "help:images.preferences": {
@@ -16256,6 +16260,10 @@
       "hash": "9d51fed0d717",
       "status": "machine"
     },
+    "voice:correction.pocketReadings": {
+      "hash": "b2c1b6c0c29b",
+      "status": "machine"
+    },
     "voice:destination.general": {
       "hash": "c910d474dcd7",
       "status": "machine"
@@ -16354,6 +16362,18 @@
     },
     "voice:intro.gotIt": {
       "hash": "5ad3dbd1242a",
+      "status": "machine"
+    },
+    "voice:intro.pocketsGuide": {
+      "hash": "be6c4af28d97",
+      "status": "machine"
+    },
+    "voice:intro.pocketsTip": {
+      "hash": "d90563a6e918",
+      "status": "machine"
+    },
+    "voice:intro.pocketsTitle": {
+      "hash": "36aaa91cbd69",
       "status": "machine"
     },
     "voice:intro.start": {
@@ -23983,7 +24003,7 @@
       "status": "machine"
     },
     "help:articles.by-number.sections.second.text": {
-      "hash": "38272defecd1",
+      "hash": "2e4ccf22b19c",
       "status": "machine"
     },
     "help:articles.by-number.sections.second.title": {
@@ -24143,7 +24163,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.second.text": {
-      "hash": "50ba6962c1d3",
+      "hash": "f44d21229fa5",
       "status": "machine"
     },
     "help:articles.dictation.sections.second.title": {
@@ -24744,6 +24764,10 @@
     },
     "help:images.patients": {
       "hash": "db82ffbdefca",
+      "status": "machine"
+    },
+    "help:images.pocketSites": {
+      "hash": "cc2d97ef7186",
       "status": "machine"
     },
     "help:images.preferences": {
@@ -32878,6 +32902,10 @@
       "hash": "9d51fed0d717",
       "status": "machine"
     },
+    "voice:correction.pocketReadings": {
+      "hash": "b2c1b6c0c29b",
+      "status": "machine"
+    },
     "voice:destination.general": {
       "hash": "c910d474dcd7",
       "status": "machine"
@@ -32976,6 +33004,18 @@
     },
     "voice:intro.gotIt": {
       "hash": "5ad3dbd1242a",
+      "status": "machine"
+    },
+    "voice:intro.pocketsGuide": {
+      "hash": "be6c4af28d97",
+      "status": "machine"
+    },
+    "voice:intro.pocketsTip": {
+      "hash": "d90563a6e918",
+      "status": "machine"
+    },
+    "voice:intro.pocketsTitle": {
+      "hash": "36aaa91cbd69",
       "status": "machine"
     },
     "voice:intro.start": {
@@ -40585,7 +40625,7 @@
       "status": "machine"
     },
     "help:articles.by-number.sections.second.text": {
-      "hash": "38272defecd1",
+      "hash": "2e4ccf22b19c",
       "status": "machine"
     },
     "help:articles.by-number.sections.second.title": {
@@ -40745,7 +40785,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.second.text": {
-      "hash": "50ba6962c1d3",
+      "hash": "f44d21229fa5",
       "status": "machine"
     },
     "help:articles.dictation.sections.second.title": {
@@ -41346,6 +41386,10 @@
     },
     "help:images.patients": {
       "hash": "db82ffbdefca",
+      "status": "machine"
+    },
+    "help:images.pocketSites": {
+      "hash": "cc2d97ef7186",
       "status": "machine"
     },
     "help:images.preferences": {
@@ -49516,6 +49560,10 @@
       "hash": "9d51fed0d717",
       "status": "machine"
     },
+    "voice:correction.pocketReadings": {
+      "hash": "b2c1b6c0c29b",
+      "status": "machine"
+    },
     "voice:destination.general": {
       "hash": "c910d474dcd7",
       "status": "machine"
@@ -49614,6 +49662,18 @@
     },
     "voice:intro.gotIt": {
       "hash": "5ad3dbd1242a",
+      "status": "machine"
+    },
+    "voice:intro.pocketsGuide": {
+      "hash": "be6c4af28d97",
+      "status": "machine"
+    },
+    "voice:intro.pocketsTip": {
+      "hash": "d90563a6e918",
+      "status": "machine"
+    },
+    "voice:intro.pocketsTitle": {
+      "hash": "36aaa91cbd69",
       "status": "machine"
     },
     "voice:intro.start": {
@@ -57243,7 +57303,7 @@
       "status": "machine"
     },
     "help:articles.by-number.sections.second.text": {
-      "hash": "38272defecd1",
+      "hash": "2e4ccf22b19c",
       "status": "machine"
     },
     "help:articles.by-number.sections.second.title": {
@@ -57403,7 +57463,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.second.text": {
-      "hash": "50ba6962c1d3",
+      "hash": "f44d21229fa5",
       "status": "machine"
     },
     "help:articles.dictation.sections.second.title": {
@@ -58004,6 +58064,10 @@
     },
     "help:images.patients": {
       "hash": "db82ffbdefca",
+      "status": "machine"
+    },
+    "help:images.pocketSites": {
+      "hash": "cc2d97ef7186",
       "status": "machine"
     },
     "help:images.preferences": {
@@ -66174,6 +66238,10 @@
       "hash": "9d51fed0d717",
       "status": "machine"
     },
+    "voice:correction.pocketReadings": {
+      "hash": "b2c1b6c0c29b",
+      "status": "machine"
+    },
     "voice:destination.general": {
       "hash": "c910d474dcd7",
       "status": "machine"
@@ -66272,6 +66340,18 @@
     },
     "voice:intro.gotIt": {
       "hash": "5ad3dbd1242a",
+      "status": "machine"
+    },
+    "voice:intro.pocketsGuide": {
+      "hash": "be6c4af28d97",
+      "status": "machine"
+    },
+    "voice:intro.pocketsTip": {
+      "hash": "d90563a6e918",
+      "status": "machine"
+    },
+    "voice:intro.pocketsTitle": {
+      "hash": "36aaa91cbd69",
       "status": "machine"
     },
     "voice:intro.start": {
@@ -73833,7 +73913,7 @@
       "status": "machine"
     },
     "help:articles.by-number.sections.second.text": {
-      "hash": "38272defecd1",
+      "hash": "2e4ccf22b19c",
       "status": "machine"
     },
     "help:articles.by-number.sections.second.title": {
@@ -73993,7 +74073,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.second.text": {
-      "hash": "50ba6962c1d3",
+      "hash": "f44d21229fa5",
       "status": "machine"
     },
     "help:articles.dictation.sections.second.title": {
@@ -74594,6 +74674,10 @@
     },
     "help:images.patients": {
       "hash": "db82ffbdefca",
+      "status": "machine"
+    },
+    "help:images.pocketSites": {
+      "hash": "cc2d97ef7186",
       "status": "machine"
     },
     "help:images.preferences": {
@@ -82664,6 +82748,10 @@
       "hash": "9d51fed0d717",
       "status": "machine"
     },
+    "voice:correction.pocketReadings": {
+      "hash": "b2c1b6c0c29b",
+      "status": "machine"
+    },
     "voice:destination.general": {
       "hash": "c910d474dcd7",
       "status": "machine"
@@ -82762,6 +82850,18 @@
     },
     "voice:intro.gotIt": {
       "hash": "5ad3dbd1242a",
+      "status": "machine"
+    },
+    "voice:intro.pocketsGuide": {
+      "hash": "be6c4af28d97",
+      "status": "machine"
+    },
+    "voice:intro.pocketsTip": {
+      "hash": "d90563a6e918",
+      "status": "machine"
+    },
+    "voice:intro.pocketsTitle": {
+      "hash": "36aaa91cbd69",
       "status": "machine"
     },
     "voice:intro.start": {
@@ -90371,7 +90471,7 @@
       "status": "machine"
     },
     "help:articles.by-number.sections.second.text": {
-      "hash": "38272defecd1",
+      "hash": "2e4ccf22b19c",
       "status": "machine"
     },
     "help:articles.by-number.sections.second.title": {
@@ -90531,7 +90631,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.second.text": {
-      "hash": "50ba6962c1d3",
+      "hash": "f44d21229fa5",
       "status": "machine"
     },
     "help:articles.dictation.sections.second.title": {
@@ -91132,6 +91232,10 @@
     },
     "help:images.patients": {
       "hash": "db82ffbdefca",
+      "status": "machine"
+    },
+    "help:images.pocketSites": {
+      "hash": "cc2d97ef7186",
       "status": "machine"
     },
     "help:images.preferences": {
@@ -99302,6 +99406,10 @@
       "hash": "9d51fed0d717",
       "status": "machine"
     },
+    "voice:correction.pocketReadings": {
+      "hash": "b2c1b6c0c29b",
+      "status": "machine"
+    },
     "voice:destination.general": {
       "hash": "c910d474dcd7",
       "status": "machine"
@@ -99400,6 +99508,18 @@
     },
     "voice:intro.gotIt": {
       "hash": "5ad3dbd1242a",
+      "status": "machine"
+    },
+    "voice:intro.pocketsGuide": {
+      "hash": "be6c4af28d97",
+      "status": "machine"
+    },
+    "voice:intro.pocketsTip": {
+      "hash": "d90563a6e918",
+      "status": "machine"
+    },
+    "voice:intro.pocketsTitle": {
+      "hash": "36aaa91cbd69",
       "status": "machine"
     },
     "voice:intro.start": {
@@ -107081,7 +107201,7 @@
       "status": "machine"
     },
     "help:articles.by-number.sections.second.text": {
-      "hash": "38272defecd1",
+      "hash": "2e4ccf22b19c",
       "status": "machine"
     },
     "help:articles.by-number.sections.second.title": {
@@ -107241,7 +107361,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.second.text": {
-      "hash": "50ba6962c1d3",
+      "hash": "f44d21229fa5",
       "status": "machine"
     },
     "help:articles.dictation.sections.second.title": {
@@ -107842,6 +107962,10 @@
     },
     "help:images.patients": {
       "hash": "db82ffbdefca",
+      "status": "machine"
+    },
+    "help:images.pocketSites": {
+      "hash": "cc2d97ef7186",
       "status": "machine"
     },
     "help:images.preferences": {
@@ -115984,6 +116108,10 @@
       "hash": "9d51fed0d717",
       "status": "machine"
     },
+    "voice:correction.pocketReadings": {
+      "hash": "b2c1b6c0c29b",
+      "status": "machine"
+    },
     "voice:destination.general": {
       "hash": "c910d474dcd7",
       "status": "machine"
@@ -116082,6 +116210,18 @@
     },
     "voice:intro.gotIt": {
       "hash": "5ad3dbd1242a",
+      "status": "machine"
+    },
+    "voice:intro.pocketsGuide": {
+      "hash": "be6c4af28d97",
+      "status": "machine"
+    },
+    "voice:intro.pocketsTip": {
+      "hash": "d90563a6e918",
+      "status": "machine"
+    },
+    "voice:intro.pocketsTitle": {
+      "hash": "36aaa91cbd69",
       "status": "machine"
     },
     "voice:intro.start": {
@@ -124321,7 +124461,7 @@
       "status": "machine"
     },
     "help:articles.by-number.sections.second.text": {
-      "hash": "38272defecd1",
+      "hash": "2e4ccf22b19c",
       "status": "machine"
     },
     "help:articles.by-number.sections.second.title": {
@@ -124481,7 +124621,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.second.text": {
-      "hash": "50ba6962c1d3",
+      "hash": "f44d21229fa5",
       "status": "machine"
     },
     "help:articles.dictation.sections.second.title": {
@@ -125082,6 +125222,10 @@
     },
     "help:images.patients": {
       "hash": "db82ffbdefca",
+      "status": "machine"
+    },
+    "help:images.pocketSites": {
+      "hash": "cc2d97ef7186",
       "status": "machine"
     },
     "help:images.preferences": {
@@ -133188,6 +133332,10 @@
       "hash": "9d51fed0d717",
       "status": "machine"
     },
+    "voice:correction.pocketReadings": {
+      "hash": "b2c1b6c0c29b",
+      "status": "machine"
+    },
     "voice:destination.general": {
       "hash": "c910d474dcd7",
       "status": "machine"
@@ -133286,6 +133434,18 @@
     },
     "voice:intro.gotIt": {
       "hash": "5ad3dbd1242a",
+      "status": "machine"
+    },
+    "voice:intro.pocketsGuide": {
+      "hash": "be6c4af28d97",
+      "status": "machine"
+    },
+    "voice:intro.pocketsTip": {
+      "hash": "d90563a6e918",
+      "status": "machine"
+    },
+    "voice:intro.pocketsTitle": {
+      "hash": "36aaa91cbd69",
       "status": "machine"
     },
     "voice:intro.start": {
@@ -140847,7 +141007,7 @@
       "status": "machine"
     },
     "help:articles.by-number.sections.second.text": {
-      "hash": "38272defecd1",
+      "hash": "2e4ccf22b19c",
       "status": "machine"
     },
     "help:articles.by-number.sections.second.title": {
@@ -141007,7 +141167,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.second.text": {
-      "hash": "50ba6962c1d3",
+      "hash": "f44d21229fa5",
       "status": "machine"
     },
     "help:articles.dictation.sections.second.title": {
@@ -141608,6 +141768,10 @@
     },
     "help:images.patients": {
       "hash": "db82ffbdefca",
+      "status": "machine"
+    },
+    "help:images.pocketSites": {
+      "hash": "cc2d97ef7186",
       "status": "machine"
     },
     "help:images.preferences": {
@@ -149678,6 +149842,10 @@
       "hash": "9d51fed0d717",
       "status": "machine"
     },
+    "voice:correction.pocketReadings": {
+      "hash": "b2c1b6c0c29b",
+      "status": "machine"
+    },
     "voice:destination.general": {
       "hash": "c910d474dcd7",
       "status": "machine"
@@ -149776,6 +149944,18 @@
     },
     "voice:intro.gotIt": {
       "hash": "5ad3dbd1242a",
+      "status": "machine"
+    },
+    "voice:intro.pocketsGuide": {
+      "hash": "be6c4af28d97",
+      "status": "machine"
+    },
+    "voice:intro.pocketsTip": {
+      "hash": "d90563a6e918",
+      "status": "machine"
+    },
+    "voice:intro.pocketsTitle": {
+      "hash": "36aaa91cbd69",
       "status": "machine"
     },
     "voice:intro.start": {

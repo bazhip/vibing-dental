@@ -425,6 +425,15 @@
   line-height: 1.45;
 }
 .ai-intro__list em { color: var(--text); font-style: italic; }
+.ai-intro__pocket-tip {
+  background: var(--surface-alt);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+.ai-intro__pocket-tip p { margin: 0.25rem 0 0.5rem; }
+.ai-intro__pocket-tip .context-help-link { align-items: center; }
 .ai-intro__foot { margin: 0; font-size: 0.8rem; color: var(--text-muted, #64748b); }
 
 /* ---- AI autofill: live panel ------------------------------------- */

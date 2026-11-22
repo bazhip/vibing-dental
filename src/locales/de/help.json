@@ -49,7 +49,8 @@
     "consultationTemplatePreview": "Der Editor für Konsultationsvorlagen mit geöffneter Auswahl „Abschnitt hinzufügen“ in einem fiktiven Besuch.",
     "consultationRecordNote": "Konsultationsnotiz mit den Schaltflächen PDF herunterladen und Kopieren.",
     "dentalConsultation": "Das Feld zur Mauluntersuchung am wachen Tier in einer fiktiven Zahnkonsultation.",
-    "dictationCheck": "Das Diktatfenster pausiert kurz vor der Prüfung der Akte. Mit „Fortsetzen“ führen Sie dasselbe Diktat weiter."
+    "dictationCheck": "Das Diktatfenster pausiert kurz vor der Prüfung der Akte. Mit „Fortsetzen“ führen Sie dasselbe Diktat weiter.",
+    "pocketSites": "Sechs erfasste Taschentiefen in der Ansicht „Pro Zahn“."
   },
   "articles": {
     "start": {
@@ -152,7 +153,7 @@
         },
         "second": {
           "title": "Transkript und Vorschläge prüfen",
-          "text": "Eindeutige Befunde können beim Sprechen in den passenden Reitern eingetragen werden, etwa in Untersuchung, Anästhesie, Zahnschema, Diagnose und Eingriff. Der aktive Reiter hilft bei mehrdeutigen Formulierungen. Beenden Sie die Aufnahme und prüfen Sie Transkript und Akte."
+          "text": "Eindeutige Befunde können beim Sprechen in den passenden Reitern eingetragen werden, etwa in Untersuchung, Anästhesie, Zahnschema, Diagnose und Eingriff. Der aktive Reiter hilft bei mehrdeutigen Formulierungen. Beenden Sie die Aufnahme und prüfen Sie Transkript und Akte.\n\nNennen Sie für Taschensondierungstiefen die Zahnnummer und die Messwerte. Sagen Sie „308 Taschentiefe 4“ für einen Einzelwert oder „308 mesial 3, distal 5“ für einen Messwert pro Wurzel. Benennen Sie bei einer Sechspunktmessung jede Stelle oder nennen Sie alle sechs Messwerte in dieser Reihenfolge: MB, B, DB, ML, L, DL. Das Zahnschema übernimmt für diesen Besuch das passende Layout. Neue Messwerte lassen die übrigen gespeicherten Messwerte für denselben Zahn bestehen. Prüfen Sie vorgeschlagene Ersetzungen gespeicherter Tiefen, bevor Sie sie übernehmen."
         },
         "third": {
           "title": "Korrekturen vor dem Übernehmen prüfen",
@@ -404,7 +405,7 @@
         },
         "second": {
           "title": "Befunde, Notizen und Extraktionsstatus erfassen",
-          "text": "Tragen Sie die Messwerte unter „Befunde“ ein. Für die Taschentiefe können Sie einen Wert, einen Wert pro Wurzel oder sechs Werte für einzelne Messstellen erfassen. Öffnen Sie im „Zahnschema“ die Option „Anpassen“, um den Modus und die sichtbaren Messwerte festzulegen. Wählen Sie „Fehlt (vor diesem Besuch)“ nur für Zähne, die bereits fehlten.\n\nDokumentieren Sie Ihre Befunde unter „Diagnosenotiz“ und verwenden Sie die eingerichteten Kürzel. Erfassen Sie durchgeführte Maßnahmen unter „Eingriffsnotiz“. Nutzen Sie „Extraktion planen“ für vorgesehene Extraktionen. Markieren Sie den Zahn als extrahiert, sobald der Eingriff erfolgt ist. Die Legende unterscheidet erfasste Zähne, geplante Extraktionen, extrahierte und fehlende Zähne."
+          "text": "Tragen Sie die Messwerte unter „Befunde“ ein. Für die Taschentiefe können Sie einen Wert, einen Wert pro Wurzel oder sechs Werte für einzelne Messstellen erfassen. Öffnen Sie im „Zahnschema“ die Option „Anpassen“, um den Modus und die sichtbaren Messwerte festzulegen. Wählen Sie „Fehlt (vor diesem Besuch)“ nur für Zähne, die bereits fehlten.\n\nDie Diktierfunktion kann das Layout für Taschentiefen im geöffneten Besuch ändern. Sagen Sie beispielsweise „308 mesial 3, distal 5“, um die Felder pro Wurzel anzuzeigen. Nennen Sie beim Sondieren an sechs Stellen die Messstellen oder diktieren Sie alle Werte in dieser Reihenfolge: MB, B, DB, ML, L, DL. Wenn Sie eine benannte Messung hinzufügen, bleiben die übrigen Werte des Zahns erhalten. Prüfen Sie vorgeschlagene Änderungen an gespeicherten Werten, bevor Sie sie übernehmen.\n\nDokumentieren Sie Ihre Befunde unter „Diagnosenotiz“ und verwenden Sie die eingerichteten Kürzel. Erfassen Sie durchgeführte Maßnahmen unter „Eingriffsnotiz“. Nutzen Sie „Extraktion planen“ für vorgesehene Extraktionen. Markieren Sie den Zahn als extrahiert, sobald der Eingriff erfolgt ist. Die Legende unterscheidet erfasste Zähne, geplante Extraktionen, extrahierte und fehlende Zähne."
         },
         "third": {
           "title": "Ansicht wechseln oder einen Befund mit Zahnnummer diktieren",

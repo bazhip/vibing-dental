@@ -58,7 +58,8 @@
   "correction": {
     "conflict": "Verificați această modificare în fișă.",
     "apply": "Aplicați sugestia",
-    "keep": "Păstrați valoarea actuală"
+    "keep": "Păstrați valoarea actuală",
+    "pocketReadings": "Verificați etichetele punctelor de măsurare din „{{value}}”."
   },
   "welcome": {
     "ready": "Transcrierea va apărea aici când începeți înregistrarea.",
@@ -76,7 +77,10 @@
     "step1": "Vorbiți normal: <em>„104 GI 2, tartru 1. 105 absent. Limbă normală.”</em>",
     "step2": "Rămâneți pe orice pagină. Fiecare constatare ajunge la locul potrivit în fișă.",
     "step3": "Atingeți <strong>Opriți</strong> când terminați. Elementele incerte sunt listate la <strong>Necesită verificare</strong>.",
-    "title": "Dictați fișa"
+    "title": "Dictați fișa",
+    "pocketsTitle": "Adâncimile pungilor parodontale",
+    "pocketsTip": "Spuneți „308 mezial 3, distal 5”. Fișa dentară schimbă aspectul pentru această vizită. Verificați modificările propuse pentru adâncimile salvate.",
+    "pocketsGuide": "Ghid de dictare a adâncimilor pungilor parodontale"
   },
   "panel": {
     "activity": "Activitate",

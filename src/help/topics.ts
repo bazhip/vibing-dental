@@ -47,6 +47,7 @@ export const HELP_SCREENSHOTS: Partial<Record<HelpTopic, readonly HelpScreenshot
     { caption: 'imagingTemplates', src: '/help/screenshots/imaging.jpg', width: 1240, height: 686, section: 'third' },
   ],
   dictation: [
+    { caption: 'pocketSites', src: '/help/screenshots/pocket-sites.jpg', width: 392, height: 346, section: 'second' },
     { caption: 'dictation', src: '/help/screenshots/dictation.jpg', width: 1440, height: 705, section: 'third' },
     { caption: 'dictationCheck', src: '/help/screenshots/dictation-check.jpg', width: 352, height: 290, section: 'third' },
   ],
@@ -55,7 +56,10 @@ export const HELP_SCREENSHOTS: Partial<Record<HelpTopic, readonly HelpScreenshot
     { caption: 'owner', src: '/help/screenshots/owner-report.jpg', width: 976, height: 438, section: 'second' },
   ],
   export: [{ caption: 'export', src: '/help/screenshots/review-export.jpg', width: 1280, height: 772, section: 'second' }],
-  'by-number': [{ caption: 'by-number', src: '/help/screenshots/by-tooth.jpg', width: 984, height: 916, section: 'first' }],
+  'by-number': [
+    { caption: 'by-number', src: '/help/screenshots/by-tooth.jpg', width: 984, height: 916, section: 'first' },
+    { caption: 'pocketSites', src: '/help/screenshots/pocket-sites.jpg', width: 392, height: 346, section: 'second' },
+  ],
 };
 
 export const CHART_CUSTOMIZATION_CATEGORIES = ['patient', 'exam', 'anesthesia', 'charting', 'diagnosis', 'procedure', 'images'] as const;
@@ -72,7 +76,7 @@ export const RELATED_HELP: Record<HelpTopic, readonly HelpTopic[]> = {
   'consultation-transfer': ['consultation', 'consultation-templates', 'export'],
   imaging: ['exam', 'preferences', 'viewer', 'dictation', 'export'],
   viewer: ['imaging', 'dictation', 'export'],
-  dictation: ['charting', 'imaging', 'troubleshooting'],
+  dictation: ['by-number', 'charting', 'imaging', 'troubleshooting'],
   treatment: ['charting', 'discharge', 'export'],
   discharge: ['treatment', 'imaging', 'export'],
   export: ['discharge', 'recovery', 'troubleshooting', 'consultation-transfer'],
