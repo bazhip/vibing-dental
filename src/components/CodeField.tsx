@@ -162,7 +162,7 @@ export const CodeField: React.FC<CodeFieldProps> = ({
   );
 
   return (
-    <span className="code-field">
+    <span className={multiline ? 'code-field code-field--multiline' : 'code-field'}>
       {multiline ? (
         <textarea
           {...(rest as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
