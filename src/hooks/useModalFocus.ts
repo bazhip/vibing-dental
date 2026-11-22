@@ -1,8 +1,11 @@
 import React from 'react';
 
-const FOCUSABLE =
-  'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), ' +
-  'textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+const FOCUSABLE = 'button, [href], input, select, textarea, [tabindex]';
+
+function isTabStop(element: HTMLElement) {
+  return element.tabIndex >= 0 && !element.matches(':disabled, input[type="hidden"]')
+    && !element.closest('[hidden], [inert]');
+}
 
 /** Open dialogs holding the page still (dialogs can stack). */
 let scrollLocks = 0;
@@ -60,7 +63,7 @@ export function useModalFocus<T extends HTMLElement = HTMLDivElement>(
     // autoFocus field) already claimed it.
     const container = containerRef.current;
     if (container && !container.contains(document.activeElement)) {
-      const first = Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE)).find((n) => n.tabIndex >= 0);
+      const first = Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE)).find(isTabStop);
       (first ?? container).focus();
     }
 
@@ -73,7 +76,7 @@ export function useModalFocus<T extends HTMLElement = HTMLDivElement>(
       const target = e.target;
       if (target instanceof Element && !el.contains(target) && target.closest('[aria-modal="true"]')) return;
       const focusables = Array.from(el.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(
-        (n) => n.tabIndex >= 0 && (n.offsetParent !== null || n === document.activeElement)
+        (n) => isTabStop(n) && (n.offsetParent !== null || n === document.activeElement)
       );
       if (focusables.length === 0) return;
       const first = focusables[0];

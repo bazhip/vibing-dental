@@ -1,6 +1,7 @@
 import type { ConsultationLayout, ConsultationSection, CustomConsultationField, CustomDischargeField } from '../utils/consultationTemplates';
 import type { AppLanguage } from '../i18n/config';
 import type { VisitType } from '../utils/visitTypes';
+import type { PracticeChartPage, SharedPracticeField } from '../utils/practiceChartFields';
 
 export type { VisitType } from '../utils/visitTypes';
 
@@ -269,6 +270,13 @@ export interface CustomAnesthesia {
   fields: CustomFieldValue[];
 }
 
+export interface PracticeChartFieldAnswer {
+  page: PracticeChartPage;
+  /** Definition as shown when the answer was recorded. */
+  field: SharedPracticeField;
+  value: string;
+}
+
 export interface PatientInfo {
   /** The last pocket layout selected by dictation in this visit. */
   dictatedPocketMode?: import('../utils/pocket').PocketMode;
@@ -337,6 +345,8 @@ export interface PatientInfo {
   /** Answered custom exam areas (see utils/customExam). Optional: absent
    *  on older charts and when none were answered. */
   customExam?: CustomExamValue[];
+  /** Practice-defined answers recorded for this visit. */
+  practiceChartFields?: PracticeChartFieldAnswer[];
   /** Next dental recheck due (yyyy-mm-dd), '' when none. Surfaced in the
    *  chart library as a recall reminder. */
   recallDate: string;

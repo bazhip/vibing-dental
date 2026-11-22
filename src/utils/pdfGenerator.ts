@@ -1,7 +1,7 @@
 import { radiologyRecordedText } from './radiologyReportState';
 import { PDFDocument, PDFHexString } from 'pdf-lib';
 import { embedPdfFonts } from './pdf/fonts';
-import { additionalNerveBlockContinuations, customExamTextContinuation, optionalClinicalContinuations, drawClinicalContinuations, drawContinuationNotice } from './pdf/continuation';
+import { additionalNerveBlockContinuations, customExamTextContinuation, optionalClinicalContinuations, practiceChartFieldContinuations, drawClinicalContinuations, drawContinuationNotice } from './pdf/continuation';
 import download from 'downloadjs';
 import i18n, { loadLanguage } from '../i18n';
 import { isAppLanguage, type AppLanguage } from '../i18n/config';
@@ -193,6 +193,7 @@ export async function buildDentalChartPDFBytes(
     ...additionalNerveBlockContinuations(patientInfo.secondNerveBlocks, lng),
     ...visitDocumentationContinuations(patientInfo, lng, 'gp-exam'),
     ...customExamTextContinuation(patientInfo, lng),
+    ...practiceChartFieldContinuations(patientInfo, lng),
   ];
   drawClinicalContinuations(pdfDoc, continuations, regular, bold);
   const continuationPages = pdfDoc.getPageCount() - 2;

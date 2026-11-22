@@ -47,7 +47,7 @@ html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__
   box-shadow: var(--clinical-field-shadow, var(--shadow-xs));
 }
 html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__input, .surgery-report__template-select) {
-  min-height: 40px;
+  min-height: var(--clinical-control-min-size, 40px);
   padding-block: 8px;
 }
 html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__input, .patient-form__textarea, .surgery-report__template-select):focus-visible {

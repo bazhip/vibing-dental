@@ -123,6 +123,7 @@ const App: React.FC = () => {
   const startTrial = () => {
     writeString(TRIAL_KEY, 1, '1');
     setTrialMode(true);
+    if (showHome) setShowHome(false);
   };
 
   const endTrial = async (nextAuth: 'signup' | 'signin' | null) => {

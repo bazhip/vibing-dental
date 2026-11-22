@@ -19,11 +19,14 @@ export type NoteTemplateKind = 'consultation' | 'discharge' | 'imaging';
 export type CustomDischargeField = `dischargeCustom_${string}`;
 export type CustomConsultationField = `consultationCustom_${string}`;
 export type ConsultationSectionId = typeof CONSULTATION_STANDARD_FIELDS[number] | CustomConsultationField | typeof DISCHARGE_FIELDS[number] | CustomDischargeField;
-export const NOTE_INPUT_TYPES = ['shortText', 'radio', 'multiselect'] as const;
+const NOTE_CHOICE_INPUT_TYPES = ['radio', 'multiselect', 'dropdown', 'multiselectDropdown'] as const;
+export type NoteChoiceInputType = typeof NOTE_CHOICE_INPUT_TYPES[number];
+export const NOTE_INPUT_TYPES = ['shortText', ...NOTE_CHOICE_INPUT_TYPES] as const;
 export type NoteInputType = typeof NOTE_INPUT_TYPES[number];
 export const NOTE_OPTION_LIMIT = 20;
 export const NOTE_OPTION_LENGTH = 100;
-const isChoiceInput = (type: unknown) => type === 'radio' || type === 'multiselect';
+export const isChoiceInput = (type: unknown): type is NoteChoiceInputType =>
+  NOTE_CHOICE_INPUT_TYPES.some(choice => choice === type);
 export const canConfigureNoteInput = (id: ConsultationSectionId, kind: NoteTemplateKind) =>
   kind !== 'imaging' && id !== 'gpVitals' && !(CONSULTATION_MEDICATION_FIELDS as readonly string[]).includes(id);
 
@@ -122,9 +125,18 @@ export interface ConsultationLibrary {
   imagingReportFields?: ImagingReportFields;
 }
 
-// Older clients cannot preserve custom sections and their dictation sources.
-export const CONSULTATION_SNAPSHOT_VERSION = 4;
-export const DISCHARGE_SNAPSHOT_VERSION = 5;
+// Older serializers drop saved layouts containing dropdowns. A current
+// serializer must also be able to replace a dropdown layout with a plain one.
+export const NOTE_DROPDOWN_SNAPSHOT_VERSION = 6;
+export const CONSULTATION_SNAPSHOT_VERSION = NOTE_DROPDOWN_SNAPSHOT_VERSION;
+export const DISCHARGE_SNAPSHOT_VERSION = NOTE_DROPDOWN_SNAPSHOT_VERSION;
+export function hasNoteDropdowns(info: Partial<PatientInfo>): boolean {
+  return [
+    info.consultationLayout?.sections, info.dischargeLayout?.sections,
+    info.consultationRetainedSections, info.dischargeRetainedSections,
+  ].some(sections => Array.isArray(sections)
+    && sections.some(section => section?.inputType === 'dropdown' || section?.inputType === 'multiselectDropdown'));
+}
 export const noteLibraryVersion = (kind: NoteTemplateKind) => kind === 'imaging' ? 2 : 4;
 export const CONSULTATION_TEMPLATE_LIMIT = 24;
 export const PRACTICE_NOTE_FIELD_LIMIT = 128;

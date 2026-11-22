@@ -1,4 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 
 vi.mock('../hooks/useTeam', () => ({ useTeam: () => ({ loaded: true, role: 'owner', members: [], practice: null }) }));
@@ -67,10 +68,12 @@ describe('My charts — History', () => {
 });
 
 it('dismisses row actions on an outside pointer press', async () => {
+  const user = userEvent.setup();
   setup();
   const history = await screen.findByTitle("Who saved Bella's chart, and when");
   const details = history.closest('details')!;
-  details.open = true;
-  fireEvent.pointerDown(document.body);
+  await user.click(details.querySelector('summary')!);
+  expect(details.open).toBe(true);
+  await user.click(document.body);
   expect(details.open).toBe(false);
 });

@@ -2,7 +2,7 @@ import { TemplatePicker } from './TemplatePicker';
 import { useId, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ClinicalDictationSource, PatientInfo } from '../types';
-import { NOTE_IMAGES_ID, noteTemplateSections, canConfigureNoteInput, changeConsultationLayout, consultationChoices, consultationSectionKey, consultationSections, consultationStarterNameKey, consultationVisitSections, consultationLayoutFor, dischargeLayoutFor, dischargeStarterNameKey, EMPTY_CONSULTATION_LIBRARY, EMPTY_DISCHARGE_LIBRARY, type ConsultationLibrary, type ConsultationSection } from '../utils/consultationTemplates';
+import { NOTE_IMAGES_ID, noteTemplateSections, canConfigureNoteInput, changeConsultationLayout, consultationChoices, consultationSectionKey, consultationSections, consultationStarterNameKey, consultationVisitSections, consultationLayoutFor, dischargeLayoutFor, dischargeStarterNameKey, isChoiceInput, EMPTY_CONSULTATION_LIBRARY, EMPTY_DISCHARGE_LIBRARY, type ConsultationLibrary, type ConsultationSection } from '../utils/consultationTemplates';
 import { documentationUrl } from '../help/openDocumentation';
 import { formatDate, formatDateTime } from '../i18n/format';
 import { VISIT_DOCUMENT_MAX_LENGTH, VISIT_DOCUMENT_TEMPLATES, type VisitDocumentKind } from '../utils/visitDocumentation';
@@ -10,6 +10,7 @@ import { SectionHeader } from './SectionHeader';
 import { DrugReferenceLookup } from './DrugReferenceLookup';
 import type { PreviousMedicationList } from '../utils/consultationMedicationHistory';
 import { RefineTextAction } from './RefineTextAction';
+import { VisitChoiceField } from './VisitChoiceField';
 import './VisitDocumentationSection.css';
 
 export interface VisitDocumentationSectionProps {
@@ -32,57 +33,6 @@ export interface VisitDocumentationSectionProps {
     previousMedicationList?: PreviousMedicationList;
     onCopyMedicationList?: () => void;
   };
-}
-
-function VisitChoiceField({ id, describedBy, options, type, value, readOnly, onChange }: {
-  id: string;
-  describedBy?: string;
-  options: readonly string[];
-  type: 'radio' | 'multiselect';
-  value: string;
-  readOnly?: boolean;
-  onChange: (next: string) => void;
-}) {
-  const { t } = useTranslation('visitDocumentation');
-  const single = type === 'radio';
-  const lines = value ? value.split(/\r\n|\n|\r/u) : [];
-  const recordedText = single
-    ? !!value && !options.includes(value)
-    : lines.some(line => !options.includes(line));
-  const selectionDisabled = readOnly || (single && recordedText);
-
-  return <>
-    <fieldset className="visit-documentation__option-group" disabled={selectionDisabled}
-      aria-labelledby={`${id}-label`} aria-describedby={describedBy}>
-      {options.map(option => {
-        const checked = single ? value === option : lines.includes(option);
-        const next = single ? option : checked
-          ? lines.filter(line => line !== option).join('\n')
-          : [value, option].filter(Boolean).join('\n');
-        return <label className="choice-row visit-documentation__option" key={option}>
-          <input type={single ? 'radio' : 'checkbox'} name={id} checked={checked}
-            disabled={next.length > VISIT_DOCUMENT_MAX_LENGTH}
-            onChange={() => { if (!selectionDisabled && next.length <= VISIT_DOCUMENT_MAX_LENGTH) onChange(next); }} />
-          <span dir="auto">{option}</span>
-        </label>;
-      })}
-    </fieldset>
-    {recordedText && <div className="visit-documentation__recorded-text">
-      <label htmlFor={`${id}-recorded`} id={`${id}-recorded-label`} className="patient-form__label">{t('consultation.templates.builder.recordedText')}</label>
-      <textarea id={`${id}-recorded`} className="patient-form__textarea" rows={3} dir="auto"
-        value={value} maxLength={VISIT_DOCUMENT_MAX_LENGTH} readOnly={readOnly}
-        aria-labelledby={`${id}-label ${id}-recorded-label`}
-        aria-describedby={single && !readOnly ? `${id}-recorded-help` : undefined}
-        onChange={event => { if (!readOnly) onChange(event.target.value); }} />
-      {single && !readOnly && <p className="visit-documentation__helper" id={`${id}-recorded-help`}>
-        {t('consultation.templates.builder.choiceLegacyHelp')}
-      </p>}
-    </div>}
-    {single && !readOnly && !!value && !recordedText &&
-      <button type="button" className="diagram-view__action" onClick={() => onChange('')}>
-        {t('consultation.templates.builder.clearSelection')}
-      </button>}
-  </>;
 }
 
 /** Source-only forms: generated clinical/client reports keep their existing owners. */
@@ -145,15 +95,15 @@ export function VisitDocumentationSection({ kind, patientInfo, onChange, readOnl
     const describedBy = helper ? `${fieldId}-help` : undefined;
     const inputType = section && canConfigureNoteInput(section.id, templateKind) ? section.inputType : undefined;
     const options = section?.options;
-    const choiceType = options?.length && (inputType === 'radio' || inputType === 'multiselect') ? inputType : undefined;
+    const choiceType = options?.length && isChoiceInput(inputType) ? inputType : undefined;
     const shortInput = inputType === 'shortText' && !/[\r\n]/u.test(value);
     const updateField = (text: string) => update({ [field.id]: text });
     return (
       <div className={section?.level === 2 ? 'visit-documentation__field visit-documentation__field--subsection' : 'visit-documentation__field'} key={field.id}>
         <div className="visit-documentation__field-head">
-          {choiceType
+          {choiceType === 'radio' || choiceType === 'multiselect'
             ? <span className="patient-form__label" id={`${fieldId}-label`}>{label}</span>
-            : <label className="patient-form__label" htmlFor={fieldId}>{label}</label>}
+            : <label className="patient-form__label" id={choiceType ? `${fieldId}-label` : undefined} htmlFor={fieldId}>{label}</label>}
         </div>
         {helper && <p className="visit-documentation__helper" id={describedBy}>{helper}</p>}
         {field.id === 'consultationCurrentMedications' && medicationTools}

@@ -1,7 +1,8 @@
 import { ctRecordedText } from '../utils/ctReportState';
 import { radiologyRecordedText } from '../utils/radiologyReportState';
-import { CONSULTATION_SNAPSHOT_VERSION, DISCHARGE_SNAPSHOT_VERSION } from '../utils/consultationTemplates';
+import { NOTE_DROPDOWN_SNAPSHOT_VERSION } from '../utils/consultationTemplates';
 import { hasVisitDocumentation } from '../utils/visitDocumentation';
+import { readPracticeChartFieldAnswers } from '../utils/practiceChartFieldAnswers';
 import { visitTypeOf } from '../utils/visitTypes';
 import React from 'react';
 import { reservePatientNumber } from '../utils/patientNumberAllocation';
@@ -124,6 +125,7 @@ function hasContent(s: ChartSnapshot): boolean {
   if ((p.patientName ?? '').trim() || ((p.patientNumber ?? '').trim() && !isGeneratedPatientNumber(p)) || (p.ownerName ?? '').trim() || (p.ownerPhone ?? '').trim() || (p.ownerEmail ?? '').trim() || (p.complaint ?? '').trim() || (p.treatmentReport ?? '').trim()) return true;
   if (s.clinicalDictations?.length || s.voiceReviews?.length) return true;
   if (hasVisitDocumentation(p) || radiologyRecordedText(p).trim() || ctRecordedText(p).trim()) return true;
+  if (readPracticeChartFieldAnswers(p.practiceChartFields).length) return true;
   if (p.secondNerveBlocks && hasNerveBlockEntries(p.secondNerveBlocks)) return true;
   if (s.plannedExtractions?.length) return true;
   // Values are strings, except the drug list (and legacy `drug`); only a
@@ -964,10 +966,9 @@ export function useCloudSync(
     if (!supabase) return false;
     // Unsaved edits here would be replaced — ask, as opening a chart does.
     if (!(await confirmDiscardIfDirty('restore'))) return false;
-    const currentHasDischargeLayout = lastSavedRef.current.chartId === id && lastSavedRef.current.snapshot?.patientInfo.dischargeLayout;
-    const minimumVersion = snapshot.patientInfo.dischargeLayout || currentHasDischargeLayout
-      ? DISCHARGE_SNAPSHOT_VERSION : snapshot.patientInfo.visitType === 'consultation' ? CONSULTATION_SNAPSHOT_VERSION : 1;
-    const restored = minimumVersion > (snapshot.version ?? 1) ? { ...snapshot, version: minimumVersion } : snapshot;
+    // An explicit restore can replace a chart that received dropdown metadata
+    // on another device after our last read.
+    const restored = { ...snapshot, version: Math.max(snapshot.version ?? 1, NOTE_DROPDOWN_SNAPSHOT_VERSION) };
     await upsertChart(JSON.stringify(restored), id, { restore: true });
     const { data, error } = await supabase.from('charts').select('id, data, updated_at').eq('id', id).single();
     if (error) throw new Error(error.message);

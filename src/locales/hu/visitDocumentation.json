@@ -74,7 +74,9 @@
           "paragraph": "Hosszú szöveg",
           "shortText": "Rövid szöveg",
           "radio": "Egy válasz",
-          "multiselect": "Több válasz"
+          "multiselect": "Több válasz",
+          "dropdown": "Egy választás (legördülő lista)",
+          "multiselectDropdown": "Több választás (kereshető lista)"
         },
         "choiceOptions": "Lehetőségek",
         "choiceOption": "{{n}}. lehetőség",
@@ -126,7 +128,13 @@
         "importHelp": "Illesszen be egy anonimizált példát Markdown-címsorokkal vagy kettősponttal záruló címkékkel. Mentés előtt ellenőrizze a címsorokat.",
         "createTemplate": "Sablon létrehozása",
         "subsection": "Használat alszakaszként",
-        "libraryTooLarge": "A sablontár túl nagy. Rövidítse a példákat, a javasolt szövegeket vagy a fogalmazási útmutatót."
+        "libraryTooLarge": "A sablontár túl nagy. Rövidítse a példákat, a javasolt szövegeket vagy a fogalmazási útmutatót.",
+        "chooseOption": "Válasszon egy lehetőséget",
+        "chooseOptions": "Válasszon lehetőségeket",
+        "searchOptions": "Lehetőségek keresése",
+        "noMatchingOptions": "Nincs találat",
+        "selectedOptions_one": "{{count}} kiválasztva",
+        "selectedOptions_other": "{{count}} kiválasztva"
       }
     },
     "dental": {
@@ -268,5 +276,22 @@
     "title": "Általános állatorvosi vizsgálat",
     "purpose": "Rögzítse a vizit életjeleit, fizikális vizsgálatát és diagnosztikai leleteit.",
     "review": "Klinikai dokumentáció áttekintése"
+  },
+  "practiceChartFields": {
+    "intro": "Adjon újrahasználható mezőket az oldalhoz. Minden oldal megtartja a saját mezőbeállításait.",
+    "loadFailed": "A rendelői mezőket nem sikerült betölteni.",
+    "conflict": "A rendelői mezők máshol módosultak. Zárja be és nyissa meg újra a beállításokat a legfrissebb mezők betöltéséhez.",
+    "saveFailed": "A rendelői mezőket nem sikerült menteni. Próbálja újra.",
+    "saved": "Rendelői mezők mentve.",
+    "discard": "Elveti a rendelői mezők módosításait?",
+    "search": "Rendelői mezők keresése",
+    "save": "Mezők mentése",
+    "apply": "Módosítások alkalmazása",
+    "addToPage": "Hozzáadás az oldalhoz",
+    "page": "A karton oldala",
+    "publish": "Mentés a közös mezőtárba",
+    "published": "A mező bekerült a közös mezőtárba.",
+    "manage": "Közös mezők kezelése",
+    "deleteMessage": "A mező eltűnik a közös mezőtárból. Az azt használó oldalak, sablonok és vizitek megtartják a saját példányukat."
   }
 }

@@ -31,3 +31,15 @@ test('initial focus skips controls excluded from the tab order', () => {
   render(<RovingDialog />);
   expect(screen.getByRole('button', { name: 'Active tab' })).toHaveFocus();
 });
+
+test('initial focus skips inputs disabled by their fieldset', () => {
+  function LockedDialog() {
+    const ref = useModalFocus(true);
+    return <div ref={ref}>
+      <fieldset disabled><input aria-label="Locked field" /></fieldset>
+      <button>Close</button>
+    </div>;
+  }
+  render(<LockedDialog />);
+  expect(screen.getByRole('button', { name: 'Close' })).toHaveFocus();
+});

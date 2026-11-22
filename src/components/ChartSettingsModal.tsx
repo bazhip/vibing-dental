@@ -8,6 +8,8 @@ import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
 import { AnesthesiaCustomEditor } from './AnesthesiaCustomEditor';
 import { QuickCodesEditor } from './QuickCodesEditor';
 import { ExamAreasEditor } from './ExamAreasEditor';
+import { PracticeFieldEditor, type PracticeFieldDismiss, type PracticeFieldLibrarySettings } from './PracticeFieldEditor';
+import { PRACTICE_CHART_PAGES, type PracticeChartPage } from '../utils/practiceChartFields';
 import { ExamLayoutEditor, type ExamLayoutDismiss, type ExamLayoutSettings } from './ExamLayoutEditor';
 import { SCORE_PICKER_OPTIONS, BLOCK_ROW_OPTIONS, ChartPrefs, PERIO_FIELDS } from '../utils/chartSettings';
 import { isNativeApp } from '../native/platform';
@@ -33,6 +35,7 @@ export interface ChartSettingsModalProps {
   followsAccount: boolean;
   onChange: (patch: Partial<ChartPrefs>) => void;
   examLayout?: ExamLayoutSettings;
+  practiceFields?: PracticeFieldLibrarySettings;
   /** Open the matching category from a page's Customize button. Native
    *  retains its scoped list and All chart settings action. */
   section?: SettingsSection;
@@ -45,32 +48,47 @@ export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = (props) =>
   isNativeApp() ? <ChartSettingsSheet {...props} /> : <ChartSettingsDialog {...props} />;
 
 /** The app: an iOS sheet holding the settings list. */
-function ChartSettingsSheet({ onClose, prefs, followsAccount, onChange, examLayout, section }: ChartSettingsModalProps) {
-  const { t } = useTranslation(['settings', 'app']);
+function ChartSettingsSheet({ onClose, prefs, followsAccount, onChange, examLayout, practiceFields, section }: ChartSettingsModalProps) {
+  const { t } = useTranslation(['settings', 'app', 'visitDocumentation']);
   const examDismiss = React.useRef<ExamLayoutDismiss | null>(null);
+  const practiceDismiss = React.useRef<PracticeFieldDismiss | null>(null);
   const [only, setOnly] = React.useState<SettingsSection | null>(section ?? null);
+  const [practicePage, setPracticePage] = React.useState<PracticeChartPage>('patient');
+  const confirmClose = async () => (await (examDismiss.current?.() ?? true)) && (await (practiceDismiss.current?.() ?? true));
+  const selectedPracticePage = PRACTICE_CHART_PAGES.find(page => page === only);
+
   return (
     <Sheet
       open
       onClose={onClose}
-      confirmDismiss={() => examDismiss.current?.() ?? true}
+      confirmDismiss={confirmClose}
       title={only ? t(`chart.sections.${only}`) : t('chart.title')}
       doneLabel={t('actions.done', { ns: 'common' })}
-      onDone={async () => { if (await (examDismiss.current?.() ?? true)) onClose(); }}
+      onDone={async () => { if (await confirmClose()) onClose(); }}
       className="ios-chart-settings-sheet"
     >
       <ChartSettingsList prefs={prefs} followsAccount={followsAccount} onChange={onChange} only={only} onShowAll={() => setOnly(null)}
         examEditor={examLayout && <ExamLayoutEditor key={examLayout.scope} {...examLayout} dismissGuard={examDismiss} />} />
+      {practiceFields && <>
+        {!only && <label className="ui-dialog__label">{t('practiceChartFields.page', { ns: 'visitDocumentation' })}
+          <select className="ui-dialog__input" value={practicePage} onChange={event => setPracticePage(event.target.value as PracticeChartPage)}>
+            {PRACTICE_CHART_PAGES.map(page => <option key={page} value={page}>{t(`chart.sections.${page}`)}</option>)}
+          </select>
+        </label>}
+        <PracticeFieldEditor key={practiceFields.scope} {...practiceFields}
+          page={only ? selectedPracticePage : practicePage} dismissGuard={practiceDismiss} />
+      </>}
     </Sheet>
   );
 }
 
 /** The website's dialog. */
-const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs, followsAccount, onChange, examLayout, section }) => {
-  const { t } = useTranslation(['settings', 'app']);
+const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs, followsAccount, onChange, examLayout, practiceFields, section }) => {
+  const { t } = useTranslation(['settings', 'app', 'visitDocumentation']);
   const settingsId = React.useId();
   const [only, setOnly] = React.useState<SettingsSection>(section ?? 'charting');
   const examDismiss = React.useRef<ExamLayoutDismiss | null>(null);
+  const practiceDismiss = React.useRef<PracticeFieldDismiss | null>(null);
   const [examSaveTarget, setExamSaveTarget] = React.useState<HTMLDivElement | null>(null);
   const contentRef = React.useRef<HTMLDivElement>(null);
   const categories: SettingsSection[] = ['patient', 'exam', 'anesthesia', 'charting', 'diagnosis', 'procedure', 'images'];
@@ -89,6 +107,7 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
   };
   const close = React.useCallback(async () => {
     if (examDismiss.current && !(await examDismiss.current())) return;
+    if (practiceDismiss.current && !(await practiceDismiss.current())) return;
     const active = document.activeElement;
     if (active instanceof HTMLElement && active.closest('.chart-settings__group')) active.blur();
     flushPendingDrafts();
@@ -467,6 +486,8 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
             </label>
             )}
           </section>
+          {practiceFields && <PracticeFieldEditor key={practiceFields.scope} {...practiceFields}
+            page={PRACTICE_CHART_PAGES.find(page => page === only)} dismissGuard={practiceDismiss} />}
           </div>
         </div>
         <footer className="ai-settings-footer chart-customization__footer">

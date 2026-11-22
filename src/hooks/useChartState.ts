@@ -4,8 +4,9 @@ import React from 'react';
 import type { ClinicalDictationSource } from '../types';
 import { normalizeClinicalDictations, appendClinicalDictationSource } from '../utils/clinicalDictationSources';
 import { createPatientIdentity, patientNumberOf } from '../utils/patientIds';
-import { CONSULTATION_SNAPSHOT_VERSION, DISCHARGE_SNAPSHOT_VERSION } from '../utils/consultationTemplates';
+import { CONSULTATION_SNAPSHOT_VERSION, DISCHARGE_SNAPSHOT_VERSION, NOTE_DROPDOWN_SNAPSHOT_VERSION, hasNoteDropdowns } from '../utils/consultationTemplates';
 import { normalizeVisitDocumentation } from '../utils/visitDocumentation';
+import { readPracticeChartFieldAnswers } from '../utils/practiceChartFieldAnswers';
 import { isVisitType, visitTypeOf, type VisitType } from '../utils/visitTypes';
 import { normalizeCustomAnesthesia } from '../utils/customAnesthesia';
 import { normalizeCustomExam } from '../utils/customExam';
@@ -231,6 +232,9 @@ function normalizeRadiologyInfo(info: PatientInfo): PatientInfo {
 function normalizePatientDocumentation(info: PatientInfo): PatientInfo {
   const patient = normalizeVisitDocumentation(info);
   if (!isVisitType(patient.visitType)) delete patient.visitType;
+  const answers = readPracticeChartFieldAnswers(patient.practiceChartFields);
+  if (answers.length) patient.practiceChartFields = answers;
+  else delete patient.practiceChartFields;
   return patient;
 }
 
@@ -650,7 +654,8 @@ export function useChartState(): UseChartStateReturn {
   // referential-equality caches off it — without this, every render
   // built a fresh object and the full chart re-serialized per keystroke.
   const snapshot = React.useMemo<ChartSnapshot>(() => ({
-    version: patientInfo.dischargeLayout ? DISCHARGE_SNAPSHOT_VERSION
+    version: hasNoteDropdowns(patientInfo) ? NOTE_DROPDOWN_SNAPSHOT_VERSION
+      : patientInfo.dischargeLayout ? DISCHARGE_SNAPSHOT_VERSION
       : patientInfo.visitType === 'consultation' ? CONSULTATION_SNAPSHOT_VERSION : CHART_SNAPSHOT_VERSION,
     imageRoles,
     ...(Object.keys(ownerReportImageInclusion).length ? { ownerReportImageInclusion } : {}),

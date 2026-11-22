@@ -74,7 +74,9 @@
           "paragraph": "Texte long",
           "shortText": "Texte court",
           "radio": "Choix unique",
-          "multiselect": "Choix multiples"
+          "multiselect": "Choix multiples",
+          "dropdown": "Choix unique (liste déroulante)",
+          "multiselectDropdown": "Choix multiples (liste avec recherche)"
         },
         "choiceOptions": "Options",
         "choiceOption": "Option {{n}}",
@@ -126,7 +128,14 @@
         "importHelp": "Collez un exemple anonymisé avec des titres Markdown ou des libellés suivis de deux-points. Vérifiez les titres avant d’enregistrer le modèle.",
         "createTemplate": "Créer le modèle",
         "subsection": "Utiliser comme sous-section",
-        "libraryTooLarge": "La bibliothèque est trop volumineuse. Raccourcissez les exemples, les textes proposés ou les consignes de rédaction."
+        "libraryTooLarge": "La bibliothèque est trop volumineuse. Raccourcissez les exemples, les textes proposés ou les consignes de rédaction.",
+        "chooseOption": "Choisissez une option",
+        "chooseOptions": "Choisissez les options",
+        "searchOptions": "Rechercher des options",
+        "noMatchingOptions": "Aucune option correspondante",
+        "selectedOptions_one": "Options sélectionnées : {{count}}",
+        "selectedOptions_many": "Options sélectionnées : {{count}}",
+        "selectedOptions_other": "Options sélectionnées : {{count}}"
       }
     },
     "dental": {
@@ -268,5 +277,22 @@
     "title": "Examen général",
     "purpose": "Consignez les paramètres vitaux, l’examen clinique et les résultats diagnostiques pour cette visite.",
     "review": "Vérifier le dossier clinique"
+  },
+  "practiceChartFields": {
+    "intro": "Ajoutez des champs réutilisables à cette page. Chaque page conserve ses propres réglages.",
+    "loadFailed": "Impossible de charger les champs de la clinique.",
+    "conflict": "Les champs de la clinique ont été modifiés ailleurs. Fermez puis rouvrez les réglages pour charger les champs à jour.",
+    "saveFailed": "Impossible d’enregistrer les champs de la clinique. Réessayez.",
+    "saved": "Champs de la clinique enregistrés.",
+    "discard": "Ignorer les modifications apportées aux champs de la clinique ?",
+    "search": "Rechercher des champs de la clinique",
+    "save": "Enregistrer les champs",
+    "apply": "Appliquer les modifications",
+    "addToPage": "Ajouter à la page",
+    "page": "Page du dossier",
+    "publish": "Enregistrer dans la bibliothèque partagée",
+    "published": "Champ ajouté à la bibliothèque partagée.",
+    "manage": "Gérer les champs partagés",
+    "deleteMessage": "Le champ sera retiré de la bibliothèque partagée. Les pages, modèles et visites qui l’utilisent déjà conservent leur copie."
   }
 }

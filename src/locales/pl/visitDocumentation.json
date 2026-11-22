@@ -74,7 +74,9 @@
           "paragraph": "Długi tekst",
           "shortText": "Krótki tekst",
           "radio": "Wybór pojedynczy",
-          "multiselect": "Wybór wielokrotny"
+          "multiselect": "Wybór wielokrotny",
+          "dropdown": "Pojedynczy wybór (lista rozwijana)",
+          "multiselectDropdown": "Wielokrotny wybór (lista z wyszukiwaniem)"
         },
         "choiceOptions": "Opcje",
         "choiceOption": "Opcja {{n}}",
@@ -126,7 +128,15 @@
         "fieldsFromOtherTemplates": "Pola z innych szablonów",
         "sectionMoved": "Pole „{{field}}” przeniesiono na pozycję {{position}}",
         "fieldName": "Nazwa pola",
-        "noPracticeFields": "Brak pól placówki"
+        "noPracticeFields": "Brak pól placówki",
+        "chooseOption": "Proszę wybrać opcję",
+        "chooseOptions": "Proszę wybrać opcje",
+        "searchOptions": "Szukaj opcji",
+        "noMatchingOptions": "Brak pasujących opcji",
+        "selectedOptions_one": "Liczba wybranych opcji: {{count}}",
+        "selectedOptions_few": "Liczba wybranych opcji: {{count}}",
+        "selectedOptions_many": "Liczba wybranych opcji: {{count}}",
+        "selectedOptions_other": "Liczba wybranych opcji: {{count}}"
       }
     },
     "dental": {
@@ -268,5 +278,22 @@
       "help": "Jak dostosować obrazowanie",
       "starterText": "Tekst początkowy"
     }
+  },
+  "practiceChartFields": {
+    "intro": "Proszę dodać do tej strony pola wielokrotnego użytku. Każda strona zachowuje własne ustawienia pól.",
+    "loadFailed": "Nie udało się wczytać pól gabinetu.",
+    "conflict": "Pola gabinetu zmieniono w innym miejscu. Proszę zamknąć i ponownie otworzyć ustawienia, aby wczytać aktualne pola.",
+    "saveFailed": "Nie udało się zapisać pól gabinetu. Proszę spróbować ponownie.",
+    "saved": "Zapisano pola gabinetu.",
+    "discard": "Odrzucić zmiany w polach gabinetu?",
+    "search": "Szukaj pól gabinetu",
+    "save": "Zapisz pola",
+    "apply": "Zastosuj zmiany",
+    "addToPage": "Dodaj do strony",
+    "page": "Strona karty",
+    "publish": "Zapisz we wspólnej bibliotece",
+    "published": "Dodano pole do wspólnej biblioteki.",
+    "manage": "Zarządzaj wspólnymi polami",
+    "deleteMessage": "Pole zostanie usunięte ze wspólnej biblioteki. Strony, szablony i wizyty, które już go używają, zachowają swoją kopię."
   }
 }

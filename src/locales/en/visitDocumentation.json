@@ -74,7 +74,9 @@
           "paragraph": "Long text",
           "shortText": "Short text",
           "radio": "Single choice",
-          "multiselect": "Multiple choice"
+          "multiselect": "Multiple choice",
+          "dropdown": "Single choice (dropdown)",
+          "multiselectDropdown": "Multiple choice (searchable dropdown)"
         },
         "choiceOptions": "Options",
         "choiceOption": "Option {{n}}",
@@ -126,7 +128,13 @@
         "importHelp": "Paste a de-identified sample with Markdown headings or labels followed by a colon. Review the headings before saving the template.",
         "createTemplate": "Create template",
         "subsection": "Use as a subsection",
-        "libraryTooLarge": "The template library is too large. Shorten examples, suggested text, or writing instructions."
+        "libraryTooLarge": "The template library is too large. Shorten examples, suggested text, or writing instructions.",
+        "chooseOption": "Choose an option",
+        "chooseOptions": "Choose options",
+        "searchOptions": "Search options",
+        "noMatchingOptions": "No matching options",
+        "selectedOptions_one": "{{count}} selected",
+        "selectedOptions_other": "{{count}} selected"
       }
     },
     "dental": {
@@ -268,5 +276,22 @@
     "title": "GP examination",
     "purpose": "Record the vital signs, physical examination, and diagnostic findings for this visit.",
     "review": "Review clinical record"
+  },
+  "practiceChartFields": {
+    "intro": "Add reusable inputs to this page. Each page keeps its own field settings.",
+    "loadFailed": "Couldn’t load practice fields.",
+    "conflict": "Practice fields changed elsewhere. Close and reopen settings to load the latest fields.",
+    "saveFailed": "Couldn’t save the practice fields. Please try again.",
+    "saved": "Practice fields saved.",
+    "discard": "Discard practice field changes?",
+    "search": "Search practice fields",
+    "save": "Save fields",
+    "apply": "Apply changes",
+    "addToPage": "Add to page",
+    "page": "Chart page",
+    "publish": "Save to shared field library",
+    "published": "Field added to the shared library.",
+    "manage": "Manage shared fields",
+    "deleteMessage": "This removes the field from the shared library. Pages, templates, and visits that already use it keep their copy."
   }
 }

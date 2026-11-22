@@ -9,10 +9,11 @@ import { documentationUrl } from '../help/openDocumentation';
 import { isNativeApp } from '../native/platform';
 import { Sheet } from '../ios/Sheet';
 import { confirmDialog, friendlyError } from './ui/dialogs';
+import { parsePracticeChartField, type SharedPracticeField } from '../utils/practiceChartFields';
 import {
   noteLibraryVersion, noteTemplateSections, splitNoteTemplateSections, NOTE_IMAGES_ID, CONSULTATION_TEMPLATE_LIMIT, CONSULTATION_TEMPLATE_NAME_LIMIT,
   CONSULTATION_SECTION_LIMIT, PRACTICE_NOTE_FIELD_LIMIT, practiceNoteFields, updatePracticeNoteField, consultationHeadings, consultationChoices, consultationLibraryFits, consultationSectionKey, consultationSections, dentalSectionKey, isCustomNoteField, isCustomDischargeField, standardNoteFields, defaultNoteLayout, dischargeStarterNameKey, DISCHARGE_RECOVERY_ACTIVITY, DENTAL_RECOVERY, STANDARD_DISCHARGE,
-  consultationStarterNameKey, isNoteStarter, noteStarterName, canConfigureNoteInput, NOTE_INPUT_TYPES, NOTE_OPTION_LIMIT, NOTE_OPTION_LENGTH, parseConsultationLibrary, IMAGING_REPORT_KINDS, IMAGING_STARTER_TEXT_LIMIT,
+  consultationStarterNameKey, isNoteStarter, noteStarterName, canConfigureNoteInput, isChoiceInput, NOTE_INPUT_TYPES, NOTE_OPTION_LIMIT, NOTE_OPTION_LENGTH, parseConsultationLibrary, IMAGING_REPORT_KINDS, IMAGING_STARTER_TEXT_LIMIT,
   type PracticeNoteField, type NoteTemplateKind, type NoteTemplateSection, type ConsultationSection, type ConsultationLayout, type ConsultationLibrary, type PracticeConsultationTemplate,
 } from '../utils/consultationTemplates';
 
@@ -30,9 +31,11 @@ interface Props {
   onReload: () => void;
   onClose: () => void;
   onOpenSettings?: () => void;
+  sharedFields?: readonly SharedPracticeField[];
+  onPublishField?: (field: SharedPracticeField) => Promise<void>;
 }
 
-export function ConsultationTemplatesDialog({ kind = 'consultation', initial, status, canEdit, onSave, onReload, onClose, onOpenSettings }: Props) {
+export function ConsultationTemplatesDialog({ kind = 'consultation', initial, status, canEdit, onSave, onReload, onClose, onOpenSettings, sharedFields = [], onPublishField }: Props) {
   const { t, i18n } = useTranslation(['visitDocumentation', 'common', 'reportui', 'settings', 'library', 'app', 'forms']);
   const id = useId();
   const isDischarge = kind === 'discharge';
@@ -62,6 +65,11 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
   const [managing, setManaging] = useState(false);
   const [removed, setRemoved] = useState<{ id: string; section: NoteTemplateSection; index: number }>();
   const [announcement, setAnnouncement] = useState('');
+  const [publishing, setPublishing] = useState(false);
+  const [publishedFields, setPublishedFields] = useState<Partial<Record<ConsultationSection['id'], string>>>({});
+  const [publishStatus, setPublishStatus] = useState('');
+  const localId = (id: string): PracticeNoteField['id'] => isDischarge ? `dischargeCustom_${id}` : `consultationCustom_${id}`;
+
   const [sample, setSample] = useState('');
   const [importing, setImporting] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -117,7 +125,7 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
     const key = consultationSectionKey({ ...section, id: section.id });
     return section.label?.trim() || (key ? t(`${key}.label`) : t('consultation.templates.builder.customSection'));
   };
-  const newFieldId = (): PracticeNoteField['id'] => isDischarge ? `dischargeCustom_${crypto.randomUUID()}` as const : `consultationCustom_${crypto.randomUUID()}` as const;
+  const newFieldId = () => localId(crypto.randomUUID());
   const addTemplate = (template: Omit<PracticeConsultationTemplate, 'id'>) => {
     if (!canAddTemplate) return;
     const id = crypto.randomUUID();
@@ -160,6 +168,25 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
       const { label, guidance, example, suggestedText, inputType, options } = section;
       setDraft(updatePracticeNoteField(next, { ...shared, label: label ?? '', guidance, example, suggestedText, inputType, options }));
     } else setDraft(next);
+  };
+  const sharedFieldId = (id: ConsultationSection['id']) => publishedFields[id] ?? id.slice(id.indexOf('_') + 1);
+  const publishField = async (section: ConsultationSection) => {
+    if (!onPublishField || publishing) return;
+    const { label, guidance, inputType, options } = section;
+    const field = { id: sharedFieldId(section.id), label: label?.trim(), guidance, inputType, options };
+    const definition = parsePracticeChartField(field) ?? parsePracticeChartField({ ...field, id: crypto.randomUUID() });
+    if (!definition) return;
+    setPublishing(true);
+    setPublishStatus('');
+    try {
+      await onPublishField(definition);
+      setPublishedFields(previous => ({ ...previous, [section.id]: definition.id }));
+      setPublishStatus(t('practiceChartFields.published'));
+    } catch (error) {
+      setPublishStatus(friendlyError(error, t('practiceChartFields.saveFailed')));
+    } finally {
+      setPublishing(false);
+    }
   };
   const closePicker = () => {
     setAdding(false);
@@ -293,7 +320,7 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
       setSaving(false);
     }
   };
-  const canClose = () => savingRef.current ? false : !changed || confirmDialog({
+  const canClose = () => savingRef.current || publishing ? false : !changed || confirmDialog({
     title: t('consultation.templates.discard'),
     confirmLabel: t('common:actions.dismiss'),
   });
@@ -464,7 +491,7 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
                       <select className="ui-dialog__input" value={section.inputType ?? ''}
                         onChange={event => {
                           const inputType = (event.target.value || undefined) as ConsultationSection['inputType'];
-                          const options = inputType === 'radio' || inputType === 'multiselect' ? section.options ?? [''] : undefined;
+                          const options = isChoiceInput(inputType) ? section.options ?? [''] : undefined;
                           updateSection({ ...section, inputType, options });
                         }}>
                         <option value="">{t('consultation.templates.builder.inputTypes.paragraph')}</option>
@@ -504,6 +531,14 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
                       placeholder={property === 'guidance' && key ? t(`${key}.helper`) : property === 'example' ? example : undefined}
                       onChange={event => updateSection({ ...section, [property]: event.target.value || undefined })} />
                   </label>)}
+                  {!imageSection && onPublishField && isCustomNoteField(sectionId) && section.label?.trim() &&
+                    !sharedFields.some(field => field.id === sharedFieldId(sectionId)) && (
+                      <button type="button" className="ui-btn ui-btn--secondary"
+                        disabled={publishing || !valid}
+                        onClick={() => void publishField({ ...section, id: sectionId })}>
+                        {t('practiceChartFields.publish')}
+                      </button>
+                    )}
                   {!imageSection && <><label className="ui-dialog__label">{t('consultation.templates.builder.format')}
                     <select className="ui-dialog__input" value={section.format ?? FORMATS[0]}
                       onChange={event => updateSection({ ...section, format: event.target.value as ConsultationSection['format'] })}>
@@ -525,6 +560,7 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
             })}
           </ol>
           <div role="status" className="visually-hidden">{announcement}</div>
+          {publishStatus && <p className="visit-documentation__helper" role="status">{publishStatus}</p>}
           <div role="status" className="consultation-library__undo">
             {removed && removed.id === custom?.id && <span>{t('consultation.templates.builder.fieldRemoved', { field: sectionName(removed.section) })}</span>}
             {editSelected && removed && removed.id === custom?.id && !sections.some(section => section.id === removed.section.id)
@@ -568,7 +604,11 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
                   const gallery = { id: NOTE_IMAGES_ID } as const;
                   const builtIn = [...new Map([gallery, ...standardNoteFields(kind).map(id => ({ id })), ...(isDischarge ? consultationSections(DENTAL_RECOVERY) : consultationSections(starter))]
                     .map(section => [section.id, section])).values()].filter(matching);
-                  const shared = practiceFields.filter(field => !field.archived && matching(field));
+                  const shared = [
+                    ...practiceFields.filter(field => !field.archived),
+                    ...sharedFields.filter(field => !practiceFields.some(local => local.id === localId(field.id)))
+                      .map(field => ({ ...field, id: localId(field.id) })),
+                  ].filter(matching);
                   const group = (heading: string, entries: readonly NoteTemplateSection[]) => entries.length > 0 && <div>
                     <h4>{heading}</h4>
                     <ul className="consultation-library__field-list">{entries.map(section => {

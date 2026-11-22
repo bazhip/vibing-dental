@@ -34,6 +34,22 @@ async function capture(p: PatientInfo = patient, species: Species = 'canine', la
   return { post, texts: texts.filter(t => t.page === post.page), bytes, allTexts: texts };
 }
 
+it('prints recorded practice answers on clinical continuation pages with page headings', async () => {
+  const practiceChartFields: NonNullable<PatientInfo['practiceChartFields']> = [
+    { page: 'patient', field: { id: '3b71a1c4-dc76-4b3c-9edd-b441b727ef01', label: 'Arrival weight' }, value: '4.2 kg' },
+    { page: 'images', field: { id: '3b71a1c4-dc76-4b3c-9edd-b441b727ef04', label: 'Comparison study' }, value: 'Baseline study' },
+  ];
+  const { allTexts, bytes } = await capture({ ...patient, practiceChartFields });
+  for (const [value, heading] of [['4.2 kg', 'patient'], ['Baseline study', 'imaging']]) {
+    const printed = allTexts.find(line => line.text.includes(value));
+    expect(printed).toBeDefined();
+    expect(allTexts.some(line => line.page === printed?.page && line.text.toLowerCase() === heading)).toBe(true);
+  }
+  const doc = await PDFDocument.load(bytes);
+  const stashed = doc.getForm().getTextField(DIAGRAM_STATE_FIELD).getText();
+  expect(JSON.parse(stashed!).patientInfo.practiceChartFields).toEqual(practiceChartFields);
+});
+
 describe('procedure diagram available region', () => {
   it.each<Species>(['canine', 'canine-deciduous', 'feline', 'feline-deciduous', 'equine'])('centers %s in the full left column without anesthesia', async species => {
     const { post, texts } = await capture(patient, species);
