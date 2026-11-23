@@ -1,5 +1,13 @@
 {
   "patient": {
+    "layout": {
+      "moveTo": "Áthelyezés szakaszba",
+      "editField": "Mező szerkesztése",
+      "fieldType": "Mezőtípus",
+      "options": "Lehetőségek (soronként egy)",
+      "limit": "Az elrendezés megtelt. Távolítson el egy szakaszt, vagy rövidítse a mezők lehetőségeit.",
+      "recorded": "Rögzített mezők"
+    },
     "title": "Páciens adatai",
     "customize": "Testreszabás",
     "customizeTitle": "Az oldalon megjelenő mezők",

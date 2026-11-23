@@ -186,7 +186,7 @@
     "patient": {
       "title": "患者页面",
       "hideRecheck": "隐藏“复查到期”字段",
-      "visibilityNote": "选择要显示的字段。已填写的宠物主人和技师字段仍会显示。"
+      "visibilityNote": "排列患者页面的分区和字段。已有记录值的字段会继续显示。"
     },
     "pdf": {
       "title": "PDF",

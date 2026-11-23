@@ -300,6 +300,7 @@ describe('Chart settings opened from a chart page in the app', () => {
     const sheet = screen.getByRole('dialog');
     expect(sheet.closest('.ios-sheet-root')).not.toBeNull();
     expect(within(sheet).getByRole('heading', { name: 'Patient page settings' })).toBeInTheDocument();
+    fireEvent.click(within(sheet).getByRole('button', { name: 'Visit details' }));
     fireEvent.click(within(sheet).getByRole('button', { name: 'Remove Recheck due' }));
     expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ hideRecheck: true }));
     expect(within(sheet).queryByRole('checkbox')).toBeNull();

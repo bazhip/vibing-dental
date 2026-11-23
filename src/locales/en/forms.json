@@ -1,5 +1,13 @@
 {
   "patient": {
+    "layout": {
+      "moveTo": "Move to section",
+      "editField": "Edit field",
+      "fieldType": "Field type",
+      "options": "Options (one per line)",
+      "limit": "This layout is full. Remove a section or shorten the field options.",
+      "recorded": "Recorded fields"
+    },
     "title": "Patient information",
     "customize": "Customize",
     "customizeTitle": "Fields shown on this page",

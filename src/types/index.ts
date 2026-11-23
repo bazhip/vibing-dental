@@ -272,6 +272,7 @@ export interface CustomAnesthesia {
 
 export interface PracticeChartFieldAnswer {
   page: PracticeChartPage;
+  origin?: 'patientLayout';
   /** Definition as shown when the answer was recorded. */
   field: SharedPracticeField;
   value: string;

@@ -186,7 +186,7 @@
     "patient": {
       "title": "Pagina Pacient",
       "hideRecheck": "Ascundeți câmpul Data controlului",
-      "visibilityNote": "Alegeți câmpurile de afișat. Câmpurile despre proprietar și asistentul veterinar care conțin deja informații rămân vizibile."
+      "visibilityNote": "Aranjați secțiunile și câmpurile din pagina Pacient. Câmpurile cu valori înregistrate rămân vizibile."
     },
     "pdf": {
       "title": "PDF",

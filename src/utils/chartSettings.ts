@@ -7,6 +7,7 @@ import { CustomExamAreaDef, normalizeExamAreaDefs } from './customExam';
 import { parseExamLayout, type ExamLayoutField } from './examLayout';
 import type { PocketMode } from './pocket';
 import { IMAGING_REPORT_KINDS, type ImagingReportKind } from './consultationTemplates';
+import { parsePatientLayout, type PatientLayout } from './patientLayout';
 
 /**
  * Chart settings — per person. They follow the signed-in account on every
@@ -91,6 +92,7 @@ export interface ChartPrefs {
   hideRecheck: boolean;
   hiddenPatientFields: OptionalPatientField[];
   patientFieldOrder: PatientLayoutField[];
+  patientLayout?: PatientLayout;
   /** Space in a grid cell moves down to the next tooth (for calling out
    *  a run of depths) instead of typing a space. */
   spaceMovesDown: boolean;
@@ -198,6 +200,7 @@ export function normalizeChartPrefs(raw: unknown, fallback: ChartPrefs = DEFAULT
     imagingReportOrder: orderedFields(r.imagingReportOrder, IMAGING_REPORT_KINDS, fallback.imagingReportOrder),
     hideRecheck: bool(r.hideRecheck, fallback.hideRecheck),
     hiddenPatientFields: Array.isArray(r.hiddenPatientFields) ? [...new Set(r.hiddenPatientFields.filter((key): key is OptionalPatientField => PATIENT_FIELD_OPTIONS.includes(key as OptionalPatientField)))] : fallback.hiddenPatientFields,
+    patientLayout: parsePatientLayout(r.patientLayout) ?? fallback.patientLayout,
     patientFieldOrder: orderedFields([...orderedFields(r.patientFieldOrder, PATIENT_LAYOUT_FIELDS, fallback.patientFieldOrder), ...PATIENT_LAYOUT_FIELDS], PATIENT_LAYOUT_FIELDS, PATIENT_LAYOUT_FIELDS),
     spaceMovesDown: bool(r.spaceMovesDown, fallback.spaceMovesDown),
     scorePicker: r.scorePicker === 'touch' || r.scorePicker === 'always' || r.scorePicker === 'never' ? r.scorePicker : fallback.scorePicker,

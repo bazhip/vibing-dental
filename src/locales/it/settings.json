@@ -186,7 +186,7 @@
     "patient": {
       "title": "Pagina Paziente",
       "hideRecheck": "Nascondi il campo Controllo previsto",
-      "visibilityNote": "Scelga quali campi mostrare. I campi del proprietario e del tecnico veterinario con informazioni registrate restano visibili."
+      "visibilityNote": "Organizzi le sezioni e i campi della Sua pagina Paziente. I campi con valori registrati rimangono visibili."
     },
     "pdf": {
       "title": "PDF",

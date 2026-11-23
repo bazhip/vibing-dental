@@ -296,3 +296,13 @@ html:not(.native-ios) .sidebar-layout__main[data-active-section="treatment"] { m
 @media (max-width: 600px) {
   .patient-form__history { min-height: 44px; }
 }
+
+
+.patient-form__layout-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  align-items: start;
+  gap: 16px;
+}
+.patient-form__layout-grid > * { min-width: 0; }
+.patient-form__layout-grid > .patient-form__complaint { grid-column: 1 / -1; }

@@ -1,5 +1,5 @@
 import { DEFAULT_EXAM_LAYOUT } from '../utils/examLayout';
-import { render, screen, fireEvent, within, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 import { ChartSettingsModal } from './ChartSettingsModal';
 import { DEFAULT_CHART_PREFS, ChartPrefs } from '../utils/chartSettings';
@@ -19,6 +19,7 @@ describe('ChartSettingsModal', () => {
       expect(screen.getAllByRole('checkbox', { name })[0]).toBeChecked();
     }
     fireEvent.click(screen.getByRole('button', { name: 'Patient details' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Visit details' }));
     expect(screen.getByRole('button', { name: 'Remove Recheck due' })).toBeInTheDocument();
   });
 
@@ -34,8 +35,10 @@ describe('ChartSettingsModal', () => {
     fireEvent.click(screen.getAllByRole('checkbox', { name: 'Recession' })[0]);
     expect(onChange).toHaveBeenLastCalledWith({ hiddenColumns: ['recession'] });
     fireEvent.click(screen.getByRole('button', { name: 'Patient details' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Owner details' }));
     fireEvent.click(screen.getByRole('button', { name: 'Remove Owner email' }));
     expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ hiddenPatientFields: ['ownerEmail'] }));
+    fireEvent.click(screen.getByRole('button', { name: 'Visit details' }));
     fireEvent.click(screen.getByRole('button', { name: 'Remove Recheck due' }));
     expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ hideRecheck: true }));
     fireEvent.click(screen.getByRole('button', { name: 'Charting' }));
@@ -104,11 +107,12 @@ describe('ChartSettingsModal — each page\'s Customize shows only its settings'
 
   it('Patient: groups owner fields separately from visit fields', () => {
     open('patient');
-    const owner = within(screen.getByRole('region', { name: 'Owner details' }));
-    const visit = within(screen.getByRole('region', { name: 'Visit details' }));
-    expect(owner.getByRole('button', { name: 'Remove Owner email' })).toBeInTheDocument();
-    expect(visit.getByRole('button', { name: 'Remove Technician' })).toBeInTheDocument();
-    expect(visit.getByRole('button', { name: 'Remove Recheck due' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Owner details' }));
+    expect(screen.getByRole('button', { name: 'Remove Owner email' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Remove Technician' })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Visit details' }));
+    expect(screen.getByRole('button', { name: 'Remove Technician' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Remove Recheck due' })).toBeInTheDocument();
     expect(present('One per tooth', 'radio')).toBe(false);
     expect(present('Caudal maxillary')).toBe(false);
   });
@@ -151,6 +155,7 @@ it('offers persistent categories and saves a draft when changing categories', ()
   fireEvent.change(screen.getByRole('combobox', { name: 'Preferred local anesthetic' }), { target: { value: 'Lidocaine' } });
   fireEvent.click(screen.getByRole('button', { name: 'Patient details' }));
   expect(onChange).toHaveBeenCalledWith({ usualDrug: { name: 'Lidocaine', concentration: '' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Visit details' }));
   expect(screen.getByRole('button', { name: 'Remove Recheck due' })).toBeInTheDocument();
   expect(screen.getByRole('button', { name: 'Done' })).toBeInTheDocument();
 });
@@ -167,6 +172,7 @@ it('keeps the final chart column enabled and forces PDF grid when diagram findin
 it('switches categories with the compact mobile selector', () => {
   setup();
   fireEvent.change(screen.getByRole('combobox', { name: 'Chart settings categories' }), { target: { value: 'patient' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Visit details' }));
   expect(screen.getByRole('button', { name: 'Remove Recheck due' })).toBeInTheDocument();
 });
 
