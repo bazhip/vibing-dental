@@ -3,7 +3,7 @@ import { visitTypeOf, type VisitType } from './utils/visitTypes';
 import { useConsultationLibrary } from './hooks/useConsultationLibrary';
 import { usePracticeChartFields } from './hooks/usePracticeChartFields';
 import { PRACTICE_CHART_FIELD_LIMIT, type PracticeChartPage, type SharedPracticeField } from './utils/practiceChartFields';
-import { CONSULTATION_FIELDS, isUnmodifiedStandardDischarge, consultationLayoutFor, dischargeLayoutFor, isCustomConsultationField, isCustomDischargeField } from './utils/consultationTemplates';
+import { CONSULTATION_FIELDS, IMAGING_REPORT_KINDS, isUnmodifiedStandardDischarge, consultationLayoutFor, dischargeLayoutFor, isCustomConsultationField, isCustomDischargeField } from './utils/consultationTemplates';
 import { ConsultationTemplatesDialog } from './components/ConsultationTemplatesDialog';
 import { Icon } from './ios/icons';
 import { CustomizeButton } from './components/CustomizeButton';
@@ -16,6 +16,7 @@ import { previousMedicationVisit, sameMedicationPatient, type PreviousMedication
 import { clinicalDictationLayout, allowedClinicalFields } from './utils/clinicalDictationAi';
 import { LocalizedError } from './utils/apiErrors';
 import type { ClinicalDictationKind, ClinicalDictationSource } from './types';
+import { ctRecordedText } from './utils/ctReportState';
 import { appendRadiologyDictation, radiologyRecordedText } from './utils/radiologyReportState';
 import { VisitDocumentationSection } from './components/VisitDocumentationSection';
 import { PracticeChartFields } from './components/PracticeChartFields';
@@ -1371,6 +1372,10 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     return action?.name === 'set_tooth_field' ? [`${action.input.triadan}:${action.input.field}`] : [];
   })), [chart.voiceReviews]);
   const chartReviewFocus = reviewFocus?.session === chart.chartSession ? reviewFocus : undefined;
+  const imagingReports = [...prefs.imagingReportOrder, ...IMAGING_REPORT_KINDS.filter(kind => {
+    const recorded = kind === 'ct' ? ctRecordedText(chart.patientInfo) : radiologyRecordedText(chart.patientInfo);
+    return !prefs.imagingReportOrder.includes(kind) && recorded.trim();
+  })];
   const renderPracticeFields = (page: PracticeChartPage) => (
     <PracticeChartFields
       fields={sharedPracticeFields.config.pages[page] ?? []}
@@ -1406,6 +1411,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           onReviewHistory={hasPriorVisits ? openRecordHistory : undefined}
           hideRecheck={prefs.hideRecheck}
           hiddenFields={prefs.hiddenPatientFields}
+          fieldOrder={prefs.patientFieldOrder}
           onCustomize={native ? undefined : () => openChartSettings('patient')}
         />
         {renderPracticeFields(PRACTICE_FIELD_PAGE.patient)}
@@ -1641,29 +1647,23 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         />
         <ImageHistory visits={imageHistoryVisits} onOpenVisit={switchVisit} toothLabel={imageToothLabel} />
         <div className="imaging-reports">
-          <div>
-          {lock(<RadiologyReportSection chartEditor
-            snapshot={{ ...chart.getSnapshot(), patientInfo: { ...chart.patientInfo,
-              radiologyReport: chart.patientInfo.radiographicFindings ?? chart.patientInfo.radiologyReport ?? '', radiographicFindings: '' } }}
-            chartId={chart.cloudChartId} chartSession={chart.chartSession} readOnly={readOnly}
-            reportLabel={imagingReportFields?.radiology?.label}
-            starterText={!chart.openedExisting && chart.patientInfo.radiographicFindings === undefined && chart.patientInfo.radiologyReport === undefined
-              ? imagingReportFields?.radiology?.starterText : undefined}
-            preferredLanguage={prefs.imagingReportLanguage}
-            aiEnabled={profile.aiEnabled && !trial && cloud.enabled}
-            refineRequest={radiologyRefineRequest?.session === radiologySession ? radiologyRefineRequest : undefined}
-            onChange={changes => chart.setPatientInfo(prev => ({ ...prev, ...changes,
-              ...(Object.hasOwn(changes, 'radiologyReport') ? { radiographicFindings: changes.radiologyReport } : {}) }))} />)}
-          </div>
-          <div>
-          {lock(<RadiologyReportSection chartEditor reportKind={CLINICAL_WORKFLOWS.ct} snapshot={chart.getSnapshot()}
-            chartId={chart.cloudChartId} chartSession={chart.chartSession} readOnly={readOnly}
-            reportLabel={imagingReportFields?.ct?.label}
-            starterText={!chart.openedExisting && chart.patientInfo.ctReport === undefined ? imagingReportFields?.ct?.starterText : undefined}
-            preferredLanguage={prefs.imagingReportLanguage}
-            aiEnabled={profile.aiEnabled && !trial && cloud.enabled} showAiNotice={false}
-            onChange={changes => chart.setPatientInfo(prev => ({ ...prev, ...changes }))} />)}
-          </div>
+          {imagingReports.map(kind => <div key={kind}>
+            {lock(<RadiologyReportSection chartEditor reportKind={kind} snapshot={kind === 'ct' ? chart.getSnapshot() : {
+              ...chart.getSnapshot(), patientInfo: { ...chart.patientInfo,
+                radiologyReport: chart.patientInfo.radiographicFindings ?? chart.patientInfo.radiologyReport ?? '', radiographicFindings: '' },
+            }}
+              chartId={chart.cloudChartId} chartSession={chart.chartSession} readOnly={readOnly}
+              reportLabel={imagingReportFields?.[kind]?.label}
+              starterText={!chart.openedExisting && (kind === 'ct' ? chart.patientInfo.ctReport === undefined
+                : chart.patientInfo.radiographicFindings === undefined && chart.patientInfo.radiologyReport === undefined)
+                ? imagingReportFields?.[kind]?.starterText : undefined}
+              preferredLanguage={prefs.imagingReportLanguage}
+              aiEnabled={profile.aiEnabled && !trial && cloud.enabled} showAiNotice={kind === 'radiology'}
+              refineRequest={kind === 'radiology' && radiologyRefineRequest?.session === radiologySession ? radiologyRefineRequest : undefined}
+              onChange={changes => chart.setPatientInfo(prev => ({ ...prev, ...changes,
+                ...(kind === 'radiology' && Object.hasOwn(changes, 'radiologyReport') ? { radiographicFindings: changes.radiologyReport } : {}),
+              }))} />)}
+          </div>)}
         </div>
         {renderPracticeFields(PRACTICE_FIELD_PAGE.images)}
         </>
@@ -2234,6 +2234,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           initial={imagingLibrary.config} status={imagingLibrary.status}
           canEdit={practiceTeam.practice?.id === profile.practiceId && practiceTeam.role === 'owner'}
           onSave={imagingLibrary.save} onReload={imagingLibrary.reload}
+          imagingReportOrder={prefs.imagingReportOrder} onImagingOrderChange={imagingReportOrder => setPref({ imagingReportOrder })}
+          imagingPracticeFields={practiceFieldSettings}
           onClose={() => setImagingTemplatesPractice(null)} onOpenSettings={() => openChartSettings('images')} />
       )}
       {(previewSnapshot || consultationOn) && previewVisitSession === chart.chartSession && (

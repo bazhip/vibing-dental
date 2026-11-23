@@ -185,7 +185,7 @@
     },
     "layout": {
       "title": "Personalizar diagnóstico por imagen",
-      "intro": "Defina las etiquetas y el texto inicial de los informes para las nuevas visitas.",
+      "intro": "Organice los informes de su cuenta. El orden y la visibilidad se guardan automáticamente. Los propietarios de la clínica pueden guardar los nombres y textos iniciales compartidos.",
       "help": "Cómo personalizar el diagnóstico por imagen",
       "starterText": "Texto inicial"
     }

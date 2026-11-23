@@ -184,7 +184,7 @@
     },
     "layout": {
       "title": "Bildgebung anpassen",
-      "intro": "Legen Sie die Beschriftungen und den Starttext der Befunde für neue Besuche fest.",
+      "intro": "Ordnen Sie die Berichte für Ihr Konto an. Reihenfolge und Sichtbarkeit werden automatisch gespeichert. Praxisinhaber können gemeinsame Bezeichnungen und Starttexte speichern.",
       "help": "Bildgebung anpassen",
       "starterText": "Starttext"
     }

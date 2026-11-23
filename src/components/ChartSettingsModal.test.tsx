@@ -19,7 +19,7 @@ describe('ChartSettingsModal', () => {
       expect(screen.getAllByRole('checkbox', { name })[0]).toBeChecked();
     }
     fireEvent.click(screen.getByRole('button', { name: 'Patient details' }));
-    expect(screen.getByRole('checkbox', { name: 'Show the Recheck due field' })).toBeChecked();
+    expect(screen.getByRole('button', { name: 'Remove Recheck due' })).toBeInTheDocument();
   });
 
   it('says the settings follow the account', () => {
@@ -34,10 +34,10 @@ describe('ChartSettingsModal', () => {
     fireEvent.click(screen.getAllByRole('checkbox', { name: 'Recession' })[0]);
     expect(onChange).toHaveBeenLastCalledWith({ hiddenColumns: ['recession'] });
     fireEvent.click(screen.getByRole('button', { name: 'Patient details' }));
-    fireEvent.click(screen.getByRole('checkbox', { name: 'Owner email' }));
-    expect(onChange).toHaveBeenLastCalledWith({ hiddenPatientFields: ['ownerEmail'] });
-    fireEvent.click(screen.getByRole('checkbox', { name: 'Show the Recheck due field' }));
-    expect(onChange).toHaveBeenLastCalledWith({ hideRecheck: true });
+    fireEvent.click(screen.getByRole('button', { name: 'Remove Owner email' }));
+    expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ hiddenPatientFields: ['ownerEmail'] }));
+    fireEvent.click(screen.getByRole('button', { name: 'Remove Recheck due' }));
+    expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ hideRecheck: true }));
     fireEvent.click(screen.getByRole('button', { name: 'Charting' }));
     fireEvent.click(screen.getByRole('radio', { name: 'By tooth' }));
     expect(onChange).toHaveBeenLastCalledWith({ chartingView: 'tooth' });
@@ -104,11 +104,11 @@ describe('ChartSettingsModal — each page\'s Customize shows only its settings'
 
   it('Patient: groups owner fields separately from visit fields', () => {
     open('patient');
-    const owner = within(screen.getByRole('group', { name: 'Owner details' }));
-    const visit = within(screen.getByRole('group', { name: 'Visit details' }));
-    expect(owner.getByRole('checkbox', { name: 'Owner email' })).toBeChecked();
-    expect(visit.getByRole('checkbox', { name: 'Technician' })).toBeChecked();
-    expect(visit.getByRole('checkbox', { name: 'Show the Recheck due field' })).toBeChecked();
+    const owner = within(screen.getByRole('region', { name: 'Owner details' }));
+    const visit = within(screen.getByRole('region', { name: 'Visit details' }));
+    expect(owner.getByRole('button', { name: 'Remove Owner email' })).toBeInTheDocument();
+    expect(visit.getByRole('button', { name: 'Remove Technician' })).toBeInTheDocument();
+    expect(visit.getByRole('button', { name: 'Remove Recheck due' })).toBeInTheDocument();
     expect(present('One per tooth', 'radio')).toBe(false);
     expect(present('Caudal maxillary')).toBe(false);
   });
@@ -151,7 +151,7 @@ it('offers persistent categories and saves a draft when changing categories', ()
   fireEvent.change(screen.getByRole('combobox', { name: 'Preferred local anesthetic' }), { target: { value: 'Lidocaine' } });
   fireEvent.click(screen.getByRole('button', { name: 'Patient details' }));
   expect(onChange).toHaveBeenCalledWith({ usualDrug: { name: 'Lidocaine', concentration: '' } });
-  expect(screen.getByRole('checkbox', { name: 'Show the Recheck due field' })).toBeChecked();
+  expect(screen.getByRole('button', { name: 'Remove Recheck due' })).toBeInTheDocument();
   expect(screen.getByRole('button', { name: 'Done' })).toBeInTheDocument();
 });
 
@@ -167,7 +167,7 @@ it('keeps the final chart column enabled and forces PDF grid when diagram findin
 it('switches categories with the compact mobile selector', () => {
   setup();
   fireEvent.change(screen.getByRole('combobox', { name: 'Chart settings categories' }), { target: { value: 'patient' } });
-  expect(screen.getByRole('checkbox', { name: 'Show the Recheck due field' })).toBeChecked();
+  expect(screen.getByRole('button', { name: 'Remove Recheck due' })).toBeInTheDocument();
 });
 
 it('edits the exam layout inside Chart settings and keeps the draft across categories', async () => {

@@ -2,6 +2,8 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { useReorderList } from '../hooks/useReorderList';
+import { ChartLayoutRows } from './ChartLayoutRows';
+import { PracticeFieldEditor, type PracticeFieldDismiss, type PracticeFieldLibrarySettings } from './PracticeFieldEditor';
 import { ReorderHandle } from './ui/ReorderHandle';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
@@ -14,13 +16,14 @@ import {
   noteLibraryVersion, noteTemplateSections, splitNoteTemplateSections, NOTE_IMAGES_ID, CONSULTATION_TEMPLATE_LIMIT, CONSULTATION_TEMPLATE_NAME_LIMIT,
   CONSULTATION_SECTION_LIMIT, PRACTICE_NOTE_FIELD_LIMIT, practiceNoteFields, updatePracticeNoteField, consultationHeadings, consultationChoices, consultationLibraryFits, consultationSectionKey, consultationSections, dentalSectionKey, isCustomNoteField, isCustomDischargeField, standardNoteFields, defaultNoteLayout, dischargeStarterNameKey, DISCHARGE_RECOVERY_ACTIVITY, DENTAL_RECOVERY, STANDARD_DISCHARGE,
   consultationStarterNameKey, isNoteStarter, noteStarterName, canConfigureNoteInput, isChoiceInput, NOTE_INPUT_TYPES, NOTE_OPTION_LIMIT, NOTE_OPTION_LENGTH, parseConsultationLibrary, IMAGING_REPORT_KINDS, IMAGING_STARTER_TEXT_LIMIT,
-  type PracticeNoteField, type NoteTemplateKind, type NoteTemplateSection, type ConsultationSection, type ConsultationLayout, type ConsultationLibrary, type PracticeConsultationTemplate,
+  type ImagingReportKind, type PracticeNoteField, type NoteTemplateKind, type NoteTemplateSection, type ConsultationSection, type ConsultationLayout, type ConsultationLibrary, type PracticeConsultationTemplate,
 } from '../utils/consultationTemplates';
 
 const SECTION_TEXT_SETTINGS = ['guidance', 'example', 'suggestedText'] as const;
 const IMAGE_TEXT_SETTINGS = ['guidance'] as const;
 const FORMATS = ['paragraph', 'bullets'] as const;
 const DETAIL_LEVELS = ['concise', 'detailed'] as const;
+const IMAGING_PAGE = 'images';
 
 interface Props {
   kind?: NoteTemplateKind;
@@ -31,11 +34,14 @@ interface Props {
   onReload: () => void;
   onClose: () => void;
   onOpenSettings?: () => void;
+  imagingReportOrder?: readonly ImagingReportKind[];
+  onImagingOrderChange?: (order: ImagingReportKind[]) => void;
+  imagingPracticeFields?: PracticeFieldLibrarySettings;
   sharedFields?: readonly SharedPracticeField[];
   onPublishField?: (field: SharedPracticeField) => Promise<void>;
 }
 
-export function ConsultationTemplatesDialog({ kind = 'consultation', initial, status, canEdit, onSave, onReload, onClose, onOpenSettings, sharedFields = [], onPublishField }: Props) {
+export function ConsultationTemplatesDialog({ kind = 'consultation', initial, status, canEdit, onSave, onReload, onClose, onOpenSettings, imagingReportOrder = IMAGING_REPORT_KINDS, onImagingOrderChange, imagingPracticeFields, sharedFields = [], onPublishField }: Props) {
   const { t, i18n } = useTranslation(['visitDocumentation', 'common', 'reportui', 'settings', 'library', 'app', 'forms']);
   const id = useId();
   const isDischarge = kind === 'discharge';
@@ -43,6 +49,7 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
   const starter = defaultNoteLayout(kind);
   const native = isNativeApp();
   const focus = useModalFocus(!native);
+  const fieldsDismiss = useRef<PracticeFieldDismiss | null>(null);
   const [edits, setDraft] = useState<ConsultationLibrary>();
   const draft = edits ?? initial;
   const [choice, setSelectedId] = useState<string>();
@@ -320,10 +327,13 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
       setSaving(false);
     }
   };
-  const canClose = () => savingRef.current || publishing ? false : !changed || confirmDialog({
-    title: t('consultation.templates.discard'),
-    confirmLabel: t('common:actions.dismiss'),
-  });
+  const canClose = async () => {
+    if (savingRef.current || publishing || !(await (fieldsDismiss.current?.() ?? true))) return false;
+    return !changed || confirmDialog({
+      title: t('consultation.templates.discard'),
+      confirmLabel: t('common:actions.dismiss'),
+    });
+  };
   const close = async () => { if (await canClose()) onClose(); };
   const backdrop = useBackdropDismiss(() => void close());
 
@@ -351,27 +361,30 @@ export function ConsultationTemplatesDialog({ kind = 'consultation', initial, st
         <button type="button" className="ui-btn ui-btn--secondary" onClick={onReload}>{t('common:actions.tryAgain')}</button>
       </div>}
       {isImaging ? <div className="consultation-library__imaging-fields">
-        {IMAGING_REPORT_KINDS.map(kind => {
-          const defaultTitle = t(kind === 'ct' ? 'app:ct.title' : 'app:radiographic.title');
-          const field = draft.imagingReportFields?.[kind];
-          const updateField = (name: 'label' | 'starterText', value: string) => setDraft({
-            ...draft, imagingReportFields: { ...draft.imagingReportFields, [kind]: { ...field, [name]: value } },
-          });
-          return <details key={kind} className="consultation-library__settings">
-            <summary><bdi>{field?.label?.trim() || defaultTitle}</bdi></summary>
-            <label className="ui-dialog__label">
-              {t('consultation.templates.builder.sectionLabel')}
-              <input className="ui-dialog__input" dir="auto" maxLength={CONSULTATION_TEMPLATE_NAME_LIMIT}
-                value={field?.label ?? ''} placeholder={defaultTitle} readOnly={!editable}
-                onChange={event => updateField('label', event.target.value)} />
-            </label>
-            <label className="ui-dialog__label">
-              {t('imaging.layout.starterText')}
-              <textarea className="ui-dialog__input" dir="auto" rows={4} maxLength={IMAGING_STARTER_TEXT_LIMIT}
-                value={field?.starterText ?? ''} readOnly={!editable} onChange={event => updateField('starterText', event.target.value)} />
-            </label>
-          </details>;
-        })}
+        <ChartLayoutRows fields={imagingReportOrder} available={IMAGING_REPORT_KINDS}
+          label={kind => draft.imagingReportFields?.[kind]?.label?.trim() || t(kind === 'ct' ? 'app:ct.title' : 'app:radiographic.title')}
+          onChange={onImagingOrderChange}
+          edit={kind => {
+            const defaultTitle = t(kind === 'ct' ? 'app:ct.title' : 'app:radiographic.title');
+            const field = draft.imagingReportFields?.[kind];
+            const updateField = (name: 'label' | 'starterText', value: string) => setDraft({
+              ...draft, imagingReportFields: { ...draft.imagingReportFields, [kind]: { ...field, [name]: value } },
+            });
+            return <>
+              <label className="ui-dialog__label">
+                {t('consultation.templates.builder.sectionLabel')}
+                <input className="ui-dialog__input" dir="auto" maxLength={CONSULTATION_TEMPLATE_NAME_LIMIT}
+                  value={field?.label ?? ''} placeholder={defaultTitle} readOnly={!editable}
+                  onChange={event => updateField('label', event.target.value)} />
+              </label>
+              <label className="ui-dialog__label">
+                {t('imaging.layout.starterText')}
+                <textarea className="ui-dialog__input" dir="auto" rows={4} maxLength={IMAGING_STARTER_TEXT_LIMIT}
+                  value={field?.starterText ?? ''} readOnly={!editable} onChange={event => updateField('starterText', event.target.value)} />
+              </label>
+            </>;
+          }} />
+        {imagingPracticeFields && <PracticeFieldEditor {...imagingPracticeFields} page={IMAGING_PAGE} dismissGuard={fieldsDismiss} />}
       </div> : <div className="consultation-library__layout">
         <div className="consultation-library__list">
           <span id={`${id}-picker`} className="patient-form__label">{t('consultation.templates.label')}</span>

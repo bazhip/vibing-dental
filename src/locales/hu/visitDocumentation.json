@@ -184,7 +184,7 @@
     },
     "layout": {
       "title": "Képalkotás testreszabása",
-      "intro": "Adja meg az új vizitek leleteinek címkéit és kezdőszövegét.",
+      "intro": "Rendezze el a jelentéseket a fiókjához. A sorrend és a láthatóság automatikusan mentésre kerül. A rendelő tulajdonosai menthetik a közös címkéket és kezdőszövegeket.",
       "help": "A képalkotás testreszabása",
       "starterText": "Kezdőszöveg"
     }

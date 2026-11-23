@@ -16,6 +16,16 @@ test('Recheck due shows by default and hides with the personal setting', () => {
   expect(screen.queryByLabelText(/Set the recheck date/)).not.toBeInTheDocument();
 });
 
+test('keeps recorded rechecks and uses the configured order of owner fields', () => {
+  render(<PatientForm patientInfo={{ ...info, recallDate: '2026-12-12' }} species="canine"
+    onPatientInfoChange={() => {}} onSpeciesChange={() => {}} hideRecheck
+    fieldOrder={['ownerEmail', 'ownerName', 'ownerPhone', 'tech', 'recallDate']} />);
+  expect(screen.getByLabelText('Recheck due')).toHaveValue('2026-12-12');
+  const former = screen.getByLabelText('Owner email');
+  const latter = screen.getByLabelText('Owner name');
+  expect(former.compareDocumentPosition(latter) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+});
+
  test('optional fields hide only when empty and retain recorded information', () => {
   const props = { species: 'canine' as const, onPatientInfoChange: () => {}, onSpeciesChange: () => {}, hiddenFields: ['ownerName', 'ownerPhone', 'ownerEmail', 'tech'] as const };
   const { rerender } = render(<PatientForm {...props} hiddenFields={[...props.hiddenFields]} patientInfo={info} />);

@@ -14,8 +14,9 @@ import { ExamLayoutEditor, type ExamLayoutDismiss, type ExamLayoutSettings } fro
 import { SCORE_PICKER_OPTIONS, BLOCK_ROW_OPTIONS, ChartPrefs, PERIO_FIELDS } from '../utils/chartSettings';
 import { isNativeApp } from '../native/platform';
 import { Sheet } from '../ios/Sheet';
+import { ImagingLayoutRows, PatientLayoutRows } from './ChartLayoutRows';
 import { ChartSettingsList } from './ChartSettingsList';
-import { PATIENT_SETTINGS_GROUPS, USUAL_ADJUNCTS, USUAL_DRUGS, toggleField, useChartSettingsModel } from './useChartSettingsModel';
+import { USUAL_ADJUNCTS, USUAL_DRUGS, toggleField, useChartSettingsModel } from './useChartSettingsModel';
 import { ADJUNCT_DRUGS, drugUnit, strengthHasUnit } from '../types';
 
 /**
@@ -406,29 +407,12 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
           </section>
 
           <section className="chart-settings__group chart-customization__modules" hidden={!show.patient}>
-            {PATIENT_SETTINGS_GROUPS.map(({ id: group, fields }) => (
-              <fieldset key={group} className="chart-settings__field chart-customization__module">
-                <legend>{t(`patient.${group}`, { ns: 'forms' })}</legend>
-                <div className="chart-customization__choices">
-                  {fields.map((field) => (
-                    <label key={field} className="chart-settings__choice choice-row">
-                      <input type="checkbox" checked={!prefs.hiddenPatientFields.includes(field)} onChange={(e) => onChange({ hiddenPatientFields: toggleField(prefs.hiddenPatientFields, field, !e.target.checked) })} />
-                      {t(`patient.${field}`, { ns: 'forms' })}
-                    </label>
-                  ))}
-                  {group === 'visitGroup' && (
-                    <label className="chart-settings__choice choice-row">
-                      <input type="checkbox" checked={!prefs.hideRecheck} onChange={(e) => onChange({ hideRecheck: !e.target.checked })} />
-                      {t('chart.customization.showRecheck')}
-                    </label>
-                  )}
-                </div>
-              </fieldset>
-            ))}
+            {show.patient && <PatientLayoutRows prefs={prefs} onChange={onChange} />}
           </section>
 
           {show.pdfImages && (
             <section className="chart-settings__group">
+              <ImagingLayoutRows prefs={prefs} onChange={onChange} />
               <label className="chart-settings__imaging-language">
                 {t('radiologyReport.editorLanguage', { ns: 'app' })}
                 <select className="patient-form__input" value={prefs.imagingReportLanguage ?? ''} onChange={event => {

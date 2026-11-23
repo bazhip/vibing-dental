@@ -294,14 +294,14 @@ describe('Settings tab screens', () => {
 });
 
 describe('Chart settings opened from a chart page in the app', () => {
-  it('is an iOS sheet with the settings list (switches, not checkboxes)', () => {
+  it('is an iOS sheet with the Patient field layout editor', () => {
     const onChange = vi.fn();
     render(<ChartSettingsModal onClose={() => {}} prefs={DEFAULT_CHART_PREFS} followsAccount onChange={onChange} section="patient" />);
     const sheet = screen.getByRole('dialog');
     expect(sheet.closest('.ios-sheet-root')).not.toBeNull();
     expect(within(sheet).getByRole('heading', { name: 'Patient page settings' })).toBeInTheDocument();
-    fireEvent.click(within(sheet).getByRole('switch', { name: 'Show the Recheck due field' }));
-    expect(onChange).toHaveBeenLastCalledWith({ hideRecheck: true });
+    fireEvent.click(within(sheet).getByRole('button', { name: 'Remove Recheck due' }));
+    expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ hideRecheck: true }));
     expect(within(sheet).queryByRole('checkbox')).toBeNull();
     fireEvent.click(within(sheet).getByRole('button', { name: 'All chart settings' }));
     expect(within(sheet).getByRole('heading', { name: 'Chart settings' })).toBeInTheDocument();

@@ -4,9 +4,10 @@ import { APP_LANGUAGES, LANGUAGE_NAMES, isAppLanguage } from '../i18n/config';
 import { List, ListRow, ListSection, SwitchRow } from '../ios/List';
 import { AnesthesiaCustomEditor } from './AnesthesiaCustomEditor';
 import { QuickCodesEditor } from './QuickCodesEditor';
+import { ImagingLayoutRows, PatientLayoutRows } from './ChartLayoutRows';
 import { ExamAreasEditor } from './ExamAreasEditor';
 import { SCORE_PICKER_OPTIONS, BLOCK_ROW_OPTIONS, ChartPrefs, PERIO_FIELDS } from '../utils/chartSettings';
-import { PATIENT_SETTINGS_GROUPS, USUAL_ADJUNCTS, USUAL_DRUGS, toggleField, useChartSettingsModel } from './useChartSettingsModel';
+import { USUAL_ADJUNCTS, USUAL_DRUGS, toggleField, useChartSettingsModel } from './useChartSettingsModel';
 import { ADJUNCT_DRUGS, drugUnit, strengthHasUnit } from '../types';
 import '../ios/settings.css';
 import './ChartCustomization.css';
@@ -291,20 +292,13 @@ export function ChartSettingsList({ prefs, followsAccount, onChange, only, onSho
         </>
       )}
 
-      {show.patient && (
-        PATIENT_SETTINGS_GROUPS.map(({ id: group, fields }) => (
-          <ListSection key={group} header={t(`patient.${group}`, { ns: 'forms' })}
-            footer={group === 'visitGroup' ? t('chart.patient.visibilityNote') : undefined}>
-            {fields.map((field) => (
-              <SwitchRow key={field} title={t(`patient.${field}`, { ns: 'forms' })} checked={!prefs.hiddenPatientFields.includes(field)} onChange={(on) => onChange({ hiddenPatientFields: toggleField(prefs.hiddenPatientFields, field, !on) })} />
-            ))}
-            {group === 'visitGroup' && <SwitchRow title={t('chart.customization.showRecheck')} checked={!prefs.hideRecheck} onChange={(on) => onChange({ hideRecheck: !on })} />}
-          </ListSection>
-        ))
-      )}
+      {show.patient && <ListSection footer={t('chart.patient.visibilityNote')}>
+        <PatientLayoutRows prefs={prefs} onChange={onChange} />
+      </ListSection>}
 
       {show.pdfImages && (
         <ListSection>
+          <ImagingLayoutRows prefs={prefs} onChange={onChange} />
           <label className="chart-settings__imaging-language">
             {t('radiologyReport.editorLanguage', { ns: 'app' })}
             <select className="patient-form__input" value={prefs.imagingReportLanguage ?? ''} onChange={event => {
