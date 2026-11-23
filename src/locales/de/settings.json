@@ -186,7 +186,7 @@
     "patient": {
       "title": "Patientenseite",
       "hideRecheck": "Feld „Kontrolle fällig“ ausblenden",
-      "visibilityNote": "Wählen Sie, welche Felder angezeigt werden. Felder mit bereits erfassten Angaben zur Halterin oder zum Halter sowie zur tiermedizinischen Assistenz bleiben sichtbar."
+      "visibilityNote": "Ordnen Sie die Abschnitte und Felder Ihrer Patientenseite an. Felder mit erfassten Werten bleiben sichtbar."
     },
     "pdf": {
       "title": "PDF",

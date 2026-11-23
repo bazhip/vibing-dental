@@ -1,5 +1,13 @@
 {
   "patient": {
+    "layout": {
+      "moveTo": "移至分区",
+      "editField": "编辑字段",
+      "fieldType": "字段类型",
+      "options": "选项（每行一个）",
+      "limit": "此布局已满。请移除一个分区或缩短字段选项。",
+      "recorded": "已记录字段"
+    },
     "title": "患者信息",
     "customize": "自定义",
     "customizeTitle": "本页显示的字段",

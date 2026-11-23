@@ -38,6 +38,7 @@ export const HELP_SCREENSHOTS: Partial<Record<HelpTopic, readonly HelpScreenshot
   treatment: [{ caption: 'treatment', src: '/help/screenshots/treatment.jpg', width: 976, height: 367, section: 'second' }],
   preferences: [
     { caption: 'preferences', src: '/help/screenshots/preferences.jpg', width: 960, height: 772, section: 'first' },
+    { caption: 'patientLayout', src: '/help/screenshots/patient-layout.jpg', width: 960, height: 780, section: 'first' },
     { caption: 'practiceChartFields', src: '/help/screenshots/practice-chart-fields.jpg', width: 960, height: 780, section: 'first' },
     { caption: 'imagingSettings', src: '/help/screenshots/imaging-settings.jpg', width: 960, height: 780, section: 'third' },
   ],

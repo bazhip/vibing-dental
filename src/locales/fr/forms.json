@@ -1,5 +1,13 @@
 {
   "patient": {
+    "layout": {
+      "moveTo": "Déplacer vers la section",
+      "editField": "Modifier le champ",
+      "fieldType": "Type de champ",
+      "options": "Options (une par ligne)",
+      "limit": "Cette disposition est pleine. Supprimez une section ou raccourcissez les options des champs.",
+      "recorded": "Champs renseignés"
+    },
     "title": "Informations sur le patient",
     "customize": "Personnaliser",
     "customizeTitle": "Champs affichés sur cette page",

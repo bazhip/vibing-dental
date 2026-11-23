@@ -186,7 +186,7 @@
     "patient": {
       "title": "Página Paciente",
       "hideRecheck": "Ocultar el campo Próxima revisión",
-      "visibilityNote": "Elija qué campos mostrar. Los campos del propietario y del auxiliar veterinario con información registrada permanecen visibles."
+      "visibilityNote": "Organice las secciones y los campos de su página Paciente. Los campos con valores registrados siguen visibles."
     },
     "pdf": {
       "title": "PDF",

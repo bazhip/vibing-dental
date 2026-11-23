@@ -1,4 +1,6 @@
 import { render, screen } from '@testing-library/react';
+import { defaultPatientLayout } from '../utils/patientLayout';
+
 import { PatientForm } from './PatientForm';
 import { EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS, PatientInfo } from '../types';
 
@@ -36,4 +38,24 @@ test('keeps recorded rechecks and uses the configured order of owner fields', ()
   rerender(<PatientForm {...props} hiddenFields={[...props.hiddenFields]} patientInfo={{ ...info, ownerName: 'Alex', tech: 'Sam' }} />);
   expect(screen.getByDisplayValue('Alex')).toBeVisible();
   expect(screen.getByDisplayValue('Sam')).toBeVisible();
+});
+
+test('uses the saved section order and keeps an unplaced custom answer visible', () => {
+  const field = { id: '58af42fe-85ec-411f-9731-1a570da160c4', label: 'Referring clinic', inputType: 'shortText' as const };
+  const layout = defaultPatientLayout();
+  layout.sections.reverse();
+  const { rerender } = render(<PatientForm patientInfo={{
+    ...info, practiceChartFields: [{ page: 'patient', origin: 'patientLayout', field, value: 'North Clinic' }],
+  }} layout={layout} species="canine" onPatientInfoChange={() => {}} onSpeciesChange={() => {}} />);
+  expect(screen.getAllByRole('region').map(group => group.getAttribute('aria-label'))).toEqual([
+    'Visit details', 'Owner details', 'Patient information', 'Recorded fields',
+  ]);
+  expect(screen.getByLabelText('Referring clinic')).toHaveValue('North Clinic');
+  layout.sections[0].fields.push(field.id);
+  layout.customFields.push(field);
+  rerender(<PatientForm patientInfo={{
+    ...info, practiceChartFields: [{ page: 'patient', origin: 'patientLayout', field, value: 'North Clinic' }],
+  }} layout={layout} species="canine" onPatientInfoChange={() => {}} onSpeciesChange={() => {}} />);
+  expect(screen.queryByRole('region', { name: 'Recorded fields' })).not.toBeInTheDocument();
+  expect(screen.getByRole('region', { name: 'Visit details' })).toContainElement(screen.getByLabelText('Referring clinic'));
 });

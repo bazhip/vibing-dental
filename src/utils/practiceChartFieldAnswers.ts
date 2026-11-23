@@ -17,7 +17,7 @@ export function readPracticeChartFieldAnswers(raw: unknown): PracticeChartFieldA
     if (!field) continue;
     const key = `${page}:${field.id}`;
     if (seen.has(key)) continue;
-    answers.push({ page, field, value });
+    answers.push({ page, field, value, ...(page === 'patient' && item.origin === 'patientLayout' ? { origin: item.origin } : {}) });
     seen.add(key);
   }
   return answers;

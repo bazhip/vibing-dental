@@ -1,5 +1,13 @@
 {
   "patient": {
+    "layout": {
+      "moveTo": "Przenieś do sekcji",
+      "editField": "Edytuj pole",
+      "fieldType": "Typ pola",
+      "options": "Opcje (jedna w wierszu)",
+      "limit": "Układ jest pełny. Usuń sekcję lub skróć opcje pól.",
+      "recorded": "Zapisane pola"
+    },
     "title": "Dane pacjenta",
     "customize": "Dostosuj",
     "customizeTitle": "Pola wyświetlane na tej stronie",

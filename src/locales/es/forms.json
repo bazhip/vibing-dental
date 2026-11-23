@@ -1,5 +1,13 @@
 {
   "patient": {
+    "layout": {
+      "moveTo": "Mover a la sección",
+      "editField": "Editar campo",
+      "fieldType": "Tipo de campo",
+      "options": "Opciones (una por línea)",
+      "limit": "Este diseño está lleno. Elimine una sección o acorte las opciones de los campos.",
+      "recorded": "Campos registrados"
+    },
     "title": "Información del paciente",
     "customize": "Personalizar",
     "customizeTitle": "Campos que se muestran en esta página",

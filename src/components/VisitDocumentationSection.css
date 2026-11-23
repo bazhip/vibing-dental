@@ -483,3 +483,20 @@
   margin-block-start: 16px;
 }
 .exam-layout__actions .ui-btn { min-block-size: 44px; }
+
+.chart-layout-rows--section > li > .consultation-library__settings {
+  margin-inline-start: clamp(0px, 2vw, 16px);
+  padding-inline-start: clamp(8px, 2vw, 16px);
+  border-inline-start: 2px solid var(--border);
+}
+.patient-layout__toolbar { margin-block-end: 8px; }
+.patient-layout__toolbar > button { display: flex; margin-inline-start: auto; }
+.patient-layout__actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+@media (max-width: 600px) {
+  .chart-layout-rows .consultation-library__row-action { min-inline-size: 44px; min-block-size: 44px; }
+}

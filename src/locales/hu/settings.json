@@ -186,7 +186,7 @@
     "patient": {
       "title": "Páciensoldal",
       "hideRecheck": "Kontroll esedékessége mező elrejtése",
-      "visibilityNote": "Válassza ki a megjelenítendő mezőket. A már kitöltött gazdi- és asszisztensmezők láthatók maradnak."
+      "visibilityNote": "Rendezze el a páciensoldal szakaszait és mezőit. A rögzített értéket tartalmazó mezők láthatók maradnak."
     },
     "pdf": {
       "title": "PDF",

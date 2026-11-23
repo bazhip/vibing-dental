@@ -186,7 +186,7 @@
     "patient": {
       "title": "Strona pacjenta",
       "hideRecheck": "Ukryj pole Termin kontroli",
-      "visibilityNote": "Wybierz pola do wyświetlenia. Wypełnione pola danych opiekuna i technika pozostają widoczne."
+      "visibilityNote": "Rozmieść sekcje i pola na stronie pacjenta. Pola z zapisanymi wartościami pozostają widoczne."
     },
     "pdf": {
       "title": "PDF",

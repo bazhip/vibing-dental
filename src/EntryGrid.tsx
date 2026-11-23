@@ -1376,24 +1376,26 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     const recorded = kind === 'ct' ? ctRecordedText(chart.patientInfo) : radiologyRecordedText(chart.patientInfo);
     return !prefs.imagingReportOrder.includes(kind) && recorded.trim();
   })];
+  const changeAdditionalField = (page: PracticeChartPage, field: SharedPracticeField, value: string, origin?: 'patientLayout') => {
+    if (readOnly) return;
+    chart.setPatientInfo(previous => {
+      const answers = previous.practiceChartFields ?? [];
+      const existing = answers.findIndex(answer => answer.page === page && answer.field.id === field.id && answer.origin === origin);
+      const next = [...answers];
+      const answer = { page, field, value, ...(origin ? { origin } : {}) };
+      if (existing >= 0) {
+        if (value) next[existing] = answer;
+        else next.splice(existing, 1);
+      } else if (value) next.push(answer);
+      return { ...previous, practiceChartFields: next.length ? next : undefined };
+    });
+  };
   const renderPracticeFields = (page: PracticeChartPage) => (
     <PracticeChartFields
       fields={sharedPracticeFields.config.pages[page] ?? []}
-      answers={(chart.patientInfo.practiceChartFields ?? []).filter(answer => answer.page === page)}
+      answers={(chart.patientInfo.practiceChartFields ?? []).filter(answer => answer.page === page && !answer.origin)}
       readOnly={readOnly}
-      onChange={(field, value) => {
-        if (readOnly) return;
-        chart.setPatientInfo(previous => {
-          const answers = previous.practiceChartFields ?? [];
-          const existing = answers.findIndex(answer => answer.page === page && answer.field.id === field.id);
-          const next = [...answers];
-          if (existing >= 0) {
-            if (value) next[existing] = { page, field, value };
-            else next.splice(existing, 1);
-          } else if (value) next.push({ page, field, value });
-          return { ...previous, practiceChartFields: next.length ? next : undefined };
-        });
-      }}
+      onChange={(field, value) => changeAdditionalField(page, field, value)}
     />
   );
   const sections: ChartSection[] = [
@@ -1412,6 +1414,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           hideRecheck={prefs.hideRecheck}
           hiddenFields={prefs.hiddenPatientFields}
           fieldOrder={prefs.patientFieldOrder}
+          layout={prefs.patientLayout}
+          onLayoutFieldChange={(field, value) => changeAdditionalField(PRACTICE_FIELD_PAGE.patient, field, value, 'patientLayout')}
           onCustomize={native ? undefined : () => openChartSettings('patient')}
         />
         {renderPracticeFields(PRACTICE_FIELD_PAGE.patient)}

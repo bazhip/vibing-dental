@@ -186,7 +186,7 @@
     "patient": {
       "title": "Patient page",
       "hideRecheck": "Hide the Recheck due field",
-      "visibilityNote": "Choose which fields to show. Owner and technician fields with recorded information stay visible."
+      "visibilityNote": "Arrange sections and fields for your Patient page. Fields with recorded values stay visible."
     },
     "pdf": {
       "title": "PDF",

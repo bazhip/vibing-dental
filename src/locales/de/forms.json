@@ -1,5 +1,13 @@
 {
   "patient": {
+    "layout": {
+      "moveTo": "In Abschnitt verschieben",
+      "editField": "Feld bearbeiten",
+      "fieldType": "Feldtyp",
+      "options": "Optionen (eine pro Zeile)",
+      "limit": "Dieses Layout ist voll. Entfernen Sie einen Abschnitt oder kürzen Sie die Feldoptionen.",
+      "recorded": "Erfasste Felder"
+    },
     "title": "Patienteninformationen",
     "customize": "Anpassen",
     "customizeTitle": "Auf dieser Seite angezeigte Felder",

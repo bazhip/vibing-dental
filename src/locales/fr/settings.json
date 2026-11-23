@@ -186,7 +186,7 @@
     "patient": {
       "title": "Page Patient",
       "hideRecheck": "Masquer le champ Contrôle prévu",
-      "visibilityNote": "Choisissez les champs à afficher. Les champs du propriétaire et de l’auxiliaire vétérinaire contenant déjà des informations restent visibles."
+      "visibilityNote": "Organisez les sections et les champs de votre page Patient. Les champs renseignés restent visibles."
     },
     "pdf": {
       "title": "PDF",

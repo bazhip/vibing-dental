@@ -1,5 +1,13 @@
 {
   "patient": {
+    "layout": {
+      "moveTo": "Mutare în secțiune",
+      "editField": "Editare câmp",
+      "fieldType": "Tip de câmp",
+      "options": "Opțiuni (una pe rând)",
+      "limit": "Aspectul este plin. Eliminați o secțiune sau scurtați opțiunile câmpurilor.",
+      "recorded": "Câmpuri înregistrate"
+    },
     "title": "Datele pacientului",
     "customize": "Personalizați",
     "customizeTitle": "Câmpuri afișate pe această pagină",
