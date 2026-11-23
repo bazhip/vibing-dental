@@ -3,7 +3,7 @@ import { isGeneratedPatientNumber, patientNumberOf } from '../utils/patientIds';
 import { SectionHeader } from './SectionHeader';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import type { OptionalPatientField } from '../utils/chartSettings';
+import { PATIENT_LAYOUT_FIELDS, type OptionalPatientField, type PatientLayoutField } from '../utils/chartSettings';
 import { localDateISO } from '../utils/localDate';
 import { PatientInfo, Species } from '../types';
 import { CodeField } from './CodeField';
@@ -19,6 +19,7 @@ interface PatientFormProps {
   /** Personal chart setting: leave out the Recheck due field. */
   hideRecheck?: boolean;
   hiddenFields?: OptionalPatientField[];
+  fieldOrder?: readonly PatientLayoutField[];
   /** Open this page's settings. */
   onCustomize?: () => void;
   onReviewHistory?: () => void;
@@ -42,6 +43,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
   onSpeciesChange,
   hideRecheck = false,
   hiddenFields = [],
+  fieldOrder = PATIENT_LAYOUT_FIELDS,
   onCustomize,
   onReviewHistory,
   readOnly = false,
@@ -60,6 +62,10 @@ export const PatientForm: React.FC<PatientFormProps> = ({
   const visibleFields = Object.fromEntries(
     (['ownerName', 'ownerPhone', 'ownerEmail', 'tech'] as OptionalPatientField[]).map((field) => [field, !hiddenFields.includes(field) || !!patientInfo[field]?.trim()])
   );
+  const ownerFields = fieldOrder.filter((field): field is 'ownerName' | 'ownerPhone' | 'ownerEmail' =>
+    field !== 'tech' && field !== 'recallDate' && visibleFields[field]);
+  const showRecheck = !hideRecheck || !!patientInfo.recallDate?.trim();
+  const visitFields = fieldOrder.filter(field => field === 'tech' ? visibleFields.tech : field === 'recallDate' && showRecheck);
   const handleInputChange = (field: keyof PatientInfo) => (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -69,6 +75,17 @@ export const PatientForm: React.FC<PatientFormProps> = ({
   // The one Species value carries both axes; the UI splits them into a
   // species picker (canine/feline/Other) and a dentition picker
   // (permanent/deciduous) so neither list is a combo of every pair.
+  const patientLayoutInput = (field: OptionalPatientField) => {
+    const contact = field === 'ownerPhone' || field === 'ownerEmail';
+    const placeholder = field === 'ownerEmail'
+      ? t(hideRecheck ? 'patient.ownerEmailOptional' : 'patient.ownerEmailReminders')
+      : t(`patient.${field}Placeholder`);
+    return <input dir={contact ? 'ltr' : 'auto'}
+      type={field === 'ownerPhone' ? 'tel' : field === 'ownerEmail' ? 'email' : 'text'}
+      className="patient-form__input" placeholder={placeholder} autoComplete={field === 'tech' ? undefined : 'off'}
+      value={patientInfo[field] ?? ''} onChange={handleInputChange(field)} />;
+  };
+
   const base = speciesBase(species);
   const dentition = speciesDentition(species);
   const deciduousOk = hasDeciduousChart(base);
@@ -188,63 +205,20 @@ export const PatientForm: React.FC<PatientFormProps> = ({
           </FormField>
         </FormGroup>
 
-        {(visibleFields.ownerName || visibleFields.ownerPhone || visibleFields.ownerEmail) && (<FormGroup header={t('ios.form.owner', { ns: 'chart' })}>
-          {visibleFields.ownerName && (<FormField label={t('patient.ownerName')}>
-            <input dir="auto"
-              type="text"
-              className="patient-form__input"
-              placeholder={t('patient.ownerNamePlaceholder')}
-              autoComplete="off"
-              value={patientInfo.ownerName ?? ''}
-              onChange={handleInputChange('ownerName')}
-            />
-          </FormField>)}
-          {visibleFields.ownerPhone && (<FormField label={t('patient.ownerPhone')}>
-            <input dir="ltr"
-              type="tel"
-              className="patient-form__input"
-              placeholder={t('patient.ownerPhonePlaceholder')}
-              autoComplete="off"
-              value={patientInfo.ownerPhone ?? ''}
-              onChange={handleInputChange('ownerPhone')}
-            />
-          </FormField>)}
-          {visibleFields.ownerEmail && (<FormField label={t('patient.ownerEmail')}>
-            <input dir="ltr"
-              type="email"
-              className="patient-form__input"
-              placeholder={hideRecheck ? t('patient.ownerEmailOptional') : t('patient.ownerEmailReminders')}
-              autoComplete="off"
-              value={patientInfo.ownerEmail ?? ''}
-              onChange={handleInputChange('ownerEmail')}
-            />
-          </FormField>)}
-        </FormGroup>)}
+        {ownerFields.length > 0 && <FormGroup header={t('ios.form.owner', { ns: 'chart' })}>
+          {ownerFields.map(field => <FormField key={field} label={t(`patient.${field}`)}>{patientLayoutInput(field)}</FormField>)}
+        </FormGroup>}
 
         <FormGroup header={t('ios.form.visit', { ns: 'chart' })}>
-          {visibleFields.tech && (<FormField label={t('patient.tech')}>
-            <input dir="auto"
-              type="text"
-              className="patient-form__input"
-              placeholder={t('patient.techPlaceholder')}
-              value={patientInfo.tech}
-              onChange={handleInputChange('tech')}
-            />
-          </FormField>)}
-          {!hideRecheck && (
-            <FormField as={GROUP_ROW} stacked label={t('patient.recheck')}>
+          {visitFields.map(field => field === 'tech'
+            ? <FormField key={field} label={t('patient.tech')}>{patientLayoutInput(field)}</FormField>
+            : <FormField key={field} as={GROUP_ROW} stacked label={t('patient.recheck')}>
               <span className="patient-form__recall">
-                <input dir="ltr"
-                  type="date"
-                  className="patient-form__input"
-                  aria-label={t('patient.recheck')}
-                  value={patientInfo.recallDate ?? ''}
-                  onChange={handleInputChange('recallDate')}
-                />
+                <input dir="ltr" type="date" className="patient-form__input"
+                  aria-label={t('patient.recheck')} value={patientInfo.recallDate ?? ''} onChange={handleInputChange('recallDate')} />
                 {recallQuick}
               </span>
-            </FormField>
-          )}
+            </FormField>)}
         </FormGroup>
 
         <FormGroup header={t('ios.form.complaint', { ns: 'chart' })}>
@@ -379,39 +353,9 @@ export const PatientForm: React.FC<PatientFormProps> = ({
       {/* Pet owner (client) — sits right under the pet's identity, above
           the per-procedure fields. Searchable in My charts. */}
       <div className="patient-form__row">
-        {visibleFields.ownerName && (<label className="patient-form__label">
-          {t('patient.ownerName')}
-          <input dir="auto"
-            type="text"
-            className="patient-form__input"
-            placeholder={t('patient.ownerNamePlaceholder')}
-            autoComplete="off"
-            value={patientInfo.ownerName ?? ''}
-            onChange={handleInputChange('ownerName')}
-          />
-        </label>)}
-        {visibleFields.ownerPhone && (<label className="patient-form__label">
-          {t('patient.ownerPhone')}
-          <input dir="ltr"
-            type="tel"
-            className="patient-form__input"
-            placeholder={t('patient.ownerPhonePlaceholder')}
-            autoComplete="off"
-            value={patientInfo.ownerPhone ?? ''}
-            onChange={handleInputChange('ownerPhone')}
-          />
-        </label>)}
-
-        {visibleFields.ownerEmail && (<label className="patient-form__label">
-          {t('patient.ownerEmail')}
-          <input dir="ltr"
-            type="email"
-            className="patient-form__input"
-            placeholder={hideRecheck ? t('patient.ownerEmailOptional') : t('patient.ownerEmailReminders')}
-            autoComplete="off"
-            value={patientInfo.ownerEmail ?? ''}
-            onChange={handleInputChange('ownerEmail')}
-          />
+        {ownerFields.map(field => <label key={field} className="patient-form__label">
+          {t(`patient.${field}`)}
+          {patientLayoutInput(field)}
         </label>)}
       </div>
 
@@ -432,31 +376,18 @@ export const PatientForm: React.FC<PatientFormProps> = ({
             onChange={handleInputChange('date')}
           />
         </label>
-        {visibleFields.tech && (<label className="patient-form__label">
-          {t('patient.tech')}
-          <input dir="auto"
-            type="text"
-            className="patient-form__input"
-            placeholder={t('patient.techPlaceholder')}
-            value={patientInfo.tech}
-            onChange={handleInputChange('tech')}
-          />
-        </label>)}
-
-        {!hideRecheck && (
-        <label className="patient-form__label">
-          {t('patient.recheck')}
-          <span className="patient-form__recall">
-            <input dir="ltr"
-              type="date"
-              className="patient-form__input"
-              value={patientInfo.recallDate ?? ''}
-              onChange={handleInputChange('recallDate')}
-            />
-            {recallQuick}
-          </span>
-        </label>
-        )}
+        {visitFields.map(field => field === 'tech'
+          ? <label key={field} className="patient-form__label">
+            {t('patient.tech')}{patientLayoutInput(field)}
+          </label>
+          : <label key={field} className="patient-form__label">
+            {t('patient.recheck')}
+            <span className="patient-form__recall">
+              <input dir="ltr" type="date" className="patient-form__input"
+                value={patientInfo.recallDate ?? ''} onChange={handleInputChange('recallDate')} />
+              {recallQuick}
+            </span>
+          </label>)}
       </div>
 
       <div className="patient-form__row">

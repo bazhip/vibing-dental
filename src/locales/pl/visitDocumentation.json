@@ -274,7 +274,7 @@
     },
     "layout": {
       "title": "Dostosuj obrazowanie",
-      "intro": "Ustaw etykiety i tekst początkowy raportów dla nowych wizyt.",
+      "intro": "Ułóż raporty na swoim koncie. Kolejność i widoczność zapisują się automatycznie. Właściciele placówki mogą zapisać wspólne etykiety i teksty początkowe.",
       "help": "Jak dostosować obrazowanie",
       "starterText": "Tekst początkowy"
     }

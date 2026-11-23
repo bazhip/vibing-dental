@@ -185,7 +185,7 @@
     },
     "layout": {
       "title": "Personalizza diagnostica per immagini",
-      "intro": "Imposti le etichette e il testo iniziale dei referti per le nuove visite.",
+      "intro": "Organizzi i referti per il Suo account. L’ordine e la visibilità vengono salvati automaticamente. I titolari della clinica possono salvare le etichette e i testi iniziali condivisi.",
       "help": "Come personalizzare la diagnostica per immagini",
       "starterText": "Testo iniziale"
     }

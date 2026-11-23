@@ -36,6 +36,6 @@ it('translates CT-specific guidance and export labels in the shared editor', () 
 it('translates the section-level Imaging editor and its field settings', () => {
   render(<ConsultationTemplatesDialog kind="imaging" initial={EMPTY_IMAGING_LIBRARY} status="ready" canEdit
     onSave={vi.fn()} onReload={vi.fn()} onClose={vi.fn()} onOpenSettings={vi.fn()} />);
-  for (const summary of document.querySelectorAll('summary')) summary.closest('details')!.open = true;
+  fireEvent.click(screen.getByRole('button', { name: i18n.t('app:radiographic.title') }));
   expect(findUntranslated(screen.getByRole('dialog'), Object.values(LANGUAGE_NAMES))).toEqual([]);
 });

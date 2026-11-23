@@ -6,6 +6,7 @@ import { DEFAULT_QUICK_CODES, normalizeQuickCodes } from './quickCodes';
 import { CustomExamAreaDef, normalizeExamAreaDefs } from './customExam';
 import { parseExamLayout, type ExamLayoutField } from './examLayout';
 import type { PocketMode } from './pocket';
+import { IMAGING_REPORT_KINDS, type ImagingReportKind } from './consultationTemplates';
 
 /**
  * Chart settings — per person. They follow the signed-in account on every
@@ -52,6 +53,13 @@ const SCORE_TAP_MOVES = new Set<string>(['finding', 'tooth', 'stay']);
 
 export const PATIENT_FIELD_OPTIONS = ['ownerName', 'ownerPhone', 'ownerEmail', 'tech'] as const;
 export type OptionalPatientField = (typeof PATIENT_FIELD_OPTIONS)[number];
+export const PATIENT_LAYOUT_FIELDS = [...PATIENT_FIELD_OPTIONS, 'recallDate'] as const;
+export type PatientLayoutField = (typeof PATIENT_LAYOUT_FIELDS)[number];
+
+function orderedFields<Field extends string>(value: unknown, allowed: readonly Field[], fallback: readonly Field[]): Field[] {
+  if (!Array.isArray(value)) return [...fallback];
+  return [...new Set(value.filter((field): field is Field => allowed.includes(field as Field)))];
+}
 
 export interface ChartPrefs {
   autosave: boolean;
@@ -78,9 +86,11 @@ export interface ChartPrefs {
   pdfIncludeCodesUsed: boolean;
   /** Output language for AI-refined imaging reports. Null follows the report or dictation. */
   imagingReportLanguage: AppLanguage | null;
+  imagingReportOrder: ImagingReportKind[];
   /** Leave out the Recheck due field on the Patient page. */
   hideRecheck: boolean;
   hiddenPatientFields: OptionalPatientField[];
+  patientFieldOrder: PatientLayoutField[];
   /** Space in a grid cell moves down to the next tooth (for calling out
    *  a run of depths) instead of typing a space. */
   spaceMovesDown: boolean;
@@ -133,8 +143,10 @@ export const DEFAULT_CHART_PREFS: ChartPrefs = {
   pdfIncludeDischarge: true,
   pdfIncludeCodesUsed: true,
   imagingReportLanguage: null,
+  imagingReportOrder: [...IMAGING_REPORT_KINDS],
   hideRecheck: false,
   hiddenPatientFields: [],
+  patientFieldOrder: [...PATIENT_LAYOUT_FIELDS],
   spaceMovesDown: true,
   scoreTapMoves: 'finding',
   scorePicker: 'touch',
@@ -183,8 +195,10 @@ export function normalizeChartPrefs(raw: unknown, fallback: ChartPrefs = DEFAULT
     pdfIncludeCodesUsed: bool(r.pdfIncludeCodesUsed, fallback.pdfIncludeCodesUsed),
     imagingReportLanguage: r.imagingReportLanguage === null || isAppLanguage(r.imagingReportLanguage)
       ? r.imagingReportLanguage : fallback.imagingReportLanguage,
+    imagingReportOrder: orderedFields(r.imagingReportOrder, IMAGING_REPORT_KINDS, fallback.imagingReportOrder),
     hideRecheck: bool(r.hideRecheck, fallback.hideRecheck),
     hiddenPatientFields: Array.isArray(r.hiddenPatientFields) ? [...new Set(r.hiddenPatientFields.filter((key): key is OptionalPatientField => PATIENT_FIELD_OPTIONS.includes(key as OptionalPatientField)))] : fallback.hiddenPatientFields,
+    patientFieldOrder: orderedFields([...orderedFields(r.patientFieldOrder, PATIENT_LAYOUT_FIELDS, fallback.patientFieldOrder), ...PATIENT_LAYOUT_FIELDS], PATIENT_LAYOUT_FIELDS, PATIENT_LAYOUT_FIELDS),
     spaceMovesDown: bool(r.spaceMovesDown, fallback.spaceMovesDown),
     scorePicker: r.scorePicker === 'touch' || r.scorePicker === 'always' || r.scorePicker === 'never' ? r.scorePicker : fallback.scorePicker,
     scoreTapMoves: typeof r.scoreTapMoves === 'string' && SCORE_TAP_MOVES.has(r.scoreTapMoves) ? (r.scoreTapMoves as ScoreTapMove) : fallback.scoreTapMoves,
