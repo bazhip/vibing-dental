@@ -70,5 +70,12 @@
     "anyway": "Descargar de todos modos",
     "finalizing": "Finalizando…",
     "failed": "No se pudo finalizar este historial. Usted puede volver a intentarlo o descargarlo de todos modos."
+  },
+  "reportFit": {
+    "cut_one": "{{report}} no cabe en la página 2: se corta aproximadamente {{count}} línea.",
+    "cut_many": "{{report}} no cabe en la página 2: se cortan aproximadamente {{count}} líneas.",
+    "cut_other": "{{report}} no cabe en la página 2: se cortan aproximadamente {{count}} líneas.",
+    "continued": "{{report}} no cabe en la página 2: el resto continúa en una página adicional.",
+    "continue": "Continuar en una página adicional"
   }
 }

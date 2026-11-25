@@ -50,7 +50,9 @@
     "title": "Raport z leczenia i zabiegu",
     "radiographicTitle": "Opis badania RTG",
     "ctTitle": "Opis badania TK",
-    "continued": "… ciąg dalszy. Pełny raport znajduje się w tym pliku. Aby go wyświetlić, otwórz plik ponownie w aplikacji."
+    "continued": "… ciąg dalszy. Pełny raport znajduje się w tym pliku. Aby go wyświetlić, otwórz plik ponownie w aplikacji.",
+    "continuedTitle": "{{title}} (ciąg dalszy)",
+    "continuedOnPage": "… ciąg dalszy na stronie {{page}}."
   },
   "anesthesia": {
     "title": "Znieczulenie · Blokady nerwów",

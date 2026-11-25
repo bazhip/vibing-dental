@@ -85,6 +85,8 @@ export interface ChartPrefs {
   pdfIncludeCtReport: boolean;
   pdfIncludeDischarge: boolean;
   pdfIncludeCodesUsed: boolean;
+  /** A report too long for page 2 continues on an extra page instead of being cut. */
+  pdfContinueReports: boolean;
   /** Output language for AI-refined imaging reports. Null follows the report or dictation. */
   imagingReportLanguage: AppLanguage | null;
   imagingReportOrder: ImagingReportKind[];
@@ -144,6 +146,7 @@ export const DEFAULT_CHART_PREFS: ChartPrefs = {
   pdfIncludeCtReport: true,
   pdfIncludeDischarge: true,
   pdfIncludeCodesUsed: true,
+  pdfContinueReports: false,
   imagingReportLanguage: null,
   imagingReportOrder: [...IMAGING_REPORT_KINDS],
   hideRecheck: false,
@@ -195,6 +198,7 @@ export function normalizeChartPrefs(raw: unknown, fallback: ChartPrefs = DEFAULT
     pdfIncludeCtReport: bool(r.pdfIncludeCtReport, fallback.pdfIncludeCtReport),
     pdfIncludeDischarge: bool(r.pdfIncludeDischarge, fallback.pdfIncludeDischarge),
     pdfIncludeCodesUsed: bool(r.pdfIncludeCodesUsed, fallback.pdfIncludeCodesUsed),
+    pdfContinueReports: bool(r.pdfContinueReports, fallback.pdfContinueReports),
     imagingReportLanguage: r.imagingReportLanguage === null || isAppLanguage(r.imagingReportLanguage)
       ? r.imagingReportLanguage : fallback.imagingReportLanguage,
     imagingReportOrder: orderedFields(r.imagingReportOrder, IMAGING_REPORT_KINDS, fallback.imagingReportOrder),

@@ -35,6 +35,7 @@
     "dictation": "Revisión de hallazgos adicionales obtenidos de una grabación de una visita dental.",
     "owner": "Controles del informe para el propietario y resumen inicial específico de la visita.",
     "export": "Vista previa del PDF del historial clínico con un odontograma de ejemplo.",
+    "reportFit": "Revisar y exportar con un aviso de que el informe de TC no cabe en la página 2 y la opción Continuar en una página adicional.",
     "start": "Área de trabajo de ejemplo con la pestaña de la visita, la navegación y la información del paciente.",
     "patients": "Procedimientos dentales y consultas anteriores en un mismo historial, con una visita seleccionada.",
     "exam": "Cuadrícula del examen oral con las opciones Normal y Anormal, y un comentario.",
@@ -209,7 +210,7 @@
         },
         "second": {
           "title": "Personalizar el PDF clínico",
-          "text": "En «Historial clínico», abra «Personalizar» para elegir los colores y el contenido que se incluirá, como imágenes, informes de diagnóstico por imagen y los códigos utilizados. Compruebe la vista previa después de cambiar una opción y descargue el documento cuando esté listo. Las secciones de alta aparecen por defecto debajo de los informes de diagnóstico por imagen. Desmarque la opción para ocultarlas en las páginas impresas. Los botones «Personalizar» y «Descargar PDF» están junto a las pestañas de los documentos."
+          "text": "En «Historial clínico», abra «Personalizar» para elegir los colores y el contenido que se incluirá, como imágenes, informes de diagnóstico por imagen y los códigos utilizados. Compruebe la vista previa después de cambiar una opción y descargue el documento cuando esté listo. Las secciones de alta aparecen por defecto debajo de los informes de diagnóstico por imagen. Desmarque la opción para ocultarlas en las páginas impresas. Los botones «Personalizar» y «Descargar PDF» están junto a las pestañas de los documentos.\n\nLa página 2 contiene los informes de tratamiento, radiográfico y de TC. Cuando son largos, el PDF los mantiene en la página 2 disponiendo en dos columnas un informe en forma de lista, como un informe de TC, y después reduciendo el texto. Si un informe sigue sin caber, un aviso encima de la vista previa indica el informe y aproximadamente cuántas líneas se cortan. Seleccione Continuar en una página adicional para imprimir el resto en la página 3. La página 2 termina entonces con «continúa en la página 3». La opción se recuerda para sus exportaciones posteriores. Por ejemplo, si se cortan las conclusiones de un informe de TC, seleccione la opción y compruebe que aparecen en la página 3 de la vista previa."
         },
         "third": {
           "title": "Finalizar o reabrir una visita",

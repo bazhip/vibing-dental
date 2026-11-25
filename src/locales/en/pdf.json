@@ -48,7 +48,9 @@
     "title": "Treatment & Surgery Report",
     "radiographicTitle": "Radiographic Report",
     "ctTitle": "CT Report",
-    "continued": "… continued — full report is embedded in this file (load it back into the app)."
+    "continued": "… continued — full report is embedded in this file (load it back into the app).",
+    "continuedTitle": "{{title}} (continued)",
+    "continuedOnPage": "… continued on page {{page}}."
   },
   "anesthesia": {
     "title": "Anesthesia · Nerve Blocks",

@@ -70,5 +70,12 @@
     "anyway": "Descărcați oricum",
     "finalizing": "Se finalizează…",
     "failed": "Fișa nu a putut fi finalizată. Puteți încerca din nou sau o puteți descărca oricum."
+  },
+  "reportFit": {
+    "cut_one": "{{report}} nu încape pe pagina 2 — aproximativ {{count}} rând este tăiat.",
+    "cut_few": "{{report}} nu încape pe pagina 2 — aproximativ {{count}} rânduri sunt tăiate.",
+    "cut_other": "{{report}} nu încape pe pagina 2 — aproximativ {{count}} de rânduri sunt tăiate.",
+    "continued": "{{report}} nu încape pe pagina 2, așa că restul continuă pe o pagină suplimentară.",
+    "continue": "Continuați pe o pagină suplimentară"
   }
 }

@@ -48,7 +48,9 @@
     "title": "Kezelési és műtéti leírás",
     "radiographicTitle": "Röntgenlelet",
     "ctTitle": "CT-lelet",
-    "continued": "… folytatás – a teljes lelet be van ágyazva ebbe a fájlba (töltse vissza az alkalmazásba)."
+    "continued": "… folytatás – a teljes lelet be van ágyazva ebbe a fájlba (töltse vissza az alkalmazásba).",
+    "continuedTitle": "{{title}} (folytatás)",
+    "continuedOnPage": "… folytatás a(z) {{page}}. oldalon."
   },
   "anesthesia": {
     "title": "Érzéstelenítés · Idegblokádok",

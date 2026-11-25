@@ -49,7 +49,9 @@
     "title": "Informe de tratamiento y cirugía",
     "radiographicTitle": "Informe radiográfico",
     "ctTitle": "Informe de TC",
-    "continued": "… continúa — el informe completo va incluido en este archivo (vuelva a cargarlo en la aplicación)."
+    "continued": "… continúa — el informe completo va incluido en este archivo (vuelva a cargarlo en la aplicación).",
+    "continuedTitle": "{{title}} (continuación)",
+    "continuedOnPage": "… continúa en la página {{page}}."
   },
   "anesthesia": {
     "title": "Anestesia · Bloqueos nerviosos",

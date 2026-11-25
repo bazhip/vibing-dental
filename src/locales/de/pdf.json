@@ -48,7 +48,9 @@
     "title": "Behandlungs- & OP-Bericht",
     "radiographicTitle": "Röntgenbericht",
     "ctTitle": "CT-Bericht",
-    "continued": "… Fortsetzung — der vollständige Bericht ist in dieser Datei eingebettet (laden Sie sie wieder in die App)."
+    "continued": "… Fortsetzung — der vollständige Bericht ist in dieser Datei eingebettet (laden Sie sie wieder in die App).",
+    "continuedTitle": "{{title}} (Fortsetzung)",
+    "continuedOnPage": "… Fortsetzung auf Seite {{page}}."
   },
   "anesthesia": {
     "title": "Narkose · Nervenblockaden",

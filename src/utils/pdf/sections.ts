@@ -49,7 +49,7 @@ import {
   wrapToWidth,
   fitTextToLines,
   drawClippedText,
-  drawWrappedText,
+  isRtlText,
   drawCenteredText,
   drawRadioGlyph,
   drawTableHeaderStrip,
@@ -1021,11 +1021,23 @@ export interface TreatmentAreaText {
   discharge?: string;
 }
 
+export type TreatmentAreaKind = 'treatment' | 'radiographic' | 'ct' | 'discharge';
+
+/** One wrapped line. `para` is its source paragraph; an empty line is a
+ *  paragraph break and prints at half height. */
+export interface TreatmentAreaLine { text: string; para: number; first: boolean }
+
 export interface TreatmentAreaCard {
-  kind: 'treatment' | 'radiographic' | 'ct' | 'discharge';
+  kind: TreatmentAreaKind;
   value: string;
   /** Card height, title band included. */
   heightPt: number;
+  /** The printed lines: one column, or two for a report of short lines. */
+  columns: TreatmentAreaLine[][];
+  /** Wrapped lines that didn't fit on page 2 (0 when everything prints). */
+  hiddenLines: number;
+  /** The source text that didn't fit, ready for a continuation page. */
+  remainder: string;
 }
 
 export interface TreatmentAreaLayout {
@@ -1038,13 +1050,72 @@ const AREA_GAP_PT = 0.12 * PT_PER_IN;
 const BODY_PAD_TOP_PT = 6;
 const BODY_PAD_BOTTOM_PT = 10;
 const BODY_INSET_PT = 8;
-/** Tried largest first; the text shrinks before anything is cut. */
-const AREA_FONT_SIZES = [9.5, 9, 8.5, 8, 7.5];
+const COLUMN_GAP_PT = 14;
+const BLANK_FACTOR = 0.5;
+/** Tried in order; the text shrinks, then the lines tighten, before
+ *  anything is cut. Line height is size × spacing. */
+const AREA_STEPS = [
+  { size: 9.5, spacing: 1.45 }, { size: 9, spacing: 1.45 }, { size: 8.5, spacing: 1.45 },
+  { size: 8, spacing: 1.45 }, { size: 7.5, spacing: 1.45 }, { size: 7.5, spacing: 1.3 }, { size: 7, spacing: 1.3 },
+];
 /** The treatment card never shrinks below this many lines of writing room. */
 const MIN_TREATMENT_LINES = 4;
 
-function wrappedLineCount(value: string, font: PDFFont, size: number, width: number): number {
-  return value.split('\n').reduce((n, para) => n + Math.max(1, wrapToWidth(para, font, size, width).length), 0);
+/** Trailing spaces are dropped and a run of blank (or space-only) lines
+ *  becomes one paragraph break; leading and trailing breaks go. */
+function reportParagraphs(value: string): string[] {
+  const out: string[] = [];
+  for (const raw of value.split('\n')) {
+    const para = raw.replace(/\s+$/, '');
+    if (para.trim()) out.push(para);
+    else if (out.length && out[out.length - 1] !== '') out.push('');
+  }
+  while (out[out.length - 1] === '') out.pop();
+  return out;
+}
+
+function wrapReport(value: string, font: PDFFont, size: number, width: number): TreatmentAreaLine[] {
+  return reportParagraphs(value).flatMap((para, index) => para
+    ? wrapToWidth(para, font, size, width).map((text, line) => ({ text, para: index, first: line === 0 }))
+    : [{ text: '', para: index, first: true }]);
+}
+
+const lineHeightOf = (line: TreatmentAreaLine, lh: number) => (line.text ? lh : lh * BLANK_FACTOR);
+const heightOf = (lines: TreatmentAreaLine[], lh: number) => lines.reduce((n, line) => n + lineHeightOf(line, lh), 0);
+/** A column never starts with a paragraph break. */
+const trimStart = (lines: TreatmentAreaLine[]) => (lines[0] && !lines[0].text ? lines.slice(1) : lines);
+
+/** Two columns of near-equal height, split at a paragraph when that costs
+ *  less than a line. */
+function balanceColumns(lines: TreatmentAreaLine[], lh: number): TreatmentAreaLine[][] {
+  const prefix = [0];
+  for (const line of lines) prefix.push(prefix[prefix.length - 1] + lineHeightOf(line, lh));
+  const total = prefix[lines.length];
+  let best: TreatmentAreaLine[][] = [lines, []];
+  let bestScore = Infinity;
+  for (let k = 1; k < lines.length; k++) {
+    const right = trimStart(lines.slice(k));
+    const height = Math.max(prefix[k], total - prefix[k] - (right.length < lines.length - k ? lh * BLANK_FACTOR : 0));
+    const score = height + (lines[k].first || !lines[k - 1].text ? 0 : lh * 0.75);
+    if (score < bestScore) { bestScore = score; best = [lines.slice(0, k), right]; }
+  }
+  return best;
+}
+
+interface CardPlan { kind: TreatmentAreaKind; value: string; columns: TreatmentAreaLine[][]; flow: TreatmentAreaLine[]; bodyPt: number }
+
+/** Lists of short lines (a CT report's findings) print in two columns when
+ *  that saves room; prose and the treatment report stay in one. */
+function planCard(part: { kind: TreatmentAreaKind; value: string }, font: PDFFont, size: number, lh: number, innerW: number, allowColumns: boolean): CardPlan {
+  const one = wrapReport(part.value, font, size, innerW);
+  const single = { ...part, columns: [one], flow: one, bodyPt: heightOf(one, lh) };
+  if (!allowColumns || part.kind === 'treatment') return single;
+  const colW = (innerW - COLUMN_GAP_PT) / 2;
+  const two = wrapReport(part.value, font, size, colW);
+  if (two.some((line) => font.widthOfTextAtSize(line.text, size) > colW)) return single;
+  const columns = balanceColumns(two, lh);
+  const bodyPt = Math.max(...columns.map((column) => heightOf(column, lh)));
+  return bodyPt < single.bodyPt - lh ? { ...part, columns, flow: two, bodyPt } : single;
 }
 
 /** Even heights, except a card that needs more keeps its need and the
@@ -1060,15 +1131,47 @@ function evenSplit(needs: number[], room: number): number[] {
   }
 }
 
+/** Fill a capped card (keeping a line for the "continued" note) and
+ *  collect the text that didn't fit. */
+function cutCard(plan: CardPlan, heightPt: number, lh: number): Pick<TreatmentAreaCard, 'columns' | 'hiddenLines' | 'remainder'> {
+  const room = heightPt - CARD_BAND_PT - BODY_PAD_TOP_PT - BODY_PAD_BOTTOM_PT - lh;
+  let rest = plan.flow;
+  const columns: TreatmentAreaLine[][] = [];
+  for (let c = 0; c < plan.columns.length; c++) {
+    rest = trimStart(rest);
+    let used = 0;
+    let n = 0;
+    while (n < rest.length && used + lineHeightOf(rest[n], lh) <= room + 1e-6) used += lineHeightOf(rest[n++], lh);
+    columns.push(rest.slice(0, n));
+    rest = rest.slice(n);
+  }
+  rest = trimStart(rest);
+  if (!rest.length) return { columns, hiddenLines: 0, remainder: '' };
+  // Don't split a paragraph across pages when it can move whole.
+  const last = columns[columns.length - 1];
+  let keep = last.length;
+  while (!rest[0].first && keep > 0 && last[keep - 1].para === rest[0].para) keep--;
+  if (keep > 0 && keep < last.length) {
+    rest = [...last.slice(keep), ...rest];
+    columns[columns.length - 1] = last.slice(0, keep);
+  }
+  const paragraphs = reportParagraphs(plan.value);
+  const head = rest[0];
+  const partial = head.first ? [] : [rest.filter((line) => line.para === head.para).map((line) => line.text).join(' ')];
+  const remainder = [...partial, ...paragraphs.slice(head.first ? head.para : head.para + 1)].join('\n');
+  return { columns, hiddenLines: rest.filter((line) => line.text).length, remainder };
+}
+
 /**
  * Splits the right column into cards: the treatment report on top, then
  * the radiographic, CT, and discharge reports (each only when populated).
  * The cards share the column evenly; one whose text needs more than its
- * share grows and the others split what's left, so the column keeps its
- * size and a chart without either report prints one card as before. When the text doesn't fit at
- * 9.5pt it steps down to 7.5pt; only past that are cards shared out by
- * need and capped (with a "continued" note — the full text round-trips
- * in the embedded data).
+ * share grows and the others split what's left. To keep everything on the
+ * page it first sets a report of short lines in two columns, then steps
+ * the text down from 9.5pt to 7.5pt, tightens the lines, then tries 7pt.
+ * Only past that are cards capped: the
+ * card reports what was left off (`hiddenLines`, `remainder`) so the PDF
+ * can continue it on an extra page.
  */
 export function layoutTreatmentArea(
   text: TreatmentAreaText,
@@ -1077,30 +1180,40 @@ export function layoutTreatmentArea(
   widthPt: number,
 ): TreatmentAreaLayout {
   const innerW = widthPt - 2 * BODY_INSET_PT;
-  const parts: { kind: TreatmentAreaCard['kind']; value: string }[] = [
+  const parts = ([
     { kind: 'treatment', value: text.treatment },
     { kind: 'radiographic', value: (text.radiographic ?? '').trim() },
     { kind: 'ct', value: (text.ct ?? '').trim() },
     { kind: 'discharge', value: (text.discharge ?? '').trim() },
-  ].filter((c) => c.kind === 'treatment' || c.value) as { kind: TreatmentAreaCard['kind']; value: string }[];
+  ] as { kind: TreatmentAreaKind; value: string }[]).filter((c) => c.kind === 'treatment' || c.value);
   const gaps = AREA_GAP_PT * (parts.length - 1);
   const chrome = CARD_BAND_PT + BODY_PAD_TOP_PT + BODY_PAD_BOTTOM_PT;
+  const needOf = (plan: CardPlan, lh: number) =>
+    chrome + Math.max(plan.bodyPt, (plan.kind === 'treatment' ? MIN_TREATMENT_LINES : 1) * lh);
 
+  let plans: CardPlan[] = [];
   let needs: number[] = [];
-  let size = AREA_FONT_SIZES[0];
-  for (size of AREA_FONT_SIZES) {
-    const lh = size * 1.45;
-    needs = parts.map((c) => {
-      const lines = c.value ? wrappedLineCount(c.value, font, size, innerW) : 0;
-      return chrome + Math.max(lines, c.kind === 'treatment' ? MIN_TREATMENT_LINES : 1) * lh;
-    });
-    if (needs.reduce((a, b) => a + b, 0) + gaps <= totalHeightPt) {
-      return { fontSize: size, lineHeight: lh, cards: parts.map((c, i) => ({ ...c, heightPt: evenSplit(needs, totalHeightPt - gaps)[i] })) };
+  let step = AREA_STEPS[0];
+  for (step of AREA_STEPS) {
+    const { size } = step;
+    const lh = size * step.spacing;
+    for (const allowColumns of [false, true]) {
+      plans = parts.map((part) => planCard(part, font, size, lh, innerW, allowColumns));
+      needs = plans.map((plan) => needOf(plan, lh));
+      if (needs.reduce((a, b) => a + b, 0) + gaps <= totalHeightPt) {
+        const heights = evenSplit(needs, totalHeightPt - gaps);
+        return {
+          fontSize: size,
+          lineHeight: lh,
+          cards: plans.map((plan, i) => ({ kind: plan.kind, value: plan.value, heightPt: heights[i], columns: plan.columns, hiddenLines: 0, remainder: '' })),
+        };
+      }
     }
   }
   // Still too long at the smallest size: cards that fit their share keep
   // their full height, the rest split what's left evenly (and cap).
-  const lh = size * 1.45;
+  const size = step.size;
+  const lh = size * step.spacing;
   const heights: number[] = new Array(parts.length).fill(0);
   let remaining = totalHeightPt - gaps;
   let pending = parts.map((_, i) => i);
@@ -1117,13 +1230,11 @@ export function layoutTreatmentArea(
   return {
     fontSize: size,
     lineHeight: lh,
-    cards: parts.map((c, i) => ({ ...c, heightPt: heights[i] })),
+    cards: plans.map((plan, i) => ({
+      kind: plan.kind, value: plan.value, heightPt: heights[i],
+      ...(needs[i] > heights[i] + 1e-6 ? cutCard(plan, heights[i], lh) : { columns: plan.columns, hiddenLines: 0, remainder: '' }),
+    })),
   };
-}
-
-function treatmentCardCapacity(card: TreatmentAreaCard, layout: TreatmentAreaLayout): number {
-  // A card sized for exactly N lines must not floor to N − 1.
-  return Math.floor((card.heightPt - CARD_BAND_PT - BODY_PAD_TOP_PT - BODY_PAD_BOTTOM_PT) / layout.lineHeight + 1e-6);
 }
 
 export function planTreatmentArea(text: TreatmentAreaText, font: PDFFont) {
@@ -1134,7 +1245,7 @@ export function planTreatmentArea(text: TreatmentAreaText, font: PDFFont) {
   // Keep the report order and full discharge text. If the extra card
   // would cause clipping, put discharge on the next page instead.
   const needsDischargePage = !!text.discharge && layout.cards.some(card =>
-    wrappedLineCount(card.value, font, layout.fontSize, innerWidth) > treatmentCardCapacity(card, layout)
+    card.hiddenLines > 0
     || (card.kind === 'discharge' && card.value.split(/\s+/).some(word => font.widthOfTextAtSize(word, layout.fontSize) > innerWidth)),
   );
   return {
@@ -1143,12 +1254,21 @@ export function planTreatmentArea(text: TreatmentAreaText, font: PDFFont) {
   };
 }
 
+export function treatmentAreaTitle(kind: TreatmentAreaKind, lng = 'en'): string {
+  if (kind === 'discharge') return i18n.getFixedT(lng, 'visitDocumentation')('discharge.title');
+  const t = pdfT(lng);
+  return t(kind === 'treatment' ? 'treatment.title' : kind === 'radiographic' ? 'treatment.radiographicTitle' : 'treatment.ctTitle');
+}
+
+/** `continuedOn` gives the page a cut card continues on; without it the
+ *  card says the full text is embedded in the file. */
 export function drawTreatmentArea(
   page: PDFPage,
   layout: TreatmentAreaLayout,
   font: PDFFont,
   fontBold: PDFFont,
-  lng = 'en'
+  lng = 'en',
+  continuedOn: Partial<Record<TreatmentAreaKind, number>> = {},
 ): void {
   const t = pdfT(lng);
   const { height: pageHeight } = page.getSize();
@@ -1156,32 +1276,29 @@ export function drawTreatmentArea(
   const widthPt = TREATMENT_REPORT.fieldWidthIn * PT_PER_IN;
   const topPt = pageHeight - TREATMENT_REPORT.headerYTopIn * PT_PER_IN;
   const innerWidth = widthPt - 2 * BODY_INSET_PT;
-  const titles = {
-    treatment: t('treatment.title'),
-    radiographic: t('treatment.radiographicTitle'),
-    ct: t('treatment.ctTitle'),
-    discharge: i18n.getFixedT(lng, 'visitDocumentation')('discharge.title'),
-  };
+  const { fontSize, lineHeight } = layout;
 
   let cardTop = topPt;
   for (const card of layout.cards) {
     const cardBottom = cardTop - card.heightPt;
-    const bodyTop = drawSectionCard(page, xPt, cardTop, widthPt, card.heightPt, titles[card.kind], fontBold);
-    if (card.value) {
-      const innerX = xPt + BODY_INSET_PT;
-      const innerYTop = bodyTop - BODY_PAD_TOP_PT;
-      const { fontSize, lineHeight } = layout;
-      const maxLines = treatmentCardCapacity(card, layout);
-      if (wrappedLineCount(card.value, font, fontSize, innerWidth) > maxLines) {
-        drawWrappedText(page, card.value, innerX, innerYTop, innerWidth,
-          fontSize, lineHeight, font, PALETTE.ink, Math.max(1, maxLines - 1));
-        page.drawText(t('treatment.continued'), {
-          x: innerX, y: cardBottom + 8, size: 7.5, font, color: PALETTE.muted,
+    const bodyTop = drawSectionCard(page, xPt, cardTop, widthPt, card.heightPt, treatmentAreaTitle(card.kind, lng), fontBold);
+    const columnWidth = card.columns.length === 2 ? (innerWidth - COLUMN_GAP_PT) / 2 : innerWidth;
+    card.columns.forEach((column, index) => {
+      const x = xPt + BODY_INSET_PT + index * (columnWidth + COLUMN_GAP_PT);
+      let y = bodyTop - BODY_PAD_TOP_PT;
+      for (const line of column) {
+        y -= lineHeightOf(line, lineHeight);
+        if (line.text) page.drawText(line.text, {
+          x: isRtlText(line.text) ? x + columnWidth - font.widthOfTextAtSize(line.text, fontSize) : x,
+          y, size: fontSize, font, color: PALETTE.ink,
         });
-      } else {
-        drawWrappedText(page, card.value, innerX, innerYTop, innerWidth,
-          fontSize, lineHeight, font, PALETTE.ink);
       }
+    });
+    if (card.hiddenLines) {
+      const pageNumber = continuedOn[card.kind];
+      page.drawText(pageNumber ? t('treatment.continuedOnPage', { page: pageNumber }) : t('treatment.continued'), {
+        x: xPt + BODY_INSET_PT, y: cardBottom + 8, size: 7.5, font, color: PALETTE.muted,
+      });
     }
     finishSectionCard(page, xPt, cardTop, widthPt, card.heightPt);
     cardTop = cardBottom - AREA_GAP_PT;

@@ -1708,3 +1708,5 @@
   margin-top: 12px; padding: 0; border: 0; background: none;
   color: var(--primary, #0c6b63); font: inherit; font-size: 13px; text-decoration: underline; cursor: pointer;
 }
+/* The fix-it choice under a "doesn't fit on page 2" warning. */
+.pdf-report-fit .choice-row { color: var(--text); font-weight: 600; }

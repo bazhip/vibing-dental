@@ -56,5 +56,11 @@
     "anyway": "Trotzdem herunterladen",
     "finalizing": "Wird abgeschlossen…",
     "failed": "Diese Patientenakte konnte nicht abgeschlossen werden. Sie können es erneut versuchen oder sie trotzdem herunterladen."
+  },
+  "reportFit": {
+    "cut_one": "{{report}} passt nicht auf Seite 2 – etwa {{count}} Zeile wird abgeschnitten.",
+    "cut_other": "{{report}} passt nicht auf Seite 2 – etwa {{count}} Zeilen werden abgeschnitten.",
+    "continued": "{{report}} passt nicht auf Seite 2, der Rest wird auf einer zusätzlichen Seite fortgesetzt.",
+    "continue": "Auf einer zusätzlichen Seite fortsetzen"
   }
 }

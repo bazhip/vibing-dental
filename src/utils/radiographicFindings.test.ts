@@ -53,7 +53,7 @@ describe('radiographic findings', () => {
     const font = await helvetica();
     const para = 'Vertical bone loss at the distal root with furcation exposure and periapical lucency. ';
     const layout = layoutTreatmentArea({ treatment: para.repeat(200), radiographic: 'Short', ct: para.repeat(200) }, font, H, W);
-    expect(layout.fontSize).toBe(7.5);
+    expect(layout.fontSize).toBe(7);
     expect(total(layout.cards)).toBeLessThanOrEqual(H + 0.01);
     // A short report keeps its full height even when the others are capped.
     expect(layout.cards[1].heightPt).toBeLessThan(layout.cards[0].heightPt);

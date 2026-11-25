@@ -19,7 +19,9 @@ import {
   buildDentalChartPDFBytes,
   type PdfBranding,
   type PdfImage,
+  type ReportFit,
 } from '../utils/pdfGenerator';
+import { treatmentAreaTitle } from '../utils/pdf/sections';
 import { listChartAttachments } from '../hooks/useAttachments';
 import { fetchAsJpeg } from '../utils/imageJpeg';
 import { diagramSvgToPng, CommentForExport } from '../utils/svgToPng';
@@ -62,6 +64,8 @@ export interface ChartSnapshot {
   includeCtReport?: boolean;
   includeDischarge?: boolean;
   includeCodesUsed?: boolean;
+  /** A report too long for page 2 continues on an extra page. */
+  continueCutReports?: boolean;
   /** Cloud chart id whose images get appended as extra pages (4 per
    *  page). Absent/empty → no image pages. */
   imagesChartId?: string;
@@ -84,7 +88,7 @@ export interface ChartPdfOptions {
   gridRequired: boolean;
   imagesAvailable: boolean;
   includeImages: boolean;
-  onChange: (field: 'pdfIncludeGrid' | 'pdfIncludeImages' | 'pdfIncludeRadiographicReport' | 'pdfIncludeCtReport' | 'pdfIncludeDischarge' | 'pdfIncludeCodesUsed', value: boolean) => void;
+  onChange: (field: 'pdfIncludeGrid' | 'pdfIncludeImages' | 'pdfIncludeRadiographicReport' | 'pdfIncludeCtReport' | 'pdfIncludeDischarge' | 'pdfIncludeCodesUsed' | 'pdfContinueReports', value: boolean) => void;
 }
 
 interface PdfPreviewModalProps {
@@ -125,6 +129,8 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
   const downloadGeneration = React.useRef(0);
   const [generating, setGenerating] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  /** Page-2 reports the last build couldn't fit. */
+  const [reportFit, setReportFit] = React.useState<ReportFit[]>([]);
   const closeButtonRef = React.useRef<HTMLButtonElement>(null);
   // Chart images, fetched once per open (not per style switch). null =
   // still loading; [] = none / not requested.
@@ -264,6 +270,8 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
             includeCtReport: snapshot.includeCtReport,
             includeDischarge: snapshot.includeDischarge,
             includeCodesUsed: snapshot.includeCodesUsed,
+            continueCutReports: snapshot.continueCutReports,
+            onReportFit: cut => { if (!cancelled) setReportFit(cut); },
             images,
             lng,
           }
@@ -419,6 +427,16 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
   const notices = <>
     {!isNativeApp() && !inAppLink.state && downloadHint() && <p className="pdf-preview-hint" role="note">{downloadHint()}</p>}
     <PdfLinkPanel state={inAppLink.state} />
+    {!viewOnly && reportFit.length > 0 && <div className="pdf-preview-warning pdf-report-fit">
+      {reportFit.map(({ kind, hiddenLines }) => <p key={kind} role="status">{snapshot?.continueCutReports
+        ? t('reportFit.continued', { report: treatmentAreaTitle(kind, lng) })
+        : t('reportFit.cut', { report: treatmentAreaTitle(kind, lng), count: hiddenLines })}</p>)}
+      {options && <label className="choice-row">
+        <input type="checkbox" checked={!!snapshot?.continueCutReports}
+          onChange={event => options.onChange('pdfContinueReports', event.target.checked)} />
+        <span>{t('reportFit.continue')}</span>
+      </label>}
+    </div>}
     {imageWarning && <div className="pdf-preview-warning">
       <p role="status">{imageWarning}</p>
       <button type="button" className="pdf-preview-secondary" onClick={() => setImageAttempt(attempt => attempt + 1)}>{t('preview.retryImages')}</button>

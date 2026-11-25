@@ -35,6 +35,7 @@
     "dictation": "Review of additional findings taken from a dental recording.",
     "owner": "The Owner report controls and a visit-specific opening summary.",
     "export": "The clinical chart PDF preview with a sample dental chart.",
+    "reportFit": "Review and export with a warning that the CT report doesn’t fit on page 2 and the Continue on an additional page option.",
     "start": "Sample patient workspace with the visit tab, section navigation, and Patient information.",
     "patients": "Earlier dental procedures and consultations in one patient history, with a visit selected.",
     "exam": "Oral Exam findings grid with Normal and Abnormal choices and a comment.",
@@ -209,7 +210,7 @@
         },
         "second": {
           "title": "Customize the clinical PDF",
-          "text": "In Clinical chart, open Customize to choose colors and the sections to include, such as images, imaging reports, and Codes used. Check the preview after changing an option and download the document when ready. Discharge sections appear below the imaging reports by default. Clear the option to hide them from the printed pages. Find Customize and Download PDF next to the document tabs."
+          "text": "In Clinical chart, open Customize to choose colors and the sections to include, such as images, imaging reports, and Codes used. Check the preview after changing an option and download the document when ready. Discharge sections appear below the imaging reports by default. Clear the option to hide them from the printed pages. Find Customize and Download PDF next to the document tabs.\n\nPage 2 holds the treatment, radiographic, and CT reports. When they run long, the PDF keeps them on page 2 by setting a list-style report, such as a CT report, in two columns and then using smaller text. If a report still doesn’t fit, a warning above the preview names the report and about how many lines are cut off. Select Continue on an additional page to print the rest on page 3. Page 2 then ends with “continued on page 3”. The option is remembered for your later exports. For example, if a CT report’s conclusions are cut off, select the option and check that page 3 of the preview shows them."
         },
         "third": {
           "title": "Finalize or reopen a visit",

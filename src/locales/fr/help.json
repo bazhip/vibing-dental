@@ -35,6 +35,7 @@
     "dictation": "Révision des constatations complémentaires extraites d’un enregistrement dentaire.",
     "owner": "Les commandes du compte rendu pour le propriétaire et un résumé d’ouverture propre à la consultation.",
     "export": "Aperçu PDF du dossier clinique avec un exemple de schéma dentaire.",
+    "reportFit": "Vérifier et exporter avec un avertissement indiquant que le compte rendu de scanner ne tient pas sur la page 2 et l’option Continuer sur une page supplémentaire.",
     "start": "Espace de travail d’un patient fictif avec l’onglet de consultation, la navigation et les informations du patient.",
     "patients": "Interventions dentaires et consultations antérieures réunies dans l’historique du patient, avec une visite sélectionnée.",
     "exam": "Grille d’examen oral avec les choix Normal et Anormal et un commentaire.",
@@ -209,7 +210,7 @@
         },
         "second": {
           "title": "Personnaliser le PDF clinique",
-          "text": "Dans « Dossier clinique », ouvrez « Personnaliser » pour choisir les couleurs et le contenu à inclure, comme les images, les comptes rendus d’imagerie et les codes utilisés. Vérifiez l’aperçu après chaque changement, puis téléchargez le document. Les sections de sortie figurent par défaut sous les comptes rendus d’imagerie. Décochez l’option pour les masquer sur les pages imprimées. Les boutons « Personnaliser » et « Télécharger le PDF » se trouvent à côté des onglets."
+          "text": "Dans « Dossier clinique », ouvrez « Personnaliser » pour choisir les couleurs et le contenu à inclure, comme les images, les comptes rendus d’imagerie et les codes utilisés. Vérifiez l’aperçu après chaque changement, puis téléchargez le document. Les sections de sortie figurent par défaut sous les comptes rendus d’imagerie. Décochez l’option pour les masquer sur les pages imprimées. Les boutons « Personnaliser » et « Télécharger le PDF » se trouvent à côté des onglets.\n\nLa page 2 contient les comptes rendus de traitement, radiographique et scanner. Lorsqu’ils sont longs, le PDF les garde sur la page 2 en présentant un compte rendu sous forme de liste, comme un compte rendu de scanner, sur deux colonnes, puis en réduisant la taille du texte. Si un compte rendu ne tient toujours pas, un avertissement au-dessus de l’aperçu indique le compte rendu concerné et le nombre approximatif de lignes coupées. Sélectionnez Continuer sur une page supplémentaire pour imprimer la suite en page 3. La page 2 se termine alors par « suite page 3 ». Ce choix est conservé pour vos exportations suivantes. Par exemple, si les conclusions d’un compte rendu de scanner sont coupées, sélectionnez l’option et vérifiez qu’elles apparaissent en page 3 de l’aperçu."
         },
         "third": {
           "title": "Finaliser ou rouvrir une consultation",
