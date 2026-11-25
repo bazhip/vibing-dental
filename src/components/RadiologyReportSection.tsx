@@ -14,6 +14,8 @@ import { savePdf } from '../utils/savePdf';
 import { supabase } from '../utils/supabaseClient';
 import { friendlyError } from './ui/dialogs';
 import { CodeField } from './CodeField';
+import { ImagingReportTemplates } from './ImagingReportTemplates';
+import type { PlaceholderValues } from '../utils/ownerReportConfig';
 import './RadiologyReportSection.css';
 
 interface Props {
@@ -34,13 +36,15 @@ interface Props {
   dictationOpenRequest?: number | null;
   onDictationOpenChange?: (open: boolean) => void;
   refineRequest?: { id: number; language: AppLanguage };
+  /** Saved report templates (chart editor only; needs a cloud account). */
+  templates?: { practiceId?: string; chartFields?: PlaceholderValues };
   onChange: (changes: Partial<PatientInfo>) => void;
 }
 type Guard = { epoch: number; source: string; report: string; reviewed: string; storedLanguage: string; chartId: string | null; session: number; language: AppLanguage };
 const reportFields = ['radiologyReport', 'radiologyReportLanguage', 'radiologyReportBasis', 'radiologyReviewedBasis', 'radiologyReportGeneratedAt'] as const;
 const escapeHtml = (value: string) => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-export function RadiologyReportSection({ snapshot: originalSnapshot, chartEditor = false, preferredLanguage, onCustomizeLanguage, reportLabel, starterText, reportKind = 'radiology', chartId = null, chartSession = 0, readOnly = false, aiEnabled = false, showAiNotice = true, onDictationApply, dictationDisabled, dictationOpenRequest, onDictationOpenChange, refineRequest, onChange: onPatientChange }: Props): React.ReactElement {
+export function RadiologyReportSection({ snapshot: originalSnapshot, chartEditor = false, preferredLanguage, onCustomizeLanguage, reportLabel, starterText, reportKind = 'radiology', chartId = null, chartSession = 0, readOnly = false, aiEnabled = false, showAiNotice = true, onDictationApply, dictationDisabled, dictationOpenRequest, onDictationOpenChange, refineRequest, templates, onChange: onPatientChange }: Props): React.ReactElement {
   const { t, i18n } = useTranslation('app');
   const snapshot = reportKind === 'ct' ? ctReportSnapshot(originalSnapshot) : originalSnapshot;
   const onChange = (changes: Partial<PatientInfo>) => onPatientChange(reportKind === 'ct' ? ctReportChanges(changes) : changes);
@@ -181,6 +185,9 @@ export function RadiologyReportSection({ snapshot: originalSnapshot, chartEditor
       </div>
     </header>
     <div className="radiology-report__body">
+      {chartEditor && templates && <ImagingReportTemplates kind={reportKind} value={draft} templateId={info.radiologyReportTemplateId}
+        chartFields={templates.chartFields} practiceId={templates.practiceId} readOnly={readOnly}
+        onApply={(body, id) => { invalidate(); onChange({ radiologyReport: body, radiologyReportTemplateId: id, radiologyReviewedBasis: '' }); }} />}
       <div className="radiographic-findings radiology-report__field refine-field">
         {chartEditor ? <CodeField multiline className="patient-form__textarea radiographic-findings__text radiology-report__editor"
           aria-label={title} aria-describedby={`${fieldId}-help`} placeholder={placeholder} maxLength={60000}

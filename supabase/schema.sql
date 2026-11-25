@@ -242,6 +242,9 @@ create table if not exists public.practice_members (
 alter table public.profiles           add column if not exists practice_id uuid references public.practices (id) on delete set null;
 alter table public.charts             add column if not exists practice_id uuid;
 alter table public.report_templates   add column if not exists practice_id uuid;
+alter table public.report_templates   add column if not exists kind text not null default 'treatment';
+alter table public.report_templates   drop constraint if exists report_templates_kind_check;
+alter table public.report_templates   add constraint report_templates_kind_check check (kind in ('treatment', 'radiology', 'ct'));
 alter table public.attachments        add column if not exists practice_id uuid;
 -- DICOM originals (paid plans): `path` is the rendered preview, this is
 -- the untouched .dcm. Gated + frozen — see migration 20261112_dicom_attachments.

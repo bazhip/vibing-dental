@@ -503,5 +503,16 @@
     "dictateDental": "Dicter la visite dentaire",
     "dentalAdditions": "Constatations dentaires complémentaires",
     "dentalAdditionsHelp": "Relisez les résultats diagnostiques, les constatations au scanner et les consignes de sortie issus du même enregistrement."
+  },
+  "imagingTemplates": {
+    "replaceTitleRadiology": "Remplacer le texte du compte rendu radiographique ?",
+    "replaceTitleCt": "Remplacer le texte du compte rendu de scanner ?",
+    "replaceMessage": "Le modèle sélectionné remplacera le texte actuel du compte rendu de cette consultation.",
+    "replace": "Utiliser le modèle",
+    "untitled": "Sans titre",
+    "none": "Aucun modèle pour l’instant",
+    "loading": "Chargement des modèles…",
+    "manageTitle": "Gérer les modèles enregistrés",
+    "saved": "Modèle « {{name}} » enregistré."
   }
 }

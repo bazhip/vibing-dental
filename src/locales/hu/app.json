@@ -501,5 +501,16 @@
     "dictateDental": "Fogászati vizit diktálása",
     "dentalAdditions": "További fogászati leletek",
     "dentalAdditionsHelp": "Ellenőrizze az ugyanazon felvételből származó diagnosztikai eredményeket, CT-leleteket és hazabocsátási utasításokat."
+  },
+  "imagingTemplates": {
+    "replaceTitleRadiology": "Felülírja a röntgenlelet szövegét?",
+    "replaceTitleCt": "Felülírja a CT-lelet szövegét?",
+    "replaceMessage": "A kiválasztott sablon felülírja a vizit leletének jelenlegi szövegét.",
+    "replace": "Sablon használata",
+    "untitled": "Névtelen",
+    "none": "Még nincsenek sablonok",
+    "loading": "Sablonok betöltése…",
+    "manageTitle": "Mentett sablonok kezelése",
+    "saved": "A(z) „{{name}}” sablon mentve."
   }
 }

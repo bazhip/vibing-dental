@@ -141,7 +141,23 @@
     "deleteConfirm": "Elimina modello",
     "saving": "Salvataggio…",
     "saveChanges": "Salva modifiche",
-    "saveTemplate": "Salva modello"
+    "saveTemplate": "Salva modello",
+    "kinds": {
+      "radiology": {
+        "title": "Modelli – Referto radiografico",
+        "aria": "Modelli – Referto radiografico",
+        "empty": "Nessun modello. Ne crei uno qui sotto oppure scelga Gestisci modelli nel referto radiografico.",
+        "bodyPlaceholder": "Il testo del referto inserito in Referto radiografico…",
+        "deleteMessage": "Questo modello viene rimosso per tutti i membri del Suo studio. L’operazione non può essere annullata."
+      },
+      "ct": {
+        "title": "Modelli – Referto TC",
+        "aria": "Modelli – Referto TC",
+        "empty": "Nessun modello. Ne crei uno qui sotto oppure scelga Gestisci modelli nel referto TC.",
+        "bodyPlaceholder": "Il testo del referto inserito in Referto TC…",
+        "deleteMessage": "Questo modello viene rimosso per tutti i membri del Suo studio. L’operazione non può essere annullata."
+      }
+    }
   },
   "workspace": {
     "description": "Cerchi le cartelle dei pazienti, consulti le visite e gestisca i controlli.",

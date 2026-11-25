@@ -139,7 +139,23 @@
     "deleteConfirm": "删除模板",
     "saving": "正在保存…",
     "saveChanges": "保存更改",
-    "saveTemplate": "保存模板"
+    "saveTemplate": "保存模板",
+    "kinds": {
+      "radiology": {
+        "title": "X 线报告模板",
+        "aria": "X 线报告模板",
+        "empty": "暂无模板。请在下方创建，或在“X 线报告”中选择“管理模板”。",
+        "bodyPlaceholder": "要插入“X 线报告”的报告文本…",
+        "deleteMessage": "此模板将对诊所所有成员移除。此操作无法撤销。"
+      },
+      "ct": {
+        "title": "CT 报告模板",
+        "aria": "CT 报告模板",
+        "empty": "暂无模板。请在下方创建，或在“CT 报告”中选择“管理模板”。",
+        "bodyPlaceholder": "要插入“CT 报告”的报告文本…",
+        "deleteMessage": "此模板将对诊所所有成员移除。此操作无法撤销。"
+      }
+    }
   },
   "workspace": {
     "description": "搜索患者病历、查看就诊并管理复查。",

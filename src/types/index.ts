@@ -301,6 +301,9 @@ export interface PatientInfo {
   treatmentReport: string;
   /** Saved template selected for this visit's treatment report. */
   treatmentReportTemplateId?: string;
+  /** Saved templates selected for this visit's radiographic and CT reports. */
+  radiologyReportTemplateId?: string;
+  ctReportTemplateId?: string;
   /** Explicit visit sources; absent on older charts. Each is bounded to 20,000 characters. */
   gpVitals?: string;
   gpPhysicalExam?: string;

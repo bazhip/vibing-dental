@@ -503,5 +503,16 @@
     "dictateDental": "Detta la visita odontoiatrica",
     "dentalAdditions": "Ulteriori rilievi odontoiatrici",
     "dentalAdditionsHelp": "Riveda i risultati diagnostici, i rilievi della TC e le istruzioni di dimissione dello stesso audio."
+  },
+  "imagingTemplates": {
+    "replaceTitleRadiology": "Sostituire il testo del referto radiografico?",
+    "replaceTitleCt": "Sostituire il testo del referto TC?",
+    "replaceMessage": "Il modello selezionato sostituirà il testo attuale del referto di questa visita.",
+    "replace": "Usa modello",
+    "untitled": "Senza titolo",
+    "none": "Nessun modello per ora",
+    "loading": "Caricamento dei modelli…",
+    "manageTitle": "Gestisca i modelli salvati",
+    "saved": "Modello «{{name}}» salvato."
   }
 }

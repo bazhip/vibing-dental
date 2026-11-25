@@ -5,6 +5,7 @@ export const ctRecordedText = (info: PatientInfo): string => typeof info.ctRepor
 const CT_REPORT_FIELDS = {
   radiologyReport: 'ctReport', radiologyReportLanguage: 'ctReportLanguage', radiologyReportBasis: 'ctReportBasis',
   radiologyReviewedBasis: 'ctReviewedBasis', radiologyReportGeneratedAt: 'ctReportGeneratedAt',
+  radiologyReportTemplateId: 'ctReportTemplateId',
 } as const;
 
 /** Adapt CT storage to the shared report editor without borrowing x-ray findings/context. */
@@ -13,6 +14,7 @@ export function ctReportSnapshot(snapshot: ChartSnapshot): ChartSnapshot {
   return { ...snapshot, patientInfo: { ...info, radiologyReport: ctRecordedText(info),
     radiologyReportLanguage: info.ctReportLanguage, radiologyReportBasis: info.ctReportBasis,
     radiologyReviewedBasis: info.ctReviewedBasis, radiologyReportGeneratedAt: info.ctReportGeneratedAt,
+    radiologyReportTemplateId: info.ctReportTemplateId,
     radiographicFindings: '', radiologyHistory: '', radiologyTechnique: '', radiologyQuestion: '' } };
 }
 

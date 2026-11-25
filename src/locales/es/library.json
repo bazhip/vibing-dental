@@ -141,7 +141,23 @@
     "deleteConfirm": "Eliminar plantilla",
     "saving": "Guardando…",
     "saveChanges": "Guardar cambios",
-    "saveTemplate": "Guardar plantilla"
+    "saveTemplate": "Guardar plantilla",
+    "kinds": {
+      "radiology": {
+        "title": "Plantillas – Informe radiográfico",
+        "aria": "Plantillas – Informe radiográfico",
+        "empty": "Aún no hay plantillas. Cree una a continuación o elija Gestionar plantillas en el informe radiográfico.",
+        "bodyPlaceholder": "El texto del informe que se inserta en Informe radiográfico…",
+        "deleteMessage": "Esta plantilla se elimina para todos los miembros de su clínica. Esta acción no se puede deshacer."
+      },
+      "ct": {
+        "title": "Plantillas – Informe de TC",
+        "aria": "Plantillas – Informe de TC",
+        "empty": "Aún no hay plantillas. Cree una a continuación o elija Gestionar plantillas en el informe de TC.",
+        "bodyPlaceholder": "El texto del informe que se inserta en Informe de TC…",
+        "deleteMessage": "Esta plantilla se elimina para todos los miembros de su clínica. Esta acción no se puede deshacer."
+      }
+    }
   },
   "workspace": {
     "description": "Busque historias de pacientes, consulte visitas y gestione revisiones.",

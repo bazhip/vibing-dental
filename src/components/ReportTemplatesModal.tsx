@@ -8,7 +8,7 @@ import { confirmDialog, friendlyError } from './ui/dialogs';
 import { isNativeApp } from '../native/platform';
 import { Sheet } from '../ios/Sheet';
 import { useModalFocus } from '../hooks/useModalFocus';
-import { ReportTemplate, UseReportTemplatesReturn } from '../hooks/useReportTemplates';
+import { ReportTemplate, ReportTemplateKind, UseReportTemplatesReturn } from '../hooks/useReportTemplates';
 import './VisitDocumentationSection.css';
 
 interface ReportTemplatesModalProps {
@@ -21,6 +21,8 @@ interface ReportTemplatesModalProps {
   onCreated?: (template: ReportTemplate) => void;
   initialTemplateId?: string | null;
   onLeaveGuardChange?: (guard: (() => Promise<boolean>) | null) => void;
+  /** Which report the templates are for; defaults to the treatment report. */
+  kind?: ReportTemplateKind;
 }
 
 /**
@@ -38,8 +40,20 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
   onCreated,
   initialTemplateId = null,
   onLeaveGuardChange,
+  kind = 'treatment',
 }) => {
   const { t } = useTranslation(['library', 'visitDocumentation']);
+  // Each report words its few report-specific strings itself.
+  const text = kind === 'ct' ? {
+    title: t('templates.kinds.ct.title'), aria: t('templates.kinds.ct.aria'), empty: t('templates.kinds.ct.empty'),
+    bodyPlaceholder: t('templates.kinds.ct.bodyPlaceholder'), deleteMessage: t('templates.kinds.ct.deleteMessage'),
+  } : kind === 'radiology' ? {
+    title: t('templates.kinds.radiology.title'), aria: t('templates.kinds.radiology.aria'), empty: t('templates.kinds.radiology.empty'),
+    bodyPlaceholder: t('templates.kinds.radiology.bodyPlaceholder'), deleteMessage: t('templates.kinds.radiology.deleteMessage'),
+  } : {
+    title: t('templates.title'), aria: t('templates.aria'), empty: t('templates.empty'),
+    bodyPlaceholder: t('templates.bodyPlaceholder'), deleteMessage: t('templates.deleteMessage'),
+  };
   const refinement = React.useContext(RefineTextContext);
   const refineEnabled = aiEnabled ?? refinement.enabled;
   const asSheet = isNativeApp();
@@ -199,7 +213,7 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
     if (!selectedId || busyRef.current) return;
     if (!(await confirmDialog({
       title: t('templates.deleteTitle', { name: name.trim() || t('templates.untitled') }),
-      message: t('templates.deleteMessage'),
+      message: text.deleteMessage,
       confirmLabel: t('templates.deleteConfirm'),
       danger: true,
     }))) return;
@@ -227,7 +241,7 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
           const template = store.templates.find(entry => entry.id === id);
           if (template) void pick(template);
         }}
-        status={!store.templates.length ? <p className="practice-logo-empty">{t('templates.empty')}</p> : undefined}
+        status={!store.templates.length ? <p className="practice-logo-empty">{text.empty}</p> : undefined}
         actions={<button type="button" className="diagram-view__action template-create" onClick={() => void startNew()} disabled={busy || !store.loaded}
           aria-label={t('visitDocumentation:consultation.templates.builder.createTemplate')}
           title={t('visitDocumentation:consultation.templates.builder.createTemplate')}>
@@ -267,7 +281,7 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
             className="patient-form__textarea treatment-templates__body"
             aria-describedby={instructionsId}
             aria-controls={suggestions ? codeMenuId : undefined}
-            placeholder={t('templates.bodyPlaceholder')}
+            placeholder={text.bodyPlaceholder}
             value={body}
             onChange={event => {
               setBody(event.target.value);
@@ -360,7 +374,7 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
       <Sheet
         open
         onClose={onClose}
-        title={t('templates.title')}
+        title={text.title}
         cancelLabel={t('actions.close', { ns: 'common' })}
         doneLabel={busy ? t('templates.saving') : selectedId ? t('templates.saveChanges') : t('templates.saveTemplate')}
         onDone={() => void handleSave()}
@@ -375,10 +389,10 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
   }
 
   return (
-    <div className="ai-settings-overlay" onClick={() => void requestClose()} role="dialog" aria-modal="true" aria-label={t('templates.aria')}>
+    <div className="ai-settings-overlay" onClick={() => void requestClose()} role="dialog" aria-modal="true" aria-label={text.aria}>
       <div className="ai-settings-modal" ref={modalRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
         <header className="ai-settings-header">
-          <h2>{t('templates.title')}</h2>
+          <h2>{text.title}</h2>
           <button type="button" className="pdf-preview-close" onClick={() => void requestClose()} aria-label={t('actions.close', { ns: 'common' })}>
             ×
           </button>

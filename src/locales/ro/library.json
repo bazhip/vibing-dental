@@ -139,7 +139,23 @@
     "deleteConfirm": "Ștergeți șablonul",
     "saving": "Se salvează…",
     "saveChanges": "Salvați modificările",
-    "saveTemplate": "Salvați șablonul"
+    "saveTemplate": "Salvați șablonul",
+    "kinds": {
+      "radiology": {
+        "title": "Șabloane – Raport radiografic",
+        "aria": "Șabloane – Raport radiografic",
+        "empty": "Nu există încă șabloane. Creați unul mai jos sau alegeți Gestionați șabloanele în Raport radiografic.",
+        "bodyPlaceholder": "Textul raportului introdus în Raport radiografic…",
+        "deleteMessage": "Acest șablon este eliminat pentru toți membrii cabinetului. Acțiunea este ireversibilă."
+      },
+      "ct": {
+        "title": "Șabloane – Raport CT",
+        "aria": "Șabloane – Raport CT",
+        "empty": "Nu există încă șabloane. Creați unul mai jos sau alegeți Gestionați șabloanele în Raport CT.",
+        "bodyPlaceholder": "Textul raportului introdus în Raport CT…",
+        "deleteMessage": "Acest șablon este eliminat pentru toți membrii cabinetului. Acțiunea este ireversibilă."
+      }
+    }
   },
   "workspace": {
     "description": "Căutați fișele pacienților, consultați vizitele și gestionați recontroalele.",

@@ -139,7 +139,23 @@
     "deleteConfirm": "Vorlage löschen",
     "saving": "Wird gespeichert …",
     "saveChanges": "Änderungen speichern",
-    "saveTemplate": "Vorlage speichern"
+    "saveTemplate": "Vorlage speichern",
+    "kinds": {
+      "radiology": {
+        "title": "Vorlagen – Röntgenbericht",
+        "aria": "Vorlagen – Röntgenbericht",
+        "empty": "Noch keine Vorlagen. Erstellen Sie unten eine oder wählen Sie Vorlagen verwalten im Röntgenbericht.",
+        "bodyPlaceholder": "Der Berichtstext, der in den Röntgenbericht eingefügt wird …",
+        "deleteMessage": "Diese Vorlage wird für alle in Ihrer Praxis entfernt. Das lässt sich nicht rückgängig machen."
+      },
+      "ct": {
+        "title": "Vorlagen – CT-Bericht",
+        "aria": "Vorlagen – CT-Bericht",
+        "empty": "Noch keine Vorlagen. Erstellen Sie unten eine oder wählen Sie Vorlagen verwalten im CT-Bericht.",
+        "bodyPlaceholder": "Der Berichtstext, der in den CT-Bericht eingefügt wird …",
+        "deleteMessage": "Diese Vorlage wird für alle in Ihrer Praxis entfernt. Das lässt sich nicht rückgängig machen."
+      }
+    }
   },
   "workspace": {
     "description": "Suchen Sie Patientenakten, prüfen Sie Besuche und verwalten Sie Nachkontrollen.",

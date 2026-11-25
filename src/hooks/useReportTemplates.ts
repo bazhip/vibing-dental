@@ -14,6 +14,8 @@ import { LocalizedError } from '../utils/apiErrors';
  * Supabase) reports `enabled: false` and the UI hides the feature.
  */
 
+export type ReportTemplateKind = 'treatment' | 'radiology' | 'ct';
+
 export interface ReportTemplate {
   id: string;
   name: string;
@@ -35,10 +37,11 @@ const byName = (a: ReportTemplate, b: ReportTemplate) =>
 // All consumers read the same RLS-scoped list. Broadcast successful mutations
 // without retaining account data after the consumers unmount.
 type TemplateChange = (templates: ReportTemplate[]) => ReportTemplate[];
-const listeners = new Set<(change: TemplateChange) => void>();
-const publish = (change: TemplateChange) => listeners.forEach((listener) => listener(change));
+const listeners = new Set<{ kind: ReportTemplateKind; apply: (change: TemplateChange) => void }>();
+const publish = (kind: ReportTemplateKind, change: TemplateChange) =>
+  listeners.forEach((listener) => { if (listener.kind === kind) listener.apply(change); });
 
-export function useReportTemplates(practiceId = ''): UseReportTemplatesReturn {
+export function useReportTemplates(practiceId = '', kind: ReportTemplateKind = 'treatment'): UseReportTemplatesReturn {
   const [templates, setTemplates] = React.useState<ReportTemplate[]>([]);
   const [loaded, setLoaded] = React.useState(!cloudEnabled);
   const practiceIdRef = React.useRef(practiceId);
@@ -53,11 +56,13 @@ export function useReportTemplates(practiceId = ''): UseReportTemplatesReturn {
       if (loading) pending.push(change);
       setTemplates(change);
     };
-    listeners.add(onChange);
+    const listener = { kind, apply: onChange };
+    listeners.add(listener);
     (async () => {
       const { data, error } = await supabase
         .from('report_templates')
         .select('id, name, body')
+        .eq('kind', kind)
         .order('name');
       if (cancelled) return;
       // A mutation may have finished while this older snapshot was loading.
@@ -68,22 +73,22 @@ export function useReportTemplates(practiceId = ''): UseReportTemplatesReturn {
     })();
     return () => {
       cancelled = true;
-      listeners.delete(onChange);
+      listeners.delete(listener);
     };
-  }, []);
+  }, [kind]);
 
   const create = React.useCallback(async (name: string, body: string): Promise<ReportTemplate> => {
     if (!supabase) throw new LocalizedError(i18n.t('templates.cloudOff', { ns: 'library' }));
     const { data, error } = await supabase
       .from('report_templates')
-      .insert({ name, body, practice_id: practiceIdRef.current || null })
+      .insert({ name, body, kind, practice_id: practiceIdRef.current || null })
       .select('id, name, body')
       .single();
     if (error) throw new Error(error.message);
     const created = data as ReportTemplate;
-    publish((prev) => [...prev.filter((template) => template.id !== created.id), created].sort(byName));
+    publish(kind, (prev) => [...prev.filter((template) => template.id !== created.id), created].sort(byName));
     return created;
-  }, []);
+  }, [kind]);
 
   const update = React.useCallback(async (id: string, name: string, body: string): Promise<void> => {
     if (!supabase) throw new LocalizedError(i18n.t('templates.cloudOff', { ns: 'library' }));
@@ -92,17 +97,17 @@ export function useReportTemplates(practiceId = ''): UseReportTemplatesReturn {
       .update({ name, body })
       .eq('id', id);
     if (error) throw new Error(error.message);
-    publish((prev) =>
+    publish(kind, (prev) =>
       prev.map((t) => (t.id === id ? { ...t, name, body } : t)).sort(byName)
     );
-  }, []);
+  }, [kind]);
 
   const remove = React.useCallback(async (id: string): Promise<void> => {
     if (!supabase) throw new LocalizedError(i18n.t('templates.cloudOff', { ns: 'library' }));
     const { error } = await supabase.from('report_templates').delete().eq('id', id);
     if (error) throw new Error(error.message);
-    publish((prev) => prev.filter((t) => t.id !== id));
-  }, []);
+    publish(kind, (prev) => prev.filter((t) => t.id !== id));
+  }, [kind]);
 
   return { enabled: cloudEnabled, loaded, templates, create, update, remove };
 }

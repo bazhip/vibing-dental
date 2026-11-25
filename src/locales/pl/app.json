@@ -505,5 +505,16 @@
     "dictateDental": "Dyktuj wizytę stomatologiczną",
     "dentalAdditions": "Dodatkowe wyniki badania stomatologicznego",
     "dentalAdditionsHelp": "Sprawdź wyniki diagnostyki, opis TK i zalecenia przy wypisie zapisane na podstawie tego samego nagrania."
+  },
+  "imagingTemplates": {
+    "replaceTitleRadiology": "Zastąpić tekst raportu radiograficznego?",
+    "replaceTitleCt": "Zastąpić tekst raportu TK?",
+    "replaceMessage": "Wybrany szablon zastąpi aktualny tekst raportu z tej wizyty.",
+    "replace": "Użyj szablonu",
+    "untitled": "Bez tytułu",
+    "none": "Brak szablonów",
+    "loading": "Wczytywanie szablonów…",
+    "manageTitle": "Zarządzaj zapisanymi szablonami",
+    "saved": "Zapisano szablon „{{name}}”."
   }
 }

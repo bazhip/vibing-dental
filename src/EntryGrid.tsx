@@ -1374,6 +1374,14 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     return action?.name === 'set_tooth_field' ? [`${action.input.triadan}:${action.input.field}`] : [];
   })), [chart.voiceReviews]);
   const chartReviewFocus = reviewFocus?.session === chart.chartSession ? reviewFocus : undefined;
+  const templateChartFields = {
+    pet: chart.patientInfo.patientName,
+    owner: chart.patientInfo.ownerName,
+    species: t(`species.${chart.species === 'canine-deciduous' ? 'canine' : chart.species === 'feline-deciduous' ? 'feline' : chart.species}`),
+    date: chart.patientInfo.date,
+    practice: profile.practiceName,
+    doctor: chart.patientInfo.doctor || profile.doctorName,
+  };
   const imagingReports = [...prefs.imagingReportOrder, ...IMAGING_REPORT_KINDS.filter(kind => {
     const recorded = kind === 'ct' ? ctRecordedText(chart.patientInfo) : radiologyRecordedText(chart.patientInfo);
     return !prefs.imagingReportOrder.includes(kind) && recorded.trim();
@@ -1664,6 +1672,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 : chart.patientInfo.radiographicFindings === undefined && chart.patientInfo.radiologyReport === undefined)
                 ? imagingReportFields?.[kind]?.starterText : undefined}
               preferredLanguage={prefs.imagingReportLanguage}
+              templates={cloud.enabled ? { practiceId: profile.practiceId, chartFields: templateChartFields } : undefined}
               aiEnabled={profile.aiEnabled && !trial && cloud.enabled} showAiNotice={kind === 'radiology'}
               refineRequest={kind === 'radiology' && radiologyRefineRequest?.session === radiologySession ? radiologyRefineRequest : undefined}
               onChange={changes => chart.setPatientInfo(prev => ({ ...prev, ...changes,
@@ -1684,14 +1693,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           readOnly={readOnly}
           value={chart.patientInfo.treatmentReport}
           templateId={chart.patientInfo.treatmentReportTemplateId}
-          chartFields={{
-            pet: chart.patientInfo.patientName,
-            owner: chart.patientInfo.ownerName,
-            species: t(`species.${chart.species === 'canine-deciduous' ? 'canine' : chart.species === 'feline-deciduous' ? 'feline' : chart.species}`),
-            date: chart.patientInfo.date,
-            practice: profile.practiceName,
-            doctor: chart.patientInfo.doctor || profile.doctorName,
-          }}
+          chartFields={templateChartFields}
           onApplyTemplate={(value, id) => {
             if (!readOnly) chart.setPatientInfo(previous => ({ ...previous, treatmentReport: value, treatmentReportTemplateId: id }));
           }}

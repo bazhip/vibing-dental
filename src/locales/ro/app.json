@@ -503,5 +503,16 @@
     "dictateDental": "Dictați vizita dentară",
     "dentalAdditions": "Constatări dentare suplimentare",
     "dentalAdditionsHelp": "Verificați rezultatele de diagnostic, constatările CT și indicațiile de externare din aceeași înregistrare."
+  },
+  "imagingTemplates": {
+    "replaceTitleRadiology": "Înlocuiți textul raportului radiografic?",
+    "replaceTitleCt": "Înlocuiți textul raportului CT?",
+    "replaceMessage": "Șablonul selectat va înlocui textul actual al raportului pentru această vizită.",
+    "replace": "Folosește șablonul",
+    "untitled": "Fără titlu",
+    "none": "Încă nu există șabloane",
+    "loading": "Se încarcă șabloanele…",
+    "manageTitle": "Gestionați șabloanele salvate",
+    "saved": "Șablonul „{{name}}” a fost salvat."
   }
 }
