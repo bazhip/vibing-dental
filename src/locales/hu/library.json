@@ -139,7 +139,23 @@
     "deleteConfirm": "Sablon törlése",
     "saving": "Mentés…",
     "saveChanges": "Módosítások mentése",
-    "saveTemplate": "Sablon mentése"
+    "saveTemplate": "Sablon mentése",
+    "kinds": {
+      "radiology": {
+        "title": "Sablonok – Röntgenlelet",
+        "aria": "Sablonok – Röntgenlelet",
+        "empty": "Még nincs sablon. Hozzon létre egyet alább, vagy válassza a Sablonok kezelése lehetőséget a következőben: Röntgenlelet.",
+        "bodyPlaceholder": "A(z) Röntgenlelet szövegébe beillesztendő szöveg…",
+        "deleteMessage": "Ez a sablon a rendelő minden tagja számára törlődik. Ez nem vonható vissza."
+      },
+      "ct": {
+        "title": "Sablonok – CT-lelet",
+        "aria": "Sablonok – CT-lelet",
+        "empty": "Még nincs sablon. Hozzon létre egyet alább, vagy válassza a Sablonok kezelése lehetőséget a következőben: CT-lelet.",
+        "bodyPlaceholder": "A(z) CT-lelet szövegébe beillesztendő szöveg…",
+        "deleteMessage": "Ez a sablon a rendelő minden tagja számára törlődik. Ez nem vonható vissza."
+      }
+    }
   },
   "workspace": {
     "description": "Keressen a páciensadatok között, tekintse át a viziteket és kezelje a kontrollvizsgálatokat.",

@@ -139,7 +139,23 @@
     "deleteConfirm": "Delete template",
     "saving": "Saving…",
     "saveChanges": "Save changes",
-    "saveTemplate": "Save template"
+    "saveTemplate": "Save template",
+    "kinds": {
+      "radiology": {
+        "title": "Radiographic report templates",
+        "aria": "Radiographic report templates",
+        "empty": "No templates yet. Create one below or choose Manage templates in Radiographic report.",
+        "bodyPlaceholder": "The report text inserted into Radiographic report…",
+        "deleteMessage": "This template is removed for everyone in your practice. This can’t be undone."
+      },
+      "ct": {
+        "title": "CT report templates",
+        "aria": "CT report templates",
+        "empty": "No templates yet. Create one below or choose Manage templates in CT report.",
+        "bodyPlaceholder": "The report text inserted into CT report…",
+        "deleteMessage": "This template is removed for everyone in your practice. This can’t be undone."
+      }
+    }
   },
   "workspace": {
     "description": "Search patient records, review visits, and manage rechecks.",

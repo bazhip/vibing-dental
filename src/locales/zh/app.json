@@ -501,5 +501,16 @@
     "dictateDental": "口述牙科就诊",
     "dentalAdditions": "其他牙科所见",
     "dentalAdditionsHelp": "核对同一段录音中的诊断结果、CT 所见和离院说明。"
+  },
+  "imagingTemplates": {
+    "replaceTitleRadiology": "替换 X 线报告文本？",
+    "replaceTitleCt": "替换 CT 报告文本？",
+    "replaceMessage": "所选模板将替换本次就诊的当前报告文本。",
+    "replace": "使用模板",
+    "untitled": "无标题",
+    "none": "暂无模板",
+    "loading": "正在加载模板…",
+    "manageTitle": "管理已保存的模板",
+    "saved": "模板“{{name}}”已保存。"
   }
 }

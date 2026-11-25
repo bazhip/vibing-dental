@@ -501,5 +501,16 @@
     "dictateDental": "Zahnbehandlung diktieren",
     "dentalAdditions": "Weitere Befunde der Zahnbehandlung",
     "dentalAdditionsHelp": "Prüfen Sie diagnostische Ergebnisse, CT-Befunde und Hinweise zur Entlassung aus derselben Aufnahme."
+  },
+  "imagingTemplates": {
+    "replaceTitleRadiology": "Text des Röntgenberichts ersetzen?",
+    "replaceTitleCt": "Text des CT-Berichts ersetzen?",
+    "replaceMessage": "Die ausgewählte Vorlage ersetzt den aktuellen Berichtstext für diesen Besuch.",
+    "replace": "Vorlage verwenden",
+    "untitled": "Ohne Titel",
+    "none": "Noch keine Vorlagen",
+    "loading": "Vorlagen werden geladen …",
+    "manageTitle": "Gespeicherte Vorlagen verwalten",
+    "saved": "Vorlage „{{name}}“ gespeichert."
   }
 }

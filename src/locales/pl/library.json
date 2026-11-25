@@ -143,7 +143,23 @@
     "deleteConfirm": "Usuń szablon",
     "saving": "Zapisywanie…",
     "saveChanges": "Zapisz zmiany",
-    "saveTemplate": "Zapisz szablon"
+    "saveTemplate": "Zapisz szablon",
+    "kinds": {
+      "radiology": {
+        "title": "Szablony – Raport radiograficzny",
+        "aria": "Szablony – Raport radiograficzny",
+        "empty": "Brak szablonów. Utwórz szablon poniżej lub wybierz Zarządzaj szablonami w sekcji: Raport radiograficzny.",
+        "bodyPlaceholder": "Tekst do wstawienia w sekcji: Raport radiograficzny…",
+        "deleteMessage": "Ten szablon zostanie usunięty wszystkim osobom w placówce. Tej operacji nie można cofnąć."
+      },
+      "ct": {
+        "title": "Szablony – Raport TK",
+        "aria": "Szablony – Raport TK",
+        "empty": "Brak szablonów. Utwórz szablon poniżej lub wybierz Zarządzaj szablonami w sekcji: Raport TK.",
+        "bodyPlaceholder": "Tekst do wstawienia w sekcji: Raport TK…",
+        "deleteMessage": "Ten szablon zostanie usunięty wszystkim osobom w placówce. Tej operacji nie można cofnąć."
+      }
+    }
   },
   "workspace": {
     "description": "Przeszukuj dokumentację pacjentów, przeglądaj wizyty i zarządzaj kontrolami.",

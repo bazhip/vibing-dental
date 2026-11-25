@@ -832,6 +832,42 @@
       "hash": "3045505000c1",
       "status": "machine"
     },
+    "app:imagingTemplates.loading": {
+      "hash": "3800ee7191b1",
+      "status": "machine"
+    },
+    "app:imagingTemplates.manageTitle": {
+      "hash": "3c577e6ac817",
+      "status": "machine"
+    },
+    "app:imagingTemplates.none": {
+      "hash": "2d1ae3be976e",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replace": {
+      "hash": "351dd54e5327",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replaceMessage": {
+      "hash": "a331271679f8",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replaceTitleCt": {
+      "hash": "5107d551c4b2",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replaceTitleRadiology": {
+      "hash": "7ba39ea92f66",
+      "status": "machine"
+    },
+    "app:imagingTemplates.saved": {
+      "hash": "fdd6e6c06fcf",
+      "status": "machine"
+    },
+    "app:imagingTemplates.untitled": {
+      "hash": "f59ab8d1331b",
+      "status": "machine"
+    },
     "app:lock.description": {
       "hash": "dee8e813b07f",
       "status": "machine"
@@ -7633,7 +7669,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.third.text": {
-      "hash": "5ba5c66c2898",
+      "hash": "f063f2c7c8ed",
       "status": "machine"
     },
     "help:articles.imaging.sections.third.title": {
@@ -9126,6 +9162,46 @@
     },
     "library:templates.fieldsInTemplate": {
       "hash": "972ec4cdc294",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.aria": {
+      "hash": "4f9f3397f534",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.bodyPlaceholder": {
+      "hash": "3d1a096e68ee",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.deleteMessage": {
+      "hash": "767c792a08c5",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.empty": {
+      "hash": "9bd4a6895b17",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.title": {
+      "hash": "4f9f3397f534",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.aria": {
+      "hash": "72abfbc3dd3e",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.bodyPlaceholder": {
+      "hash": "4730aa96edf2",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.deleteMessage": {
+      "hash": "767c792a08c5",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.empty": {
+      "hash": "48e100c4e01a",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.title": {
+      "hash": "72abfbc3dd3e",
       "status": "machine"
     },
     "library:templates.nameLabel": {
@@ -17954,6 +18030,42 @@
       "hash": "3045505000c1",
       "status": "machine"
     },
+    "app:imagingTemplates.loading": {
+      "hash": "3800ee7191b1",
+      "status": "machine"
+    },
+    "app:imagingTemplates.manageTitle": {
+      "hash": "3c577e6ac817",
+      "status": "machine"
+    },
+    "app:imagingTemplates.none": {
+      "hash": "2d1ae3be976e",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replace": {
+      "hash": "351dd54e5327",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replaceMessage": {
+      "hash": "a331271679f8",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replaceTitleCt": {
+      "hash": "5107d551c4b2",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replaceTitleRadiology": {
+      "hash": "7ba39ea92f66",
+      "status": "machine"
+    },
+    "app:imagingTemplates.saved": {
+      "hash": "fdd6e6c06fcf",
+      "status": "machine"
+    },
+    "app:imagingTemplates.untitled": {
+      "hash": "f59ab8d1331b",
+      "status": "machine"
+    },
     "app:lock.description": {
       "hash": "dee8e813b07f",
       "status": "machine"
@@ -24539,7 +24651,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.third.text": {
-      "hash": "5ba5c66c2898",
+      "hash": "f063f2c7c8ed",
       "status": "machine"
     },
     "help:articles.imaging.sections.third.title": {
@@ -26032,6 +26144,46 @@
     },
     "library:templates.fieldsInTemplate": {
       "hash": "972ec4cdc294",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.aria": {
+      "hash": "4f9f3397f534",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.bodyPlaceholder": {
+      "hash": "3d1a096e68ee",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.deleteMessage": {
+      "hash": "767c792a08c5",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.empty": {
+      "hash": "9bd4a6895b17",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.title": {
+      "hash": "4f9f3397f534",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.aria": {
+      "hash": "72abfbc3dd3e",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.bodyPlaceholder": {
+      "hash": "4730aa96edf2",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.deleteMessage": {
+      "hash": "767c792a08c5",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.empty": {
+      "hash": "48e100c4e01a",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.title": {
+      "hash": "72abfbc3dd3e",
       "status": "machine"
     },
     "library:templates.nameLabel": {
@@ -34672,6 +34824,42 @@
       "hash": "3045505000c1",
       "status": "machine"
     },
+    "app:imagingTemplates.loading": {
+      "hash": "3800ee7191b1",
+      "status": "machine"
+    },
+    "app:imagingTemplates.manageTitle": {
+      "hash": "3c577e6ac817",
+      "status": "machine"
+    },
+    "app:imagingTemplates.none": {
+      "hash": "2d1ae3be976e",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replace": {
+      "hash": "351dd54e5327",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replaceMessage": {
+      "hash": "a331271679f8",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replaceTitleCt": {
+      "hash": "5107d551c4b2",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replaceTitleRadiology": {
+      "hash": "7ba39ea92f66",
+      "status": "machine"
+    },
+    "app:imagingTemplates.saved": {
+      "hash": "fdd6e6c06fcf",
+      "status": "machine"
+    },
+    "app:imagingTemplates.untitled": {
+      "hash": "f59ab8d1331b",
+      "status": "machine"
+    },
     "app:lock.description": {
       "hash": "dee8e813b07f",
       "status": "machine"
@@ -41313,7 +41501,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.third.text": {
-      "hash": "5ba5c66c2898",
+      "hash": "f063f2c7c8ed",
       "status": "machine"
     },
     "help:articles.imaging.sections.third.title": {
@@ -42806,6 +42994,46 @@
     },
     "library:templates.fieldsInTemplate": {
       "hash": "972ec4cdc294",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.aria": {
+      "hash": "4f9f3397f534",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.bodyPlaceholder": {
+      "hash": "3d1a096e68ee",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.deleteMessage": {
+      "hash": "767c792a08c5",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.empty": {
+      "hash": "9bd4a6895b17",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.title": {
+      "hash": "4f9f3397f534",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.aria": {
+      "hash": "72abfbc3dd3e",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.bodyPlaceholder": {
+      "hash": "4730aa96edf2",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.deleteMessage": {
+      "hash": "767c792a08c5",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.empty": {
+      "hash": "48e100c4e01a",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.title": {
+      "hash": "72abfbc3dd3e",
       "status": "machine"
     },
     "library:templates.nameLabel": {
@@ -51510,6 +51738,42 @@
       "hash": "3045505000c1",
       "status": "machine"
     },
+    "app:imagingTemplates.loading": {
+      "hash": "3800ee7191b1",
+      "status": "machine"
+    },
+    "app:imagingTemplates.manageTitle": {
+      "hash": "3c577e6ac817",
+      "status": "machine"
+    },
+    "app:imagingTemplates.none": {
+      "hash": "2d1ae3be976e",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replace": {
+      "hash": "351dd54e5327",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replaceMessage": {
+      "hash": "a331271679f8",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replaceTitleCt": {
+      "hash": "5107d551c4b2",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replaceTitleRadiology": {
+      "hash": "7ba39ea92f66",
+      "status": "machine"
+    },
+    "app:imagingTemplates.saved": {
+      "hash": "fdd6e6c06fcf",
+      "status": "machine"
+    },
+    "app:imagingTemplates.untitled": {
+      "hash": "f59ab8d1331b",
+      "status": "machine"
+    },
     "app:lock.description": {
       "hash": "dee8e813b07f",
       "status": "machine"
@@ -58151,7 +58415,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.third.text": {
-      "hash": "5ba5c66c2898",
+      "hash": "f063f2c7c8ed",
       "status": "machine"
     },
     "help:articles.imaging.sections.third.title": {
@@ -59644,6 +59908,46 @@
     },
     "library:templates.fieldsInTemplate": {
       "hash": "972ec4cdc294",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.aria": {
+      "hash": "4f9f3397f534",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.bodyPlaceholder": {
+      "hash": "3d1a096e68ee",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.deleteMessage": {
+      "hash": "767c792a08c5",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.empty": {
+      "hash": "9bd4a6895b17",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.title": {
+      "hash": "4f9f3397f534",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.aria": {
+      "hash": "72abfbc3dd3e",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.bodyPlaceholder": {
+      "hash": "4730aa96edf2",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.deleteMessage": {
+      "hash": "767c792a08c5",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.empty": {
+      "hash": "48e100c4e01a",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.title": {
+      "hash": "72abfbc3dd3e",
       "status": "machine"
     },
     "library:templates.nameLabel": {
@@ -68344,6 +68648,42 @@
       "hash": "3045505000c1",
       "status": "machine"
     },
+    "app:imagingTemplates.loading": {
+      "hash": "3800ee7191b1",
+      "status": "machine"
+    },
+    "app:imagingTemplates.manageTitle": {
+      "hash": "3c577e6ac817",
+      "status": "machine"
+    },
+    "app:imagingTemplates.none": {
+      "hash": "2d1ae3be976e",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replace": {
+      "hash": "351dd54e5327",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replaceMessage": {
+      "hash": "a331271679f8",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replaceTitleCt": {
+      "hash": "5107d551c4b2",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replaceTitleRadiology": {
+      "hash": "7ba39ea92f66",
+      "status": "machine"
+    },
+    "app:imagingTemplates.saved": {
+      "hash": "fdd6e6c06fcf",
+      "status": "machine"
+    },
+    "app:imagingTemplates.untitled": {
+      "hash": "f59ab8d1331b",
+      "status": "machine"
+    },
     "app:lock.description": {
       "hash": "dee8e813b07f",
       "status": "machine"
@@ -74921,7 +75261,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.third.text": {
-      "hash": "5ba5c66c2898",
+      "hash": "f063f2c7c8ed",
       "status": "machine"
     },
     "help:articles.imaging.sections.third.title": {
@@ -76414,6 +76754,46 @@
     },
     "library:templates.fieldsInTemplate": {
       "hash": "972ec4cdc294",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.aria": {
+      "hash": "4f9f3397f534",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.bodyPlaceholder": {
+      "hash": "3d1a096e68ee",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.deleteMessage": {
+      "hash": "767c792a08c5",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.empty": {
+      "hash": "9bd4a6895b17",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.title": {
+      "hash": "4f9f3397f534",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.aria": {
+      "hash": "72abfbc3dd3e",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.bodyPlaceholder": {
+      "hash": "4730aa96edf2",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.deleteMessage": {
+      "hash": "767c792a08c5",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.empty": {
+      "hash": "48e100c4e01a",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.title": {
+      "hash": "72abfbc3dd3e",
       "status": "machine"
     },
     "library:templates.nameLabel": {
@@ -84990,6 +85370,42 @@
       "hash": "3045505000c1",
       "status": "machine"
     },
+    "app:imagingTemplates.loading": {
+      "hash": "3800ee7191b1",
+      "status": "machine"
+    },
+    "app:imagingTemplates.manageTitle": {
+      "hash": "3c577e6ac817",
+      "status": "machine"
+    },
+    "app:imagingTemplates.none": {
+      "hash": "2d1ae3be976e",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replace": {
+      "hash": "351dd54e5327",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replaceMessage": {
+      "hash": "a331271679f8",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replaceTitleCt": {
+      "hash": "5107d551c4b2",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replaceTitleRadiology": {
+      "hash": "7ba39ea92f66",
+      "status": "machine"
+    },
+    "app:imagingTemplates.saved": {
+      "hash": "fdd6e6c06fcf",
+      "status": "machine"
+    },
+    "app:imagingTemplates.untitled": {
+      "hash": "f59ab8d1331b",
+      "status": "machine"
+    },
     "app:lock.description": {
       "hash": "dee8e813b07f",
       "status": "machine"
@@ -91631,7 +92047,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.third.text": {
-      "hash": "5ba5c66c2898",
+      "hash": "f063f2c7c8ed",
       "status": "machine"
     },
     "help:articles.imaging.sections.third.title": {
@@ -93124,6 +93540,46 @@
     },
     "library:templates.fieldsInTemplate": {
       "hash": "972ec4cdc294",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.aria": {
+      "hash": "4f9f3397f534",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.bodyPlaceholder": {
+      "hash": "3d1a096e68ee",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.deleteMessage": {
+      "hash": "767c792a08c5",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.empty": {
+      "hash": "9bd4a6895b17",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.title": {
+      "hash": "4f9f3397f534",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.aria": {
+      "hash": "72abfbc3dd3e",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.bodyPlaceholder": {
+      "hash": "4730aa96edf2",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.deleteMessage": {
+      "hash": "767c792a08c5",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.empty": {
+      "hash": "48e100c4e01a",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.title": {
+      "hash": "72abfbc3dd3e",
       "status": "machine"
     },
     "library:templates.nameLabel": {
@@ -101832,6 +102288,42 @@
       "hash": "3045505000c1",
       "status": "machine"
     },
+    "app:imagingTemplates.loading": {
+      "hash": "3800ee7191b1",
+      "status": "machine"
+    },
+    "app:imagingTemplates.manageTitle": {
+      "hash": "3c577e6ac817",
+      "status": "machine"
+    },
+    "app:imagingTemplates.none": {
+      "hash": "2d1ae3be976e",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replace": {
+      "hash": "351dd54e5327",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replaceMessage": {
+      "hash": "a331271679f8",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replaceTitleCt": {
+      "hash": "5107d551c4b2",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replaceTitleRadiology": {
+      "hash": "7ba39ea92f66",
+      "status": "machine"
+    },
+    "app:imagingTemplates.saved": {
+      "hash": "fdd6e6c06fcf",
+      "status": "machine"
+    },
+    "app:imagingTemplates.untitled": {
+      "hash": "f59ab8d1331b",
+      "status": "machine"
+    },
     "app:lock.description": {
       "hash": "dee8e813b07f",
       "status": "machine"
@@ -108521,7 +109013,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.third.text": {
-      "hash": "5ba5c66c2898",
+      "hash": "f063f2c7c8ed",
       "status": "machine"
     },
     "help:articles.imaging.sections.third.title": {
@@ -110014,6 +110506,46 @@
     },
     "library:templates.fieldsInTemplate": {
       "hash": "972ec4cdc294",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.aria": {
+      "hash": "4f9f3397f534",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.bodyPlaceholder": {
+      "hash": "3d1a096e68ee",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.deleteMessage": {
+      "hash": "767c792a08c5",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.empty": {
+      "hash": "9bd4a6895b17",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.title": {
+      "hash": "4f9f3397f534",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.aria": {
+      "hash": "72abfbc3dd3e",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.bodyPlaceholder": {
+      "hash": "4730aa96edf2",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.deleteMessage": {
+      "hash": "767c792a08c5",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.empty": {
+      "hash": "48e100c4e01a",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.title": {
+      "hash": "72abfbc3dd3e",
       "status": "machine"
     },
     "library:templates.nameLabel": {
@@ -119316,6 +119848,42 @@
       "hash": "3045505000c1",
       "status": "machine"
     },
+    "app:imagingTemplates.loading": {
+      "hash": "3800ee7191b1",
+      "status": "machine"
+    },
+    "app:imagingTemplates.manageTitle": {
+      "hash": "3c577e6ac817",
+      "status": "machine"
+    },
+    "app:imagingTemplates.none": {
+      "hash": "2d1ae3be976e",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replace": {
+      "hash": "351dd54e5327",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replaceMessage": {
+      "hash": "a331271679f8",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replaceTitleCt": {
+      "hash": "5107d551c4b2",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replaceTitleRadiology": {
+      "hash": "7ba39ea92f66",
+      "status": "machine"
+    },
+    "app:imagingTemplates.saved": {
+      "hash": "fdd6e6c06fcf",
+      "status": "machine"
+    },
+    "app:imagingTemplates.untitled": {
+      "hash": "f59ab8d1331b",
+      "status": "machine"
+    },
     "app:lock.description": {
       "hash": "dee8e813b07f",
       "status": "machine"
@@ -125949,7 +126517,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.third.text": {
-      "hash": "5ba5c66c2898",
+      "hash": "f063f2c7c8ed",
       "status": "machine"
     },
     "help:articles.imaging.sections.third.title": {
@@ -127442,6 +128010,46 @@
     },
     "library:templates.fieldsInTemplate": {
       "hash": "972ec4cdc294",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.aria": {
+      "hash": "4f9f3397f534",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.bodyPlaceholder": {
+      "hash": "3d1a096e68ee",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.deleteMessage": {
+      "hash": "767c792a08c5",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.empty": {
+      "hash": "9bd4a6895b17",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.title": {
+      "hash": "4f9f3397f534",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.aria": {
+      "hash": "72abfbc3dd3e",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.bodyPlaceholder": {
+      "hash": "4730aa96edf2",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.deleteMessage": {
+      "hash": "767c792a08c5",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.empty": {
+      "hash": "48e100c4e01a",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.title": {
+      "hash": "72abfbc3dd3e",
       "status": "machine"
     },
     "library:templates.nameLabel": {
@@ -136078,6 +136686,42 @@
       "hash": "3045505000c1",
       "status": "machine"
     },
+    "app:imagingTemplates.loading": {
+      "hash": "3800ee7191b1",
+      "status": "machine"
+    },
+    "app:imagingTemplates.manageTitle": {
+      "hash": "3c577e6ac817",
+      "status": "machine"
+    },
+    "app:imagingTemplates.none": {
+      "hash": "2d1ae3be976e",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replace": {
+      "hash": "351dd54e5327",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replaceMessage": {
+      "hash": "a331271679f8",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replaceTitleCt": {
+      "hash": "5107d551c4b2",
+      "status": "machine"
+    },
+    "app:imagingTemplates.replaceTitleRadiology": {
+      "hash": "7ba39ea92f66",
+      "status": "machine"
+    },
+    "app:imagingTemplates.saved": {
+      "hash": "fdd6e6c06fcf",
+      "status": "machine"
+    },
+    "app:imagingTemplates.untitled": {
+      "hash": "f59ab8d1331b",
+      "status": "machine"
+    },
     "app:lock.description": {
       "hash": "dee8e813b07f",
       "status": "machine"
@@ -142655,7 +143299,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.third.text": {
-      "hash": "5ba5c66c2898",
+      "hash": "f063f2c7c8ed",
       "status": "machine"
     },
     "help:articles.imaging.sections.third.title": {
@@ -144148,6 +144792,46 @@
     },
     "library:templates.fieldsInTemplate": {
       "hash": "972ec4cdc294",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.aria": {
+      "hash": "4f9f3397f534",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.bodyPlaceholder": {
+      "hash": "3d1a096e68ee",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.deleteMessage": {
+      "hash": "767c792a08c5",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.empty": {
+      "hash": "9bd4a6895b17",
+      "status": "machine"
+    },
+    "library:templates.kinds.ct.title": {
+      "hash": "4f9f3397f534",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.aria": {
+      "hash": "72abfbc3dd3e",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.bodyPlaceholder": {
+      "hash": "4730aa96edf2",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.deleteMessage": {
+      "hash": "767c792a08c5",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.empty": {
+      "hash": "48e100c4e01a",
+      "status": "machine"
+    },
+    "library:templates.kinds.radiology.title": {
+      "hash": "72abfbc3dd3e",
       "status": "machine"
     },
     "library:templates.nameLabel": {

@@ -501,5 +501,16 @@
     "dictateDental": "Dictate dental visit",
     "dentalAdditions": "Additional dental findings",
     "dentalAdditionsHelp": "Review diagnostic results, CT findings, and discharge details from the same recording."
+  },
+  "imagingTemplates": {
+    "replaceTitleRadiology": "Replace radiographic report text?",
+    "replaceTitleCt": "Replace CT report text?",
+    "replaceMessage": "The selected template will replace the current report text for this visit.",
+    "replace": "Use template",
+    "untitled": "Untitled",
+    "none": "No templates yet",
+    "loading": "Loading templates…",
+    "manageTitle": "Manage saved templates",
+    "saved": "Template “{{name}}” saved."
   }
 }

@@ -141,7 +141,23 @@
     "deleteConfirm": "Supprimer le modèle",
     "saving": "Enregistrement…",
     "saveChanges": "Enregistrer les modifications",
-    "saveTemplate": "Enregistrer le modèle"
+    "saveTemplate": "Enregistrer le modèle",
+    "kinds": {
+      "radiology": {
+        "title": "Modèles – Compte rendu radiographique",
+        "aria": "Modèles – Compte rendu radiographique",
+        "empty": "Aucun modèle pour le moment. Créez-en un ci-dessous ou choisissez Gérer les modèles dans compte rendu radiographique.",
+        "bodyPlaceholder": "Le texte du compte rendu inséré dans Compte rendu radiographique…",
+        "deleteMessage": "Ce modèle est supprimé pour tous les membres de votre cabinet. Cette action est irréversible."
+      },
+      "ct": {
+        "title": "Modèles – Compte rendu de scanner",
+        "aria": "Modèles – Compte rendu de scanner",
+        "empty": "Aucun modèle pour le moment. Créez-en un ci-dessous ou choisissez Gérer les modèles dans compte rendu de scanner.",
+        "bodyPlaceholder": "Le texte du compte rendu inséré dans Compte rendu de scanner…",
+        "deleteMessage": "Ce modèle est supprimé pour tous les membres de votre cabinet. Cette action est irréversible."
+      }
+    }
   },
   "workspace": {
     "description": "Recherchez les dossiers patients, consultez les visites et gérez les contrôles.",

@@ -503,5 +503,16 @@
     "dictateDental": "Dictar la visita dental",
     "dentalAdditions": "Hallazgos dentales adicionales",
     "dentalAdditionsHelp": "Revise los resultados diagnósticos, los hallazgos de TC y los datos del alta de la misma grabación."
+  },
+  "imagingTemplates": {
+    "replaceTitleRadiology": "¿Reemplazar el texto del informe radiográfico?",
+    "replaceTitleCt": "¿Reemplazar el texto del informe de TC?",
+    "replaceMessage": "La plantilla seleccionada reemplazará el texto actual del informe de esta visita.",
+    "replace": "Usar plantilla",
+    "untitled": "Sin título",
+    "none": "Aún no hay plantillas",
+    "loading": "Cargando plantillas…",
+    "manageTitle": "Gestionar las plantillas guardadas",
+    "saved": "Plantilla «{{name}}» guardada."
   }
 }
