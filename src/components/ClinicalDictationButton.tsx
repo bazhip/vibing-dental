@@ -18,6 +18,8 @@ import { copyRichText } from '../utils/clipboard';
 import { ctRecordedText } from '../utils/ctReportState';
 import { friendlyError } from './ui/dialogs';
 import { supabase } from '../utils/supabaseClient';
+import { errorCode, logEvent } from '../utils/appEvents';
+import { DictationTracker } from '../utils/dictationTelemetry';
 import './ClinicalDictationButton.css';
 
 interface Props {
@@ -41,6 +43,9 @@ interface Props {
   onOpenChange?: (open: boolean) => void;
 }
 type Proposal = ClinicalDictationProposal & { selected: boolean };
+/** A field that was filled in but should be double-checked (low model confidence). */
+type Check = { field: ClinicalDictationField; value: string; original: string };
+const CONTROL_CHARS = /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f-\u009f]/;
 const MIC_ICON = 'mic';
 const kinds = ['gp-visit', 'consultation', 'gp-exam', 'discharge'] as const;
 const fingerprint = (snapshot: ChartSnapshot) => `${recordNoteBasis(snapshot)}\n${JSON.stringify(snapshot.clinicalDictations ?? [])}\n${JSON.stringify(snapshot.patientInfo.consultationLayout ?? null)}\n${JSON.stringify(snapshot.patientInfo.dischargeLayout ?? null)}`;
@@ -57,6 +62,9 @@ export function ClinicalDictationButton(props: Props) {
   const [target, setTarget] = React.useState(props.kind);
   const [transcript, setTranscript] = React.useState('');
   const [proposals, setProposals] = React.useState<Proposal[] | null>(null);
+  const [checks, setChecks] = React.useState<Check[]>([]);
+  const checksRef = React.useRef<Check[]>([]); checksRef.current = checks;
+  const checkSession = React.useRef<{ id: string; raw: string; language: AppLanguage } | null>(null);
   const [reviewBasis, setReviewBasis] = React.useState<string | null>(null);
   const [busy, setBusy] = React.useState(false);
   const [captureAttempt, setCaptureAttempt] = React.useState(0);
@@ -80,21 +88,41 @@ export function ClinicalDictationButton(props: Props) {
     transcriptUserId: props.transcriptUserId,
   });
   const captureRef = React.useRef(capture); captureRef.current = capture;
+  // Telemetry: the capture's tracker when the mic ran, else our own (seeded text).
+  const ownTracker = React.useRef<DictationTracker | null>(null);
+  const reviewPending = React.useRef(false);
+  const trackerNow = React.useCallback((): DictationTracker => {
+    const live = captureRef.current.tracker?.();
+    if (live) return live;
+    if (!ownTracker.current || ownTracker.current.flushed) ownTracker.current = new DictationTracker('clinical', { seeded: true });
+    return ownTracker.current;
+  }, []);
+  const finishTelemetry = React.useCallback(() => {
+    const tracker = captureRef.current.tracker?.() ?? ownTracker.current;
+    if (checksRef.current.length && checkSession.current) {
+      logEvent('dictation', 'check_decision', 'info', { flow: 'clinical', decision: 'ignored', fields: checksRef.current.map(c => c.field) }, checkSession.current.id);
+    }
+    if (reviewPending.current) tracker?.count('review_abandoned');
+    reviewPending.current = false;
+    tracker?.flush();
+    ownTracker.current = null;
+  }, []);
   const native = isNativeApp();
   const seeded = props.seededTranscript;
-  const visible = open && (!seeded || !!error || !!proposals?.length || !!status);
+  const visible = open && (!seeded || !!error || !!proposals?.length || !!status || checks.length > 0);
   const modalRef = useModalFocus<HTMLDivElement>(visible && !native);
   const heading = React.useId();
 
   const invalidate = React.useCallback(() => {
     epoch.current++; locked.current = false; mic.current = null; reviewToken.current = null;
-    setBusy(false); setProposals(null); setReviewBasis(null);
+    setBusy(false); setProposals(null); setReviewBasis(null); setChecks([]);
   }, []);
   const close = React.useCallback(() => {
     const wasOpen = opened.current; opened.current = false;
+    finishTelemetry();
     invalidate(); captureRef.current.stop();
     setOpen(false); if (wasOpen) current.current.props.onOpenChange?.(false);
-  }, [invalidate]);
+  }, [invalidate, finishTelemetry]);
   const backdrop = useBackdropDismiss(close);
   const show = React.useCallback(() => {
     const now = current.current.props;
@@ -168,25 +196,44 @@ export function ClinicalDictationButton(props: Props) {
     id: crypto.randomUUID(), kind: current.current.target, language: sessionLanguage.current ?? language(),
     transcript: raw, recordedAt: new Date().toISOString(), fields,
   });
-  const commit = (changes: Partial<PatientInfo>, source: ClinicalDictationSource) => {
+  const commit = (changes: Partial<PatientInfo>, source: ClinicalDictationSource, mode: 'review' | 'auto' = 'review', lowConfidence: ClinicalDictationField[] = []) => {
     // Validate the entire addition before the parent mutates either clinical text or provenance.
     appendClinicalDictationSource(current.current.props.snapshot.clinicalDictations ?? [], source);
     if (managed && !current.current.props.strictTarget && source.kind !== 'ct') current.current.props.onApply(changes, source, true);
     else current.current.props.onApply(changes, source);
-    reviewToken.current = null;
+    reviewToken.current = null; reviewPending.current = false;
+    // Record the outcome now: it is known, and the summary should not wait for the dialog to close.
+    const tracker = trackerNow();
+    tracker.put('applied_fields', source.fields.length);
+    tracker.set('apply_mode', source.kind === 'ct' ? 'direct' : mode);
+    tracker.set('fields', source.fields);
+    tracker.put('low_confidence', lowConfidence.length);
+    const sessionId = tracker.id;
+    tracker.flush();
+    ownTracker.current = null;
+    // Low-confidence fields stay on screen to double-check; they never block anything.
+    checkSession.current = { id: sessionId, raw: source.transcript, language: source.language };
+    setChecks(lowConfidence.map(field => ({ field, value: String(changes[field] ?? ''), original: String(changes[field] ?? '') })));
     setProposals(null); setReviewBasis(null); setTranscript(''); sessionLanguage.current = null;
-    captureRef.current.clear(); setStatus(t('clinical.applied'));
+    captureRef.current.clear();
+    setStatus(mode === 'auto' ? t('clinical.autofilled', { fields: source.fields.map(field => fieldLabel(field)).join(', ') }) : t('clinical.applied'));
   };
   const prepare = async (raw = current.current.transcript) => {
     const { props: now, basis: sourceBasis, target: selectedTarget } = current.current;
     if (locked.current || mic.current || !opened.current || now.readOnly || !now.aiEnabled) return;
-    if (!raw.trim() || raw.length > 40000) { setError(t(raw.trim() ? 'clinical.transcriptTooLong' : 'clinical.emptyTranscript')); return; }
+    if (!raw.trim() || raw.length > 40000) {
+      if (raw.trim()) trackerNow().failure('extract', 'transcript_too_long');
+      setError(t(raw.trim() ? 'clinical.transcriptTooLong' : 'clinical.emptyTranscript')); return;
+    }
     sessionLanguage.current ??= language();
     const token = ++epoch.current; requestIdentity.current = current.current.identity;
     locked.current = true; setBusy(true); setError(null); setStatus(null); setProposals(null); setReviewBasis(null);
     try {
-      if (!(await ensureAiConsent())) { if (valid(token, sourceBasis, selectedTarget)) setError(t('clinical.consentRequired')); return; }
+      if (!(await ensureAiConsent())) { if (valid(token, sourceBasis, selectedTarget)) { trackerNow().failure('consent', 'required'); setError(t('clinical.consentRequired')); } return; }
       if (!valid(token, sourceBasis, selectedTarget)) return;
+      const tracker = trackerNow();
+      tracker.put('chars', raw.length);
+      tracker.set('target', selectedTarget);
       if (selectedTarget === 'ct') {
         const result = [ctRecordedText(now.snapshot.patientInfo), raw].filter(Boolean).join('\n\n');
         if (result.length > 60000) { setError(t('clinical.sourceTooLarge')); return; }
@@ -196,19 +243,40 @@ export function ClinicalDictationButton(props: Props) {
         const consultationEnabled = now.consultationEnabled ?? now.kind === 'consultation';
         const structuredConsultation = !!now.strictTarget && selectedTarget === 'consultation';
         const routedGpExamEnabled = managed && !now.strictTarget ? !!now.gpExamEnabled : undefined;
+        const extractStarted = Date.now();
         const result = await extractClinicalDictation({ kind: selectedTarget, transcript: raw, language: sessionLanguage.current,
           patientInfo: now.snapshot.patientInfo, consultationEnabled, imagingFocus: now.imagingFocus,
           ...(structuredConsultation ? { structuredConsultation } : {}),
           ...(routedGpExamEnabled === undefined ? {} : { routedGpExamEnabled }) });
-        if (!valid(token, sourceBasis, selectedTarget)) return;
+        tracker.count('extract_calls'); tracker.count('extract_ms', Date.now() - extractStarted);
+        if (!valid(token, sourceBasis, selectedTarget)) { tracker.count('stale'); return; }
         const fields = allowedClinicalFields(selectedTarget, consultationEnabled, routedGpExamEnabled, structuredConsultation, clinicalDictationLayout(selectedTarget, now.snapshot.patientInfo)), seen = new Set<string>();
         if (!Array.isArray(result) || result.some(p => !p || !fields.includes(p.field) || seen.has(p.field)
           || (seen.add(p.field), typeof p.value !== 'string') || !p.value.trim() || p.value.length > 20000
           || typeof p.evidence !== 'string' || !p.evidence.trim() || !normalized(raw).includes(normalized(p.evidence)))) {
+          tracker.failure('extract', 'invalid_response', { reason: 'validation' });
           setError(t('clinical.invalidResponse')); return;
         }
         const changed = result.filter(p => normalized(p.value) !== normalized(now.snapshot.patientInfo[p.field] ?? ''));
+        tracker.put('proposed', result.length); tracker.put('changed', changed.length);
         if (now.seededTranscript && !changed.length) { close(); return; }
+        // Voice first: fill the chart straight away. Low-confidence fields are filled too but stay on
+        // screen to double-check. Only a result that would REPLACE existing text waits for a tap.
+        const replaces = changed.some(p => {
+          const existing = normalized(now.snapshot.patientInfo[p.field] ?? '');
+          return !!existing && !normalized(p.value).includes(existing);
+        });
+        if (changed.length && !replaces && !changed.some(p => CONTROL_CHARS.test(p.value))) {
+          try {
+            commit(Object.fromEntries(changed.map(p => [p.field, p.value])), sourceFor(raw, changed.map(p => p.field)), 'auto',
+              changed.filter(p => p.confidence !== 'high').map(p => p.field));
+            return;
+          } catch (cause) {
+            tracker.failure('apply', errorCode(cause), { mode: 'auto' });
+          }
+        }
+        reviewPending.current = true;
+        tracker.count('review_shown');
         reviewToken.current = token;
         setReviewBasis(sourceBasis);
         setProposals(changed.map(p => {
@@ -216,7 +284,13 @@ export function ClinicalDictationButton(props: Props) {
           return { ...p, selected: !managed || !existing || normalized(p.value).includes(existing) };
         }));
       }
-    } catch (cause) { if (valid(token, sourceBasis, selectedTarget)) setError(friendlyError(cause, t('clinical.failed'))); }
+    } catch (cause) {
+      if (valid(token, sourceBasis, selectedTarget)) {
+        const reason = (cause as { reason?: unknown } | null)?.reason;
+        trackerNow().failure('extract', errorCode(cause), typeof reason === 'string' ? { reason } : {});
+        setError(friendlyError(cause, t('clinical.failed')));
+      }
+    }
     finally { if (token === epoch.current && mounted.current) { locked.current = false; setBusy(false); } }
   };
   prepareRef.current = text => { void prepare(text); };
@@ -253,8 +327,35 @@ export function ClinicalDictationButton(props: Props) {
     if (selected.some(p => p.value.length > 20000 || /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f-\u009f]/.test(p.value))) { setError(t('clinical.invalidResponse')); return; }
     locked.current = true;
     try { commit(Object.fromEntries(selected.map(p => [p.field, p.value])), sourceFor(transcript, selected.map(p => p.field))); }
-    catch (cause) { setError(friendlyError(cause, t('clinical.failed'))); }
+    catch (cause) { trackerNow().failure('apply', errorCode(cause), { mode: 'review' }); setError(friendlyError(cause, t('clinical.failed'))); }
     finally { locked.current = false; }
+  };
+  const finishChecks = () => {
+    const pending = checksRef.current, session = checkSession.current;
+    if (!pending.length || !session) { setChecks([]); return; }
+    const edited = pending.filter(check => check.value !== check.original && check.value.trim() && check.value.length <= 20000 && !CONTROL_CHARS.test(check.value));
+    if (edited.length) {
+      try {
+        const source: ClinicalDictationSource = {
+          id: crypto.randomUUID(), kind: current.current.target, language: session.language,
+          transcript: session.raw, recordedAt: new Date().toISOString(), fields: edited.map(check => check.field),
+        };
+        const changes = Object.fromEntries(edited.map(check => [check.field, check.value]));
+        appendClinicalDictationSource(current.current.props.snapshot.clinicalDictations ?? [], source);
+        if (managed && !current.current.props.strictTarget && source.kind !== 'ct') current.current.props.onApply(changes, source, true);
+        else current.current.props.onApply(changes, source);
+      } catch (cause) {
+        logEvent('dictation', 'check_decision', 'fail', { flow: 'clinical', code: errorCode(cause) }, session.id);
+        setError(friendlyError(cause, t('clinical.failed')));
+        return;
+      }
+    }
+    logEvent('dictation', 'check_decision', 'info', {
+      flow: 'clinical', decision: edited.length ? 'edited' : 'confirmed', edited: edited.length, checked: pending.length,
+      fields: pending.map(check => check.field),
+    }, session.id);
+    checkSession.current = null;
+    setChecks([]);
   };
   const fieldLabel = (field: ClinicalDictationField) => {
     const layout = clinicalDictationLayout(target, props.snapshot.patientInfo);
@@ -317,6 +418,14 @@ export function ClinicalDictationButton(props: Props) {
       {status && <p role="status">{status}</p>}
       {stale && <p role="alert">{t('clinical.stale')}</p>}
       {proposals?.length === 0 && <p role="status">{t('clinical.noSections')}</p>}
+      {checks.length > 0 && <section className="clinical-dictation__checks" aria-labelledby={`${heading}-checks`}>
+        <h3 id={`${heading}-checks`}>{t('clinical.checkTitle')}</h3>
+        <p className="ai-settings-blurb">{t('clinical.checkHelp')}</p>
+        {checks.map((check, index) => <label key={check.field} className="clinical-dictation__label">{fieldLabel(check.field)}
+          <textarea rows={3} value={check.value} disabled={restricted}
+            onChange={event => setChecks(previous => previous.map((c, i) => i === index ? { ...c, value: event.target.value } : c))} />
+        </label>)}
+      </section>}
       {proposals?.map((proposal, index) => <section key={proposal.field} className="clinical-dictation__proposal">
         <label className="choice-row clinical-dictation__check">
           <input type="checkbox" checked={proposal.selected} disabled={restricted || stale} onChange={event => setProposals(previous => previous!.map((p, i) => i === index ? { ...p, selected: event.target.checked } : p))} />
@@ -334,10 +443,12 @@ export function ClinicalDictationButton(props: Props) {
       <p className="ai-settings-blurb">{t('clinical.savedWithVisit')}</p>
     </div>
     <footer className="ai-settings-footer clinical-dictation__footer">
-      <button type="button" className="clinical-dictation__primary" disabled={restricted || busy || capture.recording || draining || !transcript.trim() || (target !== 'ct' && !!proposals?.length && !stale && !proposals.some(p => p.selected && p.value.trim()))}
-        onClick={() => target !== 'ct' && proposals?.length && !stale ? apply() : void prepare()}>
-        {t(busy ? 'clinical.preparing' : target === 'ct' ? 'clinical.ctApply' : proposals?.length && !stale ? 'clinical.apply' : 'clinical.prepare')}
-      </button>
+      {checks.length > 0 && !proposals?.length
+        ? <button type="button" className="clinical-dictation__primary" disabled={restricted} onClick={finishChecks}>{t('clinical.checkDone')}</button>
+        : <button type="button" className="clinical-dictation__primary" disabled={restricted || busy || capture.recording || draining || !transcript.trim() || (target !== 'ct' && !!proposals?.length && !stale && !proposals.some(p => p.selected && p.value.trim()))}
+          onClick={() => target !== 'ct' && proposals?.length && !stale ? apply() : void prepare()}>
+          {t(busy ? 'clinical.preparing' : target === 'ct' ? 'clinical.ctApply' : proposals?.length && !stale ? 'clinical.apply' : 'clinical.prepare')}
+        </button>}
     </footer>
   </>;
   return <>

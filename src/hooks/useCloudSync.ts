@@ -1,3 +1,4 @@
+import { errorCode, logEventThrottled } from '../utils/appEvents';
 import { ctRecordedText } from '../utils/ctReportState';
 import { radiologyRecordedText } from '../utils/radiologyReportState';
 import { NOTE_DROPDOWN_SNAPSHOT_VERSION } from '../utils/consultationTemplates';
@@ -570,6 +571,7 @@ export function useCloudSync(
       // so re-setting the same message is harmless.
       setSaveError(describeSaveError(err));
       setStatus('error');
+      logEventThrottled('save', 'save_failed', 'fail', { code: errorCode(err), automatic: !!opts.automatic, restore: !!opts.restore });
       throw err;
     }
     // setSavedHash identity is stable (usePersistedState) — safe to omit.

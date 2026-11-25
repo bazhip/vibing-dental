@@ -24,6 +24,8 @@ export interface ClinicalDictationProposal {
   field: ClinicalDictationField;
   value: string;
   evidence: string;
+  /** The model's own rating. Low (or missing) asks the clinician to double-check the field. */
+  confidence?: 'high' | 'low';
 }
 
 const CONSULTATION_DETAILS = ['consultationHistory', 'consultationAssessment', 'consultationPlan'] as const;
@@ -48,8 +50,16 @@ const object = (value: unknown): value is Record<string, unknown> => !!value && 
 const own = (value: object, key: PropertyKey): boolean => Object.prototype.hasOwnProperty.call(value, key);
 const normalizedWhitespace = (value: string): string => value.replace(/\s+/gu, ' ').trim();
 type ErrorKey = 'emptyTranscript' | 'transcriptTooLong' | 'sourceTooLarge' | 'invalidResponse' | 'extractionFailed';
-function fail(language: AppLanguage, key: ErrorKey): never {
-  throw new LocalizedError(i18n.getFixedT(isAppLanguage(language) ? language : 'en', 'voice')(`clinical.${key}`));
+/** A translated failure that also carries a text-free code and reason for analytics. */
+export class ClinicalDictationError extends LocalizedError {
+  constructor(message: string, readonly code: string, readonly reason?: string) {
+    super(message);
+    this.name = 'ClinicalDictationError';
+  }
+}
+
+function fail(language: AppLanguage, key: ErrorKey, reason?: string): never {
+  throw new ClinicalDictationError(i18n.getFixedT(isAppLanguage(language) ? language : 'en', 'voice')(`clinical.${key}`), key, reason);
 }
 
 export function clinicalDictationLayout(kind: ClinicalDictationKind, info: PatientInfo): ConsultationLayout | undefined {
@@ -91,7 +101,8 @@ const SYSTEM = [
   'Preserve all existing manual values and their clinical meaning. Append new facts to existing text; do not remove prior facts. Only replace a specific existing fact when an explicit dictated correction identifies it, preserving unrelated information. Include correction wording in evidence.',
   'Each proposal is the complete intended resulting value for that field, not just an append fragment. Omit unchanged values. Never clear a field. Do not repeat current text as a new finding or restore facts explicitly corrected by the clinician.',
   'complaint: presenting concern; consultationHistory: recorded history; consultationAssessment: explicitly stated assessment; consultationPlan: explicitly stated plan; gpVitals: recorded vital signs; gpPhysicalExam: recorded physical examination; gpDiagnostics: recorded diagnostic findings; treatmentReport: performed treatment; dischargeMedications: explicitly recorded discharge medications; dischargeInstructions: recorded home instructions; dischargeFollowUp: explicitly recorded follow-up.',
-  'Return each field at most once, with field, value, evidence only. Evidence must be a nonempty verbatim contiguous excerpt of the supplied transcript supporting the new facts or explicit corrections, allowing whitespace differences only. Do not cite existing values as transcript evidence.',
+  'Return each field at most once, with field, value, evidence and confidence only. Evidence must be a nonempty verbatim contiguous excerpt of the supplied transcript supporting the new facts or explicit corrections, allowing whitespace differences only. Do not cite existing values as transcript evidence.',
+  'Set confidence to "high" only when every fact in the value is clearly stated. Set it to "low" when any part may have been misheard or is ambiguous: medication or drug names that are not clear words, doses, numbers and units, tooth numbers, laterality, wording that was garbled or marked uncertain, or a routing choice between fields that could go either way. When in doubt, choose "low"; the clinician then double-checks that field.',
   'Do not put headings, Markdown fences, commentary, patient identifiers or contact details into proposals unless the clinician explicitly recorded them as necessary clinical text. This is an unreviewed draft; never claim it was approved or saved.',
 ].join('\n');
 
@@ -132,8 +143,8 @@ export function buildClinicalDictationRequest(input: ClinicalDictationInput): Au
     input_schema: {
       type: 'object', additionalProperties: false, required: ['sections'],
       properties: { sections: { type: 'array', maxItems: fields.length, items: {
-        type: 'object', additionalProperties: false, required: ['field', 'value', 'evidence'],
-        properties: { field: { type: 'string', enum: [...fields] }, value: { type: 'string', minLength: 1, maxLength: MAX_FIELD }, evidence: { type: 'string', minLength: 1, maxLength: MAX_TRANSCRIPT } },
+        type: 'object', additionalProperties: false, required: ['field', 'value', 'evidence', 'confidence'],
+        properties: { field: { type: 'string', enum: [...fields] }, confidence: { type: 'string', enum: ['high', 'low'] }, value: { type: 'string', minLength: 1, maxLength: MAX_FIELD }, evidence: { type: 'string', minLength: 1, maxLength: MAX_TRANSCRIPT } },
       } } },
     },
   };
@@ -171,24 +182,28 @@ export function buildClinicalDictationRequest(input: ClinicalDictationInput): Au
 /** Rejects the whole response on ambiguity: no partial application of malformed output. */
 export function parseClinicalDictationProposal(content: unknown, input: ClinicalDictationInput): ClinicalDictationProposal[] {
   buildClinicalDictationRequest(input);
-  const invalid = (): never => fail(input.language, 'invalidResponse');
-  if (!Array.isArray(content) || content.some(block => !object(block) || !['tool_use', 'text', 'thinking', 'redacted_thinking'].includes(String(block.type)))) return invalid();
+  const invalid = (reason: string): never => fail(input.language, 'invalidResponse', reason);
+  if (!Array.isArray(content) || content.some(block => !object(block) || !['tool_use', 'text', 'thinking', 'redacted_thinking'].includes(String(block.type)))) return invalid('content_shape');
   const calls = content.filter(block => block.type === 'tool_use');
-  if (calls.length !== 1 || calls[0].name !== 'propose_clinical_sections' || !object(calls[0].input)) return invalid();
+  if (calls.length !== 1 || calls[0].name !== 'propose_clinical_sections' || !object(calls[0].input)) return invalid('tool_call');
   const result = calls[0].input;
   const fields = allowedClinicalFields(input.kind, input.consultationEnabled, input.routedGpExamEnabled, input.structuredConsultation, clinicalDictationLayout(input.kind, input.patientInfo));
-  if (Object.keys(result).length !== 1 || !own(result, 'sections') || !Array.isArray(result.sections) || result.sections.length > fields.length) return invalid();
+  if (Object.keys(result).length !== 1 || !own(result, 'sections') || !Array.isArray(result.sections) || result.sections.length > fields.length) return invalid('result_shape');
   const seen = new Set<ClinicalDictationField>();
   const proposals: ClinicalDictationProposal[] = [];
   const transcript = normalizedWhitespace(input.transcript);
   for (const section of result.sections) {
-    if (!object(section) || Object.keys(section).length !== 3 || !['field', 'value', 'evidence'].every(key => own(section, key))) return invalid();
-    const { field, value, evidence } = section;
-    if (typeof field !== 'string' || !fields.includes(field as ClinicalDictationField) || seen.has(field as ClinicalDictationField)) return invalid();
-    if (typeof value !== 'string' || !value.trim() || value.length > MAX_FIELD || CONTROLS.test(value)) return invalid();
-    if (typeof evidence !== 'string' || !evidence.trim() || evidence.length > MAX_TRANSCRIPT || CONTROLS.test(evidence) || !transcript.includes(normalizedWhitespace(evidence))) return invalid();
+    if (!object(section) || ![3, 4].includes(Object.keys(section).length) || !['field', 'value', 'evidence'].every(key => own(section, key))
+      || (Object.keys(section).length === 4 && !own(section, 'confidence'))) return invalid('section_shape');
+    const { field, value, evidence, confidence } = section;
+    // A missing or unrecognized rating is left off; callers treat anything but "high" as low.
+    const rating: { confidence?: 'high' | 'low' } = confidence === 'high' || confidence === 'low' ? { confidence } : {};
+    if (typeof field !== 'string' || !fields.includes(field as ClinicalDictationField) || seen.has(field as ClinicalDictationField)) return invalid('field');
+    if (typeof value !== 'string' || !value.trim() || value.length > MAX_FIELD || CONTROLS.test(value)) return invalid('value');
+    if (typeof evidence !== 'string' || !evidence.trim() || evidence.length > MAX_TRANSCRIPT || CONTROLS.test(evidence)) return invalid('evidence');
+    if (!transcript.includes(normalizedWhitespace(evidence))) return invalid('evidence_mismatch');
     seen.add(field as ClinicalDictationField);
-    proposals.push({ field: field as ClinicalDictationField, value, evidence });
+    proposals.push({ field: field as ClinicalDictationField, value, evidence, ...rating });
   }
   return proposals;
 }
@@ -200,7 +215,7 @@ export async function extractClinicalDictation(input: ClinicalDictationInput): P
     content = await sendAutofill(request);
   } catch (error) {
     if (error instanceof LocalizedError) throw error;
-    return fail(input.language, 'extractionFailed');
+    return fail(input.language, 'extractionFailed', error instanceof Error ? error.name : 'unknown');
   }
   return parseClinicalDictationProposal(content, input);
 }

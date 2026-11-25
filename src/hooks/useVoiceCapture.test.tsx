@@ -493,3 +493,51 @@ describe('useVoiceCapture browser session ownership', () => {
     expect(onStop).not.toHaveBeenCalled();
   });
 });
+
+describe('useVoiceCapture telemetry', () => {
+  const events = (stage: string) => rpc.mock.calls
+    .filter(([name, args]) => name === 'log_app_event' && args.p_stage === stage)
+    .map(([, args]) => args as { p_session_id: string; p_detail: Record<string, unknown>; p_outcome: string });
+  beforeEach(() => rpc.mockClear());
+
+  it('summarises a dictation once, with what was heard and no transcript text', () => {
+    const { result } = renderHook(() => useVoiceCapture({ transcriptSource: 'dental', transcriptUserId: 'u1' }));
+    act(() => result.current.start());
+    act(() => FakeRecognition.last!.say('one oh eight mobility two'));
+    act(() => result.current.stop());
+    const tracker = result.current.tracker!();
+    expect(tracker).not.toBeNull();
+    tracker!.count('actions');
+    tracker!.flush();
+    result.current.tracker!()?.flush(); // a second flush is a no-op
+    const [summary, ...rest] = events('summary');
+    expect(rest).toHaveLength(0);
+    expect(summary.p_detail).toMatchObject({ flow: 'dental', outcome: 'applied', chars: 'one oh eight mobility two'.length, segments: 1, lang: 'en' });
+    expect(JSON.stringify(rpc.mock.calls.filter(([name]) => name === 'log_app_event'))).not.toContain('mobility');
+  });
+
+  it('records a real recognizer failure, but not the routine no-speech end', () => {
+    const { result } = renderHook(() => useVoiceCapture({ transcriptSource: 'clinical', transcriptUserId: 'u1' }));
+    act(() => result.current.start());
+    act(() => FakeRecognition.last!.onerror?.({ error: 'no-speech' }));
+    expect(events('failure')).toHaveLength(0);
+    act(() => FakeRecognition.last!.onerror?.({ error: 'not-allowed' }));
+    const [failure] = events('failure');
+    expect(failure.p_detail).toMatchObject({ flow: 'clinical', where: 'capture', code: 'not-allowed', provider: 'browser' });
+    expect(failure.p_outcome).toBe('fail');
+  });
+
+  it('closes an unfinished dictation as "closed" when the page goes away', () => {
+    const { result, unmount } = renderHook(() => useVoiceCapture({ transcriptSource: 'dental', transcriptUserId: 'u1' }));
+    act(() => result.current.start());
+    unmount();
+    expect(events('summary')[0].p_detail).toMatchObject({ outcome: 'closed' });
+  });
+
+  it('logs nothing for a capture with no transcript source', () => {
+    const { result } = renderHook(() => useVoiceCapture());
+    act(() => result.current.start());
+    expect(result.current.tracker!()).toBeNull();
+    expect(events('failure')).toHaveLength(0);
+  });
+});

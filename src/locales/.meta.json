@@ -7553,7 +7553,7 @@
       "status": "machine"
     },
     "help:articles.consultation.sections.second.text": {
-      "hash": "2b4a479cb41a",
+      "hash": "8618e74941f0",
       "status": "machine"
     },
     "help:articles.consultation.sections.second.title": {
@@ -7593,7 +7593,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.third.text": {
-      "hash": "bc4246872463",
+      "hash": "867cc4dd3d1e",
       "status": "machine"
     },
     "help:articles.dictation.sections.third.title": {
@@ -7753,7 +7753,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.third.text": {
-      "hash": "f063f2c7c8ed",
+      "hash": "f3246496b47c",
       "status": "machine"
     },
     "help:articles.imaging.sections.third.title": {
@@ -16436,8 +16436,24 @@
       "hash": "410028ddaee5",
       "status": "machine"
     },
+    "voice:clinical.autofilled": {
+      "hash": "29d696b7ad60",
+      "status": "machine"
+    },
     "voice:clinical.cancelled": {
       "hash": "7fcb5cf44525",
+      "status": "machine"
+    },
+    "voice:clinical.checkDone": {
+      "hash": "5fc87d339144",
+      "status": "machine"
+    },
+    "voice:clinical.checkHelp": {
+      "hash": "a489bcc8f926",
+      "status": "machine"
+    },
+    "voice:clinical.checkTitle": {
+      "hash": "65dd121712c5",
       "status": "machine"
     },
     "voice:clinical.consentRequired": {
@@ -24619,7 +24635,7 @@
       "status": "machine"
     },
     "help:articles.consultation.sections.second.text": {
-      "hash": "2b4a479cb41a",
+      "hash": "8618e74941f0",
       "status": "machine"
     },
     "help:articles.consultation.sections.second.title": {
@@ -24659,7 +24675,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.third.text": {
-      "hash": "bc4246872463",
+      "hash": "867cc4dd3d1e",
       "status": "machine"
     },
     "help:articles.dictation.sections.third.title": {
@@ -24819,7 +24835,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.third.text": {
-      "hash": "f063f2c7c8ed",
+      "hash": "f3246496b47c",
       "status": "machine"
     },
     "help:articles.imaging.sections.third.title": {
@@ -33390,8 +33406,24 @@
       "hash": "410028ddaee5",
       "status": "machine"
     },
+    "voice:clinical.autofilled": {
+      "hash": "29d696b7ad60",
+      "status": "machine"
+    },
     "voice:clinical.cancelled": {
       "hash": "7fcb5cf44525",
+      "status": "machine"
+    },
+    "voice:clinical.checkDone": {
+      "hash": "5fc87d339144",
+      "status": "machine"
+    },
+    "voice:clinical.checkHelp": {
+      "hash": "a489bcc8f926",
+      "status": "machine"
+    },
+    "voice:clinical.checkTitle": {
+      "hash": "65dd121712c5",
       "status": "machine"
     },
     "voice:clinical.consentRequired": {
@@ -41553,7 +41585,7 @@
       "status": "machine"
     },
     "help:articles.consultation.sections.second.text": {
-      "hash": "2b4a479cb41a",
+      "hash": "8618e74941f0",
       "status": "machine"
     },
     "help:articles.consultation.sections.second.title": {
@@ -41593,7 +41625,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.third.text": {
-      "hash": "bc4246872463",
+      "hash": "867cc4dd3d1e",
       "status": "machine"
     },
     "help:articles.dictation.sections.third.title": {
@@ -41753,7 +41785,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.third.text": {
-      "hash": "f063f2c7c8ed",
+      "hash": "f3246496b47c",
       "status": "machine"
     },
     "help:articles.imaging.sections.third.title": {
@@ -50368,8 +50400,24 @@
       "hash": "410028ddaee5",
       "status": "machine"
     },
+    "voice:clinical.autofilled": {
+      "hash": "29d696b7ad60",
+      "status": "machine"
+    },
     "voice:clinical.cancelled": {
       "hash": "7fcb5cf44525",
+      "status": "machine"
+    },
+    "voice:clinical.checkDone": {
+      "hash": "5fc87d339144",
+      "status": "machine"
+    },
+    "voice:clinical.checkHelp": {
+      "hash": "a489bcc8f926",
+      "status": "machine"
+    },
+    "voice:clinical.checkTitle": {
+      "hash": "65dd121712c5",
       "status": "machine"
     },
     "voice:clinical.consentRequired": {
@@ -58551,7 +58599,7 @@
       "status": "machine"
     },
     "help:articles.consultation.sections.second.text": {
-      "hash": "2b4a479cb41a",
+      "hash": "8618e74941f0",
       "status": "machine"
     },
     "help:articles.consultation.sections.second.title": {
@@ -58591,7 +58639,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.third.text": {
-      "hash": "bc4246872463",
+      "hash": "867cc4dd3d1e",
       "status": "machine"
     },
     "help:articles.dictation.sections.third.title": {
@@ -58751,7 +58799,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.third.text": {
-      "hash": "f063f2c7c8ed",
+      "hash": "f3246496b47c",
       "status": "machine"
     },
     "help:articles.imaging.sections.third.title": {
@@ -67366,8 +67414,24 @@
       "hash": "410028ddaee5",
       "status": "machine"
     },
+    "voice:clinical.autofilled": {
+      "hash": "29d696b7ad60",
+      "status": "machine"
+    },
     "voice:clinical.cancelled": {
       "hash": "7fcb5cf44525",
+      "status": "machine"
+    },
+    "voice:clinical.checkDone": {
+      "hash": "5fc87d339144",
+      "status": "machine"
+    },
+    "voice:clinical.checkHelp": {
+      "hash": "a489bcc8f926",
+      "status": "machine"
+    },
+    "voice:clinical.checkTitle": {
+      "hash": "65dd121712c5",
       "status": "machine"
     },
     "voice:clinical.consentRequired": {
@@ -75481,7 +75545,7 @@
       "status": "machine"
     },
     "help:articles.consultation.sections.second.text": {
-      "hash": "2b4a479cb41a",
+      "hash": "8618e74941f0",
       "status": "machine"
     },
     "help:articles.consultation.sections.second.title": {
@@ -75521,7 +75585,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.third.text": {
-      "hash": "bc4246872463",
+      "hash": "867cc4dd3d1e",
       "status": "machine"
     },
     "help:articles.dictation.sections.third.title": {
@@ -75681,7 +75745,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.third.text": {
-      "hash": "f063f2c7c8ed",
+      "hash": "f3246496b47c",
       "status": "machine"
     },
     "help:articles.imaging.sections.third.title": {
@@ -84188,8 +84252,24 @@
       "hash": "410028ddaee5",
       "status": "machine"
     },
+    "voice:clinical.autofilled": {
+      "hash": "29d696b7ad60",
+      "status": "machine"
+    },
     "voice:clinical.cancelled": {
       "hash": "7fcb5cf44525",
+      "status": "machine"
+    },
+    "voice:clinical.checkDone": {
+      "hash": "5fc87d339144",
+      "status": "machine"
+    },
+    "voice:clinical.checkHelp": {
+      "hash": "a489bcc8f926",
+      "status": "machine"
+    },
+    "voice:clinical.checkTitle": {
+      "hash": "65dd121712c5",
       "status": "machine"
     },
     "voice:clinical.consentRequired": {
@@ -92351,7 +92431,7 @@
       "status": "machine"
     },
     "help:articles.consultation.sections.second.text": {
-      "hash": "2b4a479cb41a",
+      "hash": "8618e74941f0",
       "status": "machine"
     },
     "help:articles.consultation.sections.second.title": {
@@ -92391,7 +92471,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.third.text": {
-      "hash": "bc4246872463",
+      "hash": "867cc4dd3d1e",
       "status": "machine"
     },
     "help:articles.dictation.sections.third.title": {
@@ -92551,7 +92631,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.third.text": {
-      "hash": "f063f2c7c8ed",
+      "hash": "f3246496b47c",
       "status": "machine"
     },
     "help:articles.imaging.sections.third.title": {
@@ -101166,8 +101246,24 @@
       "hash": "410028ddaee5",
       "status": "machine"
     },
+    "voice:clinical.autofilled": {
+      "hash": "29d696b7ad60",
+      "status": "machine"
+    },
     "voice:clinical.cancelled": {
       "hash": "7fcb5cf44525",
+      "status": "machine"
+    },
+    "voice:clinical.checkDone": {
+      "hash": "5fc87d339144",
+      "status": "machine"
+    },
+    "voice:clinical.checkHelp": {
+      "hash": "a489bcc8f926",
+      "status": "machine"
+    },
+    "voice:clinical.checkTitle": {
+      "hash": "65dd121712c5",
       "status": "machine"
     },
     "voice:clinical.consentRequired": {
@@ -109401,7 +109497,7 @@
       "status": "machine"
     },
     "help:articles.consultation.sections.second.text": {
-      "hash": "2b4a479cb41a",
+      "hash": "8618e74941f0",
       "status": "machine"
     },
     "help:articles.consultation.sections.second.title": {
@@ -109441,7 +109537,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.third.text": {
-      "hash": "bc4246872463",
+      "hash": "867cc4dd3d1e",
       "status": "machine"
     },
     "help:articles.dictation.sections.third.title": {
@@ -109601,7 +109697,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.third.text": {
-      "hash": "f063f2c7c8ed",
+      "hash": "f3246496b47c",
       "status": "machine"
     },
     "help:articles.imaging.sections.third.title": {
@@ -118196,8 +118292,24 @@
       "hash": "410028ddaee5",
       "status": "machine"
     },
+    "voice:clinical.autofilled": {
+      "hash": "29d696b7ad60",
+      "status": "machine"
+    },
     "voice:clinical.cancelled": {
       "hash": "7fcb5cf44525",
+      "status": "machine"
+    },
+    "voice:clinical.checkDone": {
+      "hash": "5fc87d339144",
+      "status": "machine"
+    },
+    "voice:clinical.checkHelp": {
+      "hash": "a489bcc8f926",
+      "status": "machine"
+    },
+    "voice:clinical.checkTitle": {
+      "hash": "65dd121712c5",
       "status": "machine"
     },
     "voice:clinical.consentRequired": {
@@ -126989,7 +127101,7 @@
       "status": "machine"
     },
     "help:articles.consultation.sections.second.text": {
-      "hash": "2b4a479cb41a",
+      "hash": "8618e74941f0",
       "status": "machine"
     },
     "help:articles.consultation.sections.second.title": {
@@ -127029,7 +127141,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.third.text": {
-      "hash": "bc4246872463",
+      "hash": "867cc4dd3d1e",
       "status": "machine"
     },
     "help:articles.dictation.sections.third.title": {
@@ -127189,7 +127301,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.third.text": {
-      "hash": "f063f2c7c8ed",
+      "hash": "f3246496b47c",
       "status": "machine"
     },
     "help:articles.imaging.sections.third.title": {
@@ -135740,8 +135852,24 @@
       "hash": "410028ddaee5",
       "status": "machine"
     },
+    "voice:clinical.autofilled": {
+      "hash": "29d696b7ad60",
+      "status": "machine"
+    },
     "voice:clinical.cancelled": {
       "hash": "7fcb5cf44525",
+      "status": "machine"
+    },
+    "voice:clinical.checkDone": {
+      "hash": "5fc87d339144",
+      "status": "machine"
+    },
+    "voice:clinical.checkHelp": {
+      "hash": "a489bcc8f926",
+      "status": "machine"
+    },
+    "voice:clinical.checkTitle": {
+      "hash": "65dd121712c5",
       "status": "machine"
     },
     "voice:clinical.consentRequired": {
@@ -143855,7 +143983,7 @@
       "status": "machine"
     },
     "help:articles.consultation.sections.second.text": {
-      "hash": "2b4a479cb41a",
+      "hash": "8618e74941f0",
       "status": "machine"
     },
     "help:articles.consultation.sections.second.title": {
@@ -143895,7 +144023,7 @@
       "status": "machine"
     },
     "help:articles.dictation.sections.third.text": {
-      "hash": "bc4246872463",
+      "hash": "867cc4dd3d1e",
       "status": "machine"
     },
     "help:articles.dictation.sections.third.title": {
@@ -144055,7 +144183,7 @@
       "status": "machine"
     },
     "help:articles.imaging.sections.third.text": {
-      "hash": "f063f2c7c8ed",
+      "hash": "f3246496b47c",
       "status": "machine"
     },
     "help:articles.imaging.sections.third.title": {
@@ -152562,8 +152690,24 @@
       "hash": "410028ddaee5",
       "status": "machine"
     },
+    "voice:clinical.autofilled": {
+      "hash": "29d696b7ad60",
+      "status": "machine"
+    },
     "voice:clinical.cancelled": {
       "hash": "7fcb5cf44525",
+      "status": "machine"
+    },
+    "voice:clinical.checkDone": {
+      "hash": "5fc87d339144",
+      "status": "machine"
+    },
+    "voice:clinical.checkHelp": {
+      "hash": "a489bcc8f926",
+      "status": "machine"
+    },
+    "voice:clinical.checkTitle": {
+      "hash": "65dd121712c5",
       "status": "machine"
     },
     "voice:clinical.consentRequired": {

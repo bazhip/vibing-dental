@@ -1,3 +1,4 @@
+import { errorCode, errorWhere, logEventThrottled } from '../utils/appEvents';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -51,6 +52,7 @@ export class ErrorBoundary extends React.Component<
   componentDidCatch(error: Error, info: React.ErrorInfo): void {
     // eslint-disable-next-line no-console
     console.error('[crash]', error, info.componentStack);
+    logEventThrottled('app', 'render_crash', 'fail', { code: errorCode(error), where: errorWhere(error) });
     this.setState({ stack: (error.stack || '') + '\n\nComponent stack:' + (info.componentStack || '') });
   }
 

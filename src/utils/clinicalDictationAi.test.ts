@@ -110,14 +110,14 @@ it('keeps the existing English clinical request bytes stable', () => {
     createHash('sha256').update(JSON.stringify(buildClinicalDictationRequest(request))).digest('hex'),
   )).toMatchInlineSnapshot(`
     [
-      "a5257e8355a652616231e1d3db5dcf49ebe28521cc5c64952200729aeae8e629",
-      "ea47ecaa02bb0fdbe31c7fb22e785fe6b5dddf4f11847c0053c7c6c83b5de51d",
-      "8042dd460118afa32485819007224539cbae13e6e8a05bdfd7418b8bb9b92d7e",
-      "9197bcf08fa2f84ee484580300c54dcfe5d78ba360038f1588c05f3140d56eba",
-      "edc255b51b708ee646becd489b9c6cf526cbf28a94efa33e2376926b1345ebf7",
-      "2e5d71279df4ce585bb00273065a7788989f70590b5a0e7465face9954175d4e",
-      "85495ebbb55d60d2b4c1504ee399a78229d5455769cebaef9e2b5999c63986c8",
-      "f42b16f9be7cc36d2a1cbf11d82d4bc2875ed94c9be761d5b379f17315e2e41e",
+      "7fd80025e0e41ef5c0a7f4882c159fae63fa12b6edf30066af3eb219c5a13f3c",
+      "5020d3ca0fa3e66530cd89932ec8e8a3f15803fdc940a13743f61c374c749f34",
+      "d406a34bff74c3c853bd876abfea2db1e8b43722d542af2b0793e6dd91f06631",
+      "cb8ad680b8b6fdbab2d1594ca1eea5274f5c7421e637b890b75ea893ad77d0c9",
+      "e25acb441758bc8d698adf26aa6bf5dd9135ba9c9449e9c6f8af3770a1d1c4e7",
+      "6f460cba7d820cb3f5da5a981ef35fe5983c527a457d6a5fdb1cd19510814939",
+      "121e4f2d040a6448346c059457bb2f1f840a9a4252f842478e52bc8dc4d8e927",
+      "f1f73cc2bd3ea31c7612281e63601dce29ca6a5382041ccbccc47b84c39d8062",
     ]
   `);
 });
@@ -213,4 +213,36 @@ it('routes recorded dental discharge details to the selected custom fields and r
   const proposed = { field, value: transcript, evidence: transcript };
   expect(parseClinicalDictationProposal([tool([proposed])], data)).toEqual([proposed]);
   expect(() => parseClinicalDictationProposal([tool([{ ...proposed, evidence: 'An invented quote.' }])], data)).toThrow(LocalizedError);
+});
+
+describe('confidence rating', () => {
+  it('asks the model to rate every section and defines when to choose low', () => {
+    const request = buildClinicalDictationRequest(input({ kind: 'discharge' }));
+    const section = (request.tools![0].input_schema as { properties: { sections: { items: { required: string[]; properties: Record<string, { enum?: string[] }> } } } }).properties.sections.items;
+    expect(section.required).toContain('confidence');
+    expect(section.properties.confidence.enum).toEqual(['high', 'low']);
+    const system = request.system.map(block => block.text).join('\n');
+    expect(system).toMatch(/medication or drug names that are not clear words/);
+    expect(system).toMatch(/When in doubt, choose "low"/);
+  });
+  it('passes a valid rating through and leaves a missing one off', () => {
+    const [rated, unrated] = [
+      parseClinicalDictationProposal([tool([{ ...proposal, confidence: 'high' }])], input({ kind: 'consultation' }))[0],
+      parseClinicalDictationProposal([tool()], input({ kind: 'consultation' }))[0],
+    ];
+    expect(rated.confidence).toBe('high');
+    expect(unrated).not.toHaveProperty('confidence');
+  });
+  it('treats an unrecognized rating as missing, never as high', () => {
+    const [parsed] = parseClinicalDictationProposal([tool([{ ...proposal, confidence: 'certain' }])], input({ kind: 'consultation' }));
+    expect(parsed.confidence).toBeUndefined();
+  });
+  it('carries a text-free code and reason on a rejected response', () => {
+    try {
+      parseClinicalDictationProposal([tool([{ ...proposal, evidence: 'Not in the transcript' }])], input({ kind: 'consultation' }));
+      throw new Error('expected a rejection');
+    } catch (error) {
+      expect(error).toMatchObject({ code: 'invalidResponse', reason: 'evidence_mismatch' });
+    }
+  });
 });

@@ -1,3 +1,4 @@
+import { errorCode, logEvent } from '../utils/appEvents';
 import React from 'react';
 import { saveFile } from '../native/saveFile';
 import { isNativeApp } from '../native/platform';
@@ -459,6 +460,8 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       ? directDentalScore(segments[0], contextRef.current.toothData, lng, recentContext)
       : null;
     if (direct) {
+      voiceRef.current?.tracker?.()?.count('direct');
+      voiceRef.current?.tracker?.()?.count('actions');
       applyResult({ actions: [direct], skipped: [], flags: [], ran: true }, true);
       return;
     }
@@ -467,11 +470,17 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     const session = currentSessionRef.current;
     inFlightRef.current = true;
     setActiveChunkCount((c) => c + 1);
+    const chunkTracker = voiceRef.current?.tracker?.();
+    const chunkStarted = Date.now();
     try {
       const result = await extractChartActions({ delta, recentContext, context: contextRef.current, section, lng: voiceRef.current?.lng ?? 'en' });
+      chunkTracker?.count('chunks');
+      chunkTracker?.count('chunk_ms', Date.now() - chunkStarted);
+      chunkTracker?.count('actions', result.actions.length);
       if (gen === sessionGenRef.current && session === currentSessionRef.current) applyResult(result);
     } catch (err) {
       console.error('[VoiceInputButton] chunk extraction failed', err);
+      chunkTracker?.failure('extract', errorCode(err), { ms: Date.now() - chunkStarted });
       setError(errorText(err, i18n.getFixedT(null, 'voice')('errors.failed')));
     } finally {
       inFlightRef.current = false;
@@ -648,6 +657,8 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       finalCheckedSegmentsRef.current = segments.length;
       setReviewStatus('checked');
       const raised = applyResult(result);
+      voiceRef.current?.tracker?.()?.count('final_checks');
+      voiceRef.current?.tracker?.()?.count('final_raised', raised);
       const now = new Date();
       setActivity((prev) => [...prev, {
         id: `${now.getTime()}_final`,
@@ -665,6 +676,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       }
     } catch (err) {
       console.error('[VoiceInputButton] final check failed', err);
+      voiceRef.current?.tracker?.()?.failure('final', errorCode(err));
       if (gen === sessionGenRef.current) {
         setError(err instanceof Error ? tNow('errors.finalCheckFailedDetail', { message: err.message }) : tNow('errors.finalCheckFailed'));
       }
@@ -752,6 +764,8 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     if (!canEdit()) return;
     const item = reviewsRef.current.find((r) => r.id === id);
     if (!item) return;
+    // How often the vet keeps or removes what the AI did is the best quality signal.
+    logEvent('dictation', 'review_decision', 'info', { flow: 'dental', choice: typeof choice === 'object' ? 'alternative' : choice });
     if (typeof choice === 'object' && (item.proposal || persistentReviews.current)) {
       const current = overwrittenChartValue(choice.action, contextRef.current);
       if (isNoopAction(choice.action, contextRef.current)) {
@@ -821,6 +835,8 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
         await runFinalCheck();
         if (current() && canEdit()) onDictationCompleteRef.current?.(lng, finalText);
       } finally {
+        // The dictation is over (including its final check): emit its one summary.
+        capture?.tracker?.()?.flush();
         if (current()) {
           setFinishing(false);
           setReviewStatus(status => status === 'checking' ? null : status);
