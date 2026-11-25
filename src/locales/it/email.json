@@ -43,37 +43,41 @@
   },
   "whatsNew": {
     "subject": "Novità di ToothOps",
-    "preheader": "Compilazione vocale, referti di diagnostica per immagini, consulti, condivisione in team e dieci lingue.",
+    "preheader": "Compilazione vocale più precisa, per dente, personalizzazioni su misura per lo studio, cavalli e conigli.",
     "title": "ToothOps è cresciuto molto dal lancio",
     "intro": "Dal lancio di novembre, ToothOps è diventato un flusso di lavoro completo alla poltrona per l’odontoiatria veterinaria. Ecco i punti salienti. Acceda per riprendere da dove aveva lasciato.",
     "button": "Apri ToothOps",
     "item1": {
-      "title": "Compilazione a voce",
-      "body": "Detti mentre lavora: l’IA colloca ogni rilievo sul dente, sul diagramma e nel campo giusti, con un controllo finale su tutto ciò di cui non era sicura."
+      "title": "Compilazione vocale molto più precisa",
+      "body": "Coglie i rilievi spezzati dalle pause e le Sue correzioni a voce. Quando si ferma, rilegge l’intera registrazione e mette in un elenco da verificare tutto ciò di cui non era sicura, salvato con la visita. Le trascrizioni sono conservate per il riascolto e la dettatura ora copre i referti TC e le note di consulto e di dimissione in dieci lingue."
     },
     "item2": {
-      "title": "Cartella dentale completa",
-      "body": "Griglie Triadan per gatti, cani e conigli, diagrammi dentali collegati e l’intero set di codici AVDC, sempre sincronizzati."
+      "title": "Un dente alla volta",
+      "body": "Selezioni un dente sul diagramma numerato e registri tutto in un unico posto: profondità di tasca (un valore, uno per radice o sei punti), note di diagnosi e di procedura, codici rapidi e stato dell’estrazione. Modifica la stessa cartella della griglia, quindi può cambiare vista quando vuole."
     },
     "item3": {
+      "title": "Su misura per Lei",
+      "body": "Riordini, nasconda e aggiunga sezioni e campi Paziente, compresi campi personalizzati validi per tutto lo studio. Modifichi i modelli di consulto e di dimissione e trascini le sezioni nell’ordine che preferisce. Imposti etichette e testi iniziali dei referti di imaging e salvi modelli riutilizzabili per i referti di trattamento, radiografici e TC."
+    },
+    "item4": {
       "title": "Immagini e referti di diagnostica per immagini",
       "body": "Associ foto e radiografie ai denti e rediga referti radiografici e TC con rifinitura assistita dall’IA."
     },
-    "item4": {
+    "item5": {
       "title": "Consulti, dimissioni e referti per il proprietario",
       "body": "Note incentrate sulla visita, modelli modificabili e referti da portare a casa in linguaggio semplice, con foto prima e dopo."
     },
-    "item5": {
-      "title": "Pensato per tutto lo studio",
-      "body": "Cartelle e modelli condivisi, storico delle visite, promemoria di controllo e cartelle PDF personalizzate che potrà reimportare in seguito."
-    },
     "item6": {
-      "title": "Dieci lingue",
-      "body": "Usi ToothOps in inglese, francese, tedesco, italiano, spagnolo, ungherese, rumeno, cinese, arabo o polacco."
+      "title": "Anche cavalli e conigli",
+      "body": "Un odontogramma equino a 44 denti con diagramma, griglia e PDF, più i rilievi e i codici di procedura AVDC equini. Odontogrammi per i conigli accanto a quelli per gatti e cani, tutti con diagrammi collegati sempre sincronizzati."
     },
     "unsubscribe": {
       "text": "Riceve questo aggiornamento di prodotto una tantum perché ha un account ToothOps.",
       "label": "Annulla l’iscrizione agli aggiornamenti di prodotto"
+    },
+    "item7": {
+      "title": "Pensato per tutto lo studio",
+      "body": "Cartelle e modelli condivisi, storico delle visite, promemoria di controllo e cartelle PDF personalizzate che potrà reimportare in seguito. Usi ToothOps in inglese, francese, tedesco, italiano, spagnolo, ungherese, rumeno, cinese, arabo o polacco."
     }
   }
 }

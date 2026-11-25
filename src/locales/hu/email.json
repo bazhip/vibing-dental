@@ -43,37 +43,41 @@
   },
   "whatsNew": {
     "subject": "Újdonságok a ToothOps alkalmazásban",
-    "preheader": "Hangalapú rögzítés, képalkotó leletek, konzultációk, csapatmegosztás és tíz nyelv.",
+    "preheader": "Pontosabb hangalapú rögzítés, fogankénti dokumentálás, a rendelőhöz igazítható beállítások, lovak és nyulak.",
     "title": "A ToothOps sokat fejlődött az indulás óta",
     "intro": "A novemberi indulás óta a ToothOps teljes körű, a kezelőszék mellett használható munkafolyamattá vált az állatfogászatban. Itt vannak a legfontosabb elemek. Jelentkezzen be, és folytassa ott, ahol abbahagyta.",
     "button": "A ToothOps megnyitása",
     "item1": {
-      "title": "Rögzítés hanggal",
-      "body": "Diktáljon munka közben: a mesterséges intelligencia minden megállapítást a megfelelő fogra, ábrára és mezőbe helyez, és a végén ellenőrzi mindazt, amiben nem volt biztos."
+      "title": "Hangalapú rögzítés, sokkal pontosabban",
+      "body": "Felismeri a szünetekkel megszakított megállapításokat és a kimondott javításokat. Amikor leállítja, újra végigolvassa az egész felvételt, és ellenőrzésre felsorolja mindazt, amiben nem volt biztos – a vizittel együtt mentve. A leiratok visszajátszásra megmaradnak, a diktálás pedig mostantól a CT-leleteket, valamint a konzultációs és elbocsátási jegyzeteket is lefedi tíz nyelven."
     },
     "item2": {
-      "title": "Teljes szájüregi dokumentáció",
-      "body": "Triadan-rácsok macskákhoz, kutyákhoz és nyulakhoz, összekapcsolt fogászati ábrák és a teljes AVDC-kódkészlet, mind szinkronban."
+      "title": "Foganként is rögzíthet",
+      "body": "Válasszon ki egy fogat a számozott ábrán, és mindent egy helyen rögzítsen hozzá: tasakmélységeket (egy értéket, gyökerenként egyet vagy hat mérési pontot), diagnózis- és beavatkozási jegyzeteket, gyorskódokat és az eltávolítás állapotát. Ugyanazt a kartont szerkeszti, mint a táblázatban, így bármikor válthat a nézetek között."
     },
     "item3": {
+      "title": "Igazítsa magához",
+      "body": "Rendezze át, rejtse el vagy adjon hozzá Páciens-szakaszokat és -mezőket, a rendelőre kiterjedő egyéni mezőket is. Szerkessze a konzultációs és elbocsátási sablonokat, és húzással állítsa saját sorrendbe a szakaszaikat. Adjon meg saját képalkotó lelet-címkéket és kezdőszövegeket, és mentsen újrahasználható kezelési, röntgen- és CT-leletsablonokat."
+    },
+    "item4": {
       "title": "Képek és képalkotó leletek",
       "body": "Rögzítsen fotókat és röntgenfelvételeket a fogakhoz, és írjon röntgen- és CT-leleteket MI-támogatású finomítással."
     },
-    "item4": {
+    "item5": {
       "title": "Konzultációk, elbocsátás és gazdai jelentések",
       "body": "Vizitközpontú jegyzetek, szerkeszthető sablonok és közérthető, hazavihető jelentések előtte-utána fotókkal."
     },
-    "item5": {
-      "title": "A teljes rendelőnek tervezve",
-      "body": "Megosztott kartonok és sablonok, páciensenkénti vizittörténet, kontrollemlékeztetők és saját arculatú PDF-kartonok, amelyeket később újra be lehet importálni."
-    },
     "item6": {
-      "title": "Tíz nyelv",
-      "body": "Használja a ToothOpsot angolul, franciául, németül, olaszul, spanyolul, magyarul, románul, kínaiul, arabul vagy lengyelül."
+      "title": "Lovak és nyulak is",
+      "body": "44 fogas lófogászati ábra diagrammal, táblázattal és PDF-fel, valamint az AVDC lovakra vonatkozó megállapításai és beavatkozási kódjai. Nyulak fogászati ábrái a macskák és kutyák mellett, összekapcsolt diagramokkal, amelyek szinkronban maradnak."
     },
     "unsubscribe": {
       "text": "Ezt az egyszeri termékhírt azért kapja, mert van ToothOps-fiókja.",
       "label": "Leiratkozás a termékhírekről"
+    },
+    "item7": {
+      "title": "A teljes rendelőnek tervezve",
+      "body": "Megosztott kartonok és sablonok, páciensenkénti vizittörténet, kontrollemlékeztetők és saját arculatú PDF-kartonok, amelyeket később újra be lehet importálni. Használja a ToothOpsot angolul, franciául, németül, olaszul, spanyolul, magyarul, románul, kínaiul, arabul vagy lengyelül."
     }
   }
 }

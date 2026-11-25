@@ -43,37 +43,41 @@
   },
   "whatsNew": {
     "subject": "Noutăți în ToothOps",
-    "preheader": "Completare vocală, rapoarte imagistice, consultații, partajare în echipă și zece limbi.",
+    "preheader": "Completare vocală mai precisă, pe dinte, personalizări potrivite cabinetului, cai și iepuri.",
     "title": "ToothOps a crescut mult de la lansare",
     "intro": "De la lansarea din noiembrie, ToothOps a devenit un flux de lucru complet la fotoliu pentru stomatologia veterinară. Iată principalele repere. Autentificați-vă pentru a continua de unde ați rămas.",
     "button": "Deschideți ToothOps",
     "item1": {
-      "title": "Completare prin voce",
-      "body": "Dictați în timp ce lucrați: IA plasează fiecare constatare pe dintele, diagrama și câmpul potrivit, cu o verificare finală pentru tot ce nu a fost sigură."
+      "title": "Completare vocală, mult mai precisă",
+      "body": "Prinde constatările întrerupte de pauze și corecțiile dvs. rostite. Când opriți, recitește întreaga înregistrare și listează pentru verificare tot ce nu a fost sigură, salvat cu vizita. Transcrierile sunt păstrate pentru redare, iar dictarea acoperă acum rapoartele CT și notele de consultație și de externare în zece limbi."
     },
     "item2": {
-      "title": "Fișă dentară completă",
-      "body": "Grile Triadan pentru pisici, câini și iepuri, diagrame dentare legate între ele și setul complet de coduri AVDC, toate sincronizate."
+      "title": "Câte un dinte pe rând",
+      "body": "Selectați un dinte pe diagrama numerotată și înregistrați totul într-un singur loc: adâncimi ale pungilor (o valoare, una pe rădăcină sau șase puncte), note de diagnostic și de procedură, coduri rapide și starea extracției. Editați aceeași fișă medicală ca în tabel, deci puteți schimba vizualizarea oricând."
     },
     "item3": {
+      "title": "Faceți-l al dvs.",
+      "body": "Reordonați, ascundeți și adăugați secțiuni și câmpuri Pacient, inclusiv câmpuri personalizate pentru tot cabinetul. Editați șabloanele de consultație și de externare și trageți secțiunile în ordinea dorită. Stabiliți propriile etichete și texte de pornire pentru rapoartele imagistice și salvați șabloane reutilizabile pentru rapoartele de tratament, radiografice și CT."
+    },
+    "item4": {
       "title": "Imagini și rapoarte imagistice",
       "body": "Asociați fotografii și radiografii dinților și redactați rapoarte radiografice și CT cu rafinare asistată de IA."
     },
-    "item4": {
+    "item5": {
       "title": "Consultații, externare și rapoarte pentru proprietar",
       "body": "Note centrate pe vizită, șabloane editabile și rapoarte de luat acasă în limbaj simplu, cu fotografii înainte și după."
     },
-    "item5": {
-      "title": "Creat pentru întregul cabinet",
-      "body": "Fișe și șabloane partajate, istoricul vizitelor, mementouri de control și fișe PDF personalizate pe care le puteți reimporta ulterior."
-    },
     "item6": {
-      "title": "Zece limbi",
-      "body": "Folosiți ToothOps în engleză, franceză, germană, italiană, spaniolă, maghiară, română, chineză, arabă sau poloneză."
+      "title": "Și pentru cai și iepuri",
+      "body": "O fișă dentară ecvină de 44 de dinți, cu diagramă, tabel și PDF, plus constatările și codurile de procedură AVDC pentru ecvine. Fișe dentare pentru iepuri alături de cele pentru pisici și câini, toate cu diagrame legate care rămân sincronizate."
     },
     "unsubscribe": {
       "text": "Primiți această noutate de produs unică deoarece aveți un cont ToothOps.",
       "label": "Dezabonare de la noutățile de produs"
+    },
+    "item7": {
+      "title": "Creat pentru întregul cabinet",
+      "body": "Fișe și șabloane partajate, istoricul vizitelor, mementouri de control și fișe PDF personalizate pe care le puteți reimporta ulterior. Folosiți ToothOps în engleză, franceză, germană, italiană, spaniolă, maghiară, română, chineză, arabă sau poloneză."
     }
   }
 }
