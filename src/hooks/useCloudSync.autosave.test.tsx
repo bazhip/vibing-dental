@@ -765,6 +765,34 @@ describe('saved patient identity guard', () => {
     expect(db.upserts).toHaveLength(1);
   });
 
+  it('allows replacing the generated placeholder number with the practice number', async () => {
+    db.identities['chart-1'] = { patient_name: 'Ember Sprincz', patient_number: '334543' };
+    const s = patient('Ember Sprincz', '113054');
+    s.patientInfo.generatedPatientNumber = '334543';
+    renderHook(() => useCloudSync(fakeChart(s)));
+    await flush();
+    expect(choose).not.toHaveBeenCalled();
+    expect(db.upserts).toHaveLength(1);
+  });
+
+  it.each([['Ember', '334543', 'Ember Sprincz', '334543'], ['Ember Sprincz', '1130', 'Ember Sprincz', '113054']])(
+    'allows continuing an entry autosaved part-way (%s / %s)', async (savedName, savedNumber, name, number) => {
+      db.identities['chart-1'] = { patient_name: savedName, patient_number: savedNumber };
+      renderHook(() => useCloudSync(fakeChart(patient(name, number))));
+      await flush();
+      expect(choose).not.toHaveBeenCalled();
+      expect(db.upserts).toHaveLength(1);
+    });
+
+  it('still asks when an established number is replaced', async () => {
+    const s = patient('Luffy', 'SP9111');
+    s.patientInfo.generatedPatientNumber = '334543';
+    renderHook(() => useCloudSync(fakeChart(s)));
+    await flush();
+    expect(choose).toHaveBeenCalledTimes(1);
+    expect(db.upserts).toHaveLength(0);
+  });
+
   it('requires approval for removing an established number', async () => {
     renderHook(() => useCloudSync(fakeChart(patient('Luffy', ''))));
     await flush();
