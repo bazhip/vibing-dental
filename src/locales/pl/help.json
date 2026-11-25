@@ -33,6 +33,7 @@
     "dictation": "Przegląd dodatkowych wyników z nagrania stomatologicznego.",
     "owner": "Opcje raportu dla opiekuna i wstępne podsumowanie wizyty.",
     "export": "Podgląd klinicznego pliku PDF z przykładową kartą stomatologiczną.",
+    "reportFit": "Przegląd i eksport z ostrzeżeniem, że raport TK nie mieści się na stronie 2, oraz opcją Kontynuuj na dodatkowej stronie.",
     "start": "Przykładowy obszar roboczy pacjenta z kartą wizyty, nawigacją po sekcjach i danymi pacjenta.",
     "patients": "Historia pacjenta z wcześniejszymi zabiegami i konsultacjami stomatologicznymi oraz wybraną wizytą.",
     "exam": "Tabela wyników badania jamy ustnej z opcjami „W normie” i „Nieprawidłowe” oraz komentarzem.",
@@ -209,7 +210,7 @@
         },
         "second": {
           "title": "Dostosowywanie klinicznego pliku PDF",
-          "text": "Na karcie „Karta kliniczna” proszę wybrać „Dostosuj”, aby ustawić kolory i sekcje do uwzględnienia, takie jak obrazy, opisy badań i „Użyte kody”. Po zmianie opcji proszę sprawdzić podgląd i pobrać gotowy dokument. Sekcje wypisowe są domyślnie widoczne pod opisami badań obrazowych. Wyłączenie tej opcji ukrywa je w wydruku. Przyciski „Dostosuj” i „Pobierz PDF” znajdują się obok kart dokumentów."
+          "text": "Na karcie „Karta kliniczna” proszę wybrać „Dostosuj”, aby ustawić kolory i sekcje do uwzględnienia, takie jak obrazy, opisy badań i „Użyte kody”. Po zmianie opcji proszę sprawdzić podgląd i pobrać gotowy dokument. Sekcje wypisowe są domyślnie widoczne pod opisami badań obrazowych. Wyłączenie tej opcji ukrywa je w wydruku. Przyciski „Dostosuj” i „Pobierz PDF” znajdują się obok kart dokumentów.\n\nStrona 2 zawiera raport z zabiegu, raport radiologiczny i raport TK. Gdy są długie, PDF zatrzymuje je na stronie 2: raport w formie listy, na przykład raport TK, układa w dwóch kolumnach, a potem zmniejsza tekst. Jeśli raport nadal się nie mieści, ostrzeżenie nad podglądem wskazuje raport i przybliżoną liczbę uciętych wierszy. Zaznacz Kontynuuj na dodatkowej stronie, aby wydrukować resztę na stronie 3. Strona 2 kończy się wtedy tekstem „ciąg dalszy na stronie 3”. Wybór zostaje zapamiętany przy kolejnych eksportach. Na przykład jeśli ucięte są wnioski raportu TK, zaznacz tę opcję i sprawdź, czy pojawiają się na stronie 3 podglądu."
         },
         "third": {
           "title": "Zakończenie lub ponowne otwarcie wizyty",

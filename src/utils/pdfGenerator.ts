@@ -42,6 +42,8 @@ import {
   drawNerveBlockTable,
   drawTreatmentArea,
   planTreatmentArea,
+  treatmentAreaTitle,
+  type TreatmentAreaKind,
   visitDocumentationContinuations,
   drawDiagramAt,
   drawFooter,
@@ -125,6 +127,11 @@ export interface PdfLayoutOptions {
   /** Include completed discharge fields on the printed pages. Default true. */
   includeDischarge?: boolean;
   includeCodesUsed?: boolean;
+  /** A report too long for page 2 continues on an extra page instead of
+   *  being cut (the full text round-trips either way). Default false. */
+  continueCutReports?: boolean;
+  /** Told which page-2 reports didn't fit, and how many lines were left off. */
+  onReportFit?: (cut: ReportFit[]) => void;
   /** Chart images to append after page 2, IMAGES_PER_PAGE to a page.
    *  Empty / absent → no image pages. Not round-tripped through the
    *  stash: the images live in cloud storage with the chart. */
@@ -133,6 +140,8 @@ export interface PdfLayoutOptions {
    *  headers, code definitions). Typed text prints as stored. Default 'en'. */
   lng?: AppLanguage;
 }
+
+export interface ReportFit { kind: TreatmentAreaKind; hiddenLines: number }
 
 /** Build the PDF as raw bytes — the entry point for both the download
  *  path and the live preview iframe. The `styleId` selects one of the
@@ -187,6 +196,17 @@ export async function buildDentalChartPDFBytes(
     ct: printedCt,
     discharge: discharge[0]?.paragraphs.join('\n\n'),
   }, regular);
+  const cutCards = treatmentArea.cards.filter(card => card.hiddenLines > 0);
+  layoutOptions.onReportFit?.(cutCards.map(({ kind, hiddenLines }) => ({ kind, hiddenLines })));
+  // Cut reports continue first, so their page numbers follow page 2.
+  const continuedOn: Partial<Record<TreatmentAreaKind, number>> = {};
+  if (layoutOptions.continueCutReports) for (const card of cutCards) {
+    continuedOn[card.kind] = pdfDoc.getPageCount() + 1;
+    drawClinicalContinuations(pdfDoc, [{
+      title: t('treatment.continuedTitle', { title: treatmentAreaTitle(card.kind, lng) }),
+      paragraphs: [card.remainder],
+    }], regular, bold);
+  }
   const continuations = [
     ...(needsDischargePage ? discharge : []),
     ...(measure.overflow ? optionalClinicalContinuations(patientInfo, logo, lng) : []),
@@ -359,7 +379,7 @@ export async function buildDentalChartPDFBytes(
     pdfDoc, postSlot, postDiagram.png,
     diagramBottomIn(1, usedByPage.page2)
   );
-  drawTreatmentArea(page2, treatmentArea, regular, bold, lng);
+  drawTreatmentArea(page2, treatmentArea, regular, bold, lng, continuedOn);
   drawFooter(page2, regular, bold, 2, totalPages, generatedAt, identityLine, lng);
 
   // ---- Page-2 codes-used legend (page 1 drew its own above) ------------

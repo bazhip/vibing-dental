@@ -70,5 +70,11 @@
     "anyway": "仍然下载",
     "finalizing": "正在定稿…",
     "failed": "无法将此图表定稿。您可以重试或仍然下载。"
+  },
+  "reportFit": {
+    "cut_one": "{{report}}在第 2 页放不下，约有 {{count}} 行被截断。",
+    "cut_other": "{{report}}在第 2 页放不下，约有 {{count}} 行被截断。",
+    "continued": "{{report}}在第 2 页放不下，其余内容将在附加页上继续。",
+    "continue": "在附加页上继续"
   }
 }

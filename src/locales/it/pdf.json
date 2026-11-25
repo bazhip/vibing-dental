@@ -49,7 +49,9 @@
     "title": "Referto di trattamento e chirurgia",
     "radiographicTitle": "Referto radiografico",
     "ctTitle": "Referto TC",
-    "continued": "… continua — il referto completo è incorporato in questo file (lo ricarichi nell’app)."
+    "continued": "… continua — il referto completo è incorporato in questo file (lo ricarichi nell’app).",
+    "continuedTitle": "{{title}} (continua)",
+    "continuedOnPage": "… continua a pagina {{page}}."
   },
   "anesthesia": {
     "title": "Anestesia · Blocchi nervosi",

@@ -56,5 +56,11 @@
     "anyway": "Download anyway",
     "finalizing": "Finalizing…",
     "failed": "Could not finalize this chart. You can try again or download anyway."
+  },
+  "reportFit": {
+    "cut_one": "{{report}} doesn’t fit on page 2 — about {{count}} line is cut off.",
+    "cut_other": "{{report}} doesn’t fit on page 2 — about {{count}} lines are cut off.",
+    "continued": "{{report}} doesn’t fit on page 2, so the rest continues on an additional page.",
+    "continue": "Continue on an additional page"
   }
 }

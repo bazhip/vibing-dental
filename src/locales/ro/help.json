@@ -35,6 +35,7 @@
     "dictation": "Verificarea constatărilor suplimentare dintr-o înregistrare a vizitei dentare.",
     "owner": "Comenzile raportului pentru proprietar și rezumatul introductiv al unei vizite.",
     "export": "Previzualizarea PDF a unei fișe clinice cu un exemplu de fișă dentară.",
+    "reportFit": "Revizuire și export cu un avertisment că raportul CT nu încape pe pagina 2 și opțiunea Continuați pe o pagină suplimentară.",
     "start": "Spațiu de lucru de exemplu cu fila vizitei, navigarea între secțiuni și datele pacientului.",
     "patients": "Proceduri dentare și consultații anterioare în același istoric, cu o vizită selectată.",
     "exam": "Tabelul examinării orale cu opțiunile Normal și Anormal și un comentariu.",
@@ -209,7 +210,7 @@
         },
         "second": {
           "title": "Personalizați PDF-ul clinic",
-          "text": "În „Fișă clinică”, deschideți „Personalizare” pentru a alege culorile și secțiunile incluse, cum ar fi imaginile, rapoartele imagistice și codurile utilizate. Verificați previzualizarea după modificarea unei opțiuni și descărcați documentul când este gata. Secțiunile de externare apar implicit sub rapoartele de imagistică. Debifați opțiunea pentru a le ascunde din paginile tipărite. Butoanele pentru personalizare și descărcarea PDF-ului se află lângă filele documentelor."
+          "text": "În „Fișă clinică”, deschideți „Personalizare” pentru a alege culorile și secțiunile incluse, cum ar fi imaginile, rapoartele imagistice și codurile utilizate. Verificați previzualizarea după modificarea unei opțiuni și descărcați documentul când este gata. Secțiunile de externare apar implicit sub rapoartele de imagistică. Debifați opțiunea pentru a le ascunde din paginile tipărite. Butoanele pentru personalizare și descărcarea PDF-ului se află lângă filele documentelor.\n\nPagina 2 cuprinde rapoartele de tratament, radiografic și CT. Când sunt lungi, PDF-ul le păstrează pe pagina 2 așezând pe două coloane un raport sub formă de listă, cum ar fi un raport CT, apoi micșorând textul. Dacă un raport tot nu încape, un avertisment deasupra previzualizării numește raportul și aproximativ câte rânduri sunt tăiate. Selectați Continuați pe o pagină suplimentară pentru a tipări restul pe pagina 3. Pagina 2 se încheie atunci cu „continuă la pagina 3”. Opțiunea este reținută pentru exporturile ulterioare. De exemplu, dacă se taie concluziile unui raport CT, selectați opțiunea și verificați că apar pe pagina 3 a previzualizării."
         },
         "third": {
           "title": "Finalizați sau redeschideți o vizită",

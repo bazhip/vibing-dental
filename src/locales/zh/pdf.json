@@ -48,7 +48,9 @@
     "title": "治疗与手术报告",
     "radiographicTitle": "X 线报告",
     "ctTitle": "CT 报告",
-    "continued": "…续。完整报告已嵌入此文件，可重新载入应用查看。"
+    "continued": "…续。完整报告已嵌入此文件，可重新载入应用查看。",
+    "continuedTitle": "{{title}}（续）",
+    "continuedOnPage": "…续见第 {{page}} 页。"
   },
   "anesthesia": {
     "title": "麻醉 · 神经阻滞",

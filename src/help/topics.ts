@@ -57,7 +57,10 @@ export const HELP_SCREENSHOTS: Partial<Record<HelpTopic, readonly HelpScreenshot
     { caption: 'dischargeTemplates', src: '/help/screenshots/discharge-templates.jpg', width: 836, height: 922, section: 'first' },
     { caption: 'owner', src: '/help/screenshots/owner-report.jpg', width: 976, height: 438, section: 'second' },
   ],
-  export: [{ caption: 'export', src: '/help/screenshots/review-export.jpg', width: 1280, height: 772, section: 'second' }],
+  export: [
+    { caption: 'export', src: '/help/screenshots/review-export.jpg', width: 1280, height: 772, section: 'second' },
+    { caption: 'reportFit', src: '/help/screenshots/report-fit.jpg', width: 1280, height: 372, section: 'second' },
+  ],
   'by-number': [
     { caption: 'by-number', src: '/help/screenshots/by-tooth.jpg', width: 984, height: 916, section: 'first' },
     { caption: 'pocketSites', src: '/help/screenshots/pocket-sites.jpg', width: 392, height: 346, section: 'second' },

@@ -70,5 +70,13 @@
     "anyway": "Pobierz mimo to",
     "finalizing": "Zamykanie karty…",
     "failed": "Nie udało się zamknąć karty. Spróbuj ponownie lub pobierz plik mimo to."
+  },
+  "reportFit": {
+    "cut_one": "{{report}} nie mieści się na stronie 2 — ok. {{count}} wiersz zostanie ucięty.",
+    "cut_few": "{{report}} nie mieści się na stronie 2 — ok. {{count}} wiersze zostaną ucięte.",
+    "cut_many": "{{report}} nie mieści się na stronie 2 — ok. {{count}} wierszy zostanie uciętych.",
+    "cut_other": "{{report}} nie mieści się na stronie 2 — ok. {{count}} wiersza zostanie uciętych.",
+    "continued": "{{report}} nie mieści się na stronie 2, więc dalsza część znajdzie się na dodatkowej stronie.",
+    "continue": "Kontynuuj na dodatkowej stronie"
   }
 }

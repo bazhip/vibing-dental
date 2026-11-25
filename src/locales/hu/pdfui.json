@@ -70,5 +70,11 @@
     "anyway": "Letöltés mindenképpen",
     "finalizing": "Véglegesítés…",
     "failed": "A karton véglegesítése nem sikerült. Próbálja újra, vagy töltse le mindenképpen."
+  },
+  "reportFit": {
+    "cut_one": "{{report}}: nem fér el a 2. oldalon – kb. {{count}} sor lemarad.",
+    "cut_other": "{{report}}: nem fér el a 2. oldalon – kb. {{count}} sor lemarad.",
+    "continued": "{{report}}: nem fér el a 2. oldalon, a folytatás egy további oldalra kerül.",
+    "continue": "Folytatás egy további oldalon"
   }
 }

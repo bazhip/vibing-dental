@@ -7561,7 +7561,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.second.text": {
-      "hash": "91ae49ef9640",
+      "hash": "cdce01c17961",
       "status": "machine"
     },
     "help:articles.export.sections.second.title": {
@@ -8082,6 +8082,10 @@
     },
     "help:images.preferences": {
       "hash": "25e32d2056b2",
+      "status": "machine"
+    },
+    "help:images.reportFit": {
+      "hash": "95430c90e1e9",
       "status": "machine"
     },
     "help:images.start": {
@@ -10764,6 +10768,14 @@
       "hash": "aad5fb09fb67",
       "status": "machine"
     },
+    "pdf:treatment.continuedOnPage": {
+      "hash": "a13529681de8",
+      "status": "machine"
+    },
+    "pdf:treatment.continuedTitle": {
+      "hash": "d2523f85e952",
+      "status": "machine"
+    },
     "pdf:treatment.ctTitle": {
       "hash": "b65dbe9328b2",
       "status": "machine"
@@ -10938,6 +10950,38 @@
     },
     "pdfui:preview.withoutImages": {
       "hash": "a52fd3b2f0f9",
+      "status": "machine"
+    },
+    "pdfui:reportFit.continue": {
+      "hash": "cedb6251ba32",
+      "status": "machine"
+    },
+    "pdfui:reportFit.continued": {
+      "hash": "a93ac44602af",
+      "status": "machine"
+    },
+    "pdfui:reportFit.cut_few": {
+      "hash": "47d098f7d8ca",
+      "status": "machine"
+    },
+    "pdfui:reportFit.cut_many": {
+      "hash": "47d098f7d8ca",
+      "status": "machine"
+    },
+    "pdfui:reportFit.cut_one": {
+      "hash": "7c0eca353b50",
+      "status": "machine"
+    },
+    "pdfui:reportFit.cut_other": {
+      "hash": "47d098f7d8ca",
+      "status": "machine"
+    },
+    "pdfui:reportFit.cut_two": {
+      "hash": "47d098f7d8ca",
+      "status": "machine"
+    },
+    "pdfui:reportFit.cut_zero": {
+      "hash": "47d098f7d8ca",
       "status": "machine"
     },
     "pdfui:style.chooseColor": {
@@ -24423,7 +24467,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.second.text": {
-      "hash": "91ae49ef9640",
+      "hash": "cdce01c17961",
       "status": "machine"
     },
     "help:articles.export.sections.second.title": {
@@ -24944,6 +24988,10 @@
     },
     "help:images.preferences": {
       "hash": "25e32d2056b2",
+      "status": "machine"
+    },
+    "help:images.reportFit": {
+      "hash": "95430c90e1e9",
       "status": "machine"
     },
     "help:images.start": {
@@ -27590,6 +27638,14 @@
       "hash": "aad5fb09fb67",
       "status": "machine"
     },
+    "pdf:treatment.continuedOnPage": {
+      "hash": "a13529681de8",
+      "status": "machine"
+    },
+    "pdf:treatment.continuedTitle": {
+      "hash": "d2523f85e952",
+      "status": "machine"
+    },
     "pdf:treatment.ctTitle": {
       "hash": "b65dbe9328b2",
       "status": "machine"
@@ -27764,6 +27820,22 @@
     },
     "pdfui:preview.withoutImages": {
       "hash": "a52fd3b2f0f9",
+      "status": "machine"
+    },
+    "pdfui:reportFit.continue": {
+      "hash": "cedb6251ba32",
+      "status": "machine"
+    },
+    "pdfui:reportFit.continued": {
+      "hash": "a93ac44602af",
+      "status": "machine"
+    },
+    "pdfui:reportFit.cut_one": {
+      "hash": "7c0eca353b50",
+      "status": "machine"
+    },
+    "pdfui:reportFit.cut_other": {
+      "hash": "47d098f7d8ca",
       "status": "machine"
     },
     "pdfui:style.chooseColor": {
@@ -41169,7 +41241,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.second.text": {
-      "hash": "91ae49ef9640",
+      "hash": "cdce01c17961",
       "status": "machine"
     },
     "help:articles.export.sections.second.title": {
@@ -41690,6 +41762,10 @@
     },
     "help:images.preferences": {
       "hash": "25e32d2056b2",
+      "status": "machine"
+    },
+    "help:images.reportFit": {
+      "hash": "95430c90e1e9",
       "status": "machine"
     },
     "help:images.start": {
@@ -44360,6 +44436,14 @@
       "hash": "aad5fb09fb67",
       "status": "machine"
     },
+    "pdf:treatment.continuedOnPage": {
+      "hash": "a13529681de8",
+      "status": "machine"
+    },
+    "pdf:treatment.continuedTitle": {
+      "hash": "d2523f85e952",
+      "status": "machine"
+    },
     "pdf:treatment.ctTitle": {
       "hash": "b65dbe9328b2",
       "status": "machine"
@@ -44534,6 +44618,26 @@
     },
     "pdfui:preview.withoutImages": {
       "hash": "a52fd3b2f0f9",
+      "status": "machine"
+    },
+    "pdfui:reportFit.continue": {
+      "hash": "cedb6251ba32",
+      "status": "machine"
+    },
+    "pdfui:reportFit.continued": {
+      "hash": "a93ac44602af",
+      "status": "machine"
+    },
+    "pdfui:reportFit.cut_many": {
+      "hash": "47d098f7d8ca",
+      "status": "machine"
+    },
+    "pdfui:reportFit.cut_one": {
+      "hash": "7c0eca353b50",
+      "status": "machine"
+    },
+    "pdfui:reportFit.cut_other": {
+      "hash": "47d098f7d8ca",
       "status": "machine"
     },
     "pdfui:style.chooseColor": {
@@ -57975,7 +58079,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.second.text": {
-      "hash": "91ae49ef9640",
+      "hash": "cdce01c17961",
       "status": "machine"
     },
     "help:articles.export.sections.second.title": {
@@ -58496,6 +58600,10 @@
     },
     "help:images.preferences": {
       "hash": "25e32d2056b2",
+      "status": "machine"
+    },
+    "help:images.reportFit": {
+      "hash": "95430c90e1e9",
       "status": "machine"
     },
     "help:images.start": {
@@ -61166,6 +61274,14 @@
       "hash": "aad5fb09fb67",
       "status": "machine"
     },
+    "pdf:treatment.continuedOnPage": {
+      "hash": "a13529681de8",
+      "status": "machine"
+    },
+    "pdf:treatment.continuedTitle": {
+      "hash": "d2523f85e952",
+      "status": "machine"
+    },
     "pdf:treatment.ctTitle": {
       "hash": "b65dbe9328b2",
       "status": "machine"
@@ -61340,6 +61456,26 @@
     },
     "pdfui:preview.withoutImages": {
       "hash": "a52fd3b2f0f9",
+      "status": "machine"
+    },
+    "pdfui:reportFit.continue": {
+      "hash": "cedb6251ba32",
+      "status": "machine"
+    },
+    "pdfui:reportFit.continued": {
+      "hash": "a93ac44602af",
+      "status": "machine"
+    },
+    "pdfui:reportFit.cut_many": {
+      "hash": "47d098f7d8ca",
+      "status": "machine"
+    },
+    "pdfui:reportFit.cut_one": {
+      "hash": "7c0eca353b50",
+      "status": "machine"
+    },
+    "pdfui:reportFit.cut_other": {
+      "hash": "47d098f7d8ca",
       "status": "machine"
     },
     "pdfui:style.chooseColor": {
@@ -74713,7 +74849,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.second.text": {
-      "hash": "91ae49ef9640",
+      "hash": "cdce01c17961",
       "status": "machine"
     },
     "help:articles.export.sections.second.title": {
@@ -75234,6 +75370,10 @@
     },
     "help:images.preferences": {
       "hash": "25e32d2056b2",
+      "status": "machine"
+    },
+    "help:images.reportFit": {
+      "hash": "95430c90e1e9",
       "status": "machine"
     },
     "help:images.start": {
@@ -77820,6 +77960,14 @@
       "hash": "aad5fb09fb67",
       "status": "machine"
     },
+    "pdf:treatment.continuedOnPage": {
+      "hash": "a13529681de8",
+      "status": "machine"
+    },
+    "pdf:treatment.continuedTitle": {
+      "hash": "d2523f85e952",
+      "status": "machine"
+    },
     "pdf:treatment.ctTitle": {
       "hash": "b65dbe9328b2",
       "status": "machine"
@@ -77994,6 +78142,22 @@
     },
     "pdfui:preview.withoutImages": {
       "hash": "a52fd3b2f0f9",
+      "status": "machine"
+    },
+    "pdfui:reportFit.continue": {
+      "hash": "cedb6251ba32",
+      "status": "machine"
+    },
+    "pdfui:reportFit.continued": {
+      "hash": "a93ac44602af",
+      "status": "machine"
+    },
+    "pdfui:reportFit.cut_one": {
+      "hash": "7c0eca353b50",
+      "status": "machine"
+    },
+    "pdfui:reportFit.cut_other": {
+      "hash": "47d098f7d8ca",
       "status": "machine"
     },
     "pdfui:style.chooseColor": {
@@ -91395,7 +91559,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.second.text": {
-      "hash": "91ae49ef9640",
+      "hash": "cdce01c17961",
       "status": "machine"
     },
     "help:articles.export.sections.second.title": {
@@ -91916,6 +92080,10 @@
     },
     "help:images.preferences": {
       "hash": "25e32d2056b2",
+      "status": "machine"
+    },
+    "help:images.reportFit": {
+      "hash": "95430c90e1e9",
       "status": "machine"
     },
     "help:images.start": {
@@ -94586,6 +94754,14 @@
       "hash": "aad5fb09fb67",
       "status": "machine"
     },
+    "pdf:treatment.continuedOnPage": {
+      "hash": "a13529681de8",
+      "status": "machine"
+    },
+    "pdf:treatment.continuedTitle": {
+      "hash": "d2523f85e952",
+      "status": "machine"
+    },
     "pdf:treatment.ctTitle": {
       "hash": "b65dbe9328b2",
       "status": "machine"
@@ -94760,6 +94936,26 @@
     },
     "pdfui:preview.withoutImages": {
       "hash": "a52fd3b2f0f9",
+      "status": "machine"
+    },
+    "pdfui:reportFit.continue": {
+      "hash": "cedb6251ba32",
+      "status": "machine"
+    },
+    "pdfui:reportFit.continued": {
+      "hash": "a93ac44602af",
+      "status": "machine"
+    },
+    "pdfui:reportFit.cut_many": {
+      "hash": "47d098f7d8ca",
+      "status": "machine"
+    },
+    "pdfui:reportFit.cut_one": {
+      "hash": "7c0eca353b50",
+      "status": "machine"
+    },
+    "pdfui:reportFit.cut_other": {
+      "hash": "47d098f7d8ca",
       "status": "machine"
     },
     "pdfui:style.chooseColor": {
@@ -108253,7 +108449,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.second.text": {
-      "hash": "91ae49ef9640",
+      "hash": "cdce01c17961",
       "status": "machine"
     },
     "help:articles.export.sections.second.title": {
@@ -108774,6 +108970,10 @@
     },
     "help:images.preferences": {
       "hash": "25e32d2056b2",
+      "status": "machine"
+    },
+    "help:images.reportFit": {
+      "hash": "95430c90e1e9",
       "status": "machine"
     },
     "help:images.start": {
@@ -111408,6 +111608,14 @@
       "hash": "aad5fb09fb67",
       "status": "machine"
     },
+    "pdf:treatment.continuedOnPage": {
+      "hash": "a13529681de8",
+      "status": "machine"
+    },
+    "pdf:treatment.continuedTitle": {
+      "hash": "d2523f85e952",
+      "status": "machine"
+    },
     "pdf:treatment.ctTitle": {
       "hash": "b65dbe9328b2",
       "status": "machine"
@@ -111582,6 +111790,30 @@
     },
     "pdfui:preview.withoutImages": {
       "hash": "a52fd3b2f0f9",
+      "status": "machine"
+    },
+    "pdfui:reportFit.continue": {
+      "hash": "cedb6251ba32",
+      "status": "machine"
+    },
+    "pdfui:reportFit.continued": {
+      "hash": "a93ac44602af",
+      "status": "machine"
+    },
+    "pdfui:reportFit.cut_few": {
+      "hash": "47d098f7d8ca",
+      "status": "machine"
+    },
+    "pdfui:reportFit.cut_many": {
+      "hash": "47d098f7d8ca",
+      "status": "machine"
+    },
+    "pdfui:reportFit.cut_one": {
+      "hash": "7c0eca353b50",
+      "status": "machine"
+    },
+    "pdfui:reportFit.cut_other": {
+      "hash": "47d098f7d8ca",
       "status": "machine"
     },
     "pdfui:style.chooseColor": {
@@ -125645,7 +125877,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.second.text": {
-      "hash": "91ae49ef9640",
+      "hash": "cdce01c17961",
       "status": "machine"
     },
     "help:articles.export.sections.second.title": {
@@ -126166,6 +126398,10 @@
     },
     "help:images.preferences": {
       "hash": "25e32d2056b2",
+      "status": "machine"
+    },
+    "help:images.reportFit": {
+      "hash": "95430c90e1e9",
       "status": "machine"
     },
     "help:images.start": {
@@ -128776,6 +129012,14 @@
       "hash": "aad5fb09fb67",
       "status": "machine"
     },
+    "pdf:treatment.continuedOnPage": {
+      "hash": "a13529681de8",
+      "status": "machine"
+    },
+    "pdf:treatment.continuedTitle": {
+      "hash": "d2523f85e952",
+      "status": "machine"
+    },
     "pdf:treatment.ctTitle": {
       "hash": "b65dbe9328b2",
       "status": "machine"
@@ -128950,6 +129194,26 @@
     },
     "pdfui:preview.withoutImages": {
       "hash": "a52fd3b2f0f9",
+      "status": "machine"
+    },
+    "pdfui:reportFit.continue": {
+      "hash": "cedb6251ba32",
+      "status": "machine"
+    },
+    "pdfui:reportFit.continued": {
+      "hash": "a93ac44602af",
+      "status": "machine"
+    },
+    "pdfui:reportFit.cut_few": {
+      "hash": "47d098f7d8ca",
+      "status": "machine"
+    },
+    "pdfui:reportFit.cut_one": {
+      "hash": "7c0eca353b50",
+      "status": "machine"
+    },
+    "pdfui:reportFit.cut_other": {
+      "hash": "47d098f7d8ca",
       "status": "machine"
     },
     "pdfui:style.chooseColor": {
@@ -142319,7 +142583,7 @@
       "status": "machine"
     },
     "help:articles.export.sections.second.text": {
-      "hash": "91ae49ef9640",
+      "hash": "cdce01c17961",
       "status": "machine"
     },
     "help:articles.export.sections.second.title": {
@@ -142840,6 +143104,10 @@
     },
     "help:images.preferences": {
       "hash": "25e32d2056b2",
+      "status": "machine"
+    },
+    "help:images.reportFit": {
+      "hash": "95430c90e1e9",
       "status": "machine"
     },
     "help:images.start": {
@@ -145426,6 +145694,14 @@
       "hash": "aad5fb09fb67",
       "status": "machine"
     },
+    "pdf:treatment.continuedOnPage": {
+      "hash": "a13529681de8",
+      "status": "machine"
+    },
+    "pdf:treatment.continuedTitle": {
+      "hash": "d2523f85e952",
+      "status": "machine"
+    },
     "pdf:treatment.ctTitle": {
       "hash": "b65dbe9328b2",
       "status": "machine"
@@ -145600,6 +145876,22 @@
     },
     "pdfui:preview.withoutImages": {
       "hash": "a52fd3b2f0f9",
+      "status": "machine"
+    },
+    "pdfui:reportFit.continue": {
+      "hash": "cedb6251ba32",
+      "status": "machine"
+    },
+    "pdfui:reportFit.continued": {
+      "hash": "a93ac44602af",
+      "status": "machine"
+    },
+    "pdfui:reportFit.cut_one": {
+      "hash": "7c0eca353b50",
+      "status": "machine"
+    },
+    "pdfui:reportFit.cut_other": {
+      "hash": "47d098f7d8ca",
       "status": "machine"
     },
     "pdfui:style.chooseColor": {

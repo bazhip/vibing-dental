@@ -70,5 +70,12 @@
     "anyway": "Télécharger quand même",
     "finalizing": "Finalisation…",
     "failed": "Impossible de finaliser ce dossier. Vous pouvez réessayer ou le télécharger quand même."
+  },
+  "reportFit": {
+    "cut_one": "{{report}} ne tient pas sur la page 2 — environ {{count}} ligne est coupée.",
+    "cut_many": "{{report}} ne tient pas sur la page 2 — environ {{count}} lignes sont coupées.",
+    "cut_other": "{{report}} ne tient pas sur la page 2 — environ {{count}} lignes sont coupées.",
+    "continued": "{{report}} ne tient pas sur la page 2 : la suite figure sur une page supplémentaire.",
+    "continue": "Continuer sur une page supplémentaire"
   }
 }

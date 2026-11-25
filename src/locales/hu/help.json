@@ -35,6 +35,7 @@
     "dictation": "Fogászati felvételből származó kiegészítő leletek áttekintése.",
     "owner": "A Gazdinak szóló lelet kezelőelemei és egy adott vizithez készült bevezető összefoglaló.",
     "export": "A klinikai fogászati lap PDF-előnézete egy mintakitöltéssel.",
+    "reportFit": "Áttekintés és exportálás figyelmeztetéssel, hogy a CT-lelet nem fér el a 2. oldalon, valamint a Folytatás egy további oldalon lehetőséggel.",
     "start": "Minta páciensnézet a vizit fülével, a szakaszok menüjével és a páciens adataival.",
     "patients": "Korábbi fogászati beavatkozások és konzultációk a beteg közös előzményeiben, egy kiválasztott vizittel.",
     "exam": "A szájüregi vizsgálat táblázata Normális és Rendellenes választással, valamint megjegyzéssel.",
@@ -209,7 +210,7 @@
         },
         "second": {
           "title": "A klinikai PDF testreszabása",
-          "text": "A „Klinikai fogászati lap” alatt nyissa meg a „Testreszabás” panelt a színek és a belefoglalt szakaszok beállításához. Ide tartoznak például a képek, a képalkotó leletek és a használt kódok. Módosítás után ellenőrizze az előnézetet, és ha megfelelő, töltse le a dokumentumot. A hazabocsátási szakaszok alapértelmezés szerint a képalkotó leletek alatt jelennek meg. Törölje a jelölést, ha el szeretné rejteni őket a nyomtatott oldalakon. A „Testreszabás” és a PDF letöltésére szolgáló gomb a dokumentumfülek mellett található."
+          "text": "A „Klinikai fogászati lap” alatt nyissa meg a „Testreszabás” panelt a színek és a belefoglalt szakaszok beállításához. Ide tartoznak például a képek, a képalkotó leletek és a használt kódok. Módosítás után ellenőrizze az előnézetet, és ha megfelelő, töltse le a dokumentumot. A hazabocsátási szakaszok alapértelmezés szerint a képalkotó leletek alatt jelennek meg. Törölje a jelölést, ha el szeretné rejteni őket a nyomtatott oldalakon. A „Testreszabás” és a PDF letöltésére szolgáló gomb a dokumentumfülek mellett található.\n\nA 2. oldalon szerepel a kezelési, a röntgen- és a CT-lelet. Ha hosszúak, a PDF a 2. oldalon tartja őket: egy felsorolásszerű leletet, például CT-leletet két hasábba tördel, majd kisebb betűméretet használ. Ha egy lelet így sem fér el, az előnézet fölötti figyelmeztetés megnevezi a leletet, és jelzi, kb. hány sor marad le. Válassza a Folytatás egy további oldalon lehetőséget, hogy a maradék a 3. oldalra kerüljön. Ekkor a 2. oldal a „folytatás a(z) 3. oldalon” szöveggel zárul. A választást a rendszer a későbbi exportálásokhoz is megjegyzi. Ha például egy CT-lelet következtetései lemaradnak, jelölje be a lehetőséget, és ellenőrizze, hogy az előnézet 3. oldalán megjelennek."
         },
         "third": {
           "title": "Vizit lezárása vagy újbóli megnyitása",

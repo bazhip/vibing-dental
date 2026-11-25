@@ -49,7 +49,9 @@
     "title": "Raport de tratament și chirurgie",
     "radiographicTitle": "Raport radiografic",
     "ctTitle": "Raport CT",
-    "continued": "… continuare — raportul complet este încorporat în acest fișier (încărcați-l din nou în aplicație)."
+    "continued": "… continuare — raportul complet este încorporat în acest fișier (încărcați-l din nou în aplicație).",
+    "continuedTitle": "{{title}} (continuare)",
+    "continuedOnPage": "… continuă la pagina {{page}}."
   },
   "anesthesia": {
     "title": "Anestezie · Blocuri nervoase",

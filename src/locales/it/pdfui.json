@@ -56,5 +56,12 @@
     "anyway": "Scarica comunque",
     "finalizing": "Finalizzazione…",
     "failed": "Impossibile finalizzare questa cartella. Lei può riprovare o scaricarla comunque."
+  },
+  "reportFit": {
+    "cut_one": "{{report}} non entra nella pagina 2: circa {{count}} riga viene tagliata.",
+    "cut_many": "{{report}} non entra nella pagina 2: circa {{count}} righe vengono tagliate.",
+    "cut_other": "{{report}} non entra nella pagina 2: circa {{count}} righe vengono tagliate.",
+    "continued": "{{report}} non entra nella pagina 2: il resto prosegue su una pagina aggiuntiva.",
+    "continue": "Continua su una pagina aggiuntiva"
   }
 }

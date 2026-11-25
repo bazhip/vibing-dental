@@ -35,6 +35,7 @@
     "dictation": "Prüfung zusätzlicher Befunde aus der Aufnahme eines Zahnbesuchs.",
     "owner": "Die Bedienelemente des Besitzerberichts und eine Einleitung zum aktuellen Besuch.",
     "export": "Die PDF-Vorschau der klinischen Akte mit einem Beispiel-Zahnschema.",
+    "reportFit": "Prüfen und exportieren mit einer Warnung, dass der CT-Bericht nicht auf Seite 2 passt, und der Option Auf einer zusätzlichen Seite fortsetzen.",
     "start": "Beispiel-Arbeitsbereich mit Besuchsregister, Abschnittsnavigation und Patienteninformationen.",
     "patients": "Frühere Zahnbehandlungen und Konsultationen in einer Patientenakte mit einem ausgewählten Besuch.",
     "exam": "Tabelle der Befunde der Mauluntersuchung mit Normal, Auffällig und einem Kommentar.",
@@ -209,7 +210,7 @@
         },
         "second": {
           "title": "Klinisches PDF anpassen",
-          "text": "Wählen Sie unter „Klinische Akte“ die Option „Anpassen“, um Farben und Inhalte auszuwählen, etwa Bilder, Befundberichte und verwendete Codes. Prüfen Sie nach einer Änderung die Vorschau und laden Sie das fertige Dokument herunter. Die Entlassungsabschnitte erscheinen standardmäßig unter den Bildgebungsberichten. Deaktivieren Sie die Option, um sie auf den gedruckten Seiten auszublenden. Die Schaltflächen „Anpassen“ und „PDF herunterladen“ finden Sie neben den Dokumentreitern."
+          "text": "Wählen Sie unter „Klinische Akte“ die Option „Anpassen“, um Farben und Inhalte auszuwählen, etwa Bilder, Befundberichte und verwendete Codes. Prüfen Sie nach einer Änderung die Vorschau und laden Sie das fertige Dokument herunter. Die Entlassungsabschnitte erscheinen standardmäßig unter den Bildgebungsberichten. Deaktivieren Sie die Option, um sie auf den gedruckten Seiten auszublenden. Die Schaltflächen „Anpassen“ und „PDF herunterladen“ finden Sie neben den Dokumentreitern.\n\nSeite 2 enthält den Behandlungs-, Röntgen- und CT-Bericht. Sind sie lang, hält das PDF sie auf Seite 2, indem es einen listenartigen Bericht wie einen CT-Bericht zweispaltig setzt und danach die Schrift verkleinert. Passt ein Bericht dennoch nicht, nennt eine Warnung über der Vorschau den Bericht und ungefähr, wie viele Zeilen abgeschnitten werden. Wählen Sie Auf einer zusätzlichen Seite fortsetzen, um den Rest auf Seite 3 zu drucken. Seite 2 endet dann mit „Fortsetzung auf Seite 3“. Die Auswahl wird für Ihre späteren Exporte gespeichert. Beispiel: Werden die Schlussfolgerungen eines CT-Berichts abgeschnitten, wählen Sie die Option und prüfen Sie, ob Seite 3 der Vorschau sie zeigt."
         },
         "third": {
           "title": "Besuch abschließen oder erneut öffnen",

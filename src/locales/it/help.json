@@ -35,6 +35,7 @@
     "dictation": "Revisione dei rilievi aggiuntivi ricavati da una registrazione odontoiatrica.",
     "owner": "Comandi del referto per il proprietario e riepilogo iniziale specifico della visita.",
     "export": "Anteprima del PDF della cartella clinica con un odontogramma di esempio.",
+    "reportFit": "Revisione ed esportazione con l’avviso che il referto TC non entra nella pagina 2 e l’opzione Continua su una pagina aggiuntiva.",
     "start": "Area di lavoro di esempio con la linguetta della visita, la navigazione e le informazioni del paziente.",
     "patients": "Procedure odontoiatriche e consultazioni precedenti nello stesso storico, con una visita selezionata.",
     "exam": "Griglia dell’esame orale con le opzioni Normale e Anomalo e un commento.",
@@ -209,7 +210,7 @@
         },
         "second": {
           "title": "Personalizzare il PDF clinico",
-          "text": "In «Cartella clinica», apra «Personalizza» per scegliere i colori e i contenuti da includere, ad esempio le immagini, i referti della diagnostica per immagini e i codici utilizzati. Dopo ogni modifica controlli l’anteprima e scarichi il documento quando è pronto. Per impostazione predefinita, le sezioni di dimissione compaiono sotto i referti di diagnostica per immagini. Deselezioni l’opzione per nasconderle nelle pagine stampate. I pulsanti «Personalizza» e «Scarica PDF» si trovano nella barra dei documenti, sopra l’anteprima."
+          "text": "In «Cartella clinica», apra «Personalizza» per scegliere i colori e i contenuti da includere, ad esempio le immagini, i referti della diagnostica per immagini e i codici utilizzati. Dopo ogni modifica controlli l’anteprima e scarichi il documento quando è pronto. Per impostazione predefinita, le sezioni di dimissione compaiono sotto i referti di diagnostica per immagini. Deselezioni l’opzione per nasconderle nelle pagine stampate. I pulsanti «Personalizza» e «Scarica PDF» si trovano nella barra dei documenti, sopra l’anteprima.\n\nLa pagina 2 contiene i referti del trattamento, radiografico e TC. Quando sono lunghi, il PDF li mantiene nella pagina 2 impaginando su due colonne un referto in forma di elenco, come un referto TC, e poi riducendo il testo. Se un referto continua a non entrare, un avviso sopra l’anteprima indica il referto e circa quante righe vengono tagliate. Selezioni Continua su una pagina aggiuntiva per stampare il resto a pagina 3. La pagina 2 termina allora con «continua a pagina 3». La scelta viene ricordata per le Sue esportazioni successive. Ad esempio, se le conclusioni di un referto TC vengono tagliate, selezioni l’opzione e verifichi che compaiano a pagina 3 dell’anteprima."
         },
         "third": {
           "title": "Finalizzare o riaprire una visita",

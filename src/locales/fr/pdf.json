@@ -49,7 +49,9 @@
     "title": "Compte rendu de traitement et de chirurgie",
     "radiographicTitle": "Compte rendu radiographique",
     "ctTitle": "Compte rendu de scanner",
-    "continued": "… suite — le compte rendu complet est intégré à ce fichier (rechargez-le dans l’application)."
+    "continued": "… suite — le compte rendu complet est intégré à ce fichier (rechargez-le dans l’application).",
+    "continuedTitle": "{{title}} (suite)",
+    "continuedOnPage": "… suite page {{page}}."
   },
   "anesthesia": {
     "title": "Anesthésie · Blocs nerveux",
