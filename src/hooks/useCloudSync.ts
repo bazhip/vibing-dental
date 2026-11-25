@@ -423,7 +423,7 @@ export function useCloudSync(
             .select('patient_name, patient_number').eq('id', id).maybeSingle();
           if (identityError) fail(identityError);
           if (!stillCurrent()) fail(new LocalizedError(i18n.t('sync.identity.changed', { ns: 'app' })));
-          if (saved && changesPatientIdentity(saved as PatientIdentity, proposed)) {
+          if (saved && changesPatientIdentity(saved as PatientIdentity, proposed, snap.patientInfo.generatedPatientNumber)) {
             const changeKey = JSON.stringify([id, identityKey(saved as PatientIdentity), identityKey(proposed)]);
             if (opts.automatic && declinedIdentityRef.current === changeKey) {
               fail(new SaveFailure('', i18n.t('sync.identity.paused', { ns: 'app' })));
@@ -877,6 +877,7 @@ export function useCloudSync(
       if (!basePatient || changesPatientIdentity(
         { patient_name: basePatient.patientName, patient_number: basePatient.patientNumber },
         { patient_name: patient.patientName, patient_number: patient.patientNumber },
+        patient.generatedPatientNumber,
       )) return null;
     } else {
       if (patient.patientId && !patient.patientNumber.trim() && !patient.generatedPatientNumber) {
