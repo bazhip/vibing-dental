@@ -4,6 +4,8 @@ import i18n from '../i18n';
 import { describeError, withDetail } from '../utils/apiErrors';
 import { isAppLanguage, type AppLanguage } from '../i18n/config';
 import { browserSpeechLang } from '../utils/voice/sttConfig';
+import { DictationTracker } from '../utils/dictationTelemetry';
+import { errorCode } from '../utils/appEvents';
 import {
   startDeepgramSession, DeepgramSession, canCaptureRawAudio, createCaptureContext,
 } from '../utils/deepgramVoice';
@@ -90,6 +92,9 @@ export interface VoiceCapture {
   startInLanguage?: (lng: AppLanguage) => void;
   /** Clear the transcript without starting. Stable. */
   clear: () => void;
+  /** The telemetry tracker of the dictation in progress (or just ended, until it
+   *  is flushed). Optional so test doubles need not provide it. Stable. */
+  tracker?: () => DictationTracker | null;
   /** Ignore the mic while true (the app is speaking a prompt). Stable. */
   setMuted: (muted: boolean) => void;
   /** Stable across renders — also fires onStop with the final transcript. */
@@ -204,6 +209,16 @@ export function useVoiceCapture({
   // Mic permission refused: the session ends, but "resume" can't help.
   const fatalRef = React.useRef(false);
 
+  // Telemetry for the dictation in progress; one summary row per dictation.
+  const trackerRef = React.useRef<DictationTracker | null>(null);
+  const captureStartedRef = React.useRef(0);
+  const providerRef = React.useRef<VoiceProvider>(provider);
+  providerRef.current = provider;
+  const tracker = React.useCallback(() => {
+    const current = trackerRef.current;
+    return current && !current.flushed ? current : null;
+  }, []);
+
   const ignoreStaleStopCallbacksRef = React.useRef(ignoreStaleStopCallbacks);
   React.useEffect(() => { ignoreStaleStopCallbacksRef.current = ignoreStaleStopCallbacks; }, [ignoreStaleStopCallbacks]);
   const isStaleSession = React.useCallback((id: number, generation: number) =>
@@ -289,6 +304,15 @@ export function useVoiceCapture({
       setRecording(false);
       if (wasLive && !stopRequestedRef.current && !fatalRef.current) setInterrupted(true);
 
+      const tr = trackerRef.current;
+      if (tr && !tr.flushed) {
+        tr.count('capture_ms', Date.now() - captureStartedRef.current);
+        tr.put('chars', finalText.length);
+        tr.put('segments', allSegmentsRef.current.length);
+        if (wasLive && !stopRequestedRef.current && !fatalRef.current) tr.count('interrupted');
+        if (!wasLive) tr.count('never_live');
+      }
+
       if (generation === generationRef.current) archiveTranscript();
     }
     onStopRef.current?.(finalText);
@@ -297,6 +321,7 @@ export function useVoiceCapture({
   const startBrowser = React.useCallback((id: number) => {
     const generation = generationRef.current;
     if (!browserCtor) {
+      trackerRef.current?.failure('capture', 'unsupported');
       setError(i18n.t('errors.browserUnsupported', { ns: 'voice' }));
       setRecording(false);
       return;
@@ -324,6 +349,8 @@ export function useVoiceCapture({
     rec.onerror = (e) => {
       if (isStaleSession(id, generation)) return;
       if (e.error === 'not-allowed' || e.error === 'service-not-allowed') fatalRef.current = true;
+      // 'no-speech' and 'aborted' are routine ends, not failures.
+      if (e.error !== 'no-speech' && e.error !== 'aborted') trackerRef.current?.failure('capture', String(e.error ?? 'unknown').slice(0, 40), { provider: 'browser' });
       setError(i18n.t('errors.recognition', { ns: 'voice', error: e.error ?? i18n.t('errors.recognitionUnknown', { ns: 'voice' }) }));
     };
     rec.onend = () => {
@@ -338,6 +365,7 @@ export function useVoiceCapture({
       sessionLiveRef.current = true;
       setReady(true);
     } catch (err) {
+      trackerRef.current?.failure('capture', 'mic_start', { provider: 'browser', name: errorCode(err) });
       setError(i18n.t('errors.micStart', { ns: 'voice', message: (err as Error).message }));
       browserRef.current = null;
       setRecording(false);
@@ -354,16 +382,21 @@ export function useVoiceCapture({
     // isn't available (not configured, or a non-Pro/trial caller), fall
     // back to browser speech recognition.
     let dgAuth: { token: string; kind: 'token' | 'bearer' } | null = null;
+    let tokenFailure = 'invoke_error';
     try {
       // eslint-disable-next-line no-restricted-syntax -- dev-only: caught below; falls back to browser speech recognition
-      if (!supabase) throw new Error('no cloud');
+      if (!supabase) { tokenFailure = 'no_cloud'; throw new Error('no cloud'); }
       const { data, error } = await supabase.functions.invoke('deepgram-token', { body: {} });
       // eslint-disable-next-line no-restricted-syntax -- dev-only: caught below; falls back to browser speech recognition
-      if (error || !data?.token) throw new Error(data?.error || error?.message || 'no token');
+      if (error || !data?.token) { tokenFailure = error ? 'invoke_error' : String(data?.code ?? 'no_token').slice(0, 40); throw new Error(data?.error || error?.message || 'no token'); }
       dgAuth = { token: data.token as string, kind: (data.kind as 'token' | 'bearer') || 'bearer' };
     } catch {
       audioCtx?.close().catch(() => { /* ignore */ });
       if (isStaleSession(id, startGeneration)) return;
+      // The mint failed: the dictation silently falls back to the browser's
+      // weaker speech recognition, so record why.
+      trackerRef.current?.failure('token', tokenFailure);
+      trackerRef.current?.set('fallback', 'browser');
       if (ignoreStaleStopCallbacksRef.current && stopRequestedRef.current) {
         handleSessionEnd(id, startGeneration);
         return;
@@ -397,7 +430,12 @@ export function useVoiceCapture({
         // A stopped session's last words still count — unless the user
         // has since cleared/started fresh.
         onFinal: (seg) => { if (generation === generationRef.current && !isStaleSession(id, generation)) recordSegment(seg); },
-        onError: (msg) => { if (id === sessionIdRef.current && !isStaleSession(id, generation)) setError(msg); },
+        onError: (msg) => {
+          if (id === sessionIdRef.current && !isStaleSession(id, generation)) {
+            trackerRef.current?.failure('capture', 'provider_error', { provider: 'deepgram' });
+            setError(msg);
+          }
+        },
         onClose: () => {
           if (holder.session && deepgramRef.current === holder.session) deepgramRef.current = null;
           handleSessionEnd(id, generation);
@@ -420,6 +458,8 @@ export function useVoiceCapture({
     } catch (err) {
       if (id !== sessionIdRef.current || isStaleSession(id, generation)) return;
       const name = err instanceof Error ? err.name : '';
+      trackerRef.current?.failure('capture', name === 'NotAllowedError' || name === 'SecurityError' ? 'mic_blocked'
+        : name === 'NotFoundError' ? 'no_mic' : 'session_start', { provider: 'deepgram', name: errorCode(err) });
       if (name === 'NotAllowedError' || name === 'SecurityError') {
         setError(i18n.t('errors.micBlocked', { ns: 'voice' }));
       } else if (name === 'NotFoundError') {
@@ -445,6 +485,17 @@ export function useVoiceCapture({
     if (allSegmentsRef.current.length === 0) lngRef.current = forcedFreshLanguageRef.current ?? appLanguage();
     setLng(lngRef.current);
     const now = Date.now();
+    captureStartedRef.current = now;
+    if (transcriptSource) {
+      // A fresh dictation replaces an unfinished one; a resume keeps counting.
+      const previous = trackerRef.current;
+      if (previous && !previous.flushed && allSegmentsRef.current.length === 0) previous.flush('superseded');
+      if (!trackerRef.current || trackerRef.current.flushed) {
+        trackerRef.current = new DictationTracker(transcriptSource, { provider, lang: lngRef.current, resumed: allSegmentsRef.current.length > 0 });
+      } else {
+        trackerRef.current.count('resumes');
+      }
+    }
     const archive = transcriptArchiveRef.current;
     if (transcriptSource && transcriptUserId && supabase
         && (!archive || archive.expiresAt <= now)
@@ -551,6 +602,7 @@ export function useVoiceCapture({
       archiveTranscript();
       transcriptArchiveRef.current = null;
       sessionIdRef.current++;
+      trackerRef.current?.flush('closed');
       if (browserRef.current) {
         try { browserRef.current.abort(); } catch { /* ignore */ }
         browserRef.current = null;
@@ -563,7 +615,7 @@ export function useVoiceCapture({
   }, [archiveTranscript]);
 
   return {
-    supported, recording, ready, transcript, interim, start, startInLanguage, clear, stop, setMuted, error,
+    supported, recording, ready, transcript, interim, start, startInLanguage, clear, stop, setMuted, error, tracker,
     consumeFinalSegments, recentSegments, allSegments, startedAt,
     provider, interrupted, resume, dismissInterruption, lng,
   };

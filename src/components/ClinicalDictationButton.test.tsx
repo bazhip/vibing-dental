@@ -10,8 +10,10 @@ vi.mock('../utils/supabaseClient', () => ({ supabase: { auth: { onAuthStateChang
 vi.mock('../utils/clipboard', () => ({ copyRichText: mocks.copy }));
 vi.mock('../hooks/useVoiceCapture', () => ({ useVoiceCapture: (options: { onStop: (text: string) => void }) => { mocks.onStop = options.onStop; return { supported: true, recording: mocks.recording, ready: false, transcript: mocks.captureText, lng: 'en', start: mocks.start, startInLanguage: mocks.startInLanguage, stop: mocks.stop, clear: vi.fn(), resume: mocks.start, error: mocks.captureError }; } }));
 const text = 'Cough for three days';
-const label = (key: 'transcript' | 'prepare' | 'apply' | 'stale' | 'noSections' | 'copyTranscript' | 'copyPromptShown' | 'copied' | 'start' | 'ctApply') => i18n.t(`voice:clinical.${key}`);
-function setup(kind: ClinicalDictationKind = 'gp-visit') { const props = { kind, snapshot: sampleOwnerReportSnapshot(), chartId: 'chart', chartSession: 1, aiEnabled: true, onApply: vi.fn() }; const view = render(<ClinicalDictationButton {...props}/>); fireEvent.click(screen.getByRole('button')); return { ...view, props }; }
+const label = (key: 'transcript' | 'prepare' | 'autofilled' | 'checkTitle' | 'checkDone' | 'apply' | 'stale' | 'noSections' | 'copyTranscript' | 'copyPromptShown' | 'copied' | 'start' | 'ctApply') => i18n.t(`voice:clinical.${key}`);
+// The shared setup has an existing, different complaint, so dictated text would REPLACE it and
+// therefore waits for review. Autofill of empty fields is covered by the "autofill" tests below.
+function setup(kind: ClinicalDictationKind = 'gp-visit') { const snapshot = sampleOwnerReportSnapshot(); snapshot.patientInfo.complaint = 'Existing reason for visit'; const props = { kind, snapshot, chartId: 'chart', chartSession: 1, aiEnabled: true, onApply: vi.fn() }; const view = render(<ClinicalDictationButton {...props}/>); fireEvent.click(screen.getByRole('button')); return { ...view, props }; }
 function paste() { fireEvent.change(screen.getByLabelText(label('transcript')), { target: { value: text } }); }
 async function prepare() { paste(); fireEvent.click(screen.getByRole('button', { name: label('prepare') })); await screen.findByRole('checkbox'); }
 beforeEach(async () => { await i18n.changeLanguage('en'); mocks.extract.mockReset().mockResolvedValue([{ field: 'complaint', value: text, evidence: text }]); mocks.consent.mockReset().mockResolvedValue(true); mocks.copy.mockReset().mockResolvedValue('plain'); mocks.start.mockReset(); mocks.startInLanguage.mockReset().mockImplementation(() => mocks.start()); mocks.stop.mockReset(); mocks.recording = false; mocks.captureError = null; mocks.captureText = ''; });
@@ -213,7 +215,7 @@ it('omits Consultation from dictation targets when only GP examination is enable
 it('reviews additional dental findings using the completed recording without restarting the microphone', async () => {
   const onApply = vi.fn();
   const seededTranscript = { text: 'CT: possible fracture at 108.', language: 'fr' as const };
-  const proposal = { field: 'ctReport', value: seededTranscript.text, evidence: seededTranscript.text };
+  const proposal = { field: 'ctReport', value: seededTranscript.text, evidence: seededTranscript.text, confidence: 'high' as const };
   mocks.extract.mockResolvedValue([proposal]);
   const props = { kind: 'dental-visit' as const, snapshot: sampleOwnerReportSnapshot(), chartId: 'chart', chartSession: 1, aiEnabled: true,
     seededTranscript, strictTarget: true, openRequest: 1, onApply };
@@ -224,8 +226,10 @@ it('reviews additional dental findings using the completed recording without res
   expect(mocks.extract).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ kind: 'dental-visit', transcript: seededTranscript.text, language: 'fr' }));
   expect(mocks.start).not.toHaveBeenCalled();
   expect(screen.queryByRole('button', { name: label('start') })).not.toBeInTheDocument();
-  fireEvent.click(screen.getByRole('button', { name: label('apply') }));
-  expect(onApply).toHaveBeenCalledExactlyOnceWith({ ctReport: proposal.value }, expect.objectContaining({ language: 'fr', fields: ['ctReport'] }));
+  // Voice first: the finding is filled in straight away, with no Apply tap.
+  await waitFor(() => expect(onApply).toHaveBeenCalledExactlyOnceWith({ ctReport: proposal.value }, expect.objectContaining({ language: 'fr', fields: ['ctReport'] })));
+  expect(screen.queryByRole('button', { name: label('apply') })).not.toBeInTheDocument();
+  expect(screen.getByText(i18n.t('voice:clinical.autofilled', { fields: i18n.t('app:ct.title') }))).toBeVisible();
 });
 
 it('does not open an extra dialog when the completed dental recording has no supplemental fields', async () => {
@@ -237,4 +241,62 @@ it('does not open an extra dialog when the completed dental recording has no sup
   await waitFor(() => expect(onOpenChange.mock.calls).toEqual([[true], [false]]));
   expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   expect(onApply).not.toHaveBeenCalled();
+});
+
+describe('voice-first autofill', () => {
+  function emptySetup() { const snapshot = sampleOwnerReportSnapshot(); snapshot.patientInfo.complaint = ''; const props = { kind: 'gp-visit' as const, snapshot, chartId: 'chart', chartSession: 1, aiEnabled: true, onApply: vi.fn() }; const view = render(<ClinicalDictationButton {...props}/>); fireEvent.click(screen.getByRole('button')); return { ...view, props }; }
+  const prepareAuto = () => { paste(); fireEvent.click(screen.getByRole('button', { name: label('prepare') })); };
+  it('fills a confident result straight into an empty field with no review step', async () => {
+    mocks.extract.mockResolvedValue([{ field: 'complaint', value: text, evidence: text, confidence: 'high' }]);
+    const { props } = emptySetup(); prepareAuto();
+    await waitFor(() => expect(props.onApply).toHaveBeenCalledExactlyOnceWith({ complaint: text }, expect.objectContaining({ kind: 'gp-visit', transcript: text, fields: ['complaint'] })));
+    expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
+    expect(screen.queryByText(label('checkTitle'))).not.toBeInTheDocument();
+    expect(screen.getByText(i18n.t('voice:clinical.autofilled', { fields: i18n.t('visitDocumentation:fields.complaint.label') }))).toBeVisible();
+  });
+  it('fills a low-confidence result too, and keeps it on screen to double-check', async () => {
+    mocks.extract.mockResolvedValue([{ field: 'complaint', value: text, evidence: text, confidence: 'low' }]);
+    const { props } = emptySetup(); prepareAuto();
+    await waitFor(() => expect(props.onApply).toHaveBeenCalledOnce());
+    expect(await screen.findByText(label('checkTitle'))).toBeVisible();
+    expect(screen.getByLabelText(i18n.t('visitDocumentation:fields.complaint.label'))).toHaveValue(text);
+    fireEvent.click(screen.getByRole('button', { name: label('checkDone') }));
+    expect(props.onApply).toHaveBeenCalledOnce(); // confirming applies nothing more
+    expect(screen.queryByText(label('checkTitle'))).not.toBeInTheDocument();
+  });
+  it('applies an edit made in the check card as a correction', async () => {
+    mocks.extract.mockResolvedValue([{ field: 'complaint', value: text, evidence: text, confidence: 'low' }]);
+    const { props } = emptySetup(); prepareAuto();
+    await screen.findByText(label('checkTitle'));
+    fireEvent.change(screen.getByLabelText(i18n.t('visitDocumentation:fields.complaint.label')), { target: { value: 'Cough for four days' } });
+    fireEvent.click(screen.getByRole('button', { name: label('checkDone') }));
+    expect(props.onApply).toHaveBeenCalledTimes(2);
+    expect(props.onApply.mock.calls[1][0]).toEqual({ complaint: 'Cough for four days' });
+  });
+  it('treats a result with no confidence rating as low', async () => {
+    mocks.extract.mockResolvedValue([{ field: 'complaint', value: text, evidence: text }]);
+    const { props } = emptySetup(); prepareAuto();
+    await waitFor(() => expect(props.onApply).toHaveBeenCalledOnce());
+    expect(await screen.findByText(label('checkTitle'))).toBeVisible();
+  });
+  it('shows the review instead when the commit is refused, so nothing dictated is lost', async () => {
+    mocks.extract.mockResolvedValue([{ field: 'complaint', value: text, evidence: text, confidence: 'high' }]);
+    const { props } = emptySetup(); props.onApply.mockImplementationOnce(() => { throw new Error('stale'); });
+    prepareAuto();
+    expect(await screen.findByRole('checkbox')).toBeChecked();
+    expect(screen.getByLabelText(label('transcript'))).toHaveValue(text);
+  });
+  it('never autofills over existing text: a replacement waits for a tap', async () => {
+    mocks.extract.mockResolvedValue([{ field: 'complaint', value: text, evidence: text, confidence: 'high' }]);
+    const { props } = setup(); prepareAuto();
+    expect(await screen.findByRole('checkbox')).toBeVisible();
+    expect(screen.getByRole('button', { name: label('apply') })).toBeVisible();
+    expect(props.onApply).not.toHaveBeenCalled();
+  });
+  it('fills a result that extends existing text without asking', async () => {
+    mocks.extract.mockResolvedValue([{ field: 'complaint', value: 'Existing reason for visit. ' + text, evidence: text, confidence: 'high' }]);
+    const { props } = setup(); prepareAuto();
+    await waitFor(() => expect(props.onApply).toHaveBeenCalledOnce());
+    expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
+  });
 });

@@ -19,6 +19,10 @@ import { isIosPreview } from './ios/preview';
 import { bootLanguage } from './i18n/bootLanguage';
 import { captureFromEzyvet } from './utils/pims/ezyvetHandover';
 import { initAppearance } from './theme/appearance';
+import { installCrashLogging } from './utils/appEvents';
+
+// Uncaught errors and unhandled rejections, by code and location only (never their text).
+installCrashLogging();
 
 // DEV-only: `?iosPreview=1&iosGallery=1` renders the iOS component kit
 // gallery instead of the app. The constant DEV check drops it (and its

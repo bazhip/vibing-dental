@@ -84,7 +84,8 @@ it('documents a single recording across the dental visit', () => {
   render(<HelpSite />);
   const main = screen.getByRole('main');
   expect(within(main).getByText(/any tab of a dental procedure/)).toBeInTheDocument();
-  expect(within(main).getByText(/the same recording can propose CT/)).toBeInTheDocument();
+  expect(within(main).getByText(/the same recording can fill in CT/)).toBeInTheDocument();
+  expect(within(main).getByText(/listed under “Please double-check”/)).toBeInTheDocument();
 });
 
 it('localizes the consultation image instructions and screenshot at the direct link', async () => {
