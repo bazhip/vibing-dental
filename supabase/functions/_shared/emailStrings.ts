@@ -474,7 +474,7 @@ export const EMAIL_STRINGS: Record<EmailLanguage, Record<EmailKey, string>> = {
     "whatsNew.item5.title": "问诊、出院与宠主报告",
     "whatsNew.item6.body": "44 颗牙的马牙科图表，含示意图、表格和 PDF，并提供 AVDC 马的发现和操作代码。除猫和犬之外，还有兔的牙科图表，所有联动的示意图保持同步。",
     "whatsNew.item6.title": "也支持马和兔",
-    "whatsNew.item7.body": "共享的病历和模板、患者就诊历史、复查提醒，以及带有您品牌标识、可日后重新导入的 PDF 病历。 可使用英语、法语、德语、意大利语、西班牙语、匈牙利语、罗马尼亚语、中文、阿拉伯语或波兰语使用 ToothOps。",
+    "whatsNew.item7.body": "共享的病历和模板、患者就诊历史、复查提醒，以及带有您品牌标识、可日后重新导入的 PDF 病历。支持英语、法语、德语、意大利语、西班牙语、匈牙利语、罗马尼亚语、中文、阿拉伯语和波兰语。",
     "whatsNew.item7.title": "为整个诊所而设计",
     "whatsNew.preheader": "更精准的语音记录、按牙位记录、可按诊所定制，以及马和兔。",
     "whatsNew.subject": "ToothOps 新增功能",
