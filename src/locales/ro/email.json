@@ -40,5 +40,40 @@
     "subjectFinal": "Ultimul memento: alăturați-vă cabinetului {{who}} pe ToothOps",
     "title": "Sunteți invitat să vă alăturați cabinetului {{who}}",
     "titleFinal": "Invitația dumneavoastră vă așteaptă în continuare"
+  },
+  "whatsNew": {
+    "subject": "Noutăți în ToothOps",
+    "preheader": "Completare vocală, rapoarte imagistice, consultații, partajare în echipă și zece limbi.",
+    "title": "ToothOps a crescut mult de la lansare",
+    "intro": "De la lansarea din noiembrie, ToothOps a devenit un flux de lucru complet la fotoliu pentru stomatologia veterinară. Iată principalele repere. Autentificați-vă pentru a continua de unde ați rămas.",
+    "button": "Deschideți ToothOps",
+    "item1": {
+      "title": "Completare prin voce",
+      "body": "Dictați în timp ce lucrați: IA plasează fiecare constatare pe dintele, diagrama și câmpul potrivit, cu o verificare finală pentru tot ce nu a fost sigură."
+    },
+    "item2": {
+      "title": "Fișă dentară completă",
+      "body": "Grile Triadan pentru pisici, câini și iepuri, diagrame dentare legate între ele și setul complet de coduri AVDC, toate sincronizate."
+    },
+    "item3": {
+      "title": "Imagini și rapoarte imagistice",
+      "body": "Asociați fotografii și radiografii dinților și redactați rapoarte radiografice și CT cu rafinare asistată de IA."
+    },
+    "item4": {
+      "title": "Consultații, externare și rapoarte pentru proprietar",
+      "body": "Note centrate pe vizită, șabloane editabile și rapoarte de luat acasă în limbaj simplu, cu fotografii înainte și după."
+    },
+    "item5": {
+      "title": "Creat pentru întregul cabinet",
+      "body": "Fișe și șabloane partajate, istoricul vizitelor, mementouri de control și fișe PDF personalizate pe care le puteți reimporta ulterior."
+    },
+    "item6": {
+      "title": "Zece limbi",
+      "body": "Folosiți ToothOps în engleză, franceză, germană, italiană, spaniolă, maghiară, română, chineză, arabă sau poloneză."
+    },
+    "unsubscribe": {
+      "text": "Primiți această noutate de produs unică deoarece aveți un cont ToothOps.",
+      "label": "Dezabonare de la noutățile de produs"
+    }
   }
 }

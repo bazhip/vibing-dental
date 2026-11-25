@@ -40,5 +40,40 @@
     "subjectFinal": "Dernier rappel : rejoignez {{who}} sur ToothOps",
     "title": "Invitation à rejoindre {{who}}",
     "titleFinal": "Votre invitation vous attend toujours"
+  },
+  "whatsNew": {
+    "subject": "Nouveautés de ToothOps",
+    "preheader": "Saisie vocale, comptes rendus d’imagerie, consultations, partage en équipe et dix langues.",
+    "title": "ToothOps a beaucoup évolué depuis son lancement",
+    "intro": "Depuis son lancement en novembre, ToothOps est devenu un véritable outil de travail au fauteuil pour la dentisterie vétérinaire. Voici les points forts. Connectez-vous pour reprendre là où vous vous étiez arrêté.",
+    "button": "Ouvrir ToothOps",
+    "item1": {
+      "title": "Saisie par la voix",
+      "body": "Dictez pendant que vous travaillez : l’IA place chaque constat sur la bonne dent, le bon schéma et le bon champ, avec une vérification finale de tout ce dont elle n’était pas sûre."
+    },
+    "item2": {
+      "title": "Charting complet de la bouche",
+      "body": "Grilles Triadan pour chats, chiens et lapins, schémas dentaires liés et jeu complet de codes AVDC, le tout synchronisé."
+    },
+    "item3": {
+      "title": "Images et comptes rendus d’imagerie",
+      "body": "Associez photos et radiographies aux dents, et rédigez des comptes rendus radiographiques et de scanner avec une reformulation assistée par IA."
+    },
+    "item4": {
+      "title": "Consultations, sorties et comptes rendus propriétaire",
+      "body": "Notes centrées sur la visite, modèles modifiables et comptes rendus à emporter en langage clair, avec photos avant et après."
+    },
+    "item5": {
+      "title": "Conçu pour tout le cabinet",
+      "body": "Dossiers et modèles partagés, historique des visites, rappels de contrôle et dossiers PDF personnalisés que vous pouvez réimporter plus tard."
+    },
+    "item6": {
+      "title": "Dix langues",
+      "body": "Utilisez ToothOps en anglais, français, allemand, italien, espagnol, hongrois, roumain, chinois, arabe ou polonais."
+    },
+    "unsubscribe": {
+      "text": "Vous recevez cette information produit ponctuelle parce que vous avez un compte ToothOps.",
+      "label": "Se désabonner des actualités produit"
+    }
   }
 }

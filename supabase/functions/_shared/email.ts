@@ -31,6 +31,8 @@ export interface BrandedEmail {
   button?: { label: string; url: string };
   /** Small print under the button (escaped). */
   footnote?: string;
+  /** Product-update emails: opt-out line under the card, with its link. */
+  unsubscribe?: { text: string; label: string; url: string };
 }
 
 export function renderBrandedEmail(e: BrandedEmail, lng = 'en'): { html: string; text: string } {
@@ -74,7 +76,8 @@ export function renderBrandedEmail(e: BrandedEmail, lng = 'en'): { html: string;
         ${paras}
       </td></tr>${code}${action}
     </table>
-    <p style="margin:16px 0 0;font-size:12px;color:#94a3b8;">ToothOps · ${esc(emailT(lang, 'layout.tagline'))} · <a href="https://toothops.app" style="color:#94a3b8;">toothops.app</a></p>
+    <p style="margin:16px 0 0;font-size:12px;color:#94a3b8;">ToothOps · ${esc(emailT(lang, 'layout.tagline'))} · <a href="https://toothops.app" style="color:#94a3b8;">toothops.app</a></p>${e.unsubscribe ? `
+    <p style="margin:8px 0 0;font-size:12px;line-height:1.5;color:#94a3b8;">${esc(e.unsubscribe.text)} <a href="${esc(e.unsubscribe.url)}" style="color:#94a3b8;">${esc(e.unsubscribe.label)}</a></p>` : ''}
   </td></tr>
 </table>
 </body></html>`;
@@ -86,6 +89,7 @@ export function renderBrandedEmail(e: BrandedEmail, lng = 'en'): { html: string;
     ...(e.button ? [`${e.button.label}: ${e.button.url}`, ''] : []),
     ...(e.footnote ? [e.footnote, ''] : []),
     '— ToothOps · toothops.app',
+    ...(e.unsubscribe ? ['', `${e.unsubscribe.text} ${e.unsubscribe.label}: ${e.unsubscribe.url}`] : []),
   ].join('\n');
   return { html, text };
 }
@@ -101,17 +105,17 @@ export function sendBrandedEmail(apiKey: string, to: string, subject: string, e:
  */
 export async function sendEmail(
   apiKey: string,
-  m: { to: string; subject: string; html: string; text: string },
+  m: { to: string; subject: string; html: string; text: string; headers?: Record<string, string> },
   opts: { idempotencyKey?: string } = {},
 ): Promise<boolean> {
-  const { to, subject, html, text } = m;
+  const { to, subject, html, text, headers: extra } = m;
   const headers: Record<string, string> = { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' };
   if (opts.idempotencyKey) headers['Idempotency-Key'] = opts.idempotencyKey;
   const resp = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers,
     signal: AbortSignal.timeout(4000),
-    body: JSON.stringify({ from: EMAIL_FROM, to: [to], subject, html, text }),
+    body: JSON.stringify({ from: EMAIL_FROM, to: [to], subject, html, text, ...(extra ? { headers: extra } : {}) }),
   }).catch(() => null);
   return !!resp?.ok;
 }

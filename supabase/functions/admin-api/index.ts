@@ -13,6 +13,9 @@ import { createClient } from 'npm:@supabase/supabase-js@2';
 import { AI_FEATURES, ALLOWED_AI_MODELS, isAiFeature, resolveAiModels } from '../_shared/aiModels.ts';
 import { aggregateAiUsage, costOfAiUsage, parseAiUsageQuery } from '../_shared/aiUsageQuery.ts';
 import { cancelPracticeSubscription } from '../_shared/deletion.ts';
+import { sendEmail } from '../_shared/email.ts';
+import { buildWhatsNewEmail, isWhatsNewCandidate, WHATS_NEW_CAMPAIGN, WHATS_NEW_CUTOFF } from '../_shared/whatsNewEmail.ts';
+import { emailLanguage } from '../_shared/emailStrings.ts';
 import { freshInviteLink, isPendingAccount, markInviteRevoked, resetInviteState, safeAppUrl } from '../_shared/pendingInvites.ts';
 
 type Json = Record<string, unknown>;
@@ -151,6 +154,41 @@ async function profileRowsWithLastSeen(admin: any) {
   return admin.from('profiles').select('id, practice_name, doctor_name, logo_path');
 }
 
+
+/** Who the "What's new" email would go to now: eligible accounts minus anyone
+ *  who opted out or already received this campaign. */
+// deno-lint-ignore no-explicit-any
+async function whatsNewAudience(admin: any) {
+  const users = await listAllUsers(admin);
+  const [outs, sent] = await Promise.all([
+    admin.from('marketing_opt_outs').select('user_id'),
+    admin.from('marketing_sends').select('user_id').eq('campaign', WHATS_NEW_CAMPAIGN),
+  ]);
+  if (outs.error) throw outs.error;
+  if (sent.error) throw sent.error;
+  const optedOut = new Set<string>((outs.data ?? []).map((r: { user_id: string }) => r.user_id));
+  const alreadySent = new Set<string>((sent.data ?? []).map((r: { user_id: string }) => r.user_id));
+  // deno-lint-ignore no-explicit-any
+  const candidates = users.filter((u: any) => isWhatsNewCandidate(u));
+  // deno-lint-ignore no-explicit-any
+  const pending = candidates.filter((u: any) => !optedOut.has(u.id) && !alreadySent.has(u.id));
+  return {
+    pending,
+    counts: {
+      pending: pending.length,
+      eligible: candidates.length,
+      optedOut: candidates.filter((u: { id: string }) => optedOut.has(u.id)).length,
+      alreadySent: candidates.filter((u: { id: string }) => alreadySent.has(u.id)).length,
+      neverSignedIn: users.filter((u: { last_sign_in_at?: string | null }) => !u.last_sign_in_at).length,
+      cutoff: WHATS_NEW_CUTOFF,
+    },
+  };
+}
+
+const WHATS_NEW_BATCH = 50;
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+
 // Browser calls come from the app's origins (github.io / vercel /
 // localhost dev) — auth is enforced by the JWT + role check, not CORS.
 const CORS = {
@@ -194,6 +232,53 @@ Deno.serve(async (req: Request) => {
 
   try {
     switch (action) {
+      case 'whats_new_status': {
+        return json((await whatsNewAudience(admin)).counts);
+      }
+
+      case 'whats_new_send': {
+        const secret = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+        const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+        const apiKey = Deno.env.get('RESEND_API_KEY') ?? (await admin.rpc('get_resend_key')).data;
+        if (!apiKey) return json({ error: 'Email is not configured (no Resend key).' }, 500);
+
+        if (body.mode === 'preview') {
+          // Only ever to the signed-in admin's own address.
+          if (!caller.email) return json({ error: 'Your account has no email address.' }, 400);
+          const lng = emailLanguage(body.language ?? caller.user_metadata?.language);
+          const m = await buildWhatsNewEmail(lng, caller.id, secret, supabaseUrl);
+          const ok = await sendEmail(apiKey, { to: caller.email, ...m, subject: `[Preview] ${m.subject}` });
+          if (!ok) return json({ error: 'Resend did not accept the preview.' }, 502);
+          return json({ ok: true, to: caller.email, language: lng });
+        }
+
+        if (body.mode !== 'send') return json({ error: 'unknown mode' }, 400);
+        const { pending, counts } = await whatsNewAudience(admin);
+        // The admin confirmed a specific head-count; refuse if the audience moved.
+        if (body.confirmPending !== counts.pending) {
+          return json({ error: `The audience changed (now ${counts.pending}). Review the count and try again.`, counts }, 409);
+        }
+        let sent = 0;
+        let failed = 0;
+        let consecutiveFailures = 0;
+        // deno-lint-ignore no-explicit-any
+        for (const u of pending.slice(0, WHATS_NEW_BATCH) as any[]) {
+          const m = await buildWhatsNewEmail(u.user_metadata?.language, u.id, secret, supabaseUrl);
+          const ok = await sendEmail(apiKey, { to: u.email, ...m }, { idempotencyKey: `${WHATS_NEW_CAMPAIGN}:${u.id}` });
+          if (ok) {
+            const { error } = await admin.from('marketing_sends').upsert({ campaign: WHATS_NEW_CAMPAIGN, user_id: u.id }, { onConflict: 'campaign,user_id', ignoreDuplicates: true });
+            if (error) throw error; // never lose track of who was emailed
+            sent++;
+            consecutiveFailures = 0;
+          } else {
+            failed++;
+            if (++consecutiveFailures >= 3) break; // something systemic — stop, don't hammer Resend
+          }
+          await sleep(600); // stay under Resend's request rate limit
+        }
+        return json({ ok: true, sent, failed, remaining: counts.pending - sent });
+      }
+
       case 'stats': {
         const [{ count: charts }, { count: templates }, { count: profiles }] =
           await Promise.all([

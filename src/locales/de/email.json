@@ -40,5 +40,40 @@
     "subjectFinal": "Letzte Erinnerung: {{who}} wartet auf Sie bei ToothOps",
     "title": "{{who}} hat Sie eingeladen",
     "titleFinal": "Ihre Einladung wartet noch auf Sie"
+  },
+  "whatsNew": {
+    "subject": "Neu in ToothOps",
+    "preheader": "Sprachbasierte Dokumentation, Bildgebungsberichte, Konsultationen, Teamfreigabe und zehn Sprachen.",
+    "title": "ToothOps hat sich seit dem Start stark weiterentwickelt",
+    "intro": "Seit dem Start im November ist ToothOps zu einem kompletten Arbeitsablauf am Behandlungsstuhl für die Veterinärzahnmedizin geworden. Hier die Höhepunkte. Melden Sie sich an und machen Sie dort weiter, wo Sie aufgehört haben.",
+    "button": "ToothOps öffnen",
+    "item1": {
+      "title": "Dokumentieren per Sprache",
+      "body": "Diktieren Sie während der Arbeit: Die KI ordnet jeden Befund dem richtigen Zahn, Schema und Feld zu und prüft am Ende alles, bei dem sie unsicher war."
+    },
+    "item2": {
+      "title": "Vollständiges Gebissschema",
+      "body": "Triadan-Raster für Katzen, Hunde und Kaninchen, verknüpfte Zahnschemata und der gesamte AVDC-Code-Satz – alles synchron."
+    },
+    "item3": {
+      "title": "Bilder und Bildgebungsberichte",
+      "body": "Heften Sie Fotos und Röntgenbilder an Zähne und verfassen Sie Röntgen- und CT-Berichte mit KI-Überarbeitung."
+    },
+    "item4": {
+      "title": "Konsultationen, Entlassung und Besitzerberichte",
+      "body": "Besuchsorientierte Notizen, bearbeitbare Vorlagen und verständliche Berichte zum Mitnehmen mit Vorher-nachher-Fotos."
+    },
+    "item5": {
+      "title": "Für die ganze Praxis gemacht",
+      "body": "Gemeinsame Akten und Vorlagen, Besuchshistorie je Patient, Kontrollerinnerungen und gebrandete PDF-Akten, die Sie später wieder importieren können."
+    },
+    "item6": {
+      "title": "Zehn Sprachen",
+      "body": "Nutzen Sie ToothOps auf Englisch, Französisch, Deutsch, Italienisch, Spanisch, Ungarisch, Rumänisch, Chinesisch, Arabisch oder Polnisch."
+    },
+    "unsubscribe": {
+      "text": "Sie erhalten dieses einmalige Produkt-Update, weil Sie ein ToothOps-Konto haben.",
+      "label": "Produkt-Updates abbestellen"
+    }
   }
 }

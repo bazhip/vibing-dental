@@ -40,5 +40,40 @@
     "subjectFinal": "Ultimo promemoria: {{who}} La aspetta su ToothOps",
     "title": "{{who}} La invita a unirsi",
     "titleFinal": "Il Suo invito La sta ancora aspettando"
+  },
+  "whatsNew": {
+    "subject": "Novità di ToothOps",
+    "preheader": "Compilazione vocale, referti di diagnostica per immagini, consulti, condivisione in team e dieci lingue.",
+    "title": "ToothOps è cresciuto molto dal lancio",
+    "intro": "Dal lancio di novembre, ToothOps è diventato un flusso di lavoro completo alla poltrona per l’odontoiatria veterinaria. Ecco i punti salienti. Acceda per riprendere da dove aveva lasciato.",
+    "button": "Apri ToothOps",
+    "item1": {
+      "title": "Compilazione a voce",
+      "body": "Detti mentre lavora: l’IA colloca ogni rilievo sul dente, sul diagramma e nel campo giusti, con un controllo finale su tutto ciò di cui non era sicura."
+    },
+    "item2": {
+      "title": "Cartella dentale completa",
+      "body": "Griglie Triadan per gatti, cani e conigli, diagrammi dentali collegati e l’intero set di codici AVDC, sempre sincronizzati."
+    },
+    "item3": {
+      "title": "Immagini e referti di diagnostica per immagini",
+      "body": "Associ foto e radiografie ai denti e rediga referti radiografici e TC con rifinitura assistita dall’IA."
+    },
+    "item4": {
+      "title": "Consulti, dimissioni e referti per il proprietario",
+      "body": "Note incentrate sulla visita, modelli modificabili e referti da portare a casa in linguaggio semplice, con foto prima e dopo."
+    },
+    "item5": {
+      "title": "Pensato per tutto lo studio",
+      "body": "Cartelle e modelli condivisi, storico delle visite, promemoria di controllo e cartelle PDF personalizzate che potrà reimportare in seguito."
+    },
+    "item6": {
+      "title": "Dieci lingue",
+      "body": "Usi ToothOps in inglese, francese, tedesco, italiano, spagnolo, ungherese, rumeno, cinese, arabo o polacco."
+    },
+    "unsubscribe": {
+      "text": "Riceve questo aggiornamento di prodotto una tantum perché ha un account ToothOps.",
+      "label": "Annulla l’iscrizione agli aggiornamenti di prodotto"
+    }
   }
 }

@@ -423,3 +423,19 @@ alter table public.practices add column if not exists client_language text
 -- stored subject/body ({{patient}} {{owner}} {{practice}} {{recheck_date}}; NULLs
 -- become ''), posts via Resend (net.http_post, key from get_resend_key()) and
 -- stamps reminder_sent_at. Practice-name fallback follows client_language.
+
+-- ------------------------------------------------ product-update emails
+-- Opt-outs and per-campaign send log for one-off "What's new" emails
+-- (admin-api whats_new_*; unsubscribe edge function). Service role only.
+create table if not exists public.marketing_opt_outs (
+  user_id uuid primary key references auth.users (id) on delete cascade,
+  opted_out_at timestamptz not null default now()
+);
+create table if not exists public.marketing_sends (
+  campaign text not null,
+  user_id uuid not null references auth.users (id) on delete cascade,
+  sent_at timestamptz not null default now(),
+  primary key (campaign, user_id)
+);
+alter table public.marketing_opt_outs enable row level security;
+alter table public.marketing_sends enable row level security;

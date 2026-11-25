@@ -17,6 +17,7 @@ import { useModalFocus } from '../hooks/useModalFocus';
 import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
 import { useOptionalStack } from '../ios/Stack';
 import { confirmDialog, friendlyError, promptDialog } from './ui/dialogs';
+import { APP_LANGUAGES, LANGUAGE_NAMES, type AppLanguage } from '../i18n/config';
 import './Login.css';
 import './AccountSurfaces.css';
 
@@ -253,6 +254,15 @@ interface AdminPanelProps {
   presentation?: 'modal' | 'screen';
 }
 
+interface WhatsNewStatus {
+  pending: number;
+  eligible: number;
+  optedOut: number;
+  alreadySent: number;
+  neverSignedIn: number;
+  cutoff: string;
+}
+
 export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose, presentation = 'modal' }) => {
   const { t } = useTranslation(['app', 'voice']);
   const asScreen = presentation === 'screen';
@@ -265,7 +275,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose, presentat
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState('');
   const [notice, setNotice] = React.useState('');
-  const [tab, setTab] = React.useState<'accounts' | 'practices' | 'billing' | 'ai'>('accounts');
+  const [tab, setTab] = React.useState<'accounts' | 'practices' | 'billing' | 'ai' | 'email'>('accounts');
+  // Email tab: the one-off "What's new" product update.
+  const [whatsNew, setWhatsNew] = React.useState<WhatsNewStatus | null>(null);
+  const [whatsNewLanguage, setWhatsNewLanguage] = React.useState<AppLanguage>('en');
   // Billing tab state.
   const [billingRows, setBillingRows] = React.useState<BillingOverviewRow[] | null>(null);
   const [billingMrr, setBillingMrr] = React.useState(0);
@@ -506,6 +519,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose, presentat
   React.useEffect(() => {
     if (open && tab === 'billing') loadBilling();
   }, [open, tab, loadBilling]);
+  const loadWhatsNew = React.useCallback(async () => {
+    try {
+      setWhatsNew(await adminCall<WhatsNewStatus>({ action: 'whats_new_status' }));
+    } catch (e) {
+      setError(friendlyError(e, 'Could not load the email audience.'));
+    }
+  }, []);
+  React.useEffect(() => {
+    if (open && tab === 'email') loadWhatsNew();
+  }, [open, tab, loadWhatsNew]);
 
   if (!open) return null;
 
@@ -804,6 +827,37 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose, presentat
     });
   };
 
+  const handleWhatsNewPreview = () =>
+    run('Preview sent to your own email address.', async () => {
+      await adminCall({ action: 'whats_new_send', mode: 'preview', language: whatsNewLanguage });
+    });
+
+  const handleWhatsNewSend = async () => {
+    if (!whatsNew || whatsNew.pending === 0) return;
+    const ok = await confirmDialog({
+      title: `Send the What’s new email to ${whatsNew.pending} ${whatsNew.pending === 1 ? 'person' : 'people'}?`,
+      message: 'It goes to confirmed accounts that last signed in before Nov 14, 2026 and have not unsubscribed. Each person receives it once. This can’t be undone.',
+      confirmLabel: `Send to ${whatsNew.pending}`,
+    });
+    if (!ok) return;
+    await run(null, async () => {
+      let remaining = whatsNew.pending;
+      let sent = 0;
+      let failed = 0;
+      while (remaining > 0) {
+        const r = await adminCall<{ sent: number; failed: number; remaining: number }>({ action: 'whats_new_send', mode: 'send', confirmPending: remaining });
+        sent += r.sent;
+        failed += r.failed;
+        remaining = r.remaining;
+        setNotice(`Sent ${sent}… ${remaining} to go.`);
+        if (r.sent === 0 || r.failed > 0) break; // a failure stops the run; sending again resumes it
+      }
+      if (remaining > 0) setError(`Stopped after ${sent} sent (${failed} failed, ${remaining} left). Send again to resume.`);
+      else setNotice(`Sent to ${sent} ${sent === 1 ? 'person' : 'people'}.`);
+      await loadWhatsNew();
+    });
+  };
+
   const handleSetPracticeOwner = async (userId: string, email: string) => {
     if (!selectedPractice) return;
     const ok = await confirmDialog({
@@ -936,6 +990,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose, presentat
           onClick={() => setTab('ai')}
         >
           AI
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={tab === 'email'}
+          tabIndex={tab === 'email' ? 0 : -1}
+          className={tab === 'email' ? 'admin-panel__tab admin-panel__tab--on' : 'admin-panel__tab'}
+          onClick={() => setTab('email')}
+        >
+          Email
         </button>
       </div>
 
@@ -1499,6 +1563,39 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose, presentat
                 </tbody>
               </table>
             )}
+          </div>
+        </section>
+      )}
+
+      {tab === 'email' && (
+        <section className="admin-panel__billing">
+          <div className="admin-panel__ai-block">
+            <h3 className="ai-settings-subhead">What’s new email</h3>
+            <p className="ai-settings-blurb">
+              A one-time product update for confirmed accounts that last signed in before {whatsNew ? new Date(whatsNew.cutoff).toLocaleDateString(undefined, { dateStyle: 'medium', timeZone: 'UTC' }) : 'the cutoff'}.
+              Each message is in the person’s own language and has a one-click unsubscribe link. Send yourself a preview first.
+            </p>
+            {!whatsNew ? <p className="ai-settings-blurb">Loading the audience…</p> : (
+              <ul className="admin-panel__ai-total">
+                <li><strong>{whatsNew.pending}</strong> ready to send</li>
+                <li>{whatsNew.eligible} eligible · {whatsNew.alreadySent} already sent · {whatsNew.optedOut} unsubscribed</li>
+                <li>{whatsNew.neverSignedIn} accounts have never signed in and are excluded</li>
+              </ul>
+            )}
+            <div className="practice-logo-actions">
+              <label className="patient-form__label">Preview language
+                <select className="patient-form__input" value={whatsNewLanguage} onChange={(event) => setWhatsNewLanguage(event.target.value as AppLanguage)} disabled={busy}>
+                  {APP_LANGUAGES.map((lng) => <option key={lng} value={lng}>{LANGUAGE_NAMES[lng]}</option>)}
+                </select>
+              </label>
+              <button type="button" className="diagram-view__action" onClick={handleWhatsNewPreview} disabled={busy}>
+                Send preview to me
+              </button>
+              <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={handleWhatsNewSend}
+                disabled={busy || !whatsNew || whatsNew.pending === 0}>
+                {whatsNew && whatsNew.pending > 0 ? `Send to ${whatsNew.pending}…` : 'Nobody left to send to'}
+              </button>
+            </div>
           </div>
         </section>
       )}
