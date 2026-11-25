@@ -6572,6 +6572,82 @@
       "hash": "c6c1d88f054b",
       "status": "machine"
     },
+    "email:whatsNew.button": {
+      "hash": "732c4d9d213c",
+      "status": "machine"
+    },
+    "email:whatsNew.intro": {
+      "hash": "260aa365d9e6",
+      "status": "machine"
+    },
+    "email:whatsNew.item1.body": {
+      "hash": "0e21a98dbd17",
+      "status": "machine"
+    },
+    "email:whatsNew.item1.title": {
+      "hash": "74ad6645a234",
+      "status": "machine"
+    },
+    "email:whatsNew.item2.body": {
+      "hash": "59faeba49588",
+      "status": "machine"
+    },
+    "email:whatsNew.item2.title": {
+      "hash": "61229c189cda",
+      "status": "machine"
+    },
+    "email:whatsNew.item3.body": {
+      "hash": "81b7613b5fc5",
+      "status": "machine"
+    },
+    "email:whatsNew.item3.title": {
+      "hash": "671a473acb14",
+      "status": "machine"
+    },
+    "email:whatsNew.item4.body": {
+      "hash": "e37788d7ea47",
+      "status": "machine"
+    },
+    "email:whatsNew.item4.title": {
+      "hash": "97dc45885079",
+      "status": "machine"
+    },
+    "email:whatsNew.item5.body": {
+      "hash": "7597e32c7f60",
+      "status": "machine"
+    },
+    "email:whatsNew.item5.title": {
+      "hash": "7e6f07b49253",
+      "status": "machine"
+    },
+    "email:whatsNew.item6.body": {
+      "hash": "5b3cfc2654b8",
+      "status": "machine"
+    },
+    "email:whatsNew.item6.title": {
+      "hash": "0e5188a0b98e",
+      "status": "machine"
+    },
+    "email:whatsNew.preheader": {
+      "hash": "538da9a128d6",
+      "status": "machine"
+    },
+    "email:whatsNew.subject": {
+      "hash": "f177bccf38d2",
+      "status": "machine"
+    },
+    "email:whatsNew.title": {
+      "hash": "0aeb753ee8ac",
+      "status": "machine"
+    },
+    "email:whatsNew.unsubscribe.label": {
+      "hash": "afa85109a332",
+      "status": "machine"
+    },
+    "email:whatsNew.unsubscribe.text": {
+      "hash": "9846c15c42ce",
+      "status": "machine"
+    },
     "forms:anesthesia.add": {
       "hash": "58a85a149b26",
       "status": "machine"
@@ -23554,6 +23630,82 @@
       "hash": "c6c1d88f054b",
       "status": "machine"
     },
+    "email:whatsNew.button": {
+      "hash": "732c4d9d213c",
+      "status": "machine"
+    },
+    "email:whatsNew.intro": {
+      "hash": "260aa365d9e6",
+      "status": "machine"
+    },
+    "email:whatsNew.item1.body": {
+      "hash": "0e21a98dbd17",
+      "status": "machine"
+    },
+    "email:whatsNew.item1.title": {
+      "hash": "74ad6645a234",
+      "status": "machine"
+    },
+    "email:whatsNew.item2.body": {
+      "hash": "59faeba49588",
+      "status": "machine"
+    },
+    "email:whatsNew.item2.title": {
+      "hash": "61229c189cda",
+      "status": "machine"
+    },
+    "email:whatsNew.item3.body": {
+      "hash": "81b7613b5fc5",
+      "status": "machine"
+    },
+    "email:whatsNew.item3.title": {
+      "hash": "671a473acb14",
+      "status": "machine"
+    },
+    "email:whatsNew.item4.body": {
+      "hash": "e37788d7ea47",
+      "status": "machine"
+    },
+    "email:whatsNew.item4.title": {
+      "hash": "97dc45885079",
+      "status": "machine"
+    },
+    "email:whatsNew.item5.body": {
+      "hash": "7597e32c7f60",
+      "status": "machine"
+    },
+    "email:whatsNew.item5.title": {
+      "hash": "7e6f07b49253",
+      "status": "machine"
+    },
+    "email:whatsNew.item6.body": {
+      "hash": "5b3cfc2654b8",
+      "status": "machine"
+    },
+    "email:whatsNew.item6.title": {
+      "hash": "0e5188a0b98e",
+      "status": "machine"
+    },
+    "email:whatsNew.preheader": {
+      "hash": "538da9a128d6",
+      "status": "machine"
+    },
+    "email:whatsNew.subject": {
+      "hash": "f177bccf38d2",
+      "status": "machine"
+    },
+    "email:whatsNew.title": {
+      "hash": "0aeb753ee8ac",
+      "status": "machine"
+    },
+    "email:whatsNew.unsubscribe.label": {
+      "hash": "afa85109a332",
+      "status": "machine"
+    },
+    "email:whatsNew.unsubscribe.text": {
+      "hash": "9846c15c42ce",
+      "status": "machine"
+    },
     "forms:anesthesia.add": {
       "hash": "58a85a149b26",
       "status": "machine"
@@ -40402,6 +40554,82 @@
     },
     "email:reminder.titleFinal": {
       "hash": "c6c1d88f054b",
+      "status": "machine"
+    },
+    "email:whatsNew.button": {
+      "hash": "732c4d9d213c",
+      "status": "machine"
+    },
+    "email:whatsNew.intro": {
+      "hash": "260aa365d9e6",
+      "status": "machine"
+    },
+    "email:whatsNew.item1.body": {
+      "hash": "0e21a98dbd17",
+      "status": "machine"
+    },
+    "email:whatsNew.item1.title": {
+      "hash": "74ad6645a234",
+      "status": "machine"
+    },
+    "email:whatsNew.item2.body": {
+      "hash": "59faeba49588",
+      "status": "machine"
+    },
+    "email:whatsNew.item2.title": {
+      "hash": "61229c189cda",
+      "status": "machine"
+    },
+    "email:whatsNew.item3.body": {
+      "hash": "81b7613b5fc5",
+      "status": "machine"
+    },
+    "email:whatsNew.item3.title": {
+      "hash": "671a473acb14",
+      "status": "machine"
+    },
+    "email:whatsNew.item4.body": {
+      "hash": "e37788d7ea47",
+      "status": "machine"
+    },
+    "email:whatsNew.item4.title": {
+      "hash": "97dc45885079",
+      "status": "machine"
+    },
+    "email:whatsNew.item5.body": {
+      "hash": "7597e32c7f60",
+      "status": "machine"
+    },
+    "email:whatsNew.item5.title": {
+      "hash": "7e6f07b49253",
+      "status": "machine"
+    },
+    "email:whatsNew.item6.body": {
+      "hash": "5b3cfc2654b8",
+      "status": "machine"
+    },
+    "email:whatsNew.item6.title": {
+      "hash": "0e5188a0b98e",
+      "status": "machine"
+    },
+    "email:whatsNew.preheader": {
+      "hash": "538da9a128d6",
+      "status": "machine"
+    },
+    "email:whatsNew.subject": {
+      "hash": "f177bccf38d2",
+      "status": "machine"
+    },
+    "email:whatsNew.title": {
+      "hash": "0aeb753ee8ac",
+      "status": "machine"
+    },
+    "email:whatsNew.unsubscribe.label": {
+      "hash": "afa85109a332",
+      "status": "machine"
+    },
+    "email:whatsNew.unsubscribe.text": {
+      "hash": "9846c15c42ce",
       "status": "machine"
     },
     "forms:anesthesia.add": {
@@ -57318,6 +57546,82 @@
       "hash": "c6c1d88f054b",
       "status": "machine"
     },
+    "email:whatsNew.button": {
+      "hash": "732c4d9d213c",
+      "status": "machine"
+    },
+    "email:whatsNew.intro": {
+      "hash": "260aa365d9e6",
+      "status": "machine"
+    },
+    "email:whatsNew.item1.body": {
+      "hash": "0e21a98dbd17",
+      "status": "machine"
+    },
+    "email:whatsNew.item1.title": {
+      "hash": "74ad6645a234",
+      "status": "machine"
+    },
+    "email:whatsNew.item2.body": {
+      "hash": "59faeba49588",
+      "status": "machine"
+    },
+    "email:whatsNew.item2.title": {
+      "hash": "61229c189cda",
+      "status": "machine"
+    },
+    "email:whatsNew.item3.body": {
+      "hash": "81b7613b5fc5",
+      "status": "machine"
+    },
+    "email:whatsNew.item3.title": {
+      "hash": "671a473acb14",
+      "status": "machine"
+    },
+    "email:whatsNew.item4.body": {
+      "hash": "e37788d7ea47",
+      "status": "machine"
+    },
+    "email:whatsNew.item4.title": {
+      "hash": "97dc45885079",
+      "status": "machine"
+    },
+    "email:whatsNew.item5.body": {
+      "hash": "7597e32c7f60",
+      "status": "machine"
+    },
+    "email:whatsNew.item5.title": {
+      "hash": "7e6f07b49253",
+      "status": "machine"
+    },
+    "email:whatsNew.item6.body": {
+      "hash": "5b3cfc2654b8",
+      "status": "machine"
+    },
+    "email:whatsNew.item6.title": {
+      "hash": "0e5188a0b98e",
+      "status": "machine"
+    },
+    "email:whatsNew.preheader": {
+      "hash": "538da9a128d6",
+      "status": "machine"
+    },
+    "email:whatsNew.subject": {
+      "hash": "f177bccf38d2",
+      "status": "machine"
+    },
+    "email:whatsNew.title": {
+      "hash": "0aeb753ee8ac",
+      "status": "machine"
+    },
+    "email:whatsNew.unsubscribe.label": {
+      "hash": "afa85109a332",
+      "status": "machine"
+    },
+    "email:whatsNew.unsubscribe.text": {
+      "hash": "9846c15c42ce",
+      "status": "machine"
+    },
     "forms:anesthesia.add": {
       "hash": "58a85a149b26",
       "status": "machine"
@@ -74164,6 +74468,82 @@
       "hash": "c6c1d88f054b",
       "status": "machine"
     },
+    "email:whatsNew.button": {
+      "hash": "732c4d9d213c",
+      "status": "machine"
+    },
+    "email:whatsNew.intro": {
+      "hash": "260aa365d9e6",
+      "status": "machine"
+    },
+    "email:whatsNew.item1.body": {
+      "hash": "0e21a98dbd17",
+      "status": "machine"
+    },
+    "email:whatsNew.item1.title": {
+      "hash": "74ad6645a234",
+      "status": "machine"
+    },
+    "email:whatsNew.item2.body": {
+      "hash": "59faeba49588",
+      "status": "machine"
+    },
+    "email:whatsNew.item2.title": {
+      "hash": "61229c189cda",
+      "status": "machine"
+    },
+    "email:whatsNew.item3.body": {
+      "hash": "81b7613b5fc5",
+      "status": "machine"
+    },
+    "email:whatsNew.item3.title": {
+      "hash": "671a473acb14",
+      "status": "machine"
+    },
+    "email:whatsNew.item4.body": {
+      "hash": "e37788d7ea47",
+      "status": "machine"
+    },
+    "email:whatsNew.item4.title": {
+      "hash": "97dc45885079",
+      "status": "machine"
+    },
+    "email:whatsNew.item5.body": {
+      "hash": "7597e32c7f60",
+      "status": "machine"
+    },
+    "email:whatsNew.item5.title": {
+      "hash": "7e6f07b49253",
+      "status": "machine"
+    },
+    "email:whatsNew.item6.body": {
+      "hash": "5b3cfc2654b8",
+      "status": "machine"
+    },
+    "email:whatsNew.item6.title": {
+      "hash": "0e5188a0b98e",
+      "status": "machine"
+    },
+    "email:whatsNew.preheader": {
+      "hash": "538da9a128d6",
+      "status": "machine"
+    },
+    "email:whatsNew.subject": {
+      "hash": "f177bccf38d2",
+      "status": "machine"
+    },
+    "email:whatsNew.title": {
+      "hash": "0aeb753ee8ac",
+      "status": "machine"
+    },
+    "email:whatsNew.unsubscribe.label": {
+      "hash": "afa85109a332",
+      "status": "machine"
+    },
+    "email:whatsNew.unsubscribe.text": {
+      "hash": "9846c15c42ce",
+      "status": "machine"
+    },
     "forms:anesthesia.add": {
       "hash": "58a85a149b26",
       "status": "machine"
@@ -90948,6 +91328,82 @@
     },
     "email:reminder.titleFinal": {
       "hash": "c6c1d88f054b",
+      "status": "machine"
+    },
+    "email:whatsNew.button": {
+      "hash": "732c4d9d213c",
+      "status": "machine"
+    },
+    "email:whatsNew.intro": {
+      "hash": "260aa365d9e6",
+      "status": "machine"
+    },
+    "email:whatsNew.item1.body": {
+      "hash": "0e21a98dbd17",
+      "status": "machine"
+    },
+    "email:whatsNew.item1.title": {
+      "hash": "74ad6645a234",
+      "status": "machine"
+    },
+    "email:whatsNew.item2.body": {
+      "hash": "59faeba49588",
+      "status": "machine"
+    },
+    "email:whatsNew.item2.title": {
+      "hash": "61229c189cda",
+      "status": "machine"
+    },
+    "email:whatsNew.item3.body": {
+      "hash": "81b7613b5fc5",
+      "status": "machine"
+    },
+    "email:whatsNew.item3.title": {
+      "hash": "671a473acb14",
+      "status": "machine"
+    },
+    "email:whatsNew.item4.body": {
+      "hash": "e37788d7ea47",
+      "status": "machine"
+    },
+    "email:whatsNew.item4.title": {
+      "hash": "97dc45885079",
+      "status": "machine"
+    },
+    "email:whatsNew.item5.body": {
+      "hash": "7597e32c7f60",
+      "status": "machine"
+    },
+    "email:whatsNew.item5.title": {
+      "hash": "7e6f07b49253",
+      "status": "machine"
+    },
+    "email:whatsNew.item6.body": {
+      "hash": "5b3cfc2654b8",
+      "status": "machine"
+    },
+    "email:whatsNew.item6.title": {
+      "hash": "0e5188a0b98e",
+      "status": "machine"
+    },
+    "email:whatsNew.preheader": {
+      "hash": "538da9a128d6",
+      "status": "machine"
+    },
+    "email:whatsNew.subject": {
+      "hash": "f177bccf38d2",
+      "status": "machine"
+    },
+    "email:whatsNew.title": {
+      "hash": "0aeb753ee8ac",
+      "status": "machine"
+    },
+    "email:whatsNew.unsubscribe.label": {
+      "hash": "afa85109a332",
+      "status": "machine"
+    },
+    "email:whatsNew.unsubscribe.text": {
+      "hash": "9846c15c42ce",
       "status": "machine"
     },
     "forms:anesthesia.add": {
@@ -107914,6 +108370,82 @@
     },
     "email:reminder.titleFinal": {
       "hash": "c6c1d88f054b",
+      "status": "machine"
+    },
+    "email:whatsNew.button": {
+      "hash": "732c4d9d213c",
+      "status": "machine"
+    },
+    "email:whatsNew.intro": {
+      "hash": "260aa365d9e6",
+      "status": "machine"
+    },
+    "email:whatsNew.item1.body": {
+      "hash": "0e21a98dbd17",
+      "status": "machine"
+    },
+    "email:whatsNew.item1.title": {
+      "hash": "74ad6645a234",
+      "status": "machine"
+    },
+    "email:whatsNew.item2.body": {
+      "hash": "59faeba49588",
+      "status": "machine"
+    },
+    "email:whatsNew.item2.title": {
+      "hash": "61229c189cda",
+      "status": "machine"
+    },
+    "email:whatsNew.item3.body": {
+      "hash": "81b7613b5fc5",
+      "status": "machine"
+    },
+    "email:whatsNew.item3.title": {
+      "hash": "671a473acb14",
+      "status": "machine"
+    },
+    "email:whatsNew.item4.body": {
+      "hash": "e37788d7ea47",
+      "status": "machine"
+    },
+    "email:whatsNew.item4.title": {
+      "hash": "97dc45885079",
+      "status": "machine"
+    },
+    "email:whatsNew.item5.body": {
+      "hash": "7597e32c7f60",
+      "status": "machine"
+    },
+    "email:whatsNew.item5.title": {
+      "hash": "7e6f07b49253",
+      "status": "machine"
+    },
+    "email:whatsNew.item6.body": {
+      "hash": "5b3cfc2654b8",
+      "status": "machine"
+    },
+    "email:whatsNew.item6.title": {
+      "hash": "0e5188a0b98e",
+      "status": "machine"
+    },
+    "email:whatsNew.preheader": {
+      "hash": "538da9a128d6",
+      "status": "machine"
+    },
+    "email:whatsNew.subject": {
+      "hash": "f177bccf38d2",
+      "status": "machine"
+    },
+    "email:whatsNew.title": {
+      "hash": "0aeb753ee8ac",
+      "status": "machine"
+    },
+    "email:whatsNew.unsubscribe.label": {
+      "hash": "afa85109a332",
+      "status": "machine"
+    },
+    "email:whatsNew.unsubscribe.text": {
+      "hash": "9846c15c42ce",
       "status": "machine"
     },
     "forms:anesthesia.add": {
@@ -125420,6 +125952,82 @@
       "hash": "c6c1d88f054b",
       "status": "machine"
     },
+    "email:whatsNew.button": {
+      "hash": "732c4d9d213c",
+      "status": "machine"
+    },
+    "email:whatsNew.intro": {
+      "hash": "260aa365d9e6",
+      "status": "machine"
+    },
+    "email:whatsNew.item1.body": {
+      "hash": "0e21a98dbd17",
+      "status": "machine"
+    },
+    "email:whatsNew.item1.title": {
+      "hash": "74ad6645a234",
+      "status": "machine"
+    },
+    "email:whatsNew.item2.body": {
+      "hash": "59faeba49588",
+      "status": "machine"
+    },
+    "email:whatsNew.item2.title": {
+      "hash": "61229c189cda",
+      "status": "machine"
+    },
+    "email:whatsNew.item3.body": {
+      "hash": "81b7613b5fc5",
+      "status": "machine"
+    },
+    "email:whatsNew.item3.title": {
+      "hash": "671a473acb14",
+      "status": "machine"
+    },
+    "email:whatsNew.item4.body": {
+      "hash": "e37788d7ea47",
+      "status": "machine"
+    },
+    "email:whatsNew.item4.title": {
+      "hash": "97dc45885079",
+      "status": "machine"
+    },
+    "email:whatsNew.item5.body": {
+      "hash": "7597e32c7f60",
+      "status": "machine"
+    },
+    "email:whatsNew.item5.title": {
+      "hash": "7e6f07b49253",
+      "status": "machine"
+    },
+    "email:whatsNew.item6.body": {
+      "hash": "5b3cfc2654b8",
+      "status": "machine"
+    },
+    "email:whatsNew.item6.title": {
+      "hash": "0e5188a0b98e",
+      "status": "machine"
+    },
+    "email:whatsNew.preheader": {
+      "hash": "538da9a128d6",
+      "status": "machine"
+    },
+    "email:whatsNew.subject": {
+      "hash": "f177bccf38d2",
+      "status": "machine"
+    },
+    "email:whatsNew.title": {
+      "hash": "0aeb753ee8ac",
+      "status": "machine"
+    },
+    "email:whatsNew.unsubscribe.label": {
+      "hash": "afa85109a332",
+      "status": "machine"
+    },
+    "email:whatsNew.unsubscribe.text": {
+      "hash": "9846c15c42ce",
+      "status": "machine"
+    },
     "forms:anesthesia.add": {
       "hash": "58a85a149b26",
       "status": "machine"
@@ -142200,6 +142808,82 @@
     },
     "email:reminder.titleFinal": {
       "hash": "c6c1d88f054b",
+      "status": "machine"
+    },
+    "email:whatsNew.button": {
+      "hash": "732c4d9d213c",
+      "status": "machine"
+    },
+    "email:whatsNew.intro": {
+      "hash": "260aa365d9e6",
+      "status": "machine"
+    },
+    "email:whatsNew.item1.body": {
+      "hash": "0e21a98dbd17",
+      "status": "machine"
+    },
+    "email:whatsNew.item1.title": {
+      "hash": "74ad6645a234",
+      "status": "machine"
+    },
+    "email:whatsNew.item2.body": {
+      "hash": "59faeba49588",
+      "status": "machine"
+    },
+    "email:whatsNew.item2.title": {
+      "hash": "61229c189cda",
+      "status": "machine"
+    },
+    "email:whatsNew.item3.body": {
+      "hash": "81b7613b5fc5",
+      "status": "machine"
+    },
+    "email:whatsNew.item3.title": {
+      "hash": "671a473acb14",
+      "status": "machine"
+    },
+    "email:whatsNew.item4.body": {
+      "hash": "e37788d7ea47",
+      "status": "machine"
+    },
+    "email:whatsNew.item4.title": {
+      "hash": "97dc45885079",
+      "status": "machine"
+    },
+    "email:whatsNew.item5.body": {
+      "hash": "7597e32c7f60",
+      "status": "machine"
+    },
+    "email:whatsNew.item5.title": {
+      "hash": "7e6f07b49253",
+      "status": "machine"
+    },
+    "email:whatsNew.item6.body": {
+      "hash": "5b3cfc2654b8",
+      "status": "machine"
+    },
+    "email:whatsNew.item6.title": {
+      "hash": "0e5188a0b98e",
+      "status": "machine"
+    },
+    "email:whatsNew.preheader": {
+      "hash": "538da9a128d6",
+      "status": "machine"
+    },
+    "email:whatsNew.subject": {
+      "hash": "f177bccf38d2",
+      "status": "machine"
+    },
+    "email:whatsNew.title": {
+      "hash": "0aeb753ee8ac",
+      "status": "machine"
+    },
+    "email:whatsNew.unsubscribe.label": {
+      "hash": "afa85109a332",
+      "status": "machine"
+    },
+    "email:whatsNew.unsubscribe.text": {
+      "hash": "9846c15c42ce",
       "status": "machine"
     },
     "forms:anesthesia.add": {

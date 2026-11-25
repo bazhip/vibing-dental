@@ -1,4 +1,4 @@
-import { render, screen, waitFor, act, fireEvent } from '@testing-library/react';
+import { render, screen, waitFor, act, fireEvent, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import React from 'react';
@@ -77,7 +77,7 @@ describe('AdminPanel', () => {
     expect(practices).toHaveAttribute('aria-selected', 'true');
     expect(accounts).toHaveAttribute('tabindex', '-1');
     fireEvent.keyDown(practices, { key: 'End' });
-    expect(screen.getByRole('tab', { name: 'AI' })).toHaveFocus();
+    expect(screen.getByRole('tab', { name: 'Email' })).toHaveFocus();
     fireEvent.keyDown(document.activeElement!, { key: 'Home' });
     expect(accounts).toHaveFocus();
     await screen.findByText(/2 users · 4 charts/);
@@ -218,4 +218,61 @@ it('shows labeled legacy totals when the query is unavailable on the backend', a
   await screen.findByText(/Showing all-time totals/);
   expect(screen.getByText('alice@socal.vet')).toBeVisible();
   expect(screen.queryByRole('button', { name: 'Apply' })).toBeNull();
+});
+
+describe('What’s new email tab', () => {
+  const status = { pending: 3, eligible: 5, optedOut: 1, alreadySent: 1, neverSignedIn: 7, cutoff: '2026-11-14T00:00:00Z' };
+  const calls = () => invoke.mock.calls.map(([, { body }]) => body).filter(body => String(body.action).startsWith('whats_new'));
+
+  it('shows the audience and sends a preview only to the admin, in the chosen language', async () => {
+    respond({ whats_new_status: status });
+    renderPanel();
+    await userEvent.click(screen.getByRole('tab', { name: 'Email' }));
+    expect(await screen.findByText('ready to send')).toBeVisible();
+    expect(screen.getByText(/7 accounts have never signed in/)).toBeVisible();
+    await userEvent.selectOptions(screen.getByLabelText('Preview language'), 'fr');
+    await userEvent.click(screen.getByRole('button', { name: 'Send preview to me' }));
+    await screen.findByText('Preview sent to your own email address.');
+    expect(calls().at(-1)).toEqual({ action: 'whats_new_send', mode: 'preview', language: 'fr' });
+  });
+
+  it('asks for confirmation with the head-count and sends nothing when declined', async () => {
+    respond({ whats_new_status: status });
+    renderPanel();
+    await userEvent.click(screen.getByRole('tab', { name: 'Email' }));
+    await userEvent.click(await screen.findByRole('button', { name: 'Send to 3…' }));
+    const dialog = await screen.findByRole('alertdialog');
+    expect(within(dialog).getByText('Send the What’s new email to 3 people?')).toBeVisible();
+    await userEvent.click(within(dialog).getByRole('button', { name: /cancel/i }));
+    expect(calls().some(body => body.mode === 'send')).toBe(false);
+  });
+
+  it('sends in batches until nobody is left, confirming the expected count each time', async () => {
+    const batches = [{ sent: 2, failed: 0, remaining: 1 }, { sent: 1, failed: 0, remaining: 0 }];
+    invoke.mockImplementation(async (_fn: string, { body }: { body: { action: string; mode?: string } }) => {
+      if (body.action === 'whats_new_status') return { data: status, error: null };
+      if (body.action === 'whats_new_send') return { data: batches.shift(), error: null };
+      return { data: body.action === 'list_users' ? { users: [] } : body.action === 'list_practices' ? { practices: [] } : { ok: true }, error: null };
+    });
+    renderPanel();
+    await userEvent.click(screen.getByRole('tab', { name: 'Email' }));
+    await userEvent.click(await screen.findByRole('button', { name: 'Send to 3…' }));
+    await userEvent.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: 'Send to 3' }));
+    await screen.findByText('Sent to 3 people.');
+    expect(calls().filter(body => body.mode === 'send').map(body => body.confirmPending)).toEqual([3, 1]);
+  });
+
+  it('stops and reports when a batch has failures', async () => {
+    invoke.mockImplementation(async (_fn: string, { body }: { body: { action: string } }) => {
+      if (body.action === 'whats_new_status') return { data: status, error: null };
+      if (body.action === 'whats_new_send') return { data: { sent: 1, failed: 1, remaining: 2 }, error: null };
+      return { data: body.action === 'list_users' ? { users: [] } : body.action === 'list_practices' ? { practices: [] } : { ok: true }, error: null };
+    });
+    renderPanel();
+    await userEvent.click(screen.getByRole('tab', { name: 'Email' }));
+    await userEvent.click(await screen.findByRole('button', { name: 'Send to 3…' }));
+    await userEvent.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: 'Send to 3' }));
+    await screen.findByText(/Stopped after 1 sent \(1 failed, 2 left\)/);
+    expect(calls().filter(body => body.mode === 'send')).toHaveLength(1);
+  });
 });

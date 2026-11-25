@@ -40,5 +40,40 @@
     "subjectFinal": "Last reminder: join {{who}} on ToothOps",
     "title": "You’re invited to join {{who}}",
     "titleFinal": "Your invitation is still waiting"
+  },
+  "whatsNew": {
+    "subject": "What’s new in ToothOps",
+    "preheader": "Voice charting, imaging reports, consultations, team sharing and ten languages.",
+    "title": "ToothOps has grown a lot since launch",
+    "intro": "Since ToothOps launched in November it has become a full chairside workflow for veterinary dentistry. Here are the highlights. Sign in to pick up where you left off.",
+    "button": "Open ToothOps",
+    "item1": {
+      "title": "Chart by voice",
+      "body": "Dictate as you work and AI places each finding on the right tooth, diagram and field, with a final check for anything it wasn’t sure about."
+    },
+    "item2": {
+      "title": "Full-mouth charting",
+      "body": "Triadan grids for cats, dogs and rabbits, linked tooth diagrams, and the full AVDC code set, all kept in sync."
+    },
+    "item3": {
+      "title": "Images and imaging reports",
+      "body": "Pin photos and radiographs to teeth, and write radiographic and CT reports with AI refinement."
+    },
+    "item4": {
+      "title": "Consultations, discharge and owner reports",
+      "body": "Visit-first notes, editable templates, and plain-language take-home reports with before and after photos."
+    },
+    "item5": {
+      "title": "Built for the whole practice",
+      "body": "Shared charts and templates, patient visit history, recheck reminders, and branded PDF charts you can re-import later."
+    },
+    "item6": {
+      "title": "Ten languages",
+      "body": "Use ToothOps in English, French, German, Italian, Spanish, Hungarian, Romanian, Chinese, Arabic or Polish."
+    },
+    "unsubscribe": {
+      "text": "You’re getting this one-time product update because you have a ToothOps account.",
+      "label": "Unsubscribe from product updates"
+    }
   }
 }

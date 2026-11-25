@@ -124,7 +124,9 @@ only when signed in as the same account as the panel.
 
 1. Supabase, Authentication, URL Configuration, Redirect URLs: add both
    - `https://mkbapeaolbnpalaibokekppiciejijim.chromiumapp.org/auth` (dev extension id), and
-   - `https://<store extension id>.chromiumapp.org/auth` (once the store item exists).
+   - `https://oklpkcccbleeodjhjlbnglfohmnccajo.chromiumapp.org/auth` (Chrome Web Store extension id).
+   If the panel's Google sign-in opens the web app instead of returning to the extension, the
+   running extension's id (see `chrome://extensions`) is missing from this list.
 2. Google: nothing new in Google Cloud (Supabase is the OAuth client).
 3. Apple: configure the Supabase Apple provider for web, and build with `VITE_APPLE_SIGNIN_WEB=true`.
 

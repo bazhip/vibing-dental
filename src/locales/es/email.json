@@ -40,5 +40,40 @@
     "subjectFinal": "Último recordatorio: únase a {{who}} en ToothOps",
     "title": "Invitación para unirse a {{who}}",
     "titleFinal": "Su invitación sigue esperándole"
+  },
+  "whatsNew": {
+    "subject": "Novedades de ToothOps",
+    "preheader": "Registro por voz, informes de imagen, consultas, equipo compartido y diez idiomas.",
+    "title": "ToothOps ha crecido mucho desde su lanzamiento",
+    "intro": "Desde su lanzamiento en noviembre, ToothOps se ha convertido en un flujo de trabajo completo junto al sillón para la odontología veterinaria. Estos son los puntos destacados. Inicie sesión para retomar donde lo dejó.",
+    "button": "Abrir ToothOps",
+    "item1": {
+      "title": "Registro por voz",
+      "body": "Dicte mientras trabaja: la IA coloca cada hallazgo en el diente, el diagrama y el campo correctos, con una revisión final de todo lo que no tenía claro."
+    },
+    "item2": {
+      "title": "Odontograma completo",
+      "body": "Cuadrículas Triadan para gatos, perros y conejos, diagramas dentales vinculados y el conjunto completo de códigos AVDC, siempre sincronizados."
+    },
+    "item3": {
+      "title": "Imágenes e informes de imagen",
+      "body": "Asocie fotos y radiografías a los dientes y redacte informes radiográficos y de TC con refinamiento mediante IA."
+    },
+    "item4": {
+      "title": "Consultas, altas e informes para el propietario",
+      "body": "Notas centradas en la visita, plantillas editables e informes para llevar a casa en lenguaje claro, con fotos de antes y después."
+    },
+    "item5": {
+      "title": "Pensado para toda la clínica",
+      "body": "Historiales y plantillas compartidos, historial de visitas, recordatorios de revisión y historiales en PDF con su marca que podrá reimportar más tarde."
+    },
+    "item6": {
+      "title": "Diez idiomas",
+      "body": "Use ToothOps en inglés, francés, alemán, italiano, español, húngaro, rumano, chino, árabe o polaco."
+    },
+    "unsubscribe": {
+      "text": "Recibe esta novedad de producto puntual porque tiene una cuenta de ToothOps.",
+      "label": "Darse de baja de las novedades de producto"
+    }
   }
 }
