@@ -34,6 +34,7 @@ describe('buildWhatsNewEmail', () => {
     const token = decodeURIComponent(m.headers['List-Unsubscribe'].split('?t=')[1].replace('>', ''));
     expect(await verifyUnsubscribeToken(token, 'secret')).toBe(base.id);
     expect(m.html).not.toMatch(/\{\{|undefined/);
+    expect(m.html.match(/<strong>/g)).toHaveLength(7);
   });
   it('falls back to English for an unknown language', async () => {
     expect((await buildWhatsNewEmail('xx', base.id, 's', 'https://x')).subject).toBe('What’s new in ToothOps');

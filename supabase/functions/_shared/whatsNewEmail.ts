@@ -38,7 +38,7 @@ export async function buildWhatsNewEmail(
   const page = `${APP}/unsubscribe?t=${encodeURIComponent(token)}&lang=${lng}`;
   const oneClick = `${supabaseUrl}/functions/v1/unsubscribe?t=${encodeURIComponent(token)}`;
   const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-  const items = (['item1', 'item2', 'item3', 'item4', 'item5', 'item6'] as const).map((k) => {
+  const items = (['item1', 'item2', 'item3', 'item4', 'item5', 'item6', 'item7'] as const).map((k) => {
     const title = emailT(lng, `whatsNew.${k}.title`);
     const body = emailT(lng, `whatsNew.${k}.body`);
     return { html: `<strong>${esc(title)}</strong><br>${esc(body)}`, text: `${title}: ${body}` };

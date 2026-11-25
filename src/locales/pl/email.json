@@ -43,37 +43,41 @@
   },
   "whatsNew": {
     "subject": "Co nowego w ToothOps",
-    "preheader": "Rejestrowanie głosem, raporty obrazowe, konsultacje, współdzielenie w zespole i dziesięć języków.",
+    "preheader": "Dokładniejsze rejestrowanie głosem, praca ząb po zębie, dostosowania do Twojej placówki, konie i króliki.",
     "title": "ToothOps bardzo się rozwinął od premiery",
     "intro": "Od listopadowej premiery ToothOps stał się kompletnym przepływem pracy przy fotelu w stomatologii weterynaryjnej. Oto najważniejsze rzeczy. Zaloguj się i wróć tam, gdzie skończyłeś.",
     "button": "Otwórz ToothOps",
     "item1": {
-      "title": "Dokumentacja głosem",
-      "body": "Dyktuj w trakcie pracy: AI umieści każde ustalenie przy właściwym zębie, na właściwym schemacie i w odpowiednim polu, a na końcu sprawdzi wszystko, czego nie była pewna."
+      "title": "Rejestrowanie głosem, znacznie dokładniejsze",
+      "body": "Wychwytuje ustalenia rozdzielone pauzami i Twoje poprawki wypowiedziane na głos. Po zatrzymaniu odczytuje całe nagranie jeszcze raz i wypisuje do sprawdzenia wszystko, czego nie była pewna, zapisane razem z wizytą. Transkrypcje są zachowywane do odtworzenia, a dyktowanie obejmuje teraz raporty TK oraz notatki z konsultacji i wypisu w dziesięciu językach."
     },
     "item2": {
-      "title": "Pełna dokumentacja jamy ustnej",
-      "body": "Siatki Triadan dla kotów, psów i królików, powiązane schematy zębów i pełny zestaw kodów AVDC, wszystko zsynchronizowane."
+      "title": "Ząb po zębie",
+      "body": "Wybierz ząb na ponumerowanym schemacie i zapisz wszystko o nim w jednym miejscu: głębokości kieszeni (jeden odczyt, po jednym na korzeń lub sześć punktów), notatki diagnostyczne i zabiegowe, szybkie kody oraz status ekstrakcji. Edytujesz tę samą kartę pacjenta co w tabeli, więc widoki możesz zmieniać w każdej chwili."
     },
     "item3": {
+      "title": "Dopasuj do siebie",
+      "body": "Zmieniaj kolejność, ukrywaj i dodawaj sekcje oraz pola Pacjenta, także własne pola dla całej placówki. Edytuj szablony konsultacji i wypisu i przeciągaj ich sekcje w wybrane miejsca. Ustaw własne etykiety i teksty początkowe raportów obrazowych oraz zapisuj szablony raportów z leczenia, radiograficznych i TK do wielokrotnego użycia."
+    },
+    "item4": {
       "title": "Zdjęcia i raporty obrazowe",
       "body": "Przypinaj zdjęcia i radiogramy do zębów oraz pisz raporty radiograficzne i TK z doprecyzowaniem przez AI."
     },
-    "item4": {
+    "item5": {
       "title": "Konsultacje, wypis i raporty dla właściciela",
       "body": "Notatki od wizyty, edytowalne szablony i zrozumiałe raporty do zabrania do domu ze zdjęciami przed i po."
     },
-    "item5": {
-      "title": "Stworzony dla całej placówki",
-      "body": "Współdzielone karty i szablony, historia wizyt pacjenta, przypomnienia o kontrolach i karty PDF z Twoim brandingiem, które można później zaimportować ponownie."
-    },
     "item6": {
-      "title": "Dziesięć języków",
-      "body": "Korzystaj z ToothOps po angielsku, francusku, niemiecku, włosku, hiszpańsku, węgiersku, rumuńsku, chińsku, arabsku lub polsku."
+      "title": "Także konie i króliki",
+      "body": "Schemat uzębienia konia z 44 zębami, diagramem, tabelą i PDF oraz konne ustalenia i kody zabiegowe AVDC. Schematy zębów królików obok kotów i psów, wszystkie z powiązanymi diagramami, które pozostają zsynchronizowane."
     },
     "unsubscribe": {
       "text": "Otrzymujesz tę jednorazową informację o produkcie, ponieważ masz konto ToothOps.",
       "label": "Wypisz się z informacji o produkcie"
+    },
+    "item7": {
+      "title": "Stworzony dla całej placówki",
+      "body": "Współdzielone karty i szablony, historia wizyt pacjenta, przypomnienia o kontrolach i karty PDF z Twoim brandingiem, które można później zaimportować ponownie. Korzystaj z ToothOps po angielsku, francusku, niemiecku, włosku, hiszpańsku, węgiersku, rumuńsku, chińsku, arabsku lub polsku."
     }
   }
 }

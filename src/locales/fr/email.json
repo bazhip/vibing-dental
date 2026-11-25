@@ -43,37 +43,41 @@
   },
   "whatsNew": {
     "subject": "Nouveautés de ToothOps",
-    "preheader": "Saisie vocale, comptes rendus d’imagerie, consultations, partage en équipe et dix langues.",
+    "preheader": "Saisie vocale plus précise, saisie par dent, personnalisation adaptée à votre cabinet, chevaux et lapins.",
     "title": "ToothOps a beaucoup évolué depuis son lancement",
     "intro": "Depuis son lancement en novembre, ToothOps est devenu un véritable outil de travail au fauteuil pour la dentisterie vétérinaire. Voici les points forts. Connectez-vous pour reprendre là où vous vous étiez arrêté.",
     "button": "Ouvrir ToothOps",
     "item1": {
-      "title": "Saisie par la voix",
-      "body": "Dictez pendant que vous travaillez : l’IA place chaque constat sur la bonne dent, le bon schéma et le bon champ, avec une vérification finale de tout ce dont elle n’était pas sûre."
+      "title": "Saisie vocale bien plus précise",
+      "body": "Elle repère les constats coupés par des pauses et vos corrections à voix haute. Quand vous arrêtez, elle relit tout l’enregistrement et liste pour relecture ce dont elle n’était pas sûre, enregistré avec la visite. Les transcriptions sont conservées pour être réécoutées, et la dictée couvre désormais les comptes rendus de scanner et les notes de consultation et de sortie dans dix langues."
     },
     "item2": {
-      "title": "Charting complet de la bouche",
-      "body": "Grilles Triadan pour chats, chiens et lapins, schémas dentaires liés et jeu complet de codes AVDC, le tout synchronisé."
+      "title": "Une dent à la fois",
+      "body": "Sélectionnez une dent sur le schéma numéroté et saisissez tout au même endroit : profondeurs de poche (une valeur, une par racine ou six sites), notes de diagnostic et de procédure, codes rapides et statut d’extraction. Vous modifiez le même dossier que dans la grille, et vous pouvez changer de vue quand vous voulez."
     },
     "item3": {
+      "title": "À votre façon",
+      "body": "Réorganisez, masquez et ajoutez des sections et des champs Patient, y compris des champs personnalisés pour tout le cabinet. Modifiez les modèles de consultation et de sortie et faites glisser leurs sections dans l’ordre voulu. Définissez vos propres libellés et textes de départ pour l’imagerie, et enregistrez des modèles réutilisables de comptes rendus de traitement, radiographique et de scanner."
+    },
+    "item4": {
       "title": "Images et comptes rendus d’imagerie",
       "body": "Associez photos et radiographies aux dents, et rédigez des comptes rendus radiographiques et de scanner avec une reformulation assistée par IA."
     },
-    "item4": {
+    "item5": {
       "title": "Consultations, sorties et comptes rendus propriétaire",
       "body": "Notes centrées sur la visite, modèles modifiables et comptes rendus à emporter en langage clair, avec photos avant et après."
     },
-    "item5": {
-      "title": "Conçu pour tout le cabinet",
-      "body": "Dossiers et modèles partagés, historique des visites, rappels de contrôle et dossiers PDF personnalisés que vous pouvez réimporter plus tard."
-    },
     "item6": {
-      "title": "Dix langues",
-      "body": "Utilisez ToothOps en anglais, français, allemand, italien, espagnol, hongrois, roumain, chinois, arabe ou polonais."
+      "title": "Aussi pour les chevaux et les lapins",
+      "body": "Un schéma dentaire équin de 44 dents avec diagramme, grille et PDF, ainsi que les constats et codes de procédure AVDC équins. Des schémas dentaires pour lapins en plus des chats et des chiens, avec des diagrammes liés toujours synchronisés."
     },
     "unsubscribe": {
       "text": "Vous recevez cette information produit ponctuelle parce que vous avez un compte ToothOps.",
       "label": "Se désabonner des actualités produit"
+    },
+    "item7": {
+      "title": "Conçu pour tout le cabinet",
+      "body": "Dossiers et modèles partagés, historique des visites, rappels de contrôle et dossiers PDF personnalisés que vous pouvez réimporter plus tard. Utilisez ToothOps en anglais, français, allemand, italien, espagnol, hongrois, roumain, chinois, arabe ou polonais."
     }
   }
 }
